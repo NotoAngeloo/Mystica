@@ -1,0 +1,90 @@
+package me.angeloo.mystica.Managers;
+
+import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Components.Profile;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Scoreboard;
+
+
+public class DeathManager {
+
+    private final ProfileManager profileManager;
+    private final AbilityManager abilityManager;
+
+    public DeathManager(Mystica main){
+        profileManager = main.getProfileManager();
+        abilityManager = main.getAbilityManager();
+    }
+
+    public void playerNowDead(Player player){
+
+        Profile playerProfile = profileManager.getAnyProfile(player);
+
+        boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
+
+        if(!combatStatus){
+
+            profileManager.getAnyProfile(player).setSavedInv(player.getInventory().getContents());
+
+        }
+
+        player.getInventory().clear();
+
+        profileManager.getAnyProfile(player).setIfDead(true);
+
+        //aggroManager.removeFromAllAttackerLists(player);
+
+        player.sendMessage("You have died");
+
+        player.setHealth(20);
+        playerProfile.setCurrentHealth(playerProfile.getTotalHealth());
+        playerProfile.setCurrentMana(playerProfile.getTotalMana());
+
+        player.setFoodLevel(20);
+        player.setSaturation(20);
+        player.setInvisible(true);
+        player.setGlowing(true);
+        abilityManager.resetAbilityBuffs(player);
+    }
+
+    public void playerNowLive(Player player){
+
+        profileManager.getAnyProfile(player).setIfDead(false);
+        player.setGlowing(false);
+        player.setInvisible(false);
+        player.setFireTicks(0);
+        player.setVisualFire(false);
+        //more effects?
+
+        player.getInventory().clear();
+
+        ItemStack[] savedInv = profileManager.getAnyProfile(player).getSavedInv();
+
+        boolean allNull = true;
+        for(ItemStack item : savedInv){
+            if(item != null){
+                allNull = false;
+                break;
+            }
+        }
+
+        if(!allNull){
+            player.getInventory().setContents(savedInv);
+            profileManager.getAnyProfile(player).removeSavedInv();
+        }
+
+        player.teleport(player.getWorld().getSpawnLocation());
+
+        profileManager.getAnyProfile(player).setIfInCombat(false);
+        Scoreboard scoreboard = player.getScoreboard();
+        scoreboard.clearSlot(DisplaySlot.SIDEBAR);
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(""));
+
+
+    }
+
+}

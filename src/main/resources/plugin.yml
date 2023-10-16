@@ -1,0 +1,37 @@
+name: Mystica
+version: '${project.version}'
+main: me.angeloo.mystica.Mystica
+depend:
+  - Parties
+  - ProtocolLib
+api-version: '1.19'
+commands:
+  Trash:
+    description: allows players to throw away items
+    usage: /Trash
+  Bag:
+    description: opens the players bag
+    usage: /Bag
+  Equipment:
+    description: opens equipment
+    usage: /Equipment
+  ClassSelect:
+    description: opens class select
+    usage: /ClassSelect
+  SeeRawDamage:
+    description: allows for better testing of seeing damage
+    usage: /SeeRawDamage
+  MysticaDamage:
+    description: allows mms to damage player using this plugin
+    usage: /MysticaDamage <target> <caster> <type> <amount>
+    permission: developer
+  ToggleGlobalPvp:
+    description: toggles global pvp
+    usage: /ToggleGlobalPvp
+    permission: developer
+
+permissions:
+  developer:
+    description: commands for developer stuff
+    default: op
+

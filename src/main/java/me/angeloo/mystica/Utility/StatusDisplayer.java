@@ -107,6 +107,10 @@ public class StatusDisplayer {
                 statusString.append(applyElementalistStatuses(player));
                 break;
             }
+            case "ranger":{
+                statusString.append(applyRangerStatus(player));
+                break;
+            }
         }
 
         return String.valueOf(statusString);
@@ -141,6 +145,23 @@ public class StatusDisplayer {
 
         if (breathTime > 0) {
             statusString.append(ChatColor.of(new Color(153, 204, 255))).append(breathTime);
+            statusAmount.put(player, statusAmount.get(player) + 1);
+        }
+
+        return String.valueOf(statusString);
+    }
+
+    private String applyRangerStatus(Player player){
+        StringBuilder statusString = new StringBuilder();
+
+        if (statusAmount.get(player) >= 4) {
+            return String.valueOf(statusString);
+        }
+
+        int cry = abilityManager.getRangerAbilities().getRallyingCry().getIfBuffTime(player);
+
+        if(cry > 0){
+            statusString.append(ChatColor.of(new Color(34,111,80))).append(cry);
             statusAmount.put(player, statusAmount.get(player) + 1);
         }
 

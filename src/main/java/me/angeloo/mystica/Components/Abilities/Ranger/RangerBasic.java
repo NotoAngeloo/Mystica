@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Ranger;
 
+import me.angeloo.mystica.Components.Abilities.RangerAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -37,15 +38,17 @@ public class RangerBasic {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
 
+    private final RallyingCry rallyingCry;
+
     private final Map<UUID, Integer> basicStageMap = new HashMap<>();
     private final Map<UUID, Boolean> basicReadyMap = new HashMap<>();
 
     private final Map<UUID, BukkitTask> removeBasicStageTaskMap = new HashMap<>();
 
-
-    public RangerBasic(Mystica main, AbilityManager manager){
+    public RangerBasic(Mystica main, AbilityManager manager, RangerAbilities rangerAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
+        rallyingCry = rangerAbilities.getRallyingCry();
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
@@ -218,10 +221,14 @@ public class RangerBasic {
 
                     cancelTask();
 
-                    double level = profileManager.getAnyProfile(player).getStats().getLevel();
+                    double basicDamage = 1;
+                    if(rallyingCry.getIfBuffTime(player) > 0){
+                        basicDamage = basicDamage * 1.25;
+                    }
 
+                    double level = profileManager.getAnyProfile(player).getStats().getLevel();
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Physical", 1 * level, crit);
+                    double damage = damageCalculator.calculateDamage(player, target, "Physical", basicDamage * level, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
@@ -312,10 +319,15 @@ public class RangerBasic {
 
                     cancelTask();
 
+                    double basicDamage = 1.5;
+                    if(rallyingCry.getIfBuffTime(player) > 0){
+                        basicDamage = basicDamage * 1.25;
+                    }
+
                     double level = profileManager.getAnyProfile(player).getStats().getLevel();
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Physical", 1.5 * level, crit);
+                    double damage = damageCalculator.calculateDamage(player, target, "Physical", basicDamage * level, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);

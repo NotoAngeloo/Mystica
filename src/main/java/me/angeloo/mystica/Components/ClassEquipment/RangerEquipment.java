@@ -22,7 +22,7 @@ public class RangerEquipment {
 
     public ItemStack getBaseWeapon(){
 
-        return getItem(Material.BOW, 1,
+        return getItem(Material.FEATHER, 1,
                 ChatColor.of(new Color(34, 111, 80)) + "Ranger's Bow",
                 ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
                 ChatColor.of(new Color(176, 159, 109)) + "Main Hand",

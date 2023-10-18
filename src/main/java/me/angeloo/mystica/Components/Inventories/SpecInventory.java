@@ -164,8 +164,8 @@ public class SpecInventory {
                 ChatColor.of(new Color(34, 111, 80)) + "Starblade Volley",
                 "",
                 ChatColor.of(new Color(230,230,230)) + "Launch a blade towards the target",
-                ChatColor.of(new Color(230,230,230)) + "Landing a crit with this skill",
-                ChatColor.of(new Color(230,230,230)) + "resets its cooldown");
+                ChatColor.of(new Color(230,230,230)) + "Landing a crit with any skill",
+                ChatColor.of(new Color(230,230,230)) + "decreases this skills cooldown");
     }
 
     private ItemStack getTamerItem(){
@@ -179,9 +179,6 @@ public class SpecInventory {
                 ChatColor.of(new Color(230,230,230)) + "by the target by 10%",
                 ChatColor.of(new Color(230,230,230)) + "Increases crit of " + ChatColor.of(new Color(34, 111, 80)) + "Shadow Crows " +
                         ChatColor.of(new Color(230,230,230)) + "by 15%",
-                        ChatColor.of(new Color(230,230,230)) + "Casting " + ChatColor.of(new Color(34, 111, 80)) + "Blessed Arrows "+
-                                ChatColor.of(new Color(230,230,230)) + "reduces the cooldown of",
-                ChatColor.of(new Color(34, 111, 80)) + "Shadow Crows " + ChatColor.of(new Color(230,230,230)) + "by 2 seconds",
                 "",
                 ChatColor.of(new Color(0,102,0)) + "Get Skill",
                 ChatColor.of(new Color(0, 117, 94)) + "Wild Roar",

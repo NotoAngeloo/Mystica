@@ -95,7 +95,7 @@ public class DamageCalculator {
             }
         }
 
-        damage = damage * buffAndDebuffManager.getTotalDamageMultipliers(player);
+        damage = damage * buffAndDebuffManager.getTotalDamageMultipliers(player, entity);
         damage = damage + buffAndDebuffManager.getTotalDamageAddition(player);
 
         dpsManager.addDamageToDamageDealt(player, damage);
@@ -114,6 +114,7 @@ public class DamageCalculator {
 
         return damage;
     }
+
 
     public double calculateGettingDamaged(Player player, LivingEntity entity, String type, Double damage){
 
@@ -150,6 +151,7 @@ public class DamageCalculator {
                     * (attack / defence);
         }
 
+        damage = damage * buffAndDebuffManager.getTotalDamageMultipliers(entity, player);
 
         if(seeingRawDamage.containsKey(player.getUniqueId())){
 
@@ -158,6 +160,7 @@ public class DamageCalculator {
             }
 
         }
+
 
         return damage;
     }

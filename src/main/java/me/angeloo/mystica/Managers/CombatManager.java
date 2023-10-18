@@ -10,6 +10,7 @@ import me.angeloo.mystica.Utility.StatusDisplayer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -26,6 +27,7 @@ public class CombatManager {
 
     private final Mystica main;
     private final ProfileManager profileManager;
+    private final BuffAndDebuffManager buffAndDebuffManager;
     private final AbilityManager abilityManager;
     private final DpsManager dpsManager;
     private final AllSkillItems allSkillItems;
@@ -40,6 +42,7 @@ public class CombatManager {
     public CombatManager(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
+        buffAndDebuffManager = main.getBuffAndDebuffManager();
         abilityManager = manager;
         dpsManager = main.getDpsManager();
         allSkillItems = new AllSkillItems(main);
@@ -260,29 +263,66 @@ public class CombatManager {
 
     public void displayPlayerHealthPlusInfo(Player player){
 
-        Profile playerProfile = profileManager.getAnyProfile(player);
+        StringBuilder fullBar = new StringBuilder();
 
-        int currentHp = (int)Math.floor(profileManager.getAnyProfile(player).getCurrentHealth());
-        int currentMp = (int) Math.floor(profileManager.getAnyProfile(player).getCurrentMana());
+        //shield info here
 
-        int maxHp = playerProfile.getTotalHealth();
-        int maxMp = playerProfile.getTotalMana();
-
-
-        //default info nothing
-        String hpString = ChatColor.RED + "[" + currentHp + "/" + maxHp + "]";
-        String mpString = ChatColor.BLUE + "[" + currentMp + "/" + maxMp + "]";
-
+        String shieldString = getShieldString(player);
+        String manaString = getManaBar(player);
         String statusString = ChatColor.GRAY + getPlayerStatus(player);
 
-        String healthXMana = hpString +  "     " + statusString +  "     "   + mpString;
+        fullBar.append(shieldString).append("     ").append(statusString).append("     ").append(manaString);
 
-        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(healthXMana));
+
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(String.valueOf(fullBar)));
+    }
+
+    private String getShieldString(Player player){
+
+        Profile playerProfile = profileManager.getAnyProfile(player);
+
+        double maxHp = playerProfile.getTotalHealth();
+        double shieldAmount = buffAndDebuffManager.getGenericShield().getCurrentShieldAmount(player);
+        int percent = (int) Math.floor((shieldAmount/maxHp) * 100);
+
+        StringBuilder shieldBar = new StringBuilder().append(ChatColor.YELLOW);
+
+        for(int i = 0; i<15 ; i++){
+            if(percent > (i*((double) 100/15))){
+                shieldBar.append("||");
+            }
+            else{
+                shieldBar.append(" ");
+            }
+        }
+
+        return String.valueOf(shieldBar);
+    }
+
+
+    private String getManaBar(Player player){
+
+        Profile playerProfile = profileManager.getAnyProfile(player);
+
+        double maxMp = playerProfile.getTotalMana();
+        double currentMp = playerProfile.getCurrentMana();
+        int percent = (int) Math.floor((currentMp/maxMp) * 100);
+
+        StringBuilder manaBar = new StringBuilder().append(ChatColor.BLUE);
+
+        for(int i = 0; i<15 ; i++){
+            if(percent > (i*((double) 100/15))){
+                manaBar.append("||");
+            }
+            else{
+                manaBar.append(" ");
+            }
+        }
+
+        return String.valueOf(manaBar);
     }
 
     private String getPlayerStatus(Player player){
-
-        //add cooldown to the status
 
         int hotBarSlot = player.getInventory().getHeldItemSlot();
 

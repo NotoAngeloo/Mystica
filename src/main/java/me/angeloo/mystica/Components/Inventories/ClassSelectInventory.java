@@ -65,7 +65,7 @@ public class ClassSelectInventory {
     }
 
     private ItemStack getRangerItem(){
-        return getItem(Material.BOW, 1, ChatColor.of(new Color(34, 111, 80)) + "Ranger",
+        return getItem(Material.FEATHER, 1, ChatColor.of(new Color(34, 111, 80)) + "Ranger",
                 "",
                 ChatColor.of(new Color(176, 159, 109)) + "Role " + ChatColor.of(new Color(217, 217, 217)) + "Ranged Physical Dps"
         );

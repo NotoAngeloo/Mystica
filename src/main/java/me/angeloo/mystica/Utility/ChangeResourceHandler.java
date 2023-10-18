@@ -41,6 +41,10 @@ public class ChangeResourceHandler {
             return;
         }
 
+        if(buffAndDebuffManager.getGenericShield().getCurrentShieldAmount(entity) > 0){
+            damage = buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(entity, damage);
+        }
+
         if(entity instanceof Player){
             subtractHealthFromPlayer((Player) entity, damage);
             return;

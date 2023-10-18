@@ -3,11 +3,8 @@ package me.angeloo.mystica.Components.Abilities.Elementalist;
 import me.angeloo.mystica.Components.Abilities.ElementalistAbilities;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.CombatManager;
-import me.angeloo.mystica.Managers.ProfileManager;
-import me.angeloo.mystica.Managers.TargetManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
-import me.angeloo.mystica.Utility.DamageCalculator;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -21,7 +18,6 @@ import java.util.UUID;
 public class ElementalBreath {
 
     private final Mystica main;
-
     private final CombatManager combatManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final FieryWing fieryWing;
@@ -30,7 +26,6 @@ public class ElementalBreath {
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
     public ElementalBreath(Mystica main, AbilityManager manager, ElementalistAbilities elementalistAbilities){
-
         this.main = main;
         combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();

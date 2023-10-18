@@ -1,9 +1,6 @@
 package me.angeloo.mystica.Components.Abilities;
 
-import me.angeloo.mystica.Components.Abilities.Ranger.BitingRain;
-import me.angeloo.mystica.Components.Abilities.Ranger.RangerBasic;
-import me.angeloo.mystica.Components.Abilities.Ranger.Relentless;
-import me.angeloo.mystica.Components.Abilities.Ranger.ShadowCrows;
+import me.angeloo.mystica.Components.Abilities.Ranger.*;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -19,18 +16,25 @@ public class RangerAbilities {
     private final Map<Player, Boolean> castMap = new HashMap<>();
     private final Map<Player, Double> percentCastBar = new HashMap<>();
 
+    private final RallyingCry rallyingCry;
     private final Relentless relentless;
+    private final RazorWind razorWind;
+    private final BlessedArrow blessedArrow;
+    private final Roll roll;
     private final ShadowCrows shadowCrows;
     private final BitingRain bitingRain;
     private final RangerBasic rangerBasic;
 
     public RangerAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
-        //buff skill first
+        rallyingCry = new RallyingCry(main, manager);
         relentless = new Relentless(main, manager);
+        razorWind = new RazorWind(main, manager);
+        blessedArrow = new BlessedArrow(main, manager, this);
+        roll = new Roll(main, manager);
         shadowCrows = new ShadowCrows(main, manager);
         bitingRain = new BitingRain(main, manager);
-        rangerBasic = new RangerBasic(main, manager);
+        rangerBasic = new RangerBasic(main, manager, this);
     }
 
     public void useRangerAbility(Player player, int abilityNumber){
@@ -50,6 +54,22 @@ public class RangerAbilities {
             }
             case 3:{
                 relentless.use(player);
+                return;
+            }
+            case 4:{
+                razorWind.use(player);
+                return;
+            }
+            case 5:{
+                blessedArrow.use(player);
+                return;
+            }
+            case 6:{
+                rallyingCry.use(player);
+                return;
+            }
+            case 8:{
+                roll.use(player);
                 return;
             }
         }
@@ -83,6 +103,14 @@ public class RangerAbilities {
                 return shadowCrows.getCooldown(player);
             case 3:
                 return relentless.getCooldown(player);
+            case 4:
+                return razorWind.getCooldown(player);
+            case 5:
+                return blessedArrow.getCooldown(player);
+            case 6:
+                return rallyingCry.getCooldown(player);
+            case 8:
+                return roll.getCooldown(player);
         }
 
         return 0;
@@ -111,4 +139,7 @@ public class RangerAbilities {
         return percentCastBar.getOrDefault(player, 0.0);
     }
 
+    public RallyingCry getRallyingCry() {
+        return rallyingCry;
+    }
 }

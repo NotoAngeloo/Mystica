@@ -182,7 +182,7 @@ public class GeneralEventListener implements Listener {
         profileManager.addToPlayerNameMap(player);
         inventoryIndexingManager.innitBagIndex(player);
         targetManager.setPlayerTarget(player, null);
-
+        buffAndDebuffManager.removeAllBuffsAndDebuffs(player);
     }
 
     @EventHandler

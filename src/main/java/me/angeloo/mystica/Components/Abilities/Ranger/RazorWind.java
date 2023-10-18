@@ -9,7 +9,6 @@ import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -23,11 +22,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class ShadowCrows {
+public class RazorWind {
 
     private final Mystica main;
 
     private final ProfileManager profileManager;
+    private final AbilityManager abilityManager;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
@@ -38,9 +38,10 @@ public class ShadowCrows {
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public ShadowCrows(Mystica main, AbilityManager manager){
+    public RazorWind(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
+        abilityManager = manager;
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
@@ -51,7 +52,6 @@ public class ShadowCrows {
     }
 
     public void use(Player player){
-
         if(!abilityReadyInMap.containsKey(player.getUniqueId())){
             abilityReadyInMap.put(player.getUniqueId(), 0);
         }
@@ -96,7 +96,7 @@ public class ShadowCrows {
 
         execute(player);
 
-        abilityReadyInMap.put(player.getUniqueId(), 10);
+        abilityReadyInMap.put(player.getUniqueId(), 16);
         new BukkitRunnable(){
             @Override
             public void run(){
@@ -112,46 +112,30 @@ public class ShadowCrows {
 
             }
         }.runTaskTimer(main, 0,20);
-
     }
 
     private void execute(Player player){
 
-        boolean tamer = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("animal tamer");
-
         LivingEntity target = targetManager.getPlayerTarget(player);
 
-        Location start = player.getLocation();
-        start.subtract(0, 1, 0);
-        ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
-        armorStand.setInvisible(true);
-        armorStand.setGravity(false);
-        armorStand.setCollidable(false);
-        armorStand.setInvulnerable(true);
-        armorStand.setMarker(true);
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
+        double skillDamage = 4;
 
-        EntityEquipment entityEquipment = armorStand.getEquipment();
-
-        ItemStack crow = new ItemStack(Material.ARROW);
-        ItemMeta meta = crow.getItemMeta();
-        assert meta != null;
-        meta.setCustomModelData(2);
-        crow.setItemMeta(meta);
-        assert entityEquipment != null;
-        entityEquipment.setHelmet(crow);
-
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level() +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
-        double skillDamage = 2;
+        abilityManager.getRangerAbilities().setCasting(player, true);
+        player.setWalkSpeed(.06f);
 
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
+            int count = 0;
             @Override
             public void run(){
 
                 if(!player.isOnline()){
                     this.cancel();
-                    armorStand.remove();
+                    abilityManager.getRangerAbilities().setCasting(player, false);
+                    player.setWalkSpeed(.2f);
+                    return;
                 }
 
                 if(targetStillValid(target)){
@@ -160,23 +144,18 @@ public class ShadowCrows {
                     targetWasLoc = targetLoc.clone();
                 }
 
-                Location current = armorStand.getLocation();
-                Vector direction = targetWasLoc.toVector().subtract(current.toVector());
+                double percent = ((double) count / 20) * 100;
 
-                double distance = current.distance(targetWasLoc);
-                double distanceThisTick = Math.min(distance, 2);
-                current.add(direction.normalize().multiply(distanceThisTick));
-                armorStand.teleport(current);
+                abilityManager.getRangerAbilities().setCastBar(player, percent);
 
-                if (distance <= 3) {
+                if(count >=20){
                     this.cancel();
-                    crowTask();
-
-                    if(tamer){
-                        buffAndDebuffManager.getShadowCrowsDebuff().applyDebuff(target, 15);
-                    }
-
+                    abilityManager.getRangerAbilities().setCasting(player, false);
+                    player.setWalkSpeed(.2f);
+                    startLaunchTask();
                 }
+
+                count ++;
             }
 
             private boolean targetStillValid(LivingEntity target){
@@ -192,72 +171,130 @@ public class ShadowCrows {
                 return !target.isDead();
             }
 
+            private void startLaunchTask(){
 
-            private void crowTask(){
+                Location start = player.getLocation();
+
+                start.subtract(0, 1, 0);
+                ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+                armorStand.setInvisible(true);
+                armorStand.setGravity(false);
+                armorStand.setCollidable(false);
+                armorStand.setInvulnerable(true);
+                armorStand.setMarker(true);
+
+                EntityEquipment entityEquipment = armorStand.getEquipment();
+
+                ItemStack razor = new ItemStack(Material.ARROW);
+                ItemMeta meta = razor.getItemMeta();
+                assert meta != null;
+                meta.setCustomModelData(5);
+                razor.setItemMeta(meta);
+                assert entityEquipment != null;
+                entityEquipment.setHelmet(razor);
+
                 new BukkitRunnable(){
-                    Location targetWasLoc = target.getLocation().clone();
+                    boolean toFrom = false;
+                    Location newTargetWasLoc = targetWasLoc.clone();
+                    Location playerWasLoc = player.getLocation().clone();
                     Vector initialDirection;
-                    int count = 0;
                     int angle = 0;
                     @Override
                     public void run(){
 
                         if(targetStillValid(target)){
                             Location targetLoc = target.getLocation();
-                            targetWasLoc = targetLoc.clone();
+                            targetLoc = targetLoc.subtract(0,1,0);
+                            newTargetWasLoc = targetLoc.clone();
                         }
 
-                        if (initialDirection == null) {
-                            initialDirection = targetWasLoc.getDirection().setY(0).normalize();
+                        if(targetStillValid(player)){
+                            Location playerLoc = player.getLocation();
+                            playerLoc = playerLoc.subtract(0,1,0);
+                            playerWasLoc = playerLoc.clone();
                         }
 
-                        Vector direction = initialDirection.clone();
-                        double radians = Math.toRadians(angle);
-                        direction.rotateAroundY(radians);
-                        targetWasLoc.setDirection(direction);
-                        armorStand.teleport(targetWasLoc);
+                        Location current = armorStand.getLocation();
 
-
-                        if(!targetStillValid(target)){
-                            this.cancel();
-                            armorStand.remove();
+                        if (!sameWorld(current, targetWasLoc)) {
+                            cancelTask();
                             return;
                         }
 
-                        if(count%20 == 0){
+                        Vector direction;
+                        double distance;
 
-                            boolean crit = damageCalculator.checkIfCrit(player, subclassCritBonus(player));
-                            double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
-
-                            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                            changeResourceHandler.subtractHealthFromEntity(target, damage, player);
-
+                        if(!toFrom){
+                            direction = targetWasLoc.toVector().subtract(current.toVector());
+                            distance = current.distance(targetWasLoc);
+                        }
+                        else{
+                            direction = playerWasLoc.toVector().subtract(current.toVector());
+                            distance = current.distance(playerWasLoc);
                         }
 
-                        if(count >= 150){
-                            this.cancel();
-                            armorStand.remove();
+                        double distanceThisTick = Math.min(distance, .6);
+                        current.add(direction.normalize().multiply(distanceThisTick));
+
+
+                        if (initialDirection == null) {
+                            initialDirection = playerWasLoc.getDirection().setY(0).normalize();
                         }
 
-                        angle -= 10; // adjust the rotation speed here
-                        if (angle <= -360) {
+                        Vector rotation = initialDirection.clone();
+                        double radians = Math.toRadians(angle);
+                        rotation.rotateAroundY(radians);
+                        current.setDirection(rotation);
+
+                        armorStand.teleport(current);
+
+                        if(toFrom){
+                            if (distance <= 1) {
+                                cancelTask();
+                            }
+                        }
+
+                        if(!toFrom){
+                            if (distance <= 1) {
+
+                                toFrom = true;
+
+                                boolean crit = damageCalculator.checkIfCrit(player, subclassCritBonus(player));
+                                double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
+
+                                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
+                                changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+
+                            }
+                        }
+
+                        angle += 60; // adjust the rotation speed here
+                        if (angle >= 360) {
                             angle = 0;
                         }
 
-                        count++;
-
                     }
+
+                    private boolean sameWorld(Location loc1, Location loc2) {
+                        return loc1.getWorld().equals(loc2.getWorld());
+                    }
+
+                    private void cancelTask() {
+                        this.cancel();
+                        armorStand.remove();
+                    }
+
                 }.runTaskTimer(main, 0, 1);
             }
 
-        }.runTaskTimer(main, 0, 1);
+        }.runTaskTimer(main, 0, 2);
 
     }
 
     private int subclassCritBonus(Player player){
         String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
-        if(subclass.equalsIgnoreCase("animal tamer")){
+        if(subclass.equalsIgnoreCase("scout")){
             return 15;
         }
 
@@ -265,7 +302,6 @@ public class ShadowCrows {
     }
 
     public int getCooldown(Player player){
-
         int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
 
         if(cooldown < 0){

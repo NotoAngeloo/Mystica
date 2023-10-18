@@ -1,5 +1,7 @@
 package me.angeloo.mystica.Components.Abilities.Ranger;
 
+import me.angeloo.mystica.Components.Abilities.ElementalistAbilities;
+import me.angeloo.mystica.Components.Abilities.RangerAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -18,14 +20,15 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
-public class Relentless {
+public class BlessedArrow {
 
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final AbilityManager abilityManager;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
@@ -34,12 +37,14 @@ public class Relentless {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
 
+    private final RallyingCry rallyingCry;
+
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public Relentless(Mystica main, AbilityManager manager){
+    public BlessedArrow(Mystica main, AbilityManager manager, RangerAbilities rangerAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
-        abilityManager = manager;
+        rallyingCry = rangerAbilities.getRallyingCry();
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
@@ -95,7 +100,7 @@ public class Relentless {
 
         execute(player);
 
-        abilityReadyInMap.put(player.getUniqueId(), 16);
+        abilityReadyInMap.put(player.getUniqueId(), 10);
         new BukkitRunnable(){
             @Override
             public void run(){
@@ -116,25 +121,47 @@ public class Relentless {
 
     private void execute(Player player){
 
+        //check cry active
+
         LivingEntity target = targetManager.getPlayerTarget(player);
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level() +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
+        Location start = player.getLocation();
+        start.subtract(0, 1, 0);
+
+
+        ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+        armorStand.setInvisible(true);
+        armorStand.setGravity(false);
+        armorStand.setCollidable(false);
+        armorStand.setInvulnerable(true);
+        armorStand.setMarker(true);
+
+        EntityEquipment entityEquipment = armorStand.getEquipment();
+
+        ItemStack blessedArrow = new ItemStack(Material.ARROW);
+        ItemMeta meta = blessedArrow.getItemMeta();
+        assert meta != null;
+
+        meta.setCustomModelData(3);
+
+        blessedArrow.setItemMeta(meta);
+        assert entityEquipment != null;
+        entityEquipment.setHelmet(blessedArrow);
+
         double skillDamage = 4;
 
-        abilityManager.getRangerAbilities().setCasting(player, true);
-        buffAndDebuffManager.getSpeedUp().applySpeedUp(player, .3f);
+        if(rallyingCry.getIfBuffTime(player) > 0){
+            skillDamage = skillDamage * 1.25;
+        }
 
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
+
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
-            final Set<ArmorStand> allStands = new HashSet<>();
-            int count = 0;
             @Override
             public void run(){
-
-                if(!player.isOnline()){
-                    cancelTask();
-                }
 
                 if(targetStillValid(target)){
                     Location targetLoc = target.getLocation();
@@ -142,82 +169,34 @@ public class Relentless {
                     targetWasLoc = targetLoc.clone();
                 }
 
-                Location start = player.getLocation();
-                start.subtract(0, 1, 0);
-                ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
-                armorStand.setInvisible(true);
-                armorStand.setGravity(false);
-                armorStand.setCollidable(false);
-                armorStand.setInvulnerable(true);
-                armorStand.setMarker(true);
+                Location current = armorStand.getLocation();
 
-                EntityEquipment entityEquipment = armorStand.getEquipment();
-
-                ItemStack arrow = new ItemStack(Material.ARROW);
-                ItemMeta meta = arrow.getItemMeta();
-                assert meta != null;
-                meta.setCustomModelData(1);
-                arrow.setItemMeta(meta);
-                assert entityEquipment != null;
-                entityEquipment.setHelmet(arrow);
-
-                allStands.add(armorStand);
-
-                double randomValue = Math.random() * 2 - 1;
-
-                new BukkitRunnable(){
-                    final double initialDistance = armorStand.getLocation().distance(target.getLocation());
-                    final double halfDistance = initialDistance/2;
-                    double traveled = 0;
-                    @Override
-                    public void run(){
-
-                        Location current = armorStand.getLocation();
-
-                        Vector direction = targetWasLoc.toVector().subtract(current.toVector());
-
-                        double distance = current.distance(targetWasLoc);
-                        double distanceThisTick = Math.min(distance, .75);
-                        current.add(direction.normalize().multiply(distanceThisTick));
-                        traveled = traveled + distanceThisTick;
-
-                        if(traveled < halfDistance){
-                            current.add(direction.clone().crossProduct(new Vector(0,1,0).normalize().multiply(randomValue)));
-                        }
-                        else{
-                            current.setDirection(direction);
-                        }
-
-
-
-                        armorStand.teleport(current);
-
-                        if (distance <= 1) {
-
-                            this.cancel();
-                            armorStand.remove();
-
-
-                            boolean crit = damageCalculator.checkIfCrit(player, 0);
-                            double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
-
-                            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                            changeResourceHandler.subtractHealthFromEntity(target, damage, player);
-
-                        }
-
-                    }
-                }.runTaskTimer(main, 0, 1);
-
-                double percent = ((double) count /15) * 100;
-
-                abilityManager.getRangerAbilities().setCastBar(player, percent);
-
-                if(count >=15){
+                if (!sameWorld(current, targetWasLoc)) {
                     cancelTask();
+                    return;
                 }
 
-                count++;
+                Vector direction = targetWasLoc.toVector().subtract(current.toVector());
+                double distance = current.distance(targetWasLoc);
+                double distanceThisTick = Math.min(distance, .75);
+                current.add(direction.normalize().multiply(distanceThisTick));
+                current.setDirection(direction);
+
+                armorStand.teleport(current);
+
+
+                if (distance <= 1) {
+
+                    cancelTask();
+
+                    boolean crit = damageCalculator.checkIfCrit(player, 0);
+                    double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage * skillLevel, crit);
+
+                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+
+                }
+
             }
 
             private boolean targetStillValid(LivingEntity target){
@@ -233,26 +212,19 @@ public class Relentless {
                 return !target.isDead();
             }
 
-            private void cancelTask(){
+            private boolean sameWorld(Location loc1, Location loc2) {
+                return loc1.getWorld().equals(loc2.getWorld());
+            }
+
+            private void cancelTask() {
                 this.cancel();
-                removeStands();
-                abilityManager.getRangerAbilities().setCasting(player, false);
-                abilityManager.getRangerAbilities().setCastBar(player, 0);
-                buffAndDebuffManager.getSpeedUp().removeSpeedUp(player);
+                armorStand.remove();
             }
-
-            private void removeStands(){
-                for(ArmorStand stand : allStands){
-                    stand.remove();
-                }
-            }
-
-        }.runTaskTimer(main, 0, 4);
+        }.runTaskTimer(main, 0, 1);
 
     }
 
     public int getCooldown(Player player){
-
         int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
 
         if(cooldown < 0){

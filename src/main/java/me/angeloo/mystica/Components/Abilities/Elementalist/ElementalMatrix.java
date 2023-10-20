@@ -126,6 +126,9 @@ public class ElementalMatrix {
 
     private void execute(Player player){
 
+        boolean cryomancer = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("cryomancer");
+        boolean conjurer = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("conjurer");
+
         PartiesAPI api = Parties.getApi();
         PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
         assert partyPlayer != null;
@@ -196,11 +199,11 @@ public class ElementalMatrix {
 
         double skillDamage = 5;
 
-        if(subclass.equalsIgnoreCase("cryomancer")){
+        if(cryomancer){
             skillDamage = skillDamage * 2;
         }
 
-        if(subclass.equalsIgnoreCase("conjurer")){
+        if(conjurer){
 
             double maxMana = profileManager.getAnyProfile(player).getTotalMana();
             double currentMana = profileManager.getAnyProfile(player).getCurrentMana();

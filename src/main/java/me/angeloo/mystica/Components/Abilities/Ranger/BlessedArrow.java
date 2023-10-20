@@ -184,6 +184,7 @@ public class BlessedArrow {
 
                 armorStand.teleport(current);
 
+                //check for target tyoe to see if restore mana
 
                 if (distance <= 1) {
 

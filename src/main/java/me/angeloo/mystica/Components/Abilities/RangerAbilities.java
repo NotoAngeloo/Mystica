@@ -19,6 +19,7 @@ public class RangerAbilities {
     private final RallyingCry rallyingCry;
     private final Relentless relentless;
     private final RazorWind razorWind;
+    private final WildSpirit wildSpirit;
     private final BlessedArrow blessedArrow;
     private final Roll roll;
     private final ShadowCrows shadowCrows;
@@ -30,6 +31,7 @@ public class RangerAbilities {
         rallyingCry = new RallyingCry(main, manager);
         relentless = new Relentless(main, manager);
         razorWind = new RazorWind(main, manager);
+        wildSpirit = new WildSpirit(main, manager);
         blessedArrow = new BlessedArrow(main, manager, this);
         roll = new Roll(main, manager);
         shadowCrows = new ShadowCrows(main, manager);
@@ -66,6 +68,10 @@ public class RangerAbilities {
             }
             case 6:{
                 rallyingCry.use(player);
+                return;
+            }
+            case 7:{
+                wildSpirit.sendSignal(player);
                 return;
             }
             case 8:{
@@ -109,6 +115,8 @@ public class RangerAbilities {
                 return blessedArrow.getCooldown(player);
             case 6:
                 return rallyingCry.getCooldown(player);
+            case 7:
+                return wildSpirit.getCooldown(player);
             case 8:
                 return roll.getCooldown(player);
         }

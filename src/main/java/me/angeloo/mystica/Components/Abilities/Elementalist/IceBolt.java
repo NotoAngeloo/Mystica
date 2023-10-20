@@ -125,6 +125,9 @@ public class IceBolt {
     
     private void execute(Player player){
 
+        boolean cryomancer = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("cryomancer");
+        boolean conjurer = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("conjurer");
+
         boolean breathActive = elementalBreath.getIfBuffTime(player)>0;
 
         String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
@@ -161,7 +164,7 @@ public class IceBolt {
 
         double skillDamage = 3;
 
-        if(subclass.equalsIgnoreCase("conjurer")){
+        if(conjurer){
 
             double maxMana = profileManager.getAnyProfile(player).getTotalMana();
             double currentMana = profileManager.getAnyProfile(player).getCurrentMana();
@@ -171,7 +174,7 @@ public class IceBolt {
             skillDamage = skillDamage * (1 + percent);
         }
 
-        if(subclass.equalsIgnoreCase("cryomancer")){
+        if(cryomancer){
             skillDamage = skillDamage * (1.5);
             elementalBreath.reduceCooldown(player);
         }

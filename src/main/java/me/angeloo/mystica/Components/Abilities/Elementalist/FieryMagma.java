@@ -123,8 +123,6 @@ public class FieryMagma {
 
     private void execute(Player player){
 
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
-
         LivingEntity target = targetManager.getPlayerTarget(player);
 
         Location end = target.getLocation();
@@ -183,9 +181,7 @@ public class FieryMagma {
 
                 if (distance <= 1) {
 
-                    if(subclass.equalsIgnoreCase("pyromancer")){
-                        fieryWing.addInflame(player);
-                    }
+                    fieryWing.addInflame(player);
 
 
                     cancelTask();

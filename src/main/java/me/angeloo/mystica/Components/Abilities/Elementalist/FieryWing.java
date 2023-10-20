@@ -278,6 +278,12 @@ public class FieryWing {
 
     public void addInflame(Player player){
 
+        boolean pyromancer = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("pyromancer");
+
+        if(!pyromancer){
+            return;
+        }
+
         int stacks = getInflame(player);
 
         stacks ++;

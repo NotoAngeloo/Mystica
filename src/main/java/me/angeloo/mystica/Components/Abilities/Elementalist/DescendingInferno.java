@@ -127,7 +127,7 @@ public class DescendingInferno {
     //now if elemental breath, explode as well
     private void execute(Player player){
 
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        boolean conjurer = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("conjurer");
 
         LivingEntity target = targetManager.getPlayerTarget(player);
 
@@ -178,7 +178,7 @@ public class DescendingInferno {
 
         double skillDamage = 5;
 
-        if(subclass.equalsIgnoreCase("conjurer")){
+        if(conjurer){
 
             double maxMana = profileManager.getAnyProfile(player).getTotalMana();
             double currentMana = profileManager.getAnyProfile(player).getCurrentMana();
@@ -302,7 +302,7 @@ public class DescendingInferno {
                     }
                 }
 
-                if(needToInflame && subclass.equalsIgnoreCase("pyromancer") && !inflamedAlready){
+                if(needToInflame && !inflamedAlready){
 
                     inflamedAlready = true;
 

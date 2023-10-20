@@ -124,6 +124,7 @@ public class DragonBreathing {
 
     private void execute(Player player){
 
+
         LivingEntity target = targetManager.getPlayerTarget(player);
 
         Location spawnStart = player.getLocation().clone();

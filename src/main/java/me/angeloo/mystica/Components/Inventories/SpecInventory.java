@@ -179,6 +179,8 @@ public class SpecInventory {
                 ChatColor.of(new Color(230,230,230)) + "by the target by 10%",
                 ChatColor.of(new Color(230,230,230)) + "Increases crit of " + ChatColor.of(new Color(34, 111, 80)) + "Shadow Crows " +
                         ChatColor.of(new Color(230,230,230)) + "by 15%",
+                ChatColor.of(new Color(34,111,80)) + "Wild Spirit " + ChatColor.of(new Color(230,230,230)) + "now heals nearby",
+                ChatColor.of(new Color(230,230,230)) + "players",
                 "",
                 ChatColor.of(new Color(0,102,0)) + "Get Skill",
                 ChatColor.of(new Color(0, 117, 94)) + "Wild Roar",

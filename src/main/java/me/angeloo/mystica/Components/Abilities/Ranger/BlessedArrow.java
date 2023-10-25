@@ -1,6 +1,5 @@
 package me.angeloo.mystica.Components.Abilities.Ranger;
 
-import me.angeloo.mystica.Components.Abilities.ElementalistAbilities;
 import me.angeloo.mystica.Components.Abilities.RangerAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
@@ -11,6 +10,7 @@ import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -37,6 +37,7 @@ public class BlessedArrow {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
 
+    private final StarVolley starVolley;
     private final RallyingCry rallyingCry;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -52,6 +53,7 @@ public class BlessedArrow {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        starVolley = rangerAbilities.getStarVolley();
     }
 
     public void use(Player player){
@@ -64,16 +66,9 @@ public class BlessedArrow {
         double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
         double totalRange = baseRange + extraRange;
 
-        targetManager.setTargetToNearestValid(player, totalRange);
-
         LivingEntity target = targetManager.getPlayerTarget(player);
 
         if(target != null){
-            if(target instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) target)){
-                    return;
-                }
-            }
 
             if(!(target instanceof Player)){
                 if(!pveChecker.pveLogic(target)){
@@ -89,7 +84,7 @@ public class BlessedArrow {
         }
 
         if(target == null){
-            return;
+            target = player;
         }
 
         if(abilityReadyInMap.get(player.getUniqueId()) > 0){
@@ -98,7 +93,7 @@ public class BlessedArrow {
 
         combatManager.startCombatTimer(player);
 
-        execute(player);
+        execute(player, target);
 
         abilityReadyInMap.put(player.getUniqueId(), 10);
         new BukkitRunnable(){
@@ -111,6 +106,7 @@ public class BlessedArrow {
                 }
 
                 int cooldown = abilityReadyInMap.get(player.getUniqueId()) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
 
@@ -119,11 +115,26 @@ public class BlessedArrow {
 
     }
 
-    private void execute(Player player){
+    private void execute(Player player, LivingEntity target){
+
+        boolean scout = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("scout");
+
+        double skillDamage = 4;
+
+        if(rallyingCry.getIfBuffTime(player) > 0){
+            skillDamage = skillDamage * 1.25;
+        }
+
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
+
+        double mana = profileManager.getAnyProfile(player).getTotalMana() * .5;
 
         //check cry active
-
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        if(target == player){
+            restoreManaToAlly(player, mana * skillLevel);
+            return;
+        }
 
         Location start = player.getLocation();
         start.subtract(0, 1, 0);
@@ -148,14 +159,7 @@ public class BlessedArrow {
         assert entityEquipment != null;
         entityEquipment.setHelmet(blessedArrow);
 
-        double skillDamage = 4;
 
-        if(rallyingCry.getIfBuffTime(player) > 0){
-            skillDamage = skillDamage * 1.25;
-        }
-
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level() +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
 
         double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
@@ -190,7 +194,24 @@ public class BlessedArrow {
 
                     cancelTask();
 
+                    if(target instanceof Player){
+
+                        Player playerTarget = (Player) target;
+
+                        if(!pvpManager.pvpLogic(player, playerTarget)){
+                            restoreManaToAlly(playerTarget, mana * skillLevel);
+                            return;
+                        }
+                    }
+                    //check pvp logic
+
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
+
+                    if(scout && crit){
+                        starVolley.decreaseCooldown(player);
+                        buffAndDebuffManager.getHaste().applyHaste(player, 1, 2);
+                    }
+
                     double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage * skillLevel, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
@@ -223,6 +244,15 @@ public class BlessedArrow {
             }
         }.runTaskTimer(main, 0, 1);
 
+    }
+
+    private void restoreManaToAlly(Player playerTarget, double amount){
+
+        playerTarget.getWorld().spawnParticle(Particle.DRIP_WATER, playerTarget.getLocation(), 50, .5, 1, .5, 0);
+
+        changeResourceHandler.addManaToPlayer(playerTarget, amount);
+
+        Bukkit.getLogger().info(String.valueOf(amount));
     }
 
     public int getCooldown(Player player){

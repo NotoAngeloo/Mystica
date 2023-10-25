@@ -1,6 +1,5 @@
-package me.angeloo.mystica.Components.Abilities.Elementalist;
+package me.angeloo.mystica.Components.Abilities.Ranger;
 
-import me.angeloo.mystica.Components.Abilities.ElementalistAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -10,7 +9,6 @@ import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -24,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class IceBolt {
+public class StarVolley {
 
     private final Mystica main;
 
@@ -36,13 +34,10 @@ public class IceBolt {
     private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
-    private final FieryWing fieryWing;
-    private final CrystalStorm crystalStorm;
-    private final ElementalBreath elementalBreath;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public IceBolt(Mystica main, AbilityManager manager, ElementalistAbilities elementalistAbilities){
+    public StarVolley(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
@@ -52,9 +47,6 @@ public class IceBolt {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        fieryWing = elementalistAbilities.getFieryWing();
-        crystalStorm = elementalistAbilities.getCrystalStorm();
-        elementalBreath = elementalistAbilities.getElementalBreath();
     }
 
     public void use(Player player){
@@ -102,9 +94,8 @@ public class IceBolt {
         combatManager.startCombatTimer(player);
 
         execute(player);
-        fieryWing.removeInflame(player);
 
-        abilityReadyInMap.put(player.getUniqueId(), 7);
+        abilityReadyInMap.put(player.getUniqueId(), 45);
         new BukkitRunnable(){
             @Override
             public void run(){
@@ -123,21 +114,40 @@ public class IceBolt {
         }.runTaskTimer(main, 0,20);
 
     }
-    
+
     private void execute(Player player){
 
-        boolean cryomancer = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("cryomancer");
-        boolean conjurer = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("conjurer");
-
-        boolean breathActive = elementalBreath.getIfBuffTime(player)>0;
-
+        //spawn the thing above target, send the arrow down
         LivingEntity target = targetManager.getPlayerTarget(player);
 
-        Location start = player.getLocation();
-        start.subtract(0, 1, 0);
+        Location spawnStart = target.getLocation().clone();
+        spawnStart.add(0, 10, 0);
 
+        ArmorStand spawnTexture = spawnStart.getWorld().spawn(spawnStart, ArmorStand.class);
+        spawnTexture.setInvisible(true);
+        spawnTexture.setGravity(false);
+        spawnTexture.setCollidable(false);
+        spawnTexture.setInvulnerable(true);
+        spawnTexture.setMarker(true);
 
-        ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+        EntityEquipment entityEquipment2 = spawnTexture.getEquipment();
+
+        ItemStack spawnItem = new ItemStack(Material.ARROW);
+        ItemMeta meta2 = spawnItem.getItemMeta();
+        assert meta2 != null;
+        meta2.setCustomModelData(8);
+        spawnItem.setItemMeta(meta2);
+        assert entityEquipment2 != null;
+        entityEquipment2.setHelmet(spawnItem);
+
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                spawnTexture.remove();
+            }
+        }.runTaskLater(main, 20*3);
+
+        ArmorStand armorStand = spawnStart.getWorld().spawn(spawnStart, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -146,127 +156,69 @@ public class IceBolt {
 
         EntityEquipment entityEquipment = armorStand.getEquipment();
 
-        ItemStack boltItem = new ItemStack(Material.DRAGON_BREATH);
-        ItemMeta meta = boltItem.getItemMeta();
+        ItemStack arrow = new ItemStack(Material.ARROW);
+        ItemMeta meta = arrow.getItemMeta();
         assert meta != null;
-
-        if(!breathActive){
-            meta.setCustomModelData(8);
-        }
-        else{
-            meta.setCustomModelData(9);
-        }
-
-        boltItem.setItemMeta(meta);
+        meta.setCustomModelData(9);
+        arrow.setItemMeta(meta);
         assert entityEquipment != null;
-        entityEquipment.setHelmet(boltItem);
+        entityEquipment.setHelmet(arrow);
 
-        double skillDamage = 3;
+        double skillDamage = 20;
 
-        if(conjurer){
+        Location end = target.getLocation().clone().subtract(0,2,0);
 
-            double maxMana = profileManager.getAnyProfile(player).getTotalMana();
-            double currentMana = profileManager.getAnyProfile(player).getCurrentMana();
-
-            double percent = maxMana/currentMana;
-
-            skillDamage = skillDamage * (1 + percent);
-        }
-
-        if(cryomancer){
-            skillDamage = skillDamage * (1.5);
-            elementalBreath.reduceCooldown(player);
-        }
-
-        if(breathActive){
-            skillDamage = skillDamage * 2;
-        }
-
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level() +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
-
-        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
-            Location targetWasLoc = target.getLocation().clone();
             @Override
             public void run(){
 
-                if(targetStillValid(target)){
-                    Location targetLoc = target.getLocation();
-                    targetLoc = targetLoc.subtract(0,1,0);
-                    targetWasLoc = targetLoc.clone();
-                }
-
                 Location current = armorStand.getLocation();
 
-                if (!sameWorld(current, targetWasLoc)) {
-                    cancelTask();
-                    return;
-                }
-
-                Vector direction = targetWasLoc.toVector().subtract(current.toVector());
-                double distance = current.distance(targetWasLoc);
-                double distanceThisTick = Math.min(distance, .75);
+                Vector direction = end.toVector().subtract(current.toVector());
+                double distance = current.distance(end);
+                double distanceThisTick = Math.min(distance, 1);
                 current.add(direction.normalize().multiply(distanceThisTick));
-                current.setDirection(direction);
 
                 armorStand.teleport(current);
-
-                if(!breathActive){
-                    current.getWorld().spawnParticle(Particle.SNOWBALL, current.clone().add(0,1.5,0), 1, 0, 0, 0, 0);
-                }
-                else{
-                    current.getWorld().spawnParticle(Particle.BLOCK_CRACK, current.clone().add(0,1.5,0), 5, 0, 0, 0, 0, Material.BLUE_ICE.createBlockData());
-                }
-
 
                 if (distance <= 1) {
 
                     cancelTask();
 
+                    double level = profileManager.getAnyProfile(player).getStats().getLevel();
+
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage * skillLevel, crit);
+
+                    if(crit){
+                        buffAndDebuffManager.getHaste().applyHaste(player, 1, 2);
+                    }
+
+                    double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * level, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
 
-                    if(crystalStorm.getIfEntityEffected(target)){
-                        resetSkillCooldown(player);
-                    }
                 }
-
-            }
-
-            private boolean targetStillValid(LivingEntity target){
-
-                if(target instanceof Player){
-
-                    if(!((Player) target).isOnline()){
-                        return false;
-                    }
-
-                }
-
-                return !target.isDead();
-            }
-
-            private boolean sameWorld(Location loc1, Location loc2) {
-                return loc1.getWorld().equals(loc2.getWorld());
             }
 
             private void cancelTask() {
                 this.cancel();
                 armorStand.remove();
             }
+
         }.runTaskTimer(main, 0, 1);
 
     }
 
-    private void resetSkillCooldown(Player player){
-        abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void decreaseCooldown(Player player){
+
+        int current = getCooldown(player);
+
+        abilityReadyInMap.put(player.getUniqueId(), current - 2);
     }
 
     public int getCooldown(Player player){
+
         int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
 
         if(cooldown < 0){

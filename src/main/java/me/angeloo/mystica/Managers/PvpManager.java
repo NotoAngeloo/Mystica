@@ -43,6 +43,10 @@ public class PvpManager {
 
     public boolean pvpLogic(Player player, Player otherPlayer){
 
+        if(player == otherPlayer){
+            return false;
+        }
+
         PartiesAPI api = Parties.getApi();
 
         if(api.areInTheSameParty(player.getUniqueId(), otherPlayer.getUniqueId())){

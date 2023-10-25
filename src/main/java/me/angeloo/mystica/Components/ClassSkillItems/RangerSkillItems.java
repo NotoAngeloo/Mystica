@@ -120,14 +120,15 @@ public class RangerSkillItems {
         String subClass = playerProfile.getPlayerSubclass();
 
         switch(subClass.toLowerCase()){
+            //maybe change this skill
             case "scout":{
                 return getItem(Material.ARROW, 0,
-                        ChatColor.of(new Color(34, 111, 80)) + "Starblade Volley",
+                        ChatColor.of(new Color(34, 111, 80)) + "Star Volley",
                         ChatColor.of(new Color(0,102,0)) + "Level " + level,
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Launch a blade towards the target",
-                        ChatColor.of(new Color(230,230,230)) + "Landing a crit with this skill",
-                        ChatColor.of(new Color(230,230,230)) + "resets its cooldown");
+                        ChatColor.of(new Color(230,230,230)) + "Summon an arrow from the stars",
+                        ChatColor.of(new Color(230,230,230)) + "Landing a crit with any skill",
+                        ChatColor.of(new Color(230,230,230)) + "decreases this skills cooldown");
             }
             case "animal tamer":{
                 return getItem(Material.BONE, 0,

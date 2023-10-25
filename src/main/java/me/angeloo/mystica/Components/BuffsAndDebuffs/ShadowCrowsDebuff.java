@@ -4,6 +4,7 @@ package me.angeloo.mystica.Components.BuffsAndDebuffs;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.entity.LivingEntity;
 
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -55,7 +56,12 @@ public class ShadowCrowsDebuff {
             }
         }
 
-        return 1;
+        return 0;
+    }
+
+    public void removeCrowsDebuff(Player player){
+        hasDebuff.remove(player.getUniqueId());
+        //Bukkit.getLogger().info("remove buff");
     }
 
 }

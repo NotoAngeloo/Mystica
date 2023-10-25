@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.Abilities.Ranger;
 
 import me.angeloo.mystica.Managers.AbilityManager;
+import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Managers.CombatManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
@@ -20,6 +21,7 @@ import java.util.UUID;
 public class RallyingCry {
 
     private final Mystica main;
+    private final BuffAndDebuffManager buffAndDebuffManager;
     private final CombatManager combatManager;
     private final ChangeResourceHandler changeResourceHandler;
 
@@ -28,6 +30,7 @@ public class RallyingCry {
 
     public RallyingCry(Mystica main, AbilityManager manager){
         this.main = main;
+        buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
     }
@@ -61,6 +64,7 @@ public class RallyingCry {
                 }
 
                 int cooldown = abilityReadyInMap.get(player.getUniqueId()) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
 
@@ -81,15 +85,15 @@ public class RallyingCry {
                     return;
                 }
 
-                int cooldown = buffActiveMap.get(player.getUniqueId()) - 1;
+                int left = buffActiveMap.get(player.getUniqueId()) - 1;
 
-                buffActiveMap.put(player.getUniqueId(), cooldown);
+                buffActiveMap.put(player.getUniqueId(), left);
 
             }
         }.runTaskTimer(main, 0,20);
 
         Location start = player.getLocation();
-        ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = start.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);

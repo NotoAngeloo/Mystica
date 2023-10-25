@@ -13,6 +13,8 @@ public class BuffAndDebuffManager {
     private final ShadowCrowsDebuff shadowCrowsDebuff;
     private final WindWallBuff windWallBuff;
     private final ConjuringForceBuff conjuringForceBuff;
+    private final WildRoarBuff wildRoarBuff;
+    private final Haste haste;
 
     public BuffAndDebuffManager(Mystica main){
         genericShield = new GenericShield();
@@ -20,6 +22,8 @@ public class BuffAndDebuffManager {
         shadowCrowsDebuff = new ShadowCrowsDebuff(main);
         windWallBuff = new WindWallBuff(main);
         conjuringForceBuff = new ConjuringForceBuff();
+        wildRoarBuff = new WildRoarBuff(main);
+        haste = new Haste(main);
     }
 
 
@@ -32,12 +36,17 @@ public class BuffAndDebuffManager {
     public SpeedUp getSpeedUp(){return speedUp;}
     public GenericShield getGenericShield(){return genericShield;}
     public ShadowCrowsDebuff getShadowCrowsDebuff(){return shadowCrowsDebuff;}
+    public WildRoarBuff getWildRoarBuff(){return wildRoarBuff;}
+    public Haste getHaste(){return haste;}
 
     public void removeAllBuffsAndDebuffs(Player player){
         speedUp.removeSpeedUp(player);
         genericShield.removeShields(player);
         windWallBuff.removeWindwall(player);
         conjuringForceBuff.removeConjuringForceBuff(player);
+        shadowCrowsDebuff.removeCrowsDebuff(player);
+        wildRoarBuff.removeBuff(player);
+        haste.removeHaste(player);
     }
 
 
@@ -45,19 +54,18 @@ public class BuffAndDebuffManager {
     //attacker, defender
     public double getTotalDamageMultipliers(LivingEntity attacker, LivingEntity defender){
 
-        //multiply all the debuffs together
-
-        return shadowCrowsDebuff.getIncreasedDamageAmount(defender);
+        return 1 +
+                shadowCrowsDebuff.getIncreasedDamageAmount(defender) +
+                wildRoarBuff.getMultiplier(attacker);
     }
 
     public double getTotalDamageAddition(Player player){
-        //add more later
 
         return 0 + conjuringForceBuff.getExtraDamageAmount(player);
 
     }
 
-    public double getTotalRangeModifier(Player player){
+    public double getTotalRangeModifier(Player player) {
 
         return 0 + conjuringForceBuff.getRangeModifier(player);
     }

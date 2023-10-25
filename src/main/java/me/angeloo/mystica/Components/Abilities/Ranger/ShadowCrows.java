@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Ranger;
 
+import me.angeloo.mystica.Components.Abilities.RangerAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -34,10 +35,11 @@ public class ShadowCrows {
     private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final StarVolley starVolley;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public ShadowCrows(Mystica main, AbilityManager manager){
+    public ShadowCrows(Mystica main, AbilityManager manager, RangerAbilities rangerAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
@@ -47,9 +49,12 @@ public class ShadowCrows {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        starVolley = rangerAbilities.getStarVolley();
     }
 
     public void use(Player player){
+
+        boolean scout = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("scout");
 
         if(!abilityReadyInMap.containsKey(player.getUniqueId())){
             abilityReadyInMap.put(player.getUniqueId(), 0);
@@ -106,6 +111,7 @@ public class ShadowCrows {
                 }
 
                 int cooldown = abilityReadyInMap.get(player.getUniqueId()) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
 
@@ -116,6 +122,7 @@ public class ShadowCrows {
 
     private void execute(Player player){
 
+        boolean scout = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("scout");
         boolean tamer = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("animal tamer");
 
         LivingEntity target = targetManager.getPlayerTarget(player);
@@ -226,6 +233,12 @@ public class ShadowCrows {
                         if(count%20 == 0){
 
                             boolean crit = damageCalculator.checkIfCrit(player, subclassCritBonus(player));
+
+                            if(scout && crit){
+                                starVolley.decreaseCooldown(player);
+                                buffAndDebuffManager.getHaste().applyHaste(player, 1, 2);
+                            }
+
                             double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
 
                             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));

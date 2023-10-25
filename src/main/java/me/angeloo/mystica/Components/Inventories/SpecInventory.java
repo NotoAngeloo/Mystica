@@ -157,13 +157,13 @@ public class SpecInventory {
                 "",
                 ChatColor.of(new Color(230,230,230)) + "Increases crit of " + ChatColor.of(new Color(34, 111, 80)) + "Razor Wind " +
                         ChatColor.of(new Color(230,230,230)) + "by 15%",
-                ChatColor.of(new Color(230,230,230)) + "Increases haste by 10% after a skill",
+                ChatColor.of(new Color(230,230,230)) + "Applies haste level 1 after a skill",
                 ChatColor.of(new Color(230,230,230)) + "inflicts a critical hit",
                 "",
                 ChatColor.of(new Color(0,102,0)) + "Get Skill",
-                ChatColor.of(new Color(34, 111, 80)) + "Starblade Volley",
+                ChatColor.of(new Color(34, 111, 80)) + "Star Volley",
                 "",
-                ChatColor.of(new Color(230,230,230)) + "Launch a blade towards the target",
+                ChatColor.of(new Color(230,230,230)) + "Summon an arrow from the stars",
                 ChatColor.of(new Color(230,230,230)) + "Landing a crit with any skill",
                 ChatColor.of(new Color(230,230,230)) + "decreases this skills cooldown");
     }
@@ -186,7 +186,7 @@ public class SpecInventory {
                 ChatColor.of(new Color(0, 117, 94)) + "Wild Roar",
                 "",
                 ChatColor.of(new Color(230,230,230)) + "Inspire 5 member of your team",
-                ChatColor.of(new Color(230,230,230)) + "to deal increased damage"); //1.25% more per level
+                ChatColor.of(new Color(230,230,230)) + "to deal increased damage");
     }
 
 

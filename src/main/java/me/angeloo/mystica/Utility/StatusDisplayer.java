@@ -172,6 +172,13 @@ public class StatusDisplayer {
 
         StringBuilder statusString = new StringBuilder();
 
+        //wild roar
+        if(buffAndDebuffManager.getWildRoarBuff().getIfWildRoarBuff(player) && statusAmount.get(player) < 4){
+            statusAmount.put(player, statusAmount.get(player) + 1);
+            //icon later
+            statusString.append("R");
+        }
+
         //speed up
         if(buffAndDebuffManager.getSpeedUp().getIfSpeedUp(player) && statusAmount.get(player) < 4){
             statusAmount.put(player, statusAmount.get(player) + 1);

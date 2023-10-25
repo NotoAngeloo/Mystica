@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Ranger;
 
+import me.angeloo.mystica.Components.Abilities.RangerAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -37,9 +38,11 @@ public class BitingRain {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
 
+    private final StarVolley starVolley;
+
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public BitingRain(Mystica main, AbilityManager manager){
+    public BitingRain(Mystica main, AbilityManager manager, RangerAbilities rangerAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
@@ -49,6 +52,7 @@ public class BitingRain {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        starVolley = rangerAbilities.getStarVolley();
     }
 
     public void use(Player player){
@@ -108,6 +112,7 @@ public class BitingRain {
                 }
 
                 int cooldown = abilityReadyInMap.get(player.getUniqueId()) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
 
@@ -117,6 +122,8 @@ public class BitingRain {
     }
 
     private void execute(Player player){
+
+        boolean scout = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("scout");
 
         LivingEntity target = targetManager.getPlayerTarget(player);
 
@@ -232,6 +239,12 @@ public class BitingRain {
                         hitBySkill.add(livingEntity);
 
                         boolean crit = damageCalculator.checkIfCrit(player, 0);
+
+                        if(scout && crit){
+                            starVolley.decreaseCooldown(player);
+                            buffAndDebuffManager.getHaste().applyHaste(player, 1, 2);
+                        }
+
                         double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", skillDamage * skillLevel, crit));
 
                         //pvp logic

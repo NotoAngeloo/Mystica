@@ -108,6 +108,8 @@ public class ElementalistBasic {
 
         basicReadyMap.put(player.getUniqueId(), false);
 
+
+
         switch (basicStageMap.get(player.getUniqueId())){
             case 1:{
                 basicStage1(player);

@@ -113,6 +113,7 @@ public class FieryMagma {
                 }
 
                 int cooldown = abilityReadyInMap.get(player.getUniqueId()) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
 

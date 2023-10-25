@@ -2,6 +2,7 @@ package me.angeloo.mystica.Components.Abilities.Elementalist;
 
 import me.angeloo.mystica.Components.Abilities.ElementalistAbilities;
 import me.angeloo.mystica.Managers.AbilityManager;
+import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Managers.CombatManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
@@ -18,6 +19,7 @@ import java.util.UUID;
 public class ElementalBreath {
 
     private final Mystica main;
+    private final BuffAndDebuffManager buffAndDebuffManager;
     private final CombatManager combatManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final FieryWing fieryWing;
@@ -27,6 +29,7 @@ public class ElementalBreath {
 
     public ElementalBreath(Mystica main, AbilityManager manager, ElementalistAbilities elementalistAbilities){
         this.main = main;
+        buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
         fieryWing = elementalistAbilities.getFieryWing();
@@ -63,6 +66,8 @@ public class ElementalBreath {
                 }
 
                 int cooldown = abilityReadyInMap.get(player.getUniqueId()) - 1;
+
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
 

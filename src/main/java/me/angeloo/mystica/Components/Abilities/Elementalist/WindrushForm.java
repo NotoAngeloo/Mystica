@@ -18,6 +18,7 @@ public class WindrushForm {
 
     private final Mystica main;
 
+    private final BuffAndDebuffManager buffAndDebuffManager;
     private final CombatManager combatManager;
     private final ChangeResourceHandler changeResourceHandler;
 
@@ -27,6 +28,7 @@ public class WindrushForm {
 
     public WindrushForm(Mystica main, AbilityManager manager, ElementalistAbilities elementalistAbilities){
         this.main = main;
+        buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
 
@@ -61,6 +63,7 @@ public class WindrushForm {
                 }
 
                 int cooldown = abilityReadyInMap.get(player.getUniqueId()) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
 

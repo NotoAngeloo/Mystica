@@ -17,6 +17,8 @@ public class RangerAbilities {
     private final Map<Player, Double> percentCastBar = new HashMap<>();
 
     private final RallyingCry rallyingCry;
+    private final WildRoar wildRoar;
+    private final StarVolley starVolley;
     private final Relentless relentless;
     private final RazorWind razorWind;
     private final WildSpirit wildSpirit;
@@ -28,14 +30,16 @@ public class RangerAbilities {
 
     public RangerAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
+        starVolley = new StarVolley(main, manager);
         rallyingCry = new RallyingCry(main, manager);
-        relentless = new Relentless(main, manager);
-        razorWind = new RazorWind(main, manager);
-        wildSpirit = new WildSpirit(main, manager);
+        wildRoar = new WildRoar(main, manager);
+        relentless = new Relentless(main, manager, this);
+        razorWind = new RazorWind(main, manager, this);
+        wildSpirit = new WildSpirit(main, manager, this);
         blessedArrow = new BlessedArrow(main, manager, this);
         roll = new Roll(main, manager);
-        shadowCrows = new ShadowCrows(main, manager);
-        bitingRain = new BitingRain(main, manager);
+        shadowCrows = new ShadowCrows(main, manager, this);
+        bitingRain = new BitingRain(main, manager, this);
         rangerBasic = new RangerBasic(main, manager, this);
     }
 
@@ -89,6 +93,18 @@ public class RangerAbilities {
 
         String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
+        switch (subclass.toLowerCase()){
+            case "animal tamer":{
+                wildRoar.use(player);
+                return;
+            }
+            case "scout":{
+                starVolley.use(player);
+                return;
+            }
+        }
+
+
     }
 
     public void useRangerBasic(Player player){
@@ -127,6 +143,12 @@ public class RangerAbilities {
     public int getUltimateCooldown(Player player){
         String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
+        switch (subclass.toLowerCase()){
+            case "animal tamer":
+                return wildRoar.getCooldown(player);
+            case "scout":
+                return starVolley.getCooldown(player);
+        }
 
         return 0;
     }
@@ -149,5 +171,9 @@ public class RangerAbilities {
 
     public RallyingCry getRallyingCry() {
         return rallyingCry;
+    }
+
+    public StarVolley getStarVolley() {
+        return starVolley;
     }
 }

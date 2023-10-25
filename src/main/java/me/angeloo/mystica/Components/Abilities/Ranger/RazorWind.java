@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Ranger;
 
+import me.angeloo.mystica.Components.Abilities.RangerAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -35,10 +36,11 @@ public class RazorWind {
     private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final StarVolley starVolley;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public RazorWind(Mystica main, AbilityManager manager){
+    public RazorWind(Mystica main, AbilityManager manager, RangerAbilities rangerAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         abilityManager = manager;
@@ -49,6 +51,7 @@ public class RazorWind {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        starVolley = rangerAbilities.getStarVolley();
     }
 
     public void use(Player player){
@@ -107,6 +110,7 @@ public class RazorWind {
                 }
 
                 int cooldown = abilityReadyInMap.get(player.getUniqueId()) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
 
@@ -115,6 +119,8 @@ public class RazorWind {
     }
 
     private void execute(Player player){
+
+        boolean scout = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("scout");
 
         LivingEntity target = targetManager.getPlayerTarget(player);
 
@@ -260,6 +266,12 @@ public class RazorWind {
                                 toFrom = true;
 
                                 boolean crit = damageCalculator.checkIfCrit(player, subclassCritBonus(player));
+
+                                if(scout && crit){
+                                    starVolley.decreaseCooldown(player);
+                                    buffAndDebuffManager.getHaste().applyHaste(player, 1, 2);
+                                }
+
                                 double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
 
                                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));

@@ -14,21 +14,27 @@ public class AllSkillItems {
 
     private final ElementalistSkillItems elementalistSkillItems;
     private final RangerSkillItems rangerSkillItems;
+    private final MysticSkillItem mysticSkillItem;
 
     public AllSkillItems(Mystica main){
         profileManager = main.getProfileManager();
         elementalistSkillItems = new ElementalistSkillItems(main);
         rangerSkillItems = new RangerSkillItems(main);
+        mysticSkillItem = new MysticSkillItem(main);
     }
 
     public ItemStack getPlayerSkill(Player player, int skillNumber){
 
-        if(profileManager.getIfClassTrial(player)){
-            return getTrialSkill(player, skillNumber);
-        }
-
         Profile playerProfile = profileManager.getAnyProfile(player);
-        String clazz = playerProfile.getPlayerClass();
+
+        String clazz;
+
+        if(profileManager.getIfClassTrial(player)){
+            clazz = profileManager.getTrialClass(player);
+        }
+        else{
+            clazz = playerProfile.getPlayerClass();
+        }
 
         switch (clazz.toLowerCase()){
             case "elementalist":{
@@ -37,27 +43,15 @@ public class AllSkillItems {
             case "ranger":{
                 return rangerSkillItems.getSkill(skillNumber, player);
             }
+            case "mystic":{
+                return mysticSkillItem.getSkill(skillNumber, player);
+            }
         }
 
         return new ItemStack(Material.AIR);
     }
 
-    private ItemStack getTrialSkill(Player player, int skillNumber){
 
-        String trialClass = profileManager.getTrialClass(player);
-
-        switch (trialClass.toLowerCase()){
-            case "elementalist":{
-                return elementalistSkillItems.getSkill(skillNumber, player);
-            }
-            case "ranger":{
-                return rangerSkillItems.getSkill(skillNumber, player);
-            }
-        }
-
-        return new ItemStack(Material.AIR);
-
-    }
 
     public ItemStack getUltimate(Player player){
 
@@ -70,6 +64,9 @@ public class AllSkillItems {
             }
             case "ranger":{
                 return rangerSkillItems.getUltimate(player);
+            }
+            case "mystic":{
+                return mysticSkillItem.getUltimate(player);
             }
         }
 

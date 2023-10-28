@@ -34,8 +34,7 @@ public class ElementalistEquipment {
     }
 
     public ItemStack getBaseOffhand(){
-        //when i have a model, make it a stick
-        return getItem(Material.BONE, 2,
+        return getItem(Material.STICK, 2,
                 ChatColor.of(new Color(153, 204, 255)) + "Elementalist's Circlet",
                 ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
                 ChatColor.of(new Color(176, 159, 109)) + "Secondary",

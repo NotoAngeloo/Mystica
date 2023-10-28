@@ -27,6 +27,9 @@ public class ClassSelectInventory {
 
         inv.setItem(4, getClassItem(clazz));
 
+        if(!clazz.equalsIgnoreCase("mystic")){
+            inv.setItem(21, getMysticItem());
+        }
 
         if(!clazz.equalsIgnoreCase("elementalist")){
             inv.setItem(22, getElementalistItem());
@@ -50,6 +53,9 @@ public class ClassSelectInventory {
             case "ranger":{
                 return getRangerItem();
             }
+            case "mystic":{
+                return getMysticItem();
+            }
             default:{
                 return new ItemStack(Material.AIR);
             }
@@ -68,6 +74,14 @@ public class ClassSelectInventory {
         return getItem(Material.FEATHER, 1, ChatColor.of(new Color(34, 111, 80)) + "Ranger",
                 "",
                 ChatColor.of(new Color(176, 159, 109)) + "Role " + ChatColor.of(new Color(217, 217, 217)) + "Ranged Physical Dps"
+        );
+    }
+
+    private ItemStack getMysticItem(){
+        return getItem(Material.BLAZE_ROD, 1,ChatColor.of(new Color(155, 120, 197)) + "Mystic",
+                "",
+                ChatColor.of(new Color(176, 159, 109)) + "Roles " + ChatColor.of(new Color(217, 217, 217)) + "Ranged Magical Dps",
+                ChatColor.of(new Color(217, 217, 217)) + "Main Healer"
         );
     }
 

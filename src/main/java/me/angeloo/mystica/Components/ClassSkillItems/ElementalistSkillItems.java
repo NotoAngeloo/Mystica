@@ -38,7 +38,7 @@ public class ElementalistSkillItems {
         switch(number){
 
             case 1:{
-                return getItem(Material.ICE, 0,
+                return getItem(Material.CYAN_DYE, 0,
                         ChatColor.of(new Color(153, 204, 255)) + "Ice Bolt",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_1_Level() + skillLevel.getSkill_1_Level_Bonus()),
                         "",
@@ -46,7 +46,7 @@ public class ElementalistSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "and shoot it at the enemy");
             }
             case 2:{
-                return getItem(Material.FIRE_CHARGE, 0,
+                return getItem(Material.CYAN_DYE, 0,
                         ChatColor.of(new Color(153, 204, 255)) + "Fiery Magma",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_2_Level() + skillLevel.getSkill_2_Level_Bonus()),
                         "",
@@ -56,7 +56,7 @@ public class ElementalistSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "dealing damage to nearby enemies");
             }
             case 3:{
-                return getItem(Material.FLINT_AND_STEEL, 0,
+                return getItem(Material.CYAN_DYE, 0,
                         ChatColor.of(new Color(153, 204, 255)) + "Descending Inferno",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_3_Level() + skillLevel.getSkill_3_Level_Bonus()),
                         "",
@@ -66,7 +66,7 @@ public class ElementalistSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "impact");
             }
             case 4:{
-                return getItem(Material.FEATHER, 0,
+                return getItem(Material.CYAN_DYE, 0,
                         ChatColor.of(new Color(153, 204, 255)) + "Windrush Form",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_4_Level() + skillLevel.getSkill_4_Level_Bonus()),
                         "",
@@ -76,7 +76,7 @@ public class ElementalistSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "damaging enemies on the target path");
             }
             case 5:{
-                return getItem(Material.CACTUS, 0,
+                return getItem(Material.CYAN_DYE, 0,
                         ChatColor.of(new Color(153, 204, 255)) + "Wind Wall",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_5_Level() + skillLevel.getSkill_5_Level_Bonus()),
                         "",
@@ -85,7 +85,7 @@ public class ElementalistSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "a certain amount of damage");
             }
             case 6:{
-                return getItem(Material.DRAGON_HEAD, 0,
+                return getItem(Material.CYAN_DYE, 0,
                         ChatColor.of(new Color(153, 204, 255)) + "Dragon Breathing",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_6_Level() + skillLevel.getSkill_6_Level_Bonus()),
                         "",
@@ -97,7 +97,7 @@ public class ElementalistSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "to continue burning for 5 seconds");
             }
             case 7:{
-                return getItem(Material.DRAGON_BREATH, 0,
+                return getItem(Material.CYAN_DYE, 0,
                         ChatColor.of(new Color(153, 204, 255)) + "Elemental Breath",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_7_Level() + skillLevel.getSkill_7_Level_Bonus()),
                         "",
@@ -115,7 +115,7 @@ public class ElementalistSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "damage");
             }
             case 8:{
-                return getItem(Material.REDSTONE, 0,
+                return getItem(Material.CYAN_DYE, 0,
                         ChatColor.of(new Color(153, 204, 255)) + "Elemental Matrix",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_8_Level() + skillLevel.getSkill_8_Level_Bonus()),
                         "",

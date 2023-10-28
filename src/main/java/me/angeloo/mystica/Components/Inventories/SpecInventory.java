@@ -57,6 +57,12 @@ public class SpecInventory {
                 inv.setItem(15, getTamerItem());
                 break;
             }
+            case "mystic":{
+                inv.setItem(11, getChaosItem());
+                inv.setItem(13, getShepardItem());
+                inv.setItem(15, getArcaneItem());
+                break;
+            }
         }
 
         return inv;
@@ -75,6 +81,12 @@ public class SpecInventory {
                 return getScoutItem();
             case "animal tamer":
                 return getTamerItem();
+            case "chaos":
+                return getChaosItem();
+            case "arcane master":
+                return getArcaneItem();
+            case "shepard":
+                return getShepardItem();
         }
         return new ItemStack(Material.AIR);
     }
@@ -187,6 +199,75 @@ public class SpecInventory {
                 "",
                 ChatColor.of(new Color(230,230,230)) + "Inspire 5 member of your team",
                 ChatColor.of(new Color(230,230,230)) + "to deal increased damage");
+    }
+
+    private ItemStack getChaosItem(){
+        return getItem(Material.ENDER_EYE, 0,
+                ChatColor.of(new Color(59, 14, 114)) + "Chaos",
+                "",
+                ChatColor.of(new Color(0,102,0)) + "Each level",
+                ChatColor.of(new Color(230,230,230)) + "+15 Health, +3 Magic, +100 Mana, +1 Both Defense",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Crit rate increased by 10%",
+                "",
+                "Your abilities are replaced with",
+                "new ones",
+                "",
+                ChatColor.of(new Color(0,102,0)) + "Get Skill",
+                ChatColor.of(new Color(59, 14, 114)) + "Evil Spirit",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Transform into the embodiment",
+                ChatColor.of(new Color(230,230,230)) + "of chaos, with the one goal",
+                ChatColor.of(new Color(230,230,230)) + "of destroying your enemies.",
+                ChatColor.of(new Color(230,230,230)) + "Instead of a cooldown, your",
+                ChatColor.of(new Color(230,230,230)) + "skills build up chaos energy",
+                ChatColor.of(new Color(230,230,230)) + "which is used to cast this",
+                ChatColor.of(new Color(230,230,230)) + "instead");
+
+    }
+
+    private ItemStack getArcaneItem(){
+        return getItem(Material.DIAMOND, 0,
+                ChatColor.of(new Color(155, 120, 197)) + "Arcane Master",
+                "",
+                ChatColor.of(new Color(0,102,0)) + "Each level",
+                ChatColor.of(new Color(230,230,230)) + "+15 Health, +3 Magic, +100 Mana, +1 Both Defense",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Crit rate increased by 10%",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Increases " + ChatColor.of(new Color(155, 120, 197)) + "Dreadfall " +
+                        ChatColor.of(new Color(230,230,230)) + "damage by 50%.",
+                ChatColor.of(new Color(230,230,230)) + "Landing a crit additionally deals",
+                ChatColor.of(new Color(230,230,230)) + "15% of your Magic.",
+                "",
+                ChatColor.of(new Color(0,102,0)) + "Get Skill",
+                ChatColor.of(new Color(155, 120, 197)) + "Arcane Missiles",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Rapidly fire multiple projectiles",
+                ChatColor.of(new Color(230,230,230)) + "of pure arcane energy that bombard",
+                ChatColor.of(new Color(230,230,230)) + "your enemy");
+    }
+
+    private ItemStack getShepardItem(){
+        return getItem(Material.GOLDEN_APPLE, 0,
+                ChatColor.of(new Color(126, 101, 238)) + "Shepard",
+                "",
+                ChatColor.of(new Color(0,102,0)) + "Each level",
+                ChatColor.of(new Color(230,230,230)) + "+30 Health, +2 Magic, +100 Mana, +1 Both Defense",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Increases healing by 20%.",
+                ChatColor.of(new Color(155,120,197)) + "Arcane Shield " +
+                        ChatColor.of(new Color(230,230,230)) + "restores the target's health",
+                ChatColor.of(new Color(230,230,230)) + "by 30% every 20 seconds.",
+                ChatColor.of(new Color(155,120,197)) + "Aurora " + ChatColor.of(new Color(230,230,230)) + "area restores health to",
+                ChatColor.of(new Color(230,230,230)) + "all allies within",
+                "",
+                ChatColor.of(new Color(0,102,0)) + "Get Skill",
+                ChatColor.of(new Color(126, 101, 238)) + "Enlightenment",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Instantly heal nearby allies",
+                ChatColor.of(new Color(230,230,230)) + "and give them a 10% damage",
+                ChatColor.of(new Color(230,230,230)) + "reduction buff for 5 seconds");
     }
 
 

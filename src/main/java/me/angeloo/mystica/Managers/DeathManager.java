@@ -14,10 +14,12 @@ public class DeathManager {
 
     private final ProfileManager profileManager;
     private final AbilityManager abilityManager;
+    private final AggroManager aggroManager;
 
     public DeathManager(Mystica main){
         profileManager = main.getProfileManager();
         abilityManager = main.getAbilityManager();
+        aggroManager = main.getAggroManager();
     }
 
     public void playerNowDead(Player player){
@@ -36,7 +38,7 @@ public class DeathManager {
 
         profileManager.getAnyProfile(player).setIfDead(true);
 
-        //aggroManager.removeFromAllAttackerLists(player);
+        aggroManager.removeFromAllAttackerLists(player);
 
         player.sendMessage("You have died");
 

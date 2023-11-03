@@ -36,35 +36,19 @@ public class TargetDistanceTick extends BukkitRunnable {
                 World targetWorld = playerTarget.getWorld();
 
                 if(playerWorld != targetWorld){
-                    BossBar bossBar = targetManager.getTargetBar(player.getUniqueId());
-
-                    if(bossBar != null){
-                        bossBar.removeAll();
-                    }
-
-                    targetManager.setPlayerTarget(player, null);
+                    targetManager.removeAllBars(player);
                     return;
                 }
 
                 double distance = playerTarget.getLocation().distance(player.getLocation());
                 if(distance > 35){
-                    BossBar bossBar = targetManager.getTargetBar(player.getUniqueId());
-
-                    if(bossBar != null){
-                        bossBar.removeAll();
-                    }
-
+                    targetManager.removeAllBars(player);
                     targetManager.setPlayerTarget(player, null);
                     return;
                 }
 
                 if(playerTarget.isDead()){
-                    BossBar bossBar = targetManager.getTargetBar(player.getUniqueId());
-
-                    if(bossBar != null){
-                        bossBar.removeAll();
-                    }
-
+                    targetManager.removeAllBars(player);
                     targetManager.setPlayerTarget(player, null);
                     return;
                 }

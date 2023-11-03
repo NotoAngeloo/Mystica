@@ -68,6 +68,7 @@ public class ClassSetter {
 
         player.sendMessage("You are now a(n) " + clazz);
         displayWeapons.displayWeapons(player);
+        displayWeapons.displayArmor(player);
 
     }
 

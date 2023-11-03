@@ -1,16 +1,25 @@
 package me.angeloo.mystica.Managers;
 
 import me.angeloo.mystica.Components.Abilities.ElementalistAbilities;
+import me.angeloo.mystica.Components.Abilities.MysticAbilities;
 import me.angeloo.mystica.Components.Abilities.RangerAbilities;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class AbilityManager {
 
     private final ProfileManager profileManager;
+
+    private final Map<Player, Boolean> castMap = new HashMap<>();
+    private final Map<Player, Double> percentCastBar = new HashMap<>();
+
     private final ElementalistAbilities elementalistAbilities;
     private final RangerAbilities rangerAbilities;
+    private final MysticAbilities mysticAbilities;
     private final CombatManager combatManager;
 
     public AbilityManager(Mystica main){
@@ -18,9 +27,14 @@ public class AbilityManager {
         combatManager = new CombatManager(main, this);
         elementalistAbilities = new ElementalistAbilities(main, this);
         rangerAbilities = new RangerAbilities(main, this);
+        mysticAbilities = new MysticAbilities(main, this);
     }
 
     public void useAbility(Player player, int abilityNumber){
+
+        if(getIfCasting(player)){
+            return;
+        }
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
@@ -43,10 +57,18 @@ public class AbilityManager {
                 rangerAbilities.useRangerAbility(player, abilityNumber);
                 return;
             }
+            case "mystic":{
+                mysticAbilities.useMysticAbility(player, abilityNumber);
+                return;
+            }
         }
     }
 
     public void useBasic(Player player){
+
+        if(getIfCasting(player)){
+            return;
+        }
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
@@ -68,10 +90,18 @@ public class AbilityManager {
                 rangerAbilities.useRangerBasic(player);
                 return;
             }
+            case "mystic":{
+                mysticAbilities.useMysticBasic(player);
+                return;
+            }
         }
     }
 
     public void useUltimate(Player player){
+
+        if(getIfCasting(player)){
+            return;
+        }
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
@@ -91,6 +121,10 @@ public class AbilityManager {
             }
             case "ranger":{
                 rangerAbilities.useRangerUltimate(player);
+                return;
+            }
+            case "mystic":{
+                mysticAbilities.useMysticUltimate(player);
                 return;
             }
         }
@@ -116,6 +150,9 @@ public class AbilityManager {
             }
             case "ranger":{
                 return rangerAbilities.getAbilityCooldown(player, abilityNumber);
+            }
+            case "mystic":{
+                return mysticAbilities.getAbilityCooldown(player, abilityNumber);
             }
         }
 
@@ -143,6 +180,9 @@ public class AbilityManager {
             case "ranger":{
                 return rangerAbilities.getUltimateCooldown(player);
             }
+            case "mystic":{
+                return mysticAbilities.getUltimateCooldown(player);
+            }
         }
 
         return 0;
@@ -153,13 +193,26 @@ public class AbilityManager {
     }
 
     public ElementalistAbilities getElementalistAbilities(){return elementalistAbilities;}
-
     public RangerAbilities getRangerAbilities(){return rangerAbilities;}
+    public MysticAbilities getMysticAbilities(){return mysticAbilities;}
 
     public void resetAbilityBuffs(Player player){
-
+        mysticAbilities.getEvilSpirit().removeShards(player);
         elementalistAbilities.getFieryWing().removeInflame(player);
 
+    }
+
+    public boolean getIfCasting(Player player){
+        return castMap.getOrDefault(player, false);
+    }
+    public void setCasting(Player player, boolean casting){
+        castMap.put(player, casting);
+    }
+    public void setCastBar(Player player, double percent){
+        percentCastBar.put(player, percent);
+    }
+    public double getCastPercent(Player player){
+        return percentCastBar.getOrDefault(player, 0.0);
     }
 
 }

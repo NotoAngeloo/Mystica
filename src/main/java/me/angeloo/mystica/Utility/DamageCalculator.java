@@ -38,6 +38,10 @@ public class DamageCalculator {
 
     public Double calculateDamage(Player player, LivingEntity entity, String type, Double damage, boolean crit){
 
+        if(buffAndDebuffManager.getImmune().getImmune(entity)){
+            return 0.0;
+        }
+
         Profile playerProfile = profileManager.getAnyProfile(player);
         Profile enemyProfile = profileManager.getAnyProfile(entity);
 
@@ -117,6 +121,10 @@ public class DamageCalculator {
 
 
     public double calculateGettingDamaged(Player player, LivingEntity entity, String type, Double damage){
+
+        if(buffAndDebuffManager.getImmune().getImmune(player)){
+            return 0.0;
+        }
 
         Profile playerProfile = profileManager.getAnyProfile(player);
         Profile enemyProfile = profileManager.getAnyProfile(entity);

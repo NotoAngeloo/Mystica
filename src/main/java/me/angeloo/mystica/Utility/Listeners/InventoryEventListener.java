@@ -10,7 +10,6 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ClassSetter;
 import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.EquipmentInformation;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -77,6 +76,18 @@ public class InventoryEventListener implements Listener {
         }
         bagInventory.addItemsToPlayerBagByInventoryClose(player, items, index);
 
+    }
+
+    @EventHandler
+    public void gearClose(InventoryCloseEvent event){
+        if(!event.getView().getTitle().equals(event.getPlayer().getName() + "'s Equipment")){
+            return;
+        }
+
+        Player player = (Player) event.getPlayer();
+
+        displayWeapons.displayWeapons(player);
+        displayWeapons.displayArmor(player);
     }
 
     @EventHandler
@@ -252,6 +263,7 @@ public class InventoryEventListener implements Listener {
             }
 
             displayWeapons.displayWeapons(player);
+            displayWeapons.displayArmor(player);
             return;
         }
 

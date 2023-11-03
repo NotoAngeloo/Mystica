@@ -179,7 +179,7 @@ public class ShadowCrows {
                     crowTask();
 
                     if(tamer){
-                        buffAndDebuffManager.getShadowCrowsDebuff().applyDebuff(target, 15);
+                        buffAndDebuffManager.getShadowCrowsDebuff().applyDebuff(target, 15 * 20);
                     }
 
                 }

@@ -56,7 +56,8 @@ public class MysticSkillItem {
                             "",
                             ChatColor.of(new Color(230,230,230)) + "Deal damage to your target and",
                             ChatColor.of(new Color(230,230,230)) + "all nearby enemies. All hit enemies",
-                            ChatColor.of(new Color(230,230,230)) + "will take continuous damage");
+                            ChatColor.of(new Color(230,230,230)) + "will take damage and become cursed.",
+                            ChatColor.of(new Color(230,230,230)) + "Using this skill gains a chaos shard");
                 }
 
                 case 3:{
@@ -66,7 +67,9 @@ public class MysticSkillItem {
                             "",
                             ChatColor.of(new Color(230,230,230)) + "Cause a meteor of chaos energy",
                             ChatColor.of(new Color(230,230,230)) + "to fall from the sky and hit",
-                            ChatColor.of(new Color(230,230,230)) + "your target");
+                            ChatColor.of(new Color(230,230,230)) + "your target. More damage is dealt",
+                            ChatColor.of(new Color(230,230,230)) + "depending on how may chaos shards",
+                            ChatColor.of(new Color(230,230,230)) + "you possess");
                 }
 
                 case 4:{
@@ -83,8 +86,9 @@ public class MysticSkillItem {
                             ChatColor.of(new Color(155, 120, 197)) + "Spiritual Descent",
                             ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_5_Level() + skillLevel.getSkill_5_Level_Bonus()),
                             "",
-                            ChatColor.of(new Color(230,230,230)) + "Erupt the ground under your",
-                            ChatColor.of(new Color(230,230,230)) + "target with chaos energy");
+                            ChatColor.of(new Color(230,230,230)) + "Erupt the ground under your target",
+                            ChatColor.of(new Color(230,230,230)) + "with chaos energy.",
+                            ChatColor.of(new Color(230,230,230)) + "Using this skill gains a chaos shard");
                 }
 
                 case 6: {
@@ -92,8 +96,10 @@ public class MysticSkillItem {
                             ChatColor.of(new Color(155, 120, 197)) + "Chaos Lash",
                             ChatColor.of(new Color(0, 102, 0)) + "Level " + (skillLevel.getSkill_6_Level() + skillLevel.getSkill_6_Level_Bonus()),
                             "",
-                            ChatColor.of(new Color(230, 230, 230)) + "Rapidly fire bolts of chaos",
-                            ChatColor.of(new Color(230, 230, 230)) + "energy to hit your target");
+                            ChatColor.of(new Color(230, 230, 230)) + "Release chaotic flames toward your",
+                            ChatColor.of(new Color(230, 230, 230)) + "target during a short period of time",
+                            ChatColor.of(new Color(230, 230, 230)) + "dealing massive damage. If the target",
+                            ChatColor.of(new Color(230, 230, 230)) + "is cursed, you gain two chaos shards");
                 }
 
                 case 7: {
@@ -217,10 +223,9 @@ public class MysticSkillItem {
                         ChatColor.of(new Color(230,230,230)) + "Transform into the embodiment",
                         ChatColor.of(new Color(230,230,230)) + "of chaos, with the one goal",
                         ChatColor.of(new Color(230,230,230)) + "of destroying your enemies.",
-                        ChatColor.of(new Color(230,230,230)) + "Instead of a cooldown, your",
-                        ChatColor.of(new Color(230,230,230)) + "skills build up chaos energy",
-                        ChatColor.of(new Color(230,230,230)) + "which is used to cast this",
-                        ChatColor.of(new Color(230,230,230)) + "instead");
+                        ChatColor.of(new Color(230,230,230)) + "Your skills build up chaos ",
+                        ChatColor.of(new Color(230,230,230)) + "shards. When you have six",
+                        ChatColor.of(new Color(230,230,230)) + "this skill is able to be cast");
             }
 
             case "arcane master":{

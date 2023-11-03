@@ -92,7 +92,7 @@ public class SpecInventory {
     }
 
     private ItemStack getPyromancerItem(){
-        return getItem(Material.TORCH, 0,
+        return getItem(Material.CYAN_DYE, 17,
                 ChatColor.of(new Color(250, 102, 0)) + "Pyromancer",
                 "",
                 ChatColor.of(new Color(0,102,0)) + "Each level",
@@ -112,7 +112,7 @@ public class SpecInventory {
     }
 
     private ItemStack getConjurerItem(){
-        return getItem(Material.AMETHYST_SHARD, 0,
+        return getItem(Material.CYAN_DYE, 22,
                 ChatColor.of(new Color(153, 0, 255)) + "Conjurer",
                 "",
                 ChatColor.of(new Color(0,102,0)) + "Each level",
@@ -133,7 +133,7 @@ public class SpecInventory {
     }
 
     private ItemStack getCryomancerItem(){
-        return getItem(Material.PRISMARINE_CRYSTALS, 0,
+        return getItem(Material.CYAN_DYE, 19,
                 ChatColor.of(new Color(153, 204, 255)) + "Cryomancer",
                 "",
                 ChatColor.of(new Color(0,102,0)) + "Each level",
@@ -219,10 +219,9 @@ public class SpecInventory {
                 ChatColor.of(new Color(230,230,230)) + "Transform into the embodiment",
                 ChatColor.of(new Color(230,230,230)) + "of chaos, with the one goal",
                 ChatColor.of(new Color(230,230,230)) + "of destroying your enemies.",
-                ChatColor.of(new Color(230,230,230)) + "Instead of a cooldown, your",
-                ChatColor.of(new Color(230,230,230)) + "skills build up chaos energy",
-                ChatColor.of(new Color(230,230,230)) + "which is used to cast this",
-                ChatColor.of(new Color(230,230,230)) + "instead");
+                ChatColor.of(new Color(230,230,230)) + "Your skills build up chaos ",
+                ChatColor.of(new Color(230,230,230)) + "shards. When you have six",
+                ChatColor.of(new Color(230,230,230)) + "this skill is able to be cast");
 
     }
 

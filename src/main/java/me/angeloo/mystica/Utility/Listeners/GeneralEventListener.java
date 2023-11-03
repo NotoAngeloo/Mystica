@@ -28,7 +28,6 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
-import org.bukkit.boss.BossBar;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -215,10 +214,7 @@ public class GeneralEventListener implements Listener {
             Entity target = entry.getValue();
 
             if(target != null && target.equals(player)){
-                BossBar bossBar = targetManager.getTargetBar(playerID);
-                bossBar.removeAll();
-                assert thisPlayer != null;
-                targetManager.setPlayerTarget(thisPlayer, null);
+                targetManager.removeAllBars(thisPlayer);
 
             }
         }
@@ -513,12 +509,14 @@ public class GeneralEventListener implements Listener {
         event.setDroppedExp(0);
 
         for(Map.Entry<UUID, LivingEntity> entry: targetManager.getTargetMap().entrySet()){
-            UUID playerID = entry.getKey();
+
+            Player thisPlayer = Bukkit.getPlayer(entry.getKey());
+
             Entity target = entry.getValue();
 
-            BossBar bossBar = targetManager.getTargetBar(playerID);
             if(target == player){
-                bossBar.setProgress(0);
+                assert thisPlayer != null;
+                targetManager.updateTargetBar(thisPlayer);
             }
         }
 
@@ -649,6 +647,31 @@ public class GeneralEventListener implements Listener {
         }
     }
 
+    @EventHandler
+    public void noImmobile(PlayerMoveEvent event){
+        Player player = event.getPlayer();
+
+        boolean immobile = buffAndDebuffManager.getImmobile().getImmobile(player);
+
+        if(!immobile){
+            return;
+        }
+
+        Block block = player.getLocation().subtract(0,.1,0).getBlock();
+
+        if(block.getType() == Material.AIR){
+            return;
+        }
+
+        Location from = event.getFrom();
+        Location to = event.getTo();
+        assert to != null;
+        if (from.getX() != to.getX() || from.getY() != to.getY() || from.getZ() != to.getZ()) {
+            event.setCancelled(true);
+            player.teleport(from);
+        }
+    }
+
 
     @EventHandler
     public void noTakeArmorstand(PlayerArmorStandManipulateEvent event){
@@ -674,6 +697,7 @@ public class GeneralEventListener implements Listener {
         }
 
         boolean immortal = false;
+        boolean immune = buffAndDebuffManager.getImmune().getImmune(defender);
 
         if(!(defender instanceof Player)){
 
@@ -717,7 +741,7 @@ public class GeneralEventListener implements Listener {
             }
         }
 
-        if(immortal){
+        if(immortal || immune){
             return;
         }
 
@@ -747,41 +771,15 @@ public class GeneralEventListener implements Listener {
         }
 
         //targeting bar
-
-        Stats stats = profileManager.getAnyProfile(defender).getStats();
-        double current = profileManager.getAnyProfile(defender).getCurrentHealth();
-        double max = stats.getHealth();
-
-        if(defender instanceof Player){
-
-            Profile playerProfile = profileManager.getAnyProfile(defender);
-            max = playerProfile.getTotalHealth();
-        }
-
-
-        double progress = current / max;
-
         for(Map.Entry<UUID, LivingEntity> entry: targetManager.getTargetMap().entrySet()){
             UUID playerID = entry.getKey();
             Player player = Bukkit.getPlayer(playerID);
             Entity target = entry.getValue();
 
             if(target != null && target.equals(defender)){
-                BossBar bossBar = targetManager.getTargetBar(playerID);
+                assert player != null;
+                targetManager.updateTargetBar(player);
 
-                if(target instanceof Player){
-                    Player targetedPlayer = (Player) target;
-                    if(profileManager.getAnyProfile(targetedPlayer).getIfDead()){
-                        progress = 0;
-                    }
-                }
-                bossBar.setProgress(progress);
-
-                if(target.isDead()){
-                    bossBar.removeAll();
-                    assert player != null;
-                    targetManager.setPlayerTarget(player, null);
-                }
             }
         }
     }

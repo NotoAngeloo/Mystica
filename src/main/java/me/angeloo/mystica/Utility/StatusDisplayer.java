@@ -33,8 +33,7 @@ public class StatusDisplayer {
         StringBuilder statusString = new StringBuilder();
 
 
-
-        String bigStatus = getBigStatus(player);
+        String bigStatus = getCastStatus(player);
 
         String colorlessClassStatus = getClassStatus(player).replaceAll("§.", "");
         String colorlessBonusStatus = getBonusStatus(player).replaceAll("§.", "");
@@ -53,7 +52,7 @@ public class StatusDisplayer {
         player.sendTitle("", String.valueOf(statusString), 0, 4, 0);
     }
 
-    private String getBigStatus(Player player){
+    private String getCastStatus(Player player){
 
         String clazz = profileManager.getAnyProfile(player).getPlayerClass();
 
@@ -61,36 +60,36 @@ public class StatusDisplayer {
 
         statusString.append("   ");
 
-        switch (clazz.toLowerCase()){
-            case "ranger":{
-                if(!abilityManager.getRangerAbilities().getIfCasting(player)){
+
+        if(abilityManager.getIfCasting(player)){
+            Color color = new Color(0,0,0);
+
+            switch (clazz.toLowerCase()){
+                case "ranger":{
+                    color = new Color(34, 11, 80);
                     break;
                 }
-
-
-                //how do i keep big status centered
-                statusString.append(ChatColor.of(new Color(34, 111, 80))).append("[");
-
-                double percent = abilityManager.getRangerAbilities().getCastPercent(player);
-
-                for(int i = 0; i<10; i++){
-                    if(percent >= (i*10)){
-                        statusString.append("||");
-                    }
-                    else{
-                        statusString.append(" ");
-                    }
+                case "mystic":{
+                    color = new Color(155, 120, 197);
+                    break;
                 }
+            }
 
-                statusString.append("]");
-                break;
+            statusString.append(ChatColor.of(color)).append("[");
+
+            double percent = abilityManager.getCastPercent(player);
+
+            for(int i = 0; i<10; i++){
+                if(percent >= (i*10)){
+                    statusString.append("||");
+                }
+                else{
+                    statusString.append(" ");
+                }
             }
-            default:{
-                statusString.append("    ");
-                break;
-            }
+
+            statusString.append("]");
         }
-
         statusString.append("   ");
 
         return String.valueOf(statusString);
@@ -131,7 +130,24 @@ public class StatusDisplayer {
             int inflame = abilityManager.getElementalistAbilities().getFieryWing().getInflame(player);
 
             if (inflame > 0) {
-                statusString.append(ChatColor.of(new Color(250, 102, 0))).append(inflame);
+
+                switch (inflame){
+                    case 1:{
+                        statusString.append("\uE000");
+                        break;
+                    }
+                    case 2:{
+                        statusString.append("\uE001");
+                        break;
+                    }
+                    case 3:{
+                        statusString.append("\uE002");
+                        break;
+                    }
+                }
+
+
+                //statusString.append(ChatColor.of(new Color(250, 102, 0))).append(inflame);
                 statusAmount.put(player, statusAmount.get(player) + 1);
             }
 

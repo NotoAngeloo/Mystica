@@ -49,12 +49,13 @@ public final class Mystica extends JavaPlugin {
         profileManager = new ProfileManager(this);
         profileManager.loadProfilesFromConfig();
 
+        aggroManager = new AggroManager();
+
         classSetter = new ClassSetter(this);
 
         buffAndDebuffManager = new BuffAndDebuffManager(this);
 
         changeResourceHandler = new ChangeResourceHandler(this);
-
 
         pveChecker = new PveChecker(this);
         pvpManager = new PvpManager(this);
@@ -64,8 +65,6 @@ public final class Mystica extends JavaPlugin {
         dpsManager = new DpsManager();
 
         damageCalculator = new DamageCalculator(this);
-
-        aggroManager = new AggroManager(this);
 
 
         abilityManager = new AbilityManager(this);

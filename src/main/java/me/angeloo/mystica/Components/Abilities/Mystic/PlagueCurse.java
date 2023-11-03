@@ -1,17 +1,16 @@
-package me.angeloo.mystica.Components.Abilities.Elementalist;
+package me.angeloo.mystica.Components.Abilities.Mystic;
 
-import com.alessiodp.parties.api.Parties;
-import com.alessiodp.parties.api.interfaces.PartiesAPI;
-import com.alessiodp.parties.api.interfaces.Party;
-import com.alessiodp.parties.api.interfaces.PartyPlayer;
-import me.angeloo.mystica.Components.Abilities.ElementalistAbilities;
+import me.angeloo.mystica.Components.Abilities.MysticAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -25,7 +24,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class ElementalMatrix {
+public class PlagueCurse {
 
     private final Mystica main;
 
@@ -38,11 +37,12 @@ public class ElementalMatrix {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
 
-    private final FieryWing fieryWing;
+    private final EvilSpirit evilSpirit;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
+    private final Map<UUID, Boolean> curseMap = new HashMap<>();
 
-    public ElementalMatrix(Mystica main, AbilityManager manager, ElementalistAbilities elementalistAbilities){
+    public PlagueCurse(Mystica main, AbilityManager manager, MysticAbilities mysticAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
@@ -53,8 +53,7 @@ public class ElementalMatrix {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
 
-        fieryWing = elementalistAbilities.getFieryWing();
-
+        evilSpirit = mysticAbilities.getEvilSpirit();
     }
 
     public void use(Player player){
@@ -103,7 +102,7 @@ public class ElementalMatrix {
 
         execute(player);
 
-        abilityReadyInMap.put(player.getUniqueId(), 10);
+        abilityReadyInMap.put(player.getUniqueId(), 6);
         new BukkitRunnable(){
             @Override
             public void run(){
@@ -122,63 +121,15 @@ public class ElementalMatrix {
             }
         }.runTaskTimer(main, 0,20);
 
-        fieryWing.removeInflame(player);
-
     }
 
     private void execute(Player player){
 
-        boolean cryomancer = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("cryomancer");
-        boolean conjurer = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("conjurer");
-
-        PartiesAPI api = Parties.getApi();
-        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
-        assert partyPlayer != null;
-        if(partyPlayer.isInParty()){
-
-            Party party = api.getParty(partyPlayer.getPartyId());
-
-            assert party != null;
-            Set<UUID> partyMemberList = party.getMembers();
-
-            for(UUID partyMemberId : partyMemberList){
-
-                Player partyMember = Bukkit.getPlayer(partyMemberId);
-
-                if(partyMember == null){
-                    continue;
-                }
-
-                if(!partyMember.isOnline()){
-                    continue;
-                }
-
-                if(partyMember == player){
-                    continue;
-                }
-
-                boolean deathStatus = profileManager.getAnyProfile(partyMember).getIfDead();
-
-                if(deathStatus){
-                    continue;
-                }
-
-                double maxHp = profileManager.getAnyProfile(partyMember).getTotalHealth();
-
-                changeResourceHandler.addHealthToEntity(partyMember, maxHp * .05, player);
-
-            }
-        }
-
-        double maxHp = profileManager.getAnyProfile(player).getTotalHealth();
-        changeResourceHandler.addHealthToEntity(player, maxHp * .05, player);
-
-        double maxMp = profileManager.getAnyProfile(player).getTotalMana();
-        changeResourceHandler.addManaToPlayer(player, maxMp * .05);
+        evilSpirit.addChaosShard(player, 1);
 
         LivingEntity target = targetManager.getPlayerTarget(player);
 
-        Location spawnLoc = target.getLocation().subtract(0,1.9,0);
+        Location spawnLoc = target.getLocation().subtract(0,1.5,0);
 
         ArmorStand armorStand = spawnLoc.getWorld().spawn(spawnLoc, ArmorStand.class);
         armorStand.setInvisible(true);
@@ -189,93 +140,52 @@ public class ElementalMatrix {
 
         EntityEquipment entityEquipment = armorStand.getEquipment();
 
-        ItemStack matrixItem = new ItemStack(Material.DRAGON_BREATH);
-        ItemMeta meta = matrixItem.getItemMeta();
+        ItemStack curseItem = new ItemStack(Material.SPECTRAL_ARROW);
+        ItemMeta meta = curseItem.getItemMeta();
         assert meta != null;
         meta.setCustomModelData(6);
-        matrixItem.setItemMeta(meta);
+        curseItem.setItemMeta(meta);
         assert entityEquipment != null;
-        entityEquipment.setHelmet(matrixItem);
+        entityEquipment.setHelmet(curseItem);
 
-        double skillDamage = 5;
+        double skillDamage = 3;
 
-        if(cryomancer){
-            skillDamage = skillDamage * 2;
-        }
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
 
-        if(conjurer){
-
-            double maxMana = profileManager.getAnyProfile(player).getTotalMana();
-            double currentMana = profileManager.getAnyProfile(player).getCurrentMana();
-
-            double percent = maxMana/currentMana;
-
-            skillDamage = skillDamage * (1 + percent);
-        }
-
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level() +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
-
-        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
+            Location targetWasLoc = target.getLocation().clone().subtract(0,.75,0);
             int ran = 0;
             Vector initialDirection;
             double angle = 0;
             @Override
             public void run(){
 
-
-                Location targetLoc = target.getLocation();
+                if(targetStillValid(target)){
+                    Location targetLoc = target.getLocation().clone().subtract(0,.75,0);
+                    targetWasLoc = targetLoc.clone();
+                }
 
                 if (initialDirection == null) {
-                    initialDirection = targetLoc.getDirection().setY(0).normalize();
+                    initialDirection = targetWasLoc.getDirection().setY(0).normalize();
                 }
 
                 Vector direction = initialDirection.clone();
                 double radians = Math.toRadians(angle);
                 direction.rotateAroundY(radians);
 
+                targetWasLoc.setDirection(direction);
 
-                if(!targetStillValid(target)){
-                    cancelTask();
-                    return;
-                }
-
-                targetLoc = targetLoc.subtract(0,1.5,0);
-
-                targetLoc.setDirection(direction);
-
-                armorStand.teleport(targetLoc);
+                armorStand.teleport(targetWasLoc);
 
                 if(ran%20 == 0){
-                    //tick damage
-
-                    boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = (damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage * skillLevel, crit));
-                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, player);
-                }
-
-
-                angle += 10; // adjust the rotation speed here
-                if (angle >= 360) {
-                    angle = 0;
-                }
-
-                ran++;
-
-                if(ran >= 100){
-                    cancelTask();
-
-                    Set<LivingEntity> hitBySkill = new HashSet<>();
-
                     BoundingBox hitBox = new BoundingBox(
-                            target.getLocation().getX() - 4,
-                            target.getLocation().getY() - 2,
-                            target.getLocation().getZ() - 4,
-                            target.getLocation().getX() + 4,
-                            target.getLocation().getY() + 4,
-                            target.getLocation().getZ() + 4
+                            targetWasLoc.getX() - 4,
+                            targetWasLoc.getY() - 2,
+                            targetWasLoc.getZ() - 4,
+                            targetWasLoc.getX() + 4,
+                            targetWasLoc.getY() + 4,
+                            targetWasLoc.getZ() + 4
                     );
 
                     for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
@@ -294,18 +204,18 @@ public class ElementalMatrix {
 
                         LivingEntity livingEntity = (LivingEntity) entity;
 
-                        if(hitBySkill.contains(livingEntity)){
-                            continue;
+                        if(!getIfCursed(livingEntity)){
+                            applyCurse(livingEntity);
                         }
 
-                        hitBySkill.add(livingEntity);
-
                         boolean crit = damageCalculator.checkIfCrit(player, 0);
-                        double damage = (damageCalculator.calculateDamage(player, livingEntity, "Magical", finalSkillDamage * skillLevel * 3, crit));
+                        double damage = (damageCalculator.calculateDamage(player, livingEntity, "Magical", skillDamage * skillLevel, crit));
 
                         //pvp logic
                         if(entity instanceof Player){
-                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                            if(pvpManager.pvpLogic(player, (Player) entity)){
+                                changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                            }
                             continue;
                         }
 
@@ -315,8 +225,56 @@ public class ElementalMatrix {
                         }
 
                     }
-
                 }
+
+                angle += 2; // adjust the rotation speed here
+                if (angle >= 360) {
+                    angle = 0;
+                }
+
+                ran++;
+
+                if(ran >= 10 * 20){
+                    cancelTask();
+                }
+            }
+
+            private void applyCurse(LivingEntity entity){
+                curseMap.put(entity.getUniqueId(), true);
+
+                new BukkitRunnable(){
+                    int count = 0;
+                    @Override
+                    public void run(){
+
+                        if(!targetStillValid(entity)){
+                            this.cancel();
+                            curseMap.remove(entity.getUniqueId());
+                            return;
+                        }
+
+                        Location center = entity.getLocation().clone().add(0,1,0);
+
+                        double increment = (2 * Math.PI) / 16; // angle between particles
+
+                        for (int i = 0; i < 16; i++) {
+                            double angle = i * increment;
+                            double j = center.getX() + (1 * Math.cos(angle));
+                            double k = center.getZ() + (1 * Math.sin(angle));
+                            Location loc = new Location(center.getWorld(), j, (center.getY()), k);
+
+                            entity.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, loc, 1, 0, 0, 0, 0);
+                        }
+
+                        if(count >= 10){
+                            this.cancel();
+                            curseMap.remove(entity.getUniqueId());
+                        }
+
+                        count++;
+
+                    }
+                }.runTaskTimer(main, 0, 20);
             }
 
             private boolean targetStillValid(LivingEntity target){
@@ -339,6 +297,10 @@ public class ElementalMatrix {
 
         }.runTaskTimer(main, 0, 1);
 
+    }
+
+    public boolean getIfCursed(LivingEntity entity){
+        return curseMap.getOrDefault(entity.getUniqueId(), false);
     }
 
     public int getCooldown(Player player){

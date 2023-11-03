@@ -192,13 +192,12 @@ public class RangerBasic {
         entityEquipment.setHelmet(arrow);
 
         new BukkitRunnable(){
-            Location targetWasLoc = target.getLocation().clone();
+            Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
             @Override
             public void run(){
 
                 if(targetStillValid(target)){
-                    Location targetLoc = target.getLocation();
-                    targetLoc = targetLoc.subtract(0,1,0);
+                    Location targetLoc = target.getLocation().clone().subtract(0,1,0);
                     targetWasLoc = targetLoc.clone();
                 }
 
@@ -290,13 +289,12 @@ public class RangerBasic {
         entityEquipment.setHelmet(arrow);
 
         new BukkitRunnable(){
-            Location targetWasLoc = target.getLocation().clone();
+            Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
             @Override
             public void run(){
 
                 if(targetStillValid(target)){
-                    Location targetLoc = target.getLocation();
-                    targetLoc = targetLoc.subtract(0,1,0);
+                    Location targetLoc = target.getLocation().clone().subtract(0,1,0);
                     targetWasLoc = targetLoc.clone();
                 }
 

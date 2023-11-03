@@ -1,6 +1,5 @@
 package me.angeloo.mystica.Utility;
 
-import me.angeloo.mystica.Components.ClassEquipment.ElementalistEquipment;
 import me.angeloo.mystica.Components.ClassEquipment.TrialClassEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Managers.ProfileManager;
@@ -18,6 +17,32 @@ public class DisplayWeapons {
     public DisplayWeapons(Mystica main){
         profileManager = main.getProfileManager();
         trialClassEquipment = new TrialClassEquipment();
+    }
+
+    public void displayArmor(Player player){
+
+        PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
+
+        if(playerEquipment.getHelmet() != null){
+            player.getInventory().setHelmet(playerEquipment.getHelmet());
+        }
+
+        if(playerEquipment.getChestPlate() != null){
+            player.getInventory().setChestplate(playerEquipment.getChestPlate());
+        }
+
+
+        if(playerEquipment.getLeggings() != null){
+            player.getInventory().setLeggings(playerEquipment.getLeggings());
+        }
+
+        if(playerEquipment.getBoots() != null){
+            player.getInventory().setBoots(playerEquipment.getBoots());
+        }
+    }
+
+    public void unDisplayArmor(Player player){
+
     }
 
     public void displayWeapons(Player player){

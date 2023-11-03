@@ -1,6 +1,5 @@
 package me.angeloo.mystica.Managers;
 
-import me.angeloo.mystica.Mystica;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -12,12 +11,14 @@ public class AggroManager {
     private final Map<UUID, Player> lastPlayerWhoHit;
     private final Map<UUID, Player> creatureHighPriorityTarget;
     private final Map<UUID, Long> lastSetAsPriority;
+    private final Map<Player, Boolean> blacklist;
 
-    public AggroManager(Mystica main){
+    public AggroManager(){
         creatureListOfAttackers = new HashMap<>();
         creatureHighPriorityTarget = new HashMap<>();
         lastSetAsPriority = new HashMap<>();
         lastPlayerWhoHit = new HashMap<>();
+        blacklist = new HashMap<>();
     }
 
     public void addAttacker(LivingEntity entity, Player player){
@@ -105,5 +106,21 @@ public class AggroManager {
             lastSetAsPriority.put(entity.getUniqueId(), currentTime);
         }
         return lastSetAsPriority.get(entity.getUniqueId());
+    }
+
+    public void addToBlackList(Player player){
+        blacklist.put(player, true);
+    }
+
+    public void removeFromBlackList(Player player){
+        blacklist.remove(player);
+    }
+
+    public boolean getIfOnBlackList(Player player){
+        if(blacklist.containsKey(player)){
+            return blacklist.get(player);
+        }
+
+        return false;
     }
 }

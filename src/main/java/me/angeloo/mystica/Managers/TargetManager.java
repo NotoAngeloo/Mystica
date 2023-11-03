@@ -36,6 +36,18 @@ public class TargetManager {
         return playerTarget.get(player.getUniqueId());
     }
 
+    public void updateTargetBar(Player player){
+
+        LivingEntity target = playerTarget.get(player.getUniqueId());
+
+        if(target == null){
+            return;
+        }
+
+        setPlayerTarget(player, target);
+
+    }
+
     public void setPlayerTarget(Player player, LivingEntity entity){
 
         if(entity instanceof ArmorStand){
@@ -44,14 +56,14 @@ public class TargetManager {
 
         playerTarget.put(player.getUniqueId(), entity);
         if(playerTargetBar.containsKey(player.getUniqueId())){
-            removeOldTargetBar(player, playerTargetBar.get(player.getUniqueId()));
+            removeAllBars(player);
         }
 
         if(entity != null){
             playerTargetBar.put(player.getUniqueId(), startTargetBar(player, entity));
 
             if(entity.isDead()){
-                removeOldTargetBar(player, playerTargetBar.get(player.getUniqueId()));
+                removeAllBars(player);
             }
         }
 
@@ -100,9 +112,9 @@ public class TargetManager {
 
                 Player entityPlayer = (Player) entity;
 
-                boolean deathstatus = profileManager.getAnyProfile(entityPlayer).getIfDead();
+                boolean deathStatus = profileManager.getAnyProfile(entityPlayer).getIfDead();
 
-                if(deathstatus){
+                if(deathStatus){
                     continue;
                 }
 
@@ -164,8 +176,8 @@ public class TargetManager {
         }
 
 
-        Double maxHealth = entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
-        Double currentHealth = entity.getHealth();
+        Double maxHealth = (double) profileManager.getAnyProfile(entity).getTotalHealth();
+        Double currentHealth = profileManager.getAnyProfile(entity).getCurrentHealth();
         bossBar.setProgress(currentHealth/maxHealth);
 
         //ok this should work
@@ -184,13 +196,15 @@ public class TargetManager {
         return bossBar;
     }
 
-    private void removeOldTargetBar(Player player, BossBar bossBar){
+    public void removeAllBars(Player player){
+        BossBar bossBar = playerTargetBar.get(player.getUniqueId());
+
+        if(bossBar == null){
+            return;
+        }
+
         bossBar.removePlayer(player);
         playerTargetBar.remove(player.getUniqueId());
-    }
-
-    public BossBar getTargetBar(UUID id){
-        return playerTargetBar.get(id);
     }
 
     public Map<UUID, LivingEntity> getTargetMap(){

@@ -128,7 +128,7 @@ public class Relentless {
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
         double skillDamage = 4;
 
-        abilityManager.getRangerAbilities().setCasting(player, true);
+        abilityManager.setCasting(player, true);
         buffAndDebuffManager.getSpeedUp().applySpeedUp(player, .3f);
 
         new BukkitRunnable(){
@@ -223,7 +223,7 @@ public class Relentless {
 
                 double percent = ((double) count /15) * 100;
 
-                abilityManager.getRangerAbilities().setCastBar(player, percent);
+                abilityManager.setCastBar(player, percent);
 
                 if(count >=15){
                     cancelTask();
@@ -248,8 +248,8 @@ public class Relentless {
             private void cancelTask(){
                 this.cancel();
                 removeStands();
-                abilityManager.getRangerAbilities().setCasting(player, false);
-                abilityManager.getRangerAbilities().setCastBar(player, 0);
+                abilityManager.setCasting(player, false);
+                abilityManager.setCastBar(player, 0);
                 buffAndDebuffManager.getSpeedUp().removeSpeedUp(player);
             }
 

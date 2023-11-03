@@ -58,17 +58,26 @@ public class AggroTick {
 
                 List<Player> originalAttackerList = aggroManager.getAttackerList(entity);
 
+                List<Player> attackers = new ArrayList<>();
+
+                for(Player player : originalAttackerList){
+                    boolean blacklist = aggroManager.getIfOnBlackList(player);
+
+                    if(!blacklist){
+                        attackers.add(player);
+                    }
+                }
 
                 if(aggroManager.getHighPriorityTarget(entity) == null){
 
                     Player highestDpsPlayer = null;
                     double highestDps = 0;
 
-                    if(!originalAttackerList.isEmpty()){
+                    if(!attackers.isEmpty()){
 
                         //Bukkit.getLogger().info(String.valueOf(attackers));
 
-                        for(Player player : originalAttackerList){
+                        for(Player player : attackers){
 
 
                             double dps = dpsManager.getRawDps(player);
@@ -106,7 +115,9 @@ public class AggroTick {
 
                     boolean deathStatus = profileManager.getAnyProfile(targetedPlayer).getIfDead();
 
-                    if(deathStatus){
+                    boolean blackList = aggroManager.getIfOnBlackList(targetedPlayer);
+
+                    if(deathStatus || blackList){
                         ((Creature) entity).setTarget(null);
                     }else{
                         playerCombatManager.startCombatTimer(targetedPlayer);
@@ -119,10 +130,10 @@ public class AggroTick {
 
                     //Bukkit.getLogger().info("target null");
 
-                    if(!originalAttackerList.isEmpty()){
+                    if(!attackers.isEmpty()){
                         Random random = new Random();
-                        int index = random.nextInt(originalAttackerList.size());
-                        ((Creature) entity).setTarget(originalAttackerList.get(index));
+                        int index = random.nextInt(attackers.size());
+                        ((Creature) entity).setTarget(attackers.get(index));
 
                         //Bukkit.getLogger().info("Setting random target to " + attackers.get(index));
                     }

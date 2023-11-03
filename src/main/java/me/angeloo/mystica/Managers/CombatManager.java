@@ -6,6 +6,7 @@ import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Components.Profile;
+import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.StatusDisplayer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
@@ -72,22 +73,8 @@ public class CombatManager {
                     player.getInventory().setItemInOffHand(playerEquipment.getOffhand());
                 }
 
-                if(playerEquipment.getHelmet() != null){
-                    player.getInventory().setHelmet(playerEquipment.getHelmet());
-                }
-
-                if(playerEquipment.getChestPlate() != null){
-                    player.getInventory().setChestplate(playerEquipment.getChestPlate());
-                }
-
-
-                if(playerEquipment.getLeggings() != null){
-                    player.getInventory().setLeggings(playerEquipment.getLeggings());
-                }
-
-                if(playerEquipment.getBoots() != null){
-                    player.getInventory().setBoots(playerEquipment.getBoots());
-                }
+                DisplayWeapons displayWeapons = new DisplayWeapons(main);
+                displayWeapons.displayArmor(player);
             }
             else{
                 String trialClass = profileManager.getTrialClass(player);
@@ -188,6 +175,18 @@ public class CombatManager {
                     abilityItem.setAmount(cooldown);
                 }
 
+                if(cooldown == 1 && !abilityItem.getType().equals(Material.AIR)){
+
+                    ItemMeta meta = abilityItem.getItemMeta();
+
+                    assert meta != null;
+                    int modelData = meta.getCustomModelData();
+                    modelData++;
+
+                    meta.setCustomModelData(modelData);
+                    abilityItem.setItemMeta(meta);
+                }
+
                 player.getInventory().setItem(i, abilityItem);
             }
             return;
@@ -212,6 +211,18 @@ public class CombatManager {
                 abilityItem.setAmount(cooldown);
             }
 
+            if(cooldown == 1 && !abilityItem.getType().equals(Material.AIR)){
+
+                ItemMeta meta = abilityItem.getItemMeta();
+
+                assert meta != null;
+                int modelData = meta.getCustomModelData();
+                modelData++;
+
+                meta.setCustomModelData(modelData);
+                abilityItem.setItemMeta(meta);
+            }
+
             player.getInventory().setItem(i, abilityItem);
         }
 
@@ -229,6 +240,18 @@ public class CombatManager {
 
             if(cooldown > 0){
                 ultimateItem.setAmount(cooldown);
+            }
+
+            if(cooldown == 1 && !ultimateItem.getType().equals(Material.AIR)){
+
+                ItemMeta meta = ultimateItem.getItemMeta();
+
+                assert meta != null;
+                int modelData = meta.getCustomModelData();
+                modelData++;
+
+                meta.setCustomModelData(modelData);
+                ultimateItem.setItemMeta(meta);
             }
 
             player.getInventory().setItem(8, ultimateItem);
@@ -421,6 +444,9 @@ public class CombatManager {
         //and restore their inventories
 
         if(!profileManager.getAnyProfile(player).getIfDead()){
+
+            player.setInvisible(false);
+
             player.getInventory().clear();
 
             ItemStack[] savedInv = profileManager.getAnyProfile(player).getSavedInv();

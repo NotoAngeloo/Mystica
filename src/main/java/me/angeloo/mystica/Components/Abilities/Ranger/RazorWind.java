@@ -128,7 +128,7 @@ public class RazorWind {
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
         double skillDamage = 4;
 
-        abilityManager.getRangerAbilities().setCasting(player, true);
+        abilityManager.setCasting(player, true);
         player.setWalkSpeed(.06f);
 
         new BukkitRunnable(){
@@ -139,7 +139,7 @@ public class RazorWind {
 
                 if(!player.isOnline()){
                     this.cancel();
-                    abilityManager.getRangerAbilities().setCasting(player, false);
+                    abilityManager.setCasting(player, false);
                     player.setWalkSpeed(.2f);
                     return;
                 }
@@ -152,11 +152,11 @@ public class RazorWind {
 
                 double percent = ((double) count / 20) * 100;
 
-                abilityManager.getRangerAbilities().setCastBar(player, percent);
+                abilityManager.setCastBar(player, percent);
 
                 if(count >=20){
                     this.cancel();
-                    abilityManager.getRangerAbilities().setCasting(player, false);
+                    abilityManager.setCasting(player, false);
                     player.setWalkSpeed(.2f);
                     startLaunchTask();
                 }

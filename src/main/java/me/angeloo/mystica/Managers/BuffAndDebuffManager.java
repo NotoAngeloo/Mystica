@@ -8,6 +8,9 @@ import org.bukkit.entity.Player;
 
 public class BuffAndDebuffManager {
 
+    private final Immune immune;
+    private final Hidden hidden;
+    private final Immobile immobile;
     private final GenericShield genericShield;
     private final SpeedUp speedUp;
     private final ShadowCrowsDebuff shadowCrowsDebuff;
@@ -17,6 +20,9 @@ public class BuffAndDebuffManager {
     private final Haste haste;
 
     public BuffAndDebuffManager(Mystica main){
+        immune = new Immune(main);
+        hidden = new Hidden(main);
+        immobile = new Immobile(main);
         genericShield = new GenericShield();
         speedUp = new SpeedUp();
         shadowCrowsDebuff = new ShadowCrowsDebuff(main);
@@ -26,7 +32,9 @@ public class BuffAndDebuffManager {
         haste = new Haste(main);
     }
 
-
+    public Immune getImmune(){return immune;}
+    public Hidden getHidden(){return hidden;}
+    public Immobile getImmobile() {return immobile;}
     public WindWallBuff getWindWallBuff() {
         return windWallBuff;
     }
@@ -40,6 +48,9 @@ public class BuffAndDebuffManager {
     public Haste getHaste(){return haste;}
 
     public void removeAllBuffsAndDebuffs(Player player){
+        immune.removeImmune(player);
+        hidden.unhidePlayer(player);
+        immobile.removeImmobile(player);
         speedUp.removeSpeedUp(player);
         genericShield.removeShields(player);
         windWallBuff.removeWindwall(player);

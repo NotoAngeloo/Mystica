@@ -42,7 +42,7 @@ public class ShadowCrowsDebuff {
 
                 count++;
             }
-        }.runTaskTimer(main, 0, 20);
+        }.runTaskTimer(main, 0, 1);
 
         removeDebuffTaskMap.put(entity.getUniqueId(), task);
     }

@@ -13,9 +13,6 @@ public class RangerAbilities {
 
     private final ProfileManager profileManager;
 
-    private final Map<Player, Boolean> castMap = new HashMap<>();
-    private final Map<Player, Double> percentCastBar = new HashMap<>();
-
     private final RallyingCry rallyingCry;
     private final WildRoar wildRoar;
     private final StarVolley starVolley;
@@ -44,10 +41,6 @@ public class RangerAbilities {
     }
 
     public void useRangerAbility(Player player, int abilityNumber){
-
-        if(getIfCasting(player)){
-            return;
-        }
 
         switch (abilityNumber){
             case 1:{
@@ -87,10 +80,6 @@ public class RangerAbilities {
 
     public void useRangerUltimate(Player player){
 
-        if(getIfCasting(player)){
-            return;
-        }
-
         String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
         switch (subclass.toLowerCase()){
@@ -108,10 +97,6 @@ public class RangerAbilities {
     }
 
     public void useRangerBasic(Player player){
-
-        if(getIfCasting(player)){
-            return;
-        }
 
         rangerBasic.useBasic(player);
     }
@@ -151,22 +136,6 @@ public class RangerAbilities {
         }
 
         return 0;
-    }
-
-    public boolean getIfCasting(Player player){
-        return castMap.getOrDefault(player, false);
-    }
-
-    public void setCasting(Player player, boolean casting){
-        castMap.put(player, casting);
-    }
-
-    public void setCastBar(Player player, double percent){
-        percentCastBar.put(player, percent);
-    }
-
-    public double getCastPercent(Player player){
-        return percentCastBar.getOrDefault(player, 0.0);
     }
 
     public RallyingCry getRallyingCry() {

@@ -30,7 +30,7 @@ public class MysticEquipment {
                 ChatColor.of(new Color(255,255,255)) + "Magic + 3",
                 ChatColor.of(new Color(255,255,255)) + "Health + 18",
                 "",
-                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(153, 204, 255)) + "Elementalist");
+                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(155, 120, 197)) + "Mystic");
     }
 
     public ItemStack getBaseOffhand(){
@@ -43,7 +43,7 @@ public class MysticEquipment {
                 ChatColor.of(new Color(255,255,255)) + "Defense + 4",
                 ChatColor.of(new Color(255,255,255)) + "Magic Defense + 4",
                 "",
-                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(153, 204, 255)) + "Elementalist");
+                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(155, 120, 197)) + "Mystic");
     }
 
     public ItemStack getBaseHelmet(){
@@ -54,7 +54,7 @@ public class MysticEquipment {
                 "",
                 ChatColor.of(new Color(255,255,255)) + "Health + 50",
                 "",
-                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(153, 204, 255)) + "Elementalist");
+                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(155, 120, 197)) + "Mystic");
     }
 
     public ItemStack getBaseChestPlate(){
@@ -67,7 +67,7 @@ public class MysticEquipment {
                 ChatColor.of(new Color(255,255,255)) + "Defense + 4",
                 ChatColor.of(new Color(255,255,255)) + "Magic Defense + 4",
                 "",
-                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(153, 204, 255)) + "Elementalist");
+                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(155, 120, 197)) + "Mystic");
     }
 
     public ItemStack getBaseLeggings(){
@@ -78,7 +78,7 @@ public class MysticEquipment {
                 "",
                 ChatColor.of(new Color(255,255,255)) + "Magic + 4",
                 "",
-                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(153, 204, 255)) + "Elementalist");
+                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(155, 120, 197)) + "Mystic");
     }
 
     public ItemStack getBaseBoots(){
@@ -89,7 +89,7 @@ public class MysticEquipment {
                 "",
                 ChatColor.of(new Color(255,255,255)) + "Magic + 2",
                 "",
-                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(153, 204, 255)) + "Elementalist");
+                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(155, 120, 197)) + "Mystic");
     }
 
     private ItemStack getItem(Material material, int modelData, String name, String ... lore){

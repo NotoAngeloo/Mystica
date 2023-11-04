@@ -66,7 +66,7 @@ public class StatusDisplayer {
 
             switch (clazz.toLowerCase()){
                 case "ranger":{
-                    color = new Color(34, 11, 80);
+                    color = new Color(34, 111, 80);
                     break;
                 }
                 case "mystic":{
@@ -90,7 +90,11 @@ public class StatusDisplayer {
 
             statusString.append("]");
         }
-        statusString.append("   ");
+        else{
+            statusString.append("            ");
+        }
+
+        statusString.append(ChatColor.RESET).append("   ");
 
         return String.valueOf(statusString);
     }
@@ -125,7 +129,6 @@ public class StatusDisplayer {
             return String.valueOf(statusString);
         }
 
-        //TODO: replace these with unicode
         if (subclass.equalsIgnoreCase("pyromancer")) {
             int inflame = abilityManager.getElementalistAbilities().getFieryWing().getInflame(player);
 
@@ -160,7 +163,7 @@ public class StatusDisplayer {
         int breathTime = abilityManager.getElementalistAbilities().getElementalBreath().getIfBuffTime(player);
 
         if (breathTime > 0) {
-            statusString.append(ChatColor.of(new Color(153, 204, 255))).append(breathTime);
+            statusString.append("\uE004");
             statusAmount.put(player, statusAmount.get(player) + 1);
         }
 
@@ -191,14 +194,18 @@ public class StatusDisplayer {
         //wild roar
         if(buffAndDebuffManager.getWildRoarBuff().getIfWildRoarBuff(player) && statusAmount.get(player) < 4){
             statusAmount.put(player, statusAmount.get(player) + 1);
-            //icon later
             statusString.append("R");
+        }
+
+        if(buffAndDebuffManager.getConjuringForceBuff().getIfConjForceBuff(player) && statusAmount.get(player) < 4){
+            statusAmount.put(player, statusAmount.get(player) + 1);
+            statusString.append("\uE005");
         }
 
         //speed up
         if(buffAndDebuffManager.getSpeedUp().getIfSpeedUp(player) && statusAmount.get(player) < 4){
+            statusString.append("\uE003");
             statusAmount.put(player, statusAmount.get(player) + 1);
-            statusString.append("s");
         }
 
         return String.valueOf(statusString);

@@ -1,9 +1,6 @@
 package me.angeloo.mystica.Components.Abilities;
 
-import me.angeloo.mystica.Components.Abilities.Mystic.ChaosVoid;
-import me.angeloo.mystica.Components.Abilities.Mystic.EvilSpirit;
-import me.angeloo.mystica.Components.Abilities.Mystic.MysticBasic;
-import me.angeloo.mystica.Components.Abilities.Mystic.PlagueCurse;
+import me.angeloo.mystica.Components.Abilities.Mystic.*;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -17,6 +14,9 @@ public class MysticAbilities {
     private final EvilSpirit evilSpirit;
     private final PlagueCurse plagueCurse;
     private final ChaosVoid chaosVoid;
+    private final ShadowOfDarkness shadowOfDarkness;
+    private final Warp warp;
+    private final SpiritualDescent spiritualDescent;
     private final MysticBasic mysticBasic;
 
     public MysticAbilities(Mystica main, AbilityManager manager){
@@ -24,6 +24,9 @@ public class MysticAbilities {
         evilSpirit = new EvilSpirit(main, manager);
         plagueCurse = new PlagueCurse(main, manager, this);
         chaosVoid = new ChaosVoid(main, manager);
+        shadowOfDarkness = new ShadowOfDarkness(main, manager, this);
+        warp = new Warp(main, manager);
+        spiritualDescent = new SpiritualDescent(main, manager, this);
         mysticBasic = new MysticBasic(main, manager, this);
     }
 
@@ -46,12 +49,27 @@ public class MysticAbilities {
                     plagueCurse.use(player);
                     return;
                 }
+                case 3:{
+                    shadowOfDarkness.use(player);
+                    return;
+                }
+                case 4:{
+                    warp.use(player);
+                    return;
+                }
+                case 5:{
+                    spiritualDescent.use(player);
+                    return;
+                }
             }
 
         }
 
         switch (abilityNumber){
-
+            case 4:{
+                warp.use(player);
+                return;
+            }
         }
 
     }
@@ -96,12 +114,19 @@ public class MysticAbilities {
                     return chaosVoid.getCooldown(player);
                 case 2:
                     return plagueCurse.getCooldown(player);
+                case 3:
+                    return shadowOfDarkness.getCooldown(player);
+                case 4:
+                    return warp.getCooldown(player);
+                case 5:
+                    return spiritualDescent.getCooldown(player);
             }
 
         }
 
         switch (abilityNumber){
-
+            case 4:
+                return warp.getCooldown(player);
         }
 
         return 0;

@@ -25,7 +25,6 @@ public class ChaosVoid {
     private final ProfileManager profileManager;
     private final CombatManager combatManager;
     private final AbilityManager abilityManager;
-    private final PvpManager pvpManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
 
@@ -36,7 +35,6 @@ public class ChaosVoid {
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
         abilityManager = manager;
-        pvpManager = main.getPvpManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
     }

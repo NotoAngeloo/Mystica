@@ -149,7 +149,6 @@ public class PlagueCurse {
         entityEquipment.setHelmet(curseItem);
 
         double skillDamage = 3;
-
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
 

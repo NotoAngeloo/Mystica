@@ -450,12 +450,17 @@ public class MysticBasic {
 
             double totalTargetHealth = profileManager.getAnyProfile(target).getTotalHealth();
             double yourMagic = profileManager.getAnyProfile(player).getTotalMagic();
+            boolean crit = damageCalculator.checkIfCrit(player, 0);
 
             double healAmount = totalTargetHealth * .05;
             healAmount = healAmount * (yourMagic/4);
 
             if(subclass.equalsIgnoreCase("shepard")){
                 healAmount = healAmount * 1.2;
+            }
+
+            if(crit){
+                healAmount = healAmount * 1.5;
             }
 
             changeResourceHandler.addHealthToEntity(target, healAmount, player);

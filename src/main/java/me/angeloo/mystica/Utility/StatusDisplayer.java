@@ -17,8 +17,6 @@ public class StatusDisplayer {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final AbilityManager abilityManager;
 
-    private final Map<Player, Integer> statusAmount = new HashMap<>();
-
     public StatusDisplayer(Mystica main, AbilityManager manager) {
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
@@ -26,9 +24,6 @@ public class StatusDisplayer {
     }
 
     public void displayStatus(Player player) {
-
-        statusAmount.put(player, 0);
-
 
         StringBuilder statusString = new StringBuilder();
 
@@ -125,10 +120,6 @@ public class StatusDisplayer {
 
         String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
-        if (statusAmount.get(player) >= 4) {
-            return String.valueOf(statusString);
-        }
-
         if (subclass.equalsIgnoreCase("pyromancer")) {
             int inflame = abilityManager.getElementalistAbilities().getFieryWing().getInflame(player);
 
@@ -149,22 +140,14 @@ public class StatusDisplayer {
                     }
                 }
 
-
-                //statusString.append(ChatColor.of(new Color(250, 102, 0))).append(inflame);
-                statusAmount.put(player, statusAmount.get(player) + 1);
             }
 
-        }
-
-        if (statusAmount.get(player) >= 4) {
-            return String.valueOf(statusString);
         }
 
         int breathTime = abilityManager.getElementalistAbilities().getElementalBreath().getIfBuffTime(player);
 
         if (breathTime > 0) {
             statusString.append("\uE004");
-            statusAmount.put(player, statusAmount.get(player) + 1);
         }
 
         return String.valueOf(statusString);
@@ -173,15 +156,10 @@ public class StatusDisplayer {
     private String applyRangerStatus(Player player){
         StringBuilder statusString = new StringBuilder();
 
-        if (statusAmount.get(player) >= 4) {
-            return String.valueOf(statusString);
-        }
-
         int cry = abilityManager.getRangerAbilities().getRallyingCry().getIfBuffTime(player);
 
         if(cry > 0){
             statusString.append(ChatColor.of(new Color(34,111,80))).append(cry);
-            statusAmount.put(player, statusAmount.get(player) + 1);
         }
 
         return String.valueOf(statusString);
@@ -192,20 +170,17 @@ public class StatusDisplayer {
         StringBuilder statusString = new StringBuilder();
 
         //wild roar
-        if(buffAndDebuffManager.getWildRoarBuff().getIfWildRoarBuff(player) && statusAmount.get(player) < 4){
-            statusAmount.put(player, statusAmount.get(player) + 1);
+        if(buffAndDebuffManager.getWildRoarBuff().getIfWildRoarBuff(player)){
             statusString.append("R");
         }
 
-        if(buffAndDebuffManager.getConjuringForceBuff().getIfConjForceBuff(player) && statusAmount.get(player) < 4){
-            statusAmount.put(player, statusAmount.get(player) + 1);
+        if(buffAndDebuffManager.getConjuringForceBuff().getIfConjForceBuff(player)){
             statusString.append("\uE005");
         }
 
         //speed up
-        if(buffAndDebuffManager.getSpeedUp().getIfSpeedUp(player) && statusAmount.get(player) < 4){
+        if(buffAndDebuffManager.getSpeedUp().getIfSpeedUp(player)){
             statusString.append("\uE003");
-            statusAmount.put(player, statusAmount.get(player) + 1);
         }
 
         return String.valueOf(statusString);

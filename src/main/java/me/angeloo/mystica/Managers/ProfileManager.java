@@ -268,7 +268,7 @@ public class ProfileManager {
 
                         @Override
                         public Boolean getIsMovable() {
-                            return false;
+                            return true;
                         }
 
                         @Override
@@ -279,7 +279,7 @@ public class ProfileManager {
 
                         @Override
                         public Boolean getImmortality() {
-                            return null;
+                            return false;
                         }
 
                         @Override

@@ -9,13 +9,16 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class AbilityManager {
 
     private final ProfileManager profileManager;
+    private final BuffAndDebuffManager buffAndDebuffManager;
 
     private final Map<Player, Boolean> castMap = new HashMap<>();
     private final Map<Player, Double> percentCastBar = new HashMap<>();
+    private final Map<UUID, Long> globalCooldown = new HashMap<>();
 
     private final ElementalistAbilities elementalistAbilities;
     private final RangerAbilities rangerAbilities;
@@ -24,6 +27,7 @@ public class AbilityManager {
 
     public AbilityManager(Mystica main){
         profileManager = main.getProfileManager();
+        buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = new CombatManager(main, this);
         elementalistAbilities = new ElementalistAbilities(main, this);
         rangerAbilities = new RangerAbilities(main, this);
@@ -31,6 +35,20 @@ public class AbilityManager {
     }
 
     public void useAbility(Player player, int abilityNumber){
+
+        if(buffAndDebuffManager.getIfCantAct(player)){
+            return;
+        }
+
+        if(globalCooldown.get(player.getUniqueId()) == null){
+            globalCooldown.put(player.getUniqueId(), (System.currentTimeMillis() / 1000) - 1);
+        }
+
+        long currentTime = System.currentTimeMillis() / 1000;
+        if(currentTime - globalCooldown.get(player.getUniqueId()) < .5){
+            return;
+        }
+        globalCooldown.put(player.getUniqueId(), currentTime);
 
         if(getIfCasting(player)){
             return;
@@ -98,6 +116,16 @@ public class AbilityManager {
     }
 
     public void useUltimate(Player player){
+
+        if(globalCooldown.get(player.getUniqueId()) == null){
+            globalCooldown.put(player.getUniqueId(), (System.currentTimeMillis() / 1000) - 1);
+        }
+
+        long currentTime = System.currentTimeMillis() / 1000;
+        if(currentTime - globalCooldown.get(player.getUniqueId()) < .5){
+            return;
+        }
+        globalCooldown.put(player.getUniqueId(), currentTime);
 
         if(getIfCasting(player)){
             return;

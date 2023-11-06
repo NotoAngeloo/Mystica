@@ -1,31 +1,40 @@
 package me.angeloo.mystica.Components.BuffsAndDebuffs;
 
+import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class Immobile {
 
     private final Mystica main;
+    private final ProfileManager profileManager;
 
     private final Map<UUID, BukkitTask> removeImmobileTaskMap = new HashMap<>();
     private final Map<UUID, Boolean> immobileMap = new HashMap<>();
 
     public Immobile(Mystica main){
         this.main = main;
+        profileManager = main.getProfileManager();
     }
 
     public void applyImmobile(LivingEntity entity, int time){
+        if(!profileManager.getAnyProfile(entity).getIsMovable()){
+            return;
+        }
+
         immobileMap.put(entity.getUniqueId(), true);
 
         if(removeImmobileTaskMap.containsKey(entity.getUniqueId())){
             removeImmobileTaskMap.get(entity.getUniqueId()).cancel();
+        }
+
+        if(!(entity instanceof Player)){
+            entity.setAI(false);
         }
 
         if(time == 0){
@@ -40,6 +49,11 @@ public class Immobile {
                 if(count >= time){
                     this.cancel();
                     immobileMap.remove(entity.getUniqueId());
+
+                    if(!(entity instanceof Player)){
+                        entity.setAI(true);
+                    }
+
                 }
 
                 count++;
@@ -53,8 +67,13 @@ public class Immobile {
         return immobileMap.getOrDefault(entity.getUniqueId(), false);
     }
 
-    public void removeImmobile(Player player){
-        immobileMap.remove(player.getUniqueId());
+    public void removeImmobile(LivingEntity entity){
+        immobileMap.remove(entity.getUniqueId());
+
+        if(!(entity instanceof Player)){
+            entity.setAI(true);
+        }
+
     }
 
 }

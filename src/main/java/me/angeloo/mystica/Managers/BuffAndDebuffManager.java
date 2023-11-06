@@ -11,6 +11,7 @@ public class BuffAndDebuffManager {
     private final Immune immune;
     private final Hidden hidden;
     private final Immobile immobile;
+    private final Sleep sleep;
     private final GenericShield genericShield;
     private final SpeedUp speedUp;
     private final ShadowCrowsDebuff shadowCrowsDebuff;
@@ -23,6 +24,7 @@ public class BuffAndDebuffManager {
         immune = new Immune(main);
         hidden = new Hidden(main);
         immobile = new Immobile(main);
+        sleep = new Sleep(main, immobile);
         genericShield = new GenericShield();
         speedUp = new SpeedUp();
         shadowCrowsDebuff = new ShadowCrowsDebuff(main);
@@ -35,6 +37,7 @@ public class BuffAndDebuffManager {
     public Immune getImmune(){return immune;}
     public Hidden getHidden(){return hidden;}
     public Immobile getImmobile() {return immobile;}
+    public Sleep getSleep(){return sleep;}
     public WindWallBuff getWindWallBuff() {
         return windWallBuff;
     }
@@ -51,6 +54,7 @@ public class BuffAndDebuffManager {
         immune.removeImmune(player);
         hidden.unhidePlayer(player);
         immobile.removeImmobile(player);
+        sleep.forceWakeUp(player);
         speedUp.removeSpeedUp(player);
         genericShield.removeShields(player);
         windWallBuff.removeWindwall(player);
@@ -83,5 +87,10 @@ public class BuffAndDebuffManager {
 
     public float getSpeedUp(Player player){
         return speedUp.getSpeedUpAmount(player);
+    }
+
+    public boolean getIfCantAct(LivingEntity entity){
+        //use a bunch of || inbetween
+        return sleep.getIfSleep(entity);
     }
 }

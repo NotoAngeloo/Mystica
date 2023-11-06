@@ -294,8 +294,27 @@ public class CombatManager {
         String manaString = getManaBar(player);
         String statusString = ChatColor.GRAY + getPlayerStatus(player);
 
-        fullBar.append(shieldString).append("     ").append(statusString).append("     ").append(manaString);
 
+
+        String colorlessString = statusString.replaceAll("§.", "");
+
+        int amountStatusChar = colorlessString.length();
+        //make sure the bar is always 25 chars long
+        int leftToSpaceOnEachSide = 25 - amountStatusChar;
+
+        /*if(leftToSpaceOnEachSide%2!=0){
+            leftToSpaceOnEachSide = leftToSpaceOnEachSide + 1;
+        }*/
+
+        leftToSpaceOnEachSide = leftToSpaceOnEachSide/2;
+
+        StringBuilder fillerString = new StringBuilder();
+        for(int i=0;i<leftToSpaceOnEachSide;i++){
+            fillerString.append(" ");
+        }
+
+        //replace " " with fillerString
+        fullBar.append(shieldString).append(fillerString).append(statusString).append(fillerString).append(manaString);
 
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(String.valueOf(fullBar)));
     }

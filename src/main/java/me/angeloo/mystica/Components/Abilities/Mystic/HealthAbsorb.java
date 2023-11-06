@@ -1,6 +1,6 @@
-package me.angeloo.mystica.Components.Abilities.Ranger;
+package me.angeloo.mystica.Components.Abilities.Mystic;
 
-import me.angeloo.mystica.Components.Abilities.RangerAbilities;
+import me.angeloo.mystica.Components.Abilities.MysticAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -10,6 +10,7 @@ import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -21,12 +22,11 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class Relentless {
+public class HealthAbsorb {
 
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final AbilityManager abilityManager;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
@@ -34,11 +34,12 @@ public class Relentless {
     private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
-    private final StarVolley starVolley;
+    private final AbilityManager abilityManager;
+
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public Relentless(Mystica main, AbilityManager manager, RangerAbilities rangerAbilities){
+    public HealthAbsorb(Mystica main, AbilityManager manager, MysticAbilities mysticAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         abilityManager = manager;
@@ -49,7 +50,7 @@ public class Relentless {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        starVolley = rangerAbilities.getStarVolley();
+
     }
 
     public void use(Player player){
@@ -98,7 +99,7 @@ public class Relentless {
 
         execute(player);
 
-        abilityReadyInMap.put(player.getUniqueId(), 16);
+        abilityReadyInMap.put(player.getUniqueId(), 20);
         new BukkitRunnable(){
             @Override
             public void run(){
@@ -120,38 +121,86 @@ public class Relentless {
 
     private void execute(Player player){
 
-        boolean scout = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("scout");
-
         LivingEntity target = targetManager.getPlayerTarget(player);
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level() +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
-        double skillDamage = 4;
+        double skillDamage = 3;
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
 
         abilityManager.setCasting(player, true);
-        buffAndDebuffManager.getSpeedUp().applySpeedUp(player, .3f);
 
         new BukkitRunnable(){
-            Location targetWasLoc = target.getLocation().clone();
-            final Set<ArmorStand> allStands = new HashSet<>();
-            int count = 0;
+            final List<ArmorStand> armorStands = new ArrayList<>();
+            int ran = 0;
+
+            Vector initialDirection;
+            boolean up = true;
+            int angle = 0;
+            double height = 0;
+            final double radius = 4;
             @Override
             public void run(){
 
-                if(!player.isOnline() || buffAndDebuffManager.getIfCantAct(player)){
+                if(targetInvalid(target)){
                     cancelTask();
                     return;
                 }
 
-                if(targetStillValid(target)){
-                    Location targetLoc = target.getLocation();
-                    targetLoc = targetLoc.subtract(0,1,0);
-                    targetWasLoc = targetLoc.clone();
+                if(!player.isOnline()){
+                    cancelTask();
+                    return;
                 }
 
-                Location start = player.getLocation();
-                start.subtract(0, 1, 0);
-                ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+                Location playerLoc = player.getLocation().clone();
+
+                if(profileManager.getAnyProfile(player).getIfDead()){
+                    cancelTask();
+                    return;
+                }
+
+                if (initialDirection == null) {
+                    initialDirection = playerLoc.getDirection().setY(0).normalize();
+                }
+
+                Vector rotation = initialDirection.clone();
+                double radians = Math.toRadians(angle);
+                rotation.rotateAroundY(radians);
+                playerLoc.setDirection(rotation);
+
+                double x = playerLoc.getX() + rotation.getX() * radius;
+                double z = playerLoc.getZ() + rotation.getZ() * radius;
+
+                double x2 = playerLoc.getX() - rotation.getX() * radius;
+                double z2 = playerLoc.getZ() - rotation.getZ() * radius;
+
+                Location particleLoc = new Location(playerLoc.getWorld(), x, playerLoc.getY() + height, z);
+                Location particleLoc2 = new Location(playerLoc.getWorld(), x2, playerLoc.getY() + height, z2);
+
+                playerLoc.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, particleLoc, 1, 0, 0, 0, 0);
+                playerLoc.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, particleLoc2, 1, 0, 0, 0, 0);
+
+
+                if(up){
+                    height += .1;
+                }
+                else{
+                    height -= .1;
+                }
+
+                angle += 5;
+
+                if(height >= 4){
+                    up = false;
+                }
+
+                if(height < 0){
+                    up = true;
+                }
+
+
+                Location targetLoc = target.getLocation().clone().subtract(0,1,0);
+
+                ArmorStand armorStand = targetLoc.getWorld().spawn(targetLoc, ArmorStand.class);
                 armorStand.setInvisible(true);
                 armorStand.setGravity(false);
                 armorStand.setCollidable(false);
@@ -160,107 +209,104 @@ public class Relentless {
 
                 EntityEquipment entityEquipment = armorStand.getEquipment();
 
-                ItemStack arrow = new ItemStack(Material.ARROW);
-                ItemMeta meta = arrow.getItemMeta();
+                ItemStack absorbItem = new ItemStack(Material.SPECTRAL_ARROW);
+                ItemMeta meta = absorbItem.getItemMeta();
                 assert meta != null;
-                meta.setCustomModelData(1);
-                arrow.setItemMeta(meta);
+                meta.setCustomModelData(10);
+                absorbItem.setItemMeta(meta);
                 assert entityEquipment != null;
-                entityEquipment.setHelmet(arrow);
+                entityEquipment.setHelmet(absorbItem);
 
-                allStands.add(armorStand);
-
-                double randomValue = Math.random() * 2 - 1;
+                armorStands.add(armorStand);
 
                 new BukkitRunnable(){
-                    final double initialDistance = armorStand.getLocation().distance(target.getLocation());
-                    final double halfDistance = initialDistance/2;
-                    double traveled = 0;
+                    final Location current = targetLoc.clone();
                     @Override
                     public void run(){
 
-                        Location current = armorStand.getLocation();
+                        if(!player.isOnline()){
+                            this.cancel();
+                            return;
+                        }
 
-                        Vector direction = targetWasLoc.toVector().subtract(current.toVector());
+                        if(targetInvalid(target)){
+                            this.cancel();
+                            return;
+                        }
 
-                        double distance = current.distance(targetWasLoc);
+                        Location playerLoc = player.getLocation().clone().subtract(0,1,0);
+
+                        Vector direction = playerLoc.toVector().subtract(current.toVector());
+                        double distance = current.distance(playerLoc);
                         double distanceThisTick = Math.min(distance, .75);
                         current.add(direction.normalize().multiply(distanceThisTick));
-                        traveled = traveled + distanceThisTick;
-
-                        if(traveled < halfDistance){
-                            current.add(direction.clone().crossProduct(new Vector(0,1,0).normalize().multiply(randomValue)));
-                        }
-                        else{
-                            current.setDirection(direction);
-                        }
-
-
+                        current.setDirection(direction);
 
                         armorStand.teleport(current);
 
                         if (distance <= 1) {
-
                             this.cancel();
                             armorStand.remove();
-
-
-                            boolean crit = damageCalculator.checkIfCrit(player, 0);
-
-                            if(scout && crit){
-                                starVolley.decreaseCooldown(player);
-                                buffAndDebuffManager.getHaste().applyHaste(player, 1, 2);
-                            }
-
-                            double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
-
-                            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                            changeResourceHandler.subtractHealthFromEntity(target, damage, player);
-
                         }
 
                     }
                 }.runTaskTimer(main, 0, 1);
 
-                double percent = ((double) count /15) * 100;
+                if(ran%20==0){
+                    boolean crit = damageCalculator.checkIfCrit(player, 0);
+                    double damage = damageCalculator.calculateDamage(player, target, "Magical", skillDamage * skillLevel, crit);
+
+                    double healed = damage * .3;
+
+                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+                    changeResourceHandler.addHealthToEntity(player, healed, player);
+                }
+
+                double percent = ((double) ran /(20*5)) * 100;
 
                 abilityManager.setCastBar(player, percent);
 
-                if(count >=15){
+                ran++;
+
+                if(ran >= 20*5){
                     cancelTask();
                 }
 
-                count++;
             }
 
-            private boolean targetStillValid(LivingEntity target){
+            private boolean targetInvalid(LivingEntity target){
 
                 if(target instanceof Player){
 
                     if(!((Player) target).isOnline()){
-                        return false;
+
+                        return true;
                     }
-
                 }
-
-                return !target.isDead();
+                return target.isDead();
             }
 
-            private void cancelTask(){
+            private void cancelTask() {
                 this.cancel();
-                removeStands();
+                removeArmorStands(armorStands);
                 abilityManager.setCasting(player, false);
                 abilityManager.setCastBar(player, 0);
-                buffAndDebuffManager.getSpeedUp().removeSpeedUp(player);
             }
 
-            private void removeStands(){
-                for(ArmorStand stand : allStands){
+
+            private void removeArmorStands(List<ArmorStand> stands){
+
+                if(armorStands.isEmpty()){
+                    return;
+                }
+
+                for(ArmorStand stand : stands){
                     stand.remove();
                 }
             }
 
-        }.runTaskTimer(main, 0, 4);
+        }.runTaskTimer(main, 0L, 1);
 
     }
 

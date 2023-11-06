@@ -107,7 +107,7 @@ public class MysticSkillItem {
                             ChatColor.of(new Color(155, 120, 197)) + "Cursing Voice",
                             ChatColor.of(new Color(0, 102, 0)) + "Level " + (skillLevel.getSkill_7_Level() + skillLevel.getSkill_7_Level_Bonus()),
                             "",
-                            ChatColor.of(new Color(230, 230, 230)) + "Cause your target to fal asleep.",
+                            ChatColor.of(new Color(230, 230, 230)) + "Cause your target to fall asleep.",
                             ChatColor.of(new Color(230, 230, 230)) + "If they take damage, they awaken");
                 }
 

@@ -17,6 +17,10 @@ public class MysticAbilities {
     private final ShadowOfDarkness shadowOfDarkness;
     private final Warp warp;
     private final SpiritualDescent spiritualDescent;
+    private final ChaosLash chaosLash;
+    private final CursingVoice cursingVoice;
+    private final HealthAbsorb healthAbsorb;
+    private final ArcaneShield arcaneShield;
     private final MysticBasic mysticBasic;
 
     public MysticAbilities(Mystica main, AbilityManager manager){
@@ -27,6 +31,10 @@ public class MysticAbilities {
         shadowOfDarkness = new ShadowOfDarkness(main, manager, this);
         warp = new Warp(main, manager);
         spiritualDescent = new SpiritualDescent(main, manager, this);
+        chaosLash = new ChaosLash(main, manager, this);
+        cursingVoice = new CursingVoice(main, manager);
+        healthAbsorb = new HealthAbsorb(main, manager, this);
+        arcaneShield = new ArcaneShield(main, manager);
         mysticBasic = new MysticBasic(main, manager, this);
     }
 
@@ -61,11 +69,27 @@ public class MysticAbilities {
                     spiritualDescent.use(player);
                     return;
                 }
+                case 6:{
+                    chaosLash.use(player);
+                    return;
+                }
+                case 7:{
+                    cursingVoice.use(player);
+                    return;
+                }
+                case 8:{
+                    healthAbsorb.use(player);
+                    return;
+                }
             }
 
         }
 
         switch (abilityNumber){
+            case 1:{
+                arcaneShield.use(player);
+                return;
+            }
             case 4:{
                 warp.use(player);
                 return;
@@ -120,11 +144,19 @@ public class MysticAbilities {
                     return warp.getCooldown(player);
                 case 5:
                     return spiritualDescent.getCooldown(player);
+                case 6:
+                    return chaosLash.getCooldown(player);
+                case 7:
+                    return cursingVoice.getCooldown(player);
+                case 8:
+                    return healthAbsorb.getCooldown(player);
             }
 
         }
 
         switch (abilityNumber){
+            case 1:
+                return arcaneShield.getCooldown(player);
             case 4:
                 return warp.getCooldown(player);
         }
@@ -153,7 +185,6 @@ public class MysticAbilities {
         return 0;
     }
 
-
     public EvilSpirit getEvilSpirit(){return evilSpirit;}
-
+    public PlagueCurse getPlagueCurse(){return plagueCurse;}
 }

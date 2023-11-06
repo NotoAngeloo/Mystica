@@ -15,8 +15,6 @@ import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Components.Profile;
-import me.angeloo.mystica.Components.ProfileComponents.Stats;
 import me.angeloo.mystica.Tasks.AggroTick;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageCalculator;
@@ -757,11 +755,11 @@ public class GeneralEventListener implements Listener {
                 ((Player) defender).playSound(defender, Sound.ENTITY_PLAYER_HURT, 1, 1);
             }
 
+            buffAndDebuffManager.getSleep().forceWakeUp(defender);
         }
 
 
         if(!defender.hasAI()){
-
             defender.setAI(true);
         }
 

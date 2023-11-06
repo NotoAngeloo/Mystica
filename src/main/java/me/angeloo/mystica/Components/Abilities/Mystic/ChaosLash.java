@@ -1,6 +1,6 @@
-package me.angeloo.mystica.Components.Abilities.Ranger;
+package me.angeloo.mystica.Components.Abilities.Mystic;
 
-import me.angeloo.mystica.Components.Abilities.RangerAbilities;
+import me.angeloo.mystica.Components.Abilities.MysticAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -10,6 +10,7 @@ import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -19,16 +20,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
-public class RazorWind {
+public class ChaosLash {
 
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final AbilityManager abilityManager;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
@@ -36,11 +34,14 @@ public class RazorWind {
     private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
-    private final StarVolley starVolley;
+    private final AbilityManager abilityManager;
+
+    private final PlagueCurse plagueCurse;
+    private final EvilSpirit evilSpirit;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public RazorWind(Mystica main, AbilityManager manager, RangerAbilities rangerAbilities){
+    public ChaosLash(Mystica main, AbilityManager manager, MysticAbilities mysticAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         abilityManager = manager;
@@ -51,10 +52,13 @@ public class RazorWind {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        starVolley = rangerAbilities.getStarVolley();
+        evilSpirit = mysticAbilities.getEvilSpirit();
+        plagueCurse = mysticAbilities.getPlagueCurse();
+
     }
 
     public void use(Player player){
+
         if(!abilityReadyInMap.containsKey(player.getUniqueId())){
             abilityReadyInMap.put(player.getUniqueId(), 0);
         }
@@ -99,7 +103,7 @@ public class RazorWind {
 
         execute(player);
 
-        abilityReadyInMap.put(player.getUniqueId(), 16);
+        abilityReadyInMap.put(player.getUniqueId(), 11);
         new BukkitRunnable(){
             @Override
             public void run(){
@@ -116,33 +120,35 @@ public class RazorWind {
 
             }
         }.runTaskTimer(main, 0,20);
+
     }
 
     private void execute(Player player){
 
-        boolean scout = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("scout");
-
         LivingEntity target = targetManager.getPlayerTarget(player);
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level() +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
-        double skillDamage = 4;
+        if(plagueCurse.getIfCursed(target)){
+            evilSpirit.addChaosShard(player, 2);
+        }
+
+        double skillDamage = 5;
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
 
         abilityManager.setCasting(player, true);
-        player.setWalkSpeed(.06f);
 
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
+            final Set<ArmorStand> allStands = new HashSet<>();
             int count = 0;
             @Override
             public void run(){
 
                 if(!player.isOnline() || buffAndDebuffManager.getIfCantAct(player)){
-                    this.cancel();
-                    abilityManager.setCasting(player, false);
-                    player.setWalkSpeed(.2f);
+                    cancelTask();
                     return;
                 }
+
 
                 if(targetStillValid(target)){
                     Location targetLoc = target.getLocation();
@@ -150,18 +156,108 @@ public class RazorWind {
                     targetWasLoc = targetLoc.clone();
                 }
 
-                double percent = ((double) count / 20) * 100;
+                Location start = player.getLocation();
+                start.subtract(0, 1, 0);
+                ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+                armorStand.setInvisible(true);
+                armorStand.setGravity(false);
+                armorStand.setCollidable(false);
+                armorStand.setInvulnerable(true);
+                armorStand.setMarker(true);
+
+                EntityEquipment entityEquipment = armorStand.getEquipment();
+
+                ItemStack boltItem = new ItemStack(Material.SPECTRAL_ARROW);
+                ItemMeta meta = boltItem.getItemMeta();
+                assert meta != null;
+                meta.setCustomModelData(9);
+                boltItem.setItemMeta(meta);
+                assert entityEquipment != null;
+                entityEquipment.setHelmet(boltItem);
+
+                allStands.add(armorStand);
+
+                new BukkitRunnable() {
+                    final double initialDistance = armorStand.getLocation().distance(target.getLocation());
+                    final double halfDistance = initialDistance/2;
+                    double traveled = 0;
+                    Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
+                    @Override
+                    public void run() {
+
+                        if(targetStillValid(target)){
+                            Location targetLoc = target.getLocation().clone().subtract(0,1,0);
+                            targetWasLoc = targetLoc.clone();
+                        }
+
+                        Location current = armorStand.getLocation();
+
+                        if (!sameWorld(current, targetWasLoc)) {
+                            cancelTask();
+                            return;
+                        }
+
+                        Vector direction = targetWasLoc.toVector().subtract(current.toVector());
+                        double distance = current.distance(targetWasLoc);
+                        double distanceThisTick = Math.min(distance, 1);
+                        current.add(direction.normalize().multiply(distanceThisTick));
+                        traveled = traveled + distanceThisTick;
+
+                        if(traveled < halfDistance){
+                            current.subtract(direction.clone().crossProduct(new Vector(0,1,0).normalize().multiply(distanceThisTick)));
+                        }
+
+                        armorStand.teleport(current);
+
+
+                        if (distance <= 1) {
+                            cancelTask();
+
+                            armorStand.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, current.add(0,2,0), 1, 0, 0, 0, 0);
+
+                            boolean crit = damageCalculator.checkIfCrit(player, 0);
+                            double damage = damageCalculator.calculateDamage(player, target, "Magical", skillDamage * skillLevel, crit);
+
+                            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
+                            changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+
+                        }
+
+
+                    }
+
+                    private boolean targetStillValid(LivingEntity target){
+
+                        if(target instanceof Player){
+
+                            if(!((Player) target).isOnline()){
+                                return false;
+                            }
+
+                        }
+
+                        return !target.isDead();
+                    }
+
+                    private boolean sameWorld(Location loc1, Location loc2) {
+                        return loc1.getWorld().equals(loc2.getWorld());
+                    }
+
+                    private void cancelTask() {
+                        this.cancel();
+                        armorStand.remove();
+                    }
+                }.runTaskTimer(main, 0L, 1);
+
+                double percent = ((double) count /15) * 100;
 
                 abilityManager.setCastBar(player, percent);
 
-                if(count >=20){
-                    this.cancel();
-                    abilityManager.setCasting(player, false);
-                    player.setWalkSpeed(.2f);
-                    startLaunchTask();
+                if(count >=15){
+                    cancelTask();
                 }
 
-                count ++;
+                count++;
             }
 
             private boolean targetStillValid(LivingEntity target){
@@ -177,143 +273,27 @@ public class RazorWind {
                 return !target.isDead();
             }
 
-            private void startLaunchTask(){
-
-                Location start = player.getLocation();
-
-                start.subtract(0, 1, 0);
-                ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
-                armorStand.setInvisible(true);
-                armorStand.setGravity(false);
-                armorStand.setCollidable(false);
-                armorStand.setInvulnerable(true);
-                armorStand.setMarker(true);
-
-                EntityEquipment entityEquipment = armorStand.getEquipment();
-
-                ItemStack razor = new ItemStack(Material.ARROW);
-                ItemMeta meta = razor.getItemMeta();
-                assert meta != null;
-                meta.setCustomModelData(5);
-                razor.setItemMeta(meta);
-                assert entityEquipment != null;
-                entityEquipment.setHelmet(razor);
-
-                new BukkitRunnable(){
-                    boolean toFrom = false;
-                    Location newTargetWasLoc = targetWasLoc.clone();
-                    Location playerWasLoc = player.getLocation().clone();
-                    Vector initialDirection;
-                    int angle = 0;
-                    @Override
-                    public void run(){
-
-                        if(targetStillValid(target)){
-                            Location targetLoc = target.getLocation();
-                            targetLoc = targetLoc.subtract(0,1,0);
-                            newTargetWasLoc = targetLoc.clone();
-                        }
-
-                        if(targetStillValid(player)){
-                            Location playerLoc = player.getLocation();
-                            playerLoc = playerLoc.subtract(0,1,0);
-                            playerWasLoc = playerLoc.clone();
-                        }
-
-                        Location current = armorStand.getLocation();
-
-                        if (!sameWorld(current, targetWasLoc)) {
-                            cancelTask();
-                            return;
-                        }
-
-                        Vector direction;
-                        double distance;
-
-                        if(!toFrom){
-                            direction = targetWasLoc.toVector().subtract(current.toVector());
-                            distance = current.distance(targetWasLoc);
-                        }
-                        else{
-                            direction = playerWasLoc.toVector().subtract(current.toVector());
-                            distance = current.distance(playerWasLoc);
-                        }
-
-                        double distanceThisTick = Math.min(distance, .6);
-                        current.add(direction.normalize().multiply(distanceThisTick));
-
-
-                        if (initialDirection == null) {
-                            initialDirection = playerWasLoc.getDirection().setY(0).normalize();
-                        }
-
-                        Vector rotation = initialDirection.clone();
-                        double radians = Math.toRadians(angle);
-                        rotation.rotateAroundY(radians);
-                        current.setDirection(rotation);
-
-                        armorStand.teleport(current);
-
-                        if(toFrom){
-                            if (distance <= 1) {
-                                cancelTask();
-                            }
-                        }
-
-                        if(!toFrom){
-                            if (distance <= 1) {
-
-                                toFrom = true;
-
-                                boolean crit = damageCalculator.checkIfCrit(player, subclassCritBonus(player));
-
-                                if(scout && crit){
-                                    starVolley.decreaseCooldown(player);
-                                    buffAndDebuffManager.getHaste().applyHaste(player, 1, 2);
-                                }
-
-                                double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
-
-                                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                                changeResourceHandler.subtractHealthFromEntity(target, damage, player);
-
-                            }
-                        }
-
-                        angle += 60; // adjust the rotation speed here
-                        if (angle >= 360) {
-                            angle = 0;
-                        }
-
-                    }
-
-                    private boolean sameWorld(Location loc1, Location loc2) {
-                        return loc1.getWorld().equals(loc2.getWorld());
-                    }
-
-                    private void cancelTask() {
-                        this.cancel();
-                        armorStand.remove();
-                    }
-
-                }.runTaskTimer(main, 0, 1);
+            private void cancelTask(){
+                this.cancel();
+                removeStands();
+                abilityManager.setCasting(player, false);
+                abilityManager.setCastBar(player, 0);
             }
 
-        }.runTaskTimer(main, 0, 2);
+            private void removeStands(){
+                for(ArmorStand stand : allStands){
+                    stand.remove();
+                }
+            }
 
-    }
+        }.runTaskTimer(main, 0, 6);
 
-    private int subclassCritBonus(Player player){
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
-        if(subclass.equalsIgnoreCase("scout")){
-            return 15;
-        }
 
-        return 0;
     }
 
     public int getCooldown(Player player){
+
         int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
 
         if(cooldown < 0){

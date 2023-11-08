@@ -58,9 +58,7 @@ public class Relentless {
             abilityReadyInMap.put(player.getUniqueId(), 0);
         }
 
-        double baseRange = 20;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
-        double totalRange = baseRange + extraRange;
+        double totalRange = getRange(player);
 
         targetManager.setTargetToNearestValid(player, totalRange);
 
@@ -118,6 +116,12 @@ public class Relentless {
 
     }
 
+    private double getRange(Player player){
+        double baseRange = 20;
+        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
+        return baseRange + extraRange;
+    }
+
     private void execute(Player player){
 
         boolean scout = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("scout");
@@ -151,6 +155,14 @@ public class Relentless {
 
                 Location start = player.getLocation();
                 start.subtract(0, 1, 0);
+
+                double distanceToTarget = start.distance(targetWasLoc);
+
+                if(distanceToTarget>getRange(player)){
+                    cancelTask();
+                    return;
+                }
+
                 ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
                 armorStand.setInvisible(true);
                 armorStand.setGravity(false);

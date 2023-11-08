@@ -63,9 +63,7 @@ public class ChaosLash {
             abilityReadyInMap.put(player.getUniqueId(), 0);
         }
 
-        double baseRange = 20;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
-        double totalRange = baseRange + extraRange;
+        double totalRange = getRange(player);
 
         targetManager.setTargetToNearestValid(player, totalRange);
 
@@ -123,6 +121,12 @@ public class ChaosLash {
 
     }
 
+    private double getRange(Player player){
+        double baseRange = 20;
+        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
+        return baseRange + extraRange;
+    }
+
     private void execute(Player player){
 
         LivingEntity target = targetManager.getPlayerTarget(player);
@@ -149,7 +153,6 @@ public class ChaosLash {
                     return;
                 }
 
-
                 if(targetStillValid(target)){
                     Location targetLoc = target.getLocation();
                     targetLoc = targetLoc.subtract(0,1,0);
@@ -158,6 +161,14 @@ public class ChaosLash {
 
                 Location start = player.getLocation();
                 start.subtract(0, 1, 0);
+
+                double distanceToTarget = start.distance(targetWasLoc);
+
+                if(distanceToTarget>getRange(player)){
+                    cancelTask();
+                    return;
+                }
+
                 ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
                 armorStand.setInvisible(true);
                 armorStand.setGravity(false);

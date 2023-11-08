@@ -739,6 +739,19 @@ public class GeneralEventListener implements Listener {
             }
         }
 
+        //targeting bar
+        for(Map.Entry<UUID, LivingEntity> entry: targetManager.getTargetMap().entrySet()){
+            UUID playerID = entry.getKey();
+            Player player = Bukkit.getPlayer(playerID);
+            Entity target = entry.getValue();
+
+            if(target != null && target.equals(defender)){
+                assert player != null;
+                targetManager.updateTargetBar(player);
+
+            }
+        }
+
         if(immortal || immune){
             return;
         }
@@ -768,18 +781,6 @@ public class GeneralEventListener implements Listener {
             MythicBukkit.inst().getAPIHelper().getMythicMobInstance(defender).signalMob(abstractEntity, "damage");
         }
 
-        //targeting bar
-        for(Map.Entry<UUID, LivingEntity> entry: targetManager.getTargetMap().entrySet()){
-            UUID playerID = entry.getKey();
-            Player player = Bukkit.getPlayer(playerID);
-            Entity target = entry.getValue();
-
-            if(target != null && target.equals(defender)){
-                assert player != null;
-                targetManager.updateTargetBar(player);
-
-            }
-        }
     }
 
     @EventHandler

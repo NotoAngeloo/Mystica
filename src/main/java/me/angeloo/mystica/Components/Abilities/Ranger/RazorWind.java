@@ -59,9 +59,7 @@ public class RazorWind {
             abilityReadyInMap.put(player.getUniqueId(), 0);
         }
 
-        double baseRange = 20;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
-        double totalRange = baseRange + extraRange;
+        double totalRange = getRange(player);
 
         targetManager.setTargetToNearestValid(player, totalRange);
 
@@ -118,6 +116,12 @@ public class RazorWind {
         }.runTaskTimer(main, 0,20);
     }
 
+    private double getRange(Player player){
+        double baseRange = 20;
+        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
+        return baseRange + extraRange;
+    }
+
     private void execute(Player player){
 
         boolean scout = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("scout");
@@ -148,6 +152,15 @@ public class RazorWind {
                     Location targetLoc = target.getLocation();
                     targetLoc = targetLoc.subtract(0,1,0);
                     targetWasLoc = targetLoc.clone();
+                }
+
+                double distanceToTarget = player.getLocation().distance(targetWasLoc);
+
+                if(distanceToTarget>getRange(player)){
+                    this.cancel();
+                    abilityManager.setCasting(player, false);
+                    player.setWalkSpeed(.2f);
+                    return;
                 }
 
                 double percent = ((double) count / 20) * 100;

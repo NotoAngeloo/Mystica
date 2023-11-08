@@ -47,7 +47,7 @@ public class ElementalistEquipment {
     }
 
     public ItemStack getBaseHelmet(){
-        return getItem(Material.CHAINMAIL_HELMET, 2,
+        return getItem(Material.CHAIN, 1,
                 ChatColor.of(new Color(153, 204, 255)) + "Elementalist's Hood",
                 ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
                 ChatColor.of(new Color(176, 159, 109)) + "Helmet",
@@ -58,7 +58,7 @@ public class ElementalistEquipment {
     }
 
     public ItemStack getBaseChestPlate(){
-        return getItem(Material.CHAINMAIL_CHESTPLATE, 2,
+        return getItem(Material.CHAINMAIL_CHESTPLATE, 1,
                 ChatColor.of(new Color(153, 204, 255)) + "Elementalist's Tunic",
                 ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
                 ChatColor.of(new Color(176, 159, 109)) + "Chestplate",
@@ -71,7 +71,7 @@ public class ElementalistEquipment {
     }
 
     public ItemStack getBaseLeggings(){
-        return getItem(Material.CHAINMAIL_LEGGINGS, 2,
+        return getItem(Material.CHAINMAIL_LEGGINGS, 1,
                 ChatColor.of(new Color(153, 204, 255)) + "Elementalist's Breeches",
                 ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
                 ChatColor.of(new Color(176, 159, 109)) + "Leggings",
@@ -82,7 +82,7 @@ public class ElementalistEquipment {
     }
 
     public ItemStack getBaseBoots(){
-        return getItem(Material.CHAINMAIL_BOOTS, 2,
+        return getItem(Material.CHAINMAIL_BOOTS, 1,
                 ChatColor.of(new Color(153, 204, 255)) + "Elementalist's Boots",
                 ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
                 ChatColor.of(new Color(176, 159, 109)) + "Boots",

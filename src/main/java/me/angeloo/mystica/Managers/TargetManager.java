@@ -19,13 +19,16 @@ import java.util.UUID;
 
 public class TargetManager {
 
+    private final BuffAndDebuffManager buffAndDebuffManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final Map<UUID, LivingEntity> playerTarget = new HashMap<>();
     private final Map<UUID, BossBar> playerTargetBar = new HashMap<>();
+    private final Map<UUID, BossBar> targetShieldBar = new HashMap<>();
     private final ProfileManager profileManager;
 
     public TargetManager(Mystica main){
+        buffAndDebuffManager = main.getBuffAndDebuffManager();
         pveChecker = main.getPveChecker();
         pvpManager = main.getPvpManager();
         profileManager = main.getProfileManager();
@@ -61,6 +64,7 @@ public class TargetManager {
 
         if(entity != null){
             playerTargetBar.put(player.getUniqueId(), startTargetBar(player, entity));
+
 
             if(entity.isDead()){
                 removeAllBars(player);
@@ -176,8 +180,9 @@ public class TargetManager {
         }
 
 
-        Double maxHealth = (double) profileManager.getAnyProfile(entity).getTotalHealth();
-        Double currentHealth = profileManager.getAnyProfile(entity).getCurrentHealth();
+        double maxHealth =  profileManager.getAnyProfile(entity).getTotalHealth();
+        double currentHealth = profileManager.getAnyProfile(entity).getCurrentHealth();
+
         bossBar.setProgress(currentHealth/maxHealth);
 
         //ok this should work
@@ -193,18 +198,46 @@ public class TargetManager {
         bossBar.addPlayer(player);
         bossBar.setVisible(true);
 
+        if(buffAndDebuffManager.getGenericShield().getCurrentShieldAmount(entity) > 0){
+            startShieldBar(player, entity);
+        }
+
+
+
         return bossBar;
+    }
+
+    private void startShieldBar(Player player, LivingEntity entity){
+
+        BossBar shieldBar = Bukkit.createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
+        double maxHealth = profileManager.getAnyProfile(entity).getTotalHealth();
+        double shieldAmount = buffAndDebuffManager.getGenericShield().getCurrentShieldAmount(entity);
+        if(shieldAmount > maxHealth){
+            shieldAmount = maxHealth;
+        }
+
+        shieldBar.setProgress(shieldAmount/maxHealth);
+        shieldBar.addPlayer(player);
+        shieldBar.setVisible(true);
+
+        targetShieldBar.put(player.getUniqueId(), shieldBar);
+
     }
 
     public void removeAllBars(Player player){
         BossBar bossBar = playerTargetBar.get(player.getUniqueId());
+        BossBar shieldBar = targetShieldBar.get(player.getUniqueId());
 
-        if(bossBar == null){
-            return;
+        if(bossBar != null){
+            bossBar.removePlayer(player);
+            playerTargetBar.remove(player.getUniqueId());
         }
 
-        bossBar.removePlayer(player);
-        playerTargetBar.remove(player.getUniqueId());
+        if(shieldBar != null){
+            shieldBar.removePlayer(player);
+            targetShieldBar.remove(player.getUniqueId());
+        }
+
     }
 
     public Map<UUID, LivingEntity> getTargetMap(){

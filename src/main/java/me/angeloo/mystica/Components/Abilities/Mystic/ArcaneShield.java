@@ -5,15 +5,11 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,9 +24,11 @@ public class ArcaneShield {
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final CombatManager combatManager;
-    private final AbilityManager abilityManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
+
+    private final Map<UUID, Boolean> needToRemove = new HashMap<>();
+    private final Map<UUID, BukkitTask> shieldTaskMap = new HashMap<>();
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
@@ -41,7 +39,6 @@ public class ArcaneShield {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         combatManager = manager.getCombatManager();
-        abilityManager = manager;
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
     }
@@ -111,14 +108,22 @@ public class ArcaneShield {
 
     private void execute(Player player, LivingEntity target){
 
+        if(!needToRemove.containsKey(target.getUniqueId())){
+            needToRemove.put(target.getUniqueId(), false);
+        }
+
+        if(needToRemove.get(target.getUniqueId())){
+            needToRemove.put(target.getUniqueId(), false);
+        }
+
         int skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
 
         double fivePercent = (double) profileManager.getAnyProfile(target).getTotalHealth() / 20;
-
-        double shieldAmount = fivePercent * skillLevel;
+        double shieldAmount = fivePercent + (((double) profileManager.getAnyProfile(player).getTotalMagic() / 3) * skillLevel);
 
         buffAndDebuffManager.getGenericShield().applyOrAddShield(target, shieldAmount);
+
 
         int shieldDurationInTicks = 20*60;
 
@@ -126,23 +131,31 @@ public class ArcaneShield {
             @Override
             public void run(){
                 buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(target, shieldAmount);
+                needToRemove.put(target.getUniqueId(), true);
             }
         }.runTaskLater(main, shieldDurationInTicks);
 
 
+        //TODO task for shield particles
+
         String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+
 
         if(subclass.equalsIgnoreCase("shepard")){
             //task to heal them for as long as they have a shield
             double thirtyPercent = (double) profileManager.getAnyProfile(target).getTotalHealth() * .3;
 
-            new BukkitRunnable(){
+            if(shieldTaskMap.containsKey(target.getUniqueId())){
+                shieldTaskMap.get(target.getUniqueId()).cancel();
+            }
+
+            BukkitTask task = new BukkitRunnable(){
                 @Override
                 public void run(){
 
                     boolean stillHasAShield = buffAndDebuffManager.getGenericShield().getCurrentShieldAmount(target) > 0;
 
-                    if(!stillHasAShield){
+                    if(!stillHasAShield || needToRemove.get(target.getUniqueId())){
                         this.cancel();
                         return;
                     }
@@ -164,6 +177,8 @@ public class ArcaneShield {
 
                 }
             }.runTaskTimer(main, 0, 20 * 20);
+
+            shieldTaskMap.put(target.getUniqueId(), task);
 
         }
 

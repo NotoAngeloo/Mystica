@@ -1,5 +1,7 @@
 package me.angeloo.mystica.Components.BuffsAndDebuffs;
 
+import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.HashMap;
@@ -21,6 +23,7 @@ public class GenericShield {
         double newAmount = currentAmount + additional;
 
         shieldAmount.put(entity.getUniqueId(), newAmount);
+        Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, 0.0, true));
     }
 
     public double removeSomeShieldAndReturnHowMuchOver(LivingEntity entity, double amount){
@@ -35,11 +38,13 @@ public class GenericShield {
         }
 
         shieldAmount.put(entity.getUniqueId(), newAmount);
+        Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, 0.0, true));
         return 0;
     }
 
     public void removeShields(LivingEntity entity){
         shieldAmount.remove(entity.getUniqueId());
+        Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, 0.0, true));
     }
 
     public double getCurrentShieldAmount(LivingEntity entity){

@@ -1,0 +1,232 @@
+package me.angeloo.mystica.Components.Abilities.Mystic;
+
+import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
+import me.angeloo.mystica.Managers.*;
+import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.DamageCalculator;
+import me.angeloo.mystica.Utility.PveChecker;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.BoundingBox;
+
+import java.util.*;
+
+public class PurifyingBlast {
+
+    private final Mystica main;
+
+    private final ProfileManager profileManager;
+    private final CombatManager combatManager;
+    private final AbilityManager abilityManager;
+    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final ChangeResourceHandler changeResourceHandler;
+    private final DamageCalculator damageCalculator;
+    private final PvpManager pvpManager;
+    private final PveChecker pveChecker;
+
+    private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
+
+    public PurifyingBlast(Mystica main, AbilityManager manager){
+        this.main = main;
+        profileManager = main.getProfileManager();
+        combatManager = manager.getCombatManager();
+        abilityManager = manager;
+        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        changeResourceHandler = main.getChangeResourceHandler();
+        damageCalculator = main.getDamageCalculator();
+        pvpManager = main.getPvpManager();
+        pveChecker = main.getPveChecker();
+    }
+
+    public void use(Player player){
+        if (!abilityReadyInMap.containsKey(player.getUniqueId())) {
+            abilityReadyInMap.put(player.getUniqueId(), 0);
+        }
+
+        if (abilityReadyInMap.get(player.getUniqueId()) > 0) {
+            return;
+        }
+
+        combatManager.startCombatTimer(player);
+
+        execute(player);
+
+        abilityReadyInMap.put(player.getUniqueId(), 12);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+
+                if (abilityReadyInMap.get(player.getUniqueId()) <= 0) {
+                    this.cancel();
+                    return;
+                }
+
+                int cooldown = abilityReadyInMap.get(player.getUniqueId()) - 1;
+
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+
+                abilityReadyInMap.put(player.getUniqueId(), cooldown);
+
+            }
+        }.runTaskTimer(main, 0, 20);
+    }
+
+    private void execute(Player player){
+
+        int castTime = 20;
+
+        buffAndDebuffManager.getImmobile().applyImmobile(player, castTime);
+
+
+        abilityManager.setCasting(player, true);
+
+        new BukkitRunnable(){
+            int count = 0;
+            @Override
+            public void run(){
+
+                if(!player.isOnline() || buffAndDebuffManager.getIfCantAct(player)){
+                    this.cancel();
+                    abilityManager.setCasting(player, false);
+                    return;
+                }
+
+                double percent = ((double) count / castTime) * 100;
+
+                abilityManager.setCastBar(player, percent);
+
+                if(count >= castTime){
+                    this.cancel();
+                    abilityManager.setCasting(player, false);
+                    blastTask();
+                }
+
+                count++;
+            }
+
+            private void blastTask(){
+
+                double skillDamage = 10;
+                double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level() +
+                        profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
+
+                double yourMagic = profileManager.getAnyProfile(player).getTotalMagic();
+                double healAmount = (skillDamage * skillLevel) + yourMagic;
+
+                String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+
+                if(subclass.equalsIgnoreCase("shepard")){
+                    healAmount = healAmount * 1.2;
+                }
+
+                if(damageCalculator.checkIfCrit(player, 0)){
+                    healAmount = healAmount * 1.5;
+                }
+
+                Location center = player.getLocation().clone();
+
+                Set<LivingEntity> hitBySkill = new HashSet<>();
+
+                double finalHealAmount = healAmount;
+                new BukkitRunnable(){
+                    double progress = 0;
+                    final int maxDistance = 10;
+                    @Override
+                    public void run(){
+
+                        BoundingBox hitBox = new BoundingBox(
+                                center.getX() - progress,
+                                center.getY() - 2,
+                                center.getZ() - progress,
+                                center.getX() + progress,
+                                center.getY() + 4,
+                                center.getZ() + progress
+                        );
+
+                        for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+
+
+                            if(!(entity instanceof LivingEntity)){
+                                continue;
+                            }
+
+                            if(entity instanceof ArmorStand){
+                                continue;
+                            }
+
+                            LivingEntity livingEntity = (LivingEntity) entity;
+
+                            if(hitBySkill.contains(livingEntity)){
+                                continue;
+                            }
+
+                            hitBySkill.add(livingEntity);
+
+                            boolean crit = damageCalculator.checkIfCrit(player, 0);
+                            double damage = (damageCalculator.calculateDamage(player, livingEntity, "Magical", skillDamage * skillLevel, crit));
+
+                            //pvp logic
+                            if(entity instanceof Player){
+                                if(pvpManager.pvpLogic(player, (Player) entity)){
+                                    changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                                }
+                                else{
+                                    changeResourceHandler.addHealthToEntity(livingEntity, finalHealAmount, player);
+                                }
+
+                                continue;
+                            }
+
+                            if(pveChecker.pveLogic(livingEntity)){
+                                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, player));
+                                changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                            }
+
+                        }
+
+                        //particles
+                        double radius = progress;
+                        double thisNumber = (Math.pow(2, progress));
+                        double increment = (2 * Math.PI) / thisNumber;
+
+                        for (double i = 0; i < thisNumber; i++) {
+                            double angle = i * increment;
+                            double x = center.getX() + (radius * Math.cos(angle));
+                            double z = center.getZ() + (radius * Math.sin(angle));
+                            Location loc = new Location(player.getWorld(), x, center.getY(), z);
+                            player.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1, 0, 0, 0, 0);
+                        }
+
+
+                        progress += .6;
+
+                        if(progress >= maxDistance){
+                            this.cancel();
+                        }
+
+
+                    }
+                }.runTaskTimer(main, 0, 1);
+            }
+
+        }.runTaskTimer(main, 0, 1);
+
+    }
+
+    public int getCooldown(Player player){
+        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+
+        if(cooldown < 0){
+            cooldown = 0;
+        }
+
+        return cooldown;
+    }
+}

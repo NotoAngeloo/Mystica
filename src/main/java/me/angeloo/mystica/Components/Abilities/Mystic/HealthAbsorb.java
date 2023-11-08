@@ -59,9 +59,7 @@ public class HealthAbsorb {
             abilityReadyInMap.put(player.getUniqueId(), 0);
         }
 
-        double baseRange = 20;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
-        double totalRange = baseRange + extraRange;
+        double totalRange = getRange(player);
 
         targetManager.setTargetToNearestValid(player, totalRange);
 
@@ -119,6 +117,12 @@ public class HealthAbsorb {
 
     }
 
+    private double getRange(Player player){
+        double baseRange = 20;
+        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
+        return baseRange + extraRange;
+    }
+
     private void execute(Player player){
 
         LivingEntity target = targetManager.getPlayerTarget(player);
@@ -146,7 +150,7 @@ public class HealthAbsorb {
                     return;
                 }
 
-                if(!player.isOnline()){
+                if(!player.isOnline() || buffAndDebuffManager.getIfCantAct(player)){
                     cancelTask();
                     return;
                 }
@@ -154,6 +158,15 @@ public class HealthAbsorb {
                 Location playerLoc = player.getLocation().clone();
 
                 if(profileManager.getAnyProfile(player).getIfDead()){
+                    cancelTask();
+                    return;
+                }
+
+                Location targetLoc = target.getLocation().clone().subtract(0,1,0);
+
+                double distanceToTarget = playerLoc.distance(targetLoc);
+
+                if(distanceToTarget>getRange(player)){
                     cancelTask();
                     return;
                 }
@@ -198,7 +211,6 @@ public class HealthAbsorb {
                 }
 
 
-                Location targetLoc = target.getLocation().clone().subtract(0,1,0);
 
                 ArmorStand armorStand = targetLoc.getWorld().spawn(targetLoc, ArmorStand.class);
                 armorStand.setInvisible(true);

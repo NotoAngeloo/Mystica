@@ -47,7 +47,7 @@ public class RangerEquipment {
     }
 
     public ItemStack getBaseHelmet(){
-        return getItem(Material.CHAINMAIL_HELMET, 2,
+        return getItem(Material.CHAIN, 2,
                 ChatColor.of(new Color(34, 111, 80)) + "Ranger's Hood",
                 ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
                 ChatColor.of(new Color(176, 159, 109)) + "Helmet",

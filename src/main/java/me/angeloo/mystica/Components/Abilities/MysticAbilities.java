@@ -20,7 +20,9 @@ public class MysticAbilities {
     private final ChaosLash chaosLash;
     private final CursingVoice cursingVoice;
     private final HealthAbsorb healthAbsorb;
+    //sigil here, for purifying blast no cast time buff
     private final ArcaneShield arcaneShield;
+    private final PurifyingBlast purifyingBlast;
     private final MysticBasic mysticBasic;
 
     public MysticAbilities(Mystica main, AbilityManager manager){
@@ -35,6 +37,7 @@ public class MysticAbilities {
         cursingVoice = new CursingVoice(main, manager);
         healthAbsorb = new HealthAbsorb(main, manager, this);
         arcaneShield = new ArcaneShield(main, manager);
+        purifyingBlast = new PurifyingBlast(main, manager);
         mysticBasic = new MysticBasic(main, manager, this);
     }
 
@@ -88,6 +91,10 @@ public class MysticAbilities {
         switch (abilityNumber){
             case 1:{
                 arcaneShield.use(player);
+                return;
+            }
+            case 2:{
+                purifyingBlast.use(player);
                 return;
             }
             case 4:{
@@ -157,6 +164,8 @@ public class MysticAbilities {
         switch (abilityNumber){
             case 1:
                 return arcaneShield.getCooldown(player);
+            case 2:
+                return purifyingBlast.getCooldown(player);
             case 4:
                 return warp.getCooldown(player);
         }

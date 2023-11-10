@@ -76,7 +76,7 @@ public class MysticBasic {
     }
 
     private double getRange(Player player){
-        double baseRange = 15;
+        double baseRange = 20;
         double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
         return baseRange + extraRange;
     }

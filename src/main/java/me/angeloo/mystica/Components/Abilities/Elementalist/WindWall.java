@@ -33,11 +33,10 @@ public class WindWall {
     private final ChangeResourceHandler changeResourceHandler;
     private final BuffAndDebuffManager buffAndDebuffManager;
 
-    private final FieryWing fieryWing;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public WindWall(Mystica main, AbilityManager manager, ElementalistAbilities elementalistAbilities){
+    public WindWall(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
@@ -48,7 +47,6 @@ public class WindWall {
         changeResourceHandler = main.getChangeResourceHandler();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
 
-        fieryWing = elementalistAbilities.getFieryWing();
 
     }
 
@@ -65,7 +63,6 @@ public class WindWall {
         combatManager.startCombatTimer(player);
 
         execute(player);
-        fieryWing.removeInflame(player);
 
         abilityReadyInMap.put(player.getUniqueId(), 21);
         new BukkitRunnable() {

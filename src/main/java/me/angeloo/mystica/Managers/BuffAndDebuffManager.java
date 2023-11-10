@@ -19,6 +19,7 @@ public class BuffAndDebuffManager {
     private final ConjuringForceBuff conjuringForceBuff;
     private final WildRoarBuff wildRoarBuff;
     private final Haste haste;
+    private final GenericDamageReduction damageReduction;
 
     public BuffAndDebuffManager(Mystica main){
         immune = new Immune(main);
@@ -32,6 +33,7 @@ public class BuffAndDebuffManager {
         conjuringForceBuff = new ConjuringForceBuff();
         wildRoarBuff = new WildRoarBuff(main);
         haste = new Haste(main);
+        damageReduction = new GenericDamageReduction(main);
     }
 
     public Immune getImmune(){return immune;}
@@ -49,6 +51,7 @@ public class BuffAndDebuffManager {
     public ShadowCrowsDebuff getShadowCrowsDebuff(){return shadowCrowsDebuff;}
     public WildRoarBuff getWildRoarBuff(){return wildRoarBuff;}
     public Haste getHaste(){return haste;}
+    public GenericDamageReduction getDamageReduction(){return damageReduction;}
 
     public void removeAllBuffsAndDebuffs(Player player){
         immune.removeImmune(player);
@@ -62,6 +65,7 @@ public class BuffAndDebuffManager {
         shadowCrowsDebuff.removeCrowsDebuff(player);
         wildRoarBuff.removeBuff(player);
         haste.removeHaste(player);
+        damageReduction.removeReduction(player);
     }
 
 
@@ -70,8 +74,9 @@ public class BuffAndDebuffManager {
     public double getTotalDamageMultipliers(LivingEntity attacker, LivingEntity defender){
 
         return 1 +
-                shadowCrowsDebuff.getIncreasedDamageAmount(defender) +
-                wildRoarBuff.getMultiplier(attacker);
+                (shadowCrowsDebuff.getIncreasedDamageAmount(defender) +
+                wildRoarBuff.getMultiplier(attacker))
+                * damageReduction.getReduction(defender);
     }
 
     public double getTotalDamageAddition(Player player){
@@ -85,9 +90,6 @@ public class BuffAndDebuffManager {
         return 0 + conjuringForceBuff.getRangeModifier(player);
     }
 
-    public float getSpeedUp(Player player){
-        return speedUp.getSpeedUpAmount(player);
-    }
 
     public boolean getIfCantAct(LivingEntity entity){
         //use a bunch of || inbetween

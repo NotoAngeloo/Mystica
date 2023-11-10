@@ -65,6 +65,7 @@ public class ClassSetter {
         }
 
         playerProfile.setPlayerClass(clazz);
+        playerProfile.setPlayerSubclass("none");
 
         player.sendMessage("You are now a(n) " + clazz);
         displayWeapons.displayWeapons(player);

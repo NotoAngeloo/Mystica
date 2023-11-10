@@ -22,7 +22,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class ChaosLash {
+public class ArcaneMissiles {
 
     private final Mystica main;
 
@@ -36,12 +36,10 @@ public class ChaosLash {
     private final ChangeResourceHandler changeResourceHandler;
     private final AbilityManager abilityManager;
 
-    private final PlagueCurse plagueCurse;
-    private final EvilSpirit evilSpirit;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public ChaosLash(Mystica main, AbilityManager manager, MysticAbilities mysticAbilities){
+    public ArcaneMissiles(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
         abilityManager = manager;
@@ -52,8 +50,6 @@ public class ChaosLash {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        evilSpirit = mysticAbilities.getEvilSpirit();
-        plagueCurse = mysticAbilities.getPlagueCurse();
 
     }
 
@@ -101,7 +97,7 @@ public class ChaosLash {
 
         execute(player);
 
-        abilityReadyInMap.put(player.getUniqueId(), 11);
+        abilityReadyInMap.put(player.getUniqueId(), 15);
         new BukkitRunnable(){
             @Override
             public void run(){
@@ -128,19 +124,10 @@ public class ChaosLash {
     }
 
     private void execute(Player player){
-
         LivingEntity target = targetManager.getPlayerTarget(player);
 
-        if(plagueCurse.getIfCursed(target)){
-            evilSpirit.addChaosShard(player, 2);
-        }
-
-        double skillDamage = 5;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level() +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
-
-        abilityManager.setCasting(player, true);
-        double castTime = 15;
+        double skillDamage = 8;
+        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
 
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
@@ -170,7 +157,13 @@ public class ChaosLash {
                     return;
                 }
 
-                ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+                Vector direction = player.getLocation().getDirection().normalize();
+                Location spawn1Loc = start.clone();
+                spawn1Loc.subtract(direction.clone().crossProduct(new Vector(0,1,0).normalize().multiply(.5)));
+                Location spawn2Loc = start.clone();
+                spawn2Loc.add(direction.clone().crossProduct(new Vector(0,1,0).normalize().multiply(.5)));
+
+                ArmorStand armorStand = start.getWorld().spawn(spawn1Loc, ArmorStand.class);
                 armorStand.setInvisible(true);
                 armorStand.setGravity(false);
                 armorStand.setCollidable(false);
@@ -182,17 +175,27 @@ public class ChaosLash {
                 ItemStack boltItem = new ItemStack(Material.SPECTRAL_ARROW);
                 ItemMeta meta = boltItem.getItemMeta();
                 assert meta != null;
-                meta.setCustomModelData(9);
+                meta.setCustomModelData(1);
                 boltItem.setItemMeta(meta);
                 assert entityEquipment != null;
                 entityEquipment.setHelmet(boltItem);
 
                 allStands.add(armorStand);
 
+                ArmorStand armorStand2 = start.getWorld().spawn(spawn2Loc, ArmorStand.class);
+                armorStand2.setInvisible(true);
+                armorStand2.setGravity(false);
+                armorStand2.setCollidable(false);
+                armorStand2.setInvulnerable(true);
+                armorStand2.setMarker(true);
+
+                EntityEquipment entityEquipment2 = armorStand2.getEquipment();
+                assert entityEquipment2 != null;
+                entityEquipment2.setHelmet(boltItem);
+
+                allStands.add(armorStand2);
+
                 new BukkitRunnable() {
-                    final double initialDistance = armorStand.getLocation().distance(target.getLocation());
-                    final double halfDistance = initialDistance/2;
-                    double traveled = 0;
                     Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
                     @Override
                     public void run() {
@@ -209,23 +212,16 @@ public class ChaosLash {
                             return;
                         }
 
-                        Vector direction = targetWasLoc.toVector().subtract(current.toVector());
+                        org.bukkit.util.Vector direction = targetWasLoc.toVector().subtract(current.toVector());
                         double distance = current.distance(targetWasLoc);
                         double distanceThisTick = Math.min(distance, 1);
                         current.add(direction.normalize().multiply(distanceThisTick));
-                        traveled = traveled + distanceThisTick;
-
-                        if(traveled < halfDistance){
-                            current.subtract(direction.clone().crossProduct(new Vector(0,1,0).normalize().multiply(distanceThisTick)));
-                        }
 
                         armorStand.teleport(current);
 
 
                         if (distance <= 1) {
                             cancelTask();
-
-                            armorStand.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, current.add(0,2,0), 1, 0, 0, 0, 0);
 
                             boolean crit = damageCalculator.checkIfCrit(player, 0);
                             double damage = damageCalculator.calculateDamage(player, target, "Magical", skillDamage * skillLevel, crit);
@@ -261,13 +257,72 @@ public class ChaosLash {
                     }
                 }.runTaskTimer(main, 0L, 1);
 
-                double percent = ((double) count / castTime) * 100;
+                new BukkitRunnable() {
+                    Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
+                    @Override
+                    public void run() {
 
-                abilityManager.setCastBar(player, percent);
+                        if(targetStillValid(target)){
+                            Location targetLoc = target.getLocation().clone().subtract(0,1,0);
+                            targetWasLoc = targetLoc.clone();
+                        }
 
-                if(count >= castTime){
+                        Location current = armorStand2.getLocation();
+
+                        if (!sameWorld(current, targetWasLoc)) {
+                            cancelTask();
+                            return;
+                        }
+
+                        org.bukkit.util.Vector direction = targetWasLoc.toVector().subtract(current.toVector());
+                        double distance = current.distance(targetWasLoc);
+                        double distanceThisTick = Math.min(distance, 1);
+                        current.add(direction.normalize().multiply(distanceThisTick));
+
+                        armorStand2.teleport(current);
+
+
+                        if (distance <= 1) {
+                            cancelTask();
+
+                            boolean crit = damageCalculator.checkIfCrit(player, 0);
+                            double damage = damageCalculator.calculateDamage(player, target, "Magical", skillDamage * skillLevel, crit);
+
+                            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
+                            changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+
+                        }
+
+
+                    }
+
+                    private boolean targetStillValid(LivingEntity target){
+
+                        if(target instanceof Player){
+
+                            if(!((Player) target).isOnline()){
+                                return false;
+                            }
+
+                        }
+
+                        return !target.isDead();
+                    }
+
+                    private boolean sameWorld(Location loc1, Location loc2) {
+                        return loc1.getWorld().equals(loc2.getWorld());
+                    }
+
+                    private void cancelTask() {
+                        this.cancel();
+                        armorStand2.remove();
+                    }
+                }.runTaskTimer(main, 0L, 1);
+
+                if(count >= 10){
                     cancelTask();
                 }
+
 
                 count++;
             }
@@ -298,8 +353,9 @@ public class ChaosLash {
                 }
             }
 
-        }.runTaskTimer(main, 0, 6);
 
+
+        }.runTaskTimer(main, 0, 6);
     }
 
     public int getCooldown(Player player){

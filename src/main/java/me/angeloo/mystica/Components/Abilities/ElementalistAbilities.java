@@ -27,14 +27,14 @@ public class ElementalistAbilities {
         fieryWing = new FieryWing(main, manager);
         crystalStorm = new CrystalStorm(main, manager);
         conjuringForce = new ConjuringForce(main, manager);
-        elementalBreath = new ElementalBreath(main, manager, this);
+        elementalBreath = new ElementalBreath(main, manager);
         fieryMagma = new FieryMagma(main, manager, this);
         descendingInferno = new DescendingInferno(main, manager, this);
-        elemental_matrix = new ElementalMatrix(main, manager, this);
+        elemental_matrix = new ElementalMatrix(main, manager);
         iceBolt = new IceBolt(main, manager, this);
         dragonBreathing = new DragonBreathing(main, manager, this);
-        windrushForm = new WindrushForm(main, manager, this);
-        windWall = new WindWall(main, manager, this);
+        windrushForm = new WindrushForm(main, manager);
+        windWall = new WindWall(main, manager);
         elementalistBasic = new ElementalistBasic(main, manager);
     }
 

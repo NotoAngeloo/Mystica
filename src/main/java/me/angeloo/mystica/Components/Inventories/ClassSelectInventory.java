@@ -66,22 +66,45 @@ public class ClassSelectInventory {
     private ItemStack getElementalistItem(){
         return getItem(Material.STICK, 1,ChatColor.of(new Color(153, 204, 255)) + "Elementalist",
                 "",
-                ChatColor.of(new Color(176, 159, 109)) + "Role " + ChatColor.of(new Color(217, 217, 217)) + "Ranged Magical Dps"
+                ChatColor.of(new Color(217, 217, 217)) + "Magical Damage Type",
+                "",
+                ChatColor.of(new Color(217, 217, 217)) + "Subclasses",
+                ChatColor.of(new Color(250, 102, 0)) + "Pyromancer",
+                ChatColor.of(new Color(217, 217, 217)) + "Long Range Dps",
+                "",
+                ChatColor.of(new Color(153, 0, 255)) + "Conjurer",
+                ChatColor.of(new Color(217, 217, 217)) + "Long Range Damage Support"
         );
     }
 
     private ItemStack getRangerItem(){
         return getItem(Material.FEATHER, 1, ChatColor.of(new Color(34, 111, 80)) + "Ranger",
                 "",
-                ChatColor.of(new Color(176, 159, 109)) + "Role " + ChatColor.of(new Color(217, 217, 217)) + "Ranged Physical Dps"
+                ChatColor.of(new Color(217, 217, 217)) + "Physical Damage Type",
+                "",
+                ChatColor.of(new Color(217, 217, 217)) + "Subclasses",
+                ChatColor.of(new Color(34, 111, 80)) + "Scout",
+                ChatColor.of(new Color(217, 217, 217)) + "Long Range Dps",
+                "",
+                ChatColor.of(new Color(0, 117, 94)) + "Animal Tamer",
+                ChatColor.of(new Color(217, 217, 217)) + "Long Range Damage Support"
         );
     }
 
     private ItemStack getMysticItem(){
         return getItem(Material.BLAZE_ROD, 1,ChatColor.of(new Color(155, 120, 197)) + "Mystic",
                 "",
-                ChatColor.of(new Color(176, 159, 109)) + "Roles " + ChatColor.of(new Color(217, 217, 217)) + "Ranged Magical Dps",
-                ChatColor.of(new Color(217, 217, 217)) + "Main Healer"
+                ChatColor.of(new Color(217, 217, 217)) + "Magic Damage Type",
+                "",
+                ChatColor.of(new Color(217, 217, 217)) + "Subclasses",
+                ChatColor.of(new Color(126, 101, 238)) + "Shepard",
+                ChatColor.of(new Color(217, 217, 217)) + "Long Range Healer",
+                "",
+                ChatColor.of(new Color(59, 14, 114)) + "Chaos",
+                ChatColor.of(new Color(217, 217, 217)) + "Long Range Dps",
+                "",
+                ChatColor.of(new Color(155, 120, 197)) + "Arcane Master",
+                ChatColor.of(new Color(217, 217, 217)) + "Long Range Hybrid Dps"
         );
     }
 

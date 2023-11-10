@@ -118,7 +118,7 @@ public final class Mystica extends JavaPlugin {
             boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
 
             if(deathStatus){
-                deathManager.playerNowLive(player);
+                deathManager.playerNowLive(player, false, null);
             }
             if(combatStatus){
                 combatManager.forceCombatEnd(player);

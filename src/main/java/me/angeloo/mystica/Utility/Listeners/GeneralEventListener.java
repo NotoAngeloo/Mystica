@@ -560,7 +560,7 @@ public class GeneralEventListener implements Listener {
                 || event.getAction() == Action.RIGHT_CLICK_BLOCK){
             if(item != null && item.getType() == Material.ENDER_EYE && item.getItemMeta().getDisplayName().equalsIgnoreCase("Revive")){
                 event.setCancelled(true);
-                deathManager.playerNowLive(player);
+                deathManager.playerNowLive(player, false, null);
                 displayWeapons.displayWeapons(player);
             }
         }

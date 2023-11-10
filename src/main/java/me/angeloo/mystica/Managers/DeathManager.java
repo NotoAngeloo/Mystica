@@ -2,6 +2,8 @@ package me.angeloo.mystica.Managers;
 
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Components.Profile;
+import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
@@ -13,11 +15,13 @@ import org.bukkit.scoreboard.Scoreboard;
 public class DeathManager {
 
     private final ProfileManager profileManager;
+    private final ChangeResourceHandler changeResourceHandler;
     private final AbilityManager abilityManager;
     private final AggroManager aggroManager;
 
     public DeathManager(Mystica main){
         profileManager = main.getProfileManager();
+        changeResourceHandler = main.getChangeResourceHandler();
         abilityManager = main.getAbilityManager();
         aggroManager = main.getAggroManager();
     }
@@ -53,7 +57,7 @@ public class DeathManager {
         abilityManager.resetAbilityBuffs(player);
     }
 
-    public void playerNowLive(Player player){
+    public void playerNowLive(Player player, Boolean bySkill, Player playerWhoCastSkill){
 
         profileManager.getAnyProfile(player).setIfDead(false);
         player.setGlowing(false);
@@ -63,6 +67,8 @@ public class DeathManager {
         //more effects?
 
         player.getInventory().clear();
+
+        profileManager.getAnyProfile(player).setIfInCombat(false);
 
         ItemStack[] savedInv = profileManager.getAnyProfile(player).getSavedInv();
 
@@ -79,9 +85,17 @@ public class DeathManager {
             profileManager.getAnyProfile(player).removeSavedInv();
         }
 
-        player.teleport(player.getWorld().getSpawnLocation());
+        if(!bySkill){
+            player.teleport(player.getWorld().getSpawnLocation());
+        }
+        else{
+            player.teleport(playerWhoCastSkill.getLocation());
+            double halfHealth = ((double) profileManager.getAnyProfile(player).getTotalHealth() / 2);
 
-        profileManager.getAnyProfile(player).setIfInCombat(false);
+            changeResourceHandler.subtractHealthFromEntity(player, halfHealth, playerWhoCastSkill);
+        }
+
+
         Scoreboard scoreboard = player.getScoreboard();
         scoreboard.clearSlot(DisplaySlot.SIDEBAR);
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(""));

@@ -48,8 +48,8 @@ public class SpecInventory {
         switch (clazz.toLowerCase()){
             case "elementalist":{
                 inv.setItem(11, getPyromancerItem());
-                inv.setItem(13, getConjurerItem());
-                inv.setItem(15, getCryomancerItem());
+                //inv.setItem(13, getCryomancerItem());
+                inv.setItem(15, getConjurerItem());
                 break;
             }
             case "ranger":{
@@ -58,8 +58,9 @@ public class SpecInventory {
                 break;
             }
             case "mystic":{
-                inv.setItem(11, getChaosItem());
-                inv.setItem(13, getShepardItem());
+                inv.setItem(11, getShepardItem());
+                //chaos is a secret subclass
+                inv.setItem(13, getChaosItem());
                 inv.setItem(15, getArcaneItem());
                 break;
             }
@@ -75,8 +76,8 @@ public class SpecInventory {
                 return getPyromancerItem();
             case "conjurer":
                 return getConjurerItem();
-            case "cryomancer":
-                return getCryomancerItem();
+            /*case "cryomancer":
+                return getCryomancerItem();*/
             case "scout":
                 return getScoutItem();
             case "animal tamer":
@@ -100,7 +101,7 @@ public class SpecInventory {
                 "",
                 ChatColor.of(new Color(230,230,230)) + "Crit rate increased by 10%",
                 "",
-                ChatColor.of(new Color(230,230,230)) + "Every 4 fire skills cast consecutively refresh",
+                ChatColor.of(new Color(230,230,230)) + "Every 4 hit fire skills cast refresh",
                 ChatColor.of(new Color(230,230,230)) + "your " + ChatColor.of(new Color(250,102,0)) + "Fiery Wing",
                 "",
                 ChatColor.of(new Color(0,102,0)) + "Get Skill",
@@ -132,7 +133,7 @@ public class SpecInventory {
                 ChatColor.of(new Color(230,230,230)) + "allies within");
     }
 
-    private ItemStack getCryomancerItem(){
+    /*private ItemStack getCryomancerItem(){
         return getItem(Material.CYAN_DYE, 19,
                 ChatColor.of(new Color(153, 204, 255)) + "Cryomancer",
                 "",
@@ -156,7 +157,7 @@ public class SpecInventory {
                 ChatColor.of(new Color(230,230,230)) + "with " + ChatColor.of(new Color(153, 204, 255)) + "Ice Bolt " +
                         ChatColor.of(new Color(230,230,230)) + "resets the cooldown",
                 ChatColor.of(new Color(230,230,230)) + "of "  +ChatColor.of(new Color(153, 204, 255)) + "Ice Bolt");
-    }
+    }*/
 
     private ItemStack getScoutItem(){
         return getItem(Material.ARROW, 0,

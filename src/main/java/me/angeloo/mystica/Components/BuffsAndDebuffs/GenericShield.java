@@ -31,7 +31,6 @@ public class GenericShield {
         double newAmount = currentAmount - amount;
 
         if(newAmount <=0){
-
             double remainder = Math.abs(0 - newAmount);
             removeShields(entity);
             return remainder;

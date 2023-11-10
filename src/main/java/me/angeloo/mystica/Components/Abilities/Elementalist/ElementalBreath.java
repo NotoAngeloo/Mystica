@@ -22,17 +22,15 @@ public class ElementalBreath {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CombatManager combatManager;
     private final ChangeResourceHandler changeResourceHandler;
-    private final FieryWing fieryWing;
 
     private final Map<UUID, Integer> buffActiveMap = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public ElementalBreath(Mystica main, AbilityManager manager, ElementalistAbilities elementalistAbilities){
+    public ElementalBreath(Mystica main, AbilityManager manager){
         this.main = main;
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        fieryWing = elementalistAbilities.getFieryWing();
 
     }
 
@@ -53,7 +51,6 @@ public class ElementalBreath {
         combatManager.startCombatTimer(player);
 
         execute(player);
-        fieryWing.removeInflame(player);
 
         abilityReadyInMap.put(player.getUniqueId(), 120);
         new BukkitRunnable(){

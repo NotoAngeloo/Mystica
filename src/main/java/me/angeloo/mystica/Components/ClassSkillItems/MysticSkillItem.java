@@ -160,7 +160,7 @@ public class MysticSkillItem {
                         ChatColor.of(new Color(155, 120, 197)) + "Dreadfall",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_4_Level() + skillLevel.getSkill_4_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Summon a void creature that deals",
+                        ChatColor.of(new Color(230,230,230)) + "Summon a void meteor that deals",
                         ChatColor.of(new Color(230,230,230)) + "heavy area damage");
             }
 
@@ -185,7 +185,7 @@ public class MysticSkillItem {
 
             case 7:{
                 return getItem(Material.PURPLE_DYE, 0,
-                        ChatColor.of(new Color(155, 120, 197)) + "Arcane Contact",
+                        ChatColor.of(new Color(155, 120, 197)) + "Arcane Contract",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_7_Level() + skillLevel.getSkill_7_Level_Bonus()),
                         "",
                         ChatColor.of(new Color(230,230,230)) + "Revive one dead player. Using this",
@@ -200,7 +200,10 @@ public class MysticSkillItem {
                         "",
                         ChatColor.of(new Color(230,230,230)) + "Generate a Light Sigil",
                         ChatColor.of(new Color(230,230,230)) + "that continuously heals",
-                        ChatColor.of(new Color(230,230,230)) + "all nearby allies");
+                        ChatColor.of(new Color(230,230,230)) + "all nearby allies. Your",
+                        ChatColor.of(new Color(230,230,230)) + "next " + ChatColor.of(new Color(155, 120, 197)) + "Purifying Blast " +
+                        ChatColor.of(new Color(230,230,230)) + "has no",
+                        ChatColor.of(new Color(230,230,230)) + "cast time");
             }
 
         }

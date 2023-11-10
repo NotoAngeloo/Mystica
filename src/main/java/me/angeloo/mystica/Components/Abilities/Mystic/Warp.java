@@ -47,6 +47,46 @@ public class Warp {
 
         combatManager.startCombatTimer(player);
 
+        double maxDistance = 8 + buffAndDebuffManager.getTotalRangeModifier(player);
+
+        Location playerLoc = player.getEyeLocation();
+        Location newLoc = playerLoc.clone();
+
+        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+
+        if(subclass.equalsIgnoreCase("chaos")){
+            player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, playerLoc, 50, .5, 1, .5, 0);
+        }
+        else{
+            player.getWorld().spawnParticle(Particle.FALLING_OBSIDIAN_TEAR, playerLoc, 50, .5, 1, .5, 0);
+        }
+
+        LivingEntity target = targetManager.getPlayerTarget(player);
+
+        if(target != null){
+            double distance = player.getLocation().distance(target.getLocation());
+
+            if(distance <= maxDistance){
+                player.teleport(target);
+                return;
+            }
+        }
+
+
+        Vector direction = playerLoc.getDirection().normalize();
+
+        while (maxDistance > 0) {
+            newLoc.add(direction);
+            if (!newLoc.getBlock().isPassable()) {
+                newLoc.subtract(direction.multiply(2));
+                break;
+            }
+            maxDistance -= 1;
+        }
+
+        newLoc.setY(newLoc.getY());
+        player.teleport(newLoc);
+
         abilityReadyInMap.put(player.getUniqueId(), 13);
         new BukkitRunnable(){
             @Override
@@ -64,44 +104,6 @@ public class Warp {
 
             }
         }.runTaskTimer(main, 0,20);
-
-        double distance = 5 + buffAndDebuffManager.getTotalRangeModifier(player);
-
-        Location playerLoc = player.getEyeLocation();
-        Location newLoc = playerLoc.clone();
-
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
-
-        if(subclass.equalsIgnoreCase("chaos")){
-            player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, playerLoc, 50, .5, 1, .5, 0);
-        }
-        else{
-            player.getWorld().spawnParticle(Particle.FALLING_OBSIDIAN_TEAR, playerLoc, 50, .5, 1, .5, 0);
-        }
-
-        Vector direction = playerLoc.getDirection().normalize();
-
-        if(targetManager.getPlayerTarget(player) != null){
-
-            LivingEntity target = targetManager.getPlayerTarget(player);
-
-            if(target.getWorld().equals(player.getWorld())){
-                direction = target.getLocation().clone().toVector().subtract(playerLoc.toVector());
-            }
-
-        }
-
-        while (distance > 0) {
-            newLoc.add(direction);
-            if (!newLoc.getBlock().isPassable()) {
-                newLoc.subtract(direction.multiply(2));
-                break;
-            }
-            distance -= 1;
-        }
-
-        newLoc.setY(newLoc.getY());
-        player.teleport(newLoc);
 
     }
 

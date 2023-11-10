@@ -11,9 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class ArcaneShield {
 
@@ -22,7 +20,6 @@ public class ArcaneShield {
     private final ProfileManager profileManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
-    private final PveChecker pveChecker;
     private final CombatManager combatManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
@@ -37,7 +34,6 @@ public class ArcaneShield {
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
-        pveChecker = main.getPveChecker();
         combatManager = manager.getCombatManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
@@ -108,6 +104,8 @@ public class ArcaneShield {
 
     private void execute(Player player, LivingEntity target){
 
+        boolean shepard = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("shepard");
+
         if(!needToRemove.containsKey(target.getUniqueId())){
             needToRemove.put(target.getUniqueId(), false);
         }
@@ -138,10 +136,7 @@ public class ArcaneShield {
 
         //TODO task for shield particles
 
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
-
-
-        if(subclass.equalsIgnoreCase("shepard")){
+        if(shepard){
             //task to heal them for as long as they have a shield
             double thirtyPercent = (double) profileManager.getAnyProfile(target).getTotalHealth() * .3;
 
@@ -174,6 +169,8 @@ public class ArcaneShield {
 
                         target.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1,0, 0, 0, 0);
                     }
+
+
 
                 }
             }.runTaskTimer(main, 0, 20 * 20);

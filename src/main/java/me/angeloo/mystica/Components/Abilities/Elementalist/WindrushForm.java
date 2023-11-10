@@ -22,17 +22,13 @@ public class WindrushForm {
     private final CombatManager combatManager;
     private final ChangeResourceHandler changeResourceHandler;
 
-    private final FieryWing fieryWing;
-
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public WindrushForm(Mystica main, AbilityManager manager, ElementalistAbilities elementalistAbilities){
+    public WindrushForm(Mystica main, AbilityManager manager){
         this.main = main;
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
-
-        fieryWing = elementalistAbilities.getFieryWing();
 
     }
 
@@ -50,8 +46,6 @@ public class WindrushForm {
         combatManager.startCombatTimer(player);
 
         execute(player);
-        fieryWing.removeInflame(player);
-
         abilityReadyInMap.put(player.getUniqueId(), 13);
         new BukkitRunnable(){
             @Override

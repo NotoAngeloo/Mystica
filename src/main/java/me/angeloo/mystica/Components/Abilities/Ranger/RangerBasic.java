@@ -68,7 +68,7 @@ public class RangerBasic {
             basicReadyMap.put(player.getUniqueId(), true);
         }
 
-        double baseRange = 15;
+        double baseRange = 20;
         double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
         double totalRange = baseRange + extraRange;
 

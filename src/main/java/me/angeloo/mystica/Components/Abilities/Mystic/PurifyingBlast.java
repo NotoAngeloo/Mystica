@@ -234,6 +234,7 @@ public class PurifyingBlast {
     public void queueInstantCast(Player player){
         instantCast.put(player.getUniqueId(), true);
     }
+    public void unQueueInstantCast(Player player){instantCast.remove(player.getUniqueId());}
 
     public void resetCooldown(Player player){
         abilityReadyInMap.put(player.getUniqueId(), 0);

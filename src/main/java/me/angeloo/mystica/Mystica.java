@@ -1,5 +1,7 @@
 package me.angeloo.mystica;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import me.angeloo.mystica.Components.Commands.*;
 import me.angeloo.mystica.Components.Inventories.BagInventory;
 import me.angeloo.mystica.Managers.*;
@@ -41,8 +43,12 @@ public final class Mystica extends JavaPlugin {
 
     private BagInventory bagInventory;
 
+    private ProtocolManager protocolManager;
+
     @Override
     public void onEnable() {
+
+        protocolManager = ProtocolLibrary.getProtocolManager();
 
         profileFileWriter = new ProfileFileWriter(this);
 
@@ -206,4 +212,7 @@ public final class Mystica extends JavaPlugin {
     public ProfileFileWriter getProfileFileWriter(){
         return profileFileWriter;
     }
+
+    public ProtocolManager getProtocolManager(){return protocolManager;}
+
 }

@@ -3,6 +3,7 @@ package me.angeloo.mystica.Utility;
 import me.angeloo.mystica.Components.ClassEquipment.ElementalistEquipment;
 import me.angeloo.mystica.Components.ClassEquipment.MysticEquipment;
 import me.angeloo.mystica.Components.ClassEquipment.RangerEquipment;
+import me.angeloo.mystica.Components.ClassEquipment.ShadowKnightEquipment;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -14,6 +15,7 @@ public class ClassSetter {
     private final ElementalistEquipment elementalistEquipment;
     private final RangerEquipment rangerEquipment;
     private final MysticEquipment mysticEquipment;
+    private final ShadowKnightEquipment shadowKnightEquipment;
     private final DisplayWeapons displayWeapons;
 
     public ClassSetter(Mystica main){
@@ -21,17 +23,12 @@ public class ClassSetter {
         elementalistEquipment = new ElementalistEquipment();
         rangerEquipment = new RangerEquipment();
         mysticEquipment = new MysticEquipment();
+        shadowKnightEquipment = new ShadowKnightEquipment();
         displayWeapons = new DisplayWeapons(main);
     }
 
-    public void setClass(Player player, String clazz, Boolean trial){
+    public void setClass(Player player, String clazz){
 
-        if(trial){
-            profileManager.setClassTrial(player, clazz);
-            player.sendMessage("You are now trying out " + clazz);
-            displayWeapons.displayWeapons(player);
-            return;
-        }
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
@@ -61,6 +58,14 @@ public class ClassSetter {
                 playerProfile.getPlayerEquipment().setChestPlate(mysticEquipment.getBaseChestPlate());
                 playerProfile.getPlayerEquipment().setLeggings(mysticEquipment.getBaseLeggings());
                 playerProfile.getPlayerEquipment().setBoots(mysticEquipment.getBaseBoots());
+            }
+            case "shadow knight":{
+                playerProfile.getPlayerEquipment().setWeapon(shadowKnightEquipment.getBaseWeapon());
+                playerProfile.getPlayerEquipment().setOffhand(shadowKnightEquipment.getBaseOffhand());
+                playerProfile.getPlayerEquipment().setHelmet(shadowKnightEquipment.getBaseHelmet());
+                playerProfile.getPlayerEquipment().setChestPlate(shadowKnightEquipment.getBaseChestPlate());
+                playerProfile.getPlayerEquipment().setLeggings(shadowKnightEquipment.getBaseLeggings());
+                playerProfile.getPlayerEquipment().setBoots(shadowKnightEquipment.getBaseBoots());
             }
         }
 

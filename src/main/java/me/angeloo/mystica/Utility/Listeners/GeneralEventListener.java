@@ -218,7 +218,6 @@ public class GeneralEventListener implements Listener {
         }
 
         targetManager.setPlayerTarget(player, null);
-        profileManager.removeClassTrial(player);
     }
 
     //maybe ill make items to be added to a bag, when implemented. just to stop items being deleted when combat end
@@ -586,7 +585,6 @@ public class GeneralEventListener implements Listener {
 
             UUID uuid = player.getUniqueId();
             if(countdownTasks.containsKey(uuid)){
-                //if its running, cancel and start new
                 countdownTasks.get(uuid).cancel();
             }
 
@@ -873,9 +871,6 @@ public class GeneralEventListener implements Listener {
             return;
         }
 
-        if(player.isSneaking()){
-            return;
-        }
 
         boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
 

@@ -38,8 +38,7 @@ public class ProfileManager {
     private final Map<String, Player> playerNameMap = new HashMap<>();
     private final Map<UUID, String> nonPlayerNameMap = new HashMap<>();
     private final Map<UUID, Location> bossHomes = new HashMap<>();
-
-    private final Map<Player, String> classTrialMap = new HashMap<>();
+    
 
     public ProfileManager(Mystica main) {
         this.main = main;
@@ -607,20 +606,6 @@ public class ProfileManager {
         nonPlayerNameMap.put(id, name);
     }
 
-    public boolean getIfClassTrial(Player player){return classTrialMap.containsKey(player);}
-    public String getTrialClass(Player player){
-        if(getIfClassTrial(player)){
-            return classTrialMap.get(player);
-        }
-        return "None";
-    }
-    public void removeClassTrial(Player player){
-        classTrialMap.remove(player);
-        DisplayWeapons displayWeapons = new DisplayWeapons(main);
-        displayWeapons.displayWeapons(player);
-
-    }
-    public void setClassTrial(Player player, String clazz){classTrialMap.put(player, clazz);}
 
     public void setBossHome(UUID uuid){
         Entity entity = Bukkit.getEntity(uuid);

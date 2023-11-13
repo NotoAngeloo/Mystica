@@ -64,6 +64,11 @@ public class SpecInventory {
                 inv.setItem(15, getArcaneItem());
                 break;
             }
+            case "shadow knight":{
+                inv.setItem(11, getBloodItem());
+                inv.setItem(15, getDoomItem());
+                break;
+            }
         }
 
         return inv;
@@ -256,6 +261,7 @@ public class SpecInventory {
                 ChatColor.of(new Color(230,230,230)) + "+30 Health, +2 Magic, +100 Mana, +1 Both Defense",
                 "",
                 ChatColor.of(new Color(230,230,230)) + "Increases healing by 20%.",
+                "",
                 ChatColor.of(new Color(155,120,197)) + "Arcane Shield " +
                         ChatColor.of(new Color(230,230,230)) + "restores the target's health",
                 ChatColor.of(new Color(230,230,230)) + "by 30% every 20 seconds.",
@@ -268,6 +274,63 @@ public class SpecInventory {
                 ChatColor.of(new Color(230,230,230)) + "Instantly heal nearby allies",
                 ChatColor.of(new Color(230,230,230)) + "and give them a 10% damage",
                 ChatColor.of(new Color(230,230,230)) + "reduction buff for 5 seconds");
+    }
+
+    private ItemStack getBloodItem(){
+        return getItem(Material.RED_DYE, 0,
+                ChatColor.of(new Color(213, 33, 3)) + "Blood",
+                "",
+                ChatColor.of(new Color(0,102,0)) + "Each level",
+                ChatColor.of(new Color(230,230,230)) + "+40 Health, +2 Attack, +1 Both Defense",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Gain Crushing Resistance",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Standing in " +
+                        ChatColor.of(new Color(213, 33, 3)) + "Burial Ground " +
+                ChatColor.of(new Color(230,230,230)) + "area",
+                ChatColor.of(new Color(230,230,230)) + "gives you 20% damage reduction.",
+                ChatColor.of(new Color(213, 33, 3)) + "Bloodsucker " +
+                        ChatColor.of(new Color(230,230,230)) + "restores an additional",
+                ChatColor.of(new Color(230,230,230)) + "30% of your maximum health",
+                "",
+                ChatColor.of(new Color(0,102,0)) + "Get Skill",
+                ChatColor.of(new Color(213, 33, 3)) + "Blood Shield",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Instantly heal 50% of your",
+                ChatColor.of(new Color(230,230,230)) + "missing health. Shield yourself",
+                ChatColor.of(new Color(230,230,230)) + "for an equivalent of your current",
+                ChatColor.of(new Color(230,230,230)) + "health for 10 seconds. While active,",
+                ChatColor.of(new Color(230,230,230)) + "casting " + ChatColor.of(new Color(213, 33, 3)) + "Bloodsucker " +
+                        ChatColor.of(new Color(230,230,230)) + "increases the",
+                ChatColor.of(new Color(230,230,230)) + "duration by 3 seconds");
+    }
+
+    private ItemStack getDoomItem(){
+        return getItem(Material.RED_DYE, 0,
+                ChatColor.of(new Color(3, 7, 219)) + "Doom",
+                "",
+                ChatColor.of(new Color(0,102,0)) + "Each level",
+                ChatColor.of(new Color(230,230,230)) + "+30 Health, +3 Attack, +1 Both Defense",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Crit rate increased by 10%",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Landing " + ChatColor.of(new Color(213, 33, 3)) + "Spiritual Attack " +
+                        ChatColor.of(new Color(230,230,230)) + "on an enemy",
+                ChatColor.of(new Color(230,230,230)) + "inflicted with an Enhanced Infection",
+                ChatColor.of(new Color(230,230,230)) + "gives you a Soul Mark.",
+                ChatColor.of(new Color(213, 33, 3)) + "Soul Reap " +
+                        ChatColor.of(new Color(230,230,230)) + "consumes Soul Marks and",
+                ChatColor.of(new Color(230,230,230)) + "Enhanced Infections to deal increased",
+                ChatColor.of(new Color(230,230,230)) + "damage.",
+                "",
+                ChatColor.of(new Color(0,102,0)) + "Get Skill",
+                ChatColor.of(new Color(3, 7, 219)) + "Annihilation",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Your spiritual ally strikes",
+                ChatColor.of(new Color(230,230,230)) + "your foe with a powerful sweep,",
+                ChatColor.of(new Color(230,230,230)) + "enhancing any " +
+                ChatColor.of(new Color(213, 33, 3)) + "Infections " + ChatColor.of(new Color(230,230,230)) + "and",
+                ChatColor.of(new Color(230,230,230)) + "refreshing its duration");
     }
 
 

@@ -15,26 +15,21 @@ public class AllSkillItems {
     private final ElementalistSkillItems elementalistSkillItems;
     private final RangerSkillItems rangerSkillItems;
     private final MysticSkillItem mysticSkillItem;
+    private final ShadowKnightSkillItems shadowKnightSkillItems;
 
     public AllSkillItems(Mystica main){
         profileManager = main.getProfileManager();
         elementalistSkillItems = new ElementalistSkillItems(main);
         rangerSkillItems = new RangerSkillItems(main);
         mysticSkillItem = new MysticSkillItem(main);
+        shadowKnightSkillItems = new ShadowKnightSkillItems(main);
     }
 
     public ItemStack getPlayerSkill(Player player, int skillNumber){
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        String clazz;
-
-        if(profileManager.getIfClassTrial(player)){
-            clazz = profileManager.getTrialClass(player);
-        }
-        else{
-            clazz = playerProfile.getPlayerClass();
-        }
+        String clazz= playerProfile.getPlayerClass();
 
         switch (clazz.toLowerCase()){
             case "elementalist":{
@@ -45,6 +40,9 @@ public class AllSkillItems {
             }
             case "mystic":{
                 return mysticSkillItem.getSkill(skillNumber, player);
+            }
+            case "shadow knight":{
+                return shadowKnightSkillItems.getSkill(skillNumber, player);
             }
         }
 
@@ -67,6 +65,9 @@ public class AllSkillItems {
             }
             case "mystic":{
                 return mysticSkillItem.getUltimate(player);
+            }
+            case "shadow knight":{
+                return shadowKnightSkillItems.getUltimate(player);
             }
         }
 

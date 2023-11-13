@@ -1,6 +1,5 @@
 package me.angeloo.mystica.Utility;
 
-import me.angeloo.mystica.Components.ClassEquipment.TrialClassEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -12,11 +11,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class DisplayWeapons {
 
     private final ProfileManager profileManager;
-    private final TrialClassEquipment trialClassEquipment;
 
     public DisplayWeapons(Mystica main){
         profileManager = main.getProfileManager();
-        trialClassEquipment = new TrialClassEquipment();
     }
 
     public void displayArmor(Player player){
@@ -51,25 +48,6 @@ public class DisplayWeapons {
 
         ItemStack displayedWeapon = new ItemStack(Material.AIR);
 
-        if(profileManager.getIfClassTrial(player)){
-
-            String trialClass = profileManager.getTrialClass(player);
-            displayedWeapon = trialClassEquipment.getTrialWeapon(trialClass);
-
-            if(displayedWeapon.hasItemMeta() && displayedWeapon.getItemMeta().hasCustomModelData()){
-                ItemMeta meta = displayedWeapon.getItemMeta();
-                meta.setDisplayName(trialClass);
-                meta.setLore(null);
-                int displayModel = meta.getCustomModelData();
-                displayModel = displayModel + 2;
-                meta.setCustomModelData(displayModel);
-                displayedWeapon.setItemMeta(meta);
-            }
-
-
-            player.getInventory().setItemInOffHand(displayedWeapon);
-            return;
-        }
 
         PlayerEquipment equipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 

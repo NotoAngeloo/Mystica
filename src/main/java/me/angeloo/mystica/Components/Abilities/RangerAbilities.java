@@ -92,8 +92,6 @@ public class RangerAbilities {
                 return;
             }
         }
-
-
     }
 
     public void useRangerBasic(Player player){

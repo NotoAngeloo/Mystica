@@ -27,6 +27,10 @@ public class Immobile {
             return;
         }
 
+        if(profileManager.getAnyProfile(entity).getIfObject()){
+           return;
+        }
+
         immobileMap.put(entity.getUniqueId(), true);
 
         if(removeImmobileTaskMap.containsKey(entity.getUniqueId())){
@@ -34,7 +38,7 @@ public class Immobile {
         }
 
         if(!(entity instanceof Player)){
-            entity.setAI(false);
+                entity.setAI(false);
         }
 
         if(time == 0){

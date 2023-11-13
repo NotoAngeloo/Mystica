@@ -3,6 +3,7 @@ package me.angeloo.mystica.Managers;
 import me.angeloo.mystica.Components.Abilities.ElementalistAbilities;
 import me.angeloo.mystica.Components.Abilities.MysticAbilities;
 import me.angeloo.mystica.Components.Abilities.RangerAbilities;
+import me.angeloo.mystica.Components.Abilities.ShadowKnightAbilities;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.entity.Player;
@@ -23,6 +24,8 @@ public class AbilityManager {
     private final ElementalistAbilities elementalistAbilities;
     private final RangerAbilities rangerAbilities;
     private final MysticAbilities mysticAbilities;
+    private final ShadowKnightAbilities shadowKnightAbilities;
+
     private final CombatManager combatManager;
 
     public AbilityManager(Mystica main){
@@ -32,6 +35,7 @@ public class AbilityManager {
         elementalistAbilities = new ElementalistAbilities(main, this);
         rangerAbilities = new RangerAbilities(main, this);
         mysticAbilities = new MysticAbilities(main, this);
+        shadowKnightAbilities = new ShadowKnightAbilities(main, this);
     }
 
     public void useAbility(Player player, int abilityNumber){
@@ -56,14 +60,7 @@ public class AbilityManager {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        String clazz;
-
-        if(profileManager.getIfClassTrial(player)){
-            clazz = profileManager.getTrialClass(player);
-        }
-        else{
-            clazz = playerProfile.getPlayerClass();
-        }
+        String clazz = playerProfile.getPlayerClass();
 
 
         switch (clazz.toLowerCase()){
@@ -79,6 +76,10 @@ public class AbilityManager {
                 mysticAbilities.useMysticAbility(player, abilityNumber);
                 return;
             }
+            case "shadow knight":{
+                shadowKnightAbilities.useShadowKnightAbility(player, abilityNumber);
+                return;
+            }
         }
     }
 
@@ -90,14 +91,8 @@ public class AbilityManager {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        String clazz;
+        String clazz = playerProfile.getPlayerClass();
 
-        if(profileManager.getIfClassTrial(player)){
-            clazz = profileManager.getTrialClass(player);
-        }
-        else{
-            clazz = playerProfile.getPlayerClass();
-        }
 
         switch (clazz.toLowerCase()){
             case "elementalist":{
@@ -110,6 +105,10 @@ public class AbilityManager {
             }
             case "mystic":{
                 mysticAbilities.useMysticBasic(player);
+                return;
+            }
+            case "shadow knight":{
+                shadowKnightAbilities.useShadowKnightBasic(player);
                 return;
             }
         }
@@ -133,14 +132,7 @@ public class AbilityManager {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        String clazz;
-
-        if(profileManager.getIfClassTrial(player)){
-            clazz = profileManager.getTrialClass(player);
-        }
-        else{
-            clazz = playerProfile.getPlayerClass();
-        }
+        String clazz = playerProfile.getPlayerClass();
 
         switch (clazz.toLowerCase()){
             case "elementalist":{
@@ -155,6 +147,10 @@ public class AbilityManager {
                 mysticAbilities.useMysticUltimate(player);
                 return;
             }
+            case "shadow knight":{
+                shadowKnightAbilities.useShadowKnightUltimate(player);
+                return;
+            }
         }
     }
 
@@ -162,15 +158,7 @@ public class AbilityManager {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        String clazz;
-
-        if(profileManager.getIfClassTrial(player)){
-            clazz = profileManager.getTrialClass(player);
-        }
-        else{
-            clazz = playerProfile.getPlayerClass();
-        }
-
+        String clazz = playerProfile.getPlayerClass();
 
         switch (clazz.toLowerCase()){
             case "elementalist":{
@@ -182,6 +170,9 @@ public class AbilityManager {
             case "mystic":{
                 return mysticAbilities.getAbilityCooldown(player, abilityNumber);
             }
+            case "shadow knight":{
+                return shadowKnightAbilities.getAbilityCooldown(player, abilityNumber);
+            }
         }
 
         return 0;
@@ -191,15 +182,7 @@ public class AbilityManager {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        String clazz;
-
-        if(profileManager.getIfClassTrial(player)){
-            clazz = profileManager.getTrialClass(player);
-        }
-        else{
-            clazz = playerProfile.getPlayerClass();
-        }
-
+        String clazz= playerProfile.getPlayerClass();
 
         switch (clazz.toLowerCase()){
             case "elementalist":{
@@ -210,6 +193,9 @@ public class AbilityManager {
             }
             case "mystic":{
                 return mysticAbilities.getUltimateCooldown(player);
+            }
+            case "shadow knight":{
+                return shadowKnightAbilities.getUltimateCooldown(player);
             }
         }
 
@@ -223,11 +209,12 @@ public class AbilityManager {
     public ElementalistAbilities getElementalistAbilities(){return elementalistAbilities;}
     public RangerAbilities getRangerAbilities(){return rangerAbilities;}
     public MysticAbilities getMysticAbilities(){return mysticAbilities;}
+    public ShadowKnightAbilities getShadowKnightAbilities(){return shadowKnightAbilities;}
 
     public void resetAbilityBuffs(Player player){
         mysticAbilities.getEvilSpirit().removeShards(player);
+        mysticAbilities.getPurifyingBlast().unQueueInstantCast(player);
         elementalistAbilities.getFieryWing().removeInflame(player);
-
     }
 
     public boolean getIfCasting(Player player){

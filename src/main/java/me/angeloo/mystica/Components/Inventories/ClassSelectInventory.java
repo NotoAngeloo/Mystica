@@ -23,7 +23,6 @@ public class ClassSelectInventory {
         Inventory inv = Bukkit.createInventory(null, 9 * 3,"Select a Class");
 
         inv.setItem(15, getItem(Material.ARROW, 0,ChatColor.of(new Color(0, 153, 51)) + "Select"));
-        inv.setItem(11, getItem(Material.ARROW, 0,ChatColor.of(new Color(255, 153, 51)) + "Trial"));
 
         inv.setItem(4, getClassItem(clazz));
 
@@ -37,6 +36,10 @@ public class ClassSelectInventory {
 
         if(!clazz.equalsIgnoreCase("ranger")){
             inv.setItem(23, getRangerItem());
+        }
+
+        if(!clazz.equalsIgnoreCase("shadow knight")){
+            inv.setItem(20, getShadowKnightItem());
         }
 
         return inv;
@@ -56,6 +59,9 @@ public class ClassSelectInventory {
             case "mystic":{
                 return getMysticItem();
             }
+            case "shadow knight":{
+                return getShadowKnightItem();
+            }
             default:{
                 return new ItemStack(Material.AIR);
             }
@@ -68,7 +74,6 @@ public class ClassSelectInventory {
                 "",
                 ChatColor.of(new Color(217, 217, 217)) + "Magical Damage Type",
                 "",
-                ChatColor.of(new Color(217, 217, 217)) + "Subclasses",
                 ChatColor.of(new Color(250, 102, 0)) + "Pyromancer",
                 ChatColor.of(new Color(217, 217, 217)) + "Long Range Dps",
                 "",
@@ -82,7 +87,6 @@ public class ClassSelectInventory {
                 "",
                 ChatColor.of(new Color(217, 217, 217)) + "Physical Damage Type",
                 "",
-                ChatColor.of(new Color(217, 217, 217)) + "Subclasses",
                 ChatColor.of(new Color(34, 111, 80)) + "Scout",
                 ChatColor.of(new Color(217, 217, 217)) + "Long Range Dps",
                 "",
@@ -96,7 +100,6 @@ public class ClassSelectInventory {
                 "",
                 ChatColor.of(new Color(217, 217, 217)) + "Magic Damage Type",
                 "",
-                ChatColor.of(new Color(217, 217, 217)) + "Subclasses",
                 ChatColor.of(new Color(126, 101, 238)) + "Shepard",
                 ChatColor.of(new Color(217, 217, 217)) + "Long Range Healer",
                 "",
@@ -106,6 +109,19 @@ public class ClassSelectInventory {
                 ChatColor.of(new Color(155, 120, 197)) + "Arcane Master",
                 ChatColor.of(new Color(217, 217, 217)) + "Long Range Hybrid Dps"
         );
+    }
+
+    private ItemStack getShadowKnightItem(){
+        return getItem(Material.DIAMOND_SWORD, 1, ChatColor.of(new Color(213, 33, 3)) + "Shadow Knight",
+                "",
+                ChatColor.of(new Color(217, 217, 217)) + "Physical Damage Type",
+                "",
+                ChatColor.of(new Color(213, 33, 3)) + "Blood",
+                ChatColor.of(new Color(217, 217, 217)) + "Tank",
+                "",
+                ChatColor.of(new Color(3, 7, 219)) + "Doom",
+                ChatColor.of(new Color(217, 217, 217)) + "Medium Range Dps"
+                );
     }
 
     private ItemStack getItem(Material material, int modelData, String name, String ... lore){

@@ -1,6 +1,5 @@
 package me.angeloo.mystica.Managers;
 
-import me.angeloo.mystica.Components.ClassEquipment.TrialClassEquipment;
 import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
@@ -11,7 +10,6 @@ import me.angeloo.mystica.Utility.StatusDisplayer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -20,7 +18,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -33,7 +30,6 @@ public class CombatManager {
     private final DpsManager dpsManager;
     private final AllSkillItems allSkillItems;
 
-    private final TrialClassEquipment trialClassEquipment;
 
     private final StatusDisplayer statusDisplayer;
 
@@ -47,7 +43,6 @@ public class CombatManager {
         abilityManager = manager;
         dpsManager = main.getDpsManager();
         allSkillItems = new AllSkillItems(main);
-        trialClassEquipment = new TrialClassEquipment();
         statusDisplayer = new StatusDisplayer(main, manager);
     }
 
@@ -62,25 +57,18 @@ public class CombatManager {
             profileManager.getAnyProfile(player).setSavedInv(player.getInventory().getContents());
             player.getInventory().clear();
 
-            if(!profileManager.getIfClassTrial(player)){
-                PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
+            PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
-                if(playerEquipment.getWeapon() != null){
-                    player.getInventory().setItemInMainHand(playerEquipment.getWeapon());
-                }
-
-                if (playerEquipment.getOffhand() != null){
-                    player.getInventory().setItemInOffHand(playerEquipment.getOffhand());
-                }
-
-                DisplayWeapons displayWeapons = new DisplayWeapons(main);
-                displayWeapons.displayArmor(player);
-            }
-            else{
-                String trialClass = profileManager.getTrialClass(player);
-                player.getInventory().setItemInMainHand(trialClassEquipment.getTrialWeapon(trialClass));
+            if(playerEquipment.getWeapon() != null){
+                player.getInventory().setItemInMainHand(playerEquipment.getWeapon());
             }
 
+            if (playerEquipment.getOffhand() != null){
+                player.getInventory().setItemInOffHand(playerEquipment.getOffhand());
+            }
+
+            DisplayWeapons displayWeapons = new DisplayWeapons(main);
+            displayWeapons.displayArmor(player);
 
 
             player.getInventory().setItem(13, getItem(new ItemStack(Material.BARRIER), "Exit Combat"));
@@ -157,41 +145,6 @@ public class CombatManager {
             weapon.setAmount(1);
         }
 
-        if(profileManager.getIfClassTrial(player)){
-            for(int i=0; i<=7; i++){
-                int slot = player.getInventory().getHeldItemSlot();
-
-                if (slot == i){
-                    continue;
-                }
-
-                int skillNumber = i+1;
-
-                int cooldown = abilityManager.getCooldown(player, skillNumber);
-
-                ItemStack abilityItem = allSkillItems.getPlayerSkill(player, skillNumber);
-
-                if(cooldown > 0){
-                    abilityItem.setAmount(cooldown);
-                }
-
-                if(cooldown == 1 && !abilityItem.getType().equals(Material.AIR)){
-
-                    ItemMeta meta = abilityItem.getItemMeta();
-
-                    assert meta != null;
-                    int modelData = meta.getCustomModelData();
-                    modelData++;
-
-                    meta.setCustomModelData(modelData);
-                    abilityItem.setItemMeta(meta);
-                }
-
-                player.getInventory().setItem(i, abilityItem);
-            }
-            return;
-        }
-
         EquipSkills equipSkills = profileManager.getAnyProfile(player).getEquipSkills();
 
         for(int i=0; i<=7; i++){
@@ -261,14 +214,6 @@ public class CombatManager {
 
     public ItemStack getOldItem(Player player, int slot){
 
-        if(profileManager.getIfClassTrial(player)){
-            if(slot ==8){
-                return new ItemStack(Material.AIR);
-            }
-            else{
-                return allSkillItems.getPlayerSkill(player, slot+1);
-            }
-        }
 
         EquipSkills equipSkills = profileManager.getAnyProfile(player).getEquipSkills();
 
@@ -369,30 +314,6 @@ public class CombatManager {
         int hotBarSlot = player.getInventory().getHeldItemSlot();
 
         int cooldown;
-
-        if(profileManager.getIfClassTrial(player)){
-            if(hotBarSlot ==8){
-
-                return  " ";
-            }
-            else{
-
-                cooldown = abilityManager.getCooldown(player, hotBarSlot + 1);
-
-                if(cooldown <= 0){
-
-                    String abilityName = allSkillItems.getPlayerSkill(player, hotBarSlot + 1).getItemMeta().getDisplayName();
-                    abilityName = abilityName.replaceAll("§.", "");
-
-                    return abilityName;
-                }
-                else{
-                    return String.valueOf(cooldown);
-                }
-
-
-            }
-        }
 
 
         EquipSkills equipSkills = profileManager.getAnyProfile(player).getEquipSkills();

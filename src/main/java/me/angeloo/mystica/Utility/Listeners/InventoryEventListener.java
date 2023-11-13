@@ -649,35 +649,18 @@ public class InventoryEventListener implements Listener {
 
         Player player = (Player) event.getWhoClicked();
 
-        switch (name.toLowerCase()){
-            case "select":{
-
-                if(classItem == null){
-                    return;
-                }
-
-                if (className.equals("None")) {
-                    return;
-                }
-
-                classSetter.setClass(player, className, false);
-                player.closeInventory();
+        if (name.equalsIgnoreCase("select")) {
+            if (classItem == null) {
                 return;
             }
-            case "trial":{
 
-                if(classItem == null){
-                    return;
-                }
-
-                if (className.equals("None")) {
-                    return;
-                }
-
-                classSetter.setClass(player, className, true);
-                player.closeInventory();
+            if (className.equals("None")) {
                 return;
             }
+
+            classSetter.setClass(player, className);
+            player.closeInventory();
+            return;
         }
 
         player.openInventory(new ClassSelectInventory().openClassSelect(name));

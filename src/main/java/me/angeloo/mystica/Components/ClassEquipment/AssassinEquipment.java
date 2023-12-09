@@ -34,7 +34,7 @@ public class AssassinEquipment {
     }
 
     public ItemStack getBaseOffhand(){
-        return getItem(Material.IRON_SWORD, 2,
+        return getItem(Material.FLINT, 2,
                 ChatColor.of(new Color(214, 61, 207)) + "Assassin's Dagger",
                 ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
                 ChatColor.of(new Color(176, 159, 109)) + "Secondary",
@@ -48,7 +48,7 @@ public class AssassinEquipment {
 
     public ItemStack getBaseHelmet(){
         return getItem(Material.CHAIN, 7,
-                ChatColor.of(new Color(214, 61, 207)) + "Assassin's Cowl",
+                ChatColor.of(new Color(214, 61, 207)) + "Assassin's Scarf",
                 ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
                 ChatColor.of(new Color(176, 159, 109)) + "Helmet",
                 "",

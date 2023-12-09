@@ -34,7 +34,7 @@ public class WarriorEquipment {
     }
 
     public ItemStack getBaseOffhand(){
-        return getItem(Material.IRON_SWORD, 2,
+        return getItem(Material.BRICK, 2,
                 ChatColor.of(new Color(214, 126, 61)) + "Warrior's Shield",
                 ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
                 ChatColor.of(new Color(176, 159, 109)) + "Secondary",

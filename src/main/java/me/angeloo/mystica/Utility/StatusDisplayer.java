@@ -44,7 +44,7 @@ public class StatusDisplayer {
         statusString.append(centeringStatus).append(bigStatus).append(getClassStatus(player)).append(getBonusStatus(player));
 
 
-        player.sendTitle("", String.valueOf(statusString), 0, 4, 0);
+        player.sendTitle("", String.valueOf(statusString), 0, 5, 0);
     }
 
     private String getCastStatus(Player player){
@@ -159,7 +159,7 @@ public class StatusDisplayer {
         int cry = abilityManager.getRangerAbilities().getRallyingCry().getIfBuffTime(player);
 
         if(cry > 0){
-            statusString.append(ChatColor.of(new Color(34,111,80))).append(cry);
+            statusString.append("\uE006");
         }
 
         return String.valueOf(statusString);
@@ -171,7 +171,7 @@ public class StatusDisplayer {
 
         //wild roar
         if(buffAndDebuffManager.getWildRoarBuff().getIfWildRoarBuff(player)){
-            statusString.append("R");
+            statusString.append("\uE007");
         }
 
         if(buffAndDebuffManager.getConjuringForceBuff().getIfConjForceBuff(player)){

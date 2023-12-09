@@ -93,6 +93,10 @@ public class SpecInventory {
                 return getArcaneItem();
             case "shepard":
                 return getShepardItem();
+            case "doom":
+                return getDoomItem();
+            case "blood":
+                return getBloodItem();
         }
         return new ItemStack(Material.AIR);
     }
@@ -165,7 +169,7 @@ public class SpecInventory {
     }*/
 
     private ItemStack getScoutItem(){
-        return getItem(Material.ARROW, 0,
+        return getItem(Material.LIME_DYE, 17,
                 ChatColor.of(new Color(34, 111, 80)) + "Scout",
                 "",
                 ChatColor.of(new Color(0,102,0)) + "Each level",
@@ -187,7 +191,7 @@ public class SpecInventory {
     }
 
     private ItemStack getTamerItem(){
-        return getItem(Material.BONE, 0,
+        return getItem(Material.LIME_DYE, 19,
                 ChatColor.of(new Color(0, 117, 94)) + "Animal Tamer",
                 "",
                 ChatColor.of(new Color(0,102,0)) + "Each level",
@@ -316,7 +320,6 @@ public class SpecInventory {
                 "",
                 ChatColor.of(new Color(230,230,230)) + "Landing " + ChatColor.of(new Color(213, 33, 3)) + "Spiritual Attack " +
                         ChatColor.of(new Color(230,230,230)) + "on an enemy",
-                ChatColor.of(new Color(230,230,230)) + "inflicted with an Enhanced Infection",
                 ChatColor.of(new Color(230,230,230)) + "gives you a Soul Mark.",
                 ChatColor.of(new Color(213, 33, 3)) + "Soul Reap " +
                         ChatColor.of(new Color(230,230,230)) + "consumes Soul Marks and",

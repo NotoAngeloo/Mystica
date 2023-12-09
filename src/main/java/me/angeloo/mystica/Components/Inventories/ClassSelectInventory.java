@@ -27,19 +27,31 @@ public class ClassSelectInventory {
         inv.setItem(4, getClassItem(clazz));
 
         if(!clazz.equalsIgnoreCase("mystic")){
-            inv.setItem(21, getMysticItem());
+            inv.setItem(19, getMysticItem());
         }
 
         if(!clazz.equalsIgnoreCase("elementalist")){
-            inv.setItem(22, getElementalistItem());
+            inv.setItem(20, getElementalistItem());
         }
 
         if(!clazz.equalsIgnoreCase("ranger")){
-            inv.setItem(23, getRangerItem());
+            inv.setItem(21, getRangerItem());
         }
 
         if(!clazz.equalsIgnoreCase("shadow knight")){
-            inv.setItem(20, getShadowKnightItem());
+            inv.setItem(22, getShadowKnightItem());
+        }
+
+        if(!clazz.equalsIgnoreCase("paladin")){
+            inv.setItem(23, getPaladinItem());
+        }
+
+        if(!clazz.equalsIgnoreCase("warrior")){
+            inv.setItem(24, getWarriorItem());
+        }
+
+        if(!clazz.equalsIgnoreCase("assassin")){
+            inv.setItem(25, getAssassinItem());
         }
 
         return inv;
@@ -61,6 +73,15 @@ public class ClassSelectInventory {
             }
             case "shadow knight":{
                 return getShadowKnightItem();
+            }
+            case "paladin":{
+                return getPaladinItem();
+            }
+            case "warrior":{
+                return getWarriorItem();
+            }
+            case "assassin":{
+                return getAssassinItem();
             }
             default:{
                 return new ItemStack(Material.AIR);
@@ -122,6 +143,48 @@ public class ClassSelectInventory {
                 ChatColor.of(new Color(3, 7, 219)) + "Doom",
                 ChatColor.of(new Color(217, 217, 217)) + "Medium Range Dps"
                 );
+    }
+
+    private ItemStack getPaladinItem(){
+        return getItem(Material.IRON_SWORD, 1, ChatColor.of(new Color(207, 214, 61)) + "Paladin",
+                "",
+                ChatColor.of(new Color(217, 217, 217)) + "Physical Damage Type",
+                "",
+                ChatColor.of(new Color(207, 180, 80)) + "Templar",
+                ChatColor.of(new Color(217, 217, 217)) + "Tank",
+                "",
+                ChatColor.of(new Color(207, 214, 61)) + "Dawn",
+                ChatColor.of(new Color(217, 217, 217)) + "Short Range Dps",
+                "",
+                ChatColor.of(new Color(207, 180, 129)) + "Divine",
+                ChatColor.of(new Color(217, 217, 217)) + "Medium Range Healer"
+        );
+    }
+
+    private ItemStack getWarriorItem(){
+        return getItem(Material.BRICK, 1, ChatColor.of(new Color(214, 126, 61)) + "Warrior",
+                "",
+                ChatColor.of(new Color(217, 217, 217)) + "Physical Damage Type",
+                "",
+                ChatColor.of(new Color(214, 126, 102)) + "Gladiator",
+                ChatColor.of(new Color(217, 217, 217)) + "Tank",
+                "",
+                ChatColor.of(new Color(214, 126, 61)) + "Executioner",
+                ChatColor.of(new Color(217, 217, 217)) + "Short Range Dps"
+        );
+    }
+
+    private ItemStack getAssassinItem(){
+        return getItem(Material.FLINT, 1, ChatColor.of(new Color(214, 61, 207)) + "Assassin",
+                "",
+                ChatColor.of(new Color(217, 217, 217)) + "Physical Damage Type",
+                "",
+                ChatColor.of(new Color(248, 61, 119)) + "Alchemist",
+                ChatColor.of(new Color(217, 217, 217)) + "Short Range Damage Support",
+                "",
+                ChatColor.of(new Color(214, 61, 207)) + "Dualist",
+                ChatColor.of(new Color(217, 217, 217)) + "Short Range Dps"
+        );
     }
 
     private ItemStack getItem(Material material, int modelData, String name, String ... lore){

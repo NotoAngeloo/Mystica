@@ -37,7 +37,7 @@ public class RangerSkillItems {
         switch(number){
 
             case 1:{
-                return getItem(Material.LIME_DYE, 0,
+                return getItem(Material.LIME_DYE, 1,
                         ChatColor.of(new Color(34, 111, 80)) + "Biting Rain",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_1_Level() + skillLevel.getSkill_1_Level_Bonus()),
                         "",
@@ -46,7 +46,7 @@ public class RangerSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "and enemies near it");
             }
             case 2:{
-                return getItem(Material.LIME_DYE, 0,
+                return getItem(Material.LIME_DYE, 3,
                         ChatColor.of(new Color(34, 111, 80)) + "Shadow Crows",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_2_Level() + skillLevel.getSkill_2_Level_Bonus()),
                         "",
@@ -54,7 +54,7 @@ public class RangerSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "continuous damage on the target");
             }
             case 3:{
-                return getItem(Material.LIME_DYE, 0,
+                return getItem(Material.LIME_DYE, 5,
                         ChatColor.of(new Color(34, 111, 80)) + "Relentless",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_3_Level() + skillLevel.getSkill_3_Level_Bonus()),
                         "",
@@ -64,7 +64,7 @@ public class RangerSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "movement speed");
             }
             case 4:{
-                return getItem(Material.LIME_DYE, 0,
+                return getItem(Material.LIME_DYE, 7,
                         ChatColor.of(new Color(34, 111, 80)) + "Razor Wind",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_4_Level() + skillLevel.getSkill_4_Level_Bonus()),
                         "",
@@ -73,7 +73,7 @@ public class RangerSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "dealing heavy damage");
             }
             case 5:{
-                return getItem(Material.LIME_DYE, 0,
+                return getItem(Material.LIME_DYE, 9,
                         ChatColor.of(new Color(34, 111, 80)) + "Blessed Arrow",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_5_Level() + skillLevel.getSkill_5_Level_Bonus()),
                         "",
@@ -83,7 +83,7 @@ public class RangerSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "or self to restore mana");
             }
             case 6:{
-                return getItem(Material.LIME_DYE, 0,
+                return getItem(Material.LIME_DYE, 11,
                         ChatColor.of(new Color(34, 111, 80)) + "Rallying Cry",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_6_Level() + skillLevel.getSkill_6_Level_Bonus()),
                         "",
@@ -92,7 +92,7 @@ public class RangerSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "increases 25%");
             }
             case 7:{
-                return getItem(Material.LIME_DYE, 0,
+                return getItem(Material.LIME_DYE, 13,
                         ChatColor.of(new Color(34, 111, 80)) + "Wild Spirit",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_7_Level() + skillLevel.getSkill_7_Level_Bonus()),
                         "",
@@ -100,7 +100,7 @@ public class RangerSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "attacks your target");
             }
             case 8:{
-                return getItem(Material.LIME_DYE, 0,
+                return getItem(Material.LIME_DYE, 15,
                         ChatColor.of(new Color(34, 111, 80)) + "Roll",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_8_Level() + skillLevel.getSkill_8_Level_Bonus()),
                         "",
@@ -122,7 +122,7 @@ public class RangerSkillItems {
         switch(subClass.toLowerCase()){
             //maybe change this skill
             case "scout":{
-                return getItem(Material.ARROW, 0,
+                return getItem(Material.LIME_DYE, 17,
                         ChatColor.of(new Color(34, 111, 80)) + "Star Volley",
                         ChatColor.of(new Color(0,102,0)) + "Level " + level,
                         "",
@@ -131,7 +131,7 @@ public class RangerSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "decreases this skills cooldown");
             }
             case "animal tamer":{
-                return getItem(Material.BONE, 0,
+                return getItem(Material.LIME_DYE, 19,
                         ChatColor.of(new Color(0, 117, 94)) + "Wild Roar",
                         ChatColor.of(new Color(0,102,0)) + "Level " + level,
                         "",

@@ -179,7 +179,6 @@ public class ShadowKnightBasic {
 
         Location loc = player.getLocation().clone().add(direction.multiply(1.25));
 
-        //player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, loc, 1, 0, 0, 0, 0);
 
         BoundingBox hitBox = new BoundingBox(
                 loc.getX() - 3,
@@ -279,7 +278,7 @@ public class ShadowKnightBasic {
 
                 armorStand.teleport(current);
 
-
+                player.getWorld().spawnParticle(Particle.SPELL_WITCH, current.clone().add(0,1,0), 1, 0, 0, 0, 0);
 
                 if(traveled>=2){
                     cancelTask();
@@ -430,6 +429,7 @@ public class ShadowKnightBasic {
                 current.setDirection(direction);
                 armorStand.teleport(current);
 
+                player.getWorld().spawnParticle(Particle.SPELL_WITCH, current.clone().add(0,1,0), 1, 0, 0, 0, 0);
 
                 if(traveled>=2){
                     cancelTask();
@@ -582,6 +582,7 @@ public class ShadowKnightBasic {
                 current.setDirection(direction);
                 armorStand.teleport(current);
 
+                player.getWorld().spawnParticle(Particle.SPELL_WITCH, current.clone().add(0,1,0), 1, 0, 0, 0, 0);
 
                 if(traveled>=3){
                     cancelTask();

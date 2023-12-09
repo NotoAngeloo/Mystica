@@ -1,6 +1,6 @@
-package me.angeloo.mystica.Components.Abilities.Mystic;
+package me.angeloo.mystica.Components.Abilities.ShadowKnight;
 
-import me.angeloo.mystica.Components.Abilities.MysticAbilities;
+import me.angeloo.mystica.Components.Abilities.ShadowKnightAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -19,12 +19,11 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class Dreadfall {
+public class SpiritualAttack {
 
     private final Mystica main;
 
@@ -39,7 +38,7 @@ public class Dreadfall {
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public Dreadfall(Mystica main, AbilityManager manager){
+    public SpiritualAttack(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
@@ -49,8 +48,6 @@ public class Dreadfall {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
-
-
     }
 
     public void use(Player player){
@@ -59,7 +56,7 @@ public class Dreadfall {
             abilityReadyInMap.put(player.getUniqueId(), 0);
         }
 
-        double baseRange = 20;
+        double baseRange = 8;
         double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
         double totalRange = baseRange + extraRange;
 
@@ -99,7 +96,7 @@ public class Dreadfall {
 
         execute(player);
 
-        abilityReadyInMap.put(player.getUniqueId(), 10);
+        abilityReadyInMap.put(player.getUniqueId(), 3);
         new BukkitRunnable(){
             @Override
             public void run(){
@@ -121,11 +118,12 @@ public class Dreadfall {
 
     private void execute(Player player){
 
-        boolean arcane = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("arcane master");
+        boolean doom = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("doom");
 
         LivingEntity target = targetManager.getPlayerTarget(player);
 
-        Location spawnLoc = target.getLocation().clone().add(0,10,0);
+        Location spawnLoc = target.getLocation().clone().add(0,12,0);
+        spawnLoc.setDirection(player.getLocation().getDirection());
 
         ArmorStand armorStand = spawnLoc.getWorld().spawn(spawnLoc, ArmorStand.class);
         armorStand.setInvisible(true);
@@ -134,19 +132,20 @@ public class Dreadfall {
         armorStand.setInvulnerable(true);
         armorStand.setMarker(true);
 
+
         EntityEquipment entityEquipment = armorStand.getEquipment();
 
-        ItemStack meteorItem = new ItemStack(Material.SPECTRAL_ARROW);
-        ItemMeta meta = meteorItem.getItemMeta();
+        ItemStack handItem = new ItemStack(Material.REDSTONE);
+        ItemMeta meta = handItem.getItemMeta();
         assert meta != null;
-        meta.setCustomModelData(11);
-        meteorItem.setItemMeta(meta);
+        meta.setCustomModelData(5);
+        handItem.setItemMeta(meta);
         assert entityEquipment != null;
-        entityEquipment.setHelmet(meteorItem);
+        entityEquipment.setHelmet(handItem);
 
-        double skillDamage = 15;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level() +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
+        double skillDamage = 8;
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
 
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
@@ -168,95 +167,36 @@ public class Dreadfall {
 
                 Vector direction = targetWasLoc.toVector().subtract(current.toVector());
                 double distance = current.distance(targetWasLoc);
-                double distanceThisTick = Math.min(distance, .75);
+                double distanceThisTick = Math.min(distance, 1);
                 current.add(direction.normalize().multiply(distanceThisTick));
+                current.setDirection(direction);
 
                 armorStand.teleport(current);
 
-                armorStand.getWorld().spawnParticle(Particle.SPELL_WITCH, current.add(0,4,0), 1, 0, 0, 0, 0);
+                double increment = (2 * Math.PI) / 16; // angle between particles
+
+                for (int i = 0; i < 16; i++) {
+                    double angle = i * increment;
+                    double x = current.getX() + (2 * Math.cos(angle));
+                    double z = current.getZ() + (2 * Math.sin(angle));
+                    Location loc = new Location(target.getWorld(), x, (current.add(0,2,0).getY()), z);
+
+                    player.getWorld().spawnParticle(Particle.SPELL_WITCH, loc, 1,0, 0, 0, 0);
+                }
 
                 if (distance <= 1) {
 
                     cancelTask();
 
-                    Set<LivingEntity> hitBySkill = new HashSet<>();
+                    boolean crit = damageCalculator.checkIfCrit(player, 0);
+                    double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
 
-                    BoundingBox hitBox = new BoundingBox(
-                            target.getLocation().getX() - 4,
-                            target.getLocation().getY() - 2,
-                            target.getLocation().getZ() - 4,
-                            target.getLocation().getX() + 4,
-                            target.getLocation().getY() + 4,
-                            target.getLocation().getZ() + 4
-                    );
+                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, player);
 
-                    double increment = (2 * Math.PI) / 16; // angle between particles
-
-                    for (int i = 0; i < 16; i++) {
-                        double angle = i * increment;
-                        double x = target.getLocation().getX() + (4 * Math.cos(angle));
-                        double z = target.getLocation().getZ() + (4 * Math.sin(angle));
-                        Location loc = new Location(target.getWorld(), x, (target.getLocation().getY()), z);
-
-                        player.getWorld().spawnParticle(Particle.SPELL_WITCH, loc, 1,0, 0, 0, 0);
+                    if(doom){
+                        //soul reap stack plus 1
                     }
-
-                    for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
-
-                        if(entity == player){
-                            continue;
-                        }
-
-                        if(!(entity instanceof LivingEntity)){
-                            continue;
-                        }
-
-                        if(entity instanceof ArmorStand){
-                            continue;
-                        }
-
-                        LivingEntity livingEntity = (LivingEntity) entity;
-
-                        if(hitBySkill.contains(livingEntity)){
-                            continue;
-                        }
-
-                        hitBySkill.add(livingEntity);
-
-                        boolean crit = damageCalculator.checkIfCrit(player, 0);
-                        double damage = damageCalculator.calculateDamage(player, target, "Magical", skillDamage * skillLevel, crit);
-
-                        //pvp logic
-                        if(entity instanceof Player){
-                            if(pvpManager.pvpLogic(player, (Player) entity)){
-                                changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
-
-                                if(arcane && crit){
-
-                                    double fifteenPercent = (double) profileManager.getAnyProfile(player).getTotalMagic() * .15;
-
-                                    changeResourceHandler.subtractHealthFromEntity(target, fifteenPercent, player);
-                                }
-
-                            }
-                            continue;
-                        }
-
-                        if(pveChecker.pveLogic(livingEntity)){
-                            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, player));
-                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
-
-                            if(arcane && crit){
-
-                                double fifteenPercent = (double) profileManager.getAnyProfile(player).getTotalMagic() * .15;
-
-                                changeResourceHandler.subtractHealthFromEntity(target, fifteenPercent, player);
-                            }
-
-                        }
-
-                    }
-
                 }
 
             }
@@ -291,7 +231,6 @@ public class Dreadfall {
     }
 
     public int getCooldown(Player player){
-
         int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
 
         if(cooldown < 0){

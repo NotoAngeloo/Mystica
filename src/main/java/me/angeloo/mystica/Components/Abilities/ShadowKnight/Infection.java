@@ -339,6 +339,27 @@ public class Infection {
     }
 
 
+    public double soulReapToRemove(Player player, LivingEntity entity){
+
+        double damage = 6;
+
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
+
+        double time = getTimeLeftOfThisInfection(entity, player);
+
+        double total = damage * skillLevel * time;
+
+        infections.get(entity.getUniqueId()).remove(player);
+
+        return total;
+    }
+
+    public  void removeEnhancement(Player player){
+        enhanced.put(player, false);
+    }
+
+
     public int getCooldown(Player player){
         int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
 

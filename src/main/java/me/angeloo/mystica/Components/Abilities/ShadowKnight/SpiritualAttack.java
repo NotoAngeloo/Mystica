@@ -12,7 +12,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
@@ -38,7 +37,9 @@ public class SpiritualAttack {
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public SpiritualAttack(Mystica main, AbilityManager manager){
+    private final SoulReap soulReap;
+
+    public SpiritualAttack(Mystica main, AbilityManager manager, ShadowKnightAbilities abilities){
         this.main = main;
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
@@ -48,6 +49,7 @@ public class SpiritualAttack {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        soulReap = abilities.getSoulReap();
     }
 
     public void use(Player player){
@@ -195,7 +197,7 @@ public class SpiritualAttack {
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
 
                     if(doom){
-                        //soul reap stack plus 1
+                        soulReap.addSoulMark(player);
                     }
                 }
 

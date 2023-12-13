@@ -443,7 +443,6 @@ public class ShadowKnightBasic {
                 armorStand.remove();
                 this.cancel();
 
-
             }
 
         }.runTaskTimer(main, 0, 1);

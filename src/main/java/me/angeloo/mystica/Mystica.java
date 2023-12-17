@@ -22,6 +22,8 @@ import java.util.ArrayList;
 
 public final class Mystica extends JavaPlugin {
 
+
+    //TODO: testing something
     private ProfileManager profileManager;
     private ProfileFileWriter profileFileWriter;
 

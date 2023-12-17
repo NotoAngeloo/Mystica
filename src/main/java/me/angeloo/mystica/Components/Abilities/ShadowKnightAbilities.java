@@ -17,6 +17,7 @@ public class ShadowKnightAbilities {
     private final Annihilation annihilation;
     private final SoulReap soulReap;
     private final BurialGround burialGround;
+    private final Bloodsucker bloodsucker;
 
     public ShadowKnightAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
@@ -26,6 +27,7 @@ public class ShadowKnightAbilities {
         spiritualAttack = new SpiritualAttack(main, manager, this);
         annihilation = new Annihilation(main, manager, this);
         burialGround = new BurialGround(main, manager);
+        bloodsucker = new Bloodsucker(main, manager);
     }
 
     public void useShadowKnightAbility(Player player, int abilityNumber){
@@ -44,6 +46,7 @@ public class ShadowKnightAbilities {
                 return;
             }
             case 4:{
+                bloodsucker.use(player);
                 return;
             }
             case 5:{
@@ -91,7 +94,7 @@ public class ShadowKnightAbilities {
             case 3:
                 return burialGround.getCooldown(player);
             case 4:
-
+                return bloodsucker.getCooldown(player);
             case 5:
                 return soulReap.getCooldown(player);
             case 6:

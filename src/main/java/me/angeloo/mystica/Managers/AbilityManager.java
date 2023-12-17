@@ -215,6 +215,8 @@ public class AbilityManager {
         mysticAbilities.getEvilSpirit().removeShards(player);
         mysticAbilities.getPurifyingBlast().unQueueInstantCast(player);
         elementalistAbilities.getFieryWing().removeInflame(player);
+        shadowKnightAbilities.getInfection().removeEnhancement(player);
+        shadowKnightAbilities.getSoulReap().removeSoulMarks(player);
     }
 
     public boolean getIfCasting(Player player){

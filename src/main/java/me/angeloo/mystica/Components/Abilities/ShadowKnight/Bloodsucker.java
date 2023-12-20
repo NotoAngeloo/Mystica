@@ -1,14 +1,12 @@
 package me.angeloo.mystica.Components.Abilities.ShadowKnight;
 
+import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -121,6 +119,16 @@ public class Bloodsucker {
 
         boolean blood = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("blood");
 
+        double skillDamage = 5;
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
+
+        double healAmount = profileManager.getAnyProfile(player).getTotalHealth() * .1;
+
+        if(blood){
+            healAmount =  healAmount + profileManager.getAnyProfile(player).getTotalHealth() * .3;
+        }
+
         LivingEntity target = targetManager.getPlayerTarget(player);
 
         Location start = player.getLocation();
@@ -147,6 +155,7 @@ public class Bloodsucker {
         entityEquipment.setHelmet(boltItem);
 
 
+        double finalHealAmount = healAmount;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
             @Override
@@ -179,7 +188,13 @@ public class Bloodsucker {
                 if (distance <= 1) {
                     cancelTask();
 
-                    //damage and healing
+                    boolean crit = damageCalculator.checkIfCrit(player, 0);
+                    double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
+
+                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+
+                    changeResourceHandler.addHealthToEntity(player, finalHealAmount, player);
 
                 }
             }

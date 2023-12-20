@@ -10,6 +10,7 @@ import me.angeloo.mystica.Utility.StatusDisplayer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -132,6 +133,7 @@ public class CombatManager {
     }
 
     private void setPlayerAbilityItems(Player player){
+
 
         boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
 

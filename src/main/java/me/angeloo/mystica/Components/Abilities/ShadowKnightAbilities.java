@@ -18,6 +18,8 @@ public class ShadowKnightAbilities {
     private final SoulReap soulReap;
     private final BurialGround burialGround;
     private final Bloodsucker bloodsucker;
+    private final ShadowGrip shadowGrip;
+    private final SpectralSteed spectralSteed;
 
     public ShadowKnightAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
@@ -28,6 +30,8 @@ public class ShadowKnightAbilities {
         annihilation = new Annihilation(main, manager, this);
         burialGround = new BurialGround(main, manager);
         bloodsucker = new Bloodsucker(main, manager);
+        shadowGrip = new ShadowGrip(main, manager);
+        spectralSteed = new SpectralSteed(main, manager);
     }
 
     public void useShadowKnightAbility(Player player, int abilityNumber){
@@ -54,9 +58,11 @@ public class ShadowKnightAbilities {
                 return;
             }
             case 6:{
+                shadowGrip.use(player);
                 return;
             }
             case 7:{
+                spectralSteed.use(player);
                 return;
             }
             case 8:{
@@ -98,9 +104,9 @@ public class ShadowKnightAbilities {
             case 5:
                 return soulReap.getCooldown(player);
             case 6:
-
+                return shadowGrip.getCooldown(player);
             case 7:
-
+                return spectralSteed.getCooldown(player);
             case 8:
 
         }

@@ -23,7 +23,6 @@ import java.util.ArrayList;
 public final class Mystica extends JavaPlugin {
 
 
-    //TODO: testing something
     private ProfileManager profileManager;
     private ProfileFileWriter profileFileWriter;
 
@@ -57,8 +56,6 @@ public final class Mystica extends JavaPlugin {
         profileManager = new ProfileManager(this);
         profileManager.loadProfilesFromConfig();
 
-        aggroManager = new AggroManager();
-
         classSetter = new ClassSetter(this);
 
         buffAndDebuffManager = new BuffAndDebuffManager(this);
@@ -69,6 +66,8 @@ public final class Mystica extends JavaPlugin {
         pvpManager = new PvpManager(this);
 
         targetManager = new TargetManager(this);
+
+        aggroManager = new AggroManager(this);
 
         dpsManager = new DpsManager();
 

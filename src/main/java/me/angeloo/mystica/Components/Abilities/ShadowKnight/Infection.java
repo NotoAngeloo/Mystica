@@ -63,7 +63,7 @@ public class Infection {
             abilityReadyInMap.put(player.getUniqueId(), 0);
         }
 
-        double baseRange = 8;
+        double baseRange = 10;
         double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
         double totalRange = baseRange + extraRange;
 

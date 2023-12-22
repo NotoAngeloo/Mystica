@@ -426,8 +426,8 @@ public class SpecInventory {
                 ChatColor.of(new Color(207, 214, 61)) + "Torah Sword" +
                         ChatColor.of(new Color(230,230,230)) + " crit rate increased by 15%.",
                 ChatColor.of(new Color(230,230,230)) + "Landing a crit refreshes the",
-                ChatColor.of(new Color(230,230,230)) + " cooldown of " + ChatColor.of(new Color(207, 214, 61)) + "Judgement.",
-                ChatColor.of(new Color(230,230,230)) + "In addition, your next" + ChatColor.of(new Color(207, 214, 61)) + "Judgement,",
+                ChatColor.of(new Color(230,230,230)) + "cooldown of " + ChatColor.of(new Color(207, 214, 61)) + "Judgement.",
+                ChatColor.of(new Color(230,230,230)) + "In addition, your next " + ChatColor.of(new Color(207, 214, 61)) + "Judgement,",
                 ChatColor.of(new Color(230,230,230)) + "Reigning Sword, or Sword of the Covenant's",
                 ChatColor.of(new Color(230,230,230)) + "Damage will be increased by 80%.",
                 "",
@@ -438,8 +438,7 @@ public class SpecInventory {
                 ChatColor.of(new Color(230,230,230)) + "area damage. This also",
                 ChatColor.of(new Color(230,230,230)) + "leaves behind orbs that",
                 ChatColor.of(new Color(230,230,230)) + "can be collected by you to",
-                ChatColor.of(new Color(230,230,230)) + "increase your crit rate by 10%",
-                ChatColor.of(new Color(230,230,230)) + "until you land a critical hit");
+                ChatColor.of(new Color(230,230,230)) + "increase your crit rate by 10%");
     }
 
     private ItemStack getExecutionerItem(){

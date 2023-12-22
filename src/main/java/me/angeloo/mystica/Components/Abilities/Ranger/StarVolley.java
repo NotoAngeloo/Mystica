@@ -117,7 +117,6 @@ public class StarVolley {
 
     private void execute(Player player){
 
-        //spawn the thing above target, send the arrow down
         LivingEntity target = targetManager.getPlayerTarget(player);
 
         Location spawnStart = target.getLocation().clone();

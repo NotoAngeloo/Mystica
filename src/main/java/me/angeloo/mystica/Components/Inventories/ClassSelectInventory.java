@@ -182,7 +182,7 @@ public class ClassSelectInventory {
                 ChatColor.of(new Color(248, 61, 119)) + "Alchemist",
                 ChatColor.of(new Color(217, 217, 217)) + "Short Range Damage Support",
                 "",
-                ChatColor.of(new Color(214, 61, 207)) + "Dualist",
+                ChatColor.of(new Color(214, 61, 207)) + "Duelist",
                 ChatColor.of(new Color(217, 217, 217)) + "Short Range Dps"
         );
     }

@@ -1,5 +1,7 @@
 package me.angeloo.mystica.Components.ClassSkillItems;
 
+import me.angeloo.mystica.Components.Abilities.AssassinAbilities;
+import me.angeloo.mystica.Components.Abilities.Paladin.PaladinBasic;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -16,6 +18,9 @@ public class AllSkillItems {
     private final RangerSkillItems rangerSkillItems;
     private final MysticSkillItem mysticSkillItem;
     private final ShadowKnightSkillItems shadowKnightSkillItems;
+    private final PaladinSkillItems paladinSkillItems;
+    private final WarriorSkillItems warriorSkillItems;
+    private final AssassinSkillItems assassinSkillItems;
 
     public AllSkillItems(Mystica main){
         profileManager = main.getProfileManager();
@@ -23,6 +28,9 @@ public class AllSkillItems {
         rangerSkillItems = new RangerSkillItems(main);
         mysticSkillItem = new MysticSkillItem(main);
         shadowKnightSkillItems = new ShadowKnightSkillItems(main);
+        paladinSkillItems = new PaladinSkillItems(main);
+        warriorSkillItems = new WarriorSkillItems(main);
+        assassinSkillItems = new AssassinSkillItems(main);
     }
 
     public ItemStack getPlayerSkill(Player player, int skillNumber){
@@ -43,6 +51,15 @@ public class AllSkillItems {
             }
             case "shadow knight":{
                 return shadowKnightSkillItems.getSkill(skillNumber, player);
+            }
+            case "paladin":{
+                return paladinSkillItems.getSkill(skillNumber, player);
+            }
+            case "warrior":{
+                return warriorSkillItems.getSkill(skillNumber, player);
+            }
+            case "assassin":{
+                return assassinSkillItems.getSkill(skillNumber, player);
             }
         }
 
@@ -68,6 +85,15 @@ public class AllSkillItems {
             }
             case "shadow knight":{
                 return shadowKnightSkillItems.getUltimate(player);
+            }
+            case "paladin":{
+                return paladinSkillItems.getUltimate(player);
+            }
+            case "warrior":{
+                return warriorSkillItems.getUltimate(player);
+            }
+            case "assassin":{
+                return assassinSkillItems.getUltimate(player);
             }
         }
 

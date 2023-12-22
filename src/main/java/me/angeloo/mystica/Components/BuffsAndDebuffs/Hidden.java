@@ -65,8 +65,18 @@ public class Hidden {
             aggroManager.removeFromBlackList(player);
         }
 
+    }
 
+    public void showWeapons(Player player){
+        PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
+        if(playerEquipment.getWeapon() != null){
+            player.getInventory().setItemInMainHand(playerEquipment.getWeapon());
+        }
+
+        if (playerEquipment.getOffhand() != null){
+            player.getInventory().setItemInOffHand(playerEquipment.getOffhand());
+        }
     }
 
 }

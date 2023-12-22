@@ -321,6 +321,7 @@ public class CombatManager {
         EquipSkills equipSkills = profileManager.getAnyProfile(player).getEquipSkills();
 
 
+
         if(hotBarSlot == 8){
 
             if(!allSkillItems.getUltimate(player).hasItemMeta()){
@@ -330,8 +331,17 @@ public class CombatManager {
             cooldown = abilityManager.getUltimateCooldown(player);
 
             if(cooldown <= 0){
-                String abilityName = allSkillItems.getUltimate(player).getItemMeta().getDisplayName();
+
+                ItemStack ultimateItem = allSkillItems.getUltimate(player);
+
+                if(ultimateItem.getType().equals(Material.AIR)){
+                    return " ";
+                }
+
+                String abilityName = ultimateItem.getItemMeta().getDisplayName();
+
                 abilityName = abilityName.replaceAll("§.", "");
+
 
                 return abilityName;
             }

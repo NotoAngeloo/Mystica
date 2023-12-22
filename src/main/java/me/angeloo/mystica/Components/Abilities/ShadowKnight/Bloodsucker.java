@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.ShadowKnight;
 
+import me.angeloo.mystica.Components.Abilities.ShadowKnightAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -36,8 +37,9 @@ public class Bloodsucker {
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
+    private final BloodShield bloodShield;
 
-    public Bloodsucker(Mystica main, AbilityManager manager){
+    public Bloodsucker(Mystica main, AbilityManager manager, ShadowKnightAbilities abilities){
         this.main = main;
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
@@ -47,6 +49,7 @@ public class Bloodsucker {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        bloodShield = abilities.getBloodShield();
     }
 
     public void use(Player player){
@@ -117,6 +120,8 @@ public class Bloodsucker {
 
     private void execute(Player player){
 
+        //TODO:get my texture pack from other computer
+
         boolean blood = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("blood");
 
         double skillDamage = 5;
@@ -127,6 +132,7 @@ public class Bloodsucker {
 
         if(blood){
             healAmount =  healAmount + profileManager.getAnyProfile(player).getTotalHealth() * .3;
+            bloodShield.increaseDuration(player);
         }
 
         LivingEntity target = targetManager.getPlayerTarget(player);

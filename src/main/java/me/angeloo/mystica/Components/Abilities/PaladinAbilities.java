@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities;
 
+import me.angeloo.mystica.Components.Abilities.Paladin.PaladinBasic;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -9,9 +10,11 @@ public class PaladinAbilities {
 
     private final ProfileManager profileManager;
 
+    private final PaladinBasic paladinBasic;
+
     public PaladinAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
-
+        paladinBasic = new PaladinBasic(main, manager);
     }
 
     public void usePaladinAbility(Player player, int abilityNumber){
@@ -62,7 +65,7 @@ public class PaladinAbilities {
     }
 
     public void usePaladinBasic(Player player){
-
+        paladinBasic.useBasic(player);
     }
 
     public int getAbilityCooldown(Player player, int abilityNumber){

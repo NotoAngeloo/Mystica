@@ -69,6 +69,23 @@ public class SpecInventory {
                 inv.setItem(15, getDoomItem());
                 break;
             }
+            case "paladin":{
+                inv.setItem(11, getTemplarItem());
+                //secret
+                inv.setItem(13, getDivineItem());
+                inv.setItem(15, getDawnItem());
+                break;
+            }
+            case "warrior":{
+                inv.setItem(11, getGladiatorItem());
+                inv.setItem(15, getExecutionerItem());
+                break;
+            }
+            case "assassin":{
+                inv.setItem(11, getDuelistItem());
+                inv.setItem(15, getAlchemistItem());
+                break;
+            }
         }
 
         return inv;
@@ -97,6 +114,20 @@ public class SpecInventory {
                 return getDoomItem();
             case "blood":
                 return getBloodItem();
+            case "templar":
+                return getTemplarItem();
+            case "divine":
+                return getDivineItem();
+            case "dawn":
+                return getDawnItem();
+            case "gladiator":
+                return getGladiatorItem();
+            case "executioner":
+                return getExecutionerItem();
+            case "duelist":
+                return getDuelistItem();
+            case "alchemist":
+                return getAlchemistItem();
         }
         return new ItemStack(Material.AIR);
     }
@@ -285,7 +316,7 @@ public class SpecInventory {
                 ChatColor.of(new Color(213, 33, 3)) + "Blood",
                 "",
                 ChatColor.of(new Color(0,102,0)) + "Each level",
-                ChatColor.of(new Color(230,230,230)) + "+40 Health, +2 Attack, +1 Both Defense",
+                ChatColor.of(new Color(230,230,230)) + "+40 Health, +1 Attack, +2 Both Defense",
                 "",
                 ChatColor.of(new Color(230,230,230)) + "Gain Crushing Resistance",
                 "",
@@ -336,6 +367,178 @@ public class SpecInventory {
                 ChatColor.of(new Color(230,230,230)) + "refreshing its duration");
     }
 
+    private ItemStack getTemplarItem(){
+        return getItem(Material.YELLOW_DYE, 0,
+                ChatColor.of(new Color(207, 180, 80)) + "Templar",
+                "",
+                ChatColor.of(new Color(0,102,0)) + "Each level",
+                ChatColor.of(new Color(230,230,230)) + "+30 Health, +1 Attack, +200 mana, +2 Both Defense",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Gain Crushing Resistance",
+                "",
+                ChatColor.of(new Color(207, 214, 61)) + "Reigning Sword" +
+                        ChatColor.of(new Color(230,230,230)) + " damage increases by 120%",
+                ChatColor.of(new Color(230,230,230)) + "and shield increased by 20%.",
+                ChatColor.of(new Color(207, 214, 61)) + "Judgement" +
+                        ChatColor.of(new Color(230,230,230)) + " will now taunt the target.",
+                "",
+                ChatColor.of(new Color(0,102,0)) + "Get Skill",
+                ChatColor.of(new Color(207, 180, 80)) + "Shield of Sanctity",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Gain a shield to absorb your",
+                ChatColor.of(new Color(230,230,230)) + "level% of your max health for",
+                ChatColor.of(new Color(230,230,230)) + "5 seconds. While active",
+                ChatColor.of(new Color(230,230,230)) + "restore your health.");
+    }
+
+    private ItemStack getDivineItem(){
+        return getItem(Material.YELLOW_DYE, 0,
+                ChatColor.of(new Color(207, 180, 129)) + "Divine",
+                "",
+                ChatColor.of(new Color(0,102,0)) + "Each level",
+                ChatColor.of(new Color(230,230,230)) + "+30 Health, +2 Attack, +100 mana, +1 Both Defense",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Increases healing by 20%.",
+                "",
+                "Your abilities are replaced with",
+                "new ones",
+                "",
+                ChatColor.of(new Color(0,102,0)) + "Get Skill",
+                ChatColor.of(new Color(207, 180, 129)) + "Representative",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Instantly heal nearby allies",
+                ChatColor.of(new Color(230,230,230)) + "and grant yourself haste as",
+                ChatColor.of(new Color(230,230,230)) + "well as your healing and damage",
+                ChatColor.of(new Color(230,230,230)) + "for 10 seconds. This skill is",
+                ChatColor.of(new Color(230,230,230)) + "unaffected by haste"
+                );
+    }
+
+    private ItemStack getDawnItem(){
+        return getItem(Material.YELLOW_DYE, 0,
+                ChatColor.of(new Color(207, 214, 61)) + "Dawn",
+                "",
+                ChatColor.of(new Color(0,102,0)) + "Each level",
+                ChatColor.of(new Color(230,230,230)) + "+15 Health, +3 Attack, +100 mana, +1 Both Defense",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Crit rate increased by 10%",
+                "",
+                ChatColor.of(new Color(207, 214, 61)) + "Torah Sword" +
+                        ChatColor.of(new Color(230,230,230)) + " crit rate increased by 15%.",
+                ChatColor.of(new Color(230,230,230)) + "Landing a crit refreshes the",
+                ChatColor.of(new Color(230,230,230)) + " cooldown of " + ChatColor.of(new Color(207, 214, 61)) + "Judgement.",
+                ChatColor.of(new Color(230,230,230)) + "In addition, your next" + ChatColor.of(new Color(207, 214, 61)) + "Judgement,",
+                ChatColor.of(new Color(230,230,230)) + "Reigning Sword, or Sword of the Covenant's",
+                ChatColor.of(new Color(230,230,230)) + "Damage will be increased by 80%.",
+                "",
+                ChatColor.of(new Color(0,102,0)) + "Get Skill",
+                ChatColor.of(new Color(207, 214, 61)) + "Well of Light",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Summon a well that deals",
+                ChatColor.of(new Color(230,230,230)) + "area damage. This also",
+                ChatColor.of(new Color(230,230,230)) + "leaves behind orbs that",
+                ChatColor.of(new Color(230,230,230)) + "can be collected by you to",
+                ChatColor.of(new Color(230,230,230)) + "increase your crit rate by 10%",
+                ChatColor.of(new Color(230,230,230)) + "until you land a critical hit");
+    }
+
+    private ItemStack getExecutionerItem(){
+        return getItem(Material.YELLOW_DYE, 0,
+                ChatColor.of(new Color(214, 126, 61)) + "Executioner",
+                "",
+                ChatColor.of(new Color(0,102,0)) + "Each level",
+                ChatColor.of(new Color(230,230,230)) + "+15 Health, +3 Attack, +100 mana, +1 Both Defense",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Crit rate increased by 10%",
+                "",
+                ChatColor.of(new Color(214, 126, 61)) + "Anvil Drop" +
+                        ChatColor.of(new Color(230,230,230)) + " crit rate increased by 15%",
+                ChatColor.of(new Color(230,230,230)) + "and damage increased by 100%.",
+                ChatColor.of(new Color(214, 126, 61)) + "Flaming Sigil " + ChatColor.of(new Color(230,230,230)) + "now also grants",
+                ChatColor.of(new Color(230,230,230)) + "attack boost to allies",
+                "",
+                ChatColor.of(new Color(0,102,0)) + "Get Skill",
+                ChatColor.of(new Color(214, 126, 61)) + "Death Gaze",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Hook your target, pulling",
+                ChatColor.of(new Color(230,230,230)) + "them towards you and stunning",
+                ChatColor.of(new Color(230,230,230)) + "them. If they are unable to be",
+                ChatColor.of(new Color(230,230,230)) + "pulled, go to their position",
+                ChatColor.of(new Color(230,230,230)) + "instead");
+    }
+
+    private ItemStack getGladiatorItem(){
+        return getItem(Material.YELLOW_DYE, 0,
+                ChatColor.of(new Color(214, 126, 102)) + "Gladiator",
+                "",
+                ChatColor.of(new Color(0,102,0)) + "Each level",
+                ChatColor.of(new Color(230,230,230)) + "+30 Health, +1 Attack, +200 mana, +2 Both Defense",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Gain Crushing Resistance",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Taking damage reduces the",
+                ChatColor.of(new Color(230,230,230)) + "cooldown of " + ChatColor.of(new Color(214, 126, 61)) + "Searing Chains.",
+                ChatColor.of(new Color(214, 126, 61)) + "Flaming Sigil " + ChatColor.of(new Color(230,230,230)) + "now also grants",
+                ChatColor.of(new Color(230,230,230)) + "health boost to allies",
+                "",
+                ChatColor.of(new Color(0,102,0)) + "Get Skill",
+                ChatColor.of(new Color(214, 126, 102)) + "Gladiator Heart",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Gain a shield to absorb your",
+                ChatColor.of(new Color(230,230,230)) + "level% of your max health for",
+                ChatColor.of(new Color(230,230,230)) + "5 seconds. While active",
+                ChatColor.of(new Color(230,230,230)) + "increase your damage resistance");
+    }
+
+    private ItemStack getDuelistItem(){
+        return getItem(Material.YELLOW_DYE, 0,
+                ChatColor.of(new Color(214, 61, 207)) + "Duelist",
+                "",
+                ChatColor.of(new Color(0,102,0)) + "Each level",
+                ChatColor.of(new Color(230,230,230)) + "+15 Health, +3 Attack, +100 mana, +1 Both Defense",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Crit rate increased by 10%",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Increase your maximum combo",
+                ChatColor.of(new Color(230,230,230)) + "points by 1. Increase your",
+                ChatColor.of(new Color(230,230,230)) + "crit damage by half your level",
+                ChatColor.of(new Color(214, 61, 207)) + "Blade Tempest " + ChatColor.of(new Color(230,230,230)) + "increases crit",
+                ChatColor.of(new Color(230,230,230)) + "rate by 10% for 5 seconds.",
+                "",
+                ChatColor.of(new Color(0,102,0)) + "Get Skill",
+                ChatColor.of(new Color(214, 61, 207)) + "Duelist's Frenzy",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Consume your combo points",
+                ChatColor.of(new Color(230,230,230)) + "to deal a massive blow.",
+                ChatColor.of(new Color(230,230,230)) + "For the next 15 seconds,",
+                ChatColor.of(new Color(230,230,230)) + "every basic attack grants",
+                ChatColor.of(new Color(230,230,230)) + "2 combo points.",
+                ChatColor.of(new Color(230,230,230)) + "Requires 6 Combo Points");
+    }
+
+    private ItemStack getAlchemistItem(){
+        return getItem(Material.YELLOW_DYE, 0,
+                ChatColor.of(new Color(248, 61, 119)) + "Alchemist",
+                "",
+                ChatColor.of(new Color(0,102,0)) + "Each level",
+                ChatColor.of(new Color(230,230,230)) + "+30 Health, +2 Attack, +100 mana, +1 Both Defense",
+                "",
+                ChatColor.of(new Color(214, 61, 207)) + "Laceration " + ChatColor.of(new Color(230,230,230)) + "now consumes",
+                ChatColor.of(new Color(230,230,230)) + "combo points to deal increased",
+                ChatColor.of(new Color(230,230,230)) + "bleeding damage.",
+                "",
+                ChatColor.of(new Color(0,102,0)) + "Get Skill",
+                ChatColor.of(new Color(248, 61, 119)) + "Wicked Concoction",
+                "",
+                ChatColor.of(new Color(230,230,230)) + "Throw a potion at your",
+                ChatColor.of(new Color(230,230,230)) + "target. If the target",
+                ChatColor.of(new Color(230,230,230)) + "is an ally, restore their",
+                ChatColor.of(new Color(230,230,230)) + "health and grant damage",
+                ChatColor.of(new Color(230,230,230)) + "reduction for 15 seconds",
+                ChatColor.of(new Color(230,230,230)) + "If the target is an enemy",
+                ChatColor.of(new Color(230,230,230)) + "they take increased damage",
+                ChatColor.of(new Color(230,230,230)) + "for 15 seconds.");
+    }
 
     private ItemStack getItem(Material material, int modelData, String name, String ... lore){
 

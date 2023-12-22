@@ -58,7 +58,7 @@ public class AssassinAbilities {
         }
     }
 
-    public void useWarriorBasic(Player player){
+    public void useAssassinBasic(Player player){
 
     }
 

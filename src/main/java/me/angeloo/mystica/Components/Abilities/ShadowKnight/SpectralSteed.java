@@ -280,7 +280,7 @@ public class SpectralSteed {
                     return;
                 }
 
-                if(count >= 20){
+                if(count >= 30){
                     horse.remove();
                     this.cancel();
                     return;

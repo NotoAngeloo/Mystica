@@ -68,6 +68,10 @@ public class StatusDisplayer {
                     color = new Color(155, 120, 197);
                     break;
                 }
+                case "shadow knight":{
+                    color = new Color(213, 33, 3);
+                    break;
+                }
             }
 
             statusString.append(ChatColor.of(color)).append("[");

@@ -48,7 +48,6 @@ public class DisplayWeapons {
 
         ItemStack displayedWeapon = new ItemStack(Material.AIR);
 
-
         PlayerEquipment equipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
         ItemStack weapon = equipment.getWeapon();

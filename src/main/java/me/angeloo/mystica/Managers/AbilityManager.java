@@ -1,9 +1,6 @@
 package me.angeloo.mystica.Managers;
 
-import me.angeloo.mystica.Components.Abilities.ElementalistAbilities;
-import me.angeloo.mystica.Components.Abilities.MysticAbilities;
-import me.angeloo.mystica.Components.Abilities.RangerAbilities;
-import me.angeloo.mystica.Components.Abilities.ShadowKnightAbilities;
+import me.angeloo.mystica.Components.Abilities.*;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.entity.Player;
@@ -25,6 +22,9 @@ public class AbilityManager {
     private final RangerAbilities rangerAbilities;
     private final MysticAbilities mysticAbilities;
     private final ShadowKnightAbilities shadowKnightAbilities;
+    private final PaladinAbilities paladinAbilities;
+    private final WarriorAbilities warriorAbilities;
+    private final AssassinAbilities assassinAbilities;
 
     private final CombatManager combatManager;
 
@@ -36,6 +36,9 @@ public class AbilityManager {
         rangerAbilities = new RangerAbilities(main, this);
         mysticAbilities = new MysticAbilities(main, this);
         shadowKnightAbilities = new ShadowKnightAbilities(main, this);
+        paladinAbilities = new PaladinAbilities(main, this);
+        warriorAbilities = new WarriorAbilities(main, this);
+        assassinAbilities = new AssassinAbilities(main, this);
     }
 
     public void useAbility(Player player, int abilityNumber){
@@ -62,7 +65,6 @@ public class AbilityManager {
 
         String clazz = playerProfile.getPlayerClass();
 
-
         switch (clazz.toLowerCase()){
             case "elementalist":{
                 elementalistAbilities.useElementalistAbility(player, abilityNumber);
@@ -78,6 +80,18 @@ public class AbilityManager {
             }
             case "shadow knight":{
                 shadowKnightAbilities.useShadowKnightAbility(player, abilityNumber);
+                return;
+            }
+            case "paladin":{
+                paladinAbilities.usePaladinAbility(player, abilityNumber);
+                return;
+            }
+            case "warrior":{
+                warriorAbilities.useWarriorAbility(player, abilityNumber);
+                return;
+            }
+            case "assassin":{
+                assassinAbilities.useAssassinAbility(player, abilityNumber);
                 return;
             }
         }
@@ -109,6 +123,18 @@ public class AbilityManager {
             }
             case "shadow knight":{
                 shadowKnightAbilities.useShadowKnightBasic(player);
+                return;
+            }
+            case "paladin":{
+                paladinAbilities.usePaladinBasic(player);
+                return;
+            }
+            case "warrior":{
+                warriorAbilities.useWarriorBasic(player);
+                return;
+            }
+            case "assassin":{
+                assassinAbilities.useAssassinBasic(player);
                 return;
             }
         }
@@ -151,6 +177,18 @@ public class AbilityManager {
                 shadowKnightAbilities.useShadowKnightUltimate(player);
                 return;
             }
+            case "paladin":{
+                paladinAbilities.usePaladinUltimate(player);
+                return;
+            }
+            case "warrior":{
+                warriorAbilities.useWarriorUltimate(player);
+                return;
+            }
+            case "assassin":{
+                assassinAbilities.useAssassinUltimate(player);
+                return;
+            }
         }
     }
 
@@ -172,6 +210,15 @@ public class AbilityManager {
             }
             case "shadow knight":{
                 return shadowKnightAbilities.getAbilityCooldown(player, abilityNumber);
+            }
+            case "paladin":{
+                return paladinAbilities.getAbilityCooldown(player, abilityNumber);
+            }
+            case "warrior":{
+                return warriorAbilities.getAbilityCooldown(player, abilityNumber);
+            }
+            case "assassin":{
+                return assassinAbilities.getAbilityCooldown(player, abilityNumber);
             }
         }
 
@@ -196,6 +243,15 @@ public class AbilityManager {
             }
             case "shadow knight":{
                 return shadowKnightAbilities.getUltimateCooldown(player);
+            }
+            case "paladin":{
+                return paladinAbilities.getUltimateCooldown(player);
+            }
+            case "warrior":{
+                return warriorAbilities.getUltimateCooldown(player);
+            }
+            case "assassin":{
+                return assassinAbilities.getUltimateCooldown(player);
             }
         }
 

@@ -72,6 +72,10 @@ public class StatusDisplayer {
                     color = new Color(213, 33, 3);
                     break;
                 }
+                case "paladin":{
+                    color = new Color(207, 214, 61);
+                    break;
+                }
             }
 
             statusString.append(ChatColor.of(color)).append("[");

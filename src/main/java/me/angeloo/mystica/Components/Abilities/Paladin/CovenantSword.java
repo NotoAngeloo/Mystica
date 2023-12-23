@@ -167,6 +167,8 @@ public class CovenantSword {
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
 
+        abilityManager.setCasting(player, true);
+
         boolean finalTargeted = targeted;
         new BukkitRunnable(){
             boolean stage1 = false;
@@ -288,6 +290,10 @@ public class CovenantSword {
                     cancelTask();
                 }
 
+                double percent = ((Math.abs(angle) + (Math.abs(ea1))) / 195) * 100;
+
+                abilityManager.setCastBar(player, percent);
+
             }
 
             private boolean targetStillValid(LivingEntity target){
@@ -389,6 +395,7 @@ public class CovenantSword {
             private void cancelTask(){
                 this.cancel();
                 sword.remove();
+                abilityManager.setCasting(player, false);
             }
 
         }.runTaskTimer(main, 0, 1);

@@ -188,8 +188,8 @@ public class TorahSword {
             critValue = 15;
         }
 
-        boolean crit = damageCalculator.checkIfCrit(player, critValue);
 
+        int finalCritValue = critValue;
         new BukkitRunnable(){
             int count = 0;
             @Override
@@ -231,6 +231,7 @@ public class TorahSword {
 
                 if (distance1 <= 1) {
 
+                    boolean crit = damageCalculator.checkIfCrit(player, finalCritValue);
                     double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
@@ -240,6 +241,7 @@ public class TorahSword {
 
                 if (distance2 <= 1) {
 
+                    boolean crit = damageCalculator.checkIfCrit(player, finalCritValue);
                     double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
@@ -251,6 +253,7 @@ public class TorahSword {
 
                     cancelTask();
 
+                    boolean crit = damageCalculator.checkIfCrit(player, finalCritValue);
                     double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));

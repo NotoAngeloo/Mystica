@@ -395,9 +395,7 @@ public class PaladinBasic {
         assert entityEquipment != null;
         entityEquipment.setHelmet(basicItem);
 
-
         Location loc = player.getLocation().clone().add(direction.multiply(1.25));
-
 
         BoundingBox hitBox = new BoundingBox(
                 loc.getX() - 3,

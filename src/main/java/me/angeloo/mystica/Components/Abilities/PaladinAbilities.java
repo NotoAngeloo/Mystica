@@ -15,6 +15,7 @@ public class PaladinAbilities {
     private final DivineGuidance divineGuidance;
     private final CovenantSword covenantSword;
     private final ReigningSword reigningSword;
+    private final OrderShield orderShield;
 
     public PaladinAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
@@ -23,6 +24,7 @@ public class PaladinAbilities {
         divineGuidance = new DivineGuidance(main, manager);
         covenantSword = new CovenantSword(main, manager);
         reigningSword = new ReigningSword(main, manager);
+        orderShield = new OrderShield(main, manager);
     }
 
     public void usePaladinAbility(Player player, int abilityNumber){
@@ -76,6 +78,7 @@ public class PaladinAbilities {
                 return;
             }
             case 5:{
+                orderShield.use(player);
                 return;
             }
             case 6:{
@@ -138,7 +141,7 @@ public class PaladinAbilities {
             case 4:
                 return covenantSword.getCooldown(player);
             case 5:
-
+                return orderShield.getCooldown(player);
             case 6:
 
             case 7:

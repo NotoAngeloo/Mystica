@@ -175,7 +175,6 @@ public class PaladinSkillItems {
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_6_Level() + skillLevel.getSkill_6_Level_Bonus()),
                         "",
                         ChatColor.of(new Color(230,230,230)) + "Gain Glory of Paladins for yourself",
-                        ChatColor.of(new Color(230,230,230)) + "throw your shield to deal damage",
                         ChatColor.of(new Color(230,230,230)) + "causing your basic attacks to deal",
                         ChatColor.of(new Color(230,230,230)) + "additional damage. Increase your max",
                         ChatColor.of(new Color(230,230,230)) + "Hp, and give your basic attacks a",

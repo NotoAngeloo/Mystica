@@ -1,6 +1,5 @@
-package me.angeloo.mystica.Components.Abilities.Elementalist;
+package me.angeloo.mystica.Components.Abilities.Paladin;
 
-import me.angeloo.mystica.Components.Abilities.ElementalistAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -18,13 +17,14 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class IceBolt {
+public class OrderShield {
 
     private final Mystica main;
 
@@ -36,12 +36,10 @@ public class IceBolt {
     private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
-    private final CrystalStorm crystalStorm;
-    private final ElementalBreath elementalBreath;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public IceBolt(Mystica main, AbilityManager manager, ElementalistAbilities elementalistAbilities){
+    public OrderShield(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
@@ -51,8 +49,6 @@ public class IceBolt {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        crystalStorm = elementalistAbilities.getCrystalStorm();
-        elementalBreath = elementalistAbilities.getElementalBreath();
     }
 
     public void use(Player player){
@@ -61,7 +57,7 @@ public class IceBolt {
             abilityReadyInMap.put(player.getUniqueId(), 0);
         }
 
-        double baseRange = 20;
+        double baseRange = 10;
         double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
         double totalRange = baseRange + extraRange;
 
@@ -101,7 +97,7 @@ public class IceBolt {
 
         execute(player);
 
-        abilityReadyInMap.put(player.getUniqueId(), 7);
+        abilityReadyInMap.put(player.getUniqueId(), 15);
         new BukkitRunnable(){
             @Override
             public void run(){
@@ -120,76 +116,53 @@ public class IceBolt {
         }.runTaskTimer(main, 0,20);
 
     }
-    
+
     private void execute(Player player){
-
-        boolean cryomancer = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("cryomancer");
-        boolean conjurer = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("conjurer");
-
-        boolean breathActive = elementalBreath.getIfBuffTime(player)>0;
 
         LivingEntity target = targetManager.getPlayerTarget(player);
 
         Location start = player.getLocation();
-        start.subtract(0, 1, 0);
 
-        ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = start.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
         armorStand.setInvulnerable(true);
         armorStand.setMarker(true);
+        armorStand.setRightArmPose(new EulerAngle(Math.toRadians(90), Math.toRadians(0), Math.toRadians(0)));
 
         EntityEquipment entityEquipment = armorStand.getEquipment();
 
-        ItemStack boltItem = new ItemStack(Material.DRAGON_BREATH);
-        ItemMeta meta = boltItem.getItemMeta();
+        ItemStack item = new ItemStack(Material.SUGAR);
+        ItemMeta meta = item.getItemMeta();
         assert meta != null;
 
-        if(!breathActive){
-            meta.setCustomModelData(8);
-        }
-        else{
-            meta.setCustomModelData(9);
-        }
+        meta.setCustomModelData(7);
 
-        boltItem.setItemMeta(meta);
+        item.setItemMeta(meta);
         assert entityEquipment != null;
-        entityEquipment.setHelmet(boltItem);
+        entityEquipment.setItemInMainHand(item);
 
-        double skillDamage = 3;
+        armorStand.teleport(start);
 
-        if(conjurer){
+        double skillDamage = 9;
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
 
-            double maxMana = profileManager.getAnyProfile(player).getTotalMana();
-            double currentMana = profileManager.getAnyProfile(player).getCurrentMana();
+        double tenPercent = profileManager.getAnyProfile(player).getTotalHealth() * .1;
 
-            double percent = maxMana/currentMana;
+        changeResourceHandler.subtractHealthFromEntity(player, tenPercent, player);
+        healOverTime(player, tenPercent/5);
 
-            skillDamage = skillDamage * (1 + percent);
-        }
-
-        if(cryomancer){
-            skillDamage = skillDamage * (1.5);
-            elementalBreath.reduceCooldown(player);
-        }
-
-        if(breathActive){
-            skillDamage = skillDamage * 2;
-        }
-
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level() +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
-
-        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
+            Vector initialDirection;
+            double angle = 0;
             Location targetWasLoc = target.getLocation().clone();
             @Override
             public void run(){
 
                 if(targetStillValid(target)){
                     Location targetLoc = target.getLocation();
-                    targetLoc = targetLoc.subtract(0,1,0);
                     targetWasLoc = targetLoc.clone();
                 }
 
@@ -200,20 +173,21 @@ public class IceBolt {
                     return;
                 }
 
+                if (initialDirection == null) {
+                    initialDirection = player.getLocation().getDirection().setY(0).normalize();
+                }
+
+                Vector rot = initialDirection.clone();
+                double radians = Math.toRadians(angle);
+                rot.rotateAroundY(radians);
+
                 Vector direction = targetWasLoc.toVector().subtract(current.toVector());
                 double distance = current.distance(targetWasLoc);
                 double distanceThisTick = Math.min(distance, .75);
                 current.add(direction.normalize().multiply(distanceThisTick));
-                current.setDirection(direction);
+                current.setDirection(rot);
 
                 armorStand.teleport(current);
-
-                if(!breathActive){
-                    current.getWorld().spawnParticle(Particle.SNOWBALL, current.clone().add(0,1.5,0), 1, 0, 0, 0, 0);
-                }
-                else{
-                    current.getWorld().spawnParticle(Particle.BLOCK_CRACK, current.clone().add(0,1.5,0), 5, 0, 0, 0, 0, Material.BLUE_ICE.createBlockData());
-                }
 
 
                 if (distance <= 1) {
@@ -221,15 +195,13 @@ public class IceBolt {
                     cancelTask();
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage * skillLevel, crit);
+                    double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
-
-                    if(crystalStorm.getIfEntityEffected(target)){
-                        resetSkillCooldown(player);
-                    }
                 }
+
+                angle+=45;
 
             }
 
@@ -258,8 +230,33 @@ public class IceBolt {
 
     }
 
-    private void resetSkillCooldown(Player player){
-        abilityReadyInMap.put(player.getUniqueId(), 0);
+    private void healOverTime(Player player, double amount){
+
+        new BukkitRunnable(){
+            int count = 0;
+            @Override
+            public void run(){
+
+                if(!player.isOnline()){
+                    this.cancel();
+                    return;
+                }
+
+                if(profileManager.getAnyProfile(player).getIfDead()){
+                    this.cancel();
+                    return;
+                }
+
+                changeResourceHandler.addHealthToEntity(player, amount, player);
+
+                if(count>=5){
+                    this.cancel();
+                }
+
+                count++;
+            }
+        }.runTaskTimer(main, 20, 20);
+
     }
 
     public int getCooldown(Player player){

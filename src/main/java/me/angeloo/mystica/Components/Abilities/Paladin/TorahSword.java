@@ -36,7 +36,6 @@ public class TorahSword {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
 
-
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
     public TorahSword(Mystica main, AbilityManager manager){

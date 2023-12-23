@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities;
 
+import me.angeloo.mystica.Components.Abilities.Paladin.CovenantSword;
 import me.angeloo.mystica.Components.Abilities.Paladin.DivineGuidance;
 import me.angeloo.mystica.Components.Abilities.Paladin.PaladinBasic;
 import me.angeloo.mystica.Components.Abilities.Paladin.TorahSword;
@@ -15,12 +16,14 @@ public class PaladinAbilities {
     private final PaladinBasic paladinBasic;
     private final TorahSword torahSword;
     private final DivineGuidance divineGuidance;
+    private final CovenantSword covenantSword;
 
     public PaladinAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
         paladinBasic = new PaladinBasic(main, manager);
         torahSword = new TorahSword(main, manager);
         divineGuidance = new DivineGuidance(main, manager);
+        covenantSword = new CovenantSword(main, manager);
     }
 
     public void usePaladinAbility(Player player, int abilityNumber){
@@ -69,6 +72,7 @@ public class PaladinAbilities {
                 return;
             }
             case 4:{
+                covenantSword.use(player);
                 return;
             }
             case 5:{
@@ -132,7 +136,7 @@ public class PaladinAbilities {
             case 3:
 
             case 4:
-
+                return covenantSword.getCooldown(player);
             case 5:
 
             case 6:

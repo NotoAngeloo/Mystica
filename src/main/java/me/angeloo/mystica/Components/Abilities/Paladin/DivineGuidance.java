@@ -166,8 +166,8 @@ public class DivineGuidance {
 
         hammer4.teleport(h4spawn);
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level() +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
         double skillDamage = 7;
 
         BoundingBox hitBox = new BoundingBox(

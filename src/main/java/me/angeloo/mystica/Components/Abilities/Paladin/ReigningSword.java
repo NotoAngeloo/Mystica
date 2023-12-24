@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Paladin;
 
+import me.angeloo.mystica.Components.Abilities.PaladinAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -27,7 +28,6 @@ public class ReigningSword {
 
     private final Mystica main;
     private final ProfileManager profileManager;
-    private final TargetManager targetManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CombatManager combatManager;
     private final ChangeResourceHandler changeResourceHandler;
@@ -35,11 +35,12 @@ public class ReigningSword {
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
 
+    private final Decision decision;
+
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public ReigningSword(Mystica main, AbilityManager manager){
+    public ReigningSword(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
         this.main = main;
-        targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
@@ -47,6 +48,7 @@ public class ReigningSword {
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
+        decision = paladinAbilities.getDecision();
     }
 
     public void use(Player player){
@@ -202,7 +204,8 @@ public class ReigningSword {
                     }
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", skillDamage * skillLevel * bonus, crit));
+                    double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", skillDamage * skillLevel
+                            * bonus * decisionMultiplier(player), crit));
 
 
                     //pvp logic
@@ -230,10 +233,20 @@ public class ReigningSword {
             private void cancelTask(){
                 this.cancel();
                 sword.remove();
+                decision.removeDecision(player);
             }
 
         }.runTaskTimer(main, 0, 1);
 
+    }
+
+    private double decisionMultiplier(Player player){
+
+        if(decision.getDecision(player)){
+            return 1.8;
+        }
+
+        return 1;
     }
 
     public int getCooldown(Player player){

@@ -37,6 +37,7 @@ public class TorahSword {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
 
+    private final Decision decision;
     private final Judgement judgement;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -51,6 +52,7 @@ public class TorahSword {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        decision = paladinAbilities.getDecision();
         judgement = paladinAbilities.getJudgement();
     }
 
@@ -236,8 +238,9 @@ public class TorahSword {
 
                     boolean crit = damageCalculator.checkIfCrit(player, finalCritValue);
 
-                    if(crit){
+                    if(crit&&dawn){
                         judgement.resetCooldown(player);
+                        decision.applyDecision(player);
                     }
 
                     double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
@@ -251,8 +254,9 @@ public class TorahSword {
 
                     boolean crit = damageCalculator.checkIfCrit(player, finalCritValue);
 
-                    if(crit){
+                    if(crit&&dawn){
                         judgement.resetCooldown(player);
+                        decision.applyDecision(player);
                     }
 
                     double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
@@ -268,8 +272,9 @@ public class TorahSword {
 
                     boolean crit = damageCalculator.checkIfCrit(player, finalCritValue);
 
-                    if(crit){
+                    if(crit&&dawn){
                         judgement.resetCooldown(player);
+                        decision.applyDecision(player);
                     }
 
                     double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);

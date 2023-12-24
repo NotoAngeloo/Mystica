@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Paladin;
 
+import me.angeloo.mystica.Components.Abilities.PaladinAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -39,10 +40,11 @@ public class CovenantSword {
     private final PveChecker pveChecker;
     private final AbilityManager abilityManager;
 
+    private final Decision decision;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public CovenantSword(Mystica main, AbilityManager manager){
+    public CovenantSword(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
         this.main = main;
         abilityManager = manager;
         targetManager = main.getTargetManager();
@@ -53,6 +55,7 @@ public class CovenantSword {
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
+        decision = paladinAbilities.getDecision();
     }
 
     public void use(Player player){
@@ -268,7 +271,8 @@ public class CovenantSword {
 
                         boolean crit = damageCalculator.checkIfCrit(player, 0);
 
-                        double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", skillDamage * skillLevel, crit));
+                        double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", skillDamage * skillLevel *
+                                decisionMultiplier(player), crit));
 
                         //pvp logic
                         if(entity instanceof Player){
@@ -394,10 +398,20 @@ public class CovenantSword {
                 this.cancel();
                 sword.remove();
                 abilityManager.setCasting(player, false);
+                decision.removeDecision(player);
             }
 
         }.runTaskTimer(main, 0, 1);
 
+    }
+
+    private double decisionMultiplier(Player player){
+
+        if(decision.getDecision(player)){
+            return 1.8;
+        }
+
+        return 1;
     }
 
     public int getCooldown(Player player){

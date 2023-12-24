@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Paladin;
 
+import me.angeloo.mystica.Components.Abilities.PaladinAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -36,9 +37,11 @@ public class Judgement {
     private final ChangeResourceHandler changeResourceHandler;
     private final AggroManager aggroManager;
 
+    private final Decision decision;
+
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public Judgement(Mystica main, AbilityManager manager){
+    public Judgement(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
@@ -49,6 +52,7 @@ public class Judgement {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
         aggroManager = main.getAggroManager();
+        decision = paladinAbilities.getDecision();
     }
 
     public void use(Player player){
@@ -196,7 +200,8 @@ public class Judgement {
 
                 }
 
-                double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
+                double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel
+                        * decisionMultiplier(player), crit);
 
                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                 changeResourceHandler.subtractHealthFromEntity(target, damage, player);
@@ -205,6 +210,7 @@ public class Judgement {
                     aggroManager.setAsHighPriorityTarget(target, player);
                 }
 
+                decision.removeDecision(player);
             }
 
             private boolean checkValid(LivingEntity target){
@@ -223,6 +229,15 @@ public class Judgement {
             }
 
         }.runTaskTimer(main, 0, 1);
+    }
+
+    private double decisionMultiplier(Player player){
+
+        if(decision.getDecision(player)){
+            return 1.8;
+        }
+
+        return 1;
     }
 
     public void resetCooldown(Player player){

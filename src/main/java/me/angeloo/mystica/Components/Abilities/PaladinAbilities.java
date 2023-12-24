@@ -19,18 +19,20 @@ public class PaladinAbilities {
     private final OrderShield orderShield;
     private final DuranceOfTruth duranceOfTruth;
     private final Judgement judgement;
+    private final Decision decision;
 
     public PaladinAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
-        judgement = new Judgement(main, manager);
+        decision = new Decision();
+        judgement = new Judgement(main, manager, this);
+        covenantSword = new CovenantSword(main, manager, this);
+        reigningSword = new ReigningSword(main, manager, this);
         gloryOfPaladins = new GloryOfPaladins(main, manager);
         paladinBasic = new PaladinBasic(main, manager, this);
-        torahSword = new TorahSword(main, manager, this);
         divineGuidance = new DivineGuidance(main, manager);
-        covenantSword = new CovenantSword(main, manager);
-        reigningSword = new ReigningSword(main, manager);
         orderShield = new OrderShield(main, manager);
         duranceOfTruth = new DuranceOfTruth(main, manager);
+        torahSword = new TorahSword(main, manager, this);
 
     }
 
@@ -178,6 +180,7 @@ public class PaladinAbilities {
         return 0;
     }
 
+    public Decision getDecision(){return decision;}
     public GloryOfPaladins getGloryOfPaladins(){
         return gloryOfPaladins;
     }

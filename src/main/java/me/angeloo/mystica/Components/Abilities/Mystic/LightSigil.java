@@ -85,13 +85,15 @@ public class LightSigil {
         }.runTaskTimer(main, 0, 20);
     }
 
+    //perhaps made it shoot at enemies too
+
     private void execute(Player player){
 
         purifyingBlast.queueInstantCast(player);
 
         Location spawnStart = player.getLocation().clone();
 
-        ArmorStand sigil = spawnStart.getWorld().spawn(spawnStart, ArmorStand.class);
+        ArmorStand sigil = player.getWorld().spawn(spawnStart, ArmorStand.class);
         sigil.setInvisible(true);
         sigil.setGravity(false);
         sigil.setCollidable(false);

@@ -21,6 +21,7 @@ public class BuffAndDebuffManager {
     private final Haste haste;
     private final GenericDamageReduction damageReduction;
     private final Silence silence;
+    private final WellCrit wellCrit;
 
     public BuffAndDebuffManager(Mystica main){
         immune = new Immune(main);
@@ -36,6 +37,7 @@ public class BuffAndDebuffManager {
         haste = new Haste(main);
         damageReduction = new GenericDamageReduction(main);
         silence = new Silence(main);
+        wellCrit = new WellCrit();
     }
 
     public Immune getImmune(){return immune;}
@@ -55,6 +57,7 @@ public class BuffAndDebuffManager {
     public Haste getHaste(){return haste;}
     public GenericDamageReduction getDamageReduction(){return damageReduction;}
     public Silence getSilence(){return silence;}
+    public WellCrit getWellCrit(){return wellCrit;}
 
     public void removeAllBuffsAndDebuffs(Player player){
         immune.removeImmune(player);
@@ -70,6 +73,7 @@ public class BuffAndDebuffManager {
         haste.removeHaste(player);
         damageReduction.removeReduction(player);
         silence.removeSilence(player);
+        wellCrit.removeBonus(player);
     }
 
 
@@ -92,6 +96,10 @@ public class BuffAndDebuffManager {
     public double getTotalRangeModifier(Player player) {
 
         return 0 + conjuringForceBuff.getRangeModifier(player);
+    }
+
+    public int getCritBuffAmount(LivingEntity entity){
+        return wellCrit.getWellCrit(entity);
     }
 
 

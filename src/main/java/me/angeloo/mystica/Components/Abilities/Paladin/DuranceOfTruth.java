@@ -35,13 +35,11 @@ public class DuranceOfTruth {
     private final DamageCalculator damageCalculator;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
-    private final AbilityManager abilityManager;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
     public DuranceOfTruth(Mystica main, AbilityManager manager){
         this.main = main;
-        abilityManager = manager;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();

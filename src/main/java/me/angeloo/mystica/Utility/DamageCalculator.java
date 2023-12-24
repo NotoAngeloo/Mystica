@@ -33,6 +33,12 @@ public class DamageCalculator {
 
         int random = (int) (Math.random() * 100) + 1;
 
+        bonus = bonus+ buffAndDebuffManager.getCritBuffAmount(player);
+
+        if(random <= (playerProfile.getTotalCrit()) + bonus){
+            buffAndDebuffManager.getWellCrit().removeBonus(player);
+        }
+
         return random <= (playerProfile.getTotalCrit()) + bonus;
     }
 

@@ -241,9 +241,9 @@ public class PaladinSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "Summon a well that deals",
                         ChatColor.of(new Color(230,230,230)) + "area damage. This also",
                         ChatColor.of(new Color(230,230,230)) + "leaves behind orbs that",
-                        ChatColor.of(new Color(230,230,230)) + "can be collected by you to",
-                        ChatColor.of(new Color(230,230,230)) + "increase your crit rate by 10%",
-                        ChatColor.of(new Color(230,230,230)) + "until you land a critical hit");
+                        ChatColor.of(new Color(230,230,230)) + "can be collected to increase",
+                        ChatColor.of(new Color(230,230,230)) + "your crit rate by 10% until",
+                        ChatColor.of(new Color(230,230,230)) + "you land a critical hit");
             }
         }
 

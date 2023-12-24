@@ -163,7 +163,7 @@ public class Judgement {
                     double z = start.getZ() + (1 * Math.sin(angle));
                     Location loc = new Location(start.getWorld(), x, y, z);
 
-                    player.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1,0, 0, 0, 0);
+                    player.getWorld().spawnParticle(Particle.FLAME, loc, 1,0, 0, 0, 0);
                 }
 
                 if(down>=7){

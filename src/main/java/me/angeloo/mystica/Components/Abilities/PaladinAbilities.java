@@ -24,6 +24,7 @@ public class PaladinAbilities {
     private final Decision decision;
 
     private final JusticeMark justiceMark;
+    private final MercifulHealing mercifulHealing;
     private final DecreeHonor decreeHonor;
 
     public PaladinAbilities(Mystica main, AbilityManager manager){
@@ -43,6 +44,7 @@ public class PaladinAbilities {
         sanctityShield = new SanctityShield(main, manager);
         torahSword = new TorahSword(main, manager, this);
 
+        mercifulHealing = new MercifulHealing(main, manager, this);
         decreeHonor = new DecreeHonor(main, manager, this);
 
     }
@@ -58,6 +60,7 @@ public class PaladinAbilities {
                     return;
                 }
                 case 2:{
+                    mercifulHealing.use(player);
                     return;
                 }
                 case 3:{
@@ -150,6 +153,7 @@ public class PaladinAbilities {
                 case 1:
                     return decreeHonor.getCooldown(player);
                 case 2:
+                    return mercifulHealing.getCooldown(player);
                 case 3:
                 case 4:
                 case 5:
@@ -197,6 +201,7 @@ public class PaladinAbilities {
         return 0;
     }
 
+    public MercifulHealing getMercifulHealing(){return mercifulHealing;}
     public JusticeMark getJusticeMark(){return justiceMark;}
     public Decision getDecision(){return decision;}
     public GloryOfPaladins getGloryOfPaladins(){

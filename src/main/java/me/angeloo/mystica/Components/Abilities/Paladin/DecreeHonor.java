@@ -20,6 +20,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -35,9 +36,9 @@ public class DecreeHonor {
     private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
-    private final AggroManager aggroManager;
 
     private final JusticeMark justiceMark;
+    private final MercifulHealing mercifulHealing;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
@@ -51,8 +52,8 @@ public class DecreeHonor {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        aggroManager = main.getAggroManager();
         justiceMark = paladinAbilities.getJusticeMark();
+        mercifulHealing = paladinAbilities.getMercifulHealing();
     }
 
     public void use(Player player){
@@ -183,7 +184,7 @@ public class DecreeHonor {
                 boolean crit = damageCalculator.checkIfCrit(player, 0);
 
                 if(crit){
-                    //next mercy instant
+                    mercifulHealing.queueMoveCast(player);
                 }
 
                 if(target instanceof Player){
@@ -192,9 +193,15 @@ public class DecreeHonor {
 
                         double healAmount = profileManager.getAnyProfile(target).getTotalHealth() * .05;
                         healAmount = healAmount + profileManager.getAnyProfile(player).getTotalAttack() * .2;
+                        healAmount = healAmount * skillLevel;
 
                         if(crit){
                             healAmount = healAmount*1.5;
+                        }
+
+                        if(justiceMark.markProc(player, target)){
+                            markHealInstead(player, healAmount);
+                            return;
                         }
 
                         changeResourceHandler.addHealthToEntity(target, healAmount, player);
@@ -228,6 +235,28 @@ public class DecreeHonor {
         }.runTaskTimer(main, 0, 1);
     }
 
+    private void markHealInstead(Player player, double healAmount){
+
+        List<LivingEntity> affected = justiceMark.getMarkedTargets(player);
+
+        for(LivingEntity thisPlayer : affected){
+            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, player);
+
+            Location center = thisPlayer.getLocation().clone().add(0,1,0);
+
+            double increment = (2 * Math.PI) / 16; // angle between particles
+
+            for (int i = 0; i < 16; i++) {
+                double angle = i * increment;
+                double x = center.getX() + (1 * Math.cos(angle));
+                double z = center.getZ() + (1 * Math.sin(angle));
+                Location loc = new Location(center.getWorld(), x, (center.getY()), z);
+
+                thisPlayer.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1,0, 0, 0, 0);
+            }
+        }
+
+    }
 
     public int getCooldown(Player player){
 

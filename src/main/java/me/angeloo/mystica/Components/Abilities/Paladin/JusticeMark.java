@@ -22,7 +22,7 @@ public class JusticeMark {
     private final CombatManager combatManager;
     private final ChangeResourceHandler changeResourceHandler;
 
-    private final Map<UUID, List<Player>> marked = new HashMap<>();
+    private final Map<UUID, List<LivingEntity>> marked = new HashMap<>();
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
@@ -108,7 +108,7 @@ public class JusticeMark {
                 center.getZ() + 12
         );
 
-        List<Player> validPlayers = new ArrayList<>();
+        List<LivingEntity> validPlayers = new ArrayList<>();
 
         for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
 
@@ -133,7 +133,7 @@ public class JusticeMark {
 
         validPlayers.sort(Comparator.comparingDouble(p -> p.getLocation().distance(center)));
 
-        List<Player> affected = validPlayers.subList(0, Math.min(5, validPlayers.size()));
+        List<LivingEntity> affected = validPlayers.subList(0, Math.min(5, validPlayers.size()));
 
         marked.put(player.getUniqueId(), affected);
 
@@ -148,18 +148,18 @@ public class JusticeMark {
 
     }
 
-    public boolean markProc(Player caster, Player target){
+    public boolean markProc(Player caster, LivingEntity target){
 
         if(!marked.containsKey(caster.getUniqueId())){
             return false;
         }
 
-        List<Player> players = marked.get(caster.getUniqueId());
+        List<LivingEntity> targets = marked.get(caster.getUniqueId());
 
-        return players.contains(target);
+        return targets.contains(target);
     }
 
-    public List<Player> getMarkedTargets(Player player){
+    public List<LivingEntity> getMarkedTargets(Player player){
         return marked.getOrDefault(player.getUniqueId(), new ArrayList<>());
     }
 

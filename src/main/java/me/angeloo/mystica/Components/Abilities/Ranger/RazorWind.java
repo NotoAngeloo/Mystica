@@ -132,6 +132,7 @@ public class RazorWind {
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
         double skillDamage = 4;
 
+        double castTime = 20;
         abilityManager.setCasting(player, true);
         player.setWalkSpeed(.06f);
 
@@ -163,11 +164,11 @@ public class RazorWind {
                     return;
                 }
 
-                double percent = ((double) count / 20) * 100;
+                double percent = ((double) count / castTime) * 100;
 
                 abilityManager.setCastBar(player, percent);
 
-                if(count >=20){
+                if(count >= castTime){
                     this.cancel();
                     abilityManager.setCasting(player, false);
                     player.setWalkSpeed(.2f);

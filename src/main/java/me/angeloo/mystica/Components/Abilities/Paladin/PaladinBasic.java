@@ -152,7 +152,7 @@ public class PaladinBasic {
         }
 
         if(justiceMark.markProc(player, target)){
-            markHealInstead(player, target, healAmount);
+            markHealInstead(player, healAmount);
             return;
         }
 
@@ -173,11 +173,11 @@ public class PaladinBasic {
 
     }
 
-    private void markHealInstead(Player player, Player target, double healAmount){
+    private void markHealInstead(Player player, double healAmount){
 
-        List<Player> affected = justiceMark.getMarkedTargets(player);
+        List<LivingEntity> affected = justiceMark.getMarkedTargets(player);
 
-        for(Player thisPlayer : affected){
+        for(LivingEntity thisPlayer : affected){
             changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, player);
 
             Location center = thisPlayer.getLocation().clone().add(0,1,0);

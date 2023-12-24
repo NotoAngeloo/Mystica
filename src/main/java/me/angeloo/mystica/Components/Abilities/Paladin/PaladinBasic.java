@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Paladin;
 
+import me.angeloo.mystica.Components.Abilities.PaladinAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -39,14 +40,15 @@ public class PaladinBasic {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
 
+    private final GloryOfPaladins gloryOfPaladins;
+
     private final Map<UUID, Integer> basicStageMap = new HashMap<>();
     private final Map<UUID, Boolean> basicReadyMap = new HashMap<>();
 
     private final Map<UUID, BukkitTask> removeBasicStageTaskMap = new HashMap<>();
 
-    public PaladinBasic(Mystica main, AbilityManager manager){
+    public PaladinBasic(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
         this.main = main;
-
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
@@ -55,6 +57,7 @@ public class PaladinBasic {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        gloryOfPaladins = paladinAbilities.getGloryOfPaladins();
     }
 
     public void useBasic(Player player){
@@ -326,6 +329,8 @@ public class PaladinBasic {
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, player));
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, player);
 
+            gloryOfPaladins.procGlory(player, targetToHit);
+
         }
 
         new BukkitRunnable(){
@@ -473,6 +478,8 @@ public class PaladinBasic {
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, player));
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, player);
+
+            gloryOfPaladins.procGlory(player, targetToHit);
 
         }
 
@@ -626,6 +633,8 @@ public class PaladinBasic {
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, player));
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, player);
 
+            gloryOfPaladins.procGlory(player, targetToHit);
+
         }
 
         new BukkitRunnable(){
@@ -775,6 +784,7 @@ public class PaladinBasic {
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, player));
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, player);
 
+            gloryOfPaladins.procGlory(player, targetToHit);
         }
 
         new BukkitRunnable(){

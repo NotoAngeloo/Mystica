@@ -10,21 +10,25 @@ public class PaladinAbilities {
 
     private final ProfileManager profileManager;
 
+    private final GloryOfPaladins gloryOfPaladins;
     private final PaladinBasic paladinBasic;
     private final TorahSword torahSword;
     private final DivineGuidance divineGuidance;
     private final CovenantSword covenantSword;
     private final ReigningSword reigningSword;
     private final OrderShield orderShield;
+    private final DuranceOfTruth duranceOfTruth;
 
     public PaladinAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
-        paladinBasic = new PaladinBasic(main, manager);
+        gloryOfPaladins = new GloryOfPaladins(main, manager);
+        paladinBasic = new PaladinBasic(main, manager, this);
         torahSword = new TorahSword(main, manager);
         divineGuidance = new DivineGuidance(main, manager);
         covenantSword = new CovenantSword(main, manager);
         reigningSword = new ReigningSword(main, manager);
         orderShield = new OrderShield(main, manager);
+        duranceOfTruth = new DuranceOfTruth(main, manager);
     }
 
     public void usePaladinAbility(Player player, int abilityNumber){
@@ -82,9 +86,11 @@ public class PaladinAbilities {
                 return;
             }
             case 6:{
+                gloryOfPaladins.use(player);
                 return;
             }
             case 7:{
+                duranceOfTruth.use(player);
                 return;
             }
             case 8:{
@@ -143,9 +149,9 @@ public class PaladinAbilities {
             case 5:
                 return orderShield.getCooldown(player);
             case 6:
-
+                return gloryOfPaladins.getCooldown(player);
             case 7:
-
+                return duranceOfTruth.getCooldown(player);
             case 8:
 
         }
@@ -166,6 +172,10 @@ public class PaladinAbilities {
         }
 
         return 0;
+    }
+
+    public GloryOfPaladins getGloryOfPaladins(){
+        return gloryOfPaladins;
     }
 
 }

@@ -142,7 +142,7 @@ public class Relentless {
             @Override
             public void run(){
 
-                if(!player.isOnline() || buffAndDebuffManager.getIfCantAct(player)){
+                if(!player.isOnline() || buffAndDebuffManager.getIfInterrupt(player)){
                     cancelTask();
                     return;
                 }

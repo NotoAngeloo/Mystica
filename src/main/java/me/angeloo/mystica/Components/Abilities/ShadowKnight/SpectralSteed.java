@@ -274,7 +274,7 @@ public class SpectralSteed {
                     return;
                 }
 
-                if(buffAndDebuffManager.getIfCantAct(player)){
+                if(buffAndDebuffManager.getIfInterrupt(player)){
                     horse.remove();
                     this.cancel();
                     return;

@@ -43,7 +43,8 @@ public class AbilityManager {
 
     public void useAbility(Player player, int abilityNumber){
 
-        if(buffAndDebuffManager.getIfCantAct(player)){
+
+        if(buffAndDebuffManager.getIfInterrupt(player)){
             return;
         }
 
@@ -103,6 +104,10 @@ public class AbilityManager {
             return;
         }
 
+        if(buffAndDebuffManager.getIfCantAct(player)){
+            return;
+        }
+
         Profile playerProfile = profileManager.getAnyProfile(player);
 
         String clazz = playerProfile.getPlayerClass();
@@ -141,6 +146,10 @@ public class AbilityManager {
     }
 
     public void useUltimate(Player player){
+
+        if(buffAndDebuffManager.getIfInterrupt(player)){
+            return;
+        }
 
         if(globalCooldown.get(player.getUniqueId()) == null){
             globalCooldown.put(player.getUniqueId(), (System.currentTimeMillis() / 1000) - 1);

@@ -227,7 +227,7 @@ public class DescendingInferno {
                     }
 
                     armorStandLeft.teleport(currentLeft);
-                    currentLeft.getWorld().spawnParticle(Particle.FLAME, currentLeft.clone().add(0,1,0), 1, 0, 0, 0, 0);
+                    player.getWorld().spawnParticle(Particle.FLAME, currentLeft.clone().add(0,1,0), 1, 0, 0, 0, 0);
 
                     if (distanceLeft <= 1) {
                         armorStandLeft.remove();
@@ -259,7 +259,7 @@ public class DescendingInferno {
                     }
 
                     armorStandRight.teleport(currentRight);
-                    currentRight.getWorld().spawnParticle(Particle.FLAME, currentRight.clone().add(0,1,0), 1, 0, 0, 0, 0);
+                    player.getWorld().spawnParticle(Particle.FLAME, currentRight.clone().add(0,1,0), 1, 0, 0, 0, 0);
 
                     if (distanceRight <= 1) {
                         armorStandRight.remove();
@@ -285,7 +285,7 @@ public class DescendingInferno {
                     double distanceThisTick = Math.min(distance, .75);
                     currentMiddle.add(direction.normalize().multiply(distanceThisTick));
                     armorStandMiddle.teleport(currentMiddle);
-                    currentMiddle.getWorld().spawnParticle(Particle.FLAME, currentMiddle.clone().add(0,1,0), 1, 0, 0, 0, 0);
+                    player.getWorld().spawnParticle(Particle.FLAME, currentMiddle.clone().add(0,1,0), 1, 0, 0, 0, 0);
 
                     if (distance <= 1) {
                         armorStandMiddle.remove();

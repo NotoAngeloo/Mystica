@@ -20,6 +20,7 @@ public class BuffAndDebuffManager {
     private final WildRoarBuff wildRoarBuff;
     private final Haste haste;
     private final GenericDamageReduction damageReduction;
+    private final Silence silence;
 
     public BuffAndDebuffManager(Mystica main){
         immune = new Immune(main);
@@ -34,6 +35,7 @@ public class BuffAndDebuffManager {
         wildRoarBuff = new WildRoarBuff(main);
         haste = new Haste(main);
         damageReduction = new GenericDamageReduction(main);
+        silence = new Silence(main);
     }
 
     public Immune getImmune(){return immune;}
@@ -52,6 +54,7 @@ public class BuffAndDebuffManager {
     public WildRoarBuff getWildRoarBuff(){return wildRoarBuff;}
     public Haste getHaste(){return haste;}
     public GenericDamageReduction getDamageReduction(){return damageReduction;}
+    public Silence getSilence(){return silence;}
 
     public void removeAllBuffsAndDebuffs(Player player){
         immune.removeImmune(player);
@@ -66,6 +69,7 @@ public class BuffAndDebuffManager {
         wildRoarBuff.removeBuff(player);
         haste.removeHaste(player);
         damageReduction.removeReduction(player);
+        silence.removeSilence(player);
     }
 
 
@@ -94,5 +98,9 @@ public class BuffAndDebuffManager {
     public boolean getIfCantAct(LivingEntity entity){
         //use a bunch of || inbetween
         return sleep.getIfSleep(entity);
+    }
+
+    public boolean getIfInterrupt(LivingEntity entity){
+        return getIfCantAct(entity) && getSilence().getSilence(entity);
     }
 }

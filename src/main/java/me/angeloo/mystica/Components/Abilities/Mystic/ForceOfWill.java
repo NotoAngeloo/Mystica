@@ -134,7 +134,7 @@ public class ForceOfWill {
             @Override
             public void run(){
 
-                if(!player.isOnline() || buffAndDebuffManager.getIfCantAct(player)){
+                if(!player.isOnline() || buffAndDebuffManager.getIfInterrupt(player)){
                     this.cancel();
                     abilityManager.setCasting(player, false);
                     abilityManager.setCastBar(player, 0);

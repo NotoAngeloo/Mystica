@@ -141,7 +141,7 @@ public class RazorWind {
             @Override
             public void run(){
 
-                if(!player.isOnline() || buffAndDebuffManager.getIfCantAct(player)){
+                if(!player.isOnline() || buffAndDebuffManager.getIfInterrupt(player)){
                     this.cancel();
                     abilityManager.setCasting(player, false);
                     player.setWalkSpeed(.2f);

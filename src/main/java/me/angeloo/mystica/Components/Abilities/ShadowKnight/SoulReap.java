@@ -175,7 +175,7 @@ public class SoulReap {
                     return;
                 }
 
-                if(buffAndDebuffManager.getIfCantAct(player)){
+                if(buffAndDebuffManager.getIfInterrupt(player)){
                     cancelTask();
                     return;
                 }

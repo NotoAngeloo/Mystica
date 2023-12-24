@@ -150,7 +150,7 @@ public class HealthAbsorb {
                     return;
                 }
 
-                if(!player.isOnline() || buffAndDebuffManager.getIfCantAct(player)){
+                if(!player.isOnline() || buffAndDebuffManager.getIfInterrupt(player)){
                     cancelTask();
                     return;
                 }

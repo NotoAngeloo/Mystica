@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Paladin;
 
+import me.angeloo.mystica.Components.Abilities.PaladinAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -36,9 +37,11 @@ public class TorahSword {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
 
+    private final Judgement judgement;
+
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public TorahSword(Mystica main, AbilityManager manager){
+    public TorahSword(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
@@ -48,6 +51,7 @@ public class TorahSword {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        judgement = paladinAbilities.getJudgement();
     }
 
     public void use(Player player){
@@ -231,6 +235,11 @@ public class TorahSword {
                 if (distance1 <= 1) {
 
                     boolean crit = damageCalculator.checkIfCrit(player, finalCritValue);
+
+                    if(crit){
+                        judgement.resetCooldown(player);
+                    }
+
                     double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
@@ -241,6 +250,11 @@ public class TorahSword {
                 if (distance2 <= 1) {
 
                     boolean crit = damageCalculator.checkIfCrit(player, finalCritValue);
+
+                    if(crit){
+                        judgement.resetCooldown(player);
+                    }
+
                     double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
@@ -253,6 +267,11 @@ public class TorahSword {
                     cancelTask();
 
                     boolean crit = damageCalculator.checkIfCrit(player, finalCritValue);
+
+                    if(crit){
+                        judgement.resetCooldown(player);
+                    }
+
                     double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));

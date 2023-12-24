@@ -15,6 +15,8 @@ public class GenericDamageReduction {
     private final Map<UUID, Double> reductionAmount = new HashMap<>();
     private final Map<UUID, BukkitTask> removeReduction = new HashMap<>();
 
+    //LOWER IS BETTER
+
     public GenericDamageReduction(Mystica main){
         this.main = main;
     }

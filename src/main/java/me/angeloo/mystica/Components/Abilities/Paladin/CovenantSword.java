@@ -39,6 +39,7 @@ public class CovenantSword {
     private final PveChecker pveChecker;
     private final AbilityManager abilityManager;
 
+
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
     public CovenantSword(Mystica main, AbilityManager manager){
@@ -91,8 +92,6 @@ public class CovenantSword {
 
     private void execute(Player player){
 
-        boolean dawn = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("dawn");
-
         double baseRange = 8;
 
         targetManager.setTargetToNearestValid(player, baseRange);
@@ -140,7 +139,7 @@ public class CovenantSword {
         Location start = player.getLocation().clone().add(direction.multiply(1));
         start.setDirection(direction);
 
-        ArmorStand sword = start.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
+        ArmorStand sword = player.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
         sword.setInvisible(true);
         sword.setGravity(false);
         sword.setCollidable(false);
@@ -160,8 +159,6 @@ public class CovenantSword {
         sword.setRightArmPose(new EulerAngle(Math.toRadians(0), Math.toRadians(0), Math.toRadians(0)));
 
         sword.teleport(start);
-
-        boolean crit = damageCalculator.checkIfCrit(player, 0);
 
         double skillDamage = 12;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level() +
@@ -269,6 +266,7 @@ public class CovenantSword {
 
                         LivingEntity livingEntity = (LivingEntity) entity;
 
+                        boolean crit = damageCalculator.checkIfCrit(player, 0);
 
                         double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", skillDamage * skillLevel, crit));
 

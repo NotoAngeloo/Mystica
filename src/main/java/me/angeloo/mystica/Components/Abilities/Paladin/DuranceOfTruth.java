@@ -151,7 +151,6 @@ public class DuranceOfTruth {
 
 
         //player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, end, 0, 0, 0, 0);
-        boolean crit = damageCalculator.checkIfCrit(player, 0);
         double skillDamage = 5;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
@@ -301,7 +300,7 @@ public class DuranceOfTruth {
 
                     LivingEntity livingEntity = (LivingEntity) entity;
 
-
+                    boolean crit = damageCalculator.checkIfCrit(player, 0);
                     double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", skillDamage * skillLevel, crit));
 
                     //pvp logic

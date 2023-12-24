@@ -20,6 +20,7 @@ public class PaladinAbilities {
     private final DuranceOfTruth duranceOfTruth;
     private final Judgement judgement;
     private final LightWell lightWell;
+    private final SanctityShield sanctityShield;
     private final Decision decision;
 
     public PaladinAbilities(Mystica main, AbilityManager manager){
@@ -34,6 +35,7 @@ public class PaladinAbilities {
         orderShield = new OrderShield(main, manager);
         duranceOfTruth = new DuranceOfTruth(main, manager);
         lightWell = new LightWell(main, manager);
+        sanctityShield = new SanctityShield(main, manager);
         torahSword = new TorahSword(main, manager, this);
 
 
@@ -114,6 +116,7 @@ public class PaladinAbilities {
 
         switch (subclass.toLowerCase()){
             case "templar":{
+                sanctityShield.use(player);
                 return;
             }
             case "divine":{
@@ -174,7 +177,7 @@ public class PaladinAbilities {
 
         switch (subclass.toLowerCase()){
             case "templar":
-
+                return sanctityShield.getCooldown(player);
             case "divine":
 
             case "dawn":

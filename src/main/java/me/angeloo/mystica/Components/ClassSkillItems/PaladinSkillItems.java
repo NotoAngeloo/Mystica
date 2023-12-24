@@ -220,7 +220,8 @@ public class PaladinSkillItems {
                         "",
                         ChatColor.of(new Color(230,230,230)) + "Gain a shield to absorb",
                         ChatColor.of(new Color(230,230,230)) + (String.valueOf(level)) + "% of your max health for",
-                        ChatColor.of(new Color(230,230,230)) + "5 seconds");
+                        ChatColor.of(new Color(230,230,230)) + "5 seconds. While active,",
+                        ChatColor.of(new Color(230,230,230)) + "restore your health.");
             }
             case "divine":{
                 return getItem(Material.YELLOW_DYE, 0,

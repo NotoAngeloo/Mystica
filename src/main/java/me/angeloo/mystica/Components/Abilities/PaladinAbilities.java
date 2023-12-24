@@ -23,9 +23,14 @@ public class PaladinAbilities {
     private final SanctityShield sanctityShield;
     private final Decision decision;
 
+    private final JusticeMark justiceMark;
+    private final DecreeHonor decreeHonor;
+
     public PaladinAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
         decision = new Decision();
+        justiceMark = new JusticeMark(main, manager);
+
         judgement = new Judgement(main, manager, this);
         covenantSword = new CovenantSword(main, manager, this);
         reigningSword = new ReigningSword(main, manager, this);
@@ -38,6 +43,7 @@ public class PaladinAbilities {
         sanctityShield = new SanctityShield(main, manager);
         torahSword = new TorahSword(main, manager, this);
 
+        decreeHonor = new DecreeHonor(main, manager, this);
 
     }
 
@@ -48,6 +54,7 @@ public class PaladinAbilities {
         if(subclass.equalsIgnoreCase("divine")){
             switch (abilityNumber){
                 case 1:{
+                    decreeHonor.use(player);
                     return;
                 }
                 case 2:{
@@ -69,6 +76,7 @@ public class PaladinAbilities {
                     return;
                 }
                 case 8:{
+                    justiceMark.use(player);
                     return;
                 }
             }
@@ -140,6 +148,7 @@ public class PaladinAbilities {
         if(subclass.equalsIgnoreCase("divine")){
             switch (abilityNumber){
                 case 1:
+                    return decreeHonor.getCooldown(player);
                 case 2:
                 case 3:
                 case 4:
@@ -147,6 +156,7 @@ public class PaladinAbilities {
                 case 6:
                 case 7:
                 case 8:
+                    return justiceMark.getCooldown(player);
             }
         }
 
@@ -187,6 +197,7 @@ public class PaladinAbilities {
         return 0;
     }
 
+    public JusticeMark getJusticeMark(){return justiceMark;}
     public Decision getDecision(){return decision;}
     public GloryOfPaladins getGloryOfPaladins(){
         return gloryOfPaladins;

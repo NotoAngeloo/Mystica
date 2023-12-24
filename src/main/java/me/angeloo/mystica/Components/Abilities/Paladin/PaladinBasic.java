@@ -24,6 +24,7 @@ import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -40,6 +41,7 @@ public class PaladinBasic {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
 
+    private final JusticeMark justiceMark;
     private final GloryOfPaladins gloryOfPaladins;
 
     private final Map<UUID, Integer> basicStageMap = new HashMap<>();
@@ -58,6 +60,7 @@ public class PaladinBasic {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
         gloryOfPaladins = paladinAbilities.getGloryOfPaladins();
+        justiceMark = paladinAbilities.getJusticeMark();
     }
 
     public void useBasic(Player player){
@@ -135,7 +138,7 @@ public class PaladinBasic {
         return baseRange + extraRange;
     }
 
-    private void healTarget(Player player, LivingEntity target){
+    private void healTarget(Player player, Player target){
 
         double totalTargetHealth = profileManager.getAnyProfile(target).getTotalHealth();
         double yourAttack = profileManager.getAnyProfile(player).getTotalAttack();
@@ -146,6 +149,11 @@ public class PaladinBasic {
 
         if(crit){
             healAmount = healAmount * 1.5;
+        }
+
+        if(justiceMark.markProc(player, target)){
+            markHealInstead(player, target, healAmount);
+            return;
         }
 
         changeResourceHandler.addHealthToEntity(target, healAmount, player);
@@ -162,6 +170,30 @@ public class PaladinBasic {
 
             target.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1,0, 0, 0, 0);
         }
+
+    }
+
+    private void markHealInstead(Player player, Player target, double healAmount){
+
+        List<Player> affected = justiceMark.getMarkedTargets(player);
+
+        for(Player thisPlayer : affected){
+            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, player);
+
+            Location center = thisPlayer.getLocation().clone().add(0,1,0);
+
+            double increment = (2 * Math.PI) / 16; // angle between particles
+
+            for (int i = 0; i < 16; i++) {
+                double angle = i * increment;
+                double x = center.getX() + (1 * Math.cos(angle));
+                double z = center.getZ() + (1 * Math.sin(angle));
+                Location loc = new Location(center.getWorld(), x, (center.getY()), z);
+
+                thisPlayer.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1,0, 0, 0, 0);
+            }
+        }
+
 
     }
 

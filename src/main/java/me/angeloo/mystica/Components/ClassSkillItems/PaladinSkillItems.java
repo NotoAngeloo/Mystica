@@ -44,7 +44,10 @@ public class PaladinSkillItems {
                             ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_1_Level() + skillLevel.getSkill_1_Level_Bonus()),
                             "",
                             ChatColor.of(new Color(230,230,230)) + "Damage enemies or",
-                            ChatColor.of(new Color(230,230,230)) + "heal friendly units");
+                            ChatColor.of(new Color(230,230,230)) + "heal friendly units.",
+                            ChatColor.of(new Color(230,230,230)) + "Landing a crit makes",
+                            ChatColor.of(new Color(230,230,230)) + "your next " + ChatColor.of(new Color(207, 180, 129)) + "Merciful Healing",
+                            ChatColor.of(new Color(230,230,230)) + "require no casting");
                 }
                 case 2:{
                     return getItem(Material.YELLOW_DYE, 0,

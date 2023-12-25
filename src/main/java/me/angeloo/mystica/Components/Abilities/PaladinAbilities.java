@@ -26,6 +26,7 @@ public class PaladinAbilities {
     private final JusticeMark justiceMark;
     private final MercifulHealing mercifulHealing;
     private final DecreeHonor decreeHonor;
+    private final HonorCounter honorCounter;
 
     public PaladinAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
@@ -46,6 +47,7 @@ public class PaladinAbilities {
 
         mercifulHealing = new MercifulHealing(main, manager, this);
         decreeHonor = new DecreeHonor(main, manager, this);
+        honorCounter = new HonorCounter(main, manager);
 
     }
 
@@ -64,6 +66,7 @@ public class PaladinAbilities {
                     return;
                 }
                 case 3:{
+                    honorCounter.use(player);
                     return;
                 }
                 case 4:{
@@ -155,6 +158,7 @@ public class PaladinAbilities {
                 case 2:
                     return mercifulHealing.getCooldown(player);
                 case 3:
+                    return honorCounter.getCooldown(player);
                 case 4:
                 case 5:
                 case 6:

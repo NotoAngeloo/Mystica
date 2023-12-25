@@ -10,19 +10,29 @@ import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.UUID;
 
 public class ChangeResourceHandler {
+
+    private final Mystica main;
 
     private final ProfileManager profileManager;
     private final Map<UUID, Long> lastDamaged = new HashMap<>();
 
     private final BuffAndDebuffManager buffAndDebuffManager;
 
+    private final Map<UUID, BukkitTask> savedTask = new HashMap<>();
+    private final Map<UUID, Double> damageSlot = new HashMap<>();
+    private final Map<UUID, LinkedList<Double>> allSaved = new HashMap<>();
+
     public ChangeResourceHandler(Mystica main){
+        this.main = main;
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
     }
@@ -90,6 +100,11 @@ public class ChangeResourceHandler {
 
         if(profileManager.getAnyProfile(player).getIfDead()){
             return;
+        }
+
+        if(profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("divine")){
+            addToSlot(player, damage);
+            startTask(player);
         }
 
         double trueHearts = player.getHealth();
@@ -258,6 +273,88 @@ public class ChangeResourceHandler {
         }
 
         return lastDamaged.get(uuid);
+    }
+
+    private void startTask(Player player){
+
+        if(savedTask.containsKey(player.getUniqueId())){
+            return;
+        }
+
+        BukkitTask task = new BukkitRunnable(){
+            int ran = 0;
+            @Override
+            public void run(){
+                addSaved(player, getSaved(player));
+                clearSaved(player);
+
+                if(ran>=3 && getAllSaved(player)==0.0){
+                    this.cancel();
+                    removeAllSaved(player);
+                    savedTask.remove(player.getUniqueId());
+                }
+
+                if(ran<3){
+                    ran++;
+                }
+            }
+        }.runTaskTimer(main, 20, 20);
+
+
+        savedTask.put(player.getUniqueId(), task);
+    }
+
+    public double getAllSaved(Player player){
+
+        if(!allSaved.containsKey(player.getUniqueId())){
+            return 0.0;
+        }
+
+        LinkedList<Double> values = allSaved.get(player.getUniqueId());
+
+        double sum = 0;
+        for(Double value : values){
+            sum+=value;
+        }
+
+        //Bukkit.getLogger().info(String.valueOf(sum));
+        //Bukkit.getLogger().info(String.valueOf(values));
+
+        return sum;
+    }
+
+    private void addToSlot(Player player, double damage){
+
+        double saved = damageSlot.getOrDefault(player.getUniqueId(), 0.0);
+
+        saved = saved + damage;
+
+        damageSlot.put(player.getUniqueId(), saved);
+    }
+
+    private void addSaved(Player player, double amount){
+
+        LinkedList<Double> values = allSaved.getOrDefault(player.getUniqueId(), new LinkedList<>());
+
+        values.add(amount);
+
+        if(values.size()>3){
+            values.removeFirst();
+        }
+
+        allSaved.put(player.getUniqueId(), values);
+    }
+
+    private void clearSaved(Player player){
+        damageSlot.remove(player.getUniqueId());
+    }
+
+    private void removeAllSaved(Player player){
+        allSaved.remove(player.getUniqueId());
+    }
+
+    private double getSaved(Player player){
+        return damageSlot.getOrDefault(player.getUniqueId(), 0.0);
     }
 
 }

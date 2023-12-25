@@ -132,6 +132,8 @@ public class CombatManager {
         return lastCalledCombat.get(player.getUniqueId());
     }
 
+
+    //should happen every tick of cooldown
     private void setPlayerAbilityItems(Player player){
 
 
@@ -231,17 +233,15 @@ public class CombatManager {
         return abilityItem;
     }
 
+
+    //should happen every time health is changed OR cooldown updates
     public void displayPlayerHealthPlusInfo(Player player){
 
         StringBuilder fullBar = new StringBuilder();
 
-        //shield info here
-
         String shieldString = getShieldString(player);
         String manaString = getManaBar(player);
         String statusString = ChatColor.GRAY + getPlayerStatus(player);
-
-
 
         String colorlessString = statusString.replaceAll("§.", "");
 
@@ -320,8 +320,6 @@ public class CombatManager {
 
         EquipSkills equipSkills = profileManager.getAnyProfile(player).getEquipSkills();
 
-
-
         if(hotBarSlot == 8){
 
             if(!allSkillItems.getUltimate(player).hasItemMeta()){
@@ -366,7 +364,6 @@ public class CombatManager {
         }
 
         return String.valueOf(cooldown);
-
 
     }
 

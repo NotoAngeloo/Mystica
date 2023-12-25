@@ -23,10 +23,9 @@ public class MercifulHealing {
 
     private final ProfileManager profileManager;
     private final CombatManager combatManager;
+    private final DamageCalculator damageCalculator;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
-    private final PveChecker pveChecker;
-    private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final AbilityManager abilityManager;
@@ -39,11 +38,10 @@ public class MercifulHealing {
     public MercifulHealing(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
+        damageCalculator = main.getDamageCalculator();
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
-        pveChecker = main.getPveChecker();
-        damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
         abilityManager = manager;
@@ -72,6 +70,10 @@ public class MercifulHealing {
             }
 
             if (profileManager.getAnyProfile(target).getIfDead()) {
+                target = player;
+            }
+
+            if(pvpManager.pvpLogic(player, (Player) target)){
                 target = player;
             }
 
@@ -168,6 +170,13 @@ public class MercifulHealing {
                         profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
                 double healAmount = profileManager.getAnyProfile(target).getTotalHealth() * .1;
                 healAmount = healAmount + profileManager.getAnyProfile(player).getTotalAttack() * .5;
+
+                boolean crit = damageCalculator.checkIfCrit(player, 0);
+
+                if(crit){
+                    healAmount = healAmount * 1.5;
+                }
+
                 healAmount = healAmount * skillLevel;
 
                 if(justiceMark.markProc(player, target)){

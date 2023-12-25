@@ -185,7 +185,6 @@ public class LightWell {
                         boolean crit = damageCalculator.checkIfCrit(player, 0);
                         double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", skillDamage * level, crit));
 
-
                         //pvp logic
                         if(entity instanceof Player){
                             if(pvpManager.pvpLogic(player, (Player) entity)){

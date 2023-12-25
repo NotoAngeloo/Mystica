@@ -153,7 +153,6 @@ public class DecreeHonor {
             @Override
             public void run(){
 
-
                 double increment = (2 * Math.PI) / 16; // angle between particles
 
                 for (int i = 0; i < 16; i++) {

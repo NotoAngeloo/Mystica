@@ -94,7 +94,7 @@ public class DivineGuidance {
 
         Location h1spawn = start.clone().add(direction.clone().multiply(4)).setDirection(crossProduct);
 
-        ArmorStand hammer = start.getWorld().spawn(h1spawn.clone().subtract(0,5,0), ArmorStand.class);
+        ArmorStand hammer = player.getWorld().spawn(h1spawn.clone().subtract(0,5,0), ArmorStand.class);
         hammer.setInvisible(true);
         hammer.setGravity(false);
         hammer.setCollidable(false);
@@ -117,7 +117,7 @@ public class DivineGuidance {
 
         Location h2spawn = start.clone().subtract(direction.clone().multiply(4)).setDirection(crossProduct);
 
-        ArmorStand hammer2 = start.getWorld().spawn(h2spawn.clone().subtract(0,5,0), ArmorStand.class);
+        ArmorStand hammer2 = player.getWorld().spawn(h2spawn.clone().subtract(0,5,0), ArmorStand.class);
         hammer2.setInvisible(true);
         hammer2.setGravity(false);
         hammer2.setCollidable(false);
@@ -134,7 +134,7 @@ public class DivineGuidance {
 
         Location h3spawn = start.clone().add(crossProduct.clone().multiply(4)).setDirection(direction);
 
-        ArmorStand hammer3 = start.getWorld().spawn(h3spawn.clone().subtract(0,5,0), ArmorStand.class);
+        ArmorStand hammer3 = player.getWorld().spawn(h3spawn.clone().subtract(0,5,0), ArmorStand.class);
         hammer3.setInvisible(true);
         hammer3.setGravity(false);
         hammer3.setCollidable(false);
@@ -151,7 +151,7 @@ public class DivineGuidance {
 
         Location h4spawn = start.clone().subtract(crossProduct.clone().multiply(4)).setDirection(direction);
 
-        ArmorStand hammer4 = start.getWorld().spawn(h4spawn.clone().subtract(0,5,0), ArmorStand.class);
+        ArmorStand hammer4 = player.getWorld().spawn(h4spawn.clone().subtract(0,5,0), ArmorStand.class);
         hammer4.setInvisible(true);
         hammer4.setGravity(false);
         hammer4.setCollidable(false);

@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities;
 
+import io.lumine.mythic.bukkit.utils.lib.jooq.impl.QOM;
 import me.angeloo.mystica.Components.Abilities.Paladin.*;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
@@ -27,6 +28,9 @@ public class PaladinAbilities {
     private final MercifulHealing mercifulHealing;
     private final DecreeHonor decreeHonor;
     private final HonorCounter honorCounter;
+    private final DivineInfusion divineInfusion;
+    private final SpiritualGift spiritualGift;
+    private final SacredAegis sacredAegis;
 
     public PaladinAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
@@ -48,6 +52,9 @@ public class PaladinAbilities {
         mercifulHealing = new MercifulHealing(main, manager, this);
         decreeHonor = new DecreeHonor(main, manager, this);
         honorCounter = new HonorCounter(main, manager);
+        divineInfusion = new DivineInfusion(main, manager);
+        spiritualGift = new SpiritualGift(main, manager);
+        sacredAegis = new SacredAegis(main, manager);
 
     }
 
@@ -70,12 +77,15 @@ public class PaladinAbilities {
                     return;
                 }
                 case 4:{
+                    divineInfusion.use(player);
                     return;
                 }
                 case 5:{
+                    spiritualGift.use(player);
                     return;
                 }
                 case 6:{
+                    sacredAegis.use(player);
                     return;
                 }
                 case 7:{
@@ -160,8 +170,11 @@ public class PaladinAbilities {
                 case 3:
                     return honorCounter.getCooldown(player);
                 case 4:
+                    return divineInfusion.getCooldown(player);
                 case 5:
+                    return spiritualGift.getCooldown(player);
                 case 6:
+                    return sacredAegis.getCooldown(player);
                 case 7:
                 case 8:
                     return justiceMark.getCooldown(player);

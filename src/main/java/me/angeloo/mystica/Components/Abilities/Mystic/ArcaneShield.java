@@ -118,7 +118,7 @@ public class ArcaneShield {
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
 
         double fivePercent = (double) profileManager.getAnyProfile(target).getTotalHealth() / 20;
-        double shieldAmount = fivePercent + (((double) profileManager.getAnyProfile(player).getTotalMagic() / 3) * skillLevel);
+        double shieldAmount = fivePercent + (((double) profileManager.getAnyProfile(player).getTotalMagic() / 3) + skillLevel);
 
         buffAndDebuffManager.getGenericShield().applyOrAddShield(target, shieldAmount);
 

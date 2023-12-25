@@ -124,10 +124,12 @@ public class ForceOfWill {
         double skillDamage = 3;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
+        skillDamage = skillDamage + ((int)(skillLevel/10));
 
         abilityManager.setCasting(player, true);
         double castTime = 60;
 
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
             int count = 0;
@@ -188,7 +190,7 @@ public class ForceOfWill {
 
                 if(count%10==0){
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Magical", skillDamage * skillLevel, crit);
+                    double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);

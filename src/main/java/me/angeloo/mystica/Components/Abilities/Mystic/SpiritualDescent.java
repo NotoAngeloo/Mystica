@@ -134,7 +134,9 @@ public class SpiritualDescent {
         double skillDamage = 5;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
+        skillDamage = skillDamage + ((int)(skillLevel/10));
 
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             int count = 0;
             @Override
@@ -151,7 +153,7 @@ public class SpiritualDescent {
                     @Override
                     public void run(){
 
-                        current.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, current, 1, 0, 0, 0, 0);
+                        player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, current, 1, 0, 0, 0, 0);
 
                         current = current.subtract(0,1,0);
 
@@ -159,7 +161,7 @@ public class SpiritualDescent {
 
                         if(count >= 10){
                             this.cancel();
-                            ArmorStand armorStand = spawnLoc.getWorld().spawn(spawnLoc, ArmorStand.class);
+                            ArmorStand armorStand = player.getWorld().spawn(spawnLoc, ArmorStand.class);
                             armorStand.setInvisible(true);
                             armorStand.setGravity(false);
                             armorStand.setCollidable(false);
@@ -202,7 +204,7 @@ public class SpiritualDescent {
                                 LivingEntity livingEntity = (LivingEntity) entity;
 
                                 boolean crit = damageCalculator.checkIfCrit(player, 0);
-                                double damage = (damageCalculator.calculateDamage(player, livingEntity, "Magical", skillDamage * skillLevel, crit));
+                                double damage = (damageCalculator.calculateDamage(player, livingEntity, "Magical", finalSkillDamage, crit));
 
                                 //pvp logic
                                 if(entity instanceof Player){

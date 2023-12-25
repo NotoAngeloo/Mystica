@@ -170,14 +170,13 @@ public class MercifulHealing {
                         profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
                 double healAmount = profileManager.getAnyProfile(target).getTotalHealth() * .1;
                 healAmount = healAmount + profileManager.getAnyProfile(player).getTotalAttack() * .5;
+                healAmount = healAmount + ((int)(skillLevel/10));
 
                 boolean crit = damageCalculator.checkIfCrit(player, 0);
 
                 if(crit){
                     healAmount = healAmount * 1.5;
                 }
-
-                healAmount = healAmount * skillLevel;
 
                 if(justiceMark.markProc(player, target)){
                     markHealInstead(player, healAmount);

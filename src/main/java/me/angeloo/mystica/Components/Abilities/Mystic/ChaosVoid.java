@@ -81,7 +81,7 @@ public class ChaosVoid {
         Location spawnStart = player.getLocation().clone();
         spawnStart.subtract(0, 1, 0);
 
-        ArmorStand spawnTexture = spawnStart.getWorld().spawn(spawnStart, ArmorStand.class);
+        ArmorStand spawnTexture = player.getWorld().spawn(spawnStart, ArmorStand.class);
         spawnTexture.setInvisible(true);
         spawnTexture.setGravity(false);
         spawnTexture.setCollidable(false);

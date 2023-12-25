@@ -108,8 +108,10 @@ public class LightWell {
 
         double skillDamage = 5;
         double level = profileManager.getAnyProfile(player).getStats().getLevel();
+        skillDamage = skillDamage + ((int)(level/10));
 
         Location current = well.getLocation();
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             Vector initialDirection;
             int angle = 0;
@@ -183,7 +185,7 @@ public class LightWell {
 
 
                         boolean crit = damageCalculator.checkIfCrit(player, 0);
-                        double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", skillDamage * level, crit));
+                        double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", finalSkillDamage, crit));
 
                         //pvp logic
                         if(entity instanceof Player){

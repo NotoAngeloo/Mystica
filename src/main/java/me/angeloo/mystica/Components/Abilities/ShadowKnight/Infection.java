@@ -131,7 +131,7 @@ public class Infection {
         start.subtract(0, 1, 0);
 
 
-        ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -267,16 +267,17 @@ public class Infection {
                 }
 
                 double skillDamage = 3;
+                double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level() +
+                        profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
+                skillDamage = skillDamage + ((int)(skillLevel/10));
 
                 if(getIfEnhanced(player)){
                     skillDamage = skillDamage * 2;
                 }
 
-                double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level() +
-                        profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
 
                 boolean crit = damageCalculator.checkIfCrit(player, 0);
-                double damage = damageCalculator.calculateDamage(player, entity, "Physical", skillDamage * skillLevel, crit);
+                double damage = damageCalculator.calculateDamage(player, entity, "Physical", skillDamage, crit);
                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(entity, player));
                 changeResourceHandler.subtractHealthFromEntity(entity, damage, player);
 

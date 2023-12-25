@@ -215,7 +215,7 @@ public class FieryWing {
                                 double level = profileManager.getAnyProfile(player).getStats().getLevel();
 
                                 boolean crit = damageCalculator.checkIfCrit(player, 0);
-                                double damage = damageCalculator.calculateDamage(player, target, "Magical", 20 * level, crit);
+                                double damage = damageCalculator.calculateDamage(player, target, "Magical", 20 + level, crit);
 
                                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                                 changeResourceHandler.subtractHealthFromEntity(target, damage, player);

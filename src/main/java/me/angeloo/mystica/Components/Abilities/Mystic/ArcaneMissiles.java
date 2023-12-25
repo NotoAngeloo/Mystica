@@ -128,7 +128,9 @@ public class ArcaneMissiles {
 
         double skillDamage = 8;
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+        skillDamage = skillDamage + ((int)(skillLevel/10));
 
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
             final Set<ArmorStand> allStands = new HashSet<>();
@@ -163,7 +165,7 @@ public class ArcaneMissiles {
                 Location spawn2Loc = start.clone();
                 spawn2Loc.add(direction.clone().crossProduct(new Vector(0,1,0).normalize().multiply(.5)));
 
-                ArmorStand armorStand = start.getWorld().spawn(spawn1Loc, ArmorStand.class);
+                ArmorStand armorStand = player.getWorld().spawn(spawn1Loc, ArmorStand.class);
                 armorStand.setInvisible(true);
                 armorStand.setGravity(false);
                 armorStand.setCollidable(false);
@@ -182,7 +184,7 @@ public class ArcaneMissiles {
 
                 allStands.add(armorStand);
 
-                ArmorStand armorStand2 = start.getWorld().spawn(spawn2Loc, ArmorStand.class);
+                ArmorStand armorStand2 = player.getWorld().spawn(spawn2Loc, ArmorStand.class);
                 armorStand2.setInvisible(true);
                 armorStand2.setGravity(false);
                 armorStand2.setCollidable(false);
@@ -224,7 +226,7 @@ public class ArcaneMissiles {
                             cancelTask();
 
                             boolean crit = damageCalculator.checkIfCrit(player, 0);
-                            double damage = damageCalculator.calculateDamage(player, target, "Magical", skillDamage * skillLevel, crit);
+                            double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
 
                             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                             changeResourceHandler.subtractHealthFromEntity(target, damage, player);
@@ -286,7 +288,7 @@ public class ArcaneMissiles {
                             cancelTask();
 
                             boolean crit = damageCalculator.checkIfCrit(player, 0);
-                            double damage = damageCalculator.calculateDamage(player, target, "Magical", skillDamage * skillLevel, crit);
+                            double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
 
                             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                             changeResourceHandler.subtractHealthFromEntity(target, damage, player);

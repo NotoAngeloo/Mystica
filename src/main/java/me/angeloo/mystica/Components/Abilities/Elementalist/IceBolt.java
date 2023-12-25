@@ -159,6 +159,11 @@ public class IceBolt {
 
         double skillDamage = 3;
 
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
+
+        skillDamage = skillDamage + ((int)(skillLevel/10));
+
         if(conjurer){
 
             double maxMana = profileManager.getAnyProfile(player).getTotalMana();
@@ -177,9 +182,6 @@ public class IceBolt {
         if(breathActive){
             skillDamage = skillDamage * 2;
         }
-
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level() +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
 
         double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
@@ -221,7 +223,7 @@ public class IceBolt {
                     cancelTask();
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage * skillLevel, crit);
+                    double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);

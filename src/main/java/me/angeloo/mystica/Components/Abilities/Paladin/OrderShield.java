@@ -123,7 +123,7 @@ public class OrderShield {
 
         Location start = player.getLocation();
 
-        ArmorStand armorStand = start.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -148,12 +148,14 @@ public class OrderShield {
         double skillDamage = 9;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
+        skillDamage = skillDamage + ((int)(skillLevel/10));
 
         double tenPercent = profileManager.getAnyProfile(player).getTotalHealth() * .1;
 
         changeResourceHandler.subtractHealthFromEntity(player, tenPercent, player);
         healOverTime(player, tenPercent/5);
 
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             Vector initialDirection;
             double angle = 0;
@@ -195,7 +197,7 @@ public class OrderShield {
                     cancelTask();
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
+                    double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);

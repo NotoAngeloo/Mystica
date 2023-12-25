@@ -20,10 +20,6 @@ public class Roll {
 
     private final ProfileManager profileManager;
     private final CombatManager combatManager;
-    private final TargetManager targetManager;
-    private final PvpManager pvpManager;
-    private final PveChecker pveChecker;
-    private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
 
@@ -33,10 +29,6 @@ public class Roll {
         this.main = main;
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
-        targetManager = main.getTargetManager();
-        pvpManager = main.getPvpManager();
-        pveChecker = main.getPveChecker();
-        damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
     }

@@ -81,8 +81,6 @@ public class BuffAndDebuffManager {
         modest.remove(player);
     }
 
-
-
     //attacker, defender
     public double getTotalDamageMultipliers(LivingEntity attacker, LivingEntity defender){
 

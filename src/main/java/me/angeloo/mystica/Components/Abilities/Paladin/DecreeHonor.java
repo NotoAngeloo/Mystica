@@ -147,7 +147,10 @@ public class DecreeHonor {
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
 
+        skillDamage = skillDamage + ((int)(skillLevel/10));
 
+
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             double down = 0;
             @Override
@@ -192,7 +195,7 @@ public class DecreeHonor {
 
                         double healAmount = profileManager.getAnyProfile(target).getTotalHealth() * .05;
                         healAmount = healAmount + profileManager.getAnyProfile(player).getTotalAttack() * .2;
-                        healAmount = healAmount * skillLevel;
+                        healAmount = healAmount + ((int)(skillLevel/10));
 
                         if(crit){
                             healAmount = healAmount*1.5;
@@ -209,7 +212,7 @@ public class DecreeHonor {
 
                 }
 
-                double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
+                double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
 
                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                 changeResourceHandler.subtractHealthFromEntity(target, damage, player);

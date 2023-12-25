@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.Abilities.ElementalistAbilities;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Managers.CombatManager;
+import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import org.bukkit.Location;
@@ -19,6 +20,7 @@ import java.util.UUID;
 public class ElementalBreath {
 
     private final Mystica main;
+    private final ProfileManager profileManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CombatManager combatManager;
     private final ChangeResourceHandler changeResourceHandler;
@@ -28,6 +30,7 @@ public class ElementalBreath {
 
     public ElementalBreath(Mystica main, AbilityManager manager){
         this.main = main;
+        profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
@@ -75,7 +78,13 @@ public class ElementalBreath {
 
     private void execute(Player player){
 
-        buffActiveMap.put(player.getUniqueId(), 15);
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
+
+        int bonus = ((int)(skillLevel/10));
+
+
+        buffActiveMap.put(player.getUniqueId(), 15 + bonus);
         new BukkitRunnable(){
             @Override
             public void run(){

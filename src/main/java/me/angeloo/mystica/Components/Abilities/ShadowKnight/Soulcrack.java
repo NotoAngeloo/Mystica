@@ -89,7 +89,7 @@ public class Soulcrack {
         int castTime = 45;
 
         Location start = player.getLocation();
-        ArmorStand armorStand = start.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -112,9 +112,15 @@ public class Soulcrack {
         player.getInventory().setItemInOffHand(null);
         armorStand.teleport(start);
 
+        double skillDamage = 4;
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
+        skillDamage = skillDamage + ((int)(skillLevel/10));
+
         changeResourceHandler.addManaToPlayer(player, 100.0);
 
         abilityManager.setCasting(player, true);
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             int ran = 0;
             Vector initialDirection;
@@ -156,10 +162,6 @@ public class Soulcrack {
 
             private void damageNear(){
 
-                double skillDamage = 4;
-                double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level() +
-                        profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
-
                 BoundingBox hitBox = new BoundingBox(
                         player.getLocation().getX() - 3,
                         player.getLocation().getY() - 2,
@@ -186,7 +188,7 @@ public class Soulcrack {
                     LivingEntity livingEntity = (LivingEntity) entity;
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, livingEntity, "Physical", skillDamage * skillLevel, crit);
+                    double damage = damageCalculator.calculateDamage(player, livingEntity, "Physical", finalSkillDamage, crit);
 
                     //pvp logic
                     if(entity instanceof Player){

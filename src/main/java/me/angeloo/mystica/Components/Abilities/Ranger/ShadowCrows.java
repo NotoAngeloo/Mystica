@@ -129,7 +129,7 @@ public class ShadowCrows {
 
         Location start = player.getLocation();
         start.subtract(0, 1, 0);
-        ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -150,6 +150,9 @@ public class ShadowCrows {
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
         double skillDamage = 2;
 
+        skillDamage = skillDamage + ((int)(skillLevel/10));
+
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
             @Override
@@ -239,7 +242,7 @@ public class ShadowCrows {
                                 buffAndDebuffManager.getHaste().applyHaste(player, 1, 2);
                             }
 
-                            double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
+                            double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
 
                             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                             changeResourceHandler.subtractHealthFromEntity(target, damage, player);

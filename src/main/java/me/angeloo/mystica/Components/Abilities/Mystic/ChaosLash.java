@@ -138,10 +138,12 @@ public class ChaosLash {
         double skillDamage = 5;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
+        skillDamage = skillDamage + ((int)(skillLevel/10));
 
         abilityManager.setCasting(player, true);
         double castTime = 15;
 
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
             final Set<ArmorStand> allStands = new HashSet<>();
@@ -170,7 +172,7 @@ public class ChaosLash {
                     return;
                 }
 
-                ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+                ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
                 armorStand.setInvisible(true);
                 armorStand.setGravity(false);
                 armorStand.setCollidable(false);
@@ -228,7 +230,7 @@ public class ChaosLash {
                             armorStand.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, current.add(0,2,0), 1, 0, 0, 0, 0);
 
                             boolean crit = damageCalculator.checkIfCrit(player, 0);
-                            double damage = damageCalculator.calculateDamage(player, target, "Magical", skillDamage * skillLevel, crit);
+                            double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
 
                             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                             changeResourceHandler.subtractHealthFromEntity(target, damage, player);

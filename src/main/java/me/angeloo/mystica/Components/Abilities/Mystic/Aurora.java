@@ -30,7 +30,6 @@ public class Aurora {
     private final ChangeResourceHandler changeResourceHandler;
     private final DamageCalculator damageCalculator;
     private final PvpManager pvpManager;
-    private final PveChecker pveChecker;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
@@ -43,7 +42,6 @@ public class Aurora {
         changeResourceHandler = main.getChangeResourceHandler();
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
-        pveChecker = main.getPveChecker();
     }
 
     public void use(Player player){

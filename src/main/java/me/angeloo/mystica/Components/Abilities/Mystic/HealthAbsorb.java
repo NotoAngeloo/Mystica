@@ -39,7 +39,7 @@ public class HealthAbsorb {
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public HealthAbsorb(Mystica main, AbilityManager manager, MysticAbilities mysticAbilities){
+    public HealthAbsorb(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
         abilityManager = manager;
@@ -130,9 +130,11 @@ public class HealthAbsorb {
         double skillDamage = 3;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
+        skillDamage = skillDamage + ((int)(skillLevel/10));
 
         abilityManager.setCasting(player, true);
 
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             final List<ArmorStand> armorStands = new ArrayList<>();
             int ran = 0;
@@ -189,8 +191,8 @@ public class HealthAbsorb {
                 Location particleLoc = new Location(playerLoc.getWorld(), x, playerLoc.getY() + height, z);
                 Location particleLoc2 = new Location(playerLoc.getWorld(), x2, playerLoc.getY() + height, z2);
 
-                playerLoc.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, particleLoc, 1, 0, 0, 0, 0);
-                playerLoc.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, particleLoc2, 1, 0, 0, 0, 0);
+                player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, particleLoc, 1, 0, 0, 0, 0);
+                player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, particleLoc2, 1, 0, 0, 0, 0);
 
 
                 if(up){
@@ -266,7 +268,7 @@ public class HealthAbsorb {
 
                 if(ran%20==0){
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Magical", skillDamage * skillLevel, crit);
+                    double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
 
                     double healed = damage * .3;
 

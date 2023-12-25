@@ -132,10 +132,13 @@ public class RazorWind {
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
         double skillDamage = 4;
 
+        skillDamage = skillDamage + ((int)(skillLevel/10));
+
         double castTime = 20;
         abilityManager.setCasting(player, true);
         player.setWalkSpeed(.06f);
 
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
             int count = 0;
@@ -196,7 +199,7 @@ public class RazorWind {
                 Location start = player.getLocation();
 
                 start.subtract(0, 1, 0);
-                ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+                ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
                 armorStand.setInvisible(true);
                 armorStand.setGravity(false);
                 armorStand.setCollidable(false);
@@ -286,7 +289,7 @@ public class RazorWind {
                                     buffAndDebuffManager.getHaste().applyHaste(player, 1, 2);
                                 }
 
-                                double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
+                                double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
 
                                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                                 changeResourceHandler.subtractHealthFromEntity(target, damage, player);

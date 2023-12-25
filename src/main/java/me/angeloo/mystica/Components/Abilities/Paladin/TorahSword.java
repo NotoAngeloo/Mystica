@@ -187,6 +187,8 @@ public class TorahSword {
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
         double skillDamage = 3;
 
+        skillDamage = skillDamage + ((int)(skillLevel/10));
+
         int critValue = 0;
 
         if(dawn){
@@ -195,6 +197,7 @@ public class TorahSword {
 
 
         int finalCritValue = critValue;
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             int count = 0;
             @Override
@@ -243,7 +246,7 @@ public class TorahSword {
                         decision.applyDecision(player);
                     }
 
-                    double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
+                    double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
@@ -259,7 +262,7 @@ public class TorahSword {
                         decision.applyDecision(player);
                     }
 
-                    double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
+                    double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
@@ -277,7 +280,7 @@ public class TorahSword {
                         decision.applyDecision(player);
                     }
 
-                    double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
+                    double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);

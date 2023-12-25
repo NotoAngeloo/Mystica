@@ -124,7 +124,7 @@ public class MysticBasic {
 
         Location start = player.getLocation();
         start.subtract(0, 1, 0);
-        ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -148,8 +148,6 @@ public class MysticBasic {
         bolt.setItemMeta(meta);
         assert entityEquipment != null;
         entityEquipment.setHelmet(bolt);
-
-
 
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
@@ -177,7 +175,7 @@ public class MysticBasic {
                 armorStand.teleport(current);
 
                 if(evilSpirit){
-                    targetWasLoc.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, current, 1, 0, 0, 0, 0);
+                    player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, current, 1, 0, 0, 0, 0);
                 }
 
                 if (distance <= 1) {
@@ -193,7 +191,7 @@ public class MysticBasic {
 
                     double level = profileManager.getAnyProfile(player).getStats().getLevel();
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Magical", basicDamage * level, crit);
+                    double damage = damageCalculator.calculateDamage(player, target, "Magical", basicDamage + level, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
@@ -205,6 +203,7 @@ public class MysticBasic {
             private void aoeAttack(){
                 double skillDamage = 20;
                 double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+                skillDamage = skillDamage + ((int)(skillLevel/10));
 
                 Set<LivingEntity> hitBySkill = new HashSet<>();
 
@@ -225,7 +224,7 @@ public class MysticBasic {
                     double z = targetWasLoc.getZ() + (4 * Math.sin(angle));
                     Location loc = new Location(targetWasLoc.getWorld(), x, targetWasLoc.clone().add(0,1,0).getY(), z);
 
-                    targetWasLoc.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, loc, 1, 0, 0, 0, 0);
+                    player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, loc, 1, 0, 0, 0, 0);
                 }
 
                 for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
@@ -251,7 +250,7 @@ public class MysticBasic {
                     hitBySkill.add(livingEntity);
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = (damageCalculator.calculateDamage(player, livingEntity, "Magical", skillDamage * skillLevel, crit));
+                    double damage = (damageCalculator.calculateDamage(player, livingEntity, "Magical", skillDamage, crit));
 
                     //pvp logic
                     if(entity instanceof Player){
@@ -411,10 +410,10 @@ public class MysticBasic {
                         cancelTask();
 
                         double basicDamage = 1;
-
                         double level = profileManager.getAnyProfile(player).getStats().getLevel();
+                        basicDamage = basicDamage + ((int)(level/10));
                         boolean crit = damageCalculator.checkIfCrit(player, 0);
-                        double damage = damageCalculator.calculateDamage(player, target, "Magical", basicDamage * level, crit);
+                        double damage = damageCalculator.calculateDamage(player, target, "Magical", basicDamage, crit);
 
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                         changeResourceHandler.subtractHealthFromEntity(target, damage, player);
@@ -450,10 +449,11 @@ public class MysticBasic {
 
             double totalTargetHealth = profileManager.getAnyProfile(target).getTotalHealth();
             double yourMagic = profileManager.getAnyProfile(player).getTotalMagic();
+            double level = profileManager.getAnyProfile(player).getStats().getLevel();
             boolean crit = damageCalculator.checkIfCrit(player, 0);
-
             double healAmount = totalTargetHealth * .05;
             healAmount = healAmount * (yourMagic/4);
+            healAmount = healAmount + ((int)(level/10));
 
             if(subclass.equalsIgnoreCase("shepard")){
                 healAmount = healAmount * 1.2;

@@ -86,7 +86,14 @@ public class SacredAegis {
 
         execute(player, (Player)target);
 
-        abilityReadyInMap.put(player.getUniqueId(), 120);
+        int cooldown = 120;
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
+        cooldown = cooldown - ((int) skillLevel/15);
+
+
+
+        abilityReadyInMap.put(player.getUniqueId(), cooldown);
         new BukkitRunnable(){
             @Override
             public void run(){

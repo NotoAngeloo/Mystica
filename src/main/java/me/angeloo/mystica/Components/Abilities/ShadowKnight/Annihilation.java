@@ -131,7 +131,7 @@ public class Annihilation {
         Location spawnLoc = start.clone().subtract(0,3,0);
         spawnLoc.setDirection(direction);
 
-        ArmorStand armorStand = start.getWorld().spawn(spawnLoc, ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(spawnLoc, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -149,6 +149,11 @@ public class Annihilation {
         assert entityEquipment != null;
         entityEquipment.setHelmet(item);
 
+        double skillDamage = 13;
+        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+        skillDamage = skillDamage + ((int)(skillLevel/10));
+
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             int ran = 0;
             int height = 0;
@@ -217,11 +222,10 @@ public class Annihilation {
 
             private void hitTarget(){
 
-                double skillDamage = 13;
-                double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+
 
                 boolean crit = damageCalculator.checkIfCrit(player, 0);
-                double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
+                double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                 changeResourceHandler.subtractHealthFromEntity(target, damage, player);
 

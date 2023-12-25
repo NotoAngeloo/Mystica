@@ -174,7 +174,7 @@ public class RangerBasic {
 
         Location start = player.getLocation();
         start.subtract(0, 1, 0);
-        ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -191,6 +191,12 @@ public class RangerBasic {
         assert entityEquipment != null;
         entityEquipment.setHelmet(arrow);
 
+        double skillDamage = 1;
+        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+
+        skillDamage = skillDamage + ((int)(skillLevel/10));
+
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
             @Override
@@ -225,9 +231,8 @@ public class RangerBasic {
                         basicDamage = basicDamage * 1.25;
                     }
 
-                    double level = profileManager.getAnyProfile(player).getStats().getLevel();
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Physical", basicDamage * level, crit);
+                    double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
@@ -288,6 +293,12 @@ public class RangerBasic {
         assert entityEquipment != null;
         entityEquipment.setHelmet(arrow);
 
+        double skillDamage = 1;
+        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+
+        skillDamage = skillDamage + ((int)(skillLevel/10));
+
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
             @Override
@@ -317,15 +328,14 @@ public class RangerBasic {
 
                     cancelTask();
 
-                    double basicDamage = 1.5;
+                    double basicDamage = finalSkillDamage;
                     if(rallyingCry.getIfBuffTime(player) > 0){
                         basicDamage = basicDamage * 1.25;
                     }
 
-                    double level = profileManager.getAnyProfile(player).getStats().getLevel();
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Physical", basicDamage * level, crit);
+                    double damage = damageCalculator.calculateDamage(player, target, "Physical", basicDamage, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);

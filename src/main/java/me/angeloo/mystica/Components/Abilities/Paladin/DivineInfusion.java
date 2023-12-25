@@ -145,9 +145,11 @@ public class DivineInfusion {
         double skillDamage = 3;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
+        skillDamage = skillDamage + ((int)(skillLevel/10));
 
         Set<Player> hitBySkill = new HashSet<>();
 
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             int count = 0;
             boolean down = true;
@@ -206,7 +208,7 @@ public class DivineInfusion {
                             LivingEntity livingEntity = (LivingEntity) entity;
 
                             boolean crit = damageCalculator.checkIfCrit(player, 0);
-                            double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", skillDamage * skillLevel, crit));
+                            double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", finalSkillDamage, crit));
 
                             if(livingEntity instanceof Player){
 

@@ -148,13 +148,15 @@ public class ShadowOfDarkness {
         entityEquipment.setHelmet(meteorItem);
 
         double skillDamage = 4;
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
+
+        skillDamage = skillDamage + ((int)(skillLevel/10));
 
         int shards = evilSpirit.getChaosShards(player);
 
         skillDamage = skillDamage + shards;
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level() +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
 
         double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
@@ -189,7 +191,7 @@ public class ShadowOfDarkness {
                     cancelTask();
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage * skillLevel, crit);
+                    double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);

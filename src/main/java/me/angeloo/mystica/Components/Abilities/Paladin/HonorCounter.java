@@ -150,8 +150,10 @@ public class HonorCounter {
         double skillDamage = 4;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
+        skillDamage = skillDamage + ((int)(skillLevel/10));
         double bonus = changeResourceHandler.getAllSaved(player);
 
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             @Override
             public void run(){
@@ -168,7 +170,7 @@ public class HonorCounter {
                     cancelTask();
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
+                    double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
                     damage = damage + bonus;
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));

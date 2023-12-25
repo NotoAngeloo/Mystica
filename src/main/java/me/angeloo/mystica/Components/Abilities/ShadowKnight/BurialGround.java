@@ -78,7 +78,7 @@ public class BurialGround {
         boolean blood = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("blood");
 
         Location start = player.getLocation();
-        ArmorStand armorStand = start.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -99,6 +99,12 @@ public class BurialGround {
 
         armorStand.teleport(start);
 
+        double healAmount = profileManager.getAnyProfile(player).getTotalHealth() * .07;
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
+        healAmount = healAmount + ((int)(skillLevel/10));
+
+        double finalHealAmount = healAmount;
         new BukkitRunnable(){
             int ran = 0;
             @Override
@@ -117,9 +123,7 @@ public class BurialGround {
 
                 if(playerValid()){
 
-                    double sevenPercent = profileManager.getAnyProfile(player).getTotalHealth() * .07;
-
-                    changeResourceHandler.addHealthToEntity(player,sevenPercent, player);
+                    changeResourceHandler.addHealthToEntity(player, finalHealAmount, player);
                     changeResourceHandler.addManaToPlayer(player, 10.0);
 
                     if(blood){

@@ -166,10 +166,12 @@ public class CovenantSword {
         double skillDamage = 12;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
+        skillDamage = skillDamage + ((int)(skillLevel/10));
 
         abilityManager.setCasting(player, true);
 
         boolean finalTargeted = targeted;
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             boolean stage1 = false;
             Vector initialDirection;
@@ -271,8 +273,8 @@ public class CovenantSword {
 
                         boolean crit = damageCalculator.checkIfCrit(player, 0);
 
-                        double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", skillDamage * skillLevel *
-                                decisionMultiplier(player), crit));
+                        double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", finalSkillDamage, crit));
+                        damage = damage * decisionMultiplier(player);
 
                         //pvp logic
                         if(entity instanceof Player){

@@ -175,9 +175,10 @@ public class GloryOfPaladins {
         double skillDamage = 3;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
+        skillDamage = skillDamage + ((int)(skillLevel/10));
 
         boolean crit = damageCalculator.checkIfCrit(player, 0);
-        double damage = damageCalculator.calculateDamage(player, livingEntity, "Physical", skillDamage * skillLevel, crit);
+        double damage = damageCalculator.calculateDamage(player, livingEntity, "Physical", skillDamage, crit);
 
         changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
 

@@ -219,15 +219,16 @@ public class SoulReap {
 
                     //damage
                     double skillDamage = 7 + getSoulMarks(player);
+                    double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level() +
+                            profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
+
+                    skillDamage = skillDamage + ((int)(skillLevel/10));
 
                     double targetHealthPercent = profileManager.getAnyProfile(target).getCurrentHealth() / (double) profileManager.getAnyProfile(target).getTotalHealth();
 
                     if(targetHealthPercent<=.3){
                         skillDamage = skillDamage * .3;
                     }
-
-                    double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level() +
-                            profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
 
@@ -237,7 +238,8 @@ public class SoulReap {
                         extra = infection.soulReapToRemove(player, target);
                     }
 
-                    double damage = damageCalculator.calculateDamage(player, target, "Physical", (skillDamage * skillLevel) + extra, crit);
+                    double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage, crit);
+                    damage = damage + extra;
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
                 }

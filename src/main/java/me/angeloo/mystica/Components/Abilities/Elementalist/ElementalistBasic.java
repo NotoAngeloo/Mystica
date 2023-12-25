@@ -172,7 +172,7 @@ public class ElementalistBasic {
 
         Location start = player.getLocation();
         start.subtract(0, 1, 0);
-        ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -189,7 +189,12 @@ public class ElementalistBasic {
         assert entityEquipment != null;
         entityEquipment.setHelmet(fireballItem);
 
+        double skillDamage = 1;
+        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
 
+        skillDamage = skillDamage + ((int)(skillLevel/10));
+
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable() {
             final double initialDistance = armorStand.getLocation().distance(target.getLocation());
             final double halfDistance = initialDistance/2;
@@ -225,10 +230,8 @@ public class ElementalistBasic {
                 if (distance <= 1) {
                     cancelTask();
 
-                    double level = profileManager.getAnyProfile(player).getStats().getLevel();
-
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Magical", 1 * level, crit);
+                    double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
@@ -270,7 +273,7 @@ public class ElementalistBasic {
 
         Location start = player.getLocation();
         start.subtract(0, 1, 0);
-        ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -287,7 +290,12 @@ public class ElementalistBasic {
         assert entityEquipment != null;
         entityEquipment.setHelmet(iceBallItem);
 
+        double skillDamage = 1;
+        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
 
+        skillDamage = skillDamage + ((int)(skillLevel/10));
+
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable() {
             final double initialDistance = armorStand.getLocation().distance(target.getLocation());
             final double halfDistance = initialDistance/2;
@@ -326,7 +334,7 @@ public class ElementalistBasic {
                     double level = profileManager.getAnyProfile(player).getStats().getLevel();
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Magical", 1 * level, crit);
+                    double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
@@ -365,6 +373,12 @@ public class ElementalistBasic {
 
         basicStageMap.put(player.getUniqueId(), 1);
 
+        double skillDamage = 1;
+        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+
+        skillDamage = skillDamage + ((int)(skillLevel/10));
+
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
             final List<ArmorStand> armorStands = new ArrayList<>();
@@ -395,7 +409,7 @@ public class ElementalistBasic {
                         double distanceThisTick = Math.min(distance, .5);
                         current.add(direction.normalize().multiply(distanceThisTick));
 
-                        ArmorStand armorStand = playerLoc.getWorld().spawn(current, ArmorStand.class);
+                        ArmorStand armorStand = player.getWorld().spawn(current, ArmorStand.class);
                         armorStand.setInvisible(true);
                         armorStand.setGravity(false);
                         armorStand.setCollidable(false);
@@ -436,7 +450,7 @@ public class ElementalistBasic {
                     double level = profileManager.getAnyProfile(player).getStats().getLevel();
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Magical", 1 * level, crit);
+                    double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);

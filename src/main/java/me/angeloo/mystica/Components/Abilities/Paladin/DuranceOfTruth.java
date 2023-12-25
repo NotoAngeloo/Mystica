@@ -152,8 +152,10 @@ public class DuranceOfTruth {
         double skillDamage = 5;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
+        skillDamage = skillDamage + ((int)(skillLevel/10));
 
         Location finalEnd = end;
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             final Set<LivingEntity> affected = new HashSet<>();
             final List<ArmorStand> allStands = new ArrayList<>();
@@ -299,7 +301,7 @@ public class DuranceOfTruth {
                     LivingEntity livingEntity = (LivingEntity) entity;
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", skillDamage * skillLevel, crit));
+                    double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", finalSkillDamage, crit));
 
                     //pvp logic
                     if(entity instanceof Player){

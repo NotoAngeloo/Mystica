@@ -124,24 +124,13 @@ public class Bloodsucker {
 
         boolean blood = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("blood");
 
-        double skillDamage = 5;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level() +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
-
-        double healAmount = profileManager.getAnyProfile(player).getTotalHealth() * .1;
-
-        if(blood){
-            healAmount =  healAmount + profileManager.getAnyProfile(player).getTotalHealth() * .3;
-            bloodShield.increaseDuration(player);
-        }
-
         LivingEntity target = targetManager.getPlayerTarget(player);
 
         Location start = player.getLocation();
         start.subtract(0, 1, 0);
 
 
-        ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -153,15 +142,27 @@ public class Bloodsucker {
         ItemStack boltItem = new ItemStack(Material.REDSTONE);
         ItemMeta meta = boltItem.getItemMeta();
         assert meta != null;
-
         meta.setCustomModelData(9);
-
         boltItem.setItemMeta(meta);
         assert entityEquipment != null;
         entityEquipment.setHelmet(boltItem);
 
 
+        double skillDamage = 5;
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
+        skillDamage = skillDamage + ((int)(skillLevel/10));
+
+        double healAmount = profileManager.getAnyProfile(player).getTotalHealth() * .1;
+
+        if(blood){
+            healAmount =  healAmount + profileManager.getAnyProfile(player).getTotalHealth() * .3;
+            bloodShield.increaseDuration(player);
+        }
+
+
         double finalHealAmount = healAmount;
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
             @Override
@@ -195,7 +196,7 @@ public class Bloodsucker {
                     cancelTask();
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
+                    double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);

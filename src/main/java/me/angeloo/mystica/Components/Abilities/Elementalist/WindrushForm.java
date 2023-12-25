@@ -18,6 +18,7 @@ public class WindrushForm {
 
     private final Mystica main;
 
+    private final ProfileManager profileManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CombatManager combatManager;
     private final ChangeResourceHandler changeResourceHandler;
@@ -26,6 +27,7 @@ public class WindrushForm {
 
     public WindrushForm(Mystica main, AbilityManager manager){
         this.main = main;
+        profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
@@ -45,8 +47,15 @@ public class WindrushForm {
 
         combatManager.startCombatTimer(player);
 
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
+
+        int cooldown = 15;
+
+        cooldown = cooldown - ((int)(skillLevel/15));
+
         execute(player);
-        abilityReadyInMap.put(player.getUniqueId(), 13);
+        abilityReadyInMap.put(player.getUniqueId(), cooldown);
         new BukkitRunnable(){
             @Override
             public void run(){

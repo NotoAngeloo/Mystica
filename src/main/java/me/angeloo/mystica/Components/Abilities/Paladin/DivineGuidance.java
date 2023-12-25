@@ -166,9 +166,11 @@ public class DivineGuidance {
 
         hammer4.teleport(h4spawn);
 
+        double skillDamage = 7;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
-        double skillDamage = 7;
+
+        skillDamage = skillDamage + ((int)(skillLevel/10));
 
         BoundingBox hitBox = new BoundingBox(
                 start.getX() - 4,
@@ -235,6 +237,7 @@ public class DivineGuidance {
             }
         }
 
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             Vector initialDirection;
             double angle = 0;
@@ -300,7 +303,7 @@ public class DivineGuidance {
                     hitBySkill.add(livingEntity);
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, livingEntity, "Physical", skillDamage * skillLevel, crit);
+                    double damage = damageCalculator.calculateDamage(player, livingEntity, "Physical", finalSkillDamage, crit);
 
                     //pvp logic
                     if(entity instanceof Player){

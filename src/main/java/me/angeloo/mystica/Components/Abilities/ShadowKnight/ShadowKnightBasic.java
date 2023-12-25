@@ -156,7 +156,7 @@ public class ShadowKnightBasic {
         start.add(direction.multiply(4));
         start.add(crossProduct.multiply(3));
 
-        ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -191,6 +191,10 @@ public class ShadowKnightBasic {
         LivingEntity firstHit = null;
 
         boolean targetHit = false;
+
+        double skillDamage = 1;
+        double level = profileManager.getAnyProfile(player).getStats().getLevel();
+        skillDamage = skillDamage + ((int)(level/10));
 
         for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
 
@@ -246,10 +250,8 @@ public class ShadowKnightBasic {
             playerLoc.setDirection(targetDir);
             player.teleport(playerLoc);
 
-            double level = profileManager.getAnyProfile(player).getStats().getLevel();
-
             boolean crit = damageCalculator.checkIfCrit(player, 0);
-            double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", 1 * level, crit);
+            double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", skillDamage, crit);
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, player));
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, player);
@@ -344,6 +346,10 @@ public class ShadowKnightBasic {
 
         boolean targetHit = false;
 
+        double skillDamage = 1;
+        double level = profileManager.getAnyProfile(player).getStats().getLevel();
+        skillDamage = skillDamage + ((int)(level/10));
+
         for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
 
             if(entity == player){
@@ -398,10 +404,8 @@ public class ShadowKnightBasic {
             playerLoc.setDirection(targetDir);
             player.teleport(playerLoc);
 
-            double level = profileManager.getAnyProfile(player).getStats().getLevel();
-
             boolean crit = damageCalculator.checkIfCrit(player, 0);
-            double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", 1 * level, crit);
+            double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", skillDamage, crit);
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, player));
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, player);
@@ -495,6 +499,10 @@ public class ShadowKnightBasic {
 
         boolean targetHit = false;
 
+        double skillDamage = 1.5;
+        double level = profileManager.getAnyProfile(player).getStats().getLevel();
+        skillDamage = skillDamage + ((int)(level/10));
+
         for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
 
             if(entity == player){
@@ -549,10 +557,8 @@ public class ShadowKnightBasic {
             playerLoc.setDirection(targetDir);
             player.teleport(playerLoc);
 
-            double level = profileManager.getAnyProfile(player).getStats().getLevel();
-
             boolean crit = damageCalculator.checkIfCrit(player, 0);
-            double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", 1.5 * level, crit);
+            double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", skillDamage, crit);
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, player));
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, player);

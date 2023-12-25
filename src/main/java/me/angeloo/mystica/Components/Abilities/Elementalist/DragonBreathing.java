@@ -184,6 +184,9 @@ public class DragonBreathing {
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
 
+        skillDamage = skillDamage + ((int)(skillLevel/10));
+
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             final Location end = target.getLocation().add(0, 5, 0);
             final Set<LivingEntity> hitBySkill = new HashSet<>();
@@ -262,7 +265,7 @@ public class DragonBreathing {
                             }
 
                             boolean crit = damageCalculator.checkIfCrit(player, 0);
-                            double damage = (damageCalculator.calculateDamage(player, livingEntity, "Magical", skillDamage * skillLevel, crit));
+                            double damage = (damageCalculator.calculateDamage(player, livingEntity, "Magical", finalSkillDamage, crit));
 
                             //pvp logic
                             if(entity instanceof Player){
@@ -295,7 +298,7 @@ public class DragonBreathing {
                     public void run(){
 
                         boolean crit = damageCalculator.checkIfCrit(player, 0);
-                        double tickDamage = damageCalculator.calculateDamage(player, entity, "Magical", (skillDamage * skillLevel)/3, crit);
+                        double tickDamage = damageCalculator.calculateDamage(player, entity, "Magical", finalSkillDamage/3, crit);
 
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(entity, player));
                         changeResourceHandler.subtractHealthFromEntity(entity, tickDamage, player);

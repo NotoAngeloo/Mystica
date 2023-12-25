@@ -147,7 +147,9 @@ public class Judgement {
         double skillDamage = 6;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
+        skillDamage = skillDamage + ((int)(skillLevel/10));
 
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             double down = 0;
             @Override
@@ -200,8 +202,8 @@ public class Judgement {
 
                 }
 
-                double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel
-                        * decisionMultiplier(player), crit);
+                double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
+                damage = damage * decisionMultiplier(player);
 
                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                 changeResourceHandler.subtractHealthFromEntity(target, damage, player);

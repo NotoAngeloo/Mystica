@@ -136,6 +136,9 @@ public class BitingRain {
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
         double skillDamage = 6;
 
+        skillDamage = skillDamage + ((int)(skillLevel/10));
+
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             final Set<ArmorStand> allStands = new HashSet<>();
             int count = 0;
@@ -150,7 +153,7 @@ public class BitingRain {
                 if(count <=5){
                     Location playerLoc = player.getLocation();
 
-                    ArmorStand armorStand = playerLoc.getWorld().spawn(playerLoc, ArmorStand.class);
+                    ArmorStand armorStand = player.getWorld().spawn(playerLoc, ArmorStand.class);
                     armorStand.setInvisible(true);
                     armorStand.setGravity(false);
                     armorStand.setCollidable(false);
@@ -245,7 +248,7 @@ public class BitingRain {
                             buffAndDebuffManager.getHaste().applyHaste(player, 1, 2);
                         }
 
-                        double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", skillDamage * skillLevel, crit));
+                        double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", finalSkillDamage, crit));
 
                         //pvp logic
                         if(entity instanceof Player){
@@ -270,7 +273,7 @@ public class BitingRain {
 
                     Location spawnLoc = upstart.clone().add(randomNumberX, 8, randomNumberZ);
 
-                    ArmorStand armorStand = spawnLoc.getWorld().spawn(spawnLoc, ArmorStand.class);
+                    ArmorStand armorStand = player.getWorld().spawn(spawnLoc, ArmorStand.class);
                     armorStand.setInvisible(true);
                     armorStand.setGravity(false);
                     armorStand.setCollidable(false);

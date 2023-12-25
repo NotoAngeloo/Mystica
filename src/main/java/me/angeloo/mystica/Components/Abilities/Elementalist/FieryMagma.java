@@ -153,6 +153,9 @@ public class FieryMagma {
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
 
+        skillDamage = skillDamage + ((int)(skillLevel/10));
+
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
             @Override
@@ -188,7 +191,7 @@ public class FieryMagma {
                     cancelTask();
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Magical", skillDamage * skillLevel, crit);
+                    double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
@@ -228,7 +231,7 @@ public class FieryMagma {
                     public void run(){
 
                         boolean crit = damageCalculator.checkIfCrit(player, 0);
-                        double tickDamage = damageCalculator.calculateDamage(player, target, "Magical", (skillDamage * skillLevel)/2, crit);
+                        double tickDamage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage/2, crit);
 
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                         changeResourceHandler.subtractHealthFromEntity(target, tickDamage, player);
@@ -285,7 +288,7 @@ public class FieryMagma {
                                 hitBySkill.add(livingEntity);
 
                                 boolean crit2 = damageCalculator.checkIfCrit(player, 0);
-                                double damage = (damageCalculator.calculateDamage(player, livingEntity, "Magical", skillDamage * skillLevel, crit2));
+                                double damage = (damageCalculator.calculateDamage(player, livingEntity, "Magical", finalSkillDamage * skillLevel, crit2));
 
                                 //pvp logic
                                 if(entity instanceof Player){

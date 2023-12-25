@@ -121,12 +121,14 @@ public class BlessedArrow {
 
         double skillDamage = 4;
 
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
+
+        skillDamage = skillDamage + ((int)(skillLevel/10));
+
         if(rallyingCry.getIfBuffTime(player) > 0){
             skillDamage = skillDamage * 1.25;
         }
-
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level() +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
 
         double mana = profileManager.getAnyProfile(player).getTotalMana() * .5;
 
@@ -140,7 +142,7 @@ public class BlessedArrow {
         start.subtract(0, 1, 0);
 
 
-        ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -212,7 +214,7 @@ public class BlessedArrow {
                         buffAndDebuffManager.getHaste().applyHaste(player, 1, 2);
                     }
 
-                    double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage * skillLevel, crit);
+                    double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);

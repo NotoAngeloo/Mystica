@@ -127,7 +127,7 @@ public class Dreadfall {
 
         Location spawnLoc = target.getLocation().clone().add(0,10,0);
 
-        ArmorStand armorStand = spawnLoc.getWorld().spawn(spawnLoc, ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(spawnLoc, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -148,6 +148,9 @@ public class Dreadfall {
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
 
+        skillDamage = skillDamage + ((int)(skillLevel/10));
+
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
             @Override
@@ -224,7 +227,7 @@ public class Dreadfall {
                         hitBySkill.add(livingEntity);
 
                         boolean crit = damageCalculator.checkIfCrit(player, 0);
-                        double damage = damageCalculator.calculateDamage(player, target, "Magical", skillDamage * skillLevel, crit);
+                        double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
 
                         //pvp logic
                         if(entity instanceof Player){

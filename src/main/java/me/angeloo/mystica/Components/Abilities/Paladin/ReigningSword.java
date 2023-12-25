@@ -122,6 +122,8 @@ public class ReigningSword {
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
 
+        skillDamage = skillDamage + ((int)(skillLevel/10));
+
         double shield = profileManager.getAnyProfile(player).getTotalHealth() * 0.1;
 
         if(templar){
@@ -138,6 +140,7 @@ public class ReigningSword {
             }
         }.runTaskLater(main, 20*5);
 
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             Vector initialDirection;
             double angle = 0;
@@ -204,7 +207,7 @@ public class ReigningSword {
                     }
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", skillDamage * skillLevel
+                    double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", finalSkillDamage
                             * bonus * decisionMultiplier(player), crit));
 
 

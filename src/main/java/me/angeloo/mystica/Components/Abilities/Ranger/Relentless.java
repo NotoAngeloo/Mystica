@@ -132,9 +132,12 @@ public class Relentless {
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
         double skillDamage = 4;
 
+        skillDamage = skillDamage + ((int)(skillLevel/10));
+
         abilityManager.setCasting(player, true);
         buffAndDebuffManager.getSpeedUp().applySpeedUp(player, .3f);
 
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
             final Set<ArmorStand> allStands = new HashSet<>();
@@ -163,7 +166,7 @@ public class Relentless {
                     return;
                 }
 
-                ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+                ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
                 armorStand.setInvisible(true);
                 armorStand.setGravity(false);
                 armorStand.setCollidable(false);
@@ -224,7 +227,7 @@ public class Relentless {
                                 buffAndDebuffManager.getHaste().applyHaste(player, 1, 2);
                             }
 
-                            double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * skillLevel, crit);
+                            double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
 
                             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                             changeResourceHandler.subtractHealthFromEntity(target, damage, player);

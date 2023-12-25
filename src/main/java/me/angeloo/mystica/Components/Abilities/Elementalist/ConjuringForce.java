@@ -77,7 +77,7 @@ public class ConjuringForce {
         Location spawnStart = player.getLocation().clone();
         spawnStart.subtract(0, 1, 0);
 
-        ArmorStand spawnTexture = spawnStart.getWorld().spawn(spawnStart, ArmorStand.class);
+        ArmorStand spawnTexture = player.getWorld().spawn(spawnStart, ArmorStand.class);
         spawnTexture.setInvisible(true);
         spawnTexture.setGravity(false);
         spawnTexture.setCollidable(false);
@@ -95,7 +95,7 @@ public class ConjuringForce {
         entityEquipment2.setHelmet(spawnItem);
 
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
-        double buffAmount = 5 * skillLevel;
+        double buffAmount = 5 + skillLevel;
 
         new BukkitRunnable(){
             int ran = 0;

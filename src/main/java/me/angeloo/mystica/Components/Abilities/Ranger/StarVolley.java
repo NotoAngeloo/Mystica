@@ -164,9 +164,12 @@ public class StarVolley {
         entityEquipment.setHelmet(arrow);
 
         double skillDamage = 20;
+        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+        skillDamage = skillDamage + ((int)(skillLevel/10));
 
         Location end = target.getLocation().clone().subtract(0,2,0);
 
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             @Override
             public void run(){
@@ -192,7 +195,7 @@ public class StarVolley {
                         buffAndDebuffManager.getHaste().applyHaste(player, 1, 2);
                     }
 
-                    double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage * level, crit);
+                    double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);

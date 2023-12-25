@@ -179,6 +179,10 @@ public class DescendingInferno {
         entityEquipmentMiddle.setHelmet(fireballItem);
 
         double skillDamage = 5;
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
+
+        skillDamage = skillDamage + ((int)(skillLevel/10));
 
         if(conjurer){
 
@@ -190,8 +194,6 @@ public class DescendingInferno {
             skillDamage = skillDamage * (1 + percent);
         }
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level() +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
 
         double finalSkillDamage = skillDamage;
         new BukkitRunnable() {
@@ -235,7 +237,7 @@ public class DescendingInferno {
                         needToInflame = true;
 
                         boolean crit = damageCalculator.checkIfCrit(player, 0);
-                        double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage * skillLevel, crit);
+                        double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
 
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                         changeResourceHandler.subtractHealthFromEntity(target, damage, player);
@@ -267,7 +269,7 @@ public class DescendingInferno {
                         needToInflame = true;
 
                         boolean crit = damageCalculator.checkIfCrit(player, 0);
-                        double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage * skillLevel, crit);
+                        double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
 
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                         changeResourceHandler.subtractHealthFromEntity(target, damage, player);
@@ -293,7 +295,7 @@ public class DescendingInferno {
                         needToInflame = true;
 
                         boolean crit = damageCalculator.checkIfCrit(player, 0);
-                        double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage * skillLevel, crit);
+                        double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
 
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                         changeResourceHandler.subtractHealthFromEntity(target, damage, player);
@@ -378,7 +380,7 @@ public class DescendingInferno {
                     hitBySkill.add(livingEntity);
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = (damageCalculator.calculateDamage(player, livingEntity, "Magical", finalSkillDamage * skillLevel, crit));
+                    double damage = (damageCalculator.calculateDamage(player, livingEntity, "Magical", finalSkillDamage, crit));
 
                     //pvp logic
                     if(entity instanceof Player){

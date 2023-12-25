@@ -126,7 +126,7 @@ public class CursingVoice {
                 double distanceThisTick = Math.min(distance, 3);
                 current.add(direction.normalize().multiply(distanceThisTick));
 
-                player.getLocation().getWorld().spawnParticle(Particle.SONIC_BOOM, current, 1, 0, 0, 0, 0);
+                player.getWorld().spawnParticle(Particle.SONIC_BOOM, current, 1, 0, 0, 0, 0);
 
                 if (distance <= 1) {
                     cancelTask();

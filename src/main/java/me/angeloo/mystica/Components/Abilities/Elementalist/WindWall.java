@@ -27,9 +27,6 @@ public class WindWall {
     private final ProfileManager profileManager;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
-    private final PvpManager pvpManager;
-    private final PveChecker pveChecker;
-    private final DamageCalculator damageCalculator;
     private final ChangeResourceHandler changeResourceHandler;
     private final BuffAndDebuffManager buffAndDebuffManager;
 
@@ -41,9 +38,6 @@ public class WindWall {
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
-        pvpManager = main.getPvpManager();
-        pveChecker = main.getPveChecker();
-        damageCalculator = main.getDamageCalculator();
         changeResourceHandler = main.getChangeResourceHandler();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
 
@@ -64,7 +58,14 @@ public class WindWall {
 
         execute(player);
 
-        abilityReadyInMap.put(player.getUniqueId(), 21);
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
+
+        int cooldown = 21;
+
+        cooldown = cooldown - ((int)(skillLevel/15));
+
+        abilityReadyInMap.put(player.getUniqueId(), cooldown);
         new BukkitRunnable() {
             @Override
             public void run() {

@@ -127,10 +127,13 @@ public class WildSpirit {
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
         double skillDamage = 3;
 
+        skillDamage = skillDamage + ((int)(skillLevel/10));
+
         boolean tamer = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("animal tamer");
 
         ArmorStand wolf = wildSpiritMap.get(player.getUniqueId());
 
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             int wolfAttackReadyIn = 0;
             LivingEntity wolfTarget = null;
@@ -238,7 +241,7 @@ public class WildSpirit {
                     buffAndDebuffManager.getHaste().applyHaste(player, 1, 2);
                 }
 
-                double damage = damageCalculator.calculateDamage(player, wolfTarget, "Physical", skillDamage * skillLevel, crit);
+                double damage = damageCalculator.calculateDamage(player, wolfTarget, "Physical", finalSkillDamage, crit);
 
                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(wolfTarget, player));
                 changeResourceHandler.subtractHealthFromEntity(wolfTarget, damage, player);

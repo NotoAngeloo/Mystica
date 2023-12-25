@@ -132,8 +132,10 @@ public class PurifyingBlast {
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
 
+        skillDamage = skillDamage + ((int)(skillLevel/10));
+
         double yourMagic = profileManager.getAnyProfile(player).getTotalMagic();
-        double healAmount = (skillDamage * skillLevel) + yourMagic;
+        double healAmount = skillDamage + yourMagic;
 
         String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
@@ -150,6 +152,7 @@ public class PurifyingBlast {
         Set<LivingEntity> hitBySkill = new HashSet<>();
 
         double finalHealAmount = healAmount;
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             double progress = 0;
             final int maxDistance = 10;
@@ -185,7 +188,7 @@ public class PurifyingBlast {
                     hitBySkill.add(livingEntity);
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = (damageCalculator.calculateDamage(player, livingEntity, "Magical", skillDamage * skillLevel, crit));
+                    double damage = (damageCalculator.calculateDamage(player, livingEntity, "Magical", finalSkillDamage, crit));
 
                     //pvp logic
                     if(entity instanceof Player){

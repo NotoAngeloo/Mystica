@@ -32,11 +32,13 @@ public class PaladinAbilities {
     private final SpiritualGift spiritualGift;
     private final SacredAegis sacredAegis;
     private final ModestCalling modestCalling;
+    private final Representative representative;
 
     public PaladinAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
         decision = new Decision();
         justiceMark = new JusticeMark(main, manager);
+        representative = new Representative(main, manager);
 
         judgement = new Judgement(main, manager, this);
         covenantSword = new CovenantSword(main, manager, this);
@@ -57,6 +59,7 @@ public class PaladinAbilities {
         spiritualGift = new SpiritualGift(main, manager);
         sacredAegis = new SacredAegis(main, manager);
         modestCalling = new ModestCalling(main, manager);
+
 
     }
 
@@ -147,6 +150,7 @@ public class PaladinAbilities {
                 return;
             }
             case "divine":{
+                representative.use(player);
                 return;
             }
             case "dawn":{
@@ -214,7 +218,7 @@ public class PaladinAbilities {
             case "templar":
                 return sanctityShield.getCooldown(player);
             case "divine":
-
+                return representative.getCooldown(player);
             case "dawn":
                 return lightWell.getCooldown(player);
         }
@@ -222,6 +226,7 @@ public class PaladinAbilities {
         return 0;
     }
 
+    public Representative getRepresentative(){return representative;}
     public MercifulHealing getMercifulHealing(){return mercifulHealing;}
     public JusticeMark getJusticeMark(){return justiceMark;}
     public Decision getDecision(){return decision;}

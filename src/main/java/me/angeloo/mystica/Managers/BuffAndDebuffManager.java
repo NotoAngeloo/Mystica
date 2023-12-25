@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Managers;
 
+import io.lumine.mythic.bukkit.utils.lib.jooq.impl.QOM;
 import me.angeloo.mystica.Components.BuffsAndDebuffs.*;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.entity.LivingEntity;
@@ -22,6 +23,7 @@ public class BuffAndDebuffManager {
     private final GenericDamageReduction damageReduction;
     private final Silence silence;
     private final WellCrit wellCrit;
+    private final Modest modest;
 
     public BuffAndDebuffManager(Mystica main){
         immune = new Immune(main);
@@ -38,6 +40,7 @@ public class BuffAndDebuffManager {
         damageReduction = new GenericDamageReduction(main);
         silence = new Silence(main);
         wellCrit = new WellCrit();
+        modest = new Modest(main);
     }
 
     public Immune getImmune(){return immune;}
@@ -58,6 +61,7 @@ public class BuffAndDebuffManager {
     public GenericDamageReduction getDamageReduction(){return damageReduction;}
     public Silence getSilence(){return silence;}
     public WellCrit getWellCrit(){return wellCrit;}
+    public Modest getModest(){return modest;}
 
     public void removeAllBuffsAndDebuffs(Player player){
         immune.removeImmune(player);
@@ -74,6 +78,7 @@ public class BuffAndDebuffManager {
         damageReduction.removeReduction(player);
         silence.removeSilence(player);
         wellCrit.removeBonus(player);
+        modest.remove(player);
     }
 
 
@@ -87,9 +92,11 @@ public class BuffAndDebuffManager {
                 * damageReduction.getReduction(defender);
     }
 
-    public double getTotalDamageAddition(Player player){
+    public double getTotalDamageAddition(Player player, LivingEntity entity){
 
-        return 0 + conjuringForceBuff.getExtraDamageAmount(player);
+        return 0 + conjuringForceBuff.getExtraDamageAmount(player)
+                - modest.getMultiplier(player)
+                + modest.getMultiplier(entity);
 
     }
 

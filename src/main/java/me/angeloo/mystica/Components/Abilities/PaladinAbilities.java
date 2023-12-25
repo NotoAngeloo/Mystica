@@ -31,6 +31,7 @@ public class PaladinAbilities {
     private final DivineInfusion divineInfusion;
     private final SpiritualGift spiritualGift;
     private final SacredAegis sacredAegis;
+    private final ModestCalling modestCalling;
 
     public PaladinAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
@@ -55,6 +56,7 @@ public class PaladinAbilities {
         divineInfusion = new DivineInfusion(main, manager);
         spiritualGift = new SpiritualGift(main, manager);
         sacredAegis = new SacredAegis(main, manager);
+        modestCalling = new ModestCalling(main, manager);
 
     }
 
@@ -89,6 +91,7 @@ public class PaladinAbilities {
                     return;
                 }
                 case 7:{
+                    modestCalling.use(player);
                     return;
                 }
                 case 8:{
@@ -176,6 +179,7 @@ public class PaladinAbilities {
                 case 6:
                     return sacredAegis.getCooldown(player);
                 case 7:
+                    return modestCalling.getCooldown(player);
                 case 8:
                     return justiceMark.getCooldown(player);
             }

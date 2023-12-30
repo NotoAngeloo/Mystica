@@ -3,6 +3,7 @@ package me.angeloo.mystica.Components.Abilities.Mystic;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -23,6 +24,7 @@ public class Warp {
     private final TargetManager targetManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
@@ -33,6 +35,7 @@ public class Warp {
         targetManager = main.getTargetManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
     public void use(Player player){
@@ -106,6 +109,14 @@ public class Warp {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+
+                if(subclass.equalsIgnoreCase("chaos")){
+                    cooldownDisplayer.displayCooldown(player,4);
+                }
+                else{
+                    cooldownDisplayer.displayCooldown(player,5);
+                }
+
 
             }
         }.runTaskTimer(main, 0,20);

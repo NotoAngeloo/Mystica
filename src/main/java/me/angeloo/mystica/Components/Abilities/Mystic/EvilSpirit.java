@@ -1,10 +1,11 @@
 package me.angeloo.mystica.Components.Abilities.Mystic;
 
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
-import me.angeloo.mystica.Utility.DamageCalculator;
-import me.angeloo.mystica.Utility.PveChecker;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -26,13 +27,10 @@ public class EvilSpirit {
 
     private final ProfileManager profileManager;
     private final CombatManager combatManager;
-    private final TargetManager targetManager;
-    private final PvpManager pvpManager;
-    private final PveChecker pveChecker;
-    private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final AbilityManager abilityManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, Integer> chaosShards = new HashMap<>();
     private final Map<UUID, Boolean> isEvilSpirit = new HashMap<>();
@@ -41,13 +39,10 @@ public class EvilSpirit {
         this.main = main;
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
-        targetManager = main.getTargetManager();
-        pvpManager = main.getPvpManager();
-        pveChecker = main.getPveChecker();
-        damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         abilityManager = manager;
         changeResourceHandler = main.getChangeResourceHandler();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
     public void use(Player player){
@@ -123,8 +118,8 @@ public class EvilSpirit {
                 Location particleLoc = new Location(loc.getWorld(), x, loc.getY() + height, z);
                 Location particleLoc2 = new Location(loc.getWorld(), x2, loc.getY() + height, z2);
 
-                loc.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, particleLoc, 1, 0, 0, 0, 0);
-                loc.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, particleLoc2, 1, 0, 0, 0, 0);
+                player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, particleLoc, 1, 0, 0, 0, 0);
+                player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, particleLoc2, 1, 0, 0, 0, 0);
 
 
                 height += .1;
@@ -216,21 +211,23 @@ public class EvilSpirit {
         }
 
         chaosShards.put(player.getUniqueId(), current);
+        cooldownDisplayer.displayChaosMysticUltimateItem(player, getChaosShards(player) >= 6);
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
     }
 
     public void removeShards(Player player){
         chaosShards.put(player.getUniqueId(), 0);
+        cooldownDisplayer.displayChaosMysticUltimateItem(player, getChaosShards(player) >= 6);
     }
 
-    public int getIfReady(Player player){
+    public int returnWhichItem(Player player){
 
-        boolean ready = getChaosShards(player)>=6;
-
-        //swap these when chaos shards are implemented
-        if(ready){
-            return 0;
+        if(getChaosShards(player) >= 6){
+            return 1;
         }
-        return 1;
+
+        return 0;
     }
+
 
 }

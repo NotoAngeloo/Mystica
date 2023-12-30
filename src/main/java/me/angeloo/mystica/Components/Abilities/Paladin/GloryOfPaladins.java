@@ -6,6 +6,7 @@ import me.angeloo.mystica.Managers.CombatManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -26,6 +27,7 @@ public class GloryOfPaladins {
     private final CombatManager combatManager;
     private final DamageCalculator damageCalculator;
     private final ChangeResourceHandler changeResourceHandler;
+    private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, Integer> buffActiveMap = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -37,7 +39,7 @@ public class GloryOfPaladins {
         combatManager = manager.getCombatManager();
         damageCalculator = main.getDamageCalculator();
         changeResourceHandler = main.getChangeResourceHandler();
-
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
     public void use(Player player){
@@ -73,6 +75,7 @@ public class GloryOfPaladins {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(player, 6);
 
             }
         }.runTaskTimer(main, 0,20);

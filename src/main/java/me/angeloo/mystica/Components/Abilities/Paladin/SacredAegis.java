@@ -3,6 +3,7 @@ package me.angeloo.mystica.Components.Abilities.Paladin;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -30,6 +31,7 @@ public class SacredAegis {
     private final PvpManager pvpManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
@@ -41,6 +43,7 @@ public class SacredAegis {
         pvpManager = main.getPvpManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
     public void use(Player player){
@@ -105,6 +108,7 @@ public class SacredAegis {
 
                 int cooldown = abilityReadyInMap.get(player.getUniqueId()) - 1;
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(player, 6);
 
             }
         }.runTaskTimer(main, 0,20);

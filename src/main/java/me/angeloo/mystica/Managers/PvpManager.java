@@ -12,15 +12,11 @@ import java.util.Map;
 
 public class PvpManager {
 
-    private final ProfileManager profileManager;
-    private final ChangeResourceHandler changeResourceHandler;
     private final Map<Player, Boolean> inPvp;
 
     private boolean globalPvp;
 
     public PvpManager(Mystica main){
-        profileManager = main.getProfileManager();
-        changeResourceHandler = main.getChangeResourceHandler();
         inPvp = new HashMap<>();
         globalPvp = false;
     }

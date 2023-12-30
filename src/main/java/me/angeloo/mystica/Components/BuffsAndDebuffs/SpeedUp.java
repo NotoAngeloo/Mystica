@@ -1,5 +1,7 @@
 package me.angeloo.mystica.Components.BuffsAndDebuffs;
 
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -19,6 +21,8 @@ public class SpeedUp {
 
         double current = getSpeedUpAmount(player);
 
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+
         if(amount > current){
             speedUpAmount.put(player, amount);
             player.setWalkSpeed(amount);
@@ -34,6 +38,9 @@ public class SpeedUp {
         hasSpeedUp.remove(player);
         speedUpAmount.remove(player);
         player.setWalkSpeed(.2f);
+
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+
     }
 
     public float getSpeedUpAmount(Player player){

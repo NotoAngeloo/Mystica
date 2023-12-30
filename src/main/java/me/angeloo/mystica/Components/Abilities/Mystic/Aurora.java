@@ -4,6 +4,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
@@ -30,6 +31,7 @@ public class Aurora {
     private final ChangeResourceHandler changeResourceHandler;
     private final DamageCalculator damageCalculator;
     private final PvpManager pvpManager;
+    private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
@@ -42,6 +44,7 @@ public class Aurora {
         changeResourceHandler = main.getChangeResourceHandler();
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
     public void use(Player player){
@@ -101,6 +104,8 @@ public class Aurora {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+
+                cooldownDisplayer.displayCooldown(player, 6);
 
             }
         }.runTaskTimer(main, 0, 20);

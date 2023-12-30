@@ -1,12 +1,15 @@
 package me.angeloo.mystica.Components.Abilities.Elementalist;
 
 import me.angeloo.mystica.Components.Abilities.ElementalistAbilities;
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Managers.CombatManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -23,6 +26,7 @@ public class ElementalBreath {
     private final ProfileManager profileManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CombatManager combatManager;
+    private final CooldownDisplayer cooldownDisplayer;
     private final ChangeResourceHandler changeResourceHandler;
 
     private final Map<UUID, Integer> buffActiveMap = new HashMap<>();
@@ -34,7 +38,7 @@ public class ElementalBreath {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
-
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
     public void use(Player player){
@@ -70,6 +74,7 @@ public class ElementalBreath {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(player, 7);
 
             }
         }.runTaskTimer(main, 0,20);
@@ -85,10 +90,12 @@ public class ElementalBreath {
 
 
         buffActiveMap.put(player.getUniqueId(), 15 + bonus);
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
         new BukkitRunnable(){
             @Override
             public void run(){
 
+                Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
                 if(buffActiveMap.get(player.getUniqueId()) <= 0){
                     this.cancel();
                     return;
@@ -97,7 +104,6 @@ public class ElementalBreath {
                 int cooldown = buffActiveMap.get(player.getUniqueId()) - 1;
 
                 buffActiveMap.put(player.getUniqueId(), cooldown);
-
             }
         }.runTaskTimer(main, 0,20);
 
@@ -142,8 +148,8 @@ public class ElementalBreath {
                 Location particleLoc = new Location(loc.getWorld(), x, loc.getY() + height, z);
                 Location particleLoc2 = new Location(loc.getWorld(), x2, loc.getY() + height, z2);
 
-                loc.getWorld().spawnParticle(Particle.FLAME, particleLoc, 1, 0, 0, 0, 0);
-                loc.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, particleLoc2, 1, 0, 0, 0, 0);
+                player.getWorld().spawnParticle(Particle.FLAME, particleLoc, 1, 0, 0, 0, 0);
+                player.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, particleLoc2, 1, 0, 0, 0, 0);
 
                 if(up){
                     height += .1;

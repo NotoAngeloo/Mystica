@@ -1,5 +1,7 @@
 package me.angeloo.mystica.Components.BuffsAndDebuffs;
 
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -20,7 +22,7 @@ public class ConjuringForceBuff {
 
         if(extraDamageAmount > currentExtraDamage){
             extraDamageMap.put(player, extraDamageAmount);
-            //Bukkit.getLogger().info("apply buff");
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
         }
 
     }
@@ -28,8 +30,7 @@ public class ConjuringForceBuff {
     public void removeConjuringForceBuff(Player player){
         hasConjForceBuffMap.remove(player);
         extraDamageMap.remove(player);
-
-        //Bukkit.getLogger().info("remove buff");
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
     }
 
     public boolean getIfConjForceBuff(Player player){

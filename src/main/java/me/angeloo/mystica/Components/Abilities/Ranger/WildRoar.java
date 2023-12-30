@@ -3,6 +3,7 @@ package me.angeloo.mystica.Components.Abilities.Ranger;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -23,6 +24,7 @@ public class WildRoar {
     private final PvpManager pvpManager;
     private final CombatManager combatManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
@@ -33,6 +35,7 @@ public class WildRoar {
         pvpManager = main.getPvpManager();
         combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
     public void use(Player player){
@@ -64,6 +67,7 @@ public class WildRoar {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                cooldownDisplayer.displayUltimateCooldown(player);
 
             }
         }.runTaskTimer(main, 0,20);

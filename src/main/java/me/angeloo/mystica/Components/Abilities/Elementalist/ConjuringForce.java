@@ -3,6 +3,7 @@ package me.angeloo.mystica.Components.Abilities.Elementalist;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -26,6 +27,7 @@ public class ConjuringForce {
     private final CombatManager combatManager;
     private final PvpManager pvpManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
+    private final CooldownDisplayer cooldownDisplayer;
     private final ChangeResourceHandler changeResourceHandler;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -37,6 +39,7 @@ public class ConjuringForce {
         pvpManager = main.getPvpManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
     public void use(Player player){
@@ -67,6 +70,7 @@ public class ConjuringForce {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                cooldownDisplayer.displayUltimateCooldown(player);
 
             }
         }.runTaskTimer(main, 0, 20);

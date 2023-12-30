@@ -222,7 +222,7 @@ public class MysticAbilities {
 
         switch (subclass.toLowerCase()){
             case "chaos":{
-                return evilSpirit.getIfReady(player);
+                return evilSpirit.returnWhichItem(player);
             }
             case "arcane master":{
                 return arcaneMissiles.getCooldown(player);

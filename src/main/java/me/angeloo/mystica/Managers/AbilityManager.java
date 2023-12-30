@@ -2,7 +2,9 @@ package me.angeloo.mystica.Managers;
 
 import me.angeloo.mystica.Components.Abilities.*;
 import me.angeloo.mystica.Components.Profile;
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -53,7 +55,7 @@ public class AbilityManager {
         }
 
         long currentTime = System.currentTimeMillis() / 1000;
-        if(currentTime - globalCooldown.get(player.getUniqueId()) < .5){
+        if(currentTime - globalCooldown.get(player.getUniqueId()) < 1){
             return;
         }
         globalCooldown.put(player.getUniqueId(), currentTime);
@@ -156,7 +158,7 @@ public class AbilityManager {
         }
 
         long currentTime = System.currentTimeMillis() / 1000;
-        if(currentTime - globalCooldown.get(player.getUniqueId()) < .5){
+        if(currentTime - globalCooldown.get(player.getUniqueId()) < 1){
             return;
         }
         globalCooldown.put(player.getUniqueId(), currentTime);
@@ -275,6 +277,7 @@ public class AbilityManager {
     public RangerAbilities getRangerAbilities(){return rangerAbilities;}
     public MysticAbilities getMysticAbilities(){return mysticAbilities;}
     public ShadowKnightAbilities getShadowKnightAbilities(){return shadowKnightAbilities;}
+    public PaladinAbilities getPaladinAbilities(){return paladinAbilities;}
 
     public void resetAbilityBuffs(Player player){
         mysticAbilities.getEvilSpirit().removeShards(player);
@@ -292,6 +295,7 @@ public class AbilityManager {
     }
     public void setCastBar(Player player, double percent){
         percentCastBar.put(player, percent);
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
     }
     public double getCastPercent(Player player){
         return percentCastBar.getOrDefault(player, 0.0);

@@ -1,6 +1,8 @@
 package me.angeloo.mystica.Components.BuffsAndDebuffs;
 
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -31,6 +33,11 @@ public class Modest {
 
         modestMap.put(entity.getUniqueId(), multiplier);
 
+        if(entity instanceof Player){
+            Player player = (Player) entity;
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        }
+
         if(removeModestTaskMap.containsKey(entity.getUniqueId())){
             removeModestTaskMap.get(entity.getUniqueId()).cancel();
         }
@@ -42,7 +49,7 @@ public class Modest {
 
                 if(count >= time){
                     this.cancel();
-                    modestMap.remove(entity.getUniqueId());
+                    removeModest(entity);
                 }
 
                 count++;
@@ -56,8 +63,14 @@ public class Modest {
         return modestMap.getOrDefault(entity.getUniqueId(), 0.0);
     }
 
-    public void remove(Player player){
-        modestMap.remove(player.getUniqueId());
+    public void removeModest(LivingEntity entity){
+        modestMap.remove(entity.getUniqueId());
+
+        if(entity instanceof Player){
+            Player player = (Player) entity;
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        }
+
     }
 
 }

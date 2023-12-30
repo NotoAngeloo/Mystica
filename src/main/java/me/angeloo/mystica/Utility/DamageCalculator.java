@@ -109,9 +109,6 @@ public class DamageCalculator {
         damage = damage + buffAndDebuffManager.getTotalDamageAddition(player, entity);
 
         dpsManager.addDamageToDamageDealt(player, damage);
-        dpsManager.setPlayerDps(player);
-
-        //addding buffs here is easier
 
         if(seeingRawDamage.containsKey(player.getUniqueId())){
 
@@ -120,7 +117,6 @@ public class DamageCalculator {
             }
 
         }
-
 
         return damage;
     }

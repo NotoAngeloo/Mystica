@@ -1,6 +1,8 @@
 package me.angeloo.mystica.Components.BuffsAndDebuffs;
 
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -32,6 +34,11 @@ public class Sleep {
             removeSleepTaskMap.get(entity.getUniqueId()).cancel();
         }
 
+        if(entity instanceof Player){
+            Player player = (Player) entity;
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        }
+
         if(time == 0){
             return;
         }
@@ -43,7 +50,7 @@ public class Sleep {
 
                 if(count >= time){
                     this.cancel();
-                    sleepMap.remove(entity.getUniqueId());
+                    removeSleep(entity);
                 }
 
                 count++;
@@ -59,8 +66,15 @@ public class Sleep {
     }
 
     public void forceWakeUp(LivingEntity entity){
-        sleepMap.remove(entity.getUniqueId());
+        removeSleep(entity);
         immobile.removeImmobile(entity);
+    }
 
+    public void removeSleep(LivingEntity entity){
+        sleepMap.remove(entity.getUniqueId());
+        if(entity instanceof Player){
+            Player player = (Player) entity;
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        }
     }
 }

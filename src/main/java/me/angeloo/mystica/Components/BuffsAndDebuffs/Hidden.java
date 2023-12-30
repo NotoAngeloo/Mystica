@@ -1,10 +1,12 @@
 package me.angeloo.mystica.Components.BuffsAndDebuffs;
 
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Managers.AggroManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DisplayWeapons;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class Hidden {
@@ -29,6 +31,8 @@ public class Hidden {
         player.getInventory().setLeggings(null);
         player.getInventory().setBoots(null);
 
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+
         if(blacklist){
             aggroManager.removeHighPriorityTarget(player.getUniqueId());
             aggroManager.addToBlackList(player);
@@ -42,6 +46,8 @@ public class Hidden {
 
         boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
         boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
+
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
 
         if(!deathStatus){
             player.setInvisible(false);

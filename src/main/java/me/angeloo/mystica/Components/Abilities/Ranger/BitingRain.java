@@ -5,6 +5,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
@@ -37,6 +38,7 @@ public class BitingRain {
     private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final CooldownDisplayer cooldownDisplayer;
 
     private final StarVolley starVolley;
 
@@ -52,6 +54,7 @@ public class BitingRain {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
         starVolley = rangerAbilities.getStarVolley();
     }
 
@@ -115,6 +118,7 @@ public class BitingRain {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(player, 1);
 
             }
         }.runTaskTimer(main, 0,20);
@@ -245,7 +249,7 @@ public class BitingRain {
 
                         if(scout && crit){
                             starVolley.decreaseCooldown(player);
-                            buffAndDebuffManager.getHaste().applyHaste(player, 1, 2);
+                            buffAndDebuffManager.getHaste().applyHaste(player, 1, 2*20);
                         }
 
                         double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", finalSkillDamage, crit));

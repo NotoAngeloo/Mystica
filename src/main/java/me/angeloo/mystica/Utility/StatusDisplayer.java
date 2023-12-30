@@ -44,7 +44,11 @@ public class StatusDisplayer {
         statusString.append(centeringStatus).append(bigStatus).append(getClassStatus(player)).append(getBonusStatus(player));
 
 
-        player.sendTitle("", String.valueOf(statusString), 0, 5, 0);
+        player.sendTitle("", String.valueOf(statusString), 0, 200, 0);
+    }
+
+    public void clearPlayerStatus(Player player){
+        player.sendTitle("", "", 0, 2, 0);
     }
 
     private String getCastStatus(Player player){

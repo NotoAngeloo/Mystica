@@ -1,6 +1,5 @@
 package me.angeloo.mystica.Managers;
 
-import io.lumine.mythic.bukkit.utils.lib.jooq.impl.QOM;
 import me.angeloo.mystica.Components.BuffsAndDebuffs.*;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.entity.LivingEntity;
@@ -78,7 +77,7 @@ public class BuffAndDebuffManager {
         damageReduction.removeReduction(player);
         silence.removeSilence(player);
         wellCrit.removeBonus(player);
-        modest.remove(player);
+        modest.removeModest(player);
     }
 
     //attacker, defender

@@ -327,6 +327,8 @@ public class SpecInventory {
                 ChatColor.of(new Color(213, 33, 3)) + "Bloodsucker " +
                         ChatColor.of(new Color(230,230,230)) + "restores an additional",
                 ChatColor.of(new Color(230,230,230)) + "30% of your maximum health",
+                ChatColor.of(new Color(213, 33, 3)) + "Shadow Grip " +
+                        ChatColor.of(new Color(230,230,230)) + "now taunts.",
                 "",
                 ChatColor.of(new Color(0,102,0)) + "Get Skill",
                 ChatColor.of(new Color(213, 33, 3)) + "Blood Shield",

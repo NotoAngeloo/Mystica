@@ -1,7 +1,9 @@
 package me.angeloo.mystica.Components.BuffsAndDebuffs;
 
 
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 
 import org.bukkit.entity.Player;
@@ -30,6 +32,11 @@ public class ShadowCrowsDebuff {
             removeDebuffTaskMap.get(entity.getUniqueId()).cancel();
         }
 
+        if(entity instanceof Player){
+            Player player = (Player) entity;
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        }
+
         BukkitTask task = new BukkitRunnable(){
             int count = 0;
             @Override
@@ -37,7 +44,7 @@ public class ShadowCrowsDebuff {
 
                 if(count >= time){
                     this.cancel();
-                    hasDebuff.remove(entity.getUniqueId());
+                    removeCrowsDebuff(entity);
                 }
 
                 count++;
@@ -59,9 +66,14 @@ public class ShadowCrowsDebuff {
         return 0;
     }
 
-    public void removeCrowsDebuff(Player player){
-        hasDebuff.remove(player.getUniqueId());
-        //Bukkit.getLogger().info("remove buff");
+    public void removeCrowsDebuff(LivingEntity entity){
+        hasDebuff.remove(entity.getUniqueId());
+
+        if(entity instanceof Player){
+            Player player = (Player) entity;
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        }
+
     }
 
 }

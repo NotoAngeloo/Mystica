@@ -5,6 +5,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
@@ -36,6 +37,7 @@ public class RazorWind {
     private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final CooldownDisplayer cooldownDisplayer;
     private final StarVolley starVolley;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -51,6 +53,7 @@ public class RazorWind {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
         starVolley = rangerAbilities.getStarVolley();
     }
 
@@ -111,6 +114,7 @@ public class RazorWind {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(player, 4);
 
             }
         }.runTaskTimer(main, 0,20);
@@ -130,15 +134,19 @@ public class RazorWind {
 
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
-        double skillDamage = 4;
+        double skillDamage = 10;
 
         skillDamage = skillDamage + ((int)(skillLevel/10));
 
         double castTime = 20;
+
+        castTime = castTime - buffAndDebuffManager.getHaste().getHasteLevel(player);
+
         abilityManager.setCasting(player, true);
         player.setWalkSpeed(.06f);
 
         double finalSkillDamage = skillDamage;
+        double finalCastTime = castTime;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
             int count = 0;
@@ -167,11 +175,11 @@ public class RazorWind {
                     return;
                 }
 
-                double percent = ((double) count / castTime) * 100;
+                double percent = ((double) count / finalCastTime) * 100;
 
                 abilityManager.setCastBar(player, percent);
 
-                if(count >= castTime){
+                if(count >= finalCastTime){
                     this.cancel();
                     abilityManager.setCasting(player, false);
                     player.setWalkSpeed(.2f);
@@ -286,7 +294,7 @@ public class RazorWind {
 
                                 if(scout && crit){
                                     starVolley.decreaseCooldown(player);
-                                    buffAndDebuffManager.getHaste().applyHaste(player, 1, 2);
+                                    buffAndDebuffManager.getHaste().applyHaste(player, 1, 2*20);
                                 }
 
                                 double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);

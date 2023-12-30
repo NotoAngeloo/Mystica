@@ -1,7 +1,10 @@
 package me.angeloo.mystica.Components.BuffsAndDebuffs;
 
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -27,6 +30,11 @@ public class Silence {
             removeSilenceTaskMap.get(entity.getUniqueId()).cancel();
         }
 
+        if(entity instanceof Player){
+            Player player = (Player) entity;
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        }
+
         if(time == 0){
             return;
         }
@@ -38,7 +46,7 @@ public class Silence {
 
                 if(count >= time){
                     this.cancel();
-                    silenceMap.remove(entity.getUniqueId());
+                    removeSilence(entity);
                 }
 
                 count++;
@@ -54,6 +62,10 @@ public class Silence {
 
     public void removeSilence(LivingEntity entity){
         silenceMap.remove(entity.getUniqueId());
+        if(entity instanceof Player){
+            Player player = (Player) entity;
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        }
     }
 
 }

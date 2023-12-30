@@ -1,6 +1,8 @@
 package me.angeloo.mystica.Components.BuffsAndDebuffs;
 
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -34,6 +36,11 @@ public class WildRoarBuff {
         hasWildRoarBuffMap.put(entity.getUniqueId(), true);
         multiplierMap.put(entity.getUniqueId(), multiplier);
 
+        if(entity instanceof Player){
+            Player player = (Player) entity;
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        }
+
         if(removeBuffTaskMap.containsKey(entity.getUniqueId())){
             removeBuffTaskMap.get(entity.getUniqueId()).cancel();
         }
@@ -64,8 +71,12 @@ public class WildRoarBuff {
         return multiplierMap.getOrDefault(entity.getUniqueId(), 0.0);
     }
 
-    public void removeBuff(Player player){
-        hasWildRoarBuffMap.remove(player.getUniqueId());
+    public void removeBuff(LivingEntity entity){
+        hasWildRoarBuffMap.remove(entity.getUniqueId());
+        if(entity instanceof Player){
+            Player player = (Player) entity;
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        }
     }
 
 }

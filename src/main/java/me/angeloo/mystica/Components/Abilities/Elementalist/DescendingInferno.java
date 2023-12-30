@@ -5,6 +5,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
@@ -36,6 +37,7 @@ public class DescendingInferno {
     private final DamageCalculator damageCalculator;
     private final ChangeResourceHandler changeResourceHandler;
     private final BuffAndDebuffManager buffAndDebuffManager;
+    private final CooldownDisplayer cooldownDisplayer;
 
     private final FieryWing fieryWing;
     private final ElementalBreath elementalBreath;
@@ -52,6 +54,7 @@ public class DescendingInferno {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
 
         fieryWing = elementalistAbilities.getFieryWing();
         elementalBreath = elementalistAbilities.getElementalBreath();
@@ -120,6 +123,7 @@ public class DescendingInferno {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(player, 3);
 
             }
         }.runTaskTimer(main, 0,20);
@@ -142,7 +146,7 @@ public class DescendingInferno {
         meta.setCustomModelData(1);
         fireballItem.setItemMeta(meta);
 
-        ArmorStand armorStandLeft = start.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStandLeft = player.getWorld().spawn(start, ArmorStand.class);
         armorStandLeft.setInvisible(true);
         armorStandLeft.setGravity(false);
         armorStandLeft.setCollidable(false);

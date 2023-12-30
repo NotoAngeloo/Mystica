@@ -1,13 +1,12 @@
 package me.angeloo.mystica.Components.Abilities.Mystic;
 
 import me.angeloo.mystica.Components.Abilities.MysticAbilities;
-import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -35,6 +34,7 @@ public class LightSigil {
     private final DamageCalculator damageCalculator;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
+    private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
@@ -49,6 +49,7 @@ public class LightSigil {
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
         purifyingBlast = mysticAbilities.getPurifyingBlast();
     }
 
@@ -80,6 +81,7 @@ public class LightSigil {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(player, 8);
 
             }
         }.runTaskTimer(main, 0, 20);

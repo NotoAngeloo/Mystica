@@ -81,6 +81,7 @@ public class AggroTick {
 
 
                             double dps = dpsManager.getRawDps(player);
+                            //Bukkit.getLogger().info(String.valueOf(dps));
                             if(dps > highestDps){
                                 highestDps = dps;
                                 highestDpsPlayer = player;
@@ -92,7 +93,6 @@ public class AggroTick {
                             ((Creature) entity).setTarget(highestDpsPlayer);
 
                             //Bukkit.getLogger().info("setting target to highest dps player " + highestDpsPlayer.getName());
-
                         }
                     }
                 }

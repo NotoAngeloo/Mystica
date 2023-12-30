@@ -5,6 +5,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
@@ -38,6 +39,7 @@ public class IceBolt {
     private final ChangeResourceHandler changeResourceHandler;
     private final CrystalStorm crystalStorm;
     private final ElementalBreath elementalBreath;
+    private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
@@ -51,6 +53,7 @@ public class IceBolt {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
         crystalStorm = elementalistAbilities.getCrystalStorm();
         elementalBreath = elementalistAbilities.getElementalBreath();
     }
@@ -115,7 +118,7 @@ public class IceBolt {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
-
+                cooldownDisplayer.displayCooldown(player, 1);
             }
         }.runTaskTimer(main, 0,20);
 

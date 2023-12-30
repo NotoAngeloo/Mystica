@@ -1,10 +1,13 @@
 package me.angeloo.mystica.Components.Abilities.Ranger;
 
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Managers.CombatManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
@@ -24,6 +27,7 @@ public class RallyingCry {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CombatManager combatManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, Integer> buffActiveMap = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -33,6 +37,7 @@ public class RallyingCry {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
     public void use(Player player){
@@ -67,6 +72,7 @@ public class RallyingCry {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(player, 6);
 
             }
         }.runTaskTimer(main, 0,20);
@@ -79,6 +85,8 @@ public class RallyingCry {
         new BukkitRunnable(){
             @Override
             public void run(){
+
+                Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
 
                 if(buffActiveMap.get(player.getUniqueId()) <= 0){
                     this.cancel();

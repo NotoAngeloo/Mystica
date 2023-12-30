@@ -5,6 +5,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
@@ -38,6 +39,7 @@ public class WildSpirit {
     private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final CooldownDisplayer cooldownDisplayer;
     private final StarVolley starVolley;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -53,6 +55,7 @@ public class WildSpirit {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
         starVolley = rangerAbilities.getStarVolley();
     }
 
@@ -66,6 +69,9 @@ public class WildSpirit {
             return;
         }
 
+        if(wildSpiritMap.containsKey(player.getUniqueId())){
+            return;
+        }
 
         combatManager.startCombatTimer(player);
 
@@ -85,6 +91,7 @@ public class WildSpirit {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(player, 7);
 
             }
         }.runTaskTimer(main, 0,20);
@@ -167,7 +174,9 @@ public class WildSpirit {
                         }
                     }
 
-                    assert wolfTarget != null;
+                }
+
+                if(wolfTarget != null){
                     if(wolfTarget.isDead()){
                         wolfTarget = null;
                     }
@@ -206,6 +215,7 @@ public class WildSpirit {
                 count++;
             }
 
+
             private void goToEnemy(){
                 Location current = wolf.getLocation();
                 Location enemyLoc = wolfTarget.getLocation().clone().subtract(0,1.7,0);
@@ -238,7 +248,7 @@ public class WildSpirit {
 
                 if(scout && crit){
                     starVolley.decreaseCooldown(player);
-                    buffAndDebuffManager.getHaste().applyHaste(player, 1, 2);
+                    buffAndDebuffManager.getHaste().applyHaste(player, 1, 2*20);
                 }
 
                 double damage = damageCalculator.calculateDamage(player, wolfTarget, "Physical", finalSkillDamage, crit);

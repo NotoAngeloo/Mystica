@@ -13,7 +13,6 @@ public class TargetDistanceTick extends BukkitRunnable {
 
     private final TargetManager targetManager;
 
-
     public TargetDistanceTick(Mystica main){
         targetManager = main.getTargetManager();
     }

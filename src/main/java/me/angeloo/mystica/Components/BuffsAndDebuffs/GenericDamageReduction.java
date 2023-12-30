@@ -1,7 +1,10 @@
 package me.angeloo.mystica.Components.BuffsAndDebuffs;
 
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -29,6 +32,11 @@ public class GenericDamageReduction {
             return;
         }
 
+        if(entity instanceof Player){
+            Player player = (Player) entity;
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        }
+
         if(removeReduction.containsKey(entity.getUniqueId())){
             removeReduction.get(entity.getUniqueId()).cancel();
         }
@@ -46,7 +54,7 @@ public class GenericDamageReduction {
 
                 if(count >= time){
                     this.cancel();
-                    reductionAmount.remove(entity.getUniqueId());
+                    removeReduction(entity);
                 }
 
                 count++;
@@ -64,5 +72,9 @@ public class GenericDamageReduction {
 
     public void removeReduction(LivingEntity entity){
         reductionAmount.remove(entity.getUniqueId());
+        if(entity instanceof Player){
+            Player player = (Player) entity;
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        }
     }
 }

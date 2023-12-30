@@ -5,6 +5,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
@@ -34,6 +35,7 @@ public class Relentless {
     private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final CooldownDisplayer cooldownDisplayer;
     private final StarVolley starVolley;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -49,6 +51,7 @@ public class Relentless {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
         starVolley = rangerAbilities.getStarVolley();
     }
 
@@ -110,6 +113,7 @@ public class Relentless {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(player, 3);
 
             }
         }.runTaskTimer(main, 0,20);
@@ -128,16 +132,21 @@ public class Relentless {
 
         LivingEntity target = targetManager.getPlayerTarget(player);
 
+        double castTime = 15;
+
+        castTime = castTime - buffAndDebuffManager.getHaste().getHasteLevel(player);
+
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
-        double skillDamage = 4;
-
+        double skillDamage = 10;
         skillDamage = skillDamage + ((int)(skillLevel/10));
+
 
         abilityManager.setCasting(player, true);
         buffAndDebuffManager.getSpeedUp().applySpeedUp(player, .3f);
 
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = skillDamage / castTime;
+        double finalCastTime = castTime;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
             final Set<ArmorStand> allStands = new HashSet<>();
@@ -224,7 +233,7 @@ public class Relentless {
 
                             if(scout && crit){
                                 starVolley.decreaseCooldown(player);
-                                buffAndDebuffManager.getHaste().applyHaste(player, 1, 2);
+                                buffAndDebuffManager.getHaste().applyHaste(player, 1, 2*20);
                             }
 
                             double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
@@ -241,7 +250,7 @@ public class Relentless {
 
                 abilityManager.setCastBar(player, percent);
 
-                if(count >=15){
+                if(count >= finalCastTime){
                     cancelTask();
                 }
 

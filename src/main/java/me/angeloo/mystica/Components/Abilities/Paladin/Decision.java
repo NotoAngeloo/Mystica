@@ -1,5 +1,7 @@
 package me.angeloo.mystica.Components.Abilities.Paladin;
 
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -15,6 +17,7 @@ public class Decision {
     }
 
     public void applyDecision(Player player){
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
         decisionMap.put(player.getUniqueId(), true);
     }
 
@@ -23,6 +26,7 @@ public class Decision {
     }
 
     public void removeDecision(Player player){
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
         decisionMap.remove(player.getUniqueId());
     }
 

@@ -1,6 +1,8 @@
 package me.angeloo.mystica.Components.BuffsAndDebuffs;
 
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -31,6 +33,11 @@ public class Haste {
 
         hasteLevel.put(entity.getUniqueId(), level);
 
+        if(entity instanceof Player){
+            Player player = (Player) entity;
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        }
+
         if(removeHasteTaskMap.containsKey(entity.getUniqueId())){
             removeHasteTaskMap.get(entity.getUniqueId()).cancel();
         }
@@ -42,12 +49,12 @@ public class Haste {
 
                 if(count >= duration){
                     this.cancel();
-                    hasteLevel.remove(entity.getUniqueId());
+                    removeHaste(entity);
                 }
 
                 count++;
             }
-        }.runTaskTimer(main, 0, 20);
+        }.runTaskTimer(main, 0, 1);
 
 
         removeHasteTaskMap.put(entity.getUniqueId(), task);
@@ -57,8 +64,14 @@ public class Haste {
         return hasteLevel.getOrDefault(entity.getUniqueId(), 0);
     }
 
-    public void removeHaste(Player player){
-        hasteLevel.remove(player.getUniqueId());
+    public void removeHaste(LivingEntity entity){
+        hasteLevel.remove(entity.getUniqueId());
+
+        if(entity instanceof Player){
+            Player player = (Player) entity;
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        }
+
     }
 
     public boolean getIfHaste(Player player){

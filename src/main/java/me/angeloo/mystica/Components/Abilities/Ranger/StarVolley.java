@@ -4,6 +4,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
@@ -34,6 +35,7 @@ public class StarVolley {
     private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
@@ -47,6 +49,7 @@ public class StarVolley {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
     public void use(Player player){
@@ -109,6 +112,7 @@ public class StarVolley {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                cooldownDisplayer.displayUltimateCooldown(player);
 
             }
         }.runTaskTimer(main, 0,20);
@@ -122,7 +126,7 @@ public class StarVolley {
         Location spawnStart = target.getLocation().clone();
         spawnStart.add(0, 10, 0);
 
-        ArmorStand spawnTexture = spawnStart.getWorld().spawn(spawnStart, ArmorStand.class);
+        ArmorStand spawnTexture = player.getWorld().spawn(spawnStart, ArmorStand.class);
         spawnTexture.setInvisible(true);
         spawnTexture.setGravity(false);
         spawnTexture.setCollidable(false);
@@ -192,7 +196,7 @@ public class StarVolley {
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
 
                     if(crit){
-                        buffAndDebuffManager.getHaste().applyHaste(player, 1, 2);
+                        buffAndDebuffManager.getHaste().applyHaste(player, 1, 2*20);
                     }
 
                     double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);

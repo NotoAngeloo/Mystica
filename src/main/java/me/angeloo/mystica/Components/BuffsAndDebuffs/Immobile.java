@@ -1,7 +1,9 @@
 package me.angeloo.mystica.Components.BuffsAndDebuffs;
 
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -33,6 +35,11 @@ public class Immobile {
 
         immobileMap.put(entity.getUniqueId(), true);
 
+        if(entity instanceof Player){
+            Player player = (Player) entity;
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        }
+
         if(removeImmobileTaskMap.containsKey(entity.getUniqueId())){
             removeImmobileTaskMap.get(entity.getUniqueId()).cancel();
         }
@@ -52,7 +59,7 @@ public class Immobile {
 
                 if(count >= time){
                     this.cancel();
-                    immobileMap.remove(entity.getUniqueId());
+                    removeImmobile(entity);
 
                     if(!(entity instanceof Player)){
                         entity.setAI(true);
@@ -76,6 +83,11 @@ public class Immobile {
 
         if(!(entity instanceof Player)){
             entity.setAI(true);
+        }
+
+        if(entity instanceof Player){
+            Player player = (Player) entity;
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
         }
 
     }

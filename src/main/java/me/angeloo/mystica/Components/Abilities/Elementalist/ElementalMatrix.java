@@ -9,6 +9,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.*;
@@ -37,6 +38,7 @@ public class ElementalMatrix {
     private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final CooldownDisplayer cooldownDisplayer;
 
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -51,7 +53,7 @@ public class ElementalMatrix {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
-
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
 
     }
 
@@ -114,8 +116,8 @@ public class ElementalMatrix {
                 int cooldown = abilityReadyInMap.get(player.getUniqueId()) - 1;
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
-
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(player, 8);
 
             }
         }.runTaskTimer(main, 0,20);

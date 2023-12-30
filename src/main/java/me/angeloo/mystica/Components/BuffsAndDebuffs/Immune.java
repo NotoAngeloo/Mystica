@@ -1,6 +1,8 @@
 package me.angeloo.mystica.Components.BuffsAndDebuffs;
 
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -28,6 +30,11 @@ public class Immune {
             removeImmobileTaskMap.get(entity.getUniqueId()).cancel();
         }
 
+        if(entity instanceof Player){
+            Player player = (Player) entity;
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        }
+
         if(time == 0){
             return;
         }
@@ -39,7 +46,7 @@ public class Immune {
 
                 if(count >= time){
                     this.cancel();
-                    immobileMap.remove(entity.getUniqueId());
+                    removeImmune(entity);
                 }
 
                 count++;
@@ -55,6 +62,11 @@ public class Immune {
 
     public void removeImmune(LivingEntity entity){
         immobileMap.remove(entity.getUniqueId());
+        if(entity instanceof Player){
+            Player player = (Player) entity;
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        }
+
     }
 
 }

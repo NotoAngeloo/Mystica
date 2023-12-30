@@ -7,6 +7,7 @@ import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -30,6 +31,7 @@ public class ArcaneContract {
     private final CombatManager combatManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final CooldownDisplayer cooldownDisplayer;
     private final DeathManager deathManager;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -42,6 +44,7 @@ public class ArcaneContract {
         combatManager = manager.getCombatManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
         deathManager = new DeathManager(main);
     }
 
@@ -151,6 +154,12 @@ public class ArcaneContract {
     }
 
     private void putOnCooldown(UUID id){
+        Player player = Bukkit.getPlayer(id);
+
+        if(player == null){
+            return;
+        }
+
         abilityReadyInMap.put(id, 120);
         new BukkitRunnable(){
             @Override
@@ -164,7 +173,7 @@ public class ArcaneContract {
                 int cooldown = abilityReadyInMap.get(id) - 1;
 
                 abilityReadyInMap.put(id, cooldown);
-
+                cooldownDisplayer.displayCooldown(player, 7);
             }
         }.runTaskTimer(main, 0,20);
     }

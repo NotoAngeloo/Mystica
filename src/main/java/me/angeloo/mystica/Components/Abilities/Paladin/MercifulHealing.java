@@ -1,11 +1,14 @@
 package me.angeloo.mystica.Components.Abilities.Paladin;
 
 import me.angeloo.mystica.Components.Abilities.PaladinAbilities;
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -29,6 +32,7 @@ public class MercifulHealing {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final AbilityManager abilityManager;
+    private final CooldownDisplayer cooldownDisplayer;
 
     private final JusticeMark justiceMark;
 
@@ -45,6 +49,7 @@ public class MercifulHealing {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
         abilityManager = manager;
+        cooldownDisplayer= new CooldownDisplayer(main, manager);
         justiceMark = paladinAbilities.getJusticeMark();
     }
 
@@ -105,6 +110,7 @@ public class MercifulHealing {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(player, 2);
 
             }
         }.runTaskTimer(main, 0,20);
@@ -121,7 +127,13 @@ public class MercifulHealing {
 
         abilityManager.setCasting(player, true);
         int castTime = 20;
-        buffAndDebuffManager.getImmobile().applyImmobile(player, castTime);
+
+        if(getMoveCast(player)){
+            unQueueMoveCast(player);
+        }
+        else{
+            buffAndDebuffManager.getImmobile().applyImmobile(player, castTime);
+        }
 
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
@@ -243,9 +255,13 @@ public class MercifulHealing {
     }
 
     public void queueMoveCast(Player player){
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
         moveCast.put(player.getUniqueId(), true);
     }
-    public void unQueueMoveCast(Player player){moveCast.remove(player.getUniqueId());}
+    public void unQueueMoveCast(Player player){
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        moveCast.remove(player.getUniqueId());
+    }
     private boolean getMoveCast(Player player){
         return moveCast.getOrDefault(player.getUniqueId(), false);
     }

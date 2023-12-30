@@ -13,13 +13,11 @@ import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
 import me.angeloo.mystica.CustomEvents.CustomDeathEvent;
 import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Tasks.AggroTick;
-import me.angeloo.mystica.Utility.ChangeResourceHandler;
-import me.angeloo.mystica.Utility.DamageCalculator;
-import me.angeloo.mystica.Utility.DisplayWeapons;
-import me.angeloo.mystica.Utility.EquipmentInformation;
+import me.angeloo.mystica.Utility.*;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
@@ -68,6 +66,8 @@ public class GeneralEventListener implements Listener {
     private final AbilityInventory abilityInventory;
     private final EquipmentInformation equipmentInformation;
     private final DisplayWeapons displayWeapons;
+    private final StatusDisplayer statusDisplayer;
+    private final CooldownDisplayer cooldownDisplayer;
 
     private final DamageCalculator damageCalculator;
     private final ChangeResourceHandler changeResourceHandler;
@@ -91,7 +91,8 @@ public class GeneralEventListener implements Listener {
         abilityInventory = new AbilityInventory(main);
         equipmentInformation = new EquipmentInformation();
         displayWeapons = new DisplayWeapons(main);
-
+        statusDisplayer = new StatusDisplayer(main, abilityManager);
+        cooldownDisplayer = new CooldownDisplayer(main, abilityManager);
         damageCalculator = main.getDamageCalculator();
         changeResourceHandler = main.getChangeResourceHandler();
     }
@@ -439,6 +440,7 @@ public class GeneralEventListener implements Listener {
         }
         event.setCancelled(true);
         player.sendMessage("you can't do that right now");
+        player.closeInventory();
     }
 
     @EventHandler
@@ -491,7 +493,7 @@ public class GeneralEventListener implements Listener {
         int newSlot = event.getNewSlot();
         int oldSlot = event.getPreviousSlot();
         player.getInventory().setItem(newSlot, weapon);
-        player.getInventory().setItem(oldSlot, combatManager.getOldItem(player, oldSlot));
+        player.getInventory().setItem(oldSlot, cooldownDisplayer.getOldItem(player, oldSlot));
     }
 
     @EventHandler
@@ -1196,6 +1198,18 @@ public class GeneralEventListener implements Listener {
             }
         }
 
+    }
+
+    @EventHandler
+    public void StatusChange(StatusUpdateEvent event){
+        Player player = event.getPlayer();
+
+        if(event.getClear()){
+            statusDisplayer.clearPlayerStatus(player);
+            return;
+        }
+
+        statusDisplayer.displayStatus(player);
     }
 
 

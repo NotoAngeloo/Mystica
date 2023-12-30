@@ -18,12 +18,14 @@ public class DeathManager {
     private final ChangeResourceHandler changeResourceHandler;
     private final AbilityManager abilityManager;
     private final AggroManager aggroManager;
+    private final DpsManager dpsManager;
 
     public DeathManager(Mystica main){
         profileManager = main.getProfileManager();
         changeResourceHandler = main.getChangeResourceHandler();
         abilityManager = main.getAbilityManager();
         aggroManager = main.getAggroManager();
+        dpsManager = main.getDpsManager();
     }
 
     public void playerNowDead(Player player){
@@ -55,6 +57,7 @@ public class DeathManager {
         player.setInvisible(true);
         player.setGlowing(true);
         abilityManager.resetAbilityBuffs(player);
+        dpsManager.removeDps(player);
     }
 
     public void playerNowLive(Player player, Boolean bySkill, Player playerWhoCastSkill){

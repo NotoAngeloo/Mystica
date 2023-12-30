@@ -1,9 +1,11 @@
 package me.angeloo.mystica.Components.Abilities.Elementalist;
 
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
@@ -35,6 +37,7 @@ public class FieryWing {
     private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, Integer> inflameMap = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -49,6 +52,7 @@ public class FieryWing {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
     public void use(Player player){
@@ -111,7 +115,7 @@ public class FieryWing {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
-
+                cooldownDisplayer.displayUltimateCooldown(player);
             }
         }.runTaskTimer(main, 0,20);
 
@@ -142,6 +146,14 @@ public class FieryWing {
         assert entityEquipment2 != null;
         entityEquipment2.setHelmet(spawnItem);
 
+        double skillDamage = 20;
+
+        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+
+
+        skillDamage = skillDamage + ((int)(skillLevel/10));
+
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             boolean spawned = false;
             int ran = 0;
@@ -204,7 +216,7 @@ public class FieryWing {
                             armorStand.teleport(current);
 
 
-                            current.getWorld().spawnParticle(Particle.FLAME, current.clone().add(0,1,0), 1, 0, 0, 0, 0);
+                            player.getWorld().spawnParticle(Particle.FLAME, current.clone().add(0,1,0), 1, 0, 0, 0, 0);
 
                             if (distance <= 1) {
 
@@ -212,10 +224,8 @@ public class FieryWing {
 
                                 cancelTask();
 
-                                double level = profileManager.getAnyProfile(player).getStats().getLevel();
-
                                 boolean crit = damageCalculator.checkIfCrit(player, 0);
-                                double damage = damageCalculator.calculateDamage(player, target, "Magical", 20 + level, crit);
+                                double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
 
                                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                                 changeResourceHandler.subtractHealthFromEntity(target, damage, player);
@@ -289,6 +299,8 @@ public class FieryWing {
 
         stacks ++;
 
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+
         if(stacks >=4){
             abilityReadyInMap.put(player.getUniqueId(), 0);
             removeInflame(player);
@@ -302,6 +314,7 @@ public class FieryWing {
 
     public void removeInflame(Player player){
         inflameMap.put(player.getUniqueId(), 0);
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
     }
 
     public int getCooldown(Player player){

@@ -4,6 +4,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
@@ -37,6 +38,7 @@ public class Infection {
     private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
@@ -55,6 +57,7 @@ public class Infection {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
     public void use(Player player){
@@ -117,6 +120,7 @@ public class Infection {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(player, 1);
 
             }
         }.runTaskTimer(main, 0,20);
@@ -177,7 +181,7 @@ public class Infection {
 
                 armorStand.teleport(current);
 
-                current.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, current.add(0,1,0), 1, 0, 0, 0, 0);
+                player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, current.add(0,1,0), 1, 0, 0, 0, 0);
 
 
                 if (distance <= 1) {

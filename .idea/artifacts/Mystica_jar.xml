@@ -1,10 +1,11 @@
 <component name="ArtifactManager">
   <artifact type="jar" build-on-make="true" name="Mystica:jar">
-    <output-path>$PROJECT_DIR$/../server/plugins</output-path>
+    <output-path>$USER_HOME$/Desktop/server/plugins</output-path>
     <root id="archive" name="Mystica.jar">
       <element id="module-output" name="Mystica" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/comphenix/protocol/ProtocolLib/4.8.0/ProtocolLib-4.8.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.12.8/byte-buddy-1.12.8.jar" path-in-jar="/" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/java/default-profile.yml" />
     </root>
   </artifact>
 </component>

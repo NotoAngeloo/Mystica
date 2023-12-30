@@ -3,6 +3,7 @@ package me.angeloo.mystica.Components.Abilities.Mystic;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -23,6 +24,7 @@ public class ArcaneShield {
     private final CombatManager combatManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, Boolean> needToRemove = new HashMap<>();
     private final Map<UUID, BukkitTask> shieldTaskMap = new HashMap<>();
@@ -37,6 +39,7 @@ public class ArcaneShield {
         combatManager = manager.getCombatManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
     public void use(Player player){
@@ -96,6 +99,7 @@ public class ArcaneShield {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(player, 1);
 
             }
         }.runTaskTimer(main, 0,20);

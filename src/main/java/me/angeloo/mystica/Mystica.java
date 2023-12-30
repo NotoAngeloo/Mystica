@@ -58,21 +58,20 @@ public final class Mystica extends JavaPlugin {
 
         classSetter = new ClassSetter(this);
 
-        buffAndDebuffManager = new BuffAndDebuffManager(this);
-
-        changeResourceHandler = new ChangeResourceHandler(this);
-
         pveChecker = new PveChecker(this);
         pvpManager = new PvpManager(this);
 
+        aggroManager = new AggroManager(this);
+
+        buffAndDebuffManager = new BuffAndDebuffManager(this);
+
         targetManager = new TargetManager(this);
 
-        aggroManager = new AggroManager(this);
+        changeResourceHandler = new ChangeResourceHandler(this);
 
         dpsManager = new DpsManager();
 
         damageCalculator = new DamageCalculator(this);
-
 
         abilityManager = new AbilityManager(this);
         combatManager = abilityManager.getCombatManager();

@@ -5,6 +5,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.*;
@@ -34,6 +35,7 @@ public class ShadowGrip {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final AggroManager aggroManager;
+    private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
@@ -48,6 +50,7 @@ public class ShadowGrip {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
         aggroManager = main.getAggroManager();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
     public void use(Player player){
@@ -56,7 +59,7 @@ public class ShadowGrip {
             abilityReadyInMap.put(player.getUniqueId(), 0);
         }
 
-        double baseRange = 10;
+        double baseRange = 15;
         double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
         double totalRange = baseRange + extraRange;
 
@@ -110,6 +113,7 @@ public class ShadowGrip {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(player, 6);
 
             }
         }.runTaskTimer(main, 0,20);
@@ -117,6 +121,8 @@ public class ShadowGrip {
     }
 
     private void execute(Player player){
+
+        boolean blood = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("blood");
 
         double skillDamage = 2;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level() +
@@ -186,7 +192,10 @@ public class ShadowGrip {
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                         changeResourceHandler.subtractHealthFromEntity(target, damage, player);
 
-                        aggroManager.setAsHighPriorityTarget(target, player);
+
+                        if(blood){
+                            aggroManager.setAsHighPriorityTarget(target, player);
+                        }
 
                         //also check and pull creature
                         pullTarget();
@@ -197,6 +206,7 @@ public class ShadowGrip {
 
                     if(!player.isOnline()){
                         cancelTask();
+                        return;
                     }
 
 

@@ -5,6 +5,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
@@ -35,6 +36,7 @@ public class ShadowCrows {
     private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final CooldownDisplayer cooldownDisplayer;
     private final StarVolley starVolley;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -49,6 +51,7 @@ public class ShadowCrows {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
         starVolley = rangerAbilities.getStarVolley();
     }
 
@@ -114,6 +117,7 @@ public class ShadowCrows {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(player, 2);
 
             }
         }.runTaskTimer(main, 0,20);
@@ -239,7 +243,7 @@ public class ShadowCrows {
 
                             if(scout && crit){
                                 starVolley.decreaseCooldown(player);
-                                buffAndDebuffManager.getHaste().applyHaste(player, 1, 2);
+                                buffAndDebuffManager.getHaste().applyHaste(player, 1, 2*20);
                             }
 
                             double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);

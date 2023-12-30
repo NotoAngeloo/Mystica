@@ -3,9 +3,11 @@ package me.angeloo.mystica.Components.Abilities.ShadowKnight;
 
 import me.angeloo.mystica.Components.Abilities.ShadowKnightAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
@@ -38,6 +40,7 @@ public class SoulReap {
     private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
@@ -55,6 +58,7 @@ public class SoulReap {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
         infection = shadowKnightAbilities.getInfection();
     }
 
@@ -116,6 +120,7 @@ public class SoulReap {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(player, 5);
 
             }
         }.runTaskTimer(main, 0,20);
@@ -141,7 +146,7 @@ public class SoulReap {
         Location spawnLoc = start.clone().subtract(crossProduct.multiply(1));
         spawnLoc.subtract(0,5,0);
 
-        ArmorStand armorStand = start.getWorld().spawn(spawnLoc, ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(spawnLoc, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -259,7 +264,7 @@ public class SoulReap {
                 Vector crossProduct = direction2.clone().crossProduct(new Vector(0,1,0)).normalize();
                 start2.subtract(crossProduct.multiply(2));
 
-                ArmorStand armorStand2 = start2.getWorld().spawn(start2, ArmorStand.class);
+                ArmorStand armorStand2 = player.getWorld().spawn(start2, ArmorStand.class);
                 armorStand2.setInvisible(true);
                 armorStand2.setGravity(false);
                 armorStand2.setCollidable(false);
@@ -322,6 +327,8 @@ public class SoulReap {
 
     public void addSoulMark(Player player){
 
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+
         int stacks = getSoulMarks(player);
 
         if(stacks >=4){
@@ -334,6 +341,7 @@ public class SoulReap {
     }
 
     public void removeSoulMarks(Player player){
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
         soulMarks.put(player.getUniqueId(), 0);
     }
 

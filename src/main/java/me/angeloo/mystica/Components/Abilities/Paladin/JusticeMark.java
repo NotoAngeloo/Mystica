@@ -3,6 +3,7 @@ package me.angeloo.mystica.Components.Abilities.Paladin;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -21,6 +22,7 @@ public class JusticeMark {
     private final PvpManager pvpManager;
     private final CombatManager combatManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, List<LivingEntity>> marked = new HashMap<>();
 
@@ -34,6 +36,7 @@ public class JusticeMark {
         pvpManager = main.getPvpManager();
         combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
     public void use(Player player){
@@ -88,6 +91,7 @@ public class JusticeMark {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(player, 8);
 
             }
         }.runTaskTimer(main, 0,20);

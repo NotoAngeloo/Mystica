@@ -170,7 +170,7 @@ public class ClassSelectInventory {
                 ChatColor.of(new Color(217, 217, 217)) + "Tank",
                 "",
                 ChatColor.of(new Color(214, 126, 61)) + "Executioner",
-                ChatColor.of(new Color(217, 217, 217)) + "Short Range Dps"
+                ChatColor.of(new Color(217, 217, 217)) + "Short Range Dps/Off Tank"
         );
     }
 

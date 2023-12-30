@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.Abilities.ElementalistAbilities;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Location;
@@ -29,7 +30,7 @@ public class WindWall {
     private final TargetManager targetManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final BuffAndDebuffManager buffAndDebuffManager;
-
+    private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
@@ -40,7 +41,7 @@ public class WindWall {
         targetManager = main.getTargetManager();
         changeResourceHandler = main.getChangeResourceHandler();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
-
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
 
     }
 
@@ -79,7 +80,7 @@ public class WindWall {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
-
+                cooldownDisplayer.displayCooldown(player, 5);
             }
         }.runTaskTimer(main, 0, 20);
     }

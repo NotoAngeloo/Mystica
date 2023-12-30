@@ -3,8 +3,10 @@ package me.angeloo.mystica.Managers;
 import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Components.Profile;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.StatusDisplayer;
 import net.md_5.bungee.api.ChatColor;
@@ -31,11 +33,9 @@ public class CombatManager {
     private final DpsManager dpsManager;
     private final AllSkillItems allSkillItems;
 
-
-    private final StatusDisplayer statusDisplayer;
+    private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, Long> lastCalledCombat = new HashMap<>();
-    private final Map<UUID, BukkitTask> combatTickForThisPlayer = new HashMap<>();
 
     public CombatManager(Mystica main, AbilityManager manager){
         this.main = main;
@@ -44,7 +44,7 @@ public class CombatManager {
         abilityManager = manager;
         dpsManager = main.getDpsManager();
         allSkillItems = new AllSkillItems(main);
-        statusDisplayer = new StatusDisplayer(main, manager);
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
 
@@ -73,53 +73,11 @@ public class CombatManager {
 
 
             player.getInventory().setItem(13, getItem(new ItemStack(Material.BARRIER), "Exit Combat"));
+            cooldownDisplayer.initializeItems(player);
         }
 
         profileManager.getAnyProfile(player).setIfInCombat(true);
         lastCalledCombat.put(player.getUniqueId(), System.currentTimeMillis());
-        startCombatTick(player);
-    }
-
-    private void startCombatTick(Player player){
-
-        if(combatTickForThisPlayer.containsKey(player.getUniqueId())){
-            return;
-        }
-
-        BukkitTask combatTask = new BukkitRunnable() {
-
-            int clock = 0;
-
-            @Override
-            public void run() {
-
-                boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
-
-                if(!combatStatus){
-                    this.cancel();
-                    combatTickForThisPlayer.remove(player.getUniqueId());
-                    return;
-                }
-
-                //do a thing once a second
-                displayPlayerHealthPlusInfo(player);
-                setPlayerAbilityItems(player);
-
-                statusDisplayer.displayStatus(player);
-
-                clock += 1;
-
-                //every 20 in game ticks
-                if(clock >= 10){
-                    dpsManager.addPlayerSecondsInCombat(player);
-                    clock = 0;
-                }
-
-            }
-        }.runTaskTimer(main, 0, 2);
-
-        combatTickForThisPlayer.put(player.getUniqueId(), combatTask);
-
     }
 
 
@@ -131,108 +89,6 @@ public class CombatManager {
 
         return lastCalledCombat.get(player.getUniqueId());
     }
-
-
-    //should happen every tick of cooldown
-    private void setPlayerAbilityItems(Player player){
-
-
-        boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
-
-        if(deathStatus){
-            return;
-        }
-
-        ItemStack weapon = player.getInventory().getItemInMainHand();
-
-        if(weapon.getAmount() > 1){
-            weapon.setAmount(1);
-        }
-
-        EquipSkills equipSkills = profileManager.getAnyProfile(player).getEquipSkills();
-
-        for(int i=0; i<=7; i++){
-            int slot = player.getInventory().getHeldItemSlot();
-
-            if (slot == i){
-                continue;
-            }
-
-            int skillNumber = equipSkills.getAnySlot()[i];
-
-            int cooldown = abilityManager.getCooldown(player, skillNumber);
-
-            ItemStack abilityItem = allSkillItems.getPlayerSkill(player, skillNumber);
-
-            if(cooldown > 0){
-                abilityItem.setAmount(cooldown);
-            }
-
-            if(cooldown == 1 && !abilityItem.getType().equals(Material.AIR)){
-
-                ItemMeta meta = abilityItem.getItemMeta();
-
-                assert meta != null;
-                int modelData = meta.getCustomModelData();
-                modelData++;
-
-                meta.setCustomModelData(modelData);
-                abilityItem.setItemMeta(meta);
-            }
-
-            player.getInventory().setItem(i, abilityItem);
-        }
-
-        if(allSkillItems.getUltimate(player).getType() != Material.AIR){
-
-            int slot = player.getInventory().getHeldItemSlot();
-
-            if(slot == 8){
-                return;
-            }
-
-            int cooldown = abilityManager.getUltimateCooldown(player);
-
-            ItemStack ultimateItem = allSkillItems.getUltimate(player);
-
-            if(cooldown > 0){
-                ultimateItem.setAmount(cooldown);
-            }
-
-            if(cooldown == 1 && !ultimateItem.getType().equals(Material.AIR)){
-
-                ItemMeta meta = ultimateItem.getItemMeta();
-
-                assert meta != null;
-                int modelData = meta.getCustomModelData();
-                modelData++;
-
-                meta.setCustomModelData(modelData);
-                ultimateItem.setItemMeta(meta);
-            }
-
-            player.getInventory().setItem(8, ultimateItem);
-        }
-
-    }
-
-    public ItemStack getOldItem(Player player, int slot){
-
-
-        EquipSkills equipSkills = profileManager.getAnyProfile(player).getEquipSkills();
-
-        ItemStack abilityItem;
-
-        if(slot == 8){
-            abilityItem = allSkillItems.getUltimate(player);
-        }
-        else{
-            abilityItem = allSkillItems.getPlayerSkill(player, equipSkills.getAnySlot()[slot]);
-        }
-
-        return abilityItem;
-    }
-
 
     //should happen every time health is changed OR cooldown updates
     public void displayPlayerHealthPlusInfo(Player player){
@@ -316,7 +172,6 @@ public class CombatManager {
         int hotBarSlot = player.getInventory().getHeldItemSlot();
 
         int cooldown;
-
 
         EquipSkills equipSkills = profileManager.getAnyProfile(player).getEquipSkills();
 
@@ -416,6 +271,7 @@ public class CombatManager {
 
         dpsManager.removeDps(player);
         abilityManager.resetAbilityBuffs(player);
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, true));
     }
 
     private ItemStack getItem(ItemStack item, String name, String... lore){

@@ -1,6 +1,5 @@
 package me.angeloo.mystica.Components.Abilities.Mystic;
 
-import me.angeloo.mystica.Components.Abilities.MysticAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -10,14 +9,9 @@ import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -105,6 +99,7 @@ public class ForceOfWill {
             public void run(){
 
                 if(abilityReadyInMap.get(player.getUniqueId()) <= 0){
+                    cooldownDisplayer.displayCooldown(player, 3);
                     this.cancel();
                     return;
                 }

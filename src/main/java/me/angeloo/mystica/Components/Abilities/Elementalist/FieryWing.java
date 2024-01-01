@@ -107,6 +107,7 @@ public class FieryWing {
             public void run(){
 
                 if(abilityReadyInMap.get(player.getUniqueId()) <= 0){
+                    cooldownDisplayer.displayUltimateCooldown(player);
                     this.cancel();
                     return;
                 }
@@ -129,7 +130,7 @@ public class FieryWing {
         start.subtract(0, 1, 0);
 
 
-        ArmorStand spawnTexture = start.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand spawnTexture = player.getWorld().spawn(start, ArmorStand.class);
         spawnTexture.setInvisible(true);
         spawnTexture.setGravity(false);
         spawnTexture.setCollidable(false);
@@ -170,7 +171,7 @@ public class FieryWing {
 
                     spawned = true;
 
-                    ArmorStand armorStand = start.getWorld().spawn(player.getLocation().clone().subtract(0,1,0), ArmorStand.class);
+                    ArmorStand armorStand = player.getWorld().spawn(player.getLocation().clone().subtract(0,1,0), ArmorStand.class);
                     armorStand.setInvisible(true);
                     armorStand.setGravity(false);
                     armorStand.setCollidable(false);

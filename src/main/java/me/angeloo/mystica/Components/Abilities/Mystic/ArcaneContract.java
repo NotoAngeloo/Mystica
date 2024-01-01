@@ -166,6 +166,7 @@ public class ArcaneContract {
             public void run(){
 
                 if(abilityReadyInMap.get(id) <= 0){
+                    cooldownDisplayer.displayCooldown(player, 7);
                     this.cancel();
                     return;
                 }

@@ -109,6 +109,7 @@ public class ElementalMatrix {
             public void run(){
 
                 if(abilityReadyInMap.get(player.getUniqueId()) <= 0){
+                    cooldownDisplayer.displayCooldown(player, 8);
                     this.cancel();
                     return;
                 }
@@ -178,7 +179,7 @@ public class ElementalMatrix {
 
         Location spawnLoc = target.getLocation().subtract(0,1.9,0);
 
-        ArmorStand armorStand = spawnLoc.getWorld().spawn(spawnLoc, ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(spawnLoc, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);

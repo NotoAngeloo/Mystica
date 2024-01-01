@@ -74,6 +74,7 @@ public class DuranceOfTruth {
             public void run(){
 
                 if(abilityReadyInMap.get(player.getUniqueId()) <= 0){
+                    cooldownDisplayer.displayCooldown(player, 7);
                     this.cancel();
                     return;
                 }

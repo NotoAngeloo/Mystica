@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.Abilities.*;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.ShieldAbilityManaDisplayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -34,6 +35,7 @@ public class AbilityManager {
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = new CombatManager(main, this);
+
         elementalistAbilities = new ElementalistAbilities(main, this);
         rangerAbilities = new RangerAbilities(main, this);
         mysticAbilities = new MysticAbilities(main, this);
@@ -44,7 +46,6 @@ public class AbilityManager {
     }
 
     public void useAbility(Player player, int abilityNumber){
-
 
         if(buffAndDebuffManager.getIfInterrupt(player)){
             return;

@@ -65,31 +65,14 @@ public class EvilSpirit {
         Location spawnStart = player.getLocation().clone();
         spawnStart.subtract(0, 1, 0);
 
-        ArmorStand spawnTexture = spawnStart.getWorld().spawn(spawnStart, ArmorStand.class);
-        spawnTexture.setInvisible(true);
-        spawnTexture.setGravity(false);
-        spawnTexture.setCollidable(false);
-        spawnTexture.setInvulnerable(true);
-        spawnTexture.setMarker(true);
-
-        EntityEquipment entityEquipment2 = spawnTexture.getEquipment();
-
-        ItemStack spawnItem = new ItemStack(Material.SPECTRAL_ARROW);
-        ItemMeta meta2 = spawnItem.getItemMeta();
-        assert meta2 != null;
-        meta2.setCustomModelData(4);
-        spawnItem.setItemMeta(meta2);
-        assert entityEquipment2 != null;
-        entityEquipment2.setHelmet(spawnItem);
-
-        Location current = spawnTexture.getLocation();
+        Location current = player.getLocation().clone();
 
         abilityManager.setCasting(player, true);
 
         buffAndDebuffManager.getHidden().hidePlayer(player, false);
 
         new BukkitRunnable(){
-            final Location loc = spawnTexture.getLocation();
+            final Location loc = current.clone();
             Vector initialDirection;
             int ran = 0;
             int angle = 0;
@@ -107,7 +90,7 @@ public class EvilSpirit {
                 rotation.rotateAroundY(radians);
                 current.setDirection(rotation);
 
-                spawnTexture.teleport(current);
+
 
                 double x = loc.getX() + rotation.getX() * radius;
                 double z = loc.getZ() + rotation.getZ() * radius;
@@ -135,7 +118,6 @@ public class EvilSpirit {
                     abilityManager.setCasting(player, false);
                     abilityManager.setCastBar(player, 0);
                     evilSpiritTime(player);
-                    spawnTexture.remove();
                 }
 
                 angle += 5;

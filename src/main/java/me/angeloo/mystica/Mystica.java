@@ -96,7 +96,7 @@ public final class Mystica extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new GeneralEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new MMListeners(this), this);
 
-        NaturalRegenTick regenTick = new NaturalRegenTick(this);
+        NaturalRegenTick regenTick = new NaturalRegenTick(this, abilityManager);
         regenTick.runTaskTimer(this, 0, 20);
         RezTick rezTick = new RezTick(this);
         rezTick.runTaskTimer(this, 0, 20);

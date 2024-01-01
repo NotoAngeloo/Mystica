@@ -112,6 +112,7 @@ public class DragonBreathing {
             public void run(){
 
                 if(abilityReadyInMap.get(player.getUniqueId()) <= 0){
+                    cooldownDisplayer.displayCooldown(player, 6);
                     this.cancel();
                     return;
                 }
@@ -135,30 +136,6 @@ public class DragonBreathing {
         Location spawnStart = player.getLocation().clone();
         spawnStart.subtract(0, 1.5, 0);
 
-        ArmorStand spawnTexture = spawnStart.getWorld().spawn(spawnStart, ArmorStand.class);
-        spawnTexture.setInvisible(true);
-        spawnTexture.setGravity(false);
-        spawnTexture.setCollidable(false);
-        spawnTexture.setInvulnerable(true);
-        spawnTexture.setMarker(true);
-
-        EntityEquipment entityEquipment2 = spawnTexture.getEquipment();
-
-        ItemStack spawnItem = new ItemStack(Material.DRAGON_BREATH);
-        ItemMeta meta2 = spawnItem.getItemMeta();
-        assert meta2 != null;
-        meta2.setCustomModelData(11);
-        spawnItem.setItemMeta(meta2);
-        assert entityEquipment2 != null;
-        entityEquipment2.setHelmet(spawnItem);
-
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-                spawnTexture.remove();
-            }
-        }.runTaskLater(main, 20*3);
-
         Location start = player.getLocation().clone();
         Location end = target.getLocation();
         Vector direction = end.toVector().subtract(start.toVector());
@@ -166,7 +143,7 @@ public class DragonBreathing {
         spawnLoc.add(0, 5, 0);
 
 
-        ArmorStand armorStand = spawnLoc.getWorld().spawn(spawnLoc, ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(spawnLoc, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -228,7 +205,7 @@ public class DragonBreathing {
                             double z = loc.getZ() + (radius * Math.sin(angle));
                             Location jloc = new Location(loc.getWorld(), x, loc.getY(), z);
 
-                            loc.getWorld().spawnParticle(Particle.LAVA, jloc, 1, 0, 0, 0, 0);
+                            player.getWorld().spawnParticle(Particle.LAVA, jloc, 1, 0, 0, 0, 0);
                         }
 
                         BoundingBox hitBox = new BoundingBox(

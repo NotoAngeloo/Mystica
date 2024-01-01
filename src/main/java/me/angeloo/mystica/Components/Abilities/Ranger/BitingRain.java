@@ -110,6 +110,7 @@ public class BitingRain {
             public void run(){
 
                 if(abilityReadyInMap.get(player.getUniqueId()) <= 0){
+                    cooldownDisplayer.displayCooldown(player, 1);
                     this.cancel();
                     return;
                 }

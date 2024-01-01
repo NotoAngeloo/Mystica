@@ -68,6 +68,7 @@ public class GeneralEventListener implements Listener {
     private final DisplayWeapons displayWeapons;
     private final StatusDisplayer statusDisplayer;
     private final CooldownDisplayer cooldownDisplayer;
+    private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
 
     private final DamageCalculator damageCalculator;
     private final ChangeResourceHandler changeResourceHandler;
@@ -93,6 +94,7 @@ public class GeneralEventListener implements Listener {
         displayWeapons = new DisplayWeapons(main);
         statusDisplayer = new StatusDisplayer(main, abilityManager);
         cooldownDisplayer = new CooldownDisplayer(main, abilityManager);
+        shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, abilityManager);
         damageCalculator = main.getDamageCalculator();
         changeResourceHandler = main.getChangeResourceHandler();
     }
@@ -720,7 +722,7 @@ public class GeneralEventListener implements Listener {
                 return;
             }
 
-            combatManager.displayPlayerHealthPlusInfo((Player) defender);
+            shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo((Player) defender);
 
             if(!event.getIfPositive()){
                 Player defenderPlayer = (Player)defender;

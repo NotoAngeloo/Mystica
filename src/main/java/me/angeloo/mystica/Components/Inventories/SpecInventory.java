@@ -153,7 +153,7 @@ public class SpecInventory {
     }
 
     private ItemStack getConjurerItem(){
-        return getItem(Material.CYAN_DYE, 22,
+        return getItem(Material.CYAN_DYE, 21,
                 ChatColor.of(new Color(153, 0, 255)) + "Conjurer",
                 "",
                 ChatColor.of(new Color(0,102,0)) + "Each level",

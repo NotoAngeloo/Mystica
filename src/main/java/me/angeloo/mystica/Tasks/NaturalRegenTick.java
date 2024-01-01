@@ -2,9 +2,11 @@ package me.angeloo.mystica.Tasks;
 
 import me.angeloo.mystica.Components.ProfileComponents.Stats;
 import me.angeloo.mystica.Components.ProfileComponents.StatsFromGear;
+import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.ShieldAbilityManaDisplayer;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -15,10 +17,12 @@ public class NaturalRegenTick extends BukkitRunnable {
 
     private final ProfileManager profileManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
 
-    public NaturalRegenTick(Mystica main){
+    public NaturalRegenTick(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, manager);
     }
 
     @Override
@@ -81,6 +85,12 @@ public class NaturalRegenTick extends BukkitRunnable {
             if(currentHealth < maxHealth){
                 changeResourceHandler.addHealthToEntity(player, healthRegenRate, null);
             }
+
+            if(!profileManager.getAnyProfile(player).getIfInCombat() || profileManager.getAnyProfile(player).getIfDead()){
+                continue;
+            }
+
+            shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
 
         }
     }

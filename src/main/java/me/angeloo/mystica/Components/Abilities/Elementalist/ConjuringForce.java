@@ -61,6 +61,7 @@ public class ConjuringForce {
             public void run() {
 
                 if (abilityReadyInMap.get(player.getUniqueId()) <= 0) {
+                    cooldownDisplayer.displayUltimateCooldown(player);
                     this.cancel();
                     return;
                 }
@@ -78,25 +79,8 @@ public class ConjuringForce {
 
     private void execute(Player player){
 
-        Location spawnStart = player.getLocation().clone();
-        spawnStart.subtract(0, 1, 0);
+        Location start = player.getLocation().clone();
 
-        ArmorStand spawnTexture = player.getWorld().spawn(spawnStart, ArmorStand.class);
-        spawnTexture.setInvisible(true);
-        spawnTexture.setGravity(false);
-        spawnTexture.setCollidable(false);
-        spawnTexture.setInvulnerable(true);
-        spawnTexture.setMarker(true);
-
-        EntityEquipment entityEquipment2 = spawnTexture.getEquipment();
-
-        ItemStack spawnItem = new ItemStack(Material.DRAGON_BREATH);
-        ItemMeta meta2 = spawnItem.getItemMeta();
-        assert meta2 != null;
-        meta2.setCustomModelData(13);
-        spawnItem.setItemMeta(meta2);
-        assert entityEquipment2 != null;
-        entityEquipment2.setHelmet(spawnItem);
 
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
         double buffAmount = 5 + skillLevel;
@@ -105,7 +89,7 @@ public class ConjuringForce {
             int ran = 0;
             final Set<Player> affected = new HashSet<>();
 
-            final Location loc = spawnTexture.getLocation();
+            final Location loc = start.clone();
             double height = 0;
             boolean up = true;
             final double radius = 4;
@@ -115,7 +99,6 @@ public class ConjuringForce {
             public void run(){
 
                 Set<Player> hitBySkill = new HashSet<>();
-
 
                 if(initialDirection == null) {
                     initialDirection = loc.getDirection().setY(0).normalize();
@@ -136,8 +119,8 @@ public class ConjuringForce {
                 Location particleLoc = new Location(loc.getWorld(), x, loc.getY() + height, z);
                 Location particleLoc2 = new Location(loc.getWorld(), x2, loc.getY() + height, z2);
 
-                loc.getWorld().spawnParticle(Particle.FLAME, particleLoc, 1, 0, 0, 0, 0);
-                loc.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, particleLoc2, 1, 0, 0, 0, 0);
+                player.getWorld().spawnParticle(Particle.FLAME, particleLoc, 1, 0, 0, 0, 0);
+                player.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, particleLoc2, 1, 0, 0, 0, 0);
 
                 if(up){
                     height += .1;
@@ -156,14 +139,25 @@ public class ConjuringForce {
                     up = true;
                 }
 
+                double increment = (2 * Math.PI) / 16; // angle between particles
+
+                for (int i = 0; i < 16; i++) {
+                    double angle = i * increment;
+                    double x3 = start.getX() + (4 * Math.cos(angle));
+                    double y3 = start.getY() + 1;
+                    double z3 = start.getZ() + (4 * Math.sin(angle));
+                    Location loc = new Location(start.getWorld(), x3, y3, z3);
+                    player.getWorld().spawnParticle(Particle.SPELL_WITCH, loc, 1,0, 0, 0, 0);
+                }
+
 
                 BoundingBox hitBox = new BoundingBox(
-                        spawnTexture.getLocation().getX() - 4,
-                        spawnTexture.getLocation().getY() - 2,
-                        spawnTexture.getLocation().getZ() - 4,
-                        spawnTexture.getLocation().getX() + 4,
-                        spawnTexture.getLocation().getY() + 4,
-                        spawnTexture.getLocation().getZ() + 4
+                        start.getX() - 4,
+                        start.getY() - 2,
+                        start.getZ() - 4,
+                        start.getX() + 4,
+                        start.getY() + 4,
+                        start.getZ() + 4
                 );
 
 
@@ -206,7 +200,6 @@ public class ConjuringForce {
 
             private void cancelTask(){
                 this.cancel();
-                spawnTexture.remove();
 
                 for(Player thisPlayer : affected){
                     buffAndDebuffManager.getConjuringForceBuff().removeConjuringForceBuff(thisPlayer);

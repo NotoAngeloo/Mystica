@@ -1,12 +1,9 @@
 package me.angeloo.mystica.Components.Abilities.Elementalist;
 
-import me.angeloo.mystica.Components.Abilities.ElementalistAbilities;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
-import me.angeloo.mystica.Utility.DamageCalculator;
-import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
@@ -27,7 +24,6 @@ public class WindWall {
 
     private final ProfileManager profileManager;
     private final CombatManager combatManager;
-    private final TargetManager targetManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CooldownDisplayer cooldownDisplayer;
@@ -38,7 +34,6 @@ public class WindWall {
         this.main = main;
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
-        targetManager = main.getTargetManager();
         changeResourceHandler = main.getChangeResourceHandler();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
@@ -72,6 +67,7 @@ public class WindWall {
             public void run() {
 
                 if (abilityReadyInMap.get(player.getUniqueId()) <= 0) {
+                    cooldownDisplayer.displayCooldown(player, 5);
                     this.cancel();
                     return;
                 }
@@ -89,7 +85,7 @@ public class WindWall {
 
         Location start = player.getLocation();
 
-        ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);

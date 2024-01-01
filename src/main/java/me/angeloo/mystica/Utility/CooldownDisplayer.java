@@ -15,10 +15,12 @@ public class CooldownDisplayer {
     private final ProfileManager profileManager;
     private final AbilityManager abilityManager;
     private final AllSkillItems allSkillItems;
+    private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
 
     public CooldownDisplayer(Mystica main, AbilityManager manager) {
         profileManager = main.getProfileManager();
         abilityManager = manager;
+        shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, manager);
         allSkillItems = new AllSkillItems(main);
     }
 
@@ -30,6 +32,7 @@ public class CooldownDisplayer {
             int slot = player.getInventory().getHeldItemSlot();
 
             if (slot == i){
+                shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
                 continue;
             }
 
@@ -63,6 +66,7 @@ public class CooldownDisplayer {
             int slot = player.getInventory().getHeldItemSlot();
 
             if(slot == 8){
+                shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
                 return;
             }
 
@@ -92,9 +96,10 @@ public class CooldownDisplayer {
 
     public void displayCooldown(Player player, int abilityNumber){
 
+        boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
         boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
 
-        if(!combatStatus){
+        if(deathStatus || !combatStatus){
             return;
         }
 
@@ -105,6 +110,7 @@ public class CooldownDisplayer {
         int equippedIn = equipSkills.whichSlotIsTheSkillEquippedIn(abilityNumber);
 
         if(hotBarSlot == equippedIn){
+            shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
             return;
         }
 
@@ -131,15 +137,17 @@ public class CooldownDisplayer {
 
     public void displayUltimateCooldown(Player player){
 
+        boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
         boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
 
-        if(!combatStatus){
+        if(deathStatus || !combatStatus){
             return;
         }
 
         int hotBarSlot = player.getInventory().getHeldItemSlot();
 
         if(hotBarSlot == 8){
+            shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
             return;
         }
 
@@ -167,9 +175,17 @@ public class CooldownDisplayer {
 
     public void displayChaosMysticUltimateItem(Player player, boolean ready){
 
+        boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
         boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
 
-        if(!combatStatus){
+        if(deathStatus || !combatStatus){
+            return;
+        }
+
+        int hotBarSlot = player.getInventory().getHeldItemSlot();
+
+        if(hotBarSlot == 8){
+            shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
             return;
         }
 

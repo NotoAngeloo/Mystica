@@ -112,6 +112,7 @@ public class SoulReap {
             public void run(){
 
                 if(abilityReadyInMap.get(player.getUniqueId()) <= 0){
+                    cooldownDisplayer.displayCooldown(player, 5);
                     this.cancel();
                     return;
                 }

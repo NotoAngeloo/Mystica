@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Paladin;
 
+import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
@@ -12,6 +13,7 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
@@ -68,6 +70,7 @@ public class Representative {
             public void run() {
 
                 if (abilityReadyInMap.get(player.getUniqueId()) <= 0) {
+                    cooldownDisplayer.displayUltimateCooldown(player);
                     this.cancel();
                     return;
                 }
@@ -173,7 +176,7 @@ public class Representative {
 
                 if(count>=10*20){
                     this.cancel();
-
+                    removeBuff(player);
                 }
 
                 count++;
@@ -185,12 +188,23 @@ public class Representative {
     }
 
     private void applyBuff(Player player, double amount){
-        //also haste
         repBuff.put(player.getUniqueId(), amount);
     }
 
-    public double getAdditionalBonusFromBuff(Player player){
+    private void removeBuff(Player player){
+        repBuff.remove(player.getUniqueId());
 
+        boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
+
+        if(!combatStatus){
+            return;
+        }
+
+        PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
+        player.getInventory().setHelmet(playerEquipment.getHelmet());
+    }
+
+    public double getAdditionalBonusFromBuff(Player player){
         return repBuff.getOrDefault(player.getUniqueId(), 0.0);
     }
 

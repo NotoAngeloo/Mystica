@@ -83,6 +83,7 @@ public class WildSpirit {
             public void run(){
 
                 if(abilityReadyInMap.get(player.getUniqueId()) <= 0){
+                    cooldownDisplayer.displayCooldown(player, 7);
                     this.cancel();
                     return;
                 }
@@ -102,7 +103,7 @@ public class WildSpirit {
 
         Location start = player.getLocation();
         start.subtract(0, 1.7, 0);
-        ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);

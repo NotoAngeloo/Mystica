@@ -74,6 +74,7 @@ public class LightWell {
             public void run() {
 
                 if (abilityReadyInMap.get(player.getUniqueId()) <= 0) {
+                    cooldownDisplayer.displayUltimateCooldown(player);
                     this.cancel();
                     return;
                 }

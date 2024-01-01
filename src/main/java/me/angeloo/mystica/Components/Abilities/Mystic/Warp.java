@@ -101,6 +101,12 @@ public class Warp {
             public void run(){
 
                 if(abilityReadyInMap.get(player.getUniqueId()) <= 0){
+                    if(subclass.equalsIgnoreCase("chaos")){
+                        cooldownDisplayer.displayCooldown(player,4);
+                    }
+                    else{
+                        cooldownDisplayer.displayCooldown(player,5);
+                    }
                     this.cancel();
                     return;
                 }

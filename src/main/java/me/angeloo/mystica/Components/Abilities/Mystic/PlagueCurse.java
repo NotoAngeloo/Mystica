@@ -111,6 +111,7 @@ public class PlagueCurse {
             public void run(){
 
                 if(abilityReadyInMap.get(player.getUniqueId()) <= 0){
+                    cooldownDisplayer.displayCooldown(player, 2);
                     this.cancel();
                     return;
                 }

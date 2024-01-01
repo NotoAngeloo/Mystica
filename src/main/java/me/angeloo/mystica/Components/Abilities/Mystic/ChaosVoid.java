@@ -61,6 +61,7 @@ public class ChaosVoid {
             public void run() {
 
                 if (abilityReadyInMap.get(player.getUniqueId()) <= 0) {
+                    cooldownDisplayer.displayCooldown(player, 1);
                     this.cancel();
                     return;
                 }
@@ -82,27 +83,7 @@ public class ChaosVoid {
 
         buffAndDebuffManager.getImmobile().applyImmobile(player, castTime);
 
-        Location spawnStart = player.getLocation().clone();
-        spawnStart.subtract(0, 1, 0);
-
-        ArmorStand spawnTexture = player.getWorld().spawn(spawnStart, ArmorStand.class);
-        spawnTexture.setInvisible(true);
-        spawnTexture.setGravity(false);
-        spawnTexture.setCollidable(false);
-        spawnTexture.setInvulnerable(true);
-        spawnTexture.setMarker(true);
-
-        EntityEquipment entityEquipment2 = spawnTexture.getEquipment();
-
-        ItemStack spawnItem = new ItemStack(Material.SPECTRAL_ARROW);
-        ItemMeta meta2 = spawnItem.getItemMeta();
-        assert meta2 != null;
-        meta2.setCustomModelData(4);
-        spawnItem.setItemMeta(meta2);
-        assert entityEquipment2 != null;
-        entityEquipment2.setHelmet(spawnItem);
-
-        Location current = spawnTexture.getLocation();
+        Location start = player.getLocation().clone();
 
         abilityManager.setCasting(player, true);
         buffAndDebuffManager.getImmune().applyImmune(player, castTime);
@@ -111,7 +92,7 @@ public class ChaosVoid {
 
         buffAndDebuffManager.getHidden().hidePlayer(player, false);
         new BukkitRunnable(){
-            final Location loc = spawnTexture.getLocation();
+            final Location loc = start.clone();
             Vector initialDirection;
             boolean up = true;
             int ran = 0;
@@ -122,15 +103,13 @@ public class ChaosVoid {
             public void run(){
 
                 if (initialDirection == null) {
-                    initialDirection = current.getDirection().setY(0).normalize();
+                    initialDirection = start.getDirection().setY(0).normalize();
                 }
 
                 Vector rotation = initialDirection.clone();
                 double radians = Math.toRadians(angle);
                 rotation.rotateAroundY(radians);
-                current.setDirection(rotation);
 
-                spawnTexture.teleport(current);
 
                 double x = loc.getX() + rotation.getX() * radius;
                 double z = loc.getZ() + rotation.getZ() * radius;
@@ -141,8 +120,8 @@ public class ChaosVoid {
                 Location particleLoc = new Location(loc.getWorld(), x, loc.getY() + height, z);
                 Location particleLoc2 = new Location(loc.getWorld(), x2, loc.getY() + height, z2);
 
-                loc.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, particleLoc, 1, 0, 0, 0, 0);
-                loc.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, particleLoc2, 1, 0, 0, 0, 0);
+                player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, particleLoc, 1, 0, 0, 0, 0);
+                player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, particleLoc2, 1, 0, 0, 0, 0);
 
 
                 if(up){
@@ -186,7 +165,6 @@ public class ChaosVoid {
                     this.cancel();
                     abilityManager.setCasting(player, false);
                     abilityManager.setCastBar(player, 0);
-                    spawnTexture.remove();
                     buffAndDebuffManager.getHidden().unhidePlayer(player);
                 }
 

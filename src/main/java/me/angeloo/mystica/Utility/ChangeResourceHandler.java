@@ -41,10 +41,15 @@ public class ChangeResourceHandler {
 
         if(buffAndDebuffManager.getWindWallBuff().getIfWindWallActive(entity)){
 
+            if(damager == null){
+                return;
+            }
+
             double reflectedDamage = buffAndDebuffManager.getWindWallBuff().calculateHowMuchDamageIsReflected(entity, damage);
             subtractHealthFromEntity(damager, reflectedDamage, entity);
 
             if(buffAndDebuffManager.getWindWallBuff().getIfOverflow(entity)){
+
                 subtractHealthFromEntity(entity, buffAndDebuffManager.getWindWallBuff().getOverflowAmount(entity), damager);
             }
 

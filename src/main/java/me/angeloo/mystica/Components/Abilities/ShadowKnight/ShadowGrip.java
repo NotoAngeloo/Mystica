@@ -1,6 +1,5 @@
 package me.angeloo.mystica.Components.Abilities.ShadowKnight;
 
-import me.angeloo.mystica.Components.Abilities.ShadowKnightAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -180,10 +179,6 @@ public class ShadowGrip {
                 if(going){
                     Vector direction = targetWasLoc.toVector().subtract(current.toVector());
                     double distance = current.distance(targetWasLoc);
-                    double distanceThisTick = Math.min(distance, .5);
-                    current.add(direction.normalize().multiply(distanceThisTick));
-                    current.setDirection(direction);
-                    armorStand.teleport(current);
 
                     if (distance <= 1) {
 
@@ -202,6 +197,13 @@ public class ShadowGrip {
                         pullTarget();
                         going = false;
                     }
+                    else{
+                        double distanceThisTick = Math.min(distance, .5);
+                        current.add(direction.normalize().multiply(distanceThisTick));
+                        current.setDirection(direction);
+                        armorStand.teleport(current);
+                    }
+
                 }
                 else{
 
@@ -213,7 +215,21 @@ public class ShadowGrip {
 
                     Vector direction = player.getLocation().toVector().subtract(current.toVector());
                     double distance = current.distance(player.getLocation());
+
+                    if(distance <=1){
+                        cancelTask();
+                        return;
+                    }
+
+
                     double distanceThisTick = Math.min(distance, .9);
+
+                    //do a wall check here
+                    if(wallCheck(current, direction, distanceThisTick)){
+                        cancelTask();
+                        return;
+                    }
+
                     current.add(direction.normalize().multiply(distanceThisTick));
 
                     Vector opposite = direction.clone().multiply(-1);
@@ -221,13 +237,16 @@ public class ShadowGrip {
                     armorStand.teleport(current);
 
                     if(targetStillValid(target) && profileManager.getAnyProfile(target).getIsMovable()){
-                        //also check if its movable
-                        target.teleport(armorStand);
 
-                    }
+                        if(target instanceof Player){
+                            if(profileManager.getAnyProfile(target).getIfDead()){
+                                return;
+                            }
 
-                    if(distance <=1){
-                        cancelTask();
+                        }
+
+                        target.teleport(current.add(0,1,0));
+
                     }
 
                 }
@@ -271,6 +290,15 @@ public class ShadowGrip {
                 entityEquipment.setHelmet(hand);
 
                 going = false;
+            }
+
+            private boolean wallCheck(Location current, Vector direction, double distance){
+
+                Location newLoc = current.clone().add(direction.normalize().multiply(distance));
+
+                newLoc.add(0,1,0);
+
+                return !newLoc.getBlock().isPassable();
             }
 
         }.runTaskTimer(main, 0, 1);

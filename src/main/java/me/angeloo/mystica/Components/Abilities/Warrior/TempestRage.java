@@ -1,24 +1,31 @@
-package me.angeloo.mystica.Components.Abilities.Elementalist;
+package me.angeloo.mystica.Components.Abilities.Warrior;
 
+import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
+import me.angeloo.mystica.Utility.DamageCalculator;
+import me.angeloo.mystica.Utility.PveChecker;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class WindWall {
+public class TempestRage {
 
     private final Mystica main;
 
@@ -26,16 +33,23 @@ public class WindWall {
     private final CombatManager combatManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CooldownDisplayer cooldownDisplayer;
+    private final DamageCalculator damageCalculator;
+    private final PvpManager pvpManager;
+    private final PveChecker pveChecker;
+    private final ChangeResourceHandler changeResourceHandler;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public WindWall(Mystica main, AbilityManager manager){
+    public TempestRage(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
+        damageCalculator = main.getDamageCalculator();
+        pvpManager = main.getPvpManager();
+        pveChecker = main.getPveChecker();
+        changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
-
     }
 
     public void use(Player player) {
@@ -55,7 +69,7 @@ public class WindWall {
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
 
-        int cooldown = 21;
+        int cooldown = 10;
 
         cooldown = cooldown - ((int)(skillLevel/15));
 
@@ -65,7 +79,7 @@ public class WindWall {
             public void run() {
 
                 if (abilityReadyInMap.get(player.getUniqueId()) <= 0) {
-                    cooldownDisplayer.displayCooldown(player, 5);
+                    cooldownDisplayer.displayCooldown(player, 3);
                     this.cancel();
                     return;
                 }
@@ -74,7 +88,7 @@ public class WindWall {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 5);
+                cooldownDisplayer.displayCooldown(player, 3);
             }
         }.runTaskTimer(main, 0, 20);
     }
@@ -92,16 +106,19 @@ public class WindWall {
 
         EntityEquipment entityEquipment = armorStand.getEquipment();
 
-        ItemStack matrixItem = new ItemStack(Material.DRAGON_BREATH);
-        ItemMeta meta = matrixItem.getItemMeta();
+        ItemStack item = new ItemStack(Material.NETHER_WART);
+        ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setCustomModelData(12);
-        matrixItem.setItemMeta(meta);
+        meta.setCustomModelData(5);
+        item.setItemMeta(meta);
         assert entityEquipment != null;
-        entityEquipment.setHelmet(matrixItem);
+        entityEquipment.setHelmet(item);
 
-        buffAndDebuffManager.getWindWallBuff().createAWindWall(player);
-
+        double skillDamage = 5;
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
+        skillDamage = skillDamage + ((int)(skillLevel/10));
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             int timeRan = 0;
             Vector initialDirection;
@@ -110,10 +127,6 @@ public class WindWall {
             public void run(){
 
                 if(!player.isOnline()){
-                    cancelTask();
-                }
-
-                if(!buffAndDebuffManager.getWindWallBuff().getIfWindWallActive(player)){
                     cancelTask();
                 }
 
@@ -130,7 +143,52 @@ public class WindWall {
 
                 armorStand.teleport(playerLoc);
 
-                if(timeRan >= 200){
+                if(timeRan%20==0){
+                    BoundingBox hitBox = new BoundingBox(
+                            player.getLocation().getX() - 4,
+                            player.getLocation().getY() - 2,
+                            player.getLocation().getZ() - 4,
+                            player.getLocation().getX() + 4,
+                            player.getLocation().getY() + 6,
+                            player.getLocation().getZ() + 4
+                    );
+
+                    for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+
+                        if(entity == player){
+                            continue;
+                        }
+
+                        if(!(entity instanceof LivingEntity)){
+                            continue;
+                        }
+
+                        if(entity instanceof ArmorStand){
+                            continue;
+                        }
+
+                        LivingEntity livingEntity = (LivingEntity) entity;
+
+                        boolean crit = damageCalculator.checkIfCrit(player, 0);
+                        double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", finalSkillDamage, crit));
+
+                        //pvp logic
+                        if(entity instanceof Player){
+                            if(pvpManager.pvpLogic(player, (Player) entity)){
+                                changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                            }
+                            continue;
+                        }
+
+                        if(pveChecker.pveLogic(livingEntity)){
+                            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, player));
+                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                        }
+
+                    }
+                }
+
+                if(timeRan >= 20*6){
                     cancelTask();
                 }
 
@@ -145,7 +203,6 @@ public class WindWall {
             private void cancelTask() {
                 this.cancel();
                 armorStand.remove();
-                buffAndDebuffManager.getWindWallBuff().removeWindwall(player);
             }
 
         }.runTaskTimer(main, 0, 1);

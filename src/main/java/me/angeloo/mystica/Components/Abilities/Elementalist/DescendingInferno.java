@@ -159,7 +159,7 @@ public class DescendingInferno {
         assert entityEquipmentLeft != null;
         entityEquipmentLeft.setHelmet(fireballItem);
 
-        ArmorStand armorStandRight = start.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStandRight = player.getWorld().spawn(start, ArmorStand.class);
         armorStandRight.setInvisible(true);
         armorStandRight.setGravity(false);
         armorStandRight.setCollidable(false);
@@ -171,7 +171,7 @@ public class DescendingInferno {
         assert entityEquipmentRight != null;
         entityEquipmentRight.setHelmet(fireballItem);
 
-        ArmorStand armorStandMiddle = start.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStandMiddle = player.getWorld().spawn(start, ArmorStand.class);
         armorStandMiddle.setInvisible(true);
         armorStandMiddle.setGravity(false);
         armorStandMiddle.setCollidable(false);

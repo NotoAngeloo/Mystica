@@ -1,5 +1,4 @@
-package me.angeloo.mystica.Components.Abilities.ShadowKnight;
-
+package me.angeloo.mystica.Components.Abilities.Warrior;
 
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
@@ -23,9 +22,11 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
-public class ShadowKnightBasic {
+public class WarriorBasic {
 
     private final Mystica main;
 
@@ -42,7 +43,7 @@ public class ShadowKnightBasic {
 
     private final Map<UUID, BukkitTask> removeBasicStageTaskMap = new HashMap<>();
 
-    public ShadowKnightBasic(Mystica main, AbilityManager manager){
+    public WarriorBasic(Mystica main, AbilityManager manager){
         this.main = main;
 
         profileManager = main.getProfileManager();
@@ -108,7 +109,7 @@ public class ShadowKnightBasic {
                 break;
             }
             case 2:{
-                basicStage2(player);
+                basicStage2(player, 3);
                 new BukkitRunnable(){
                     @Override
                     public void run(){
@@ -128,7 +129,7 @@ public class ShadowKnightBasic {
                 break;
             }
             case 4:{
-                basicStage3(player);
+                basicStage2(player, 1);
                 new BukkitRunnable(){
                     @Override
                     public void run(){
@@ -165,7 +166,7 @@ public class ShadowKnightBasic {
 
         EntityEquipment entityEquipment = armorStand.getEquipment();
 
-        ItemStack basicItem = new ItemStack(Material.REDSTONE);
+        ItemStack basicItem = new ItemStack(Material.NETHER_WART);
         ItemMeta meta = basicItem.getItemMeta();
         assert meta != null;
         meta.setCustomModelData(1);
@@ -220,7 +221,7 @@ public class ShadowKnightBasic {
                 continue;
             }
 
-             LivingEntity livingEntity = (LivingEntity) entity;
+            LivingEntity livingEntity = (LivingEntity) entity;
 
             if(!pveChecker.pveLogic(livingEntity)){
                 continue;
@@ -277,7 +278,7 @@ public class ShadowKnightBasic {
 
                 armorStand.teleport(current);
 
-                player.getWorld().spawnParticle(Particle.SPELL_WITCH, current.clone().add(0,1,0), 1, 0, 0, 0, 0);
+                //player.getWorld().spawnParticle(Particle.SPELL_WITCH, current.clone().add(0,1,0), 1, 0, 0, 0, 0);
 
                 if(traveled>=2){
                     cancelTask();
@@ -298,16 +299,16 @@ public class ShadowKnightBasic {
 
     }
 
-    private void basicStage2(Player player){
+    private void basicStage2(Player player, int newStage){
 
-        basicStageMap.put(player.getUniqueId(), 3);
+        basicStageMap.put(player.getUniqueId(), newStage);
 
         Location start = player.getLocation().clone().subtract(0,3,0);
 
         Vector direction = player.getLocation().getDirection().setY(0).normalize();
-        start.add(direction.multiply(3));
-        direction.rotateAroundY(-45);
-        start.setDirection(direction);
+        Vector crossProduct = direction.clone().crossProduct(new Vector(0,1,0)).normalize();
+        start.add(direction.multiply(4));
+        start.subtract(crossProduct.multiply(3));
 
         ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
@@ -318,7 +319,7 @@ public class ShadowKnightBasic {
 
         EntityEquipment entityEquipment = armorStand.getEquipment();
 
-        ItemStack basicItem = new ItemStack(Material.REDSTONE);
+        ItemStack basicItem = new ItemStack(Material.NETHER_WART);
         ItemMeta meta = basicItem.getItemMeta();
         assert meta != null;
         meta.setCustomModelData(2);
@@ -329,7 +330,6 @@ public class ShadowKnightBasic {
 
         Location loc = player.getLocation().clone().add(direction.multiply(1.25));
 
-        //player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, loc, 1, 0, 0, 0, 0);
 
         BoundingBox hitBox = new BoundingBox(
                 loc.getX() - 3,
@@ -393,7 +393,7 @@ public class ShadowKnightBasic {
             }
         }
 
-        if(!targetHit && firstHit != null){
+        if(!targetHit && firstHit!= null){
             targetToHit = firstHit;
         }
 
@@ -422,15 +422,16 @@ public class ShadowKnightBasic {
                 }
 
                 Vector direction = player.getLocation().getDirection().setY(0).normalize();
+                Vector crossProduct = direction.clone().crossProduct(new Vector(0,1,0)).normalize();
 
                 Location current = player.getLocation().clone();
-                current.add(direction.multiply(3));
-                current.add(0,traveled,0);
-                direction.rotateAroundY(-45);
-                current.setDirection(direction);
+                current.add(direction.multiply(4));
+                current.subtract(crossProduct.multiply(3));
+                current.add(crossProduct.multiply(traveled));
+
                 armorStand.teleport(current);
 
-                player.getWorld().spawnParticle(Particle.SPELL_WITCH, current.clone().add(0,1,0), 1, 0, 0, 0, 0);
+                //player.getWorld().spawnParticle(Particle.SPELL_WITCH, current.clone().add(0,1,0), 1, 0, 0, 0, 0);
 
                 if(traveled>=2){
                     cancelTask();
@@ -444,166 +445,11 @@ public class ShadowKnightBasic {
                 armorStand.remove();
                 this.cancel();
 
-            }
-
-        }.runTaskTimer(main, 0, 1);
-
-    }
-
-    private void basicStage3(Player player){
-
-        basicStageMap.put(player.getUniqueId(), 1);
-
-        Location start = player.getLocation().clone().subtract(0,3,0);
-
-        Vector direction = player.getLocation().getDirection().setY(0).normalize();
-        start.add(direction.multiply(3));
-        start.add(0,6,0);
-        direction.rotateAroundY(45);
-        start.setDirection(direction);
-
-        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
-        armorStand.setInvisible(true);
-        armorStand.setGravity(false);
-        armorStand.setCollidable(false);
-        armorStand.setInvulnerable(true);
-        armorStand.setMarker(true);
-
-        EntityEquipment entityEquipment = armorStand.getEquipment();
-
-        ItemStack basicItem = new ItemStack(Material.REDSTONE);
-        ItemMeta meta = basicItem.getItemMeta();
-        assert meta != null;
-        meta.setCustomModelData(3);
-        basicItem.setItemMeta(meta);
-        assert entityEquipment != null;
-        entityEquipment.setHelmet(basicItem);
-
-
-        Location loc = player.getLocation().clone().add(direction.multiply(1.25));
-
-        //player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, loc, 1, 0, 0, 0, 0);
-
-        BoundingBox hitBox = new BoundingBox(
-                loc.getX() - 3,
-                loc.getY() - 2,
-                loc.getZ() - 3,
-                loc.getX() + 3,
-                loc.getY() + 4,
-                loc.getZ() + 3
-        );
-
-        LivingEntity targetToHit = null;
-        LivingEntity target = targetManager.getPlayerTarget(player);
-        LivingEntity firstHit = null;
-
-        boolean targetHit = false;
-
-        double skillDamage = 1.5;
-        double level = profileManager.getAnyProfile(player).getStats().getLevel();
-        skillDamage = skillDamage + ((int)(level/10));
-
-        for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
-
-            if(entity == player){
-                continue;
-            }
-
-            if(entity.isDead()){
-                continue;
-            }
-
-            if(!(entity instanceof LivingEntity)){
-                continue;
-            }
-
-            if(entity instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) entity)){
-                    continue;
-                }
-            }
-
-            if(entity instanceof ArmorStand){
-                continue;
-            }
-
-            LivingEntity livingEntity = (LivingEntity) entity;
-
-            if(!pveChecker.pveLogic(livingEntity)){
-                continue;
-            }
-
-            if(firstHit == null){
-                firstHit = livingEntity;
-            }
-
-            if(target != null){
-                if(livingEntity == target){
-                    targetHit = true;
-                    targetToHit = livingEntity;
-                    break;
-                }
-            }
-        }
-
-        if(!targetHit && firstHit != null){
-            targetToHit = firstHit;
-        }
-
-        if(targetToHit != null){
-            targetManager.setPlayerTarget(player, targetToHit);
-            Location playerLoc = player.getLocation().clone();
-            Vector targetDir = targetToHit.getLocation().toVector().subtract(playerLoc.toVector());
-            playerLoc.setDirection(targetDir);
-            player.teleport(playerLoc);
-
-            boolean crit = damageCalculator.checkIfCrit(player, 0);
-            double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", skillDamage, crit);
-
-            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, player));
-            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, player);
-
-        }
-
-        new BukkitRunnable(){
-            double traveled = 0;
-            @Override
-            public void run(){
-
-                if(!player.isOnline()){
-                    cancelTask();
-                }
-
-                Vector direction = player.getLocation().getDirection().setY(0).normalize();
-
-                Location current = player.getLocation().clone();
-                current.add(direction.multiply(3));
-                current.add(0,2,0);
-                current.subtract(0,traveled,0);
-                direction.rotateAroundY(45);
-                current.setDirection(direction);
-                armorStand.teleport(current);
-
-                player.getWorld().spawnParticle(Particle.SPELL_WITCH, current.clone().add(0,1,0), 1, 0, 0, 0, 0);
-
-                if(traveled>=3){
-                    cancelTask();
-                }
-
-                traveled +=.3;
-
-            }
-
-            private void cancelTask(){
-                armorStand.remove();
-                this.cancel();
-
 
             }
 
         }.runTaskTimer(main, 0, 1);
 
     }
-
 
 }

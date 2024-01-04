@@ -125,8 +125,6 @@ public class Bloodsucker {
 
     private void execute(Player player){
 
-        //TODO:get my texture pack from other computer
-
         boolean blood = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("blood");
 
         LivingEntity target = targetManager.getPlayerTarget(player);

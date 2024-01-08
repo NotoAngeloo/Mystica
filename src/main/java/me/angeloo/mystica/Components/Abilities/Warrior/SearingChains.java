@@ -150,7 +150,9 @@ public class SearingChains {
         Vector crossSection = finalDirection.clone().crossProduct(new Vector(0,1,0)).normalize();
         double finalSkillDamage = skillDamage;
         Set<LivingEntity> hitBySkill = new HashSet<>();
+        Set<LivingEntity> validCCTargets = new HashSet<>();
         new BukkitRunnable(){
+            final Map<LivingEntity, Boolean> done = new HashMap<>();
             int count = 0;
             boolean hooked = false;
             boolean going = true;
@@ -312,6 +314,8 @@ public class SearingChains {
 
                             hitBySkill.add(livingEntity);
 
+                            aggroManager.setAsHighPriorityTarget(livingEntity, player);
+
                             boolean crit = damageCalculator.checkIfCrit(player, 0);
                             double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", finalSkillDamage, crit));
 
@@ -319,6 +323,7 @@ public class SearingChains {
                             if(entity instanceof Player){
                                 if(pvpManager.pvpLogic(player, (Player) entity)){
                                     changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                                    validCCTargets.add(livingEntity);
                                 }
                                 continue;
                             }
@@ -326,6 +331,9 @@ public class SearingChains {
                             if(pveChecker.pveLogic(livingEntity)){
                                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, player));
                                 changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                                if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
+                                    validCCTargets.add(livingEntity);
+                                }
                             }
 
                         }
@@ -333,6 +341,7 @@ public class SearingChains {
                         finalDirection.multiply(-1);
                         directionLeft.multiply(-1);
                         directionRight.multiply(-1);
+
 
                     }
 
@@ -385,36 +394,33 @@ public class SearingChains {
                         stand.teleport(sLoc);
                     }
 
-                    for(LivingEntity entity : hitBySkill){
+                    for(LivingEntity entity : validCCTargets){
 
-                        aggroManager.setAsHighPriorityTarget(entity, player);
-
-                        if(!profileManager.getAnyProfile(entity).getIsMovable()){
-                            hitBySkill.remove(entity);
-                            continue;
-                        }
                         double distance = start.distance(entity.getLocation());
 
-                        if(distance <=1){
-                            hitBySkill.remove(entity);
+                        if(distance <= 1){
+                            done.put(entity, true);
                             continue;
                         }
 
-                        Vector direction = entity.getLocation().toVector().subtract(start.toVector());
+                        if(done.getOrDefault(entity, false)){
+                            continue;
+                        }
+
+                        Vector direction = start.toVector().subtract(entity.getLocation().toVector());
 
                         double distanceThisTick = Math.min(distance, 1);
 
                         //do a wall check here
                         if(wallCheck(entity.getLocation(), direction, distanceThisTick)){
-                            hitBySkill.remove(entity);
                             continue;
                         }
 
                         if(targetStillValid(entity)){
 
-                            if(entity instanceof Player){
+                            /*if(entity instanceof Player){
                                 if(profileManager.getAnyProfile(target).getIfDead()){
-                                    return;
+                                    continue;
                                 }
                                 ((Player) entity).setWalkSpeed(.06f);
                                 new BukkitRunnable(){
@@ -423,10 +429,9 @@ public class SearingChains {
                                         ((Player) entity).setWalkSpeed(.2f);
                                     }
                                 }.runTaskLater(main, 60);
-                            }
+                            }*/
 
-                            entity.teleport(entity.getLocation().add(direction.normalize().multiply(distanceThisTick)).add(0,1,0));
-                            //entity.teleport(current.add(0,1,0));
+                            entity.teleport(entity.getLocation().add(direction.normalize().multiply(distanceThisTick)));
 
                         }
 
@@ -457,10 +462,10 @@ public class SearingChains {
             private boolean wallCheck(Location current, Vector direction, double distance){
 
                 Location newLoc = current.clone().add(direction.normalize().multiply(distance));
-
                 newLoc.add(0,1,0);
+                Location newLoc2 = newLoc.clone().add(0,1,0);
 
-                return !newLoc.getBlock().isPassable();
+                return !newLoc.getBlock().isPassable() || !newLoc2.getBlock().isPassable();
             }
 
         }.runTaskTimer(main, 0, 1);

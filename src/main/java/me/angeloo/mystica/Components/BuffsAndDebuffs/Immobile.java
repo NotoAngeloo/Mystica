@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.BuffsAndDebuffs;
 
 import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
+import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
@@ -15,13 +16,18 @@ public class Immobile {
 
     private final Mystica main;
     private final ProfileManager profileManager;
+    private final Stun stun;
+    private final Sleep sleep;
 
     private final Map<UUID, BukkitTask> removeImmobileTaskMap = new HashMap<>();
     private final Map<UUID, Boolean> immobileMap = new HashMap<>();
+    private final Map<UUID, BukkitTask> removeMap = new HashMap<>();
 
     public Immobile(Mystica main){
         this.main = main;
         profileManager = main.getProfileManager();
+        stun = new Stun(main, this);
+        sleep = new Sleep(main, this);
     }
 
     public void applyImmobile(LivingEntity entity, int time){
@@ -45,7 +51,7 @@ public class Immobile {
         }
 
         if(!(entity instanceof Player)){
-                entity.setAI(false);
+            entity.setAI(false);
         }
 
         if(time == 0){
@@ -60,11 +66,6 @@ public class Immobile {
                 if(count >= time){
                     this.cancel();
                     removeImmobile(entity);
-
-                    if(!(entity instanceof Player)){
-                        entity.setAI(true);
-                    }
-
                 }
 
                 count++;
@@ -79,17 +80,36 @@ public class Immobile {
     }
 
     public void removeImmobile(LivingEntity entity){
-        immobileMap.remove(entity.getUniqueId());
 
-        if(!(entity instanceof Player)){
-            entity.setAI(true);
+        if(removeMap.containsKey(entity.getUniqueId())){
+            removeMap.get(entity.getUniqueId()).cancel();
         }
 
-        if(entity instanceof Player){
-            Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
-        }
+        BukkitTask task = new BukkitRunnable(){
+            @Override
+            public void run(){
+
+                if(!stun.getIfStun(entity) && !sleep.getIfSleep(entity)){
+                    immobileMap.remove(entity.getUniqueId());
+                    if(!(entity instanceof Player)){
+                        entity.setAI(true);
+                    }
+
+                    if(entity instanceof Player){
+                        Player player = (Player) entity;
+                        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+                    }
+                    this.cancel();
+                }
+
+            }
+        }.runTaskTimer(main, 0, 20);
+
+        removeMap.put(entity.getUniqueId(), task);
 
     }
+
+    public Stun getStun(){return stun;}
+    public Sleep getSleep(){return sleep;}
 
 }

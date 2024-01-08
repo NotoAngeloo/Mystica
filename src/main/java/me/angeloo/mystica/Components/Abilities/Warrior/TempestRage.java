@@ -114,11 +114,14 @@ public class TempestRage {
         assert entityEquipment != null;
         entityEquipment.setHelmet(item);
 
-        double skillDamage = 5;
+        double skillDamage = 20;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));
-        double finalSkillDamage = skillDamage;
+
+        int ticks = 6;
+
+        double finalSkillDamage = skillDamage / ticks;
         new BukkitRunnable(){
             int timeRan = 0;
             Vector initialDirection;
@@ -128,6 +131,11 @@ public class TempestRage {
 
                 if(!player.isOnline()){
                     cancelTask();
+                }
+
+                if(profileManager.getAnyProfile(player).getIfDead()){
+                    cancelTask();
+                    return;
                 }
 
                 if (initialDirection == null) {
@@ -188,7 +196,7 @@ public class TempestRage {
                     }
                 }
 
-                if(timeRan >= 20*6){
+                if(timeRan >= 20*ticks){
                     cancelTask();
                 }
 

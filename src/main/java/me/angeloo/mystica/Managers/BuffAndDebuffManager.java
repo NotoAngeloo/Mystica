@@ -12,6 +12,7 @@ public class BuffAndDebuffManager {
     private final Hidden hidden;
     private final Immobile immobile;
     private final Sleep sleep;
+    private final Stun stun;
     private final GenericShield genericShield;
     private final SpeedUp speedUp;
     private final ShadowCrowsDebuff shadowCrowsDebuff;
@@ -23,12 +24,15 @@ public class BuffAndDebuffManager {
     private final Silence silence;
     private final WellCrit wellCrit;
     private final Modest modest;
+    private final KnockUp knockUp;
 
     public BuffAndDebuffManager(Mystica main){
         immune = new Immune(main);
         hidden = new Hidden(main);
         immobile = new Immobile(main);
-        sleep = new Sleep(main, immobile);
+        stun = immobile.getStun();
+        sleep = immobile.getSleep();
+        knockUp = new KnockUp(main);
         genericShield = new GenericShield();
         speedUp = new SpeedUp();
         shadowCrowsDebuff = new ShadowCrowsDebuff(main);
@@ -46,6 +50,7 @@ public class BuffAndDebuffManager {
     public Hidden getHidden(){return hidden;}
     public Immobile getImmobile() {return immobile;}
     public Sleep getSleep(){return sleep;}
+    public Stun getStun(){return stun;}
     public WindWallBuff getWindWallBuff() {
         return windWallBuff;
     }
@@ -61,12 +66,14 @@ public class BuffAndDebuffManager {
     public Silence getSilence(){return silence;}
     public WellCrit getWellCrit(){return wellCrit;}
     public Modest getModest(){return modest;}
+    public KnockUp getKnockUp(){return knockUp;}
 
     public void removeAllBuffsAndDebuffs(Player player){
         immune.removeImmune(player);
         hidden.unhidePlayer(player);
         immobile.removeImmobile(player);
         sleep.forceWakeUp(player);
+        stun.removeStun(player);
         speedUp.removeSpeedUp(player);
         genericShield.removeShields(player);
         windWallBuff.removeWindwall(player);
@@ -78,6 +85,7 @@ public class BuffAndDebuffManager {
         silence.removeSilence(player);
         wellCrit.removeBonus(player);
         modest.removeModest(player);
+        knockUp.removeKnockUp(player);
     }
 
     //attacker, defender
@@ -109,10 +117,14 @@ public class BuffAndDebuffManager {
 
     public boolean getIfCantAct(LivingEntity entity){
         //use a bunch of || inbetween
-        return sleep.getIfSleep(entity);
+        return sleep.getIfSleep(entity)
+                || stun.getIfStun(entity)
+                || knockUp.getIfKnockUp(entity);
     }
 
     public boolean getIfInterrupt(LivingEntity entity){
-        return getIfCantAct(entity) && getSilence().getSilence(entity);
+        return getIfCantAct(entity)
+                || silence.getSilence(entity)
+                || knockUp.getIfKnockUp(entity);
     }
 }

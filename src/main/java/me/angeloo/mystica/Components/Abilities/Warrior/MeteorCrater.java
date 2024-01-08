@@ -240,12 +240,22 @@ public class MeteorCrater {
                         LivingEntity livingEntity = (LivingEntity) entity;
 
                         boolean crit = damageCalculator.checkIfCrit(player, 0);
-                        double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", finalSkillDamage, crit));
+
+                        double healthPercent = profileManager.getAnyProfile(livingEntity).getCurrentHealth() / (double) profileManager.getAnyProfile(livingEntity).getTotalHealth();
+
+                        double bonus = 1;
+
+                        if(healthPercent>=.7){
+                            bonus = 1.3;
+                        }
+
+                        double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", finalSkillDamage * bonus, crit));
 
                         //pvp logic
                         if(entity instanceof Player){
                             if(pvpManager.pvpLogic(player, (Player) entity)){
                                 changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                                stunEntity(target);
                             }
                             continue;
                         }
@@ -253,6 +263,7 @@ public class MeteorCrater {
                         if(pveChecker.pveLogic(livingEntity)){
                             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, player));
                             changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                            stunEntity(target);
                         }
 
                     }
@@ -265,6 +276,16 @@ public class MeteorCrater {
                 if(count>=20*5){
                     cancelTask();
                 }
+            }
+
+            private void stunEntity(LivingEntity target){
+
+                if(!profileManager.getAnyProfile(target).getIsMovable()){
+                    return;
+                }
+
+                //should be stun instead
+                buffAndDebuffManager.getStun().applyStun(target, 20*3);
             }
 
             private void cancelTask(){

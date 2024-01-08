@@ -1,7 +1,6 @@
 package me.angeloo.mystica.Components.BuffsAndDebuffs;
 
 import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
-import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
@@ -13,26 +12,26 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class Sleep {
+public class Stun {
 
     private final Mystica main;
     private final Immobile immobile;
 
-    private final Map<UUID, BukkitTask> removeSleepTaskMap = new HashMap<>();
-    private final Map<UUID, Boolean> sleepMap = new HashMap<>();
+    private final Map<UUID, BukkitTask> removeStunTaskMap = new HashMap<>();
+    private final Map<UUID, Boolean> stunMap = new HashMap<>();
 
-    public  Sleep(Mystica main, Immobile immobile){
+    public  Stun(Mystica main, Immobile immobile){
         this.main = main;
         this.immobile = immobile;
     }
 
-    public void applySleep(LivingEntity entity, int time){
+    public void applyStun(LivingEntity entity, int time){
         immobile.applyImmobile(entity, time);
 
-        sleepMap.put(entity.getUniqueId(), true);
+        stunMap.put(entity.getUniqueId(), true);
 
-        if(removeSleepTaskMap.containsKey(entity.getUniqueId())){
-            removeSleepTaskMap.get(entity.getUniqueId()).cancel();
+        if(removeStunTaskMap.containsKey(entity.getUniqueId())){
+            removeStunTaskMap.get(entity.getUniqueId()).cancel();
         }
 
         if(entity instanceof Player){
@@ -51,31 +50,28 @@ public class Sleep {
 
                 if(count >= time){
                     this.cancel();
-                    removeSleep(entity);
+                    removeStun(entity);
                 }
 
                 count++;
             }
         }.runTaskTimer(main, 0, 1);
 
-        removeSleepTaskMap.put(entity.getUniqueId(), task);
+        removeStunTaskMap.put(entity.getUniqueId(), task);
     }
 
 
-    public boolean getIfSleep(LivingEntity entity){
-        return sleepMap.getOrDefault(entity.getUniqueId(), false);
+    public boolean getIfStun(LivingEntity entity){
+        return stunMap.getOrDefault(entity.getUniqueId(), false);
     }
 
-    public void forceWakeUp(LivingEntity entity){
-        removeSleep(entity);
-        immobile.removeImmobile(entity);
-    }
 
-    public void removeSleep(LivingEntity entity){
-        sleepMap.remove(entity.getUniqueId());
+    public void removeStun(LivingEntity entity){
+        stunMap.remove(entity.getUniqueId());
         if(entity instanceof Player){
             Player player = (Player) entity;
             Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
         }
     }
+
 }

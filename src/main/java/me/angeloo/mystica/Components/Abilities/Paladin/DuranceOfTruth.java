@@ -249,8 +249,8 @@ public class DuranceOfTruth {
                         //pvp logic
                         if(entity instanceof Player){
                             if(pvpManager.pvpLogic(player, (Player) entity)){
-                                hitByThisTick.add(player);
-                                affected.add(player);
+                                hitByThisTick.add(livingEntity);
+                                affected.add(livingEntity);
                             }
                             continue;
                         }

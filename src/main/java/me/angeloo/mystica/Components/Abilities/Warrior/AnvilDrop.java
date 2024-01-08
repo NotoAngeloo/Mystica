@@ -190,10 +190,16 @@ public class AnvilDrop {
 
     private void knockUp(Player player){
 
+        boolean executioner = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("executioner");
+
         double skillDamage = 5;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));
+
+        if(executioner){
+            skillDamage = skillLevel * 2;
+        }
 
 
         BoundingBox hitBox = new BoundingBox(
@@ -275,7 +281,12 @@ public class AnvilDrop {
             playerLoc.setDirection(targetDir);
             player.teleport(playerLoc);
 
-            boolean crit = damageCalculator.checkIfCrit(player, 0);
+            int bonus = 0;
+            if(executioner){
+                bonus = 15;
+            }
+
+            boolean crit = damageCalculator.checkIfCrit(player, bonus);
             double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", skillDamage, crit);
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, player));

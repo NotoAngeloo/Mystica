@@ -25,6 +25,7 @@ public class BuffAndDebuffManager {
     private final WellCrit wellCrit;
     private final Modest modest;
     private final KnockUp knockUp;
+    private final FlamingSigilBuff flamingSigilBuff;
 
     public BuffAndDebuffManager(Mystica main){
         immune = new Immune(main);
@@ -44,6 +45,7 @@ public class BuffAndDebuffManager {
         silence = new Silence(main);
         wellCrit = new WellCrit();
         modest = new Modest(main);
+        flamingSigilBuff = new FlamingSigilBuff(main);
     }
 
     public Immune getImmune(){return immune;}
@@ -67,6 +69,7 @@ public class BuffAndDebuffManager {
     public WellCrit getWellCrit(){return wellCrit;}
     public Modest getModest(){return modest;}
     public KnockUp getKnockUp(){return knockUp;}
+    public FlamingSigilBuff getFlamingSigilBuff(){return flamingSigilBuff;}
 
     public void removeAllBuffsAndDebuffs(Player player){
         immune.removeImmune(player);
@@ -86,6 +89,8 @@ public class BuffAndDebuffManager {
         wellCrit.removeBonus(player);
         modest.removeModest(player);
         knockUp.removeKnockUp(player);
+        flamingSigilBuff.removeAttackBuff(player);
+        flamingSigilBuff.removeHealthBuff(player);
     }
 
     //attacker, defender
@@ -114,6 +119,13 @@ public class BuffAndDebuffManager {
         return wellCrit.getWellCrit(entity);
     }
 
+    public double getAttackBuffAmount(LivingEntity entity){
+        return flamingSigilBuff.getAttackMultiplier(entity);
+    }
+
+    public double getHealthBuffAmount(LivingEntity entity){
+        return flamingSigilBuff.getHealthMultiplier(entity);
+    }
 
     public boolean getIfCantAct(LivingEntity entity){
         //use a bunch of || inbetween

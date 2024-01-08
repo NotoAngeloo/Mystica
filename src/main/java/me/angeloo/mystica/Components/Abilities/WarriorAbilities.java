@@ -16,6 +16,7 @@ public class WarriorAbilities {
     private final TempestRage tempestRage;
     private final MeteorCrater meteorCrater;
     private final AnvilDrop anvilDrop;
+    private final FlamingSigil flamingSigil;
 
     public WarriorAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
@@ -26,6 +27,7 @@ public class WarriorAbilities {
         tempestRage = new TempestRage(main, manager);
         meteorCrater = new MeteorCrater(main, manager);
         anvilDrop = new AnvilDrop(main, manager);
+        flamingSigil = new FlamingSigil(main, manager);
     }
 
     public void useWarriorAbility(Player player, int abilityNumber){
@@ -52,6 +54,7 @@ public class WarriorAbilities {
                 return;
             }
             case 6:{
+                flamingSigil.use(player);
                 return;
             }
             case 7:{
@@ -95,7 +98,7 @@ public class WarriorAbilities {
             case 5:
                 return anvilDrop.getCooldown(player);
             case 6:
-
+                return flamingSigil.getCooldown(player);
             case 7:
 
             case 8:

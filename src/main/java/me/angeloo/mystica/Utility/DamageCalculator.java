@@ -33,7 +33,7 @@ public class DamageCalculator {
 
         int random = (int) (Math.random() * 100) + 1;
 
-        bonus = bonus+ buffAndDebuffManager.getCritBuffAmount(player);
+        bonus = bonus + buffAndDebuffManager.getCritBuffAmount(player);
 
         if(random <= (playerProfile.getTotalCrit()) + bonus){
             buffAndDebuffManager.getWellCrit().removeBonus(player);
@@ -61,11 +61,13 @@ public class DamageCalculator {
         double attack;
         double defence;
 
+        double attackBonus = buffAndDebuffManager.getAttackBuffAmount(player);
+
         if(entity instanceof Player){
 
             if(type.equalsIgnoreCase("Physical")){
 
-                attack = playerProfile.getTotalAttack();
+                attack = playerProfile.getTotalAttack() + attackBonus;
                 defence = enemyProfile.getTotalDefense();
 
                 damage = (damage * multiplierForCrit)
@@ -87,7 +89,7 @@ public class DamageCalculator {
 
             if(type.equalsIgnoreCase("Physical")){
 
-                attack = playerProfile.getTotalAttack();
+                attack = playerProfile.getTotalAttack() + attackBonus;
                 defence = enemyProfile.getStats().getDefense();
 
                 damage = (damage * multiplierForCrit)
@@ -134,6 +136,8 @@ public class DamageCalculator {
         double attack;
         double defence;
 
+        double attackBonus = buffAndDebuffManager.getAttackBuffAmount(entity);
+
         double multiplierForCrit = 1;
         int random = (int) (Math.random() * 100) + 1;
 
@@ -144,7 +148,7 @@ public class DamageCalculator {
 
         if(type.equalsIgnoreCase("Physical")){
 
-            attack = enemyProfile.getStats().getAttack();
+            attack = enemyProfile.getStats().getAttack() + attackBonus;
             defence = playerProfile.getTotalDefense();
 
             damage = (damage * multiplierForCrit)

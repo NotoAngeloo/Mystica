@@ -155,7 +155,7 @@ public class OrderShield {
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));
 
-        double tenPercent = profileManager.getAnyProfile(player).getTotalHealth() * .1;
+        double tenPercent = (profileManager.getAnyProfile(player).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(player)) * .1;
 
         changeResourceHandler.subtractHealthFromEntity(player, tenPercent, player);
         healOverTime(player, tenPercent/5);

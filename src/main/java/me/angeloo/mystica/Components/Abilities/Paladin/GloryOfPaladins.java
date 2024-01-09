@@ -186,7 +186,7 @@ public class GloryOfPaladins {
 
         changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
 
-        double healAmount = profileManager.getAnyProfile(player).getTotalHealth() * .05;
+        double healAmount = (profileManager.getAnyProfile(player).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(player)) * .05;
         //chance to restore
         int random = (int) (Math.random() * 100) + 1;
         if(random >= 25){

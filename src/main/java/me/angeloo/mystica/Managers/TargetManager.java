@@ -180,7 +180,7 @@ public class TargetManager {
         }
 
 
-        double maxHealth =  profileManager.getAnyProfile(entity).getTotalHealth();
+        double maxHealth =  profileManager.getAnyProfile(entity).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(entity);
         double currentHealth = profileManager.getAnyProfile(entity).getCurrentHealth();
 
         bossBar.setProgress(currentHealth/maxHealth);

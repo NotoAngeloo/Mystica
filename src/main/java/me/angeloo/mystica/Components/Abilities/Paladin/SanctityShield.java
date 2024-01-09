@@ -74,7 +74,7 @@ public class SanctityShield {
 
     private void execute(Player player){
 
-        double maxHealth = profileManager.getAnyProfile(player).getTotalHealth();
+        double maxHealth = profileManager.getAnyProfile(player).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(player);
         double level = profileManager.getAnyProfile(player).getStats().getLevel();
         double shield = (level / maxHealth) * 100;
         double healAmount = maxHealth * (level/100);

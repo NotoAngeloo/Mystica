@@ -181,7 +181,7 @@ public class MercifulHealing {
 
                 double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level() +
                         profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
-                double healAmount = profileManager.getAnyProfile(target).getTotalHealth() * .1;
+                double healAmount = (profileManager.getAnyProfile(target).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(target)) * .1;
                 healAmount = healAmount + profileManager.getAnyProfile(player).getTotalAttack() * .5;
                 healAmount = healAmount + ((int)(skillLevel/10));
 

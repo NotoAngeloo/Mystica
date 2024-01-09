@@ -116,7 +116,7 @@ public class ChangeResourceHandler {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        double actualMaxHealth = playerProfile.getTotalHealth();
+        double actualMaxHealth = playerProfile.getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player);
 
         //this changes bar
         double actualCurrentHealth = profileManager.getAnyProfile(player).getCurrentHealth();
@@ -204,7 +204,7 @@ public class ChangeResourceHandler {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        double actualMaxHealth = playerProfile.getTotalHealth();
+        double actualMaxHealth = playerProfile.getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player);
 
         //this changes bar
         double actualCurrentHealth = profileManager.getAnyProfile(player).getCurrentHealth();
@@ -266,7 +266,7 @@ public class ChangeResourceHandler {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        double actualMaxHealth = playerProfile.getTotalHealth();
+        double actualMaxHealth = playerProfile.getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player);
         profileManager.getAnyProfile(player).setCurrentHealth(actualMaxHealth);
         player.setHealth(20);
     }

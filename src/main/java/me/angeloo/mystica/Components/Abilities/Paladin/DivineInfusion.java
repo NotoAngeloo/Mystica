@@ -242,7 +242,7 @@ public class DivineInfusion {
 
                             hitBySkill.add(thisPlayer);
 
-                            double amount = profileManager.getAnyProfile(thisPlayer).getTotalHealth() * .05;
+                            double amount = (profileManager.getAnyProfile(thisPlayer).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(thisPlayer)) * .05;
                             buffAndDebuffManager.getSpeedUp().applySpeedUp(thisPlayer, .3f);
                             buffAndDebuffManager.getGenericShield().applyOrAddShield(thisPlayer,amount);
                             removeBuffsLater(thisPlayer, amount);

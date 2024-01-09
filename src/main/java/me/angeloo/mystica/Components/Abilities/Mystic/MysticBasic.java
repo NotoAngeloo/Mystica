@@ -447,7 +447,7 @@ public class MysticBasic {
         }
         else{
 
-            double totalTargetHealth = profileManager.getAnyProfile(target).getTotalHealth();
+            double totalTargetHealth = profileManager.getAnyProfile(target).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(target);
             double yourMagic = profileManager.getAnyProfile(player).getTotalMagic();
             double level = profileManager.getAnyProfile(player).getStats().getLevel();
             boolean crit = damageCalculator.checkIfCrit(player, 0);

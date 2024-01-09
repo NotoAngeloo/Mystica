@@ -142,7 +142,7 @@ public class PaladinBasic {
 
     private void healTarget(Player player, Player target){
 
-        double totalTargetHealth = profileManager.getAnyProfile(target).getTotalHealth();
+        double totalTargetHealth = profileManager.getAnyProfile(target).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(target);
         double yourAttack = profileManager.getAnyProfile(player).getTotalAttack();
         double level = profileManager.getAnyProfile(player).getStats().getLevel();
         boolean crit = damageCalculator.checkIfCrit(player, 0);

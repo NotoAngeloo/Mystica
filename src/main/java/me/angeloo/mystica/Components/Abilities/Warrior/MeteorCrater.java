@@ -241,7 +241,7 @@ public class MeteorCrater {
 
                         boolean crit = damageCalculator.checkIfCrit(player, 0);
 
-                        double healthPercent = profileManager.getAnyProfile(livingEntity).getCurrentHealth() / (double) profileManager.getAnyProfile(livingEntity).getTotalHealth();
+                        double healthPercent = profileManager.getAnyProfile(livingEntity).getCurrentHealth() / (profileManager.getAnyProfile(livingEntity).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(livingEntity));
 
                         double bonus = 1;
 

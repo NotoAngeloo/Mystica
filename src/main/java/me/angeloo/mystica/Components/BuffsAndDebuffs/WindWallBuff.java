@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.BuffsAndDebuffs;
 
+import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.entity.LivingEntity;
@@ -11,18 +12,20 @@ import java.util.UUID;
 public class WindWallBuff {
 
     private final ProfileManager profileManager;
+    private final BuffAndDebuffManager buffAndDebuffManager;
 
     private final Map<UUID, Double> windWallMap = new HashMap<>();
     private final Map<UUID, Double> overflowDamage = new HashMap<>();
 
-    public WindWallBuff(Mystica main){
+    public WindWallBuff(Mystica main, BuffAndDebuffManager manager){
         profileManager = main.getProfileManager();
+        buffAndDebuffManager = manager;
     }
 
 
     public void createAWindWall(LivingEntity entity){
 
-        double hp = profileManager.getAnyProfile(entity).getTotalHealth();
+        double hp = profileManager.getAnyProfile(entity).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(entity);
 
         hp = hp/4;
 

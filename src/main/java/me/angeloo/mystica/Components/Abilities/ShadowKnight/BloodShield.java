@@ -76,7 +76,7 @@ public class BloodShield {
 
     private void execute(Player player){
 
-        double maxHealth = profileManager.getAnyProfile(player).getTotalHealth();
+        double maxHealth = profileManager.getAnyProfile(player).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(player);
         double currentHealth = profileManager.getAnyProfile(player).getCurrentHealth();
         double missing = maxHealth-currentHealth;
 

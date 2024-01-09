@@ -215,7 +215,7 @@ public class DivineGuidance {
         List<Player> affected = validPlayers.subList(0, Math.min(3, validPlayers.size()));
 
         for(Player thisPlayer : affected){
-            double totalTargetHealth = profileManager.getAnyProfile(thisPlayer).getTotalHealth();
+            double totalTargetHealth = profileManager.getAnyProfile(thisPlayer).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(thisPlayer);
             double yourAttack = profileManager.getAnyProfile(player).getTotalAttack();
             boolean crit = damageCalculator.checkIfCrit(player, 0);
 

@@ -230,7 +230,7 @@ public class SoulReap {
 
                     skillDamage = skillDamage + ((int)(skillLevel/10));
 
-                    double targetHealthPercent = profileManager.getAnyProfile(target).getCurrentHealth() / (double) profileManager.getAnyProfile(target).getTotalHealth();
+                    double targetHealthPercent = profileManager.getAnyProfile(target).getCurrentHealth() / (profileManager.getAnyProfile(target).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(target));
 
                     if(targetHealthPercent<=.3){
                         skillDamage = skillDamage * .3;

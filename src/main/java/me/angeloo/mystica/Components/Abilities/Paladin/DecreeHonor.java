@@ -198,7 +198,7 @@ public class DecreeHonor {
 
                     if(!pvpManager.pvpLogic(player, (Player) target)){
 
-                        double healAmount = profileManager.getAnyProfile(target).getTotalHealth() * .05;
+                        double healAmount = (profileManager.getAnyProfile(target).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(target)) * .05;
                         healAmount = healAmount + profileManager.getAnyProfile(player).getTotalAttack() * .2;
                         healAmount = healAmount + ((int)(skillLevel/10));
 

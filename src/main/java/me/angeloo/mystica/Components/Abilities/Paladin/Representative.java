@@ -160,7 +160,7 @@ public class Representative {
                             }
 
                             boolean crit = damageCalculator.checkIfCrit(player, 0);
-                            double amount = profileManager.getAnyProfile(hitPlayer).getTotalHealth() * .25;
+                            double amount = (profileManager.getAnyProfile(hitPlayer).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(hitPlayer)) * .25;
                             amount = amount + level;
                             amount = amount + getAdditionalBonusFromBuff(player);
 

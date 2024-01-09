@@ -129,7 +129,7 @@ public class ReigningSword {
 
         skillDamage = skillDamage + ((int)(skillLevel/10));
 
-        double shield = profileManager.getAnyProfile(player).getTotalHealth() * 0.1;
+        double shield = (profileManager.getAnyProfile(player).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(player)) * 0.1;
 
         if(templar){
             shield = shield * 1.2;

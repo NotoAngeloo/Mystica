@@ -162,14 +162,14 @@ public class ElementalMatrix {
                     continue;
                 }
 
-                double maxHp = profileManager.getAnyProfile(partyMember).getTotalHealth();
+                double maxHp = profileManager.getAnyProfile(partyMember).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(partyMember);
 
                 changeResourceHandler.addHealthToEntity(partyMember, maxHp * .05, player);
 
             }
         }
 
-        double maxHp = profileManager.getAnyProfile(player).getTotalHealth();
+        double maxHp = profileManager.getAnyProfile(player).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player);
         changeResourceHandler.addHealthToEntity(player, maxHp * .05, player);
 
         double maxMp = profileManager.getAnyProfile(player).getTotalMana();

@@ -26,8 +26,11 @@ public class BuffAndDebuffManager {
     private final Modest modest;
     private final KnockUp knockUp;
     private final FlamingSigilBuff flamingSigilBuff;
+    private final BurningBlessingBuff burningBlessingBuff;
 
     public BuffAndDebuffManager(Mystica main){
+        flamingSigilBuff = new FlamingSigilBuff(main);
+        burningBlessingBuff = new BurningBlessingBuff(main);
         immune = new Immune(main);
         hidden = new Hidden(main);
         immobile = new Immobile(main);
@@ -37,7 +40,7 @@ public class BuffAndDebuffManager {
         genericShield = new GenericShield();
         speedUp = new SpeedUp();
         shadowCrowsDebuff = new ShadowCrowsDebuff(main);
-        windWallBuff = new WindWallBuff(main);
+        windWallBuff = new WindWallBuff(main, this);
         conjuringForceBuff = new ConjuringForceBuff();
         wildRoarBuff = new WildRoarBuff(main);
         haste = new Haste(main);
@@ -45,7 +48,6 @@ public class BuffAndDebuffManager {
         silence = new Silence(main);
         wellCrit = new WellCrit();
         modest = new Modest(main);
-        flamingSigilBuff = new FlamingSigilBuff(main);
     }
 
     public Immune getImmune(){return immune;}
@@ -70,8 +72,12 @@ public class BuffAndDebuffManager {
     public Modest getModest(){return modest;}
     public KnockUp getKnockUp(){return knockUp;}
     public FlamingSigilBuff getFlamingSigilBuff(){return flamingSigilBuff;}
+    public BurningBlessingBuff getBurningBlessingBuff(){return burningBlessingBuff;}
 
     public void removeAllBuffsAndDebuffs(Player player){
+        flamingSigilBuff.removeAttackBuff(player);
+        flamingSigilBuff.removeHealthBuff(player);
+        burningBlessingBuff.removeHealthBuff(player);
         immune.removeImmune(player);
         hidden.unhidePlayer(player);
         immobile.removeImmobile(player);
@@ -89,8 +95,6 @@ public class BuffAndDebuffManager {
         wellCrit.removeBonus(player);
         modest.removeModest(player);
         knockUp.removeKnockUp(player);
-        flamingSigilBuff.removeAttackBuff(player);
-        flamingSigilBuff.removeHealthBuff(player);
     }
 
     //attacker, defender
@@ -124,7 +128,8 @@ public class BuffAndDebuffManager {
     }
 
     public double getHealthBuffAmount(LivingEntity entity){
-        return flamingSigilBuff.getHealthMultiplier(entity);
+        return flamingSigilBuff.getHealthMultiplier(entity)
+                + burningBlessingBuff.getHealthMultiplier(entity);
     }
 
     public boolean getIfCantAct(LivingEntity entity){

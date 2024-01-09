@@ -30,9 +30,7 @@ public class FlamingSigil {
     private final CombatManager combatManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
-    private final DamageCalculator damageCalculator;
     private final PvpManager pvpManager;
-    private final PveChecker pveChecker;
     private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -43,9 +41,7 @@ public class FlamingSigil {
         combatManager = manager.getCombatManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
-        pveChecker = main.getPveChecker();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 

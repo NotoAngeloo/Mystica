@@ -156,10 +156,10 @@ public class Bloodsucker {
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));
 
-        double healAmount = profileManager.getAnyProfile(player).getTotalHealth() * .1;
+        double healAmount = (profileManager.getAnyProfile(player).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(player)) * .1;
 
         if(blood){
-            healAmount =  healAmount + profileManager.getAnyProfile(player).getTotalHealth() * .3;
+            healAmount =  healAmount + (profileManager.getAnyProfile(player).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player)) * .3;
             bloodShield.increaseDuration(player);
         }
 

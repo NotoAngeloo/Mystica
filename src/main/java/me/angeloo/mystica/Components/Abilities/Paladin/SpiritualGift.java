@@ -171,7 +171,7 @@ public class SpiritualGift {
                     return;
                 }
 
-                double healAmount = profileManager.getAnyProfile(target).getTotalHealth() * .05;
+                double healAmount = (profileManager.getAnyProfile(target).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(target)) * .05;
                 healAmount = healAmount + profileManager.getAnyProfile(player).getTotalAttack() * .2;
                 healAmount = healAmount * skillLevel;
 

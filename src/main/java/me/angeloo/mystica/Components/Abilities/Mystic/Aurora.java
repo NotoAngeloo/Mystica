@@ -121,7 +121,7 @@ public class Aurora {
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
 
-        double shieldAmount = (profileManager.getAnyProfile(player).getTotalHealth() + skillLevel) * .5;
+        double shieldAmount = (profileManager.getAnyProfile(player).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player) + skillLevel) * .5;
 
         new BukkitRunnable(){
             final Set<LivingEntity> hitBySkill = new HashSet<>();
@@ -182,7 +182,7 @@ public class Aurora {
                         }
 
                         if(shepard){
-                            double healAmount = (profileManager.getAnyProfile(thisPlayer).getTotalHealth() + skillLevel) * .2;
+                            double healAmount = (profileManager.getAnyProfile(thisPlayer).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(thisPlayer) + skillLevel) * .2;
 
                             if(damageCalculator.checkIfCrit(player, 0)){
                                 healAmount = healAmount * 1.5;

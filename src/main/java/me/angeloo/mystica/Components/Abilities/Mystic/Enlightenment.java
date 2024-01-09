@@ -113,7 +113,7 @@ public class Enlightenment {
                 continue;
             }
 
-            double totalTargetHealth = profileManager.getAnyProfile(healedPlayer).getTotalHealth();
+            double totalTargetHealth = profileManager.getAnyProfile(healedPlayer).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(healedPlayer);
             double yourMagic = profileManager.getAnyProfile(player).getTotalMagic();
             boolean crit = damageCalculator.checkIfCrit(player, 0);
 

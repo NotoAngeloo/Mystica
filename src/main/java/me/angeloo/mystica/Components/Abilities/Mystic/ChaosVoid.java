@@ -88,7 +88,7 @@ public class ChaosVoid {
         abilityManager.setCasting(player, true);
         buffAndDebuffManager.getImmune().applyImmune(player, castTime);
 
-        double healAmount = (double) profileManager.getAnyProfile(player).getTotalHealth() / 10;
+        double healAmount = (profileManager.getAnyProfile(player).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player)) / 10;
 
         buffAndDebuffManager.getHidden().hidePlayer(player, false);
         new BukkitRunnable(){

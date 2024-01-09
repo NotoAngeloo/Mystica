@@ -122,7 +122,7 @@ public class ArcaneShield {
         int skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
 
-        double fivePercent = (double) profileManager.getAnyProfile(target).getTotalHealth() / 20;
+        double fivePercent = (profileManager.getAnyProfile(target).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(target)) / 20;
         double shieldAmount = fivePercent + (((double) profileManager.getAnyProfile(player).getTotalMagic() / 3) + skillLevel);
 
         buffAndDebuffManager.getGenericShield().applyOrAddShield(target, shieldAmount);
@@ -143,7 +143,7 @@ public class ArcaneShield {
 
         if(shepard){
             //task to heal them for as long as they have a shield
-            double thirtyPercent = (double) profileManager.getAnyProfile(target).getTotalHealth() * .3;
+            double thirtyPercent = (profileManager.getAnyProfile(target).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(target)) * .3;
 
             if(shieldTaskMap.containsKey(target.getUniqueId())){
                 shieldTaskMap.get(target.getUniqueId()).cancel();

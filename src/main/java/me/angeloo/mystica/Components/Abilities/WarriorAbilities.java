@@ -19,6 +19,8 @@ public class WarriorAbilities {
     private final FlamingSigil flamingSigil;
     private final BurningBlessing burningBlessing;
 
+    private final GladiatorHeart gladiatorHeart;
+
     public WarriorAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
 
@@ -30,6 +32,7 @@ public class WarriorAbilities {
         anvilDrop = new AnvilDrop(main, manager);
         flamingSigil = new FlamingSigil(main, manager);
         burningBlessing = new BurningBlessing(main, manager);
+        gladiatorHeart = new GladiatorHeart(main, manager);
     }
 
     public void useWarriorAbility(Player player, int abilityNumber){
@@ -75,6 +78,7 @@ public class WarriorAbilities {
 
         switch (subclass.toLowerCase()){
             case "gladiator":{
+                gladiatorHeart.use(player);
                 return;
             }
             case "executioner":{
@@ -116,7 +120,7 @@ public class WarriorAbilities {
 
         switch (subclass.toLowerCase()){
             case "gladiator":
-
+                return gladiatorHeart.getCooldown(player);
             case "executioner":
 
 

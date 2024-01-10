@@ -79,6 +79,9 @@ public class StatusDisplayer {
                 case "paladin":{
                     color = new Color(207, 214, 61);
                     break;
+                }case "warrior":{
+                    color = new Color(214, 126, 61);
+                    break;
                 }
             }
 

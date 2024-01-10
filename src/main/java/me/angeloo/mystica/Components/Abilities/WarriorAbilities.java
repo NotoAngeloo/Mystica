@@ -18,8 +18,9 @@ public class WarriorAbilities {
     private final AnvilDrop anvilDrop;
     private final FlamingSigil flamingSigil;
     private final BurningBlessing burningBlessing;
-
+    private final MagmaSpikes magmaSpikes;
     private final GladiatorHeart gladiatorHeart;
+    private final DeathGaze deathGaze;
 
     public WarriorAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
@@ -32,7 +33,9 @@ public class WarriorAbilities {
         anvilDrop = new AnvilDrop(main, manager);
         flamingSigil = new FlamingSigil(main, manager);
         burningBlessing = new BurningBlessing(main, manager);
+        magmaSpikes = new MagmaSpikes(main, manager);
         gladiatorHeart = new GladiatorHeart(main, manager);
+        deathGaze = new DeathGaze(main, manager);
     }
 
     public void useWarriorAbility(Player player, int abilityNumber){
@@ -63,6 +66,7 @@ public class WarriorAbilities {
                 return;
             }
             case 7:{
+                magmaSpikes.use(player);
                 return;
             }
             case 8:{
@@ -82,6 +86,7 @@ public class WarriorAbilities {
                 return;
             }
             case "executioner":{
+                deathGaze.use(player);
                 return;
             }
         }
@@ -107,7 +112,7 @@ public class WarriorAbilities {
             case 6:
                 return flamingSigil.getCooldown(player);
             case 7:
-
+                return magmaSpikes.getCooldown(player);
             case 8:
                 return burningBlessing.getCooldown(player);
         }
@@ -122,7 +127,7 @@ public class WarriorAbilities {
             case "gladiator":
                 return gladiatorHeart.getCooldown(player);
             case "executioner":
-
+                return deathGaze.getCooldown(player);
 
         }
 

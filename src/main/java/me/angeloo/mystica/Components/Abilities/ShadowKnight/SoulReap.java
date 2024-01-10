@@ -33,6 +33,7 @@ public class SoulReap {
     private final Mystica main;
 
     private final ProfileManager profileManager;
+    private final AbilityManager abilityManager;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
@@ -51,6 +52,7 @@ public class SoulReap {
     public SoulReap(Mystica main, AbilityManager manager, ShadowKnightAbilities shadowKnightAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
+        abilityManager = manager;
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
@@ -168,6 +170,7 @@ public class SoulReap {
         assert entityEquipment != null;
         entityEquipment.setItemInOffHand(item);
 
+        abilityManager.setCasting(player, true);
         new BukkitRunnable(){
             final Location hitBoxCenter = target.getLocation().clone();
             final Location center = target.getLocation().clone();
@@ -250,6 +253,9 @@ public class SoulReap {
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
                 }
 
+                double percent = ((double) angle / -1500) * 100;
+                abilityManager.setCastBar(player, percent);
+
                 height+=.001;
                 angle-=60;
             }
@@ -310,6 +316,8 @@ public class SoulReap {
             private void cancelTask() {
                 this.cancel();
                 armorStand.remove();
+                abilityManager.setCasting(player, false);
+                abilityManager.setCastBar(player, 0);
                 buffAndDebuffManager.getImmobile().removeImmobile(player);
             }
 

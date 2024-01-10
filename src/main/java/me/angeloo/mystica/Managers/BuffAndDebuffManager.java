@@ -8,6 +8,8 @@ import org.bukkit.entity.Player;
 
 public class BuffAndDebuffManager {
 
+    private final ProfileManager profileManager;
+
     private final Immune immune;
     private final Hidden hidden;
     private final Immobile immobile;
@@ -29,6 +31,8 @@ public class BuffAndDebuffManager {
     private final BurningBlessingBuff burningBlessingBuff;
 
     public BuffAndDebuffManager(Mystica main){
+        profileManager = main.getProfileManager();
+
         flamingSigilBuff = new FlamingSigilBuff(main);
         burningBlessingBuff = new BurningBlessingBuff(main);
         immune = new Immune(main);
@@ -140,7 +144,9 @@ public class BuffAndDebuffManager {
     }
 
     public boolean getIfInterrupt(LivingEntity entity){
-        return getIfCantAct(entity)
+        return
+                profileManager.getAnyProfile(entity).getIfDead()
+                || getIfCantAct(entity)
                 || silence.getSilence(entity)
                 || knockUp.getIfKnockUp(entity);
     }

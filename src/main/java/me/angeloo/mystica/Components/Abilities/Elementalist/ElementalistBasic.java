@@ -447,7 +447,6 @@ public class ElementalistBasic {
                 if(ran >=20){
                     cancelTask();
 
-                    double level = profileManager.getAnyProfile(player).getStats().getLevel();
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
                     double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);

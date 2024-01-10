@@ -285,7 +285,7 @@ public class MeteorCrater {
                 }
 
                 //should be stun instead
-                buffAndDebuffManager.getStun().applyStun(target, 20*3);
+                buffAndDebuffManager.getStun().applyStun(target, 20);
             }
 
             private void cancelTask(){

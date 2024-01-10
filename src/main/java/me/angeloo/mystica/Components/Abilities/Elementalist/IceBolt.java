@@ -137,7 +137,7 @@ public class IceBolt {
         Location start = player.getLocation();
         start.subtract(0, 1, 0);
 
-        ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);

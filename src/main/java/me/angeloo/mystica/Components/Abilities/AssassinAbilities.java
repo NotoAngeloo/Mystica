@@ -1,5 +1,7 @@
 package me.angeloo.mystica.Components.Abilities;
 
+import me.angeloo.mystica.Components.Abilities.Assassin.AssassinBasic;
+import me.angeloo.mystica.Components.Abilities.Assassin.Combo;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -9,9 +11,15 @@ public class AssassinAbilities {
 
     private final ProfileManager profileManager;
 
+    private final Combo combo;
+
+    private final AssassinBasic assassinBasic;
+
     public AssassinAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
 
+        combo = new Combo(main);
+        assassinBasic = new AssassinBasic(main, manager, this);
     }
 
     public void useAssassinAbility(Player player, int abilityNumber){
@@ -59,7 +67,7 @@ public class AssassinAbilities {
     }
 
     public void useAssassinBasic(Player player){
-
+        assassinBasic.useBasic(player);
     }
 
     public int getAbilityCooldown(Player player, int abilityNumber){
@@ -99,5 +107,7 @@ public class AssassinAbilities {
 
         return 0;
     }
+
+    public Combo getCombo(){return combo;}
 
 }

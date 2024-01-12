@@ -26,8 +26,8 @@ import java.util.*;
 public class SpiritualAttack {
 
     private final Mystica main;
-
     private final ProfileManager profileManager;
+    private final AbilityManager abilityManager;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
@@ -44,6 +44,7 @@ public class SpiritualAttack {
     public SpiritualAttack(Mystica main, AbilityManager manager, ShadowKnightAbilities abilities){
         this.main = main;
         profileManager = main.getProfileManager();
+        abilityManager = manager;
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
@@ -155,6 +156,7 @@ public class SpiritualAttack {
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));
 
+        abilityManager.setSkillRunning(player, true);
         double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
@@ -230,6 +232,7 @@ public class SpiritualAttack {
             private void cancelTask() {
                 this.cancel();
                 armorStand.remove();
+                abilityManager.setSkillRunning(player, false);
             }
 
 

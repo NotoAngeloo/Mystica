@@ -222,7 +222,7 @@ public class MysticAbilities {
 
         switch (subclass.toLowerCase()){
             case "chaos":{
-                return evilSpirit.returnWhichItem(player);
+                return 0;
             }
             case "arcane master":{
                 return arcaneMissiles.getCooldown(player);
@@ -233,6 +233,10 @@ public class MysticAbilities {
         }
 
         return 0;
+    }
+
+    public int getChaosMysticModelData(Player player){
+        return evilSpirit.returnWhichItem(player);
     }
 
     public EvilSpirit getEvilSpirit(){return evilSpirit;}

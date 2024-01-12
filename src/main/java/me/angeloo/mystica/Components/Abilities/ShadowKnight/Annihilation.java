@@ -30,6 +30,7 @@ public class Annihilation {
     private final Mystica main;
 
     private final ProfileManager profileManager;
+    private final AbilityManager abilityManager;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
@@ -46,6 +47,7 @@ public class Annihilation {
     public Annihilation(Mystica main, AbilityManager manager, ShadowKnightAbilities shadowKnightAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
+        abilityManager = manager;
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
@@ -158,6 +160,7 @@ public class Annihilation {
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
         skillDamage = skillDamage + ((int)(skillLevel/10));
 
+        abilityManager.setSkillRunning(player, true);
         double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             int ran = 0;
@@ -223,6 +226,7 @@ public class Annihilation {
             private void cancelTask() {
                 this.cancel();
                 armorStand.remove();
+                abilityManager.setSkillRunning(player, false);
             }
 
             private void hitTarget(){

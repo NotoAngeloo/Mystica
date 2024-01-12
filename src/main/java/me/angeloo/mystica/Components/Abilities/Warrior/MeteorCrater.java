@@ -30,6 +30,7 @@ public class MeteorCrater {
 
     private final Mystica main;
     private final ProfileManager profileManager;
+    private final AbilityManager abilityManager;
     private final TargetManager targetManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CombatManager combatManager;
@@ -45,6 +46,7 @@ public class MeteorCrater {
         this.main = main;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
+        abilityManager = manager;
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
@@ -146,6 +148,7 @@ public class MeteorCrater {
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));
 
+        abilityManager.setSkillRunning(player, true);
         double finalSkillDamage = skillDamage;
         Vector finalDirection = direction;
         new BukkitRunnable(){
@@ -156,6 +159,12 @@ public class MeteorCrater {
             boolean going = true;
             @Override
             public void run(){
+
+                if(!player.isOnline() || buffAndDebuffManager.getIfInterrupt(player)){
+                    cancelTask();
+                    abilityManager.setSkillRunning(player, false);
+                    return;
+                }
 
                 Location current = player.getLocation();
                 current.setDirection(finalDirection);
@@ -178,6 +187,7 @@ public class MeteorCrater {
 
                     if(distance<=1){
                         land=true;
+                        abilityManager.setSkillRunning(player, false);
                     }
                 }
 

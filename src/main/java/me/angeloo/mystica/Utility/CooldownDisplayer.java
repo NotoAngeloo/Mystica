@@ -39,6 +39,7 @@ public class CooldownDisplayer {
             int skillNumber = equipSkills.getAnySlot()[i];
 
             int cooldown = abilityManager.getCooldown(player, skillNumber);
+            int modelDataAddition = abilityManager.getModelDataAddition(player, skillNumber);
 
             ItemStack abilityItem = allSkillItems.getPlayerSkill(player, skillNumber);
 
@@ -46,13 +47,13 @@ public class CooldownDisplayer {
                 abilityItem.setAmount(cooldown);
             }
 
-            if(cooldown == 1 && !abilityItem.getType().equals(Material.AIR)){
+            if(!abilityItem.getType().equals(Material.AIR)){
 
                 ItemMeta meta = abilityItem.getItemMeta();
 
                 assert meta != null;
                 int modelData = meta.getCustomModelData();
-                modelData++;
+                modelData+=modelDataAddition;
 
                 meta.setCustomModelData(modelData);
                 abilityItem.setItemMeta(meta);
@@ -71,6 +72,7 @@ public class CooldownDisplayer {
             }
 
             int cooldown = abilityManager.getUltimateCooldown(player);
+            int modelDataAddition = abilityManager.getModelDataAddition(player, -1);
 
             ItemStack ultimateItem = allSkillItems.getUltimate(player);
 
@@ -78,13 +80,13 @@ public class CooldownDisplayer {
                 ultimateItem.setAmount(cooldown);
             }
 
-            if(cooldown == 1 && !ultimateItem.getType().equals(Material.AIR)){
+            if(!ultimateItem.getType().equals(Material.AIR)){
 
                 ItemMeta meta = ultimateItem.getItemMeta();
 
                 assert meta != null;
                 int modelData = meta.getCustomModelData();
-                modelData++;
+                modelData+=modelDataAddition;
 
                 meta.setCustomModelData(modelData);
                 ultimateItem.setItemMeta(meta);
@@ -116,6 +118,7 @@ public class CooldownDisplayer {
 
         ItemStack abilityItem = allSkillItems.getPlayerSkill(player, abilityNumber);
         int cooldown = abilityManager.getCooldown(player, abilityNumber);
+        int modelDataAddition = abilityManager.getModelDataAddition(player, abilityNumber);
         if(cooldown > 0){
             abilityItem.setAmount(cooldown);
         }
@@ -126,7 +129,7 @@ public class CooldownDisplayer {
 
             assert meta != null;
             int modelData = meta.getCustomModelData();
-            modelData++;
+            modelData+=modelDataAddition;
 
             meta.setCustomModelData(modelData);
             abilityItem.setItemMeta(meta);
@@ -153,6 +156,7 @@ public class CooldownDisplayer {
 
         ItemStack abilityItem = allSkillItems.getUltimate(player);
         int cooldown = abilityManager.getUltimateCooldown(player);
+        int modelDataAddition = abilityManager.getModelDataAddition(player, -1);
         if(cooldown > 0){
             abilityItem.setAmount(cooldown);
         }
@@ -163,7 +167,7 @@ public class CooldownDisplayer {
 
             assert meta != null;
             int modelData = meta.getCustomModelData();
-            modelData++;
+            modelData+=modelDataAddition;
 
             meta.setCustomModelData(modelData);
             abilityItem.setItemMeta(meta);

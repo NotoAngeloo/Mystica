@@ -28,8 +28,8 @@ import java.util.UUID;
 public class FieryWing {
 
     private final Mystica main;
-
     private final ProfileManager profileManager;
+    private final AbilityManager abilityManager;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
@@ -45,6 +45,7 @@ public class FieryWing {
     public FieryWing(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
+        abilityManager = manager;
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
@@ -150,10 +151,9 @@ public class FieryWing {
         double skillDamage = 20;
 
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
-
-
         skillDamage = skillDamage + ((int)(skillLevel/10));
 
+        abilityManager.setSkillRunning(player, true);
         double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             boolean spawned = false;
@@ -169,6 +169,7 @@ public class FieryWing {
 
                 if(ran >= 10 && !spawned){
 
+                    abilityManager.setSkillRunning(player, false);
                     spawned = true;
 
                     ArmorStand armorStand = player.getWorld().spawn(player.getLocation().clone().subtract(0,1,0), ArmorStand.class);

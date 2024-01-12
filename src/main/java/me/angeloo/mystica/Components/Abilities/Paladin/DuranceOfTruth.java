@@ -29,6 +29,7 @@ public class DuranceOfTruth {
 
     private final Mystica main;
     private final ProfileManager profileManager;
+    private final AbilityManager abilityManager;
     private final TargetManager targetManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CombatManager combatManager;
@@ -44,6 +45,7 @@ public class DuranceOfTruth {
         this.main = main;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
+        abilityManager = manager;
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
@@ -159,6 +161,7 @@ public class DuranceOfTruth {
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));
 
+        abilityManager.setSkillRunning(player, true);
         Location finalEnd = end;
         double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
@@ -172,6 +175,11 @@ public class DuranceOfTruth {
             boolean going = true;
             @Override
             public void run(){
+
+                if(!player.isOnline()){
+                    abilityManager.setSkillRunning(player, false);
+                    return;
+                }
 
                 if(going){
                     Location current = player.getLocation();
@@ -195,6 +203,7 @@ public class DuranceOfTruth {
                         center = player.getLocation();
                         spawnShields(center);
                         damage();
+                        abilityManager.setSkillRunning(player, false);
                     }
                 }
 

@@ -29,6 +29,7 @@ public class ReigningSword {
 
     private final Mystica main;
     private final ProfileManager profileManager;
+    private final AbilityManager abilityManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CombatManager combatManager;
     private final ChangeResourceHandler changeResourceHandler;
@@ -44,6 +45,7 @@ public class ReigningSword {
     public ReigningSword(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
+        abilityManager = manager;
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
@@ -145,6 +147,7 @@ public class ReigningSword {
             }
         }.runTaskLater(main, 20*5);
 
+        abilityManager.setSkillRunning(player, true);
         double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             Vector initialDirection;
@@ -242,6 +245,7 @@ public class ReigningSword {
                 this.cancel();
                 sword.remove();
                 decision.removeDecision(player);
+                abilityManager.setSkillRunning(player, false);
             }
 
         }.runTaskTimer(main, 0, 1);

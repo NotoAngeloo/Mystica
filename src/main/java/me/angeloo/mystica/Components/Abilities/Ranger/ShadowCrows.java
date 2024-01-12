@@ -57,8 +57,6 @@ public class ShadowCrows {
 
     public void use(Player player){
 
-        boolean scout = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("scout");
-
         if(!abilityReadyInMap.containsKey(player.getUniqueId())){
             abilityReadyInMap.put(player.getUniqueId(), 0);
         }
@@ -159,7 +157,6 @@ public class ShadowCrows {
 
         double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
-            Location targetWasLoc = target.getLocation().clone();
             @Override
             public void run(){
 
@@ -168,16 +165,19 @@ public class ShadowCrows {
                     armorStand.remove();
                 }
 
-                if(targetStillValid(target)){
-                    Location targetLoc = target.getLocation();
-                    targetLoc = targetLoc.subtract(0,1,0);
-                    targetWasLoc = targetLoc.clone();
+                if(!targetStillValid(target)){
+                    this.cancel();
+                    armorStand.remove();
+                    return;
                 }
 
-                Location current = armorStand.getLocation();
-                Vector direction = targetWasLoc.toVector().subtract(current.toVector());
+                Location targetLoc = target.getLocation();
+                targetLoc = targetLoc.subtract(0,1,0);
 
-                double distance = current.distance(targetWasLoc);
+                Location current = armorStand.getLocation();
+                Vector direction = targetLoc.toVector().subtract(current.toVector());
+
+                double distance = current.distance(targetLoc);
                 double distanceThisTick = Math.min(distance, 2);
                 current.add(direction.normalize().multiply(distanceThisTick));
                 armorStand.teleport(current);
@@ -198,6 +198,10 @@ public class ShadowCrows {
                 if(target instanceof Player){
 
                     if(!((Player) target).isOnline()){
+                        return false;
+                    }
+
+                    if(profileManager.getAnyProfile(target).getIfDead()){
                         return false;
                     }
 

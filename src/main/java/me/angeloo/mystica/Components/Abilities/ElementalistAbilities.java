@@ -123,6 +123,7 @@ public class ElementalistAbilities {
         return 0;
     }
 
+
     public int getUltimateCooldown(Player player){
         String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 

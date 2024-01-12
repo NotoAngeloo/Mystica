@@ -30,6 +30,7 @@ public class DecreeHonor {
     private final Mystica main;
 
     private final ProfileManager profileManager;
+    private final AbilityManager abilityManager;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
@@ -47,6 +48,7 @@ public class DecreeHonor {
     public DecreeHonor(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
+        abilityManager = manager;
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
@@ -151,15 +153,19 @@ public class DecreeHonor {
         double skillDamage = 4;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
-
         skillDamage = skillDamage + ((int)(skillLevel/10));
 
-
+        abilityManager.setSkillRunning(player, true);
         double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             double down = 0;
             @Override
             public void run(){
+
+                if(!player.isOnline()){
+                    cancelTask();
+                    return;
+                }
 
                 double increment = (2 * Math.PI) / 16; // angle between particles
 
@@ -174,12 +180,18 @@ public class DecreeHonor {
                 }
 
                 if(down>=4){
-                    this.cancel();
-                    armorStand.remove();
+                    cancelTask();
                     doSomething(target);
                 }
 
                 down+=0.7;
+            }
+
+            private void cancelTask(){
+                this.cancel();
+                armorStand.remove();
+                abilityManager.setSkillRunning(player, false);
+
             }
 
             private void doSomething(LivingEntity target){

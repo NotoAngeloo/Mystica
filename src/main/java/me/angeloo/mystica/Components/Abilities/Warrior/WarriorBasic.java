@@ -223,8 +223,10 @@ public class WarriorBasic {
 
             LivingEntity livingEntity = (LivingEntity) entity;
 
-            if(!pveChecker.pveLogic(livingEntity)){
-                continue;
+            if(!(entity instanceof Player)){
+                if(!pveChecker.pveLogic(livingEntity)){
+                    continue;
+                }
             }
 
             if(firstHit == null){
@@ -376,8 +378,10 @@ public class WarriorBasic {
 
             LivingEntity livingEntity = (LivingEntity) entity;
 
-            if(!pveChecker.pveLogic(livingEntity)){
-                continue;
+            if(!(entity instanceof Player)){
+                if(!pveChecker.pveLogic(livingEntity)){
+                    continue;
+                }
             }
 
             if(firstHit == null){

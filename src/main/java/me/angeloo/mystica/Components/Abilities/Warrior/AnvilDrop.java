@@ -26,6 +26,7 @@ public class AnvilDrop {
 
     private final Mystica main;
     private final ProfileManager profileManager;
+    private final AbilityManager abilityManager;
     private final TargetManager targetManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CombatManager combatManager;
@@ -41,6 +42,7 @@ public class AnvilDrop {
         this.main = main;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
+        abilityManager = manager;
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
@@ -157,6 +159,7 @@ public class AnvilDrop {
             return;
         }
 
+        abilityManager.setSkillRunning(player, true);
         Location finalEnd = end;
         new BukkitRunnable(){
             final double length = start.distance(finalEnd);
@@ -164,6 +167,13 @@ public class AnvilDrop {
             double traveled = 0;
             @Override
             public void run(){
+
+                if(!player.isOnline() || profileManager.getAnyProfile(player).getIfDead()){
+                    this.cancel();
+                    abilityManager.setSkillRunning(player, false);
+                    return;
+                }
+
                 Location current = player.getLocation();
                 double distance = current.distance(finalEnd);
                 double distanceThisTick = Math.min(distance, 1);
@@ -183,6 +193,7 @@ public class AnvilDrop {
                 if(distance<=1){
                     this.cancel();
                     knockUp(player);
+                    abilityManager.setSkillRunning(player, false);
                 }
             }
         }.runTaskTimer(main, 0, 1);
@@ -253,8 +264,10 @@ public class AnvilDrop {
 
             LivingEntity livingEntity = (LivingEntity) entity;
 
-            if(!pveChecker.pveLogic(livingEntity)){
-                continue;
+            if(!(entity instanceof Player)){
+                if(!pveChecker.pveLogic(livingEntity)){
+                    continue;
+                }
             }
 
             if(firstHit == null){

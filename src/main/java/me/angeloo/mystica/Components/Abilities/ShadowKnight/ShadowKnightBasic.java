@@ -222,8 +222,10 @@ public class ShadowKnightBasic {
 
              LivingEntity livingEntity = (LivingEntity) entity;
 
-            if(!pveChecker.pveLogic(livingEntity)){
-                continue;
+            if(!(entity instanceof Player)){
+                if(!pveChecker.pveLogic(livingEntity)){
+                    continue;
+                }
             }
 
             if(firstHit == null){
@@ -376,8 +378,10 @@ public class ShadowKnightBasic {
 
             LivingEntity livingEntity = (LivingEntity) entity;
 
-            if(!pveChecker.pveLogic(livingEntity)){
-                continue;
+            if(!(entity instanceof Player)){
+                if(!pveChecker.pveLogic(livingEntity)){
+                    continue;
+                }
             }
 
             if(firstHit == null){
@@ -529,8 +533,10 @@ public class ShadowKnightBasic {
 
             LivingEntity livingEntity = (LivingEntity) entity;
 
-            if(!pveChecker.pveLogic(livingEntity)){
-                continue;
+            if(!(entity instanceof Player)){
+                if(!pveChecker.pveLogic(livingEntity)){
+                    continue;
+                }
             }
 
             if(firstHit == null){

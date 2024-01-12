@@ -24,8 +24,8 @@ import java.util.*;
 public class DeathGaze {
 
     private final Mystica main;
-
     private final ProfileManager profileManager;
+    private final AbilityManager abilityManager;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
@@ -40,6 +40,7 @@ public class DeathGaze {
     public DeathGaze(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
+        abilityManager = manager;
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
@@ -123,9 +124,9 @@ public class DeathGaze {
 
         double skillDamage = 8;
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
-
         skillDamage = skillDamage + ((int)(skillLevel/10));
 
+        abilityManager.setSkillRunning(player, true);
         double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             boolean valid = false;
@@ -338,6 +339,7 @@ public class DeathGaze {
             private void cancelTask() {
                 this.cancel();
                 removeArmorStands(armorStands);
+                abilityManager.setSkillRunning(player, false);
             }
 
             private void removeArmorStands(List<ArmorStand> stands){

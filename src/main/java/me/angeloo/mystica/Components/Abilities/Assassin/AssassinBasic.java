@@ -125,8 +125,10 @@ public class AssassinBasic {
 
             LivingEntity livingEntity = (LivingEntity) entity;
 
-            if(!pveChecker.pveLogic(livingEntity)){
-                continue;
+            if(!(entity instanceof Player)){
+                if(!pveChecker.pveLogic(livingEntity)){
+                    continue;
+                }
             }
 
             if(firstHit == null){

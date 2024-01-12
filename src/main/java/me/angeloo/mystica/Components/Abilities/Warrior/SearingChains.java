@@ -26,7 +26,6 @@ import java.util.*;
 public class SearingChains {
 
     private final Mystica main;
-
     private final ProfileManager profileManager;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
@@ -413,26 +412,13 @@ public class SearingChains {
 
                         //do a wall check here
                         if(wallCheck(entity.getLocation(), direction, distanceThisTick)){
+                            done.put(entity, true);
                             continue;
                         }
 
                         if(targetStillValid(entity)){
 
-                            /*if(entity instanceof Player){
-                                if(profileManager.getAnyProfile(target).getIfDead()){
-                                    continue;
-                                }
-                                ((Player) entity).setWalkSpeed(.06f);
-                                new BukkitRunnable(){
-                                    @Override
-                                    public void run(){
-                                        ((Player) entity).setWalkSpeed(.2f);
-                                    }
-                                }.runTaskLater(main, 60);
-                            }*/
-
                             entity.teleport(entity.getLocation().add(direction.normalize().multiply(distanceThisTick)));
-
                         }
 
 

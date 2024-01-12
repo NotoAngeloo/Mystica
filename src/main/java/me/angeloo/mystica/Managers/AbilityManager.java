@@ -21,6 +21,8 @@ public class AbilityManager {
     private final Map<Player, Double> percentCastBar = new HashMap<>();
     private final Map<UUID, Long> globalCooldown = new HashMap<>();
 
+    private final Map<Player, Boolean> skillRunning = new HashMap<>();
+
     private final ElementalistAbilities elementalistAbilities;
     private final RangerAbilities rangerAbilities;
     private final MysticAbilities mysticAbilities;
@@ -65,6 +67,10 @@ public class AbilityManager {
             return;
         }
 
+        if(getIfSkillRunning(player)){
+            return;
+        }
+
         Profile playerProfile = profileManager.getAnyProfile(player);
 
         String clazz = playerProfile.getPlayerClass();
@@ -104,6 +110,10 @@ public class AbilityManager {
     public void useBasic(Player player){
 
         if(getIfCasting(player)){
+            return;
+        }
+
+        if(getIfSkillRunning(player)){
             return;
         }
 
@@ -165,6 +175,10 @@ public class AbilityManager {
         globalCooldown.put(player.getUniqueId(), currentTime);
 
         if(getIfCasting(player)){
+            return;
+        }
+
+        if(getIfSkillRunning(player)){
             return;
         }
 
@@ -270,6 +284,130 @@ public class AbilityManager {
         return 0;
     }
 
+    public int getModelDataAddition(Player player, int abilityNumber){
+
+        Profile playerProfile = profileManager.getAnyProfile(player);
+
+        String clazz = playerProfile.getPlayerClass();
+
+        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+
+        int cooldown;
+
+        switch (clazz.toLowerCase()){
+            case "elementalist":{
+
+                if(abilityNumber==-1){
+                    cooldown = elementalistAbilities.getUltimateCooldown(player);
+                }
+                else{
+                    cooldown = elementalistAbilities.getAbilityCooldown(player, abilityNumber);
+                }
+
+                if(cooldown == 1){
+                    return 1;
+                }
+
+                return 0;
+            }
+            case "ranger":{
+                if(abilityNumber==-1){
+                    cooldown = rangerAbilities.getUltimateCooldown(player);
+                }
+                else{
+                    cooldown = rangerAbilities.getAbilityCooldown(player, abilityNumber);
+                }
+
+                if(cooldown == 1){
+                    return 1;
+                }
+
+                return 0;
+            }
+            case "mystic":{
+                if(abilityNumber==-1){
+
+                    if(subclass.equalsIgnoreCase("chaos")){
+                        return mysticAbilities.getChaosMysticModelData(player);
+                    }
+
+                    cooldown = mysticAbilities.getUltimateCooldown(player);
+                }
+                else{
+                    cooldown = mysticAbilities.getAbilityCooldown(player, abilityNumber);
+                }
+
+                if(cooldown == 1){
+                    return 1;
+                }
+
+                return 0;
+            }
+            case "shadow knight":{
+                if(abilityNumber==-1){
+                    cooldown = shadowKnightAbilities.getUltimateCooldown(player);
+                }
+                else{
+                    cooldown = shadowKnightAbilities.getAbilityCooldown(player, abilityNumber);
+                }
+
+                if(cooldown == 1){
+                    return 1;
+                }
+
+                return 0;
+            }
+            case "paladin":{
+                if(abilityNumber==-1){
+                    cooldown = paladinAbilities.getUltimateCooldown(player);
+                }
+                else{
+                    cooldown = paladinAbilities.getAbilityCooldown(player, abilityNumber);
+                }
+
+                if(cooldown == 1){
+                    return 1;
+                }
+
+                return 0;
+            }
+            case "warrior":{
+                if(abilityNumber==-1){
+                    cooldown = warriorAbilities.getUltimateCooldown(player);
+                }
+                else{
+                    cooldown = warriorAbilities.getAbilityCooldown(player, abilityNumber);
+                }
+
+                if(cooldown == 1){
+                    return 1;
+                }
+
+                return 0;
+            }
+            case "assassin":{
+
+                //TODO: unfuck this up when i have the combo specific model data items
+
+                if(abilityNumber==-1){
+                    cooldown = assassinAbilities.getUltimateCooldown(player);
+                }
+                else{
+                    cooldown = assassinAbilities.getAbilityCooldown(player, abilityNumber);
+                }
+
+                if(cooldown == 1){
+                    return 1;
+                }
+
+                return 0;
+            }
+        }
+
+
+        return 0;
+    }
+
     public CombatManager getCombatManager(){
         return combatManager;
     }
@@ -279,6 +417,8 @@ public class AbilityManager {
     public MysticAbilities getMysticAbilities(){return mysticAbilities;}
     public ShadowKnightAbilities getShadowKnightAbilities(){return shadowKnightAbilities;}
     public PaladinAbilities getPaladinAbilities(){return paladinAbilities;}
+    public WarriorAbilities getWarriorAbilities(){return warriorAbilities;}
+    public AssassinAbilities getAssassinAbilities(){return assassinAbilities;}
 
     public void resetAbilityBuffs(Player player){
         mysticAbilities.getEvilSpirit().removeShards(player);
@@ -286,6 +426,8 @@ public class AbilityManager {
         elementalistAbilities.getFieryWing().removeInflame(player);
         shadowKnightAbilities.getInfection().removeEnhancement(player);
         shadowKnightAbilities.getSoulReap().removeSoulMarks(player);
+        paladinAbilities.getDecision().removeDecision(player);
+        assassinAbilities.getCombo().removeAnAmountOfPoints(player, assassinAbilities.getCombo().getComboPoints(player));
     }
 
     public boolean getIfCasting(Player player){
@@ -301,5 +443,8 @@ public class AbilityManager {
     public double getCastPercent(Player player){
         return percentCastBar.getOrDefault(player, 0.0);
     }
+
+    public boolean getIfSkillRunning(Player player){return skillRunning.getOrDefault(player, false);}
+    public void setSkillRunning(Player player, boolean running){skillRunning.put(player, running);}
 
 }

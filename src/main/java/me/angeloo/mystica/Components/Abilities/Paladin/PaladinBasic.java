@@ -335,9 +335,12 @@ public class PaladinBasic {
 
             LivingEntity livingEntity = (LivingEntity) entity;
 
-            if(!pveChecker.pveLogic(livingEntity)){
-                continue;
+            if(!(entity instanceof Player)){
+                if(!pveChecker.pveLogic(livingEntity)){
+                    continue;
+                }
             }
+
 
             if(firstHit == null){
                 firstHit = livingEntity;
@@ -488,8 +491,10 @@ public class PaladinBasic {
 
             LivingEntity livingEntity = (LivingEntity) entity;
 
-            if(!pveChecker.pveLogic(livingEntity)){
-                continue;
+            if(!(entity instanceof Player)){
+                if(!pveChecker.pveLogic(livingEntity)){
+                    continue;
+                }
             }
 
             if(firstHit == null){
@@ -645,8 +650,10 @@ public class PaladinBasic {
 
             LivingEntity livingEntity = (LivingEntity) entity;
 
-            if(!pveChecker.pveLogic(livingEntity)){
-                continue;
+            if(!(entity instanceof Player)){
+                if(!pveChecker.pveLogic(livingEntity)){
+                    continue;
+                }
             }
 
             if(firstHit == null){
@@ -799,8 +806,10 @@ public class PaladinBasic {
 
             LivingEntity livingEntity = (LivingEntity) entity;
 
-            if(!pveChecker.pveLogic(livingEntity)){
-                continue;
+            if(!(entity instanceof Player)){
+                if(!pveChecker.pveLogic(livingEntity)){
+                    continue;
+                }
             }
 
             if(firstHit == null){

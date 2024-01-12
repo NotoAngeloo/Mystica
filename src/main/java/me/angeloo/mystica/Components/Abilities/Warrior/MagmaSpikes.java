@@ -20,7 +20,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
-import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -95,13 +94,13 @@ public class MagmaSpikes {
         Location start = player.getLocation();
         Location up = start.clone().add(0,4,0);
 
-        abilityManager.setCasting(player, true);
 
         double skillDamage = 8;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));
 
+        abilityManager.setSkillRunning(player, true);
         skillDamage = skillDamage / 2;
         double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
@@ -191,7 +190,12 @@ public class MagmaSpikes {
                             if(entity instanceof Player){
                                 if(pvpManager.pvpLogic(player, (Player) entity)){
                                     changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
-                                    //stunEntity(target);
+
+                                    if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
+                                        Vector velocity = (new Vector(0, .75, 0));
+                                        livingEntity.setVelocity(velocity);
+                                        buffAndDebuffManager.getKnockUp().applyKnockUp(livingEntity);
+                                    }
                                 }
                                 continue;
                             }
@@ -199,7 +203,12 @@ public class MagmaSpikes {
                             if(pveChecker.pveLogic(livingEntity)){
                                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, player));
                                 changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
-                                //stunEntity(target);
+
+                                if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
+                                    Vector velocity = (new Vector(0, .75, 0));
+                                    livingEntity.setVelocity(velocity);
+                                    buffAndDebuffManager.getKnockUp().applyKnockUp(livingEntity);
+                                }
                             }
 
                         }
@@ -348,7 +357,7 @@ public class MagmaSpikes {
             }
 
             private void cancelTask(){
-                abilityManager.setCasting(player, false);
+                abilityManager.setSkillRunning(player, false);
                 this.cancel();
                 for(ArmorStand stand : stands){
                     stand.remove();

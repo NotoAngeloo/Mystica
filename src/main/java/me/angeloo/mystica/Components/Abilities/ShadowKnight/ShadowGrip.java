@@ -26,6 +26,7 @@ public class ShadowGrip {
     private final Mystica main;
 
     private final ProfileManager profileManager;
+    private final AbilityManager abilityManager;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
@@ -41,6 +42,7 @@ public class ShadowGrip {
     public ShadowGrip(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
+        abilityManager = manager;
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
@@ -155,7 +157,7 @@ public class ShadowGrip {
         assert entityEquipment != null;
         entityEquipment.setHelmet(hand);
 
-
+        abilityManager.setSkillRunning(player, true);
         double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             boolean going = true;
@@ -274,6 +276,7 @@ public class ShadowGrip {
             private void cancelTask() {
                 this.cancel();
                 armorStand.remove();
+                abilityManager.setSkillRunning(player, false);
             }
 
             private void pullTarget(){

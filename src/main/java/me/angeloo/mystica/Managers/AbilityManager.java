@@ -387,7 +387,10 @@ public class AbilityManager {
             }
             case "assassin":{
 
-                //TODO: unfuck this up when i have the combo specific model data items
+
+                if(abilityNumber==3){
+                    return assassinAbilities.getWeaknessStrikeModelData(player);
+                }
 
                 if(abilityNumber==-1){
                     cooldown = assassinAbilities.getUltimateCooldown(player);
@@ -438,7 +441,7 @@ public class AbilityManager {
     }
     public void setCastBar(Player player, double percent){
         percentCastBar.put(player, percent);
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
     }
     public double getCastPercent(Player player){
         return percentCastBar.getOrDefault(player, 0.0);

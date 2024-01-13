@@ -196,12 +196,9 @@ public class ElementalMatrix {
         assert entityEquipment != null;
         entityEquipment.setHelmet(matrixItem);
 
-        double skillDamage = 5;
+        int ticks = 5;
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level() +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
-
-        skillDamage = skillDamage + ((int)(skillLevel/10));
+        double skillDamage = 10;
 
         if(cryomancer){
             skillDamage = skillDamage * 2;
@@ -216,6 +213,11 @@ public class ElementalMatrix {
 
             skillDamage = skillDamage * (1 + percent);
         }
+
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
+
+        skillDamage = skillDamage + ((int)(skillLevel/10));
 
 
         double finalSkillDamage = skillDamage;
@@ -249,11 +251,12 @@ public class ElementalMatrix {
 
                 armorStand.teleport(targetLoc);
 
+                //happens 5 times
                 if(ran%20 == 0){
                     //tick damage
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = (damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit));
+                    double damage = (damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage / ticks, crit));
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
                 }
@@ -303,7 +306,7 @@ public class ElementalMatrix {
                         hitBySkill.add(livingEntity);
 
                         boolean crit = damageCalculator.checkIfCrit(player, 0);
-                        double damage = (damageCalculator.calculateDamage(player, livingEntity, "Magical", finalSkillDamage * 3, crit));
+                        double damage = (damageCalculator.calculateDamage(player, livingEntity, "Magical", finalSkillDamage, crit));
 
                         //pvp logic
                         if(entity instanceof Player){

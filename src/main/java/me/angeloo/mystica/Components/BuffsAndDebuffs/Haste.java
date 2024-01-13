@@ -35,7 +35,7 @@ public class Haste {
 
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
         }
 
         if(removeHasteTaskMap.containsKey(entity.getUniqueId())){
@@ -69,7 +69,7 @@ public class Haste {
 
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
         }
 
     }

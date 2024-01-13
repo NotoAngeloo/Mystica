@@ -1,8 +1,6 @@
 package me.angeloo.mystica.Components.Abilities;
 
-import me.angeloo.mystica.Components.Abilities.Assassin.AssassinBasic;
-import me.angeloo.mystica.Components.Abilities.Assassin.Assault;
-import me.angeloo.mystica.Components.Abilities.Assassin.Combo;
+import me.angeloo.mystica.Components.Abilities.Assassin.*;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -16,6 +14,9 @@ public class AssassinAbilities {
 
     private final AssassinBasic assassinBasic;
     private final Assault assault;
+    private final Laceration laceration;
+    private final WeaknessStrike weaknessStrike;
+    private final Pierce pierce;
 
     public AssassinAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
@@ -23,6 +24,9 @@ public class AssassinAbilities {
         combo = new Combo(main);
         assassinBasic = new AssassinBasic(main, manager, this);
         assault = new Assault(main, manager, this);
+        laceration = new Laceration(main, manager, this);
+        weaknessStrike = new WeaknessStrike(main, manager, this);
+        pierce = new Pierce(main, manager, this);
     }
 
     public void useAssassinAbility(Player player, int abilityNumber){
@@ -33,12 +37,15 @@ public class AssassinAbilities {
                 return;
             }
             case 2:{
+                laceration.use(player);
                 return;
             }
             case 3:{
+                weaknessStrike.use(player);
                 return;
             }
             case 4:{
+                pierce.use(player);
                 return;
             }
             case 5:{
@@ -80,11 +87,11 @@ public class AssassinAbilities {
             case 1:
                 return assault.getCooldown(player);
             case 2:
-
+                return laceration.getCooldown(player);
             case 3:
-
+                return weaknessStrike.getCooldown(player);
             case 4:
-
+                return pierce.getCooldown(player);
             case 5:
 
             case 6:
@@ -96,6 +103,10 @@ public class AssassinAbilities {
         }
 
         return 0;
+    }
+
+    public int getWeaknessStrikeModelData(Player player){
+        return weaknessStrike.returnWhichItem(player);
     }
 
     public int getUltimateCooldown(Player player){

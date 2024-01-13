@@ -256,11 +256,11 @@ public class MercifulHealing {
     }
 
     public void queueMoveCast(Player player){
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
         moveCast.put(player.getUniqueId(), true);
     }
     public void unQueueMoveCast(Player player){
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
         moveCast.remove(player.getUniqueId());
     }
     private boolean getMoveCast(Player player){

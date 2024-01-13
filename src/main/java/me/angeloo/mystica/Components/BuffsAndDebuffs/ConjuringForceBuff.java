@@ -22,7 +22,7 @@ public class ConjuringForceBuff {
 
         if(extraDamageAmount > currentExtraDamage){
             extraDamageMap.put(player, extraDamageAmount);
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
         }
 
     }
@@ -30,7 +30,7 @@ public class ConjuringForceBuff {
     public void removeConjuringForceBuff(Player player){
         hasConjForceBuffMap.remove(player);
         extraDamageMap.remove(player);
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
     }
 
     public boolean getIfConjForceBuff(Player player){

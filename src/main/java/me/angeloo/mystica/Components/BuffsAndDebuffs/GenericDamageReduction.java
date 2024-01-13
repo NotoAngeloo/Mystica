@@ -34,7 +34,7 @@ public class GenericDamageReduction {
 
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
         }
 
         if(removeReduction.containsKey(entity.getUniqueId())){
@@ -74,7 +74,7 @@ public class GenericDamageReduction {
         reductionAmount.remove(entity.getUniqueId());
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
         }
     }
 }

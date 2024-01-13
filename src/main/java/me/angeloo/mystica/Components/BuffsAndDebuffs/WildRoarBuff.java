@@ -38,7 +38,7 @@ public class WildRoarBuff {
 
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
         }
 
         if(removeBuffTaskMap.containsKey(entity.getUniqueId())){
@@ -75,7 +75,7 @@ public class WildRoarBuff {
         hasWildRoarBuffMap.remove(entity.getUniqueId());
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
         }
     }
 

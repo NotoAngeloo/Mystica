@@ -336,8 +336,6 @@ public class SoulReap {
 
     public void addSoulMark(Player player){
 
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
-
         int stacks = getSoulMarks(player);
 
         if(stacks >=4){
@@ -347,11 +345,12 @@ public class SoulReap {
         stacks ++;
 
         soulMarks.put(player.getUniqueId(), stacks);
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
     }
 
     public void removeSoulMarks(Player player){
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
         soulMarks.put(player.getUniqueId(), 0);
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
     }
 
     public int getCooldown(Player player){

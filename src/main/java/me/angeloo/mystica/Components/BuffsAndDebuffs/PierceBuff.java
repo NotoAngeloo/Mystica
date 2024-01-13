@@ -12,35 +12,27 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class Stun {
+public class PierceBuff {
 
     private final Mystica main;
-    private final Immobile immobile;
 
-    private final Map<UUID, BukkitTask> removeStunTaskMap = new HashMap<>();
-    private final Map<UUID, Boolean> stunMap = new HashMap<>();
+    private final Map<UUID, BukkitTask> removeBuffTaskMap = new HashMap<>();
+    private final Map<UUID, Boolean> hasBuff = new HashMap<>();
 
-    public  Stun(Mystica main, Immobile immobile){
+    public PierceBuff(Mystica main){
         this.main = main;
-        this.immobile = immobile;
     }
 
-    public void applyStun(LivingEntity entity, int time){
-        immobile.applyImmobile(entity, time);
+    public void applyBuff(LivingEntity entity){
+        hasBuff.put(entity.getUniqueId(), true);
 
-        stunMap.put(entity.getUniqueId(), true);
-
-        if(removeStunTaskMap.containsKey(entity.getUniqueId())){
-            removeStunTaskMap.get(entity.getUniqueId()).cancel();
+        if(removeBuffTaskMap.containsKey(entity.getUniqueId())){
+            removeBuffTaskMap.get(entity.getUniqueId()).cancel();
         }
 
         if(entity instanceof Player){
             Player player = (Player) entity;
             Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
-        }
-
-        if(time == 0){
-            return;
         }
 
         BukkitTask task = new BukkitRunnable(){
@@ -48,30 +40,32 @@ public class Stun {
             @Override
             public void run(){
 
-                if(count >= time){
+                if(count >= 10){
                     this.cancel();
-                    removeStun(entity);
+                    removeBuff(entity);
                 }
 
                 count++;
             }
         }.runTaskTimer(main, 0, 1);
 
-        removeStunTaskMap.put(entity.getUniqueId(), task);
+        removeBuffTaskMap.put(entity.getUniqueId(), task);
     }
 
+    //task to remove debuff instead
 
-    public boolean getIfStun(LivingEntity entity){
-        return stunMap.getOrDefault(entity.getUniqueId(), false);
+    public boolean getIfPierceBuff(LivingEntity entity){
+        return hasBuff.getOrDefault(entity.getUniqueId(), false);
     }
 
+    public void removeBuff(LivingEntity entity){
+        hasBuff.remove(entity.getUniqueId());
 
-    public void removeStun(LivingEntity entity){
-        stunMap.remove(entity.getUniqueId());
         if(entity instanceof Player){
             Player player = (Player) entity;
             Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
         }
+
     }
 
 }

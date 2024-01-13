@@ -194,12 +194,13 @@ public class EvilSpirit {
 
         chaosShards.put(player.getUniqueId(), current);
         cooldownDisplayer.displayChaosMysticUltimateItem(player, getChaosShards(player) >= 6);
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
     }
 
     public void removeShards(Player player){
         chaosShards.put(player.getUniqueId(), 0);
         cooldownDisplayer.displayChaosMysticUltimateItem(player, getChaosShards(player) >= 6);
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
     }
 
     public int returnWhichItem(Player player){

@@ -25,8 +25,15 @@ public class StatusDisplayer {
 
     public void displayStatus(Player player) {
 
-        StringBuilder statusString = new StringBuilder();
+        if(!profileManager.getAnyProfile(player).getIfInCombat()){
+            return;
+        }
 
+        if(profileManager.getAnyProfile(player).getIfDead()){
+            return;
+        }
+
+        StringBuilder statusString = new StringBuilder();
 
         String bigStatus = getCastStatus(player);
 
@@ -44,11 +51,49 @@ public class StatusDisplayer {
         statusString.append(centeringStatus).append(bigStatus).append(getClassStatus(player)).append(getBonusStatus(player));
 
 
-        player.sendTitle("", String.valueOf(statusString), 0, 200, 0);
+
+        player.sendTitle(getBigClassStatus(player), String.valueOf(statusString), 0, 200, 0);
     }
 
     public void clearPlayerStatus(Player player){
         player.sendTitle("", "", 0, 2, 0);
+    }
+
+    private String getBigClassStatus(Player player){
+
+        String clazz = profileManager.getAnyProfile(player).getPlayerClass();
+        String subClass = profileManager.getAnyProfile(player).getPlayerSubclass();
+
+        switch (clazz.toLowerCase()){
+            case "assassin":{
+
+                StringBuilder comboString = new StringBuilder();
+
+                int maxCombo = 5;
+
+                if(subClass.equalsIgnoreCase("duelist")){
+                    maxCombo = 6;
+                }
+
+                int combo = abilityManager.getAssassinAbilities().getCombo().getComboPoints(player);
+
+                for(int i=0;i<maxCombo;i++){
+
+                    if(i>=combo){
+                        comboString.append("\uE008");
+                    }
+                    else{
+                        comboString.append("\uE009");
+                    }
+
+                }
+
+                return String.valueOf(comboString);
+            }
+            //mystic also here
+        }
+
+        return "";
     }
 
     private String getCastStatus(Player player){

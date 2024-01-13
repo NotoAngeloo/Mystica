@@ -41,7 +41,7 @@ public class FlamingSigilBuff {
 
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
         }
 
         if(removeAttackBuffTaskMap.containsKey(entity.getUniqueId())){
@@ -78,7 +78,7 @@ public class FlamingSigilBuff {
         hasAttackMap.remove(entity.getUniqueId());
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
         }
     }
 
@@ -95,7 +95,7 @@ public class FlamingSigilBuff {
 
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
         }
 
         if(removeHealthBuffTaskMap.containsKey(entity.getUniqueId())){
@@ -132,7 +132,7 @@ public class FlamingSigilBuff {
         hasHealthMap.remove(entity.getUniqueId());
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
         }
     }
 

@@ -31,7 +31,7 @@ public class Hidden {
         player.getInventory().setLeggings(null);
         player.getInventory().setBoots(null);
 
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
 
         if(blacklist){
             aggroManager.removeHighPriorityTarget(player.getUniqueId());
@@ -47,7 +47,7 @@ public class Hidden {
         boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
         boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
 
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
 
         if(!deathStatus){
             player.setInvisible(false);

@@ -160,7 +160,7 @@ public class DragonBreathing {
         assert entityEquipment != null;
         entityEquipment.setHelmet(dragonItem);
 
-        double skillDamage = 10;
+        double skillDamage = 12;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
 

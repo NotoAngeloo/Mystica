@@ -8,20 +8,16 @@ public class StatusUpdateEvent extends Event {
 
     public static final HandlerList handlers = new HandlerList();
 
-    private final Boolean clear;
     private final Player player;
 
 
-    public StatusUpdateEvent(Player player, Boolean clear){
+    public StatusUpdateEvent(Player player){
         this.player = player;
-        this.clear = clear;
     }
 
     public Player getPlayer(){
         return player;
     }
-
-    public Boolean getClear(){return clear;}
 
 
     public HandlerList getHandlers() {

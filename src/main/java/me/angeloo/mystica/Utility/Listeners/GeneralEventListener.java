@@ -1205,12 +1205,6 @@ public class GeneralEventListener implements Listener {
     @EventHandler
     public void StatusChange(StatusUpdateEvent event){
         Player player = event.getPlayer();
-
-        if(event.getClear()){
-            statusDisplayer.clearPlayerStatus(player);
-            return;
-        }
-
         statusDisplayer.displayStatus(player);
     }
 

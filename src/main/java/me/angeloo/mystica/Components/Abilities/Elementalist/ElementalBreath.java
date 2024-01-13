@@ -91,12 +91,12 @@ public class ElementalBreath {
 
 
         buffActiveMap.put(player.getUniqueId(), 15 + bonus);
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
         new BukkitRunnable(){
             @Override
             public void run(){
 
-                Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+                Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
                 if(buffActiveMap.get(player.getUniqueId()) <= 0){
                     this.cancel();
                     return;

@@ -1,7 +1,9 @@
 package me.angeloo.mystica.Components.Abilities.Assassin;
 
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -35,6 +37,7 @@ public class Combo {
         current++;
 
         comboPoints.put(player.getUniqueId(), current);
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
     }
 
     public int removeAnAmountOfPoints(Player player, int amount){
@@ -44,6 +47,8 @@ public class Combo {
         int newAmount = current - amount;
 
         comboPoints.put(player.getUniqueId(), newAmount);
+
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
 
         return current;
     }

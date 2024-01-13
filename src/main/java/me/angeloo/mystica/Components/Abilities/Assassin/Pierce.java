@@ -10,13 +10,11 @@ import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
@@ -25,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class Assault {
+public class Pierce {
 
     private final Mystica main;
     private final ProfileManager profileManager;
@@ -43,7 +41,7 @@ public class Assault {
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public Assault(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
+    public Pierce(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
         this.main = main;
         abilityManager = manager;
         targetManager = main.getTargetManager();
@@ -99,6 +97,12 @@ public class Assault {
             return;
         }
 
+        if(combo.getComboPoints(player) == 0){
+            return;
+        }
+
+        combo.removeAnAmountOfPoints(player, 1);
+
         combatManager.startCombatTimer(player);
 
         execute(player);
@@ -109,7 +113,7 @@ public class Assault {
             public void run(){
 
                 if(abilityReadyInMap.get(player.getUniqueId()) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 1);
+                    cooldownDisplayer.displayCooldown(player, 4);
                     this.cancel();
                     return;
                 }
@@ -118,7 +122,7 @@ public class Assault {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 1);
+                cooldownDisplayer.displayCooldown(player, 4);
 
             }
         }.runTaskTimer(main, 0,20);
@@ -130,32 +134,32 @@ public class Assault {
         LivingEntity target = targetManager.getPlayerTarget(player);
         Location start = player.getLocation().clone();
 
+        ItemStack weapon = profileManager.getAnyProfile(player).getPlayerEquipment().getWeapon();
+        ItemStack offhand = profileManager.getAnyProfile(player).getPlayerEquipment().getOffhand();
+
         ArmorStand stand = player.getWorld().spawn(start.clone().subtract(0,10,0), ArmorStand.class);
         stand.setInvisible(true);
         stand.setGravity(false);
         stand.setCollidable(false);
         stand.setInvulnerable(true);
         stand.setMarker(true);
-        ItemStack item = new ItemStack(Material.SLIME_BALL);
-        ItemMeta meta = item.getItemMeta();
-        assert meta != null;
-        meta.setCustomModelData(1);
-        item.setItemMeta(meta);
         EntityEquipment entityEquipment = stand.getEquipment();
         assert entityEquipment != null;
-        entityEquipment.setItemInMainHand(item);
-        stand.setRightArmPose(new EulerAngle(Math.toRadians(180), Math.toRadians(0), Math.toRadians(0)));
+        entityEquipment.setItemInMainHand(weapon); //-90, 90
+        stand.setRightArmPose(new EulerAngle(Math.toRadians(0), Math.toRadians(0), Math.toRadians(0)));
+        entityEquipment.setItemInOffHand(offhand);
+        stand.setLeftArmPose(new EulerAngle(Math.toRadians(0), Math.toRadians(0), Math.toRadians(-0)));
         stand.teleport(start.clone().add(0,.5,0));
 
-        double skillDamage = 4;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level() +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
-        skillDamage = skillDamage + ((int)(skillLevel/10));
-
         abilityManager.setSkillRunning(player, true);
+        double skillDamage = 1;
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
+        skillDamage = skillDamage + ((int)(skillLevel/10));
         double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
-            int angle = 180;
+            int rAngle = 0;
+            int lAngle = 0;
             @Override
             public void run(){
 
@@ -173,22 +177,15 @@ public class Assault {
                 Location targetLoc = target.getLocation().clone();
                 Vector direction = targetLoc.toVector().subtract(current.toVector());
                 direction.setY(0);
-
-                double distance = current.distance(targetLoc);
-                double distanceThisTick = Math.min(distance, .5);
-
-                if(distance>1){
-                    current.add(direction.normalize().multiply(distanceThisTick));
-                }
-
                 current.setDirection(direction);
 
-                player.teleport(current);
-                stand.teleport(current.clone().add(0, 0.5, 0));
-                angle+=15;
-                stand.setRightArmPose(new EulerAngle(Math.toRadians(angle), Math.toRadians(0), Math.toRadians(0)));
+                stand.teleport(current.clone().add(direction.multiply(0.5)));
 
-                if(angle>=360){
+                stand.setRightArmPose(new EulerAngle(Math.toRadians(0), Math.toRadians(rAngle), Math.toRadians(0)));
+                stand.setLeftArmPose(new EulerAngle(Math.toRadians(0), Math.toRadians(lAngle), Math.toRadians(-0)));
+
+                if(lAngle>=180){
+                    cancelTask();
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
                     double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
@@ -196,11 +193,11 @@ public class Assault {
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
 
-                    combo.addComboPoint(player);
-
-                    cancelTask();
+                    buffAndDebuffManager.getPierceBuff().applyBuff(player);
                 }
 
+                rAngle-=15;
+                lAngle+=15;
             }
 
             private boolean targetStillValid(LivingEntity target){
@@ -224,7 +221,6 @@ public class Assault {
         }.runTaskTimer(main, 0, 1);
     }
 
-
     public int getCooldown(Player player){
         int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
 
@@ -234,7 +230,5 @@ public class Assault {
 
         return cooldown;
     }
-
-
 
 }

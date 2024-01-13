@@ -17,7 +17,7 @@ public class Decision {
     }
 
     public void applyDecision(Player player){
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
         decisionMap.put(player.getUniqueId(), true);
     }
 
@@ -26,7 +26,7 @@ public class Decision {
     }
 
     public void removeDecision(Player player){
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
         decisionMap.remove(player.getUniqueId());
     }
 

@@ -29,6 +29,7 @@ public class BuffAndDebuffManager {
     private final KnockUp knockUp;
     private final FlamingSigilBuff flamingSigilBuff;
     private final BurningBlessingBuff burningBlessingBuff;
+    private final PierceBuff pierceBuff;
 
     public BuffAndDebuffManager(Mystica main){
         profileManager = main.getProfileManager();
@@ -52,6 +53,7 @@ public class BuffAndDebuffManager {
         silence = new Silence(main);
         wellCrit = new WellCrit();
         modest = new Modest(main);
+        pierceBuff = new PierceBuff(main);
     }
 
     public Immune getImmune(){return immune;}
@@ -77,6 +79,7 @@ public class BuffAndDebuffManager {
     public KnockUp getKnockUp(){return knockUp;}
     public FlamingSigilBuff getFlamingSigilBuff(){return flamingSigilBuff;}
     public BurningBlessingBuff getBurningBlessingBuff(){return burningBlessingBuff;}
+    public PierceBuff getPierceBuff(){return pierceBuff;}
 
     public void removeAllBuffsAndDebuffs(Player player){
         flamingSigilBuff.removeAttackBuff(player);
@@ -99,6 +102,7 @@ public class BuffAndDebuffManager {
         wellCrit.removeBonus(player);
         modest.removeModest(player);
         knockUp.removeKnockUp(player);
+        pierceBuff.removeBuff(player);
     }
 
     //attacker, defender

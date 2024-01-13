@@ -87,7 +87,7 @@ public class RallyingCry {
             @Override
             public void run(){
 
-                Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, false));
+                Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
 
                 if(buffActiveMap.get(player.getUniqueId()) <= 0){
                     this.cancel();

@@ -30,7 +30,7 @@ public class CombatManager {
     private final ProfileManager profileManager;
     private final AbilityManager abilityManager;
     private final DpsManager dpsManager;
-
+    private final StatusDisplayer statusDisplayer;
 
     private final CooldownDisplayer cooldownDisplayer;
 
@@ -42,6 +42,7 @@ public class CombatManager {
         abilityManager = manager;
         dpsManager = main.getDpsManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        statusDisplayer = new StatusDisplayer(main, manager);
     }
 
 
@@ -75,6 +76,7 @@ public class CombatManager {
 
         profileManager.getAnyProfile(player).setIfInCombat(true);
         lastCalledCombat.put(player.getUniqueId(), System.currentTimeMillis());
+        statusDisplayer.displayStatus(player);
     }
 
 
@@ -136,7 +138,7 @@ public class CombatManager {
 
         dpsManager.removeDps(player);
         abilityManager.resetAbilityBuffs(player);
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player, true));
+        statusDisplayer.clearPlayerStatus(player);
     }
 
     private ItemStack getItem(ItemStack item, String name, String... lore){

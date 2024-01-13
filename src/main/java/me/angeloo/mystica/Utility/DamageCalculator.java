@@ -70,6 +70,10 @@ public class DamageCalculator {
                 attack = playerProfile.getTotalAttack() + attackBonus;
                 defence = enemyProfile.getTotalDefense();
 
+                if(buffAndDebuffManager.getPierceBuff().getIfPierceBuff(player)){
+                    defence = defence * .75;
+                }
+
                 damage = (damage * multiplierForCrit)
                         * ((attack) / (defence));
             }
@@ -91,6 +95,10 @@ public class DamageCalculator {
 
                 attack = playerProfile.getTotalAttack() + attackBonus;
                 defence = enemyProfile.getStats().getDefense();
+
+                if(buffAndDebuffManager.getPierceBuff().getIfPierceBuff(player)){
+                    defence = defence * .75;
+                }
 
                 damage = (damage * multiplierForCrit)
                         * (attack / defence);
@@ -150,6 +158,10 @@ public class DamageCalculator {
 
             attack = enemyProfile.getStats().getAttack() + attackBonus;
             defence = playerProfile.getTotalDefense();
+
+            if(buffAndDebuffManager.getPierceBuff().getIfPierceBuff(entity)){
+                defence = defence * .75;
+            }
 
             damage = (damage * multiplierForCrit)
                     * (attack / defence);

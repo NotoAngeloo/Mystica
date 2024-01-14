@@ -36,7 +36,9 @@ public class AssassinBasic {
 
     private final Map<UUID, Boolean> basicReadyMap = new HashMap<>();
 
+    private final Stealth stealth;
     private final Combo combo;
+    private final DuelistsFrenzy duelistsFrenzy;
 
     public AssassinBasic(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
         this.main = main;
@@ -48,8 +50,9 @@ public class AssassinBasic {
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
         changeResourceHandler = main.getChangeResourceHandler();
-
+        stealth = assassinAbilities.getStealth();
         combo = assassinAbilities.getCombo();
+        duelistsFrenzy = assassinAbilities.getDuelistsFrenzy();
     }
 
     public void useBasic(Player player){
@@ -169,6 +172,11 @@ public class AssassinBasic {
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, player));
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, player);
+
+            stealth.stealthBonusCheck(player, targetToHit);
+            if(duelistsFrenzy.getFrenzy(player)){
+                combo.addComboPoint(player);
+            }
         }
 
 

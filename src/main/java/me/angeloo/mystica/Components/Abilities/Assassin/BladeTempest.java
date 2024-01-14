@@ -39,6 +39,7 @@ public class BladeTempest {
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
+    private final Stealth stealth;
     private final Combo combo;
 
     public BladeTempest(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
@@ -51,6 +52,7 @@ public class BladeTempest {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        stealth = assassinAbilities.getStealth();
         combo = assassinAbilities.getCombo();
     }
 
@@ -183,8 +185,8 @@ public class BladeTempest {
                         if(entity instanceof Player){
                             if(pvpManager.pvpLogic(player, (Player) entity)){
                                 changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                                stealth.stealthBonusCheck(player, livingEntity);
                                 hit = true;
-
                                 if(!trigger[0]){
                                     trigger[0] = true;
                                     combo.addComboPoint(player);
@@ -198,6 +200,7 @@ public class BladeTempest {
                         if(pveChecker.pveLogic(livingEntity)){
                             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, player));
                             changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                            stealth.stealthBonusCheck(player, livingEntity);
                             hit = true;
 
                             if(!trigger[0]){

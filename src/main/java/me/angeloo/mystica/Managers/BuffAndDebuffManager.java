@@ -31,6 +31,7 @@ public class BuffAndDebuffManager {
     private final BurningBlessingBuff burningBlessingBuff;
     private final PierceBuff pierceBuff;
     private final BladeTempestCrit bladeTempestCrit;
+    private final ConcoctionDebuff concoctionDebuff;
 
     public BuffAndDebuffManager(Mystica main){
         profileManager = main.getProfileManager();
@@ -56,6 +57,7 @@ public class BuffAndDebuffManager {
         modest = new Modest(main);
         pierceBuff = new PierceBuff(main);
         bladeTempestCrit = new BladeTempestCrit(main);
+        concoctionDebuff = new ConcoctionDebuff(main);
     }
 
     public Immune getImmune(){return immune;}
@@ -83,6 +85,7 @@ public class BuffAndDebuffManager {
     public BurningBlessingBuff getBurningBlessingBuff(){return burningBlessingBuff;}
     public PierceBuff getPierceBuff(){return pierceBuff;}
     public BladeTempestCrit getBladeTempestCrit(){return bladeTempestCrit;}
+    public ConcoctionDebuff getConcoctionDebuff(){return concoctionDebuff;}
 
     public void removeAllBuffsAndDebuffs(Player player){
         flamingSigilBuff.removeAttackBuff(player);
@@ -107,6 +110,7 @@ public class BuffAndDebuffManager {
         knockUp.removeKnockUp(player);
         pierceBuff.removeBuff(player);
         bladeTempestCrit.removeBonus(player);
+        concoctionDebuff.removeDebuff(player);
     }
 
     //attacker, defender
@@ -114,6 +118,7 @@ public class BuffAndDebuffManager {
 
         return 1 +
                 (shadowCrowsDebuff.getIncreasedDamageAmount(defender) +
+                        concoctionDebuff.getIncreasedDamageAmount(defender) +
                 wildRoarBuff.getMultiplier(attacker))
                 * damageReduction.getReduction(defender);
     }

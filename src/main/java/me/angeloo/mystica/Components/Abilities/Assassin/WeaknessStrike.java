@@ -40,6 +40,7 @@ public class WeaknessStrike {
     private final AbilityManager abilityManager;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Stealth stealth;
     private final Combo combo;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -57,6 +58,7 @@ public class WeaknessStrike {
         pveChecker = main.getPveChecker();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         combo = assassinAbilities.getCombo();
+        stealth = assassinAbilities.getStealth();
     }
 
     public void use(Player player){
@@ -202,6 +204,7 @@ public class WeaknessStrike {
 
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                         changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+                        stealth.stealthBonusCheck(player, target);
 
                         cancelTask();
                     }

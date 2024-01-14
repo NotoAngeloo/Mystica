@@ -512,7 +512,7 @@ public class SpecInventory {
                 ChatColor.of(new Color(230,230,230)) + "to deal a massive blow.",
                 ChatColor.of(new Color(230,230,230)) + "For the next 15 seconds,",
                 ChatColor.of(new Color(230,230,230)) + "every basic attack grants",
-                ChatColor.of(new Color(230,230,230)) + "2 combo points.",
+                ChatColor.of(new Color(230,230,230)) + "a combo point.",
                 ChatColor.of(new Color(230,230,230)) + "Requires 6 Combo Points");
     }
 

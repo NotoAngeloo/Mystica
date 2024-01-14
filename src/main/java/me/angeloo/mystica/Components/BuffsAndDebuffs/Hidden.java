@@ -34,6 +34,7 @@ public class Hidden {
         Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
 
         if(blacklist){
+
             aggroManager.removeHighPriorityTarget(player.getUniqueId());
             aggroManager.addToBlackList(player);
             aggroManager.removeFromAllAttackerLists(player);

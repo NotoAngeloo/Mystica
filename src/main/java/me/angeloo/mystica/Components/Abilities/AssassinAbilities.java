@@ -11,7 +11,7 @@ public class AssassinAbilities {
     private final ProfileManager profileManager;
 
     private final Combo combo;
-
+    private final Stealth stealth;
     private final AssassinBasic assassinBasic;
     private final Assault assault;
     private final Laceration laceration;
@@ -20,11 +20,14 @@ public class AssassinAbilities {
     private final Dash dash;
     private final BladeTempest bladeTempest;
     private final FlyingBlade flyingBlade;
+    private final DuelistsFrenzy duelistsFrenzy;
+    private final WickedConcoction wickedConcoction;
 
     public AssassinAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
-
         combo = new Combo(main);
+        stealth = new Stealth(main, manager);
+        duelistsFrenzy = new DuelistsFrenzy(main, manager, this);
         assassinBasic = new AssassinBasic(main, manager, this);
         assault = new Assault(main, manager, this);
         laceration = new Laceration(main, manager, this);
@@ -32,7 +35,8 @@ public class AssassinAbilities {
         pierce = new Pierce(main, manager, this);
         dash = new Dash(main, manager);
         bladeTempest = new BladeTempest(main, manager, this);
-        flyingBlade = new FlyingBlade(main, manager);
+        flyingBlade = new FlyingBlade(main, manager, this);
+        wickedConcoction = new WickedConcoction(main, manager, this);
     }
 
     public void useAssassinAbility(Player player, int abilityNumber){
@@ -67,6 +71,7 @@ public class AssassinAbilities {
                 return;
             }
             case 8:{
+                stealth.toggle(player);
                 return;
             }
         }
@@ -78,9 +83,11 @@ public class AssassinAbilities {
 
         switch (subclass.toLowerCase()){
             case "duelist":{
+                duelistsFrenzy.use(player);
                 return;
             }
             case "alchemist":{
+                wickedConcoction.use(player);
                 return;
             }
         }
@@ -108,6 +115,7 @@ public class AssassinAbilities {
             case 7:
                 return flyingBlade.getCooldown(player);
             case 8:
+                return stealth.getCooldown(player);
 
         }
 
@@ -122,16 +130,18 @@ public class AssassinAbilities {
         String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
         switch (subclass.toLowerCase()){
-            case "assassinator":
-
+            case "duelist":
+                return duelistsFrenzy.getCooldown(player);
             case "alchemist":
-
+                return wickedConcoction.getCooldown(player);
 
         }
 
         return 0;
     }
 
+    public Stealth getStealth(){return stealth;}
     public Combo getCombo(){return combo;}
+    public DuelistsFrenzy getDuelistsFrenzy(){return duelistsFrenzy;}
 
 }

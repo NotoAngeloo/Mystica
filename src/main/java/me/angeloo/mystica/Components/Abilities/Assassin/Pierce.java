@@ -37,6 +37,7 @@ public class Pierce {
     private final AbilityManager abilityManager;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Stealth stealth;
     private final Combo combo;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -54,6 +55,7 @@ public class Pierce {
         pveChecker = main.getPveChecker();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         combo = assassinAbilities.getCombo();
+        stealth = assassinAbilities.getStealth();
     }
 
     public void use(Player player){
@@ -192,7 +194,7 @@ public class Pierce {
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
-
+                    stealth.stealthBonusCheck(player, target);
                     buffAndDebuffManager.getPierceBuff().applyBuff(player);
                 }
 

@@ -1,9 +1,8 @@
 package me.angeloo.mystica.Components.Abilities.Assassin;
 
 import me.angeloo.mystica.Components.Abilities.AssassinAbilities;
-import me.angeloo.mystica.Components.Abilities.Elementalist.CrystalStorm;
-import me.angeloo.mystica.Components.Abilities.Elementalist.ElementalBreath;
-import me.angeloo.mystica.Components.Abilities.ElementalistAbilities;
+import me.angeloo.mystica.Components.Abilities.Paladin.Decision;
+import me.angeloo.mystica.Components.Abilities.PaladinAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -14,7 +13,6 @@ import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -22,13 +20,14 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class FlyingBlade {
+public class WickedConcoction {
 
     private final Mystica main;
 
@@ -40,13 +39,14 @@ public class FlyingBlade {
     private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final AggroManager aggroManager;
     private final CooldownDisplayer cooldownDisplayer;
 
     private final Stealth stealth;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public FlyingBlade(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
+    public WickedConcoction(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
@@ -56,6 +56,7 @@ public class FlyingBlade {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        aggroManager = main.getAggroManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         stealth = assassinAbilities.getStealth();
     }
@@ -70,16 +71,9 @@ public class FlyingBlade {
         double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
         double totalRange = baseRange + extraRange;
 
-        targetManager.setTargetToNearestValid(player, totalRange);
-
         LivingEntity target = targetManager.getPlayerTarget(player);
 
         if(target != null){
-            if(target instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) target)){
-                    return;
-                }
-            }
 
             if(!(target instanceof Player)){
                 if(!pveChecker.pveLogic(target)){
@@ -92,10 +86,17 @@ public class FlyingBlade {
             if(distance > totalRange){
                 return;
             }
+
+            if(target instanceof Player){
+                if(profileManager.getAnyProfile(target).getIfDead()){
+                    target = player;
+                }
+            }
+
         }
 
         if(target == null){
-            return;
+            target = player;
         }
 
         if(abilityReadyInMap.get(player.getUniqueId()) > 0){
@@ -104,15 +105,15 @@ public class FlyingBlade {
 
         combatManager.startCombatTimer(player);
 
-        execute(player);
+        execute(player, target);
 
-        abilityReadyInMap.put(player.getUniqueId(), 15);
+        abilityReadyInMap.put(player.getUniqueId(), 20);
         new BukkitRunnable(){
             @Override
             public void run(){
 
                 if(abilityReadyInMap.get(player.getUniqueId()) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 7);
+                    cooldownDisplayer.displayUltimateCooldown(player);
                     this.cancel();
                     return;
                 }
@@ -121,38 +122,46 @@ public class FlyingBlade {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 7);
+                cooldownDisplayer.displayUltimateCooldown(player);
+
             }
         }.runTaskTimer(main, 0,20);
 
     }
 
-    private void execute(Player player){
-
-        LivingEntity target = targetManager.getPlayerTarget(player);
+    private void execute(Player player, LivingEntity target){
 
         Location start = player.getLocation();
 
-        ArmorStand armorStand = player.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
-        armorStand.setInvisible(true);
-        armorStand.setGravity(false);
-        armorStand.setCollidable(false);
-        armorStand.setInvulnerable(true);
-        armorStand.setMarker(true);
-        EntityEquipment entityEquipment = armorStand.getEquipment();
-        ItemStack weapon = profileManager.getAnyProfile(player).getPlayerEquipment().getWeapon();
+        ItemStack item = new ItemStack(Material.SLIME_BALL);
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setCustomModelData(3);
+        item.setItemMeta(meta);
+
+        ArmorStand stand = player.getWorld().spawn(start.clone().subtract(0,10,0), ArmorStand.class);
+        stand.setInvisible(true);
+        stand.setGravity(false);
+        stand.setCollidable(false);
+        stand.setInvulnerable(true);
+        stand.setMarker(true);
+        EntityEquipment entityEquipment = stand.getEquipment();
         assert entityEquipment != null;
-        entityEquipment.setHelmet(weapon);
-        armorStand.teleport(start);
+        entityEquipment.setHelmet(item);
+        stand.teleport(start);
 
-        double skillDamage = 6;
+        boolean heal = false;
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level() +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
+        if(target instanceof Player){
+            if(!pvpManager.pvpLogic(player, (Player) target)){
+                heal = true;
+            }
+        }
 
+        double skillDamage = 10;
+        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
         skillDamage = skillDamage + ((int)(skillLevel/10));
-
-
+        boolean finalHeal = heal;
         double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
@@ -164,7 +173,7 @@ public class FlyingBlade {
                     targetWasLoc = targetLoc.clone();
                 }
 
-                Location current = armorStand.getLocation();
+                Location current = stand.getLocation();
 
                 if (!sameWorld(current, targetWasLoc)) {
                     cancelTask();
@@ -177,23 +186,38 @@ public class FlyingBlade {
                 current.add(direction.normalize().multiply(distanceThisTick));
                 current.setDirection(direction);
 
-                armorStand.teleport(current);
+                stand.teleport(current);
 
                 if (distance <= 1) {
 
                     cancelTask();
 
-                    boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
+                    if(!finalHeal){
+                        boolean crit = damageCalculator.checkIfCrit(player, 0);
+                        double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
 
-                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, player);
-
-                    if(profileManager.getAnyProfile(target).getIsMovable()){
-                        buffAndDebuffManager.getStun().applyStun(target, 20);
+                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
+                        changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+                        stealth.stealthBonusCheck(player, target);
+                        buffAndDebuffManager.getConcoctionDebuff().applyDebuff(target);
+                        return;
                     }
 
-                    stealth.stealthBonusCheck(player, target);
+                    double totalTargetHealth = profileManager.getAnyProfile(target).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(target);
+                    double yourAttack = profileManager.getAnyProfile(player).getTotalAttack();
+                    boolean crit = damageCalculator.checkIfCrit(player, 0);
+
+                    double healAmount = totalTargetHealth * .05;
+                    healAmount = healAmount * (yourAttack/3);
+
+                    if(crit){
+                        healAmount = healAmount * 1.5;
+                    }
+
+                    changeResourceHandler.addHealthToEntity(target, healAmount, player);
+                    buffAndDebuffManager.getDamageReduction().applyDamageReduction(target, .95, 20*15);
+                    //and damage reduction
+
                 }
 
             }
@@ -217,13 +241,15 @@ public class FlyingBlade {
 
             private void cancelTask() {
                 this.cancel();
-                armorStand.remove();
+                stand.remove();
             }
+
         }.runTaskTimer(main, 0, 1);
 
     }
 
     public int getCooldown(Player player){
+
         int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
 
         if(cooldown < 0){

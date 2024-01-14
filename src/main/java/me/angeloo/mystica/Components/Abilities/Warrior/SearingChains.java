@@ -323,6 +323,8 @@ public class SearingChains {
                                 if(pvpManager.pvpLogic(player, (Player) entity)){
                                     changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
                                     validCCTargets.add(livingEntity);
+                                    targetManager.setPlayerTarget((Player) entity, player);
+                                    return;
                                 }
                                 continue;
                             }

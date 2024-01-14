@@ -215,6 +215,11 @@ public class Judgement {
 
                 if(templar){
                     aggroManager.setAsHighPriorityTarget(target, player);
+
+                    if(target instanceof Player){
+                        targetManager.setPlayerTarget((Player) target, player);
+                        return;
+                    }
                 }
 
                 decision.removeDecision(player);

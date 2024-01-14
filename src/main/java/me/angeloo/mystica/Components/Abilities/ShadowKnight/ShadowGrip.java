@@ -193,6 +193,10 @@ public class ShadowGrip {
 
                         if(blood){
                             aggroManager.setAsHighPriorityTarget(target, player);
+                            if(target instanceof Player){
+                                targetManager.setPlayerTarget((Player) target, player);
+                                return;
+                            }
                         }
 
                         //also check and pull creature

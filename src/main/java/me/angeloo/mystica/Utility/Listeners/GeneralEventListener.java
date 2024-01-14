@@ -215,6 +215,7 @@ public class GeneralEventListener implements Listener {
             Entity target = entry.getValue();
 
             if(target != null && target.equals(player)){
+                assert thisPlayer != null;
                 targetManager.removeAllBars(thisPlayer);
 
             }

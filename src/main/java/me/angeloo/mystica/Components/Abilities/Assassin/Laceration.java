@@ -32,16 +32,15 @@ public class Laceration {
     private final DamageCalculator damageCalculator;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
-    private final AbilityManager abilityManager;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Stealth stealth;
     private final Combo combo;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
     public Laceration(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
         this.main = main;
-        abilityManager = manager;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
@@ -52,6 +51,7 @@ public class Laceration {
         pveChecker = main.getPveChecker();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         combo = assassinAbilities.getCombo();
+        stealth = assassinAbilities.getStealth();
     }
 
     public void use(Player player){
@@ -153,9 +153,9 @@ public class Laceration {
 
         boolean crit = damageCalculator.checkIfCrit(player, 0);
         double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage, crit);
-
         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
         changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+        stealth.stealthBonusCheck(player, target);
         combo.addComboPoint(player);
 
         double finalBleedDamage = bleedDamage;

@@ -30,6 +30,7 @@ public class BuffAndDebuffManager {
     private final FlamingSigilBuff flamingSigilBuff;
     private final BurningBlessingBuff burningBlessingBuff;
     private final PierceBuff pierceBuff;
+    private final BladeTempestCrit bladeTempestCrit;
 
     public BuffAndDebuffManager(Mystica main){
         profileManager = main.getProfileManager();
@@ -54,6 +55,7 @@ public class BuffAndDebuffManager {
         wellCrit = new WellCrit();
         modest = new Modest(main);
         pierceBuff = new PierceBuff(main);
+        bladeTempestCrit = new BladeTempestCrit(main);
     }
 
     public Immune getImmune(){return immune;}
@@ -80,6 +82,7 @@ public class BuffAndDebuffManager {
     public FlamingSigilBuff getFlamingSigilBuff(){return flamingSigilBuff;}
     public BurningBlessingBuff getBurningBlessingBuff(){return burningBlessingBuff;}
     public PierceBuff getPierceBuff(){return pierceBuff;}
+    public BladeTempestCrit getBladeTempestCrit(){return bladeTempestCrit;}
 
     public void removeAllBuffsAndDebuffs(Player player){
         flamingSigilBuff.removeAttackBuff(player);
@@ -103,6 +106,7 @@ public class BuffAndDebuffManager {
         modest.removeModest(player);
         knockUp.removeKnockUp(player);
         pierceBuff.removeBuff(player);
+        bladeTempestCrit.removeBonus(player);
     }
 
     //attacker, defender
@@ -128,7 +132,9 @@ public class BuffAndDebuffManager {
     }
 
     public int getCritBuffAmount(LivingEntity entity){
-        return wellCrit.getWellCrit(entity);
+        return
+                wellCrit.getWellCrit(entity)
+                + bladeTempestCrit.getTempestCrit(entity);
     }
 
     public double getAttackBuffAmount(LivingEntity entity){

@@ -17,6 +17,9 @@ public class AssassinAbilities {
     private final Laceration laceration;
     private final WeaknessStrike weaknessStrike;
     private final Pierce pierce;
+    private final Dash dash;
+    private final BladeTempest bladeTempest;
+    private final FlyingBlade flyingBlade;
 
     public AssassinAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
@@ -27,6 +30,9 @@ public class AssassinAbilities {
         laceration = new Laceration(main, manager, this);
         weaknessStrike = new WeaknessStrike(main, manager, this);
         pierce = new Pierce(main, manager, this);
+        dash = new Dash(main, manager);
+        bladeTempest = new BladeTempest(main, manager, this);
+        flyingBlade = new FlyingBlade(main, manager);
     }
 
     public void useAssassinAbility(Player player, int abilityNumber){
@@ -49,12 +55,15 @@ public class AssassinAbilities {
                 return;
             }
             case 5:{
+                dash.use(player);
                 return;
             }
             case 6:{
+                bladeTempest.use(player);
                 return;
             }
             case 7:{
+                flyingBlade.use(player);
                 return;
             }
             case 8:{
@@ -68,7 +77,7 @@ public class AssassinAbilities {
         String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
         switch (subclass.toLowerCase()){
-            case "assassinator":{
+            case "duelist":{
                 return;
             }
             case "alchemist":{
@@ -93,11 +102,11 @@ public class AssassinAbilities {
             case 4:
                 return pierce.getCooldown(player);
             case 5:
-
+                return dash.getCooldown(player);
             case 6:
-
+                return bladeTempest.getCooldown(player);
             case 7:
-
+                return flyingBlade.getCooldown(player);
             case 8:
 
         }

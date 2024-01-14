@@ -219,7 +219,7 @@ public class WeaknessStrike {
 
                     if(distance<=1){
 
-                        if(pause>=5){
+                        if(pause>=2){
                             goUp = false;
 
                             ItemStack item = new ItemStack(Material.SLIME_BALL);

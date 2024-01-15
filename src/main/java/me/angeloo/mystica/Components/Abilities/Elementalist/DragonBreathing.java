@@ -204,7 +204,6 @@ public class DragonBreathing {
                             double x = loc.getX() + (radius * Math.cos(angle));
                             double z = loc.getZ() + (radius * Math.sin(angle));
                             Location jloc = new Location(loc.getWorld(), x, loc.getY(), z);
-
                             player.getWorld().spawnParticle(Particle.LAVA, jloc, 1, 0, 0, 0, 0);
                         }
 
@@ -252,6 +251,14 @@ public class DragonBreathing {
                                 if(pvpManager.pvpLogic(player, (Player) entity)){
                                     changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
                                     burnTask(livingEntity);
+
+                                    if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
+                                        Vector awayDirection = entity.getLocation().toVector().subtract(loc.toVector()).normalize();
+                                        Vector velocity = awayDirection.multiply(.5).add(new Vector(0, .5, 0));
+                                        livingEntity.setVelocity(velocity);
+                                        buffAndDebuffManager.getKnockUp().applyKnockUp(livingEntity);
+                                    }
+
                                 }
                                 continue;
                             }
@@ -260,6 +267,14 @@ public class DragonBreathing {
                                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, player));
                                 changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
                                 burnTask(livingEntity);
+
+                                if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
+                                    Vector awayDirection = entity.getLocation().toVector().subtract(loc.toVector()).normalize();
+                                    Vector velocity = awayDirection.multiply(.5).add(new Vector(0, .5, 0));
+                                    livingEntity.setVelocity(velocity);
+                                    buffAndDebuffManager.getKnockUp().applyKnockUp(livingEntity);
+                                }
+
                             }
                         }
                     }

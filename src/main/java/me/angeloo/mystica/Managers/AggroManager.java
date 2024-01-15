@@ -1,6 +1,5 @@
 package me.angeloo.mystica.Managers;
 
-import me.angeloo.mystica.Mystica;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 

@@ -10,7 +10,7 @@ import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
+
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -192,6 +192,9 @@ public class RangerBasic {
         entityEquipment.setHelmet(arrow);
 
         double skillDamage = 1;
+        if(rallyingCry.getIfBuffTime(player) > 0){
+            skillDamage = skillDamage * 1.25;
+        }
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
 
         skillDamage = skillDamage + ((int)(skillLevel/10));
@@ -225,11 +228,6 @@ public class RangerBasic {
                 if (distance <= 1) {
 
                     cancelTask();
-
-                    double basicDamage = 1;
-                    if(rallyingCry.getIfBuffTime(player) > 0){
-                        basicDamage = basicDamage * 1.25;
-                    }
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
                     double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
@@ -268,7 +266,6 @@ public class RangerBasic {
 
     private void basicStage2(Player player){
 
-        //reason this is different because higher power, also rally cry interactions
 
         LivingEntity target = targetManager.getPlayerTarget(player);
 
@@ -276,7 +273,7 @@ public class RangerBasic {
 
         Location start = player.getLocation();
         start.subtract(0, 1, 0);
-        ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -293,8 +290,11 @@ public class RangerBasic {
         assert entityEquipment != null;
         entityEquipment.setHelmet(arrow);
 
-        double skillDamage = 1;
+        double skillDamage = 1.5;
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+        if(rallyingCry.getIfBuffTime(player) > 0){
+            skillDamage = skillDamage * 1.25;
+        }
 
         skillDamage = skillDamage + ((int)(skillLevel/10));
 
@@ -328,18 +328,20 @@ public class RangerBasic {
 
                     cancelTask();
 
-                    double basicDamage = finalSkillDamage;
-                    if(rallyingCry.getIfBuffTime(player) > 0){
-                        basicDamage = basicDamage * 1.25;
-                    }
-
-
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Physical", basicDamage, crit);
+                    double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
 
+                    if(rallyingCry.getIfBuffTime(player) > 0){
+                        if(profileManager.getAnyProfile(target).getIsMovable()){
+                            Vector awayDirection = target.getLocation().toVector().subtract(player.getLocation().toVector()).normalize();
+                            Vector velocity = awayDirection.multiply(.75).add(new Vector(0, .5, 0));
+                            target.setVelocity(velocity);
+                            buffAndDebuffManager.getKnockUp().applyKnockUp(target);
+                        }
+                    }
                 }
 
             }

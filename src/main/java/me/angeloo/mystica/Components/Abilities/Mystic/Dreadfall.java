@@ -237,10 +237,14 @@ public class Dreadfall {
                             if(pvpManager.pvpLogic(player, (Player) entity)){
                                 changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
 
+                                if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
+                                    Vector velocity = (new Vector(0, .5, 0));
+                                    livingEntity.setVelocity(velocity);
+                                    buffAndDebuffManager.getKnockUp().applyKnockUp(livingEntity);
+                                }
+
                                 if(arcane && crit){
-
                                     double fifteenPercent = (double) profileManager.getAnyProfile(player).getTotalMagic() * .15;
-
                                     changeResourceHandler.subtractHealthFromEntity(target, fifteenPercent, player);
                                 }
 
@@ -252,10 +256,14 @@ public class Dreadfall {
                             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, player));
                             changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
 
+                            if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
+                                Vector velocity = (new Vector(0, .5, 0));
+                                livingEntity.setVelocity(velocity);
+                                buffAndDebuffManager.getKnockUp().applyKnockUp(livingEntity);
+                            }
+
                             if(arcane && crit){
-
                                 double fifteenPercent = (double) profileManager.getAnyProfile(player).getTotalMagic() * .15;
-
                                 changeResourceHandler.subtractHealthFromEntity(target, fifteenPercent, player);
                             }
 

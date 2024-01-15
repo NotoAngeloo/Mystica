@@ -117,10 +117,12 @@ public class Soulcrack {
         player.getInventory().setItemInOffHand(null);
         armorStand.teleport(start);
 
-        double skillDamage = 4;
+        double skillDamage = 16;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));
+
+        skillDamage = skillDamage * .25;
 
         changeResourceHandler.addManaToPlayer(player, 100.0);
 
@@ -199,6 +201,14 @@ public class Soulcrack {
                     if(entity instanceof Player){
                         if(pvpManager.pvpLogic(player, (Player) entity)){
                             changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+
+                            if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
+                                Vector awayDirection = entity.getLocation().toVector().subtract(player.getLocation().toVector()).normalize();
+                                Vector velocity = awayDirection.multiply(.75).add(new Vector(0, .5, 0));
+                                livingEntity.setVelocity(velocity);
+                                buffAndDebuffManager.getKnockUp().applyKnockUp(livingEntity);
+                            }
+
                         }
                         continue;
                     }
@@ -206,6 +216,13 @@ public class Soulcrack {
                     if(pveChecker.pveLogic(livingEntity)){
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, player));
                         changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+
+                        if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
+                            Vector awayDirection = entity.getLocation().toVector().subtract(player.getLocation().toVector()).normalize();
+                            Vector velocity = awayDirection.multiply(.75).add(new Vector(0, .5, 0));
+                            livingEntity.setVelocity(velocity);
+                            buffAndDebuffManager.getKnockUp().applyKnockUp(livingEntity);
+                        }
 
                     }
 

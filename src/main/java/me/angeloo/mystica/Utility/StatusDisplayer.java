@@ -90,7 +90,49 @@ public class StatusDisplayer {
 
                 return String.valueOf(comboString);
             }
-            //mystic also here
+            case "mystic":{
+
+                if(!subClass.equalsIgnoreCase("chaos")){
+                    return "";
+                }
+
+                StringBuilder shardString = new StringBuilder();
+
+                int shards = abilityManager.getMysticAbilities().getEvilSpirit().getChaosShards(player);
+
+                switch (shards){
+                    case 0:{
+                        shardString.append("\uE00A").append("\uE00B").append("\uE00C").append("\uE00D").append("\uE00E").append("\uE00F");
+                        break;
+                    }
+                    case 1:{
+                        shardString.append("\uE010").append("\uE00B").append("\uE00C").append("\uE00D").append("\uE00E").append("\uE00F");
+                        break;
+                    }
+                    case 2:{
+                        shardString.append("\uE010").append("\uE011").append("\uE00C").append("\uE00D").append("\uE00E").append("\uE00F");
+                        break;
+                    }
+                    case 3:{
+                        shardString.append("\uE010").append("\uE011").append("\uE012").append("\uE00D").append("\uE00E").append("\uE00F");
+                        break;
+                    }
+                    case 4:{
+                        shardString.append("\uE010").append("\uE011").append("\uE012").append("\uE013").append("\uE00E").append("\uE00F");
+                        break;
+                    }
+                    case 5:{
+                        shardString.append("\uE010").append("\uE011").append("\uE012").append("\uE013").append("\uE014").append("\uE00F");
+                        break;
+                    }
+                    case 6:{
+                        shardString.append("\uE010").append("\uE011").append("\uE012").append("\uE013").append("\uE014").append("\uE015");
+                        break;
+                    }
+                }
+
+                return String.valueOf(shardString);
+            }
         }
 
         return "";

@@ -88,6 +88,8 @@ public class InventoryEventListener implements Listener {
 
         displayWeapons.displayWeapons(player);
         displayWeapons.displayArmor(player);
+
+        //and read it here
     }
 
     @EventHandler
@@ -180,7 +182,7 @@ public class InventoryEventListener implements Listener {
 
         if(item.getItemMeta().getDisplayName().equalsIgnoreCase("Buy")){
 
-            int bal = profileManager.getAnyProfile(player).getPoints().getBal();
+            int bal = profileManager.getAnyProfile(player).getBal().getBal();
 
             if(bal < price){
                 player.sendMessage("You cannot afford");
@@ -188,7 +190,7 @@ public class InventoryEventListener implements Listener {
             }
 
             player.sendMessage("Purchase Successful");
-            profileManager.getAnyProfile(player).getPoints().setBal(bal - price);
+            profileManager.getAnyProfile(player).getBal().setBal(bal - price);
             profileManager.getAnyProfile(player).getPlayerBag().setNumUnlocks(numLocks + 1);
             player.openInventory(buyInvSlotsInventory.openBuyInv(player));
         }
@@ -592,6 +594,7 @@ public class InventoryEventListener implements Listener {
 
             profileManager.getAnyProfile(player).setPlayerSubclass(name);
             player.openInventory(specInventory.openSpecInventory(player));
+            profileManager.getAnyProfile(player).getStats().setLevelStats(profileManager.getAnyProfile(player).getStats().getLevel(), name);
             return;
         }
 

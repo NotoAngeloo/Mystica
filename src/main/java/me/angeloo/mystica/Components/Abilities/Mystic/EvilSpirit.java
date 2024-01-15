@@ -47,9 +47,9 @@ public class EvilSpirit {
 
     public void use(Player player){
 
-        /*if(getChaosShards(player)<6){
+        if(getChaosShards(player)<6){
             return;
-        }*/
+        }
 
         combatManager.startCombatTimer(player);
         execute(player);

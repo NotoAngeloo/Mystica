@@ -66,44 +66,101 @@ public class Stats {
     }
 
 
-
-
-
     public void setLevel(int level){Level = level;}
 
-    public void setAttack(int attack) {
+
+    public void setLevelStats(int level, String subclass){
+
+        int attack = 1;
+        int magic = 1;
+        int health = 20;
+        int mana = 20;
+        int regen = 1;
+        int mana_regen = 1;
+        int defence = 5;
+        int magic_defence = 5;
+        int crit = 1;
+
+        switch (subclass.toLowerCase()){
+
+            case "pyromancer":
+            case "chaos":
+            case "arcane master":{
+                health+=(level*15);
+                magic+=(level*3);
+                mana+=(level*100);
+                defence+=(level);
+                magic_defence+=(level);
+                crit+=10;
+                break;
+            }
+            case "conjurer":
+            case "shepard": {
+                health+=(level*30);
+                magic+=(level*2);
+                mana+=(level*100);
+                defence+=(level);
+                magic_defence+=(level);
+                break;
+            }
+            case "scout":
+            case "executioner":
+            case "dawn":
+            case "duelist":{
+                health+=(level*15);
+                attack+=(level*3);
+                mana+=(level*100);
+                defence+=(level);
+                magic_defence+=(level);
+                crit+=10;
+                break;
+            }
+            case "animal tamer":
+            case "divine":
+            case "alchemist":{
+                health+=(level*30);
+                attack+=(level*2);
+                mana+=(level*100);
+                defence+=(level);
+                magic_defence+=(level);
+                break;
+            }
+            case "blood":{
+                health+=(level*40);
+                attack+=(level);
+                mana=100;
+                defence+=(level*2);
+                magic_defence+=(level*2);
+                break;
+            }
+            case "doom":{
+                health+=(level*30);
+                attack+=(level*3);
+                mana=100;
+                defence+=(level);
+                magic_defence+=(level);
+                crit+=10;
+                break;
+            }
+            case "templar":
+            case "gladiator":{
+                health+=(level*30);
+                attack+=(level);
+                mana+=(level*200);
+                defence+=(level*2);
+                magic_defence+=(level*2);
+                break;
+            }
+        }
+
         Attack = attack;
-    }
-
-    public void setMagic(int magic) {
         Magic = magic;
-    }
-
-    public void setHealth(int health) {
         Health = health;
-    }
-
-    public void setMana(int mana) {
         Mana = mana;
-    }
-
-    public void setRegen(int regen) {
         Regen = regen;
-    }
-
-    public void setMana_Regen(int mana_regen) {
         Mana_Regen = mana_regen;
-    }
-
-    public void setDefense(int defense) {
-        Defense = defense;
-    }
-
-    public void setMagic_Defense(int magic_defense) {
-        Magic_Defense = magic_defense;
-    }
-
-    public void setCrit(int crit) {
+        Defense = defence;
+        Magic_Defense = magic_defence;
         Crit = crit;
     }
 

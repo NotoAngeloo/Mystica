@@ -24,7 +24,7 @@ public class BuyInvSlotsInventory {
     public Inventory openBuyInv(Player player){
 
         int slots = profileManager.getAnyProfile(player).getPlayerBag().getNumUnlocks();
-        int bal = profileManager.getAnyProfile(player).getPoints().getBal();
+        int bal = profileManager.getAnyProfile(player).getBal().getBal();
         int price = (20 + (20 * slots));
 
         Inventory inv = Bukkit.createInventory(null, 9 ,"Purchase More Space?");
@@ -39,6 +39,7 @@ public class BuyInvSlotsInventory {
 
     private ItemStack getItem(ItemStack item, String name, String... lore){
         ItemMeta meta = item.getItemMeta();
+        assert meta != null;
         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
 
         List<String> lores = new ArrayList<>();

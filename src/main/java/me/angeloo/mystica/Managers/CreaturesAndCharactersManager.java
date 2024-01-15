@@ -51,6 +51,11 @@ public class CreaturesAndCharactersManager {
         Yield yield = new Yield(0.0f, null);
         NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(10, stats, isMovable, immortal, object, passive, yield) {
             @Override
+            public Bal getBal() {
+                return null;
+            }
+
+            @Override
             public Boolean getIfDead() {
                 return null;
             }
@@ -81,14 +86,15 @@ public class CreaturesAndCharactersManager {
             }
 
             @Override
+            public void setLevelStats(int level, String subclass) {
+
+            }
+
+            @Override
             public StatsFromGear getGearStats() {
                 return null;
             }
 
-            @Override
-            public Points getPoints() {
-                return null;
-            }
 
             @Override
             public void setGearStats(StatsFromGear statsFromGear) {
@@ -214,6 +220,11 @@ public class CreaturesAndCharactersManager {
         Yield yield = new Yield(0.0f, null);
         NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(10, stats, isMovable, immortal, object, passive, yield) {
             @Override
+            public Bal getBal() {
+                return null;
+            }
+
+            @Override
             public Boolean getIfDead() {
                 return null;
             }
@@ -244,14 +255,15 @@ public class CreaturesAndCharactersManager {
             }
 
             @Override
+            public void setLevelStats(int level, String subclass) {
+
+            }
+
+            @Override
             public StatsFromGear getGearStats() {
                 return null;
             }
 
-            @Override
-            public Points getPoints() {
-                return null;
-            }
 
             @Override
             public void setGearStats(StatsFromGear statsFromGear) {
@@ -377,6 +389,11 @@ public class CreaturesAndCharactersManager {
         NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(10, stats, isMovable, immortal, object, passive, yield) {
 
             @Override
+            public Bal getBal() {
+                return null;
+            }
+
+            @Override
             public Boolean getIfDead() {
                 return null;
             }
@@ -407,14 +424,15 @@ public class CreaturesAndCharactersManager {
             }
 
             @Override
+            public void setLevelStats(int level, String subclass) {
+
+            }
+
+            @Override
             public StatsFromGear getGearStats() {
                 return null;
             }
 
-            @Override
-            public Points getPoints() {
-                return null;
-            }
 
             @Override
             public void setGearStats(StatsFromGear statsFromGear) {

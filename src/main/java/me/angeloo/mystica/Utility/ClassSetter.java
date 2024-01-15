@@ -103,7 +103,7 @@ public class ClassSetter {
 
         playerProfile.setPlayerClass(clazz);
         playerProfile.setPlayerSubclass("none");
-
+        profileManager.getAnyProfile(player).getStats().setLevelStats(profileManager.getAnyProfile(player).getStats().getLevel(), "none");
         player.sendMessage("You are now a(n) " + clazz);
         displayWeapons.displayWeapons(player);
         displayWeapons.displayArmor(player);

@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components;
 
+import me.angeloo.mystica.Components.ProfileComponents.Bal;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.Components.ProfileComponents.Stats;
 
@@ -55,4 +56,6 @@ public abstract class NonPlayerProfile implements Profile{
     public Boolean getIsPassive(){return passive;}
     @Override
     public Yield getYield(){return yield;}
+
+    public abstract Bal getBal();
 }

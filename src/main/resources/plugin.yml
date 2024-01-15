@@ -21,6 +21,9 @@ commands:
   SeeRawDamage:
     description: allows for better testing of seeing damage
     usage: /SeeRawDamage
+  WhatAreMyStats:
+    description: allows for players to see their attributes
+    usage: /WhatAreMyStats
   MysticaDamage:
     description: allows mms to damage player using this plugin
     usage: /MysticaDamage <target> <caster> <type> <amount>

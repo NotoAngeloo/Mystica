@@ -9,7 +9,6 @@ import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.PlayerProfile;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
-import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.ProfileFileWriter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -52,7 +51,6 @@ public class ProfileManager {
             Profile profile = playerProfiles.get(uuid);
             Stats stats = profile.getStats();
             StatsFromGear gearStats = profile.getGearStats();
-            Points points = profile.getPoints();
 
             String playerClass = profile.getPlayerClass();
             String playerSubclass = profile.getPlayerSubclass();
@@ -73,19 +71,8 @@ public class ProfileManager {
 
             config.set(id + ".name", playername);
 
-            config.set(id + ".points.talentpoints", points.getTalentPoints());
-            config.set(id + ".points.bal", points.getBal());
 
             config.set(id + ".stats.level", stats.getLevel());
-            config.set(id + ".stats.atk", stats.getAttack());
-            config.set(id + ".stats.mag", stats.getMagic());
-            config.set(id + ".stats.hp", stats.getHealth());
-            config.set(id + ".stats.mana", stats.getMana());
-            config.set(id + ".stats.regen", stats.getRegen());
-            config.set(id + ".stats.mana_regen", stats.getMana_Regen());
-            config.set(id + ".stats.def", stats.getDefense());
-            config.set(id + ".stats.mag_def", stats.getMagic_Defense());
-            config.set(id + ".stats.crit", stats.getCrit());
 
             config.set(id + ".gstats.atk", gearStats.getAttack());
             config.set(id + ".gstats.mag", gearStats.getMagic());
@@ -165,21 +152,20 @@ public class ProfileManager {
                     //player points
                     int skillpoints = config.getInt(id + ".points.talentpoints");
                     int bal = config.getInt(id + ".points.bal");
-                    Points points = new Points(skillpoints, bal);
+                    Bal points = new Bal(bal);
+
+                    String playerClass = config.getString(id + ".class");
+                    String playerSubclass = config.getString(id + ".subclass");
 
                     //stats
                     int level = config.getInt(id + ".stats.level");
-                    int atk = config.getInt(id + ".stats.atk");
-                    int mag = config.getInt(id + ".stats.mag");
-                    int hp = config.getInt(id + ".stats.hp");
-                    int mana = config.getInt(id + ".stats.mana");
-                    int regen = config.getInt(id + ".stats.regen");
-                    int mregen = config.getInt(id + ".stats.mana_regen");
-                    int def = config.getInt(id + ".stats.def");
-                    int mdef = config.getInt(id + ".stats.mag_def");
-                    int crit = config.getInt(id + ".stats.crit");
 
-                    Stats stats = new Stats(level, atk, mag, hp, mana, regen, mregen, def, mdef, crit);
+                    Stats stats = new Stats(level,1,1,20,20,1,1,5,5, 1);
+                    assert playerSubclass != null;
+                    stats.setLevelStats(level, playerSubclass);
+
+                    int hp = stats.getHealth();
+                    int mana = stats.getMana();
 
                     //gearstats
                     int gatk = config.getInt(id + ".gstats.atk");
@@ -196,9 +182,6 @@ public class ProfileManager {
 
                     int currentHealth = hp + ghp;
                     int currentMana = mana + gmana;
-
-                    String playerClass = config.getString(id + ".class");
-                    String playerSubclass = config.getString(id + ".subclass");
 
                     ItemStack[] savedInv = ((List<ItemStack>) config.get(id + ".savedInv")).toArray(new ItemStack[41]);
 
@@ -261,6 +244,11 @@ public class ProfileManager {
                             playerBossLevel) {
 
                         @Override
+                        public Bal getBal() {
+                            return null;
+                        }
+
+                        @Override
                         public Boolean getIsPassive() {
                             return false;
                         }
@@ -274,7 +262,6 @@ public class ProfileManager {
                         public void setIsMovable(Boolean which) {
 
                         }
-
 
                         @Override
                         public Boolean getImmortality() {
@@ -346,7 +333,7 @@ public class ProfileManager {
         Stats stats = new Stats(1,1,1,20,20,1,1,5,5, 1);
         StatsFromGear gearStats = new StatsFromGear( 0, 0,0,0,0,0,0,0,0);
 
-        Points points = new Points(1, 0);
+        Bal bal = new Bal(0);
 
         int currentHealth = 20;
         int currentMana = 20;
@@ -364,7 +351,7 @@ public class ProfileManager {
         PlayerProfile profile = new PlayerProfile(false, false, currentHealth, currentMana,
                 stats,
                 gearStats,
-                points,
+                bal,
                 "None",
                 "None",
                 new ItemStack[41],
@@ -374,6 +361,11 @@ public class ProfileManager {
                 equipSkills,
                 playerBossLevel) {
 
+
+            @Override
+            public Bal getBal() {
+                return null;
+            }
 
             @Override
             public Boolean getIsPassive() {
@@ -437,6 +429,11 @@ public class ProfileManager {
         Yield yield = new Yield(0, null);
         NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(currentHealth, stats, true, false, false, false, yield) {
             @Override
+            public Bal getBal() {
+                return null;
+            }
+
+            @Override
             public Boolean getIfDead() {
                 return null;
             }
@@ -463,6 +460,11 @@ public class ProfileManager {
 
             @Override
             public void setCurrentMana(double currentMana) {
+
+            }
+
+            @Override
+            public void setLevelStats(int level, String subclass) {
 
             }
 
@@ -517,10 +519,6 @@ public class ProfileManager {
                 return getStats().getCrit();
             }
 
-            @Override
-            public Points getPoints() {
-                return null;
-            }
 
             @Override
             public void setGearStats(StatsFromGear statsFromGear) {

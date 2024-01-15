@@ -14,8 +14,6 @@ public abstract class PlayerProfile implements Profile{
     private Stats stats;
     private StatsFromGear statsFromGear;
 
-    private final Points points;
-
     private String  playerClass;
     private String playerSubclass;
 
@@ -39,7 +37,7 @@ public abstract class PlayerProfile implements Profile{
             Stats stats,
             StatsFromGear statsFromGear,
 
-            Points points,
+            Bal bal,
 
             String playerClass,
             String playerSubclass,
@@ -64,7 +62,6 @@ public abstract class PlayerProfile implements Profile{
         this.stats = stats;
         this.statsFromGear = statsFromGear;
 
-        this.points = points;
 
         this.playerClass = playerClass;
         this.playerSubclass = playerSubclass;
@@ -106,6 +103,12 @@ public abstract class PlayerProfile implements Profile{
     public void setCurrentMana(double currentMana) {
         this.currentMana = currentMana;
     }
+
+
+    @Override
+    public void setLevelStats(int level, String subclass){}
+
+
     @Override
     public Stats getStats() {
         return stats;
@@ -114,14 +117,13 @@ public abstract class PlayerProfile implements Profile{
     public StatsFromGear getGearStats() {
         return statsFromGear;
     }
-    @Override
-    public Points getPoints(){
-        return points;
-    }
+
     @Override
     public void setStats(Stats stats) {
         this.stats = stats;
     }
+
+
     @Override
     public void setGearStats(StatsFromGear gearStats) {
         this.statsFromGear = gearStats;

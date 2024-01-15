@@ -99,6 +99,11 @@ public class TheLindwyrm {
         NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(hp, stats, isMovable, mortal, object, passive, yield) {
 
             @Override
+            public Bal getBal() {
+                return null;
+            }
+
+            @Override
             public Boolean getIfDead() {
                 return false;
             }
@@ -129,13 +134,12 @@ public class TheLindwyrm {
             }
 
             @Override
-            public StatsFromGear getGearStats() {
-                return null;
+            public void setLevelStats(int level, String subclass) {
+
             }
 
-
             @Override
-            public Points getPoints() {
+            public StatsFromGear getGearStats() {
                 return null;
             }
 

@@ -123,12 +123,17 @@ public class SpectralSteed {
             }
 
             @Override
+            public void setLevelStats(int level, String subclass) {
+
+            }
+
+            @Override
             public StatsFromGear getGearStats() {
                 return null;
             }
 
             @Override
-            public Points getPoints() {
+            public Bal getBal() {
                 return null;
             }
 

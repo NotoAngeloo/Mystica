@@ -15,9 +15,11 @@ public interface Profile {
     double getCurrentMana();
     void setCurrentMana(double currentMana);
 
+    void setLevelStats(int level, String subclass);
+
     Stats getStats();
+    Bal getBal();
     StatsFromGear getGearStats();
-    Points getPoints();
     void setStats(Stats stats);
     void setGearStats(StatsFromGear statsFromGear);
 

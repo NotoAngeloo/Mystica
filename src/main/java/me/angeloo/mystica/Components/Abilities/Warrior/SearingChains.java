@@ -280,16 +280,6 @@ public class SearingChains {
                                 center.getZ() + 5
                         );
 
-                        /*double increment = (2 * Math.PI) / 16; // angle between particles
-
-                        for (int i = 0; i < 16; i++) {
-                            double angle = i * increment;
-                            double x = center.getX() + (5 * Math.cos(angle));
-                            double y = center.getY() + 1;
-                            double z = center.getZ() + (5 * Math.sin(angle));
-                            Location loc = new Location(end.getWorld(), x, y, z);
-                            player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, loc, 1,0, 0, 0, 0);
-                        }*/
 
                         for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
 
@@ -323,6 +313,7 @@ public class SearingChains {
                                 if(pvpManager.pvpLogic(player, (Player) entity)){
                                     changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
                                     validCCTargets.add(livingEntity);
+                                    buffAndDebuffManager.getPulled().applyPull(livingEntity);
                                     targetManager.setPlayerTarget((Player) entity, player);
                                     return;
                                 }
@@ -334,6 +325,7 @@ public class SearingChains {
                                 changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
                                 if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
                                     validCCTargets.add(livingEntity);
+                                    buffAndDebuffManager.getPulled().applyPull(livingEntity);
                                 }
                             }
 
@@ -405,6 +397,7 @@ public class SearingChains {
                         }
 
                         if(done.getOrDefault(entity, false)){
+                            buffAndDebuffManager.getPulled().removePull(entity);
                             continue;
                         }
 
@@ -460,7 +453,20 @@ public class SearingChains {
 
     }
 
-    //TODO: cooldown reduction on damage for gladiator
+    public void tryToDecreaseCooldown(Player player){
+
+        if(!profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("gladiator")){
+            return;
+        }
+
+        int current = getCooldown(player);
+        current-=2;
+        if(current<0){
+            current=0;
+        }
+
+        abilityReadyInMap.put(player.getUniqueId(), current);
+    }
 
     public int getCooldown(Player player){
         int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);

@@ -8,20 +8,14 @@ import java.util.*;
 
 public class AggroManager {
 
-    private final Map<UUID, List<Player>> creatureListOfAttackers;
-    private final Map<UUID, Player> lastPlayerWhoHit;
-    private final Map<UUID, Player> creatureHighPriorityTarget;
-    private final Map<UUID, Long> lastSetAsPriority;
-    private final Map<Player, Boolean> blacklist;
+    private final Map<UUID, List<Player>> creatureListOfAttackers = new HashMap<>();
+    private final Map<UUID, Player> lastPlayerWhoHit = new HashMap<>();
+    private final Map<UUID, Player> creatureHighPriorityTarget = new HashMap<>();
+    private final Map<UUID, Long> lastSetAsPriority = new HashMap<>();
+    private final Map<Player, Boolean> blacklist = new HashMap<>();
     //private final TargetManager targetManager;
 
-    public AggroManager(Mystica main){
-        //targetManager = main.getTargetManager();
-        creatureListOfAttackers = new HashMap<>();
-        creatureHighPriorityTarget = new HashMap<>();
-        lastSetAsPriority = new HashMap<>();
-        lastPlayerWhoHit = new HashMap<>();
-        blacklist = new HashMap<>();
+    public AggroManager(){
     }
 
     public void addAttacker(LivingEntity entity, Player player){

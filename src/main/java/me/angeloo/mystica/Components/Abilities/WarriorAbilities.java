@@ -134,4 +134,6 @@ public class WarriorAbilities {
         return 0;
     }
 
+    public SearingChains getSearingChains(){return searingChains;}
+
 }

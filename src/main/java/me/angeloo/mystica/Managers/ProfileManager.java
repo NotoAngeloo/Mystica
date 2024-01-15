@@ -75,16 +75,6 @@ public class ProfileManager {
 
             config.set(id + ".stats.level", stats.getLevel());
 
-            /*config.set(id + ".gstats.atk", gearStats.getAttack());
-            config.set(id + ".gstats.mag", gearStats.getMagic());
-            config.set(id + ".gstats.hp", gearStats.getHealth());
-            config.set(id + ".gstats.mana", gearStats.getMana());
-            config.set(id + ".gstats.regen", gearStats.getRegen());
-            config.set(id + ".gstats.mana_regen", gearStats.getMana_Regen());
-            config.set(id + ".gstats.def", gearStats.getDefense());
-            config.set(id + ".gstats.mag_def", gearStats.getMagic_Defense());
-            config.set(id + ".gstats.crit", gearStats.getCrit());*/
-
             config.set(id + ".class", playerClass);
             config.set(id + ".subclass", playerSubclass);
 
@@ -160,7 +150,7 @@ public class ProfileManager {
                     //stats
                     int level = config.getInt(id + ".stats.level");
 
-                    Stats stats = new Stats(level,30,30,100,100,1,1,100,100, 1);
+                    Stats stats = new Stats(level,50,50,100,100,1,1,50,50, 1);
                     assert playerSubclass != null;
                     stats.setLevelStats(level, playerSubclass);
 
@@ -329,7 +319,7 @@ public class ProfileManager {
 
     public void createNewPlayerProfile(UUID uuid){
 
-        Stats stats = new Stats(1,30,30,100,100,1,1,100,100, 1);
+        Stats stats = new Stats(1,50,50,100,100,1,1,50,50, 1);
         StatsFromGear gearStats = new StatsFromGear( 0, 0,0,0,0,0,0,0,0);
 
         Bal bal = new Bal(0);

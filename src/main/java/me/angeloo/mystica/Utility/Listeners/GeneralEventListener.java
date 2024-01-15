@@ -53,6 +53,7 @@ public class GeneralEventListener implements Listener {
 
     private final Mystica main;
     private final ProfileManager profileManager;
+    private final StealthTargetBlacklist stealthTargetBlacklist;
     private final AggroTick aggroTick;
     private final AggroManager aggroManager;
     private final PvpManager pvpManager;
@@ -80,6 +81,7 @@ public class GeneralEventListener implements Listener {
     public GeneralEventListener(Mystica main){
         this.main = main;
         profileManager = main.getProfileManager();
+        stealthTargetBlacklist = main.getStealthTargetBlacklist();
         aggroTick = main.getAggroTick();
         aggroManager = main.getAggroManager();
         pvpManager = main.getPvpManager();
@@ -737,12 +739,10 @@ public class GeneralEventListener implements Listener {
                     defenderPlayer.closeInventory();
                 }
 
-            }
-
-
-            if(!event.getIfPositive()){
                 combatManager.startCombatTimer((Player) defender);
+                abilityManager.getWarriorAbilities().getSearingChains().tryToDecreaseCooldown(defenderPlayer);
             }
+
         }
 
         //targeting bar
@@ -1059,6 +1059,14 @@ public class GeneralEventListener implements Listener {
                 }
 
                 if(entity instanceof Player){
+
+                    if(pvpManager.pvpLogic(player, (Player) entity)){
+                        if(stealthTargetBlacklist.get((Player) entity)){
+                            continue;
+                        }
+                    }
+
+
                     double distanceSquared = entity.getLocation().distanceSquared(player.getLocation());
                     if(distanceSquared < closestDistanceSquaredPlayer){
                         theClosestPlayer = entity;
@@ -1121,6 +1129,13 @@ public class GeneralEventListener implements Listener {
                     }
 
                     if(entity instanceof Player){
+
+                        if(pvpManager.pvpLogic(player, (Player) entity)){
+                            if(stealthTargetBlacklist.get((Player) entity)){
+                                continue;
+                            }
+                        }
+
                         double distanceSquared = entity.getLocation().distanceSquared(player.getLocation());
 
                         Player entityPlayer = (Player) entity;
@@ -1188,6 +1203,14 @@ public class GeneralEventListener implements Listener {
 
                     if(object){
                         continue;
+                    }
+
+                    if(entity instanceof Player){
+                        if(pvpManager.pvpLogic(player, (Player) entity)){
+                            if(stealthTargetBlacklist.get((Player) entity)){
+                                continue;
+                            }
+                        }
                     }
 
                     double distanceSquared = entity.getLocation().distanceSquared(player.getLocation());

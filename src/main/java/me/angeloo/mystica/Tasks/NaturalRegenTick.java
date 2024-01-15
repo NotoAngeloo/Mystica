@@ -36,8 +36,7 @@ public class NaturalRegenTick extends BukkitRunnable {
 
             int maxMana = stats.getMana() + gearStats.getMana();
             double currentMana = profileManager.getAnyProfile(player).getCurrentMana();
-            double mana_regen = stats.getMana_Regen() + gearStats.getMana_Regen();
-            double manaRegenRate = maxMana * (mana_regen/100);
+            double manaRegenRate = stats.getMana_Regen() + gearStats.getMana_Regen();
 
             if(!combatStatus){
                 manaRegenRate = maxMana * .3;

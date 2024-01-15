@@ -86,7 +86,16 @@ public class ShieldAbilityManaDisplayer {
         double currentMp = playerProfile.getCurrentMana();
         int percent = (int) Math.floor((currentMp/maxMp) * 100);
 
-        StringBuilder manaBar = new StringBuilder().append(ChatColor.BLUE);
+        StringBuilder manaBar = new StringBuilder();
+
+        if(profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("shadow knight")){
+            manaBar.append(ChatColor.DARK_RED);
+        }
+        else{
+            manaBar.append(ChatColor.BLUE);
+        }
+
+
 
         for(int i = 0; i<15 ; i++){
             if(percent > (i*((double) 100/15))){

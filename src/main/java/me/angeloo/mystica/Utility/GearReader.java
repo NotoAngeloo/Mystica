@@ -21,6 +21,8 @@ public class GearReader {
 
     public void setGearStats(Player player){
 
+        boolean ignoreMana = profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("shadow knight");
+
         int attack = 0;
         int magic = 0;
         int health = 0;
@@ -372,6 +374,11 @@ public class GearReader {
                     }
                 }
             }
+        }
+
+        if(ignoreMana){
+            mana = 0;
+            mana_regen = 0;
         }
 
         profileManager.getAnyProfile(player).getGearStats().setAllGearStats(attack,magic,health,mana,regen,mana_regen,defense,magic_defense,crit);

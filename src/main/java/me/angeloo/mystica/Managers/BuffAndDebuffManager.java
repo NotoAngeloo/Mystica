@@ -32,6 +32,7 @@ public class BuffAndDebuffManager {
     private final PierceBuff pierceBuff;
     private final BladeTempestCrit bladeTempestCrit;
     private final ConcoctionDebuff concoctionDebuff;
+    private final Pulled pulled;
 
     public BuffAndDebuffManager(Mystica main){
         profileManager = main.getProfileManager();
@@ -58,6 +59,7 @@ public class BuffAndDebuffManager {
         pierceBuff = new PierceBuff(main);
         bladeTempestCrit = new BladeTempestCrit(main);
         concoctionDebuff = new ConcoctionDebuff(main);
+        pulled = new Pulled(main);
     }
 
     public Immune getImmune(){return immune;}
@@ -86,6 +88,7 @@ public class BuffAndDebuffManager {
     public PierceBuff getPierceBuff(){return pierceBuff;}
     public BladeTempestCrit getBladeTempestCrit(){return bladeTempestCrit;}
     public ConcoctionDebuff getConcoctionDebuff(){return concoctionDebuff;}
+    public Pulled getPulled(){return pulled;}
 
     public void removeAllBuffsAndDebuffs(Player player){
         flamingSigilBuff.removeAttackBuff(player);
@@ -111,6 +114,7 @@ public class BuffAndDebuffManager {
         pierceBuff.removeBuff(player);
         bladeTempestCrit.removeBonus(player);
         concoctionDebuff.removeDebuff(player);
+        pulled.removePull(player);
     }
 
     //attacker, defender
@@ -163,6 +167,7 @@ public class BuffAndDebuffManager {
                 profileManager.getAnyProfile(entity).getIfDead()
                 || getIfCantAct(entity)
                 || silence.getSilence(entity)
-                || knockUp.getIfKnockUp(entity);
+                || knockUp.getIfKnockUp(entity)
+                || pulled.getIfPulled(entity);
     }
 }

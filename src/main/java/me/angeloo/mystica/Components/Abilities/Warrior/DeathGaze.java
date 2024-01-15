@@ -223,12 +223,14 @@ public class DeathGaze {
 
                 if(ran>=10){
 
+                    double dPull = playerLoc.distance(targetWasLoc);
                     if(valid){
                         //pull
-                        double dPull = playerLoc.distance(targetWasLoc);
+                        buffAndDebuffManager.getPulled().applyPull(target);
 
                         if(dPull <= 1){
                             cancelTask();
+                            buffAndDebuffManager.getPulled().removePull(target);
 
                             if(targetStillValid(target)){
                                 buffAndDebuffManager.getStun().applyStun(target, 20);
@@ -269,7 +271,6 @@ public class DeathGaze {
                     }
                     else{
                         //self
-                        double dPull = playerLoc.distance(targetWasLoc);
 
                         if(dPull <= 1){
                             cancelTask();

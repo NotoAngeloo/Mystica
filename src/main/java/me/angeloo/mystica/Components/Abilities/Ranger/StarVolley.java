@@ -220,8 +220,12 @@ public class StarVolley {
     public void decreaseCooldown(Player player){
 
         int current = getCooldown(player);
+        current-=2;
+        if(current<0){
+            current=0;
+        }
 
-        abilityReadyInMap.put(player.getUniqueId(), current - 2);
+        abilityReadyInMap.put(player.getUniqueId(), current);
     }
 
     public int getCooldown(Player player){

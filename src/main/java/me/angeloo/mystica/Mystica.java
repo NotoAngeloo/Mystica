@@ -27,6 +27,7 @@ public final class Mystica extends JavaPlugin {
     private ProfileFileWriter profileFileWriter;
 
     private ClassSetter classSetter;
+    private StealthTargetBlacklist stealthTargetBlacklist;
     private TargetManager targetManager;
     private AggroTick aggroTick;
     private AggroManager aggroManager;
@@ -37,7 +38,6 @@ public final class Mystica extends JavaPlugin {
     private AbilityManager abilityManager;
     private DeathManager deathManager;
     private InventoryIndexingManager inventoryIndexingManager;
-
     private PveChecker pveChecker;
     private DamageCalculator damageCalculator;
     private ChangeResourceHandler changeResourceHandler;
@@ -60,8 +60,8 @@ public final class Mystica extends JavaPlugin {
 
         pveChecker = new PveChecker(this);
         pvpManager = new PvpManager(this);
-
-        aggroManager = new AggroManager(this);
+        stealthTargetBlacklist = new StealthTargetBlacklist();
+        aggroManager = new AggroManager();
         buffAndDebuffManager = new BuffAndDebuffManager(this);
         targetManager = new TargetManager(this);
 
@@ -151,6 +151,8 @@ public final class Mystica extends JavaPlugin {
     public ClassSetter getClassSetter(){
         return classSetter;
     }
+
+    public StealthTargetBlacklist getStealthTargetBlacklist(){return stealthTargetBlacklist;}
 
     public TargetManager getTargetManager(){
         return targetManager;

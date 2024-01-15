@@ -2,6 +2,7 @@ package me.angeloo.mystica.Managers;
 
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.PveChecker;
+import me.angeloo.mystica.Utility.StealthTargetBlacklist;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
@@ -20,6 +21,7 @@ import java.util.UUID;
 public class TargetManager {
 
     private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StealthTargetBlacklist stealthTargetBlacklist;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final Map<UUID, LivingEntity> playerTarget = new HashMap<>();
@@ -29,6 +31,7 @@ public class TargetManager {
 
     public TargetManager(Mystica main){
         buffAndDebuffManager = main.getBuffAndDebuffManager();
+        stealthTargetBlacklist = main.getStealthTargetBlacklist();
         pveChecker = main.getPveChecker();
         pvpManager = main.getPvpManager();
         profileManager = main.getProfileManager();
@@ -81,7 +84,6 @@ public class TargetManager {
             return;
         }
 
-
         BoundingBox boundingBox = new BoundingBox(
                 player.getLocation().getX() - radius,
                 player.getLocation().getY() - 2,
@@ -115,6 +117,10 @@ public class TargetManager {
                 double distanceSquared = entity.getLocation().distanceSquared(player.getLocation());
 
                 Player entityPlayer = (Player) entity;
+
+                if(stealthTargetBlacklist.get(entityPlayer)){
+                    continue;
+                }
 
                 boolean deathStatus = profileManager.getAnyProfile(entityPlayer).getIfDead();
 

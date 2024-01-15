@@ -6,6 +6,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
+import me.angeloo.mystica.Utility.StealthTargetBlacklist;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -21,6 +22,7 @@ public class Stealth {
     private final Mystica main;
 
     private final ProfileManager profileManager;
+    private final StealthTargetBlacklist stealthTargetBlacklist;
     private final PvpManager pvpManager;
     private final TargetManager targetManager;
     private final DamageCalculator damageCalculator;
@@ -35,6 +37,7 @@ public class Stealth {
     public Stealth(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
+        stealthTargetBlacklist = main.getStealthTargetBlacklist();
         pvpManager = main.getPvpManager();
         targetManager = main.getTargetManager();
         damageCalculator = main.getDamageCalculator();
@@ -89,6 +92,7 @@ public class Stealth {
 
                 if(count >= 5){
                     buffAndDebuffManager.getHidden().hidePlayer(player, true);
+                    stealthTargetBlacklist.add(player);
                     stealthed.put(player.getUniqueId(), true);
 
                     for(Map.Entry<UUID, LivingEntity> entry: targetManager.getTargetMap().entrySet()){
@@ -118,12 +122,14 @@ public class Stealth {
     public void reveal(Player player){
 
         buffAndDebuffManager.getHidden().unhidePlayer(player);
+        stealthTargetBlacklist.add(player);
         stealthed.put(player.getUniqueId(), false);
     }
 
     private void forceReveal(Player player, LivingEntity victim){
 
         buffAndDebuffManager.getHidden().unhidePlayer(player);
+        stealthTargetBlacklist.add(player);
         stealthed.put(player.getUniqueId(), false);
 
         abilityReadyInMap.put(player.getUniqueId(), 30);

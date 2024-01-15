@@ -71,14 +71,14 @@ public class Stats {
 
     public void setLevelStats(int level, String subclass){
 
-        int attack = 30;
-        int magic = 30;
+        int attack = 50;
+        int magic = 50;
         int health = 100;
         int mana = 100;
         int regen = 1;
         int mana_regen = 1;
-        int defence = 100;
-        int magic_defence = 100;
+        int defence = 50;
+        int magic_defence = 50;
         int crit = 1;
 
         switch (subclass.toLowerCase()){
@@ -87,6 +87,8 @@ public class Stats {
             case "chaos":
             case "arcane master":{
                 health+=(level*15);
+                regen+=(level*1.15);
+                mana_regen+=(level*1.15);
                 magic+=(level*3);
                 mana+=(level*100);
                 defence+=(level);
@@ -97,6 +99,8 @@ public class Stats {
             case "conjurer":
             case "shepard": {
                 health+=(level*30);
+                regen+=(level*1.3);
+                mana_regen+=(level*1.3);
                 magic+=(level*2);
                 mana+=(level*100);
                 defence+=(level);
@@ -108,6 +112,8 @@ public class Stats {
             case "dawn":
             case "duelist":{
                 health+=(level*15);
+                regen+=(level*1.15);
+                mana_regen+=(level*1.15);
                 attack+=(level*3);
                 mana+=(level*100);
                 defence+=(level);
@@ -127,6 +133,8 @@ public class Stats {
             }
             case "blood":{
                 health+=(level*40);
+                regen+=(level*1.4);
+                mana_regen=30;
                 attack+=(level);
                 mana=100;
                 defence+=(level*2);
@@ -135,6 +143,8 @@ public class Stats {
             }
             case "doom":{
                 health+=(level*30);
+                regen+=(level*1.3);
+                mana_regen=30;
                 attack+=(level*3);
                 mana=100;
                 defence+=(level);
@@ -145,6 +155,8 @@ public class Stats {
             case "templar":
             case "gladiator":{
                 health+=(level*30);
+                regen+=(level*1.3);
+                mana_regen+=(level*1.3);
                 attack+=(level);
                 mana+=(level*200);
                 defence+=(level*2);

@@ -160,6 +160,7 @@ public class ShadowGrip {
         abilityManager.setSkillRunning(player, true);
         double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
+            boolean pulled = false;
             boolean going = true;
             Location targetWasLoc = target.getLocation().clone();
             @Override
@@ -201,6 +202,12 @@ public class ShadowGrip {
 
                         //also check and pull creature
                         pullTarget();
+
+                        if(targetStillValid(target) && profileManager.getAnyProfile(target).getIsMovable()){
+                            pulled = true;
+                            buffAndDebuffManager.getPulled().applyPull(target);
+                        }
+
                         going = false;
                     }
                     else{
@@ -223,6 +230,7 @@ public class ShadowGrip {
                     double distance = current.distance(player.getLocation());
 
                     if(distance <=1){
+
                         cancelTask();
                         return;
                     }
@@ -281,6 +289,9 @@ public class ShadowGrip {
                 this.cancel();
                 armorStand.remove();
                 abilityManager.setSkillRunning(player, false);
+                if(pulled){
+                    buffAndDebuffManager.getPulled().removePull(target);
+                }
             }
 
             private void pullTarget(){

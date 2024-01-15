@@ -71,14 +71,14 @@ public class Stats {
 
     public void setLevelStats(int level, String subclass){
 
-        int attack = 1;
-        int magic = 1;
-        int health = 20;
-        int mana = 20;
+        int attack = 30;
+        int magic = 30;
+        int health = 100;
+        int mana = 100;
         int regen = 1;
         int mana_regen = 1;
-        int defence = 5;
-        int magic_defence = 5;
+        int defence = 100;
+        int magic_defence = 100;
         int crit = 1;
 
         switch (subclass.toLowerCase()){

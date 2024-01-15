@@ -17,6 +17,7 @@ public class ClassSetter {
     private final WarriorEquipment warriorEquipment;
     private final AssassinEquipment assassinEquipment;
     private final DisplayWeapons displayWeapons;
+    private final GearReader gearReader;
 
     public ClassSetter(Mystica main){
         profileManager = main.getProfileManager();
@@ -28,6 +29,7 @@ public class ClassSetter {
         warriorEquipment = new WarriorEquipment();
         assassinEquipment = new AssassinEquipment();
         displayWeapons = new DisplayWeapons(main);
+        gearReader = new GearReader(main);
     }
 
     public void setClass(Player player, String clazz){
@@ -107,6 +109,7 @@ public class ClassSetter {
         player.sendMessage("You are now a(n) " + clazz);
         displayWeapons.displayWeapons(player);
         displayWeapons.displayArmor(player);
+        gearReader.setGearStats(player);
 
     }
 

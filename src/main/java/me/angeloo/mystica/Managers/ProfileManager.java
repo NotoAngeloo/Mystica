@@ -9,6 +9,7 @@ import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.PlayerProfile;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
+import me.angeloo.mystica.Utility.GearReader;
 import me.angeloo.mystica.Utility.ProfileFileWriter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -37,7 +38,7 @@ public class ProfileManager {
     private final Map<String, Player> playerNameMap = new HashMap<>();
     private final Map<UUID, String> nonPlayerNameMap = new HashMap<>();
     private final Map<UUID, Location> bossHomes = new HashMap<>();
-    
+
 
     public ProfileManager(Mystica main) {
         this.main = main;
@@ -74,7 +75,7 @@ public class ProfileManager {
 
             config.set(id + ".stats.level", stats.getLevel());
 
-            config.set(id + ".gstats.atk", gearStats.getAttack());
+            /*config.set(id + ".gstats.atk", gearStats.getAttack());
             config.set(id + ".gstats.mag", gearStats.getMagic());
             config.set(id + ".gstats.hp", gearStats.getHealth());
             config.set(id + ".gstats.mana", gearStats.getMana());
@@ -82,7 +83,7 @@ public class ProfileManager {
             config.set(id + ".gstats.mana_regen", gearStats.getMana_Regen());
             config.set(id + ".gstats.def", gearStats.getDefense());
             config.set(id + ".gstats.mag_def", gearStats.getMagic_Defense());
-            config.set(id + ".gstats.crit", gearStats.getCrit());
+            config.set(id + ".gstats.crit", gearStats.getCrit());*/
 
             config.set(id + ".class", playerClass);
             config.set(id + ".subclass", playerSubclass);
@@ -150,7 +151,6 @@ public class ProfileManager {
                     YamlConfiguration config = profileFileWriter.createOrLoadProfileFile(id);
 
                     //player points
-                    int skillpoints = config.getInt(id + ".points.talentpoints");
                     int bal = config.getInt(id + ".points.bal");
                     Bal points = new Bal(bal);
 
@@ -160,7 +160,7 @@ public class ProfileManager {
                     //stats
                     int level = config.getInt(id + ".stats.level");
 
-                    Stats stats = new Stats(level,1,1,20,20,1,1,5,5, 1);
+                    Stats stats = new Stats(level,30,30,100,100,1,1,100,100, 1);
                     assert playerSubclass != null;
                     stats.setLevelStats(level, playerSubclass);
 
@@ -168,7 +168,7 @@ public class ProfileManager {
                     int mana = stats.getMana();
 
                     //gearstats
-                    int gatk = config.getInt(id + ".gstats.atk");
+                    /*int gatk = config.getInt(id + ".gstats.atk");
                     int gmag = config.getInt(id + ".gstats.mag");
                     int ghp = config.getInt(id + ".gstats.hp");
                     int gmana = config.getInt(id + ".gstats.mana");
@@ -176,12 +176,7 @@ public class ProfileManager {
                     int gmregen = config.getInt(id + ".gstats.mana_regen");
                     int gdef = config.getInt(id + ".gstats.def");
                     int gmdef = config.getInt(id + ".gstats.mag_def");
-                    int gcrit = config.getInt(id + ".gstats.crit");
-
-                    StatsFromGear gearStats = new StatsFromGear(gatk, gmag, ghp, gmana, gregen, gmregen, gdef, gmdef, gcrit);
-
-                    int currentHealth = hp + ghp;
-                    int currentMana = mana + gmana;
+                    int gcrit = config.getInt(id + ".gstats.crit");*/
 
                     ItemStack[] savedInv = ((List<ItemStack>) config.get(id + ".savedInv")).toArray(new ItemStack[41]);
 
@@ -192,6 +187,9 @@ public class ProfileManager {
                     //equipment
                     ItemStack[] equipment = ((List<ItemStack>) config.get(id + ".equipment")).toArray(new ItemStack[6]);
                     PlayerEquipment playerEquipment = new PlayerEquipment(equipment);
+
+                    StatsFromGear gearStats = new StatsFromGear(0, 0, 0, 0, 0, 0, 0, 0, 0);
+
 
                     int skill1 = config.getInt(id + ".skill_level.skill1");
                     int skill2 = config.getInt(id + ".skill_level.skill2");
@@ -230,7 +228,7 @@ public class ProfileManager {
                     int bossLevel = config.getInt(id + ".boss_level");
 
                     PlayerBossLevel playerBossLevel = new PlayerBossLevel(bossLevel);
-                    PlayerProfile profile = new PlayerProfile(false, false, currentHealth, currentMana,
+                    PlayerProfile profile = new PlayerProfile(false, false, hp, mana,
                             stats,
                             gearStats,
                             points,
@@ -330,7 +328,8 @@ public class ProfileManager {
 
 
     public void createNewPlayerProfile(UUID uuid){
-        Stats stats = new Stats(1,1,1,20,20,1,1,5,5, 1);
+
+        Stats stats = new Stats(1,30,30,100,100,1,1,100,100, 1);
         StatsFromGear gearStats = new StatsFromGear( 0, 0,0,0,0,0,0,0,0);
 
         Bal bal = new Bal(0);

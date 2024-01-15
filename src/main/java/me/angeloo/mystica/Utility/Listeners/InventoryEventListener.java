@@ -10,6 +10,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ClassSetter;
 import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.EquipmentInformation;
+import me.angeloo.mystica.Utility.GearReader;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -35,6 +36,7 @@ public class InventoryEventListener implements Listener {
     private final SpecInventory specInventory;
     private final EquipmentInformation equipmentInformation;
     private final DisplayWeapons displayWeapons;
+    private final GearReader gearReader;
 
     public InventoryEventListener(Mystica main){
         profileManager = main.getProfileManager();
@@ -47,6 +49,7 @@ public class InventoryEventListener implements Listener {
         specInventory = new SpecInventory(main);
         equipmentInformation = new EquipmentInformation();
         displayWeapons = new DisplayWeapons(main);
+        gearReader = new GearReader(main);
     }
 
     @EventHandler
@@ -89,7 +92,7 @@ public class InventoryEventListener implements Listener {
         displayWeapons.displayWeapons(player);
         displayWeapons.displayArmor(player);
 
-        //and read it here
+        gearReader.setGearStats(player);
     }
 
     @EventHandler

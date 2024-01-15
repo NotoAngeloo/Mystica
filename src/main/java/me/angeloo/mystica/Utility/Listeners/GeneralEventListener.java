@@ -69,6 +69,7 @@ public class GeneralEventListener implements Listener {
     private final StatusDisplayer statusDisplayer;
     private final CooldownDisplayer cooldownDisplayer;
     private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
+    private final GearReader gearReader;
 
     private final DamageCalculator damageCalculator;
     private final ChangeResourceHandler changeResourceHandler;
@@ -97,6 +98,7 @@ public class GeneralEventListener implements Listener {
         shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, abilityManager);
         damageCalculator = main.getDamageCalculator();
         changeResourceHandler = main.getChangeResourceHandler();
+        gearReader = new GearReader(main);
     }
 
     @EventHandler
@@ -183,6 +185,7 @@ public class GeneralEventListener implements Listener {
         inventoryIndexingManager.innitBagIndex(player);
         targetManager.setPlayerTarget(player, null);
         buffAndDebuffManager.removeAllBuffsAndDebuffs(player);
+        gearReader.setGearStats(player);
     }
 
     @EventHandler

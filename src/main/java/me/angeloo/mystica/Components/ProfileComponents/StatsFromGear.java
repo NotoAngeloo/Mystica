@@ -23,7 +23,6 @@ public class StatsFromGear {
         Defense = defense;
         Magic_Defense = magic_defense;
         Crit = crit;
-
     }
     public int getAttack() {
         return Attack;
@@ -62,43 +61,16 @@ public class StatsFromGear {
     }
 
 
-
-
-
-
-    public void setAttack(int attack) {
+    public void setAllGearStats(int attack, int magic, int health, int mana, int regen, int mana_regen, int defense, int magic_defense, int crit){
         Attack = attack;
-    }
-
-    public void setMagic(int magic) {
         Magic = magic;
-    }
-
-    public void setHealth(int health) {
         Health = health;
-    }
-
-    public void setMana(int mana) {
         Mana = mana;
-    }
-
-    public void setRegen(int regen) {
         Regen = regen;
-    }
-
-    public void setMana_Regen(int mana_regen) {
         Mana_Regen = mana_regen;
-    }
-
-    public void setDefense(int defense) {
         Defense = defense;
-    }
-
-    public void setMagic_Defense(int magic_defense) {
         Magic_Defense = magic_defense;
-    }
-
-    public void setCrit(int crit) {
         Crit = crit;
     }
+
 }

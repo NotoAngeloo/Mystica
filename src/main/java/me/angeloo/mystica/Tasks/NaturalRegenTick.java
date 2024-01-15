@@ -32,13 +32,16 @@ public class NaturalRegenTick extends BukkitRunnable {
             Stats stats = profileManager.getAnyProfile(player).getStats();
             StatsFromGear gearStats = profileManager.getAnyProfile(player).getGearStats();
 
+            boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
+
             int maxMana = stats.getMana() + gearStats.getMana();
-
             double currentMana = profileManager.getAnyProfile(player).getCurrentMana();
+            double mana_regen = stats.getMana_Regen() + gearStats.getMana_Regen();
+            double manaRegenRate = maxMana * (mana_regen/100);
 
-            double wisdom = stats.getMana_Regen() + gearStats.getMana_Regen();
-
-            double manaRegenRate = wisdom/5;
+            if(!combatStatus){
+                manaRegenRate = maxMana * .3;
+            }
 
             if(currentMana > maxMana){
                 profileManager.getAnyProfile(player).setCurrentMana(maxMana);
@@ -72,9 +75,13 @@ public class NaturalRegenTick extends BukkitRunnable {
 
             double currentHealth = profileManager.getAnyProfile(player).getCurrentHealth();
 
-            double clarity = (stats.getRegen() + gearStats.getRegen());
+            double regen = (stats.getRegen() + gearStats.getRegen());
 
-            double healthRegenRate = clarity/10;
+            double healthRegenRate = maxHealth * (regen/100);
+
+            if(!combatStatus){
+                healthRegenRate = maxHealth * .3;
+            }
 
             if(currentHealth > maxHealth){
                 profileManager.getAnyProfile(player).setCurrentHealth(maxHealth);

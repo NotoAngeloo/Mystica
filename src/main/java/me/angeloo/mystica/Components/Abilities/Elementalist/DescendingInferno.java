@@ -183,7 +183,7 @@ public class DescendingInferno {
         assert entityEquipmentMiddle != null;
         entityEquipmentMiddle.setHelmet(fireballItem);
 
-        double skillDamage = 5;
+        double skillDamage = 20;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
 

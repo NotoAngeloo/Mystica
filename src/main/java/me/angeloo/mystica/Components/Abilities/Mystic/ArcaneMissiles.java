@@ -128,11 +128,18 @@ public class ArcaneMissiles {
     private void execute(Player player){
         LivingEntity target = targetManager.getPlayerTarget(player);
 
-        double skillDamage = 8;
+        double skillDamage = 55;
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
         skillDamage = skillDamage + ((int)(skillLevel/10));
 
+        double ticks = 10;
+        ticks = ticks - buffAndDebuffManager.getHaste().getHasteLevel(player);
+
+        skillDamage = skillDamage / ticks;
+
+
         double finalSkillDamage = skillDamage;
+        double finalTicks = ticks;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
             final Set<ArmorStand> allStands = new HashSet<>();
@@ -323,7 +330,7 @@ public class ArcaneMissiles {
                     }
                 }.runTaskTimer(main, 0L, 1);
 
-                if(count >= 10){
+                if(count >= finalTicks){
                     cancelTask();
                 }
 

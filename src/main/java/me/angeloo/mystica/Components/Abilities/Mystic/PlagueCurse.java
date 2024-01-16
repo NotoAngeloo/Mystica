@@ -153,11 +153,13 @@ public class PlagueCurse {
         assert entityEquipment != null;
         entityEquipment.setHelmet(curseItem);
 
-        double skillDamage = 3;
+        double skillDamage = 30;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
 
         skillDamage = skillDamage + ((int)(skillLevel/10));
+
+        skillDamage = skillDamage / 10;
 
         double finalSkillDamage = skillDamage;
         new BukkitRunnable(){

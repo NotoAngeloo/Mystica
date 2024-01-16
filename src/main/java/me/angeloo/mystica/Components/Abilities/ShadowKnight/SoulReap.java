@@ -227,7 +227,7 @@ public class SoulReap {
                     }
 
                     //damage
-                    double skillDamage = 7 + getSoulMarks(player);
+                    double skillDamage = 20 + (2*getSoulMarks(player));
                     double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level() +
                             profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
 

@@ -10,6 +10,7 @@ import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -61,6 +62,12 @@ public class SearingChains {
 
 
         if(abilityReadyInMap.get(player.getUniqueId()) > 0){
+            return;
+        }
+
+        Block block = player.getLocation().subtract(0,1,0).getBlock();
+
+        if(block.getType() == Material.AIR){
             return;
         }
 
@@ -140,7 +147,7 @@ public class SearingChains {
 
         Location end = start.clone().add(direction.multiply(8));
 
-        double skillDamage = 5;
+        double skillDamage = 20;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));

@@ -139,7 +139,7 @@ public class BitingRain {
 
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
-        double skillDamage = 6;
+        double skillDamage = 20;
 
         skillDamage = skillDamage + ((int)(skillLevel/10));
 

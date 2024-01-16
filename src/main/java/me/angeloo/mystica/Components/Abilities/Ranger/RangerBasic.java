@@ -191,7 +191,7 @@ public class RangerBasic {
         assert entityEquipment != null;
         entityEquipment.setHelmet(arrow);
 
-        double skillDamage = 1;
+        double skillDamage = 5;
         if(rallyingCry.getIfBuffTime(player) > 0){
             skillDamage = skillDamage * 1.25;
         }
@@ -290,7 +290,7 @@ public class RangerBasic {
         assert entityEquipment != null;
         entityEquipment.setHelmet(arrow);
 
-        double skillDamage = 1.5;
+        double skillDamage = 10;
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
         if(rallyingCry.getIfBuffTime(player) > 0){
             skillDamage = skillDamage * 1.25;

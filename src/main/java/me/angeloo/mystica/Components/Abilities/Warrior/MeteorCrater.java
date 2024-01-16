@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -64,6 +65,12 @@ public class MeteorCrater {
 
 
         if(abilityReadyInMap.get(player.getUniqueId()) > 0){
+            return;
+        }
+
+        Block block = player.getLocation().subtract(0,1,0).getBlock();
+
+        if(block.getType() == Material.AIR){
             return;
         }
 
@@ -143,7 +150,7 @@ public class MeteorCrater {
         Location end = start.clone().add(direction.multiply(2));
         end.setDirection(direction);
 
-        double skillDamage = 20;
+        double skillDamage = 40;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));

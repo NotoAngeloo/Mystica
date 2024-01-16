@@ -149,7 +149,7 @@ public class Assault {
         stand.setRightArmPose(new EulerAngle(Math.toRadians(180), Math.toRadians(0), Math.toRadians(0)));
         stand.teleport(start.clone().add(0,.5,0));
 
-        double skillDamage = 4;
+        double skillDamage = 20;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));

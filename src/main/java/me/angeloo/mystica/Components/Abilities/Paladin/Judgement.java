@@ -149,7 +149,7 @@ public class Judgement {
         assert entityEquipment != null;
         entityEquipment.setHelmet(item);
 
-        double skillDamage = 6;
+        double skillDamage = 25;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));

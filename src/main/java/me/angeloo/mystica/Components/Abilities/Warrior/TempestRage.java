@@ -153,12 +153,12 @@ public class TempestRage {
 
                 if(timeRan%20==0){
                     BoundingBox hitBox = new BoundingBox(
-                            player.getLocation().getX() - 4,
+                            player.getLocation().getX() - 5,
                             player.getLocation().getY() - 2,
-                            player.getLocation().getZ() - 4,
-                            player.getLocation().getX() + 4,
+                            player.getLocation().getZ() - 5,
+                            player.getLocation().getX() + 5,
                             player.getLocation().getY() + 6,
-                            player.getLocation().getZ() + 4
+                            player.getLocation().getZ() + 5
                     );
 
                     for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {

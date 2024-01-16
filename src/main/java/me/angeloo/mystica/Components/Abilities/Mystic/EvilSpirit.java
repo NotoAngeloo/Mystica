@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
@@ -48,6 +49,12 @@ public class EvilSpirit {
     public void use(Player player){
 
         if(getChaosShards(player)<6){
+            return;
+        }
+
+        Block block = player.getLocation().subtract(0,1,0).getBlock();
+
+        if(block.getType() == Material.AIR){
             return;
         }
 

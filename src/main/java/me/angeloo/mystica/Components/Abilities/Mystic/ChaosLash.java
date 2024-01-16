@@ -140,15 +140,20 @@ public class ChaosLash {
             evilSpirit.addChaosShard(player, 2);
         }
 
-        double skillDamage = 5;
+
+        double castTime = 15;
+        castTime = castTime - buffAndDebuffManager.getHaste().getHasteLevel(player);
+
+        double skillDamage = 50;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));
 
-        abilityManager.setCasting(player, true);
-        double castTime = 15;
+        skillDamage = skillDamage / castTime;
 
+        abilityManager.setCasting(player, true);
         double finalSkillDamage = skillDamage;
+        double finalCastTime = castTime;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
             final Set<ArmorStand> allStands = new HashSet<>();
@@ -268,11 +273,11 @@ public class ChaosLash {
                     }
                 }.runTaskTimer(main, 0L, 1);
 
-                double percent = ((double) count / castTime) * 100;
+                double percent = ((double) count / finalCastTime) * 100;
 
                 abilityManager.setCastBar(player, percent);
 
-                if(count >= castTime){
+                if(count >= finalCastTime){
                     cancelTask();
                 }
 

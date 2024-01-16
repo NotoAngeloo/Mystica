@@ -138,9 +138,9 @@ public class WeaknessStrike {
         Location start = player.getLocation().clone();
         Location up = start.clone().add(0,3,0);
 
-        double skillDamage = 10;
+        double skillDamage = 20;
 
-        skillDamage = skillDamage + combo.removeAnAmountOfPoints(player, combo.getComboPoints(player));
+        skillDamage = skillDamage + (10 * combo.removeAnAmountOfPoints(player, combo.getComboPoints(player)));
 
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();

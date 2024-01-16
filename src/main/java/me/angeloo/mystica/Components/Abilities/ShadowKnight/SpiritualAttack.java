@@ -62,7 +62,7 @@ public class SpiritualAttack {
             abilityReadyInMap.put(player.getUniqueId(), 0);
         }
 
-        double baseRange = 8;
+        double baseRange = 10;
         double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
         double totalRange = baseRange + extraRange;
 
@@ -133,7 +133,7 @@ public class SpiritualAttack {
         Location spawnLoc = target.getLocation().clone().add(0,12,0);
         spawnLoc.setDirection(player.getLocation().getDirection());
 
-        ArmorStand armorStand = spawnLoc.getWorld().spawn(spawnLoc, ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(spawnLoc, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -151,7 +151,7 @@ public class SpiritualAttack {
         assert entityEquipment != null;
         entityEquipment.setHelmet(handItem);
 
-        double skillDamage = 8;
+        double skillDamage = 25;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));

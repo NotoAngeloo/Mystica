@@ -135,7 +135,7 @@ public class RazorWind {
 
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
-        double skillDamage = 10;
+        double skillDamage = 40;
 
         skillDamage = skillDamage + ((int)(skillLevel/10));
 

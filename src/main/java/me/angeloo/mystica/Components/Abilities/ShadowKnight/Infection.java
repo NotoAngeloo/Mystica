@@ -106,7 +106,7 @@ public class Infection {
 
         execute(player);
 
-        abilityReadyInMap.put(player.getUniqueId(), 2);
+        abilityReadyInMap.put(player.getUniqueId(), 3);
         new BukkitRunnable(){
             @Override
             public void run(){
@@ -271,7 +271,7 @@ public class Infection {
                     }
                 }
 
-                double skillDamage = 3;
+                double skillDamage = 7;
                 double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level() +
                         profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
                 skillDamage = skillDamage + ((int)(skillLevel/10));

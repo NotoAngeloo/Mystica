@@ -193,7 +193,7 @@ public class WarriorBasic {
 
         boolean targetHit = false;
 
-        double skillDamage = 1;
+        double skillDamage = 7;
         double level = profileManager.getAnyProfile(player).getStats().getLevel();
         skillDamage = skillDamage + ((int)(level/10));
 
@@ -348,7 +348,7 @@ public class WarriorBasic {
 
         boolean targetHit = false;
 
-        double skillDamage = 1;
+        double skillDamage = 7;
         double level = profileManager.getAnyProfile(player).getStats().getLevel();
         skillDamage = skillDamage + ((int)(level/10));
 

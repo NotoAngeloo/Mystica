@@ -133,7 +133,7 @@ public class WildSpirit {
         double attack = profileManager.getAnyProfile(player).getTotalAttack();
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
-        double skillDamage = 3;
+        double skillDamage = 10;
 
         skillDamage = skillDamage + ((int)(skillLevel/10));
 

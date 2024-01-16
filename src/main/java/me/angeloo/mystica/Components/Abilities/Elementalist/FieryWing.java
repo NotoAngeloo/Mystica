@@ -148,7 +148,7 @@ public class FieryWing {
         assert entityEquipment2 != null;
         entityEquipment2.setHelmet(spawnItem);
 
-        double skillDamage = 20;
+        double skillDamage = 60;
 
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
         skillDamage = skillDamage + ((int)(skillLevel/10));

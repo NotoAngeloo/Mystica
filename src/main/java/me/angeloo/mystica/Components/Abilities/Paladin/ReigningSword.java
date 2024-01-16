@@ -102,7 +102,7 @@ public class ReigningSword {
         Location start = player.getLocation().clone().add(direction.multiply(1));
         start.setDirection(direction);
 
-        ArmorStand sword = start.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
+        ArmorStand sword = player.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
         sword.setInvisible(true);
         sword.setGravity(false);
         sword.setCollidable(false);
@@ -125,7 +125,7 @@ public class ReigningSword {
 
         Set<LivingEntity> hitBySkill = new HashSet<>();
 
-        double skillDamage = 6;
+        double skillDamage = 25;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
 

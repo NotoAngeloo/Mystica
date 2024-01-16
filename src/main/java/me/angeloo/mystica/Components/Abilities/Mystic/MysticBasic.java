@@ -149,6 +149,12 @@ public class MysticBasic {
         assert entityEquipment != null;
         entityEquipment.setHelmet(bolt);
 
+        double skillDamage = 5;
+        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+
+        skillDamage = skillDamage + ((int)(skillLevel/10));
+
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
             @Override
@@ -182,16 +188,14 @@ public class MysticBasic {
 
                     cancelTask();
 
-                    double basicDamage = 1;
 
                     if(evilSpirit){
                         aoeAttack();
                         return;
                     }
 
-                    double level = profileManager.getAnyProfile(player).getStats().getLevel();
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Magical", basicDamage + level, crit);
+                    double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
@@ -201,7 +205,7 @@ public class MysticBasic {
             }
 
             private void aoeAttack(){
-                double skillDamage = 20;
+                double skillDamage = 40;
                 double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
                 skillDamage = skillDamage + ((int)(skillLevel/10));
 
@@ -379,7 +383,11 @@ public class MysticBasic {
             assert entityEquipment != null;
             entityEquipment.setHelmet(bolt);
 
+            double skillDamage = 5;
+            double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
 
+            skillDamage = skillDamage + ((int)(skillLevel/10));
+            double finalSkillDamage = skillDamage;
             new BukkitRunnable(){
                 Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
                 @Override
@@ -409,11 +417,8 @@ public class MysticBasic {
 
                         cancelTask();
 
-                        double basicDamage = 1;
-                        double level = profileManager.getAnyProfile(player).getStats().getLevel();
-                        basicDamage = basicDamage + ((int)(level/10));
                         boolean crit = damageCalculator.checkIfCrit(player, 0);
-                        double damage = damageCalculator.calculateDamage(player, target, "Magical", basicDamage, crit);
+                        double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
 
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                         changeResourceHandler.subtractHealthFromEntity(target, damage, player);

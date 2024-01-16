@@ -258,7 +258,7 @@ public class ShadowCrows {
 
                         }
 
-                        if(count >= 150){
+                        if(count >= 20 * 10){
                             this.cancel();
                             armorStand.remove();
                         }

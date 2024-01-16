@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -62,6 +63,11 @@ public class MagmaSpikes {
             return;
         }
 
+        Block block = player.getLocation().subtract(0,1,0).getBlock();
+
+        if(block.getType() == Material.AIR){
+            return;
+        }
 
         combatManager.startCombatTimer(player);
 
@@ -95,7 +101,7 @@ public class MagmaSpikes {
         Location up = start.clone().add(0,4,0);
 
 
-        double skillDamage = 8;
+        double skillDamage = 30;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));

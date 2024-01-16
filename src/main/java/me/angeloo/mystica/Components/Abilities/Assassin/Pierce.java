@@ -154,7 +154,7 @@ public class Pierce {
         stand.teleport(start.clone().add(0,.5,0));
 
         abilityManager.setSkillRunning(player, true);
-        double skillDamage = 1;
+        double skillDamage = 30;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));

@@ -150,7 +150,7 @@ public class OrderShield {
 
         armorStand.teleport(start);
 
-        double skillDamage = 9;
+        double skillDamage = 30;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));

@@ -131,8 +131,8 @@ public class DuelistsFrenzy {
 
         LivingEntity target = targetManager.getPlayerTarget(player);
 
-        double skillDamage = 10;
-        skillDamage = skillDamage + combo.removeAnAmountOfPoints(player, combo.getComboPoints(player));
+        double skillDamage = 120;
+        combo.removeAnAmountOfPoints(player, combo.getComboPoints(player));
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
         skillDamage = skillDamage + ((int)(skillLevel/10));
 

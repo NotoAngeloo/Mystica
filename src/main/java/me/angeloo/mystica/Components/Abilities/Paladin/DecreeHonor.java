@@ -150,7 +150,7 @@ public class DecreeHonor {
         assert entityEquipment != null;
         entityEquipment.setHelmet(item);
 
-        double skillDamage = 4;
+        double skillDamage = 20;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));

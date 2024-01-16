@@ -145,7 +145,7 @@ public class FlyingBlade {
         entityEquipment.setHelmet(weapon);
         armorStand.teleport(start);
 
-        double skillDamage = 6;
+        double skillDamage = 25;
 
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();

@@ -147,7 +147,7 @@ public class Dreadfall {
         assert entityEquipment != null;
         entityEquipment.setHelmet(meteorItem);
 
-        double skillDamage = 15;
+        double skillDamage = 25;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
 

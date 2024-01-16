@@ -168,7 +168,7 @@ public class StarVolley {
         assert entityEquipment != null;
         entityEquipment.setHelmet(arrow);
 
-        double skillDamage = 20;
+        double skillDamage = 60;
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
         skillDamage = skillDamage + ((int)(skillLevel/10));
 

@@ -124,7 +124,7 @@ public class BlessedArrow {
 
         boolean scout = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("scout");
 
-        double skillDamage = 4;
+        double skillDamage = 20;
 
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();

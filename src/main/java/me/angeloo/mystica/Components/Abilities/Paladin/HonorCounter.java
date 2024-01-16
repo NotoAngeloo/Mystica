@@ -61,8 +61,7 @@ public class HonorCounter {
             abilityReadyInMap.put(player.getUniqueId(), 0);
         }
 
-        double baseRange = 5;
-
+        double baseRange = 6;
 
         targetManager.setTargetToNearestValid(player, baseRange);
 
@@ -152,7 +151,7 @@ public class HonorCounter {
 
         Location end = target.getLocation();
 
-        double skillDamage = 4;
+        double skillDamage = 30;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));

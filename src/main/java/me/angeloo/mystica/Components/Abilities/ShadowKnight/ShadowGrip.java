@@ -126,7 +126,7 @@ public class ShadowGrip {
 
         boolean blood = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("blood");
 
-        double skillDamage = 2;
+        double skillDamage = 15;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
 

@@ -139,7 +139,7 @@ public class Relentless {
 
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
-        double skillDamage = 10;
+        double skillDamage = 40;
         skillDamage = skillDamage + ((int)(skillLevel/10));
 
 

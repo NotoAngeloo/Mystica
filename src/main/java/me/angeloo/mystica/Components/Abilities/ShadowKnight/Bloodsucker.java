@@ -101,7 +101,7 @@ public class Bloodsucker {
 
         execute(player);
 
-        abilityReadyInMap.put(player.getUniqueId(), 2);
+        abilityReadyInMap.put(player.getUniqueId(), 3);
         new BukkitRunnable(){
             @Override
             public void run(){
@@ -151,7 +151,7 @@ public class Bloodsucker {
         entityEquipment.setHelmet(boltItem);
 
 
-        double skillDamage = 5;
+        double skillDamage = 20;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));

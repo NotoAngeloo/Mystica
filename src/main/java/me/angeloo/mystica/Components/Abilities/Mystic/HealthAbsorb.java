@@ -130,14 +130,21 @@ public class HealthAbsorb {
 
         LivingEntity target = targetManager.getPlayerTarget(player);
 
-        double skillDamage = 3;
+        double castTime = 5;
+        castTime = castTime - buffAndDebuffManager.getHaste().getHasteLevel(player);
+        castTime = castTime * 20;
+
+        double skillDamage = 20;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));
 
+        skillDamage = skillDamage / castTime;
+
         abilityManager.setCasting(player, true);
 
         double finalSkillDamage = skillDamage;
+        double finalCastTime = castTime;
         new BukkitRunnable(){
             final List<ArmorStand> armorStands = new ArrayList<>();
             int ran = 0;
@@ -217,7 +224,7 @@ public class HealthAbsorb {
 
 
 
-                ArmorStand armorStand = targetLoc.getWorld().spawn(targetLoc, ArmorStand.class);
+                ArmorStand armorStand = player.getWorld().spawn(targetLoc, ArmorStand.class);
                 armorStand.setInvisible(true);
                 armorStand.setGravity(false);
                 armorStand.setCollidable(false);
@@ -286,7 +293,7 @@ public class HealthAbsorb {
 
                 ran++;
 
-                if(ran >= 20*5){
+                if(ran >= finalCastTime){
                     cancelTask();
                 }
 

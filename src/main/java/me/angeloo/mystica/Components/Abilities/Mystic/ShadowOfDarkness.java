@@ -152,7 +152,7 @@ public class ShadowOfDarkness {
         assert entityEquipment != null;
         entityEquipment.setHelmet(meteorItem);
 
-        double skillDamage = 4;
+        double skillDamage = 25;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
 
@@ -160,7 +160,7 @@ public class ShadowOfDarkness {
 
         int shards = evilSpirit.getChaosShards(player);
 
-        skillDamage = skillDamage + shards;
+        skillDamage = skillDamage + (2*shards);
 
 
         double finalSkillDamage = skillDamage;

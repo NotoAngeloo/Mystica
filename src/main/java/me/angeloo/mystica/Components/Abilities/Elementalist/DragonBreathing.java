@@ -160,7 +160,7 @@ public class DragonBreathing {
         assert entityEquipment != null;
         entityEquipment.setHelmet(dragonItem);
 
-        double skillDamage = 12;
+        double skillDamage = 35;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
 
@@ -287,13 +287,14 @@ public class DragonBreathing {
             }
 
             private void burnTask(LivingEntity entity){
+                double burnDamage = finalSkillDamage * .1;
                 new BukkitRunnable(){
                     int ticks = 0;
                     @Override
                     public void run(){
 
                         boolean crit = damageCalculator.checkIfCrit(player, 0);
-                        double tickDamage = damageCalculator.calculateDamage(player, entity, "Magical", finalSkillDamage/3, crit);
+                        double tickDamage = damageCalculator.calculateDamage(player, entity, "Magical", burnDamage, crit);
 
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(entity, player));
                         changeResourceHandler.subtractHealthFromEntity(entity, tickDamage, player);

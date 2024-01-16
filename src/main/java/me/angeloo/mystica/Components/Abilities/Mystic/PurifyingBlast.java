@@ -133,7 +133,7 @@ public class PurifyingBlast {
             instantCast.remove(player.getUniqueId());
         }
 
-        double skillDamage = 10;
+        double skillDamage = 30;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
 

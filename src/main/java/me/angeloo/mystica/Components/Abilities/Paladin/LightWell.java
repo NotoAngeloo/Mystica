@@ -111,7 +111,7 @@ public class LightWell {
         assert entityEquipment != null;
         entityEquipment.setHelmet(item);
 
-        double skillDamage = 5;
+        double skillDamage = 20;
         double level = profileManager.getAnyProfile(player).getStats().getLevel();
         skillDamage = skillDamage + ((int)(level/10));
 

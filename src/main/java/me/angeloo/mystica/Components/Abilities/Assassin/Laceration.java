@@ -137,7 +137,7 @@ public class Laceration {
         player.teleport(warpLoc);
         player.getWorld().spawnParticle(Particle.REDSTONE, targetLoc, 50, .5, 1, .5, 1, new Particle.DustOptions(Color.RED, 1.0f));
 
-        double bleedDamage = 2;
+        double bleedDamage = 3;
 
         if(alchemist){
             int comboPoints = combo.removeAnAmountOfPoints(player, combo.getComboPoints(player));
@@ -145,7 +145,7 @@ public class Laceration {
             bleedDamage = bleedDamage + comboPoints;
         }
 
-        double skillDamage = 1;
+        double skillDamage = 7;
         double level = profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level()
                 + profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
         skillDamage = skillDamage + ((int)(level/10));

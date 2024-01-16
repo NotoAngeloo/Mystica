@@ -161,7 +161,7 @@ public class IceBolt {
         assert entityEquipment != null;
         entityEquipment.setHelmet(boltItem);
 
-        double skillDamage = 3;
+        double skillDamage = 20;
 
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();

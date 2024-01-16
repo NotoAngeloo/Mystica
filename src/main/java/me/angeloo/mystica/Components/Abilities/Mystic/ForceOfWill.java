@@ -118,15 +118,20 @@ public class ForceOfWill {
 
         LivingEntity target = targetManager.getPlayerTarget(player);
 
-        double skillDamage = 3;
+        double skillDamage = 20;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));
 
         abilityManager.setCasting(player, true);
-        double castTime = 60;
+        double castTime = 4;
+        castTime = castTime - buffAndDebuffManager.getHaste().getHasteLevel(player);
+        castTime = castTime * 20;
+
+        skillDamage = skillDamage/castTime;
 
         double finalSkillDamage = skillDamage;
+        double finalCastTime = castTime;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
             int count = 0;
@@ -175,23 +180,20 @@ public class ForceOfWill {
 
                 }
 
-                double percent = ((double) count / castTime) * 100;
+                double percent = ((double) count / finalCastTime) * 100;
 
                 abilityManager.setCastBar(player, percent);
 
-                if(count >= castTime){
+                if(count >= finalCastTime){
                     this.cancel();
                     abilityManager.setCasting(player, false);
                     abilityManager.setCastBar(player, 0);
                 }
 
-                if(count%10==0){
-                    boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
-
-                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, player);
-                }
+                boolean crit = damageCalculator.checkIfCrit(player, 0);
+                double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
+                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
+                changeResourceHandler.subtractHealthFromEntity(target, damage, player);
 
                 count++;
             }

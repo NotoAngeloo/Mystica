@@ -117,7 +117,7 @@ public class Soulcrack {
         player.getInventory().setItemInOffHand(null);
         armorStand.teleport(start);
 
-        double skillDamage = 16;
+        double skillDamage = 30;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));
@@ -170,12 +170,12 @@ public class Soulcrack {
             private void damageNear(){
 
                 BoundingBox hitBox = new BoundingBox(
-                        player.getLocation().getX() - 3,
+                        player.getLocation().getX() - 5,
                         player.getLocation().getY() - 2,
-                        player.getLocation().getZ() - 3,
-                        player.getLocation().getX() + 3,
+                        player.getLocation().getZ() - 5,
+                        player.getLocation().getX() + 5,
                         player.getLocation().getY() + 4,
-                        player.getLocation().getZ() + 3
+                        player.getLocation().getZ() + 5
                 );
 
                 for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {

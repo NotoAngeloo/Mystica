@@ -39,7 +39,6 @@ public class WickedConcoction {
     private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
-    private final AggroManager aggroManager;
     private final CooldownDisplayer cooldownDisplayer;
 
     private final Stealth stealth;
@@ -56,7 +55,6 @@ public class WickedConcoction {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        aggroManager = main.getAggroManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         stealth = assassinAbilities.getStealth();
     }
@@ -158,7 +156,7 @@ public class WickedConcoction {
             }
         }
 
-        double skillDamage = 10;
+        double skillDamage = 50;
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
         skillDamage = skillDamage + ((int)(skillLevel/10));
         boolean finalHeal = heal;

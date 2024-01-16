@@ -139,7 +139,7 @@ public class TorahSword {
         Location start = target.getLocation().clone();
         start.add(0, 5, 0);
 
-        ArmorStand sword1 = start.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand sword1 = player.getWorld().spawn(start, ArmorStand.class);
         sword1.setInvisible(true);
         sword1.setGravity(false);
         sword1.setCollidable(false);
@@ -159,7 +159,7 @@ public class TorahSword {
         sword1.setRightArmPose(new EulerAngle(Math.toRadians(0), Math.toRadians(0), Math.toRadians(0)));
 
         Location start2 = start.clone().add(crossProduct.multiply(2));
-        ArmorStand sword2 = start.getWorld().spawn(start2, ArmorStand.class);
+        ArmorStand sword2 = player.getWorld().spawn(start2, ArmorStand.class);
         sword2.setInvisible(true);
         sword2.setGravity(false);
         sword2.setCollidable(false);
@@ -173,7 +173,7 @@ public class TorahSword {
         sword2.setRightArmPose(new EulerAngle(Math.toRadians(0), Math.toRadians(0), Math.toRadians(-30)));
 
         Location start3 = start.clone().subtract(crossProduct.multiply(2));
-        ArmorStand sword3 = start.getWorld().spawn(start3, ArmorStand.class);
+        ArmorStand sword3 = player.getWorld().spawn(start3, ArmorStand.class);
         sword3.setInvisible(true);
         sword3.setGravity(false);
         sword3.setCollidable(false);
@@ -190,7 +190,7 @@ public class TorahSword {
 
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
-        double skillDamage = 3;
+        double skillDamage = 7;
 
         skillDamage = skillDamage + ((int)(skillLevel/10));
 

@@ -189,7 +189,7 @@ public class ElementalistBasic {
         assert entityEquipment != null;
         entityEquipment.setHelmet(fireballItem);
 
-        double skillDamage = 1;
+        double skillDamage = 5;
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
 
         skillDamage = skillDamage + ((int)(skillLevel/10));
@@ -290,7 +290,7 @@ public class ElementalistBasic {
         assert entityEquipment != null;
         entityEquipment.setHelmet(iceBallItem);
 
-        double skillDamage = 1;
+        double skillDamage = 5;
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
 
         skillDamage = skillDamage + ((int)(skillLevel/10));
@@ -330,8 +330,6 @@ public class ElementalistBasic {
 
                 if (distance <= 1) {
                     cancelTask();
-
-                    double level = profileManager.getAnyProfile(player).getStats().getLevel();
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
                     double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
@@ -373,7 +371,7 @@ public class ElementalistBasic {
 
         basicStageMap.put(player.getUniqueId(), 1);
 
-        double skillDamage = 1;
+        double skillDamage = 5;
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
 
         skillDamage = skillDamage + ((int)(skillLevel/10));

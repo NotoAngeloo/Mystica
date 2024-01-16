@@ -10,6 +10,7 @@ import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -55,6 +56,12 @@ public class DeathGaze {
 
         if(!abilityReadyInMap.containsKey(player.getUniqueId())){
             abilityReadyInMap.put(player.getUniqueId(), 0);
+        }
+
+        Block block = player.getLocation().subtract(0,1,0).getBlock();
+
+        if(block.getType() == Material.AIR){
+            return;
         }
 
         double baseRange = 20;
@@ -122,7 +129,7 @@ public class DeathGaze {
 
         LivingEntity target = targetManager.getPlayerTarget(player);
 
-        double skillDamage = 8;
+        double skillDamage = 25;
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
         skillDamage = skillDamage + ((int)(skillLevel/10));
 

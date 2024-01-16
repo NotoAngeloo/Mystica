@@ -55,7 +55,7 @@ public class KnockUp {
 
                 Block block = entity.getLocation().subtract(0,1,0).getBlock();
 
-                if(block.getType() == Material.AIR){
+                if(block.getType() != Material.AIR){
                     this.cancel();
                     removeKnockUp(entity);
                 }

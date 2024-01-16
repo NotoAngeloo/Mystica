@@ -153,7 +153,7 @@ public class FieryMagma {
         assert entityEquipment != null;
         entityEquipment.setHelmet(meteorItem);
 
-        double skillDamage = 5;
+        double skillDamage = 20;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
 
@@ -229,13 +229,15 @@ public class FieryMagma {
 
             private void startBurningTask(){
 
+                double burn = finalSkillDamage * .1;
+
                 new BukkitRunnable(){
                     int ticks = 0;
                     @Override
                     public void run(){
 
                         boolean crit = damageCalculator.checkIfCrit(player, 0);
-                        double tickDamage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage/2, crit);
+                        double tickDamage = damageCalculator.calculateDamage(player, target, "Magical", burn, crit);
 
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                         changeResourceHandler.subtractHealthFromEntity(target, tickDamage, player);

@@ -268,7 +268,7 @@ public class PaladinBasic {
         direction.rotateAroundY(45);
         start.setDirection(direction);
 
-        ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -305,7 +305,7 @@ public class PaladinBasic {
 
         boolean targetHit = false;
 
-        double skillDamage = 1;
+        double skillDamage = 7;
         double level = profileManager.getAnyProfile(player).getStats().getLevel();
         skillDamage = skillDamage + ((int)(level/10));
 
@@ -427,7 +427,7 @@ public class PaladinBasic {
         start.add(direction.multiply(4));
         start.subtract(crossProduct.multiply(3));
 
-        ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -461,7 +461,7 @@ public class PaladinBasic {
 
         boolean targetHit = false;
 
-        double skillDamage = 1;
+        double skillDamage = 7;
         double level = profileManager.getAnyProfile(player).getStats().getLevel();
         skillDamage = skillDamage + ((int)(level/10));
 
@@ -583,7 +583,7 @@ public class PaladinBasic {
         direction.rotateAroundY(-45);
         start.setDirection(direction);
 
-        ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -620,7 +620,7 @@ public class PaladinBasic {
 
         boolean targetHit = false;
 
-        double skillDamage = 1;
+        double skillDamage = 7;
         double level = profileManager.getAnyProfile(player).getStats().getLevel();
         skillDamage = skillDamage + ((int)(level/10));
 
@@ -776,7 +776,7 @@ public class PaladinBasic {
 
         boolean targetHit = false;
 
-        double skillDamage = 1;
+        double skillDamage = 7;
         double level = profileManager.getAnyProfile(player).getStats().getLevel();
         skillDamage = skillDamage + ((int)(level/10));
 

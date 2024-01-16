@@ -156,7 +156,7 @@ public class Annihilation {
         assert entityEquipment != null;
         entityEquipment.setHelmet(item);
 
-        double skillDamage = 13;
+        double skillDamage = 35;
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
         skillDamage = skillDamage + ((int)(skillLevel/10));
 

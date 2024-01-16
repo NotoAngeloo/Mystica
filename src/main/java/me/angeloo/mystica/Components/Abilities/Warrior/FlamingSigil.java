@@ -10,6 +10,7 @@ import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -51,6 +52,12 @@ public class FlamingSigil {
         }
 
         if (abilityReadyInMap.get(player.getUniqueId()) > 0) {
+            return;
+        }
+
+        Block block = player.getLocation().subtract(0,1,0).getBlock();
+
+        if(block.getType() == Material.AIR){
             return;
         }
 

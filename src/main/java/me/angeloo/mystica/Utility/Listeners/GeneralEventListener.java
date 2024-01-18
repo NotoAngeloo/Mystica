@@ -78,6 +78,8 @@ public class GeneralEventListener implements Listener {
     private final Map<UUID, BukkitTask> countdownTasks = new HashMap<>();
     private final Map<UUID, Boolean> dropCheck = new HashMap<>();
 
+    private final Map<UUID, Long> damageSoundCooldown = new HashMap<>();
+
     public GeneralEventListener(Mystica main){
         this.main = main;
         profileManager = main.getProfileManager();
@@ -740,7 +742,6 @@ public class GeneralEventListener implements Listener {
                 }
 
                 combatManager.startCombatTimer((Player) defender);
-                abilityManager.getWarriorAbilities().getSearingChains().tryToDecreaseCooldown(defenderPlayer);
             }
 
         }
@@ -771,10 +772,24 @@ public class GeneralEventListener implements Listener {
                 }
             }
             else{
-                ((Player) defender).playSound(defender, Sound.ENTITY_PLAYER_HURT, 1, 1);
+
+                if(damageSoundCooldown.get(defender.getUniqueId()) == null){
+                    damageSoundCooldown.put(defender.getUniqueId(), (System.currentTimeMillis() / 1000) - 1);
+                }
+
+                long currentTime = System.currentTimeMillis() / 1000;
+                if(currentTime - damageSoundCooldown.get(defender.getUniqueId()) > 1){
+                    ((Player) defender).playSound(defender, Sound.ENTITY_PLAYER_HURT, 1, 1);
+                    damageSoundCooldown.put(defender.getUniqueId(), (System.currentTimeMillis() / 1000));
+                }
+
+                abilityManager.getWarriorAbilities().getSearingChains().tryToDecreaseCooldown((Player) defender);
+                abilityManager.getAssassinAbilities().getStealth().stealthBonusCheck((Player) defender, null);
             }
 
             buffAndDebuffManager.getSleep().forceWakeUp(defender);
+
+
         }
 
 

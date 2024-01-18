@@ -8,11 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -149,7 +145,7 @@ public class ChaosVoid {
                 }
 
                 if(ran%20 == 0){
-                    changeResourceHandler.addHealthToEntity(player, healAmount, player);
+                    changeResourceHandler.addHealthToEntity(player, healAmount);
                     Location center = player.getLocation().clone().add(0,1,0);
 
                     double increment = (2 * Math.PI) / 16; // angle between particles

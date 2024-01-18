@@ -41,9 +41,7 @@ public class SoulReap {
     private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
-    private final CooldownDisplayer cooldownDisplayer;
 
-    private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
     private final Map<UUID, Integer> soulMarks = new HashMap<>();
 
@@ -60,15 +58,11 @@ public class SoulReap {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        cooldownDisplayer = new CooldownDisplayer(main, manager);
         infection = shadowKnightAbilities.getInfection();
     }
 
     public void use(Player player){
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
-        }
 
         double baseRange = 8;
 
@@ -100,33 +94,19 @@ public class SoulReap {
             return;
         }
 
-        if(abilityReadyInMap.get(player.getUniqueId()) > 0){
+
+        double cost = 30;
+
+        if(profileManager.getAnyProfile(player).getCurrentMana() < cost){
             return;
         }
+
+        changeResourceHandler.subTractManaFromPlayer(player, cost);
 
         combatManager.startCombatTimer(player);
 
         execute(player);
 
-        abilityReadyInMap.put(player.getUniqueId(), 3);
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-
-                if(abilityReadyInMap.get(player.getUniqueId()) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 5);
-                    this.cancel();
-                    return;
-                }
-
-                int cooldown = abilityReadyInMap.get(player.getUniqueId()) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
-
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 5);
-
-            }
-        }.runTaskTimer(main, 0,20);
 
     }
 
@@ -353,14 +333,5 @@ public class SoulReap {
         Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
-
-        if(cooldown < 0){
-            cooldown = 0;
-        }
-
-        return cooldown;
-    }
 
 }

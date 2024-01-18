@@ -223,7 +223,7 @@ public class DecreeHonor {
                             return;
                         }
 
-                        changeResourceHandler.addHealthToEntity(target, healAmount, player);
+                        changeResourceHandler.addHealthToEntity(target, healAmount);
                         return;
                     }
 
@@ -259,7 +259,7 @@ public class DecreeHonor {
         List<LivingEntity> affected = justiceMark.getMarkedTargets(player);
 
         for(LivingEntity thisPlayer : affected){
-            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, player);
+            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount);
 
             Location center = thisPlayer.getLocation().clone().add(0,1,0);
 

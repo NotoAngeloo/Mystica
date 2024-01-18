@@ -226,7 +226,7 @@ public class DivineGuidance {
                 healAmount = healAmount * 1.5;
             }
 
-            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, player);
+            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount);
 
             Location center = thisPlayer.getLocation().clone().add(0,1,0);
 

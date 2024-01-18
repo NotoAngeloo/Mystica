@@ -125,7 +125,7 @@ public class Enlightenment {
                 purifyingBlast.resetCooldown(player);
             }
 
-            changeResourceHandler.addHealthToEntity(healedPlayer, healAmount, player);
+            changeResourceHandler.addHealthToEntity(healedPlayer, healAmount);
             buffAndDebuffManager.getDamageReduction().applyDamageReduction(healedPlayer, .9, 20*10);
 
             double increment = (2 * Math.PI) / 16; // angle between particles

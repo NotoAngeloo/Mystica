@@ -1,8 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Assassin;
 
 import me.angeloo.mystica.Components.Abilities.AssassinAbilities;
-import me.angeloo.mystica.Components.Abilities.Paladin.Decision;
-import me.angeloo.mystica.Components.Abilities.PaladinAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -20,7 +18,6 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
@@ -216,7 +213,7 @@ public class WickedConcoction {
                         healAmount = healAmount * 1.5;
                     }
 
-                    changeResourceHandler.addHealthToEntity(target, healAmount, player);
+                    changeResourceHandler.addHealthToEntity(target, healAmount);
                     buffAndDebuffManager.getDamageReduction().applyDamageReduction(target, .95, 20*15);
                     //and damage reduction
 

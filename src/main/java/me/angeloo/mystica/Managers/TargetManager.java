@@ -189,6 +189,10 @@ public class TargetManager {
         double maxHealth =  profileManager.getAnyProfile(entity).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(entity);
         double currentHealth = profileManager.getAnyProfile(entity).getCurrentHealth();
 
+        if(maxHealth<currentHealth){
+            maxHealth = currentHealth;
+        }
+
         bossBar.setProgress(currentHealth/maxHealth);
 
         //ok this should work

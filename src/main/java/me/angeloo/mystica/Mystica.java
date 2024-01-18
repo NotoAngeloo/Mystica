@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 public final class Mystica extends JavaPlugin {
 
+    private static Mystica plugin;
 
     private ProfileManager profileManager;
     private ProfileFileWriter profileFileWriter;
@@ -48,6 +49,8 @@ public final class Mystica extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
+        plugin = this;
 
         protocolManager = ProtocolLibrary.getProtocolManager();
 
@@ -90,13 +93,14 @@ public final class Mystica extends JavaPlugin {
         getCommand("Trash").setExecutor(new Trash());
         getCommand("ClassSelect").setExecutor(new ClassSelect(this));
         getCommand("WhatAreMyStats").setExecutor(new WhatAreMyStats(this));
+        getCommand("Reforge").setExecutor(new Reforge(this));
 
         this.getServer().getPluginManager().registerEvents(new InventoryEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new GeneralEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new MMListeners(this), this);
 
         NaturalRegenTick regenTick = new NaturalRegenTick(this, abilityManager);
-        regenTick.runTaskTimer(this, 0, 20);
+        regenTick.runTaskTimer(this, 0, 40);
         RezTick rezTick = new RezTick(this);
         rezTick.runTaskTimer(this, 0, 20);
         TargetDistanceTick targetDistanceTick = new TargetDistanceTick(this);
@@ -143,6 +147,8 @@ public final class Mystica extends JavaPlugin {
         profileManager.saveProfilesToConfig();
         Bukkit.getLogger().info("Mystica Disabled");
     }
+
+    public static Mystica getPlugin(){return plugin;}
 
     public ProfileManager getProfileManager(){
         return profileManager;

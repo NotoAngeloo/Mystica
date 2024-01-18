@@ -236,6 +236,23 @@ public class FieryMagma {
                     @Override
                     public void run(){
 
+                        if(target.isDead()){
+                            this.cancel();
+                            return;
+                        }
+
+                        if(target instanceof Player){
+                            if(!((Player)target).isOnline()){
+                                this.cancel();
+                                return;
+                            }
+
+                            if(profileManager.getAnyProfile(target).getIfDead()){
+                                this.cancel();
+                                return;
+                            }
+                        }
+
                         boolean crit = damageCalculator.checkIfCrit(player, 0);
                         double tickDamage = damageCalculator.calculateDamage(player, target, "Magical", burn, crit);
 
@@ -243,7 +260,6 @@ public class FieryMagma {
                         changeResourceHandler.subtractHealthFromEntity(target, tickDamage, player);
 
                         ticks ++;
-
 
 
                         if(ticks >=3){

@@ -4,7 +4,6 @@ import com.alessiodp.parties.api.Parties;
 import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
-import me.angeloo.mystica.Components.Abilities.ElementalistAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -164,13 +163,13 @@ public class ElementalMatrix {
 
                 double maxHp = profileManager.getAnyProfile(partyMember).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(partyMember);
 
-                changeResourceHandler.addHealthToEntity(partyMember, maxHp * .05, player);
+                changeResourceHandler.addHealthToEntity(partyMember, maxHp * .05);
 
             }
         }
 
         double maxHp = profileManager.getAnyProfile(player).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player);
-        changeResourceHandler.addHealthToEntity(player, maxHp * .05, player);
+        changeResourceHandler.addHealthToEntity(player, maxHp * .05);
 
         double maxMp = profileManager.getAnyProfile(player).getTotalMana();
         changeResourceHandler.addManaToPlayer(player, maxMp * .05);

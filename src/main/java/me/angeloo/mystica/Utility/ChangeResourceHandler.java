@@ -153,7 +153,7 @@ public class ChangeResourceHandler {
         lastDamaged.put(player.getUniqueId(), (System.currentTimeMillis()/1000));
     }
 
-    public void addHealthToEntity(LivingEntity entity, Double health, LivingEntity entityWhoHealed){
+    public void addHealthToEntity(LivingEntity entity, Double health){
 
         if(entity instanceof Player){
             addHealthToPlayer((Player) entity, health);
@@ -260,6 +260,7 @@ public class ChangeResourceHandler {
         }
 
         profileManager.getAnyProfile(player).setCurrentMana(newCurrentMana);
+        Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(player, 0.0, true));
     }
 
     public void healPlayerToFull(Player player){

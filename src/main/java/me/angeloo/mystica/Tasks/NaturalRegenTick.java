@@ -89,7 +89,7 @@ public class NaturalRegenTick extends BukkitRunnable {
             }
 
             if(currentHealth < maxHealth){
-                changeResourceHandler.addHealthToEntity(player, healthRegenRate, null);
+                changeResourceHandler.addHealthToEntity(player, healthRegenRate);
             }
 
             if(!profileManager.getAnyProfile(player).getIfInCombat() || profileManager.getAnyProfile(player).getIfDead()){

@@ -201,7 +201,7 @@ public class PurifyingBlast {
                             changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
                         }
                         else{
-                            changeResourceHandler.addHealthToEntity(livingEntity, finalHealAmount, player);
+                            changeResourceHandler.addHealthToEntity(livingEntity, finalHealAmount);
                         }
 
                         continue;

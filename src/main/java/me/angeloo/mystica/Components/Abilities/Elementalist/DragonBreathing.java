@@ -293,6 +293,23 @@ public class DragonBreathing {
                     @Override
                     public void run(){
 
+                        if(entity.isDead()){
+                            this.cancel();
+                            return;
+                        }
+
+                        if(entity instanceof Player){
+                            if(!((Player)entity).isOnline()){
+                                this.cancel();
+                                return;
+                            }
+
+                            if(profileManager.getAnyProfile(entity).getIfDead()){
+                                this.cancel();
+                                return;
+                            }
+                        }
+
                         boolean crit = damageCalculator.checkIfCrit(player, 0);
                         double tickDamage = damageCalculator.calculateDamage(player, entity, "Magical", burnDamage, crit);
 

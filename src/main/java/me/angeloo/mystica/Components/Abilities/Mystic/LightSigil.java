@@ -279,7 +279,7 @@ public class LightSigil {
                         healAmount = healAmount * 1.5;
                     }
 
-                    changeResourceHandler.addHealthToEntity(healedPlayer, healAmount, player);
+                    changeResourceHandler.addHealthToEntity(healedPlayer, healAmount);
 
                     Location center = healedPlayer.getLocation().clone().add(0,1,0);
 

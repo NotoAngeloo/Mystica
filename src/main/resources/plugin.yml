@@ -32,6 +32,10 @@ commands:
     description: toggles global pvp
     usage: /ToggleGlobalPvp
     permission: developer
+  Reforge:
+    description: allows testing of reforge mechanic
+    usage: /Reforge
+    permission: developer
 
 permissions:
   developer:

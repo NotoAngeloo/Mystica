@@ -301,8 +301,6 @@ public class FieryWing {
 
         stacks ++;
 
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
-
         if(stacks >=4){
             abilityReadyInMap.put(player.getUniqueId(), 0);
             removeInflame(player);
@@ -311,6 +309,7 @@ public class FieryWing {
 
         inflameMap.put(player.getUniqueId(), stacks);
 
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
     }
 
 

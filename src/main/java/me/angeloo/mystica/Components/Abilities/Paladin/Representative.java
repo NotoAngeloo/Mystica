@@ -13,7 +13,6 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
@@ -168,7 +167,7 @@ public class Representative {
                                 amount = amount * 1.5;
                             }
 
-                            changeResourceHandler.addHealthToEntity(hitPlayer, amount, player);
+                            changeResourceHandler.addHealthToEntity(hitPlayer, amount);
 
                         }
                     }

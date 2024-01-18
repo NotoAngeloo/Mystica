@@ -1,6 +1,5 @@
 package me.angeloo.mystica.Components.Abilities.Mystic;
 
-import me.angeloo.mystica.Components.Abilities.MysticAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -280,11 +279,11 @@ public class HealthAbsorb {
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
                     double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
 
-                    double healed = damage * .3;
+                    double healed = damage * .5;
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
-                    changeResourceHandler.addHealthToEntity(player, healed, player);
+                    changeResourceHandler.addHealthToEntity(player, healed);
                 }
 
                 double percent = ((double) ran /(20*5)) * 100;

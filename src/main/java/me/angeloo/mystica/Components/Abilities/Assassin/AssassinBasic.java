@@ -162,10 +162,14 @@ public class AssassinBasic {
             Location targetLoc = targetToHit.getLocation();
             Vector targetDir = targetLoc.toVector().subtract(playerLoc.toVector());
 
-            Location warpLoc = targetLoc.add(targetDir.clone().normalize().multiply(-1.5));
-            warpLoc.setDirection(targetDir);
+            if(playerLoc!=targetLoc){
+                Location warpLoc = targetLoc.add(targetDir.clone().normalize().multiply(-1.5));
+                warpLoc.setDirection(targetDir);
 
-            player.teleport(warpLoc);
+                player.teleport(warpLoc);
+
+            }
+
 
             boolean crit = damageCalculator.checkIfCrit(player, 0);
             double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", skillDamage, crit);

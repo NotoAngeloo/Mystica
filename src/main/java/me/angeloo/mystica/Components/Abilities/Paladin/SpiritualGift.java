@@ -181,7 +181,7 @@ public class SpiritualGift {
                     healAmount = healAmount*1.5;
                 }
 
-                changeResourceHandler.addHealthToEntity(target, healAmount, player);
+                changeResourceHandler.addHealthToEntity(target, healAmount);
             }
 
         }.runTaskTimer(main, 0, 1);

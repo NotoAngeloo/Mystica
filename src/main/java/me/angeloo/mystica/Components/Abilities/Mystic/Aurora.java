@@ -1,13 +1,10 @@
 package me.angeloo.mystica.Components.Abilities.Mystic;
 
-import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
-import me.angeloo.mystica.Utility.PveChecker;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -196,7 +193,7 @@ public class Aurora {
                                 healAmount = healAmount * 1.5;
                             }
 
-                            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, player);
+                            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount);
                         }
 
                         if(hitBySkill.contains(thisPlayer)){

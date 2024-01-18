@@ -190,7 +190,7 @@ public class GloryOfPaladins {
         //chance to restore
         int random = (int) (Math.random() * 100) + 1;
         if(random >= 25){
-            changeResourceHandler.addHealthToEntity(player, healAmount, player);
+            changeResourceHandler.addHealthToEntity(player, healAmount);
         }
     }
 

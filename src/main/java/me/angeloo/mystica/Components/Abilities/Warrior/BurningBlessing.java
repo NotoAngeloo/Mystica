@@ -80,7 +80,7 @@ public class BurningBlessing {
 
         double maxHealth = profileManager.getAnyProfile(player).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player);
         double fourth = maxHealth * .25;
-        changeResourceHandler.addHealthToEntity(player, fourth, player);
+        changeResourceHandler.addHealthToEntity(player, fourth);
 
         //TODO: add icon above head when i have it
 

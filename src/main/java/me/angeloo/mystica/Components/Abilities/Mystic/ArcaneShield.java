@@ -4,7 +4,6 @@ import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
-import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -160,7 +159,7 @@ public class ArcaneShield {
                         return;
                     }
 
-                    changeResourceHandler.addHealthToEntity(target, thirtyPercent, player);
+                    changeResourceHandler.addHealthToEntity(target, thirtyPercent);
 
                     Location center = target.getLocation().clone().add(0,1,0);
 

@@ -169,13 +169,13 @@ public class Laceration {
                     return;
                 }
 
-                if(profileManager.getAnyProfile(target).getIfDead()){
-                    this.cancel();
-                    return;
-                }
-
                 if(target instanceof Player){
                     if(!((Player)target).isOnline()){
+                        this.cancel();
+                        return;
+                    }
+
+                    if(profileManager.getAnyProfile(target).getIfDead()){
                         this.cancel();
                         return;
                     }

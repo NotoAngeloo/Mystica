@@ -134,7 +134,7 @@ public class BurialGround {
 
                 if(playerValid()){
 
-                    changeResourceHandler.addHealthToEntity(player, finalHealAmount, player);
+                    changeResourceHandler.addHealthToEntity(player, finalHealAmount);
                     changeResourceHandler.addManaToPlayer(player, 10.0);
 
                     if(blood){

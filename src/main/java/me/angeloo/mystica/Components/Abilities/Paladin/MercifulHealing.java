@@ -7,7 +7,6 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
-import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -197,7 +196,7 @@ public class MercifulHealing {
                     return;
                 }
 
-                changeResourceHandler.addHealthToEntity(target, healAmount, player);
+                changeResourceHandler.addHealthToEntity(target, healAmount);
                 unQueueMoveCast(player);
 
                 Location center = target.getLocation().clone().add(0,1,0);
@@ -237,7 +236,7 @@ public class MercifulHealing {
         List<LivingEntity> affected = justiceMark.getMarkedTargets(player);
 
         for(LivingEntity thisPlayer : affected){
-            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, player);
+            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount);
 
             Location center = thisPlayer.getLocation().clone().add(0,1,0);
 

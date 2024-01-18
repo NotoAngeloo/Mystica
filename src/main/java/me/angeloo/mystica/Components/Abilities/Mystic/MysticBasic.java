@@ -1,8 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Mystic;
 
 import me.angeloo.mystica.Components.Abilities.MysticAbilities;
-import me.angeloo.mystica.Components.Abilities.Ranger.RallyingCry;
-import me.angeloo.mystica.Components.Abilities.RangerAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -453,12 +451,9 @@ public class MysticBasic {
         else{
 
             double totalTargetHealth = profileManager.getAnyProfile(target).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(target);
-            double yourMagic = profileManager.getAnyProfile(player).getTotalMagic();
-            double level = profileManager.getAnyProfile(player).getStats().getLevel();
             boolean crit = damageCalculator.checkIfCrit(player, 0);
             double healAmount = totalTargetHealth * .05;
-            healAmount = healAmount * (yourMagic/4);
-            healAmount = healAmount + ((int)(level/10));
+
 
             if(subclass.equalsIgnoreCase("shepard")){
                 healAmount = healAmount * 1.2;
@@ -468,7 +463,7 @@ public class MysticBasic {
                 healAmount = healAmount * 1.5;
             }
 
-            changeResourceHandler.addHealthToEntity(target, healAmount, player);
+            changeResourceHandler.addHealthToEntity(target, healAmount);
 
             Location center = target.getLocation().clone().add(0,1,0);
 

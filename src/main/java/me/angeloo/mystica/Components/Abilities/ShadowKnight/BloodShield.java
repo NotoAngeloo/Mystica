@@ -80,7 +80,7 @@ public class BloodShield {
         double currentHealth = profileManager.getAnyProfile(player).getCurrentHealth();
         double missing = maxHealth-currentHealth;
 
-        changeResourceHandler.addHealthToEntity(player, missing * .5, player);
+        changeResourceHandler.addHealthToEntity(player, missing * .5);
 
         double shield = profileManager.getAnyProfile(player).getCurrentHealth();
         buffAndDebuffManager.getGenericShield().applyOrAddShield(player, shield);

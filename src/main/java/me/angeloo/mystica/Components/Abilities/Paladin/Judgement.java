@@ -201,7 +201,7 @@ public class Judgement {
                             healAmount = healAmount*1.5;
                         }
 
-                        changeResourceHandler.addHealthToEntity(target, healAmount, player);
+                        changeResourceHandler.addHealthToEntity(target, healAmount);
                         return;
                     }
 

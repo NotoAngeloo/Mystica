@@ -1,11 +1,13 @@
 package me.angeloo.mystica.Managers;
 
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -58,6 +60,7 @@ public class DeathManager {
         player.setGlowing(true);
         abilityManager.resetAbilityBuffs(player);
         dpsManager.removeDps(player);
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
     }
 
     public void playerNowLive(Player player, Boolean bySkill, Player playerWhoCastSkill){
@@ -102,8 +105,7 @@ public class DeathManager {
         Scoreboard scoreboard = player.getScoreboard();
         scoreboard.clearSlot(DisplaySlot.SIDEBAR);
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(""));
-
-
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
     }
 
 }

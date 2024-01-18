@@ -3,6 +3,7 @@ package me.angeloo.mystica.Utility;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -52,6 +53,7 @@ public class GearReader {
             List<String> lores = meta.getLore();
             assert lores != null;
             for(String lore : lores){
+                Bukkit.getLogger().info(lore);
                 Matcher matcher = pattern.matcher(lore);
                 if (!matcher.matches()) {
                     continue;
@@ -69,20 +71,16 @@ public class GearReader {
                         magic+=amount;
                         break;
                     }
+                    case "crit":{
+                        crit+=amount;
+                        break;
+                    }
                     case "health":{
                         health+=amount;
                         break;
                     }
                     case "mana":{
                         mana+=amount;
-                        break;
-                    }
-                    case "regen":{
-                        regen+=amount;
-                        break;
-                    }
-                    case "mana regen":{
-                        mana_regen+=amount;
                         break;
                     }
                     case "defense":{
@@ -93,8 +91,12 @@ public class GearReader {
                         magic_defense+=amount;
                         break;
                     }
-                    case "crit":{
-                        crit+=amount;
+                    case "regen":{
+                        regen+=amount;
+                        break;
+                    }
+                    case "mana regen":{
+                        mana_regen+=amount;
                         break;
                     }
                 }

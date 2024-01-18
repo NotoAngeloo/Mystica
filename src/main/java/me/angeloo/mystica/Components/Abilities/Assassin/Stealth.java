@@ -94,6 +94,7 @@ public class Stealth {
                     buffAndDebuffManager.getHidden().hidePlayer(player, true);
                     stealthTargetBlacklist.add(player);
                     stealthed.put(player.getUniqueId(), true);
+                    revealAfterTime(player);
 
                     for(Map.Entry<UUID, LivingEntity> entry: targetManager.getTargetMap().entrySet()){
                         UUID playerID = entry.getKey();
@@ -116,20 +117,42 @@ public class Stealth {
         }.runTaskTimer(main, 0, 1);
 
 
+    }
+
+    private void revealAfterTime(Player player){
+
+        new BukkitRunnable(){
+            int count = 0;
+            @Override
+            public void run(){
+
+                if(!getIfStealthed(player)){
+                    this.cancel();
+                    return;
+                }
+
+                if(count>=30){
+                    this.cancel();
+                    forceReveal(player, null);
+                }
+
+                count++;
+            }
+        }.runTaskTimer(main, 0, 20);
 
     }
 
     public void reveal(Player player){
 
         buffAndDebuffManager.getHidden().unhidePlayer(player);
-        stealthTargetBlacklist.add(player);
+        stealthTargetBlacklist.remove(player);
         stealthed.put(player.getUniqueId(), false);
     }
 
     private void forceReveal(Player player, LivingEntity victim){
 
         buffAndDebuffManager.getHidden().unhidePlayer(player);
-        stealthTargetBlacklist.add(player);
+        stealthTargetBlacklist.remove(player);
         stealthed.put(player.getUniqueId(), false);
 
         abilityReadyInMap.put(player.getUniqueId(), 30);
@@ -151,6 +174,9 @@ public class Stealth {
             }
         }.runTaskTimer(main, 0,20);
 
+        if(victim==null){
+            return;
+        }
 
         double skillDamage = 40;
 

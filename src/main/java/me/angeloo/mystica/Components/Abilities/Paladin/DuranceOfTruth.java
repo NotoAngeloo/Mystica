@@ -244,7 +244,7 @@ public class DuranceOfTruth {
 
                             if(count%20==0){
                                 double fivePercent = (profileManager.getAnyProfile(player).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player)) * .05;
-                                changeResourceHandler.addHealthToEntity(player, fivePercent, player);
+                                changeResourceHandler.addHealthToEntity(player, fivePercent);
 
                                 buffAndDebuffManager.getDamageReduction().applyDamageReduction(player, 0.95, 20);
                             }

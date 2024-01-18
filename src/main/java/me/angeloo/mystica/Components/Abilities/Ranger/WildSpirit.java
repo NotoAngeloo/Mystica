@@ -314,7 +314,7 @@ public class WildSpirit {
 
                     double healAmount = (attack * .1) * skillLevel;
 
-                    changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, player);
+                    changeResourceHandler.addHealthToEntity(thisPlayer, healAmount);
 
                 }
             }

@@ -12,8 +12,13 @@ public class EquipmentInformation {
     public EquipmentInformation(){
         allEquipmentTypes = new ArrayList<>();
         allEquipmentTypes.add(Material.STICK);
-        allEquipmentTypes.add(Material.BONE); //TEMPORARY until i get an offhand for elementalist
-        allEquipmentTypes.add(Material.CHAINMAIL_HELMET);
+        allEquipmentTypes.add(Material.FLINT);
+        allEquipmentTypes.add(Material.BLAZE_ROD);
+        allEquipmentTypes.add(Material.IRON_SWORD);
+        allEquipmentTypes.add(Material.FEATHER);
+        allEquipmentTypes.add(Material.DIAMOND_SWORD);
+        allEquipmentTypes.add(Material.BRICK);
+        allEquipmentTypes.add(Material.CHAIN);
         allEquipmentTypes.add(Material.CHAINMAIL_CHESTPLATE);
         allEquipmentTypes.add(Material.CHAINMAIL_LEGGINGS);
         allEquipmentTypes.add(Material.CHAINMAIL_BOOTS);

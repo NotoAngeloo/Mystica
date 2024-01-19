@@ -36,6 +36,10 @@ commands:
     description: allows testing of reforge mechanic
     usage: /Reforge
     permission: developer
+  Upgrade:
+    description: allows testing of upgrade mechanic
+    usage: /Upgrade
+    permission: developer
 
 permissions:
   developer:

@@ -53,7 +53,7 @@ public class GearReader {
             List<String> lores = meta.getLore();
             assert lores != null;
             for(String lore : lores){
-                Bukkit.getLogger().info(lore);
+                //Bukkit.getLogger().info(lore);
                 Matcher matcher = pattern.matcher(lore);
                 if (!matcher.matches()) {
                     continue;

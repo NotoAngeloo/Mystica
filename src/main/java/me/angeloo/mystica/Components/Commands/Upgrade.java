@@ -1,7 +1,6 @@
 package me.angeloo.mystica.Components.Commands;
 
 import me.angeloo.mystica.Managers.EquipmentManager;
-import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -11,11 +10,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class Reforge implements CommandExecutor {
+public class Upgrade implements CommandExecutor {
 
     private final EquipmentManager equipmentManager;
 
-    public Reforge(Mystica main){
+    public Upgrade(Mystica main){
         equipmentManager = new EquipmentManager(main);
     }
 
@@ -35,7 +34,8 @@ public class Reforge implements CommandExecutor {
             return true;
         }
 
-        equipmentManager.reforge(player, item);
+        //just for testing purposes, 2 can be changed in the ui
+        equipmentManager.upgrade(player, item, 2);
 
         return true;
     }

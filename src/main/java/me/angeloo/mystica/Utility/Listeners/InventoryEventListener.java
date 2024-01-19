@@ -91,7 +91,6 @@ public class InventoryEventListener implements Listener {
 
         displayWeapons.displayWeapons(player);
         displayWeapons.displayArmor(player);
-
         gearReader.setGearStats(player);
     }
 
@@ -416,6 +415,8 @@ public class InventoryEventListener implements Listener {
             }
         }
         player.openInventory(equipmentInventory.openEquipmentInventory(player, null, false));
+        displayWeapons.displayWeapons(player);
+        displayWeapons.displayArmor(player);
     }
 
 

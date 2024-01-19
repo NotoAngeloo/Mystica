@@ -2,6 +2,7 @@ package me.angeloo.mystica.Managers;
 
 import me.angeloo.mystica.Components.ClassEquipment.*;
 import me.angeloo.mystica.Mystica;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -10,11 +11,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.awt.*;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
-import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,16 +28,171 @@ public class EquipmentManager {
     }
 
 
-    //upgrade and reforge are two things i need to accomplish
+    public void upgrade(Player player, ItemStack equipment, int newLevel){
 
-    //perhaps make this return the upgrade
-    public void upgrade(ItemStack equipment, int newLevel){
+        boolean magic = profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("mystic")
+                || profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("elementalist");
 
-        //example, catalyst +3 magic +18 health base stats per level
+        ItemMeta meta = equipment.getItemMeta();
+        assert meta != null;
+        List<String> lores = meta.getLore();
+        assert lores != null;
 
-        //get the level first, then increase it
+        boolean hasReforgeStats = false;
+        for(String lore : lores){
+            if (!lore.startsWith("§") && !lore.equalsIgnoreCase("")) {
+                hasReforgeStats = true;
+                break;
+            }
+        }
 
+        List<String> newLore = new ArrayList<>();
+        List<String> randomStats = new ArrayList<>();
+        newLore.add(ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + newLevel);
 
+        //get the slot of the item
+        String slot = lores.get(1).replaceAll("§.", "");
+        newLore.add(ChatColor.of(new Color(176, 159, 109)) + slot);
+        newLore.add("");
+
+        //get what the base stats are
+        String[] valid = {"attack","magic","health","mana","regen","mana regen","defense","magic defense","crit"};
+        String regex = ".*?((?i:" + String.join("|", valid) + ")\\s*\\+\\s*(\\d+)).*";
+        Pattern pattern = Pattern.compile(regex);
+        for (String lore : lores){
+
+            if(!lore.startsWith("§") && !lore.equalsIgnoreCase("")){
+                randomStats.add(lore);
+                continue;
+            }
+
+            Matcher matcher = pattern.matcher(lore);
+            if (!matcher.matches()) {
+                continue;
+            }
+
+            String stat = matcher.group(1);
+            stat = stat.replaceAll("\\+\\s*\\d+", "").trim();
+
+            newLore.add(getNewBaseStatString(slot, stat, newLevel));
+        }
+
+        newLore.add("");
+
+        if(hasReforgeStats){
+
+            PersistentDataContainer container = meta.getPersistentDataContainer();
+
+            for(String lore : randomStats){
+                String name = lore.replaceAll("\\s*\\+\\s*\\d+\\s*", "").toLowerCase();
+
+                if(name.equalsIgnoreCase("magic") || name.equalsIgnoreCase("attack")){
+                    name = "offense";
+                }
+
+                int skillNumber = 0;
+                if(name.startsWith("skill")){
+                    skillNumber = Integer.parseInt(name.replaceAll("skill ", ""));
+                    name = "skill";
+                }
+
+                name = name.replaceAll(" ", "_");
+
+                //because loop within loop and a lore appears twice, it also detects two different namespace keys. remove one of them after its detected
+
+                for (NamespacedKey key : container.getKeys()) {
+                    String stat = key.getKey();
+                    stat = stat.replaceAll("_[0-9]+$", "");
+
+                    int value = container.get(key, PersistentDataType.INTEGER);
+
+                    //Bukkit.getLogger().info(stat);
+
+                    if(name.equalsIgnoreCase(stat)){
+                        //remove from container
+                        container.remove(key);
+
+                        //calculate the stat based on the value
+                        switch(name.toLowerCase()){
+                            case "offense":{
+
+                                if(magic){
+                                    newLore.add("Magic + " + statCalculatorOffenseDefense(newLevel, value));
+                                }
+                                else{
+                                    newLore.add("Attack + " + statCalculatorOffenseDefense(newLevel, value));
+                                }
+
+                                break;
+                            }
+                            case "crit":{
+                                newLore.add("Crit + " + statCalculatorCrit(newLevel, value));
+                                break;
+                            }
+                            case "health":{
+                                newLore.add("Health + " + statCalculatorHealthMana(newLevel, value));
+                                break;
+                            }
+                            case "mana":{
+                                newLore.add("Mana + " + statCalculatorHealthMana(newLevel, value));
+                                break;
+                            }
+                            case "defense":{
+                                newLore.add("Defense + " + statCalculatorOffenseDefense(newLevel, value));
+                                break;
+                            }
+                            case "magic_defense":{
+                                newLore.add("Magic Defense + " + statCalculatorOffenseDefense(newLevel, value));
+                                break;
+                            }
+                            case "regen":{
+                                newLore.add("Regen + " + statCalculatorRegen(newLevel, value));
+                                break;
+                            }
+                            case "mana_regen":{
+                                newLore.add("Mana Regen + " + statCalculatorRegen(newLevel, value));
+                                break;
+                            }
+                            case "skill":{
+                                newLore.add("Skill " + skillNumber + " + " + value);
+                                break;
+                            }
+                        }
+                    }
+
+                }
+
+            }
+
+            newLore.add("");
+        }
+
+        int whichLine = 0;
+        String requiresRegex = "(?i)requires ";
+        Pattern requiresPattern = Pattern.compile(requiresRegex);
+        for(String lore : lores){
+            String colorlessString = lore.replaceAll("§.", "");
+            Matcher requiresMatcher = requiresPattern.matcher(colorlessString);
+            if(requiresMatcher.find()){
+                whichLine = lores.indexOf(lore);
+            }
+        }
+
+        newLore.add(lores.get(whichLine));
+
+        /*for(String lore : newLore){
+            Bukkit.getLogger().info(lore);
+        }*/
+
+        ItemStack newItem = equipment.clone();
+        ItemMeta newMeta = newItem.getItemMeta();
+        assert newMeta != null;
+        newMeta.setLore(newLore);
+        newItem.setItemMeta(newMeta);
+
+        player.getInventory().addItem(newItem);
+
+        //it works yay
     }
 
     public void reforge(Player player, ItemStack equipment){
@@ -52,7 +206,6 @@ public class EquipmentManager {
         assert lores != null;
 
         boolean hasReforgeStats = false;
-
 
         int level = 0;
         String levelRegex = ".*\\b(?i:level:)\\s*(\\d+).*";
@@ -76,11 +229,9 @@ public class EquipmentManager {
 
         if(hasReforgeStats){
 
-
             for (NamespacedKey key : newMeta.getPersistentDataContainer().getKeys()) {
                 newMeta.getPersistentDataContainer().remove(key);
             }
-
 
             List<String> editedLore = new ArrayList<>();
 
@@ -116,10 +267,6 @@ public class EquipmentManager {
                 whichLine = newLores.indexOf(lore) - 1;
             }
         }
-
-
-        //Bukkit.getLogger().info("line " + whichLine);
-
 
         int offenceCounter = 0;
         int critCounter = 0;
@@ -216,7 +363,6 @@ public class EquipmentManager {
 
         }
 
-        //add these values to namespace keys instead
         List<String> newRandomStats = new ArrayList<>();
         newRandomStats.add("");
         PersistentDataContainer statRolls = newMeta.getPersistentDataContainer();
@@ -310,8 +456,6 @@ public class EquipmentManager {
             newRandomStats.add("Skill " + skillNumber + " + " + statAmount);
         }
 
-        //Bukkit.getLogger().info(String.valueOf(newRandomStats));
-
         newLores.addAll(whichLine, newRandomStats);
         newMeta.setLore(newLores);
         newItem.setItemMeta(newMeta);
@@ -319,16 +463,6 @@ public class EquipmentManager {
 
         //do something else with this later
         player.getInventory().addItem(newItem);
-
-
-        //(attack/magic) health, mana, defense, magic defense, regen, mana regen, crit, skill level.
-
-        //each stat can be rolled a maximum of twice. skill level rolls another number to determine which skill
-
-        //each rolls a number between 1-100 for percentage, this value is stores as a namespacekey
-        //skill level instead rolls a number 1-5. this stays the same and is not upgraded with each upgrade
-
-
 
     }
 
@@ -412,6 +546,94 @@ public class EquipmentManager {
         rawStat = (int) convert;
 
         return rawStat;
+    }
+
+    private String getNewBaseStatString(String slot, String stat, int level){
+
+        StringBuilder statString = new StringBuilder();
+
+        statString.append(ChatColor.of(new Color(255,255,255))).append(stat).append(" + ");
+
+        int base = 0;
+
+        switch (slot.toLowerCase()){
+            case "main hand":{
+                switch (stat.toLowerCase()){
+                    case "attack":
+                    case "magic":{
+                        base = 3;
+                        break;
+                    }
+                    case "health":{
+                        base = 18;
+                        break;
+                    }
+                }
+                break;
+            }
+            case "secondary":{
+                switch (stat.toLowerCase()){
+                    case "magic defense":
+                    case "defense":{
+                        base = 4;
+                        break;
+                    }
+                    case "health":{
+                        base = 18;
+                        break;
+                    }
+                }
+                break;
+            }
+            case "helmet":{
+                switch (stat.toLowerCase()){
+                    case "health":{
+                        base = 50;
+                        break;
+                    }
+                }
+                break;
+            }
+            case "chestplate":{
+                switch (stat.toLowerCase()){
+                    case "magic defense":
+                    case "defense":{
+                        base = 4;
+                        break;
+                    }
+                    case "health":{
+                        base = 31;
+                        break;
+                    }
+                }
+                break;
+            }
+            case "leggings":{
+                switch (stat.toLowerCase()){
+                    case "attack":
+                    case "magic":{
+                        base = 4;
+                        break;
+                    }
+                }
+                break;
+            }
+            case "boots":{
+                switch (stat.toLowerCase()){
+                    case "attack":
+                    case "magic":{
+                        base = 2;
+                        break;
+                    }
+                }
+                break;
+            }
+
+        }
+
+        statString.append(base*level);
+
+        return String.valueOf(statString);
     }
 
 }

@@ -28,13 +28,13 @@ public class ShieldAbilityManaDisplayer {
         allSkillItems = new AllSkillItems(main);
     }
 
-    public void displayPlayerHealthPlusInfo(Player player){
+    public void displayPlayerHealthPlusInfo(Player player, int slot){
 
         StringBuilder fullBar = new StringBuilder();
 
         String shieldString = getShieldString(player);
         String manaString = getManaBar(player);
-        String statusString = ChatColor.GRAY + getPlayerStatus(player);
+        String statusString = ChatColor.GRAY + getPlayerStatus(player, slot);
 
         String colorlessString = statusString.replaceAll("§.", "");
 
@@ -109,7 +109,7 @@ public class ShieldAbilityManaDisplayer {
         return String.valueOf(manaBar);
     }
 
-    private String getPlayerStatus(Player player){
+    private String getPlayerStatus(Player player, int hotBarSlot){
 
         boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
 
@@ -117,7 +117,7 @@ public class ShieldAbilityManaDisplayer {
             return " ";
         }
 
-        int hotBarSlot = player.getInventory().getHeldItemSlot();
+        //int hotBarSlot = player.getInventory().getHeldItemSlot();
 
         int cooldown;
 

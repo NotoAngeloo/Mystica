@@ -32,7 +32,7 @@ public class CooldownDisplayer {
             int slot = player.getInventory().getHeldItemSlot();
 
             if (slot == i){
-                shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
+                shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player, player.getInventory().getHeldItemSlot());
                 continue;
             }
 
@@ -67,7 +67,7 @@ public class CooldownDisplayer {
             int slot = player.getInventory().getHeldItemSlot();
 
             if(slot == 8){
-                shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
+                shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player, player.getInventory().getHeldItemSlot());
                 return;
             }
 
@@ -112,7 +112,7 @@ public class CooldownDisplayer {
         int equippedIn = equipSkills.whichSlotIsTheSkillEquippedIn(abilityNumber);
 
         if(hotBarSlot == equippedIn){
-            shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
+            shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player, player.getInventory().getHeldItemSlot());
             return;
         }
 
@@ -150,7 +150,7 @@ public class CooldownDisplayer {
         int hotBarSlot = player.getInventory().getHeldItemSlot();
 
         if(hotBarSlot == 8){
-            shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
+            shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player, player.getInventory().getHeldItemSlot());
             return;
         }
 
@@ -189,7 +189,7 @@ public class CooldownDisplayer {
         int hotBarSlot = player.getInventory().getHeldItemSlot();
 
         if(hotBarSlot == 8){
-            shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
+            shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player, player.getInventory().getHeldItemSlot());
             return;
         }
 

@@ -504,6 +504,7 @@ public class GeneralEventListener implements Listener {
         int oldSlot = event.getPreviousSlot();
         player.getInventory().setItem(newSlot, weapon);
         player.getInventory().setItem(oldSlot, cooldownDisplayer.getOldItem(player, oldSlot));
+        shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player, newSlot);
     }
 
     @EventHandler
@@ -730,10 +731,11 @@ public class GeneralEventListener implements Listener {
                 return;
             }
 
-            shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo((Player) defender);
+            Player defenderPlayer = (Player) defender;
+
+            shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(defenderPlayer, defenderPlayer.getInventory().getHeldItemSlot());
 
             if(!event.getIfPositive()){
-                Player defenderPlayer = (Player)defender;
 
                 InventoryView openInv = defenderPlayer.getOpenInventory();
 
@@ -741,7 +743,7 @@ public class GeneralEventListener implements Listener {
                     defenderPlayer.closeInventory();
                 }
 
-                combatManager.startCombatTimer((Player) defender);
+                combatManager.startCombatTimer(defenderPlayer);
             }
 
         }

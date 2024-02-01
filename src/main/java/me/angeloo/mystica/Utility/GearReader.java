@@ -34,6 +34,15 @@ public class GearReader {
         int magic_defense = 0;
         int crit = 0;
 
+        int skill_1 = 0;
+        int skill_2 = 0;
+        int skill_3 = 0;
+        int skill_4 = 0;
+        int skill_5 = 0;
+        int skill_6 = 0;
+        int skill_7 = 0;
+        int skill_8 = 0;
+
         PlayerEquipment equipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
         ItemStack weapon = equipment.getWeapon();
@@ -43,7 +52,7 @@ public class GearReader {
         ItemStack leggings = equipment.getLeggings();
         ItemStack boots = equipment.getBoots();
 
-        String[] valid = {"attack","magic","health","mana","regen","mana regen","defense","magic defense","crit"};
+        String[] valid = {"attack","magic","health","mana","regen","mana regen","defense","magic defense","crit","skill \\d+"};
         String regex = ".*?((?i:" + String.join("|", valid) + ")\\s*\\+\\s*(\\d+)).*";
         Pattern pattern = Pattern.compile(regex);
 
@@ -60,7 +69,12 @@ public class GearReader {
                 }
                 String stat = matcher.group(1);
                 stat = stat.replaceAll("\\+\\s*\\d+", "").trim();
+
+                //Bukkit.getLogger().info(stat);
+
                 int amount = Integer.parseInt(matcher.group(2));
+
+                //Bukkit.getLogger().info(String.valueOf(amount));
 
                 switch (stat.toLowerCase()){
                     case "attack":{
@@ -97,6 +111,38 @@ public class GearReader {
                     }
                     case "mana regen":{
                         mana_regen+=amount;
+                        break;
+                    }
+                    case "skill 1":{
+                        skill_1+=amount;
+                        break;
+                    }
+                    case "skill 2":{
+                        skill_2+=amount;
+                        break;
+                    }
+                    case "skill 3":{
+                        skill_3+=amount;
+                        break;
+                    }
+                    case "skill 4":{
+                        skill_4+=amount;
+                        break;
+                    }
+                    case "skill 5":{
+                        skill_5+=amount;
+                        break;
+                    }
+                    case "skill 6":{
+                        skill_6+=amount;
+                        break;
+                    }
+                    case "skill 7":{
+                        skill_7+=amount;
+                        break;
+                    }
+                    case "skill 8":{
+                        skill_8+=amount;
                         break;
                     }
                 }
@@ -154,6 +200,38 @@ public class GearReader {
                         crit+=amount;
                         break;
                     }
+                    case "skill 1":{
+                        skill_1+=amount;
+                        break;
+                    }
+                    case "skill 2":{
+                        skill_2+=amount;
+                        break;
+                    }
+                    case "skill 3":{
+                        skill_3+=amount;
+                        break;
+                    }
+                    case "skill 4":{
+                        skill_4+=amount;
+                        break;
+                    }
+                    case "skill 5":{
+                        skill_5+=amount;
+                        break;
+                    }
+                    case "skill 6":{
+                        skill_6+=amount;
+                        break;
+                    }
+                    case "skill 7":{
+                        skill_7+=amount;
+                        break;
+                    }
+                    case "skill 8":{
+                        skill_8+=amount;
+                        break;
+                    }
                 }
             }
         }
@@ -207,6 +285,38 @@ public class GearReader {
                     }
                     case "crit":{
                         crit+=amount;
+                        break;
+                    }
+                    case "skill 1":{
+                        skill_1+=amount;
+                        break;
+                    }
+                    case "skill 2":{
+                        skill_2+=amount;
+                        break;
+                    }
+                    case "skill 3":{
+                        skill_3+=amount;
+                        break;
+                    }
+                    case "skill 4":{
+                        skill_4+=amount;
+                        break;
+                    }
+                    case "skill 5":{
+                        skill_5+=amount;
+                        break;
+                    }
+                    case "skill 6":{
+                        skill_6+=amount;
+                        break;
+                    }
+                    case "skill 7":{
+                        skill_7+=amount;
+                        break;
+                    }
+                    case "skill 8":{
+                        skill_8+=amount;
                         break;
                     }
                 }
@@ -264,6 +374,38 @@ public class GearReader {
                         crit+=amount;
                         break;
                     }
+                    case "skill 1":{
+                        skill_1+=amount;
+                        break;
+                    }
+                    case "skill 2":{
+                        skill_2+=amount;
+                        break;
+                    }
+                    case "skill 3":{
+                        skill_3+=amount;
+                        break;
+                    }
+                    case "skill 4":{
+                        skill_4+=amount;
+                        break;
+                    }
+                    case "skill 5":{
+                        skill_5+=amount;
+                        break;
+                    }
+                    case "skill 6":{
+                        skill_6+=amount;
+                        break;
+                    }
+                    case "skill 7":{
+                        skill_7+=amount;
+                        break;
+                    }
+                    case "skill 8":{
+                        skill_8+=amount;
+                        break;
+                    }
                 }
             }
         }
@@ -317,6 +459,38 @@ public class GearReader {
                     }
                     case "crit":{
                         crit+=amount;
+                        break;
+                    }
+                    case "skill 1":{
+                        skill_1+=amount;
+                        break;
+                    }
+                    case "skill 2":{
+                        skill_2+=amount;
+                        break;
+                    }
+                    case "skill 3":{
+                        skill_3+=amount;
+                        break;
+                    }
+                    case "skill 4":{
+                        skill_4+=amount;
+                        break;
+                    }
+                    case "skill 5":{
+                        skill_5+=amount;
+                        break;
+                    }
+                    case "skill 6":{
+                        skill_6+=amount;
+                        break;
+                    }
+                    case "skill 7":{
+                        skill_7+=amount;
+                        break;
+                    }
+                    case "skill 8":{
+                        skill_8+=amount;
                         break;
                     }
                 }
@@ -374,6 +548,38 @@ public class GearReader {
                         crit+=amount;
                         break;
                     }
+                    case "skill 1":{
+                        skill_1+=amount;
+                        break;
+                    }
+                    case "skill 2":{
+                        skill_2+=amount;
+                        break;
+                    }
+                    case "skill 3":{
+                        skill_3+=amount;
+                        break;
+                    }
+                    case "skill 4":{
+                        skill_4+=amount;
+                        break;
+                    }
+                    case "skill 5":{
+                        skill_5+=amount;
+                        break;
+                    }
+                    case "skill 6":{
+                        skill_6+=amount;
+                        break;
+                    }
+                    case "skill 7":{
+                        skill_7+=amount;
+                        break;
+                    }
+                    case "skill 8":{
+                        skill_8+=amount;
+                        break;
+                    }
                 }
             }
         }
@@ -384,6 +590,7 @@ public class GearReader {
         }
 
         profileManager.getAnyProfile(player).getGearStats().setAllGearStats(attack,magic,health,mana,regen,mana_regen,defense,magic_defense,crit);
+        profileManager.getAnyProfile(player).getSkillLevels().setAllSkillLevelBonus(skill_1,skill_2,skill_3,skill_4,skill_5,skill_6,skill_7,skill_8);
 
     }
 

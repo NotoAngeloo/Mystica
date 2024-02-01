@@ -40,6 +40,10 @@ commands:
     description: allows testing of upgrade mechanic
     usage: /Upgrade
     permission: developer
+  Generate:
+    description: allows testing of generate mechanic
+    usage: /Generate
+    permission: developer
 
 permissions:
   developer:

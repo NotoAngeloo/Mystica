@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.ClassEquipment.*;
 import me.angeloo.mystica.Mystica;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -21,14 +22,253 @@ public class EquipmentManager {
 
     private final ProfileManager profileManager;
 
+    private final AssassinEquipment assassinEquipment;
+    private final ElementalistEquipment elementalistEquipment;
+    private final MysticEquipment mysticEquipment;
+    private final PaladinEquipment paladinEquipment;
+    private final RangerEquipment rangerEquipment;
+    private final ShadowKnightEquipment shadowKnightEquipment;
+    private final WarriorEquipment warriorEquipment;
 
     public EquipmentManager(Mystica main){
         profileManager = main.getProfileManager();
-
+        assassinEquipment = new AssassinEquipment();
+        elementalistEquipment = new ElementalistEquipment();
+        mysticEquipment = new MysticEquipment();
+        paladinEquipment = new PaladinEquipment();
+        rangerEquipment = new RangerEquipment();
+        shadowKnightEquipment = new ShadowKnightEquipment();
+        warriorEquipment = new WarriorEquipment();
     }
 
+    public ItemStack generate(Player player, int level){
 
-    public void upgrade(Player player, ItemStack equipment, int newLevel){
+        ItemStack baseGear = new ItemStack(Material.AIR);
+
+        //randomly generate
+        int random = new Random().nextInt(6);
+
+        String clazz = profileManager.getAnyProfile(player).getPlayerClass();
+
+        switch (clazz.toLowerCase()){
+            case "assassin":{
+                switch (random){
+                    case 0:{
+                        baseGear = assassinEquipment.getBaseWeapon();
+                        break;
+                    }
+                    case 1:{
+                        baseGear = assassinEquipment.getBaseOffhand();
+                        break;
+                    }
+                    case 2:{
+                        baseGear = assassinEquipment.getBaseHelmet();
+                        break;
+                    }
+                    case 3:{
+                        baseGear = assassinEquipment.getBaseChestPlate();
+                        break;
+                    }
+                    case 4:{
+                        baseGear = assassinEquipment.getBaseLeggings();
+                        break;
+                    }
+                    case 5:{
+                        baseGear = assassinEquipment.getBaseBoots();
+                        break;
+                    }
+                }
+                break;
+            }
+            case "elementalist":{
+                switch (random){
+                    case 0:{
+                        baseGear = elementalistEquipment.getBaseWeapon();
+                        break;
+                    }
+                    case 1:{
+                        baseGear = elementalistEquipment.getBaseOffhand();
+                        break;
+                    }
+                    case 2:{
+                        baseGear = elementalistEquipment.getBaseHelmet();
+                        break;
+                    }
+                    case 3:{
+                        baseGear = elementalistEquipment.getBaseChestPlate();
+                        break;
+                    }
+                    case 4:{
+                        baseGear = elementalistEquipment.getBaseLeggings();
+                        break;
+                    }
+                    case 5:{
+                        baseGear = elementalistEquipment.getBaseBoots();
+                        break;
+                    }
+                }
+                break;
+            }
+            case "mystic":{
+                switch (random){
+                    case 0:{
+                        baseGear = mysticEquipment.getBaseWeapon();
+                        break;
+                    }
+                    case 1:{
+                        baseGear = mysticEquipment.getBaseOffhand();
+                        break;
+                    }
+                    case 2:{
+                        baseGear = mysticEquipment.getBaseHelmet();
+                        break;
+                    }
+                    case 3:{
+                        baseGear = mysticEquipment.getBaseChestPlate();
+                        break;
+                    }
+                    case 4:{
+                        baseGear = mysticEquipment.getBaseLeggings();
+                        break;
+                    }
+                    case 5:{
+                        baseGear = mysticEquipment.getBaseBoots();
+                        break;
+                    }
+                }
+                break;
+            }
+            case "paladin":{
+                switch (random){
+                    case 0:{
+                        baseGear = paladinEquipment.getBaseWeapon();
+                        break;
+                    }
+                    case 1:{
+                        baseGear = paladinEquipment.getBaseOffhand();
+                        break;
+                    }
+                    case 2:{
+                        baseGear = paladinEquipment.getBaseHelmet();
+                        break;
+                    }
+                    case 3:{
+                        baseGear = paladinEquipment.getBaseChestPlate();
+                        break;
+                    }
+                    case 4:{
+                        baseGear = paladinEquipment.getBaseLeggings();
+                        break;
+                    }
+                    case 5:{
+                        baseGear = paladinEquipment.getBaseBoots();
+                        break;
+                    }
+                }
+
+                break;
+            }
+            case "ranger":{
+                switch (random){
+                    case 0:{
+                        baseGear = rangerEquipment.getBaseWeapon();
+                        break;
+                    }
+                    case 1:{
+                        baseGear = rangerEquipment.getBaseOffhand();
+                        break;
+                    }
+                    case 2:{
+                        baseGear = rangerEquipment.getBaseHelmet();
+                        break;
+                    }
+                    case 3:{
+                        baseGear = rangerEquipment.getBaseChestPlate();
+                        break;
+                    }
+                    case 4:{
+                        baseGear = rangerEquipment.getBaseLeggings();
+                        break;
+                    }
+                    case 5:{
+                        baseGear = rangerEquipment.getBaseBoots();
+                        break;
+                    }
+                }
+                break;
+            }
+            case "shadow knight":{
+                switch (random){
+                    case 0:{
+                        baseGear = shadowKnightEquipment.getBaseWeapon();
+                        break;
+                    }
+                    case 1:{
+                        baseGear = shadowKnightEquipment.getBaseOffhand();
+                        break;
+                    }
+                    case 2:{
+                        baseGear = shadowKnightEquipment.getBaseHelmet();
+                        break;
+                    }
+                    case 3:{
+                        baseGear = shadowKnightEquipment.getBaseChestPlate();
+                        break;
+                    }
+                    case 4:{
+                        baseGear = shadowKnightEquipment.getBaseLeggings();
+                        break;
+                    }
+                    case 5:{
+                        baseGear = shadowKnightEquipment.getBaseBoots();
+                        break;
+                    }
+                }
+                break;
+            }
+            case "warrior":{
+                switch (random){
+                    case 0:{
+                        baseGear = warriorEquipment.getBaseWeapon();
+                        break;
+                    }
+                    case 1:{
+                        baseGear = warriorEquipment.getBaseOffhand();
+                        break;
+                    }
+                    case 2:{
+                        baseGear = warriorEquipment.getBaseHelmet();
+                        break;
+                    }
+                    case 3:{
+                        baseGear = warriorEquipment.getBaseChestPlate();
+                        break;
+                    }
+                    case 4:{
+                        baseGear = warriorEquipment.getBaseLeggings();
+                        break;
+                    }
+                    case 5:{
+                        baseGear = warriorEquipment.getBaseBoots();
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+
+        if(baseGear.getType().equals(Material.AIR)){
+            return baseGear;
+        }
+
+        return upgrade(player, baseGear, level);
+    }
+
+    public ItemStack upgrade(Player player, ItemStack equipment, int newLevel){
+
+        if(equipment.getType().equals(Material.AIR)){
+            return equipment;
+        }
 
         boolean magic = profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("mystic")
                 || profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("elementalist");
@@ -86,14 +326,16 @@ public class EquipmentManager {
             for(String lore : randomStats){
                 String name = lore.replaceAll("\\s*\\+\\s*\\d+\\s*", "").toLowerCase();
 
-                if(name.equalsIgnoreCase("magic") || name.equalsIgnoreCase("attack")){
-                    name = "offense";
+                if(name.startsWith("skill")){
+                    int skillNumber = Integer.parseInt(name.replaceAll("skill ", ""));
+                    int skillLevel = Integer.parseInt(lore.replaceAll(".*\\+\\s*(\\d+).*", "$1"));
+                    newLore.add("Skill " + skillNumber + " + " + skillLevel);
+                    continue;
+                    //Bukkit.getLogger().info(skillNumber + " " + skillLevel);
                 }
 
-                int skillNumber = 0;
-                if(name.startsWith("skill")){
-                    skillNumber = Integer.parseInt(name.replaceAll("skill ", ""));
-                    name = "skill";
+                if(name.equalsIgnoreCase("magic") || name.equalsIgnoreCase("attack")){
+                    name = "offense";
                 }
 
                 name = name.replaceAll(" ", "_");
@@ -153,10 +395,10 @@ public class EquipmentManager {
                                 newLore.add("Mana Regen + " + statCalculatorRegen(newLevel, value));
                                 break;
                             }
-                            case "skill":{
-                                newLore.add("Skill " + skillNumber + " + " + value);
+                            /*case "skill":{
+                                newLore.add("Skill " + skillNumber + " + " + skillLevel);
                                 break;
-                            }
+                            }*/
                         }
                     }
 
@@ -190,12 +432,10 @@ public class EquipmentManager {
         newMeta.setLore(newLore);
         newItem.setItemMeta(newMeta);
 
-        player.getInventory().addItem(newItem);
-
-        //it works yay
+        return newItem;
     }
 
-    public void reforge(Player player, ItemStack equipment){
+    public ItemStack reforge(Player player, ItemStack equipment){
 
         boolean magic = profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("mystic")
                 || profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("elementalist");
@@ -460,10 +700,7 @@ public class EquipmentManager {
         newMeta.setLore(newLores);
         newItem.setItemMeta(newMeta);
 
-
-        //do something else with this later
-        player.getInventory().addItem(newItem);
-
+        return newItem;
     }
 
     //offense/defense 1-5 base. +2 min, +4 max per level

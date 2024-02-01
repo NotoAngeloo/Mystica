@@ -34,9 +34,7 @@ public class Upgrade implements CommandExecutor {
             return true;
         }
 
-        //just for testing purposes, 2 can be changed in the ui
-        equipmentManager.upgrade(player, item, 2);
-
+        player.getInventory().addItem(equipmentManager.upgrade(player, item, 2));
         return true;
     }
 }

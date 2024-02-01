@@ -1,7 +1,6 @@
 package me.angeloo.mystica.Components.Commands;
 
 import me.angeloo.mystica.Managers.EquipmentManager;
-import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -11,11 +10,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class Reforge implements CommandExecutor {
+public class Generate implements CommandExecutor {
 
     private final EquipmentManager equipmentManager;
 
-    public Reforge(Mystica main){
+    public Generate(Mystica main){
         equipmentManager = new EquipmentManager(main);
     }
 
@@ -29,14 +28,8 @@ public class Reforge implements CommandExecutor {
 
         Player player = (Player) sender;
 
-        ItemStack item = player.getInventory().getItemInMainHand();
-
-        if(item.getType().equals(Material.AIR)){
-            return true;
-        }
-
-        player.getInventory().addItem(equipmentManager.reforge(player, item));
-
+        //testing purposes only, will increase level later
+        player.getInventory().addItem(equipmentManager.generate(player, 2));
         return true;
     }
 }

@@ -95,6 +95,7 @@ public final class Mystica extends JavaPlugin {
         getCommand("WhatAreMyStats").setExecutor(new WhatAreMyStats(this));
         getCommand("Reforge").setExecutor(new Reforge(this));
         getCommand("Upgrade").setExecutor(new Upgrade(this));
+        getCommand("Generate").setExecutor(new Generate(this));
 
         this.getServer().getPluginManager().registerEvents(new InventoryEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new GeneralEventListener(this), this);

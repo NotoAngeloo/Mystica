@@ -48,6 +48,14 @@ public class Warp {
             return;
         }
 
+        double cost = 5;
+
+        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+            return;
+        }
+
+        changeResourceHandler.subTractManaFromPlayer(player, cost);
+
         combatManager.startCombatTimer(player);
 
         double maxDistance = 8 + buffAndDebuffManager.getTotalRangeModifier(player);

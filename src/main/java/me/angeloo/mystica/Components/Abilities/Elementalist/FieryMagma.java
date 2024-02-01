@@ -100,6 +100,14 @@ public class FieryMagma {
             return;
         }
 
+        double cost = 2;
+
+        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+            return;
+        }
+
+        changeResourceHandler.subTractManaFromPlayer(player, cost);
+
         combatManager.startCombatTimer(player);
 
         execute(player);

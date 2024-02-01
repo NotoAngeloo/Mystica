@@ -101,8 +101,15 @@ public class DragonBreathing {
             return;
         }
 
-        combatManager.startCombatTimer(player);
+        double cost = 10;
 
+        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+            return;
+        }
+
+        changeResourceHandler.subTractManaFromPlayer(player, cost);
+
+        combatManager.startCombatTimer(player);
 
         execute(player);
 

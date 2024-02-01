@@ -85,6 +85,14 @@ public class ArcaneContract {
             return;
         }
 
+        double cost = 20;
+
+        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+            return;
+        }
+
+        changeResourceHandler.subTractManaFromPlayer(player, cost);
+
         PartiesAPI api = Parties.getApi();
 
         PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());

@@ -51,6 +51,14 @@ public class ConjuringForce {
             return;
         }
 
+        double cost = 20;
+
+        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+            return;
+        }
+
+        changeResourceHandler.subTractManaFromPlayer(player, cost);
+
         combatManager.startCombatTimer(player);
 
         execute(player);

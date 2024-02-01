@@ -26,6 +26,7 @@ public class WindWall {
     private final CombatManager combatManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CooldownDisplayer cooldownDisplayer;
+    private final ChangeResourceHandler changeResourceHandler;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
@@ -34,6 +35,7 @@ public class WindWall {
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
+        changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
 
     }
@@ -47,6 +49,14 @@ public class WindWall {
         if (abilityReadyInMap.get(player.getUniqueId()) > 0) {
             return;
         }
+
+        double cost = 5;
+
+        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+            return;
+        }
+
+        changeResourceHandler.subTractManaFromPlayer(player, cost);
 
         combatManager.startCombatTimer(player);
 

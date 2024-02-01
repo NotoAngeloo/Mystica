@@ -64,6 +64,14 @@ public class TempestRage {
 
         combatManager.startCombatTimer(player);
 
+        double cost = 10;
+
+        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+            return;
+        }
+
+        changeResourceHandler.subTractManaFromPlayer(player, cost);
+
         execute(player);
 
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level() +

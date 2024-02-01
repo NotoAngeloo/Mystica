@@ -17,7 +17,7 @@ import java.util.UUID;
 public class Dash {
 
     private final Mystica main;
-
+    private final ProfileManager profileManager;
     private final CombatManager combatManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
@@ -27,6 +27,7 @@ public class Dash {
 
     public Dash(Mystica main, AbilityManager manager){
         this.main = main;
+        profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
@@ -43,6 +44,13 @@ public class Dash {
             return;
         }
 
+        double cost = 5;
+
+        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+            return;
+        }
+
+        changeResourceHandler.subTractManaFromPlayer(player, cost);
 
         combatManager.startCombatTimer(player);
 

@@ -103,6 +103,14 @@ public class Pierce {
             return;
         }
 
+        double cost = 5;
+
+        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+            return;
+        }
+
+        changeResourceHandler.subTractManaFromPlayer(player, cost);
+
         combo.removeAnAmountOfPoints(player, 1);
 
         combatManager.startCombatTimer(player);

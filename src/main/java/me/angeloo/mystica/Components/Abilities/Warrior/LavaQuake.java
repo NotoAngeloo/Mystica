@@ -59,6 +59,14 @@ public class LavaQuake {
             return;
         }
 
+        double cost = 5;
+
+        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+            return;
+        }
+
+        changeResourceHandler.subTractManaFromPlayer(player, cost);
+
         combatManager.startCombatTimer(player);
 
         execute(player);

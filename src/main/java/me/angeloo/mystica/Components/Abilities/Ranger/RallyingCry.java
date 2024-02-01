@@ -4,6 +4,7 @@ import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Managers.CombatManager;
+import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
@@ -24,6 +25,7 @@ import java.util.UUID;
 public class RallyingCry {
 
     private final Mystica main;
+    private final ProfileManager profileManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CombatManager combatManager;
     private final ChangeResourceHandler changeResourceHandler;
@@ -34,6 +36,7 @@ public class RallyingCry {
 
     public RallyingCry(Mystica main, AbilityManager manager){
         this.main = main;
+        profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
@@ -53,6 +56,14 @@ public class RallyingCry {
         if(getIfBuffTime(player) > 0){
             return;
         }
+
+        double cost = 10;
+
+        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+            return;
+        }
+
+        changeResourceHandler.subTractManaFromPlayer(player, cost);
 
         combatManager.startCombatTimer(player);
 

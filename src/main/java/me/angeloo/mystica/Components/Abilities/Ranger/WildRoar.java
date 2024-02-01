@@ -48,9 +48,16 @@ public class WildRoar {
             return;
         }
 
+        double cost = 20;
+
+        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+            return;
+        }
+
+        changeResourceHandler.subTractManaFromPlayer(player, cost);
+
         combatManager.startCombatTimer(player);
 
-        //buff lasts 10 sec
         execute(player);
 
         abilityReadyInMap.put(player.getUniqueId(), 30);

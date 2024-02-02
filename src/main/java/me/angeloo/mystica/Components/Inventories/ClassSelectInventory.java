@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 public class ClassSelectInventory {
@@ -18,11 +18,53 @@ public class ClassSelectInventory {
 
     }
 
-    public Inventory openClassSelect(String clazz){
+    public Inventory openClassSelect(int index){
 
         Inventory inv = Bukkit.createInventory(null, 9 * 3,"Select a Class");
 
-        inv.setItem(15, getItem(Material.ARROW, 0,ChatColor.of(new Color(0, 153, 51)) + "Select"));
+        //13 is mid
+
+        inv.setItem(22, getItem(Material.LIME_DYE, 0,"Select"));
+
+        inv.setItem(15, getItem(Material.ARROW,0,"Next"));
+
+        inv.setItem(11, getItem(Material.ARROW, 0, "Previous"));
+
+
+        switch (index){
+            case 0:{
+                inv.setItem(13, getAssassinItem());
+                break;
+            }
+            case 1:{
+                inv.setItem(13, getElementalistItem());
+                break;
+            }
+            case 2:{
+                inv.setItem(13, getMysticItem());
+                break;
+            }
+            case 3:{
+                inv.setItem(13, getPaladinItem());
+                break;
+            }
+            case 4:{
+                inv.setItem(13, getRangerItem());
+                break;
+            }
+            case 5:{
+                inv.setItem(13, getShadowKnightItem());
+                break;
+            }
+            case 6:{
+                inv.setItem(13, getWarriorItem());
+                break;
+            }
+        }
+
+        /*inv.setItem(15, getItem(Material.ARROW, 0,ChatColor.of(new Color(0, 153, 51)) + "Select"));
+
+
 
         inv.setItem(4, getClassItem(clazz));
 
@@ -52,43 +94,11 @@ public class ClassSelectInventory {
 
         if(!clazz.equalsIgnoreCase("assassin")){
             inv.setItem(25, getAssassinItem());
-        }
+        }*/
 
         return inv;
     }
 
-
-
-    private ItemStack getClassItem(String clazz){
-
-        switch(clazz.toLowerCase()){
-            case "elementalist":{
-                return getElementalistItem();
-            }
-            case "ranger":{
-                return getRangerItem();
-            }
-            case "mystic":{
-                return getMysticItem();
-            }
-            case "shadow knight":{
-                return getShadowKnightItem();
-            }
-            case "paladin":{
-                return getPaladinItem();
-            }
-            case "warrior":{
-                return getWarriorItem();
-            }
-            case "assassin":{
-                return getAssassinItem();
-            }
-            default:{
-                return new ItemStack(Material.AIR);
-            }
-        }
-
-    }
 
     private ItemStack getElementalistItem(){
         return getItem(Material.STICK, 1,ChatColor.of(new Color(153, 204, 255)) + "Elementalist",

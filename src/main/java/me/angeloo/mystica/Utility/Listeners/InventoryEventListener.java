@@ -11,6 +11,7 @@ import me.angeloo.mystica.Utility.ClassSetter;
 import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.EquipmentInformation;
 import me.angeloo.mystica.Utility.GearReader;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -625,52 +626,52 @@ public class InventoryEventListener implements Listener {
             return;
         }
 
-        if(event.getInventory().getItem(event.getSlot()) == null){
-            return;
-        }
-
         ItemStack item = event.getCurrentItem();
 
         if(item == null){
             return;
         }
 
-        if(!event.getCurrentItem().hasItemMeta()){
+        if(!item.hasItemMeta()){
             return;
-        }
-
-        if(!event.getCurrentItem().getItemMeta().hasDisplayName()){
-            return;
-        }
-
-        String name = event.getCurrentItem().getItemMeta().getDisplayName();
-        name = name.replaceAll("§.", "");
-
-        ItemStack classItem = event.getInventory().getItem(4);
-        String className = "None";
-
-        if(classItem != null){
-            className = classItem.getItemMeta().getDisplayName();
-            className = className.replaceAll("§.", "");
         }
 
         Player player = (Player) event.getWhoClicked();
 
+        String name = item.getItemMeta().getDisplayName();
+        name = name.replaceAll("§.", "");
+
+        ItemStack classItem = event.getInventory().getItem(13);
+        assert classItem != null;
+        String className = classItem.getItemMeta().getDisplayName().replaceAll("§.", "");
+
         if (name.equalsIgnoreCase("select")) {
-            if (classItem == null) {
-                return;
-            }
-
-            if (className.equals("None")) {
-                return;
-            }
-
             classSetter.setClass(player, className);
             player.closeInventory();
             return;
         }
 
-        player.openInventory(new ClassSelectInventory().openClassSelect(name));
+        int index = inventoryIndexingManager.getClassIndex(player);
+
+        if(name.equalsIgnoreCase("next")){
+            index++;
+        }
+
+        if(name.equalsIgnoreCase("previous")){
+            index--;
+        }
+
+        if(index<0){
+            index = 6;
+        }
+
+        if(index>6){
+            index = 0;
+        }
+
+        inventoryIndexingManager.setClassIndex(player, index);
+
+        player.openInventory(new ClassSelectInventory().openClassSelect(index));
 
     }
 

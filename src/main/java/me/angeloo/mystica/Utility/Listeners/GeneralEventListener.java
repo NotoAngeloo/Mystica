@@ -181,12 +181,13 @@ public class GeneralEventListener implements Listener {
 
         }
 
-        if(profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("None")){
+        /*if(profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("None")){
             player.openInventory(new ClassSelectInventory().openClassSelect("none"));
-        }
+        }*/
 
         profileManager.addToPlayerNameMap(player);
         inventoryIndexingManager.innitBagIndex(player);
+        inventoryIndexingManager.innitClassIndex(player);
         targetManager.setPlayerTarget(player, null);
         buffAndDebuffManager.removeAllBuffsAndDebuffs(player);
         gearReader.setGearStats(player);

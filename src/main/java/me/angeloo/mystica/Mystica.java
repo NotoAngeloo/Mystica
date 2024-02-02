@@ -79,7 +79,7 @@ public final class Mystica extends JavaPlugin {
 
         deathManager = new DeathManager(this);
 
-        inventoryIndexingManager = new InventoryIndexingManager(this);
+        inventoryIndexingManager = new InventoryIndexingManager();
         bagInventory = new BagInventory(this);
 
 

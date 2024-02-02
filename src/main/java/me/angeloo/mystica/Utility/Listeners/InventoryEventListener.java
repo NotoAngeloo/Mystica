@@ -11,7 +11,6 @@ import me.angeloo.mystica.Utility.ClassSetter;
 import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.EquipmentInformation;
 import me.angeloo.mystica.Utility.GearReader;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -35,6 +34,8 @@ public class InventoryEventListener implements Listener {
     private final EquipmentInventory equipmentInventory;
     private final AbilityInventory abilityInventory;
     private final SpecInventory specInventory;
+    private final ReforgeInventory reforgeInventory;
+    private final UpgradeInventory upgradeInventory;
     private final EquipmentInformation equipmentInformation;
     private final DisplayWeapons displayWeapons;
     private final GearReader gearReader;
@@ -48,6 +49,8 @@ public class InventoryEventListener implements Listener {
         equipmentInventory = new EquipmentInventory(main);
         abilityInventory = new AbilityInventory(main);
         specInventory = new SpecInventory(main);
+        reforgeInventory = new ReforgeInventory(main);
+        upgradeInventory = new UpgradeInventory(main);
         equipmentInformation = new EquipmentInformation();
         displayWeapons = new DisplayWeapons(main);
         gearReader = new GearReader(main);
@@ -641,7 +644,7 @@ public class InventoryEventListener implements Listener {
         String name = item.getItemMeta().getDisplayName();
         name = name.replaceAll("§.", "");
 
-        ItemStack classItem = event.getInventory().getItem(13);
+        ItemStack classItem = event.getView().getTopInventory().getItem(13);
         assert classItem != null;
         String className = classItem.getItemMeta().getDisplayName().replaceAll("§.", "");
 
@@ -672,6 +675,194 @@ public class InventoryEventListener implements Listener {
         inventoryIndexingManager.setClassIndex(player, index);
 
         player.openInventory(new ClassSelectInventory().openClassSelect(index));
+
+    }
+
+    @EventHandler
+    public void reforgeClick(InventoryClickEvent event){
+        if(!event.getView().getTitle().equals("Reforge")){
+            return;
+        }
+        event.setCancelled(true);
+
+
+        Player player = (Player) event.getWhoClicked();
+
+        if(event.getClickedInventory() == null){
+            return;
+        }
+
+        ItemStack item = event.getCurrentItem();
+
+        if(item == null){
+            return;
+        }
+
+        Inventory topInv = event.getView().getTopInventory();
+
+        ItemStack old = topInv.getItem(11);
+
+        if(event.getClickedInventory() == topInv){
+
+            if(old == null){
+                return;
+            }
+
+            int slot = event.getSlot();
+
+            switch (slot){
+                case 13:{
+
+                    //check for stones here
+
+                    player.openInventory(reforgeInventory.openReforgeInventory(player, old, true));
+                    return;
+                }
+                case 11:{
+                    player.openInventory(reforgeInventory.openReforgeInventory(player, null, false));
+                    return;
+                }
+                case 15:{
+
+                    ItemStack newItem = event.getView().getTopInventory().getItem(15);
+
+                    assert newItem != null;
+                    if(newItem.getType().equals(Material.AIR)){
+                        return;
+                    }
+
+                    player.getInventory().remove(old);
+                    player.getInventory().addItem(newItem);
+                    player.openInventory(reforgeInventory.openReforgeInventory(player, null, false));
+                    return;
+                }
+            }
+
+
+            return;
+        }
+
+        List<Material> validEquipment = equipmentInformation.getAllEquipmentTypes();
+        Material itemType = item.getType();
+
+        if(!validEquipment.contains(itemType)){
+            return;
+        }
+
+        //add it to the inv
+
+        player.openInventory(reforgeInventory.openReforgeInventory(player, item, false));
+
+    }
+
+    @EventHandler
+    public void upgradeClick(InventoryClickEvent event){
+        if(!event.getView().getTitle().equals("Upgrade")){
+            return;
+        }
+        event.setCancelled(true);
+
+        Player player = (Player) event.getWhoClicked();
+
+        if(event.getClickedInventory() == null){
+            return;
+        }
+
+        ItemStack item = event.getCurrentItem();
+
+        if(item == null){
+            return;
+        }
+
+        Inventory topInv = event.getView().getTopInventory();
+
+        ItemStack selected = topInv.getItem(9);
+        if(selected == null){
+            selected = new ItemStack(Material.AIR);
+        }
+
+        ItemStack oldItem = topInv.getItem(11);
+        if(oldItem == null){
+            oldItem = new ItemStack(Material.AIR);
+        }
+
+        ItemStack fodder = topInv.getItem(13);
+        if(fodder == null){
+            fodder = new ItemStack(Material.AIR);
+        }
+
+        ItemStack newItem = topInv.getItem(15);
+        if(newItem == null){
+            newItem = new ItemStack(Material.AIR);
+        }
+
+        if(event.getClickedInventory() == topInv){
+
+            int slot = event.getSlot();
+
+            switch (slot){
+                case 20:{
+                    if(selected.getType() == Material.AIR){
+                        return;
+                    }
+                    player.openInventory(upgradeInventory.openUpgradeInventory(player, new ItemStack(Material.AIR), selected, fodder));
+                    return;
+                }
+                case 22:{
+                    if(selected.getType() == Material.AIR){
+                        return;
+                    }
+                    player.openInventory(upgradeInventory.openUpgradeInventory(player, new ItemStack(Material.AIR), oldItem, selected));
+                    return;
+                }
+                case 11:{
+                    player.openInventory(upgradeInventory.openUpgradeInventory(player, new ItemStack(Material.AIR), new ItemStack(Material.AIR), fodder));
+                    return;
+                }
+                case 13:{
+                    player.openInventory(upgradeInventory.openUpgradeInventory(player, new ItemStack(Material.AIR), oldItem, new ItemStack(Material.AIR)));
+                    return;
+                }
+                case 15:{
+                    if(newItem.getType() == Material.AIR){
+                        return;
+                    }
+
+                    if(newItem.getType() == Material.RED_DYE){
+                        return;
+                    }
+
+                    player.getInventory().remove(oldItem);
+                    player.getInventory().remove(fodder);
+                    player.getInventory().addItem(newItem);
+                    player.openInventory(upgradeInventory.openUpgradeInventory(player, new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR)));
+                    return;
+                }
+            }
+
+            return;
+        }
+
+        List<Material> validEquipment = equipmentInformation.getAllEquipmentTypes();
+        Material itemType = item.getType();
+
+        if(!validEquipment.contains(itemType)){
+            return;
+        }
+
+        //check duplicate protection here too, cannot put in an item that is in already
+        List<ItemStack> currentItems = new ArrayList<>();
+        currentItems.add(topInv.getItem(11));
+        currentItems.add(topInv.getItem(13));
+
+        if(currentItems.contains(item)){
+            player.sendMessage("Item already present");
+            return;
+        }
+
+        player.openInventory(upgradeInventory.openUpgradeInventory(player, item, oldItem, fodder));
+
+        //add to whichever slot is available, if any
 
     }
 

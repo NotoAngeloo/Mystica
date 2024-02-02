@@ -41,6 +41,28 @@ public class EquipmentManager {
         warriorEquipment = new WarriorEquipment();
     }
 
+    public int getItemLevel(ItemStack equipment){
+
+        ItemMeta meta = equipment.getItemMeta();
+        assert meta != null;
+        List<String> lores = meta.getLore();
+        assert lores != null;
+
+        int level = 0;
+        String levelRegex = ".*\\b(?i:level:)\\s*(\\d+).*";
+        Pattern levelPattern = Pattern.compile(levelRegex);
+        for(String lore : lores){
+            String colorlessString = lore.replaceAll("§.", "");
+            Matcher levelMatcher = levelPattern.matcher(colorlessString);
+            if(levelMatcher.matches()){
+                level = Integer.parseInt(levelMatcher.group(1));
+                break;
+            }
+
+        }
+        return level;
+    }
+
     public ItemStack generate(Player player, int level){
 
         ItemStack baseGear = new ItemStack(Material.AIR);

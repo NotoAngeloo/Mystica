@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Commands;
 
+import me.angeloo.mystica.Components.Inventories.UpgradeInventory;
 import me.angeloo.mystica.Managers.EquipmentManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Material;
@@ -12,10 +13,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class Upgrade implements CommandExecutor {
 
-    private final EquipmentManager equipmentManager;
+    private final UpgradeInventory upgradeInventory;
 
     public Upgrade(Mystica main){
-        equipmentManager = new EquipmentManager(main);
+        upgradeInventory = new UpgradeInventory(main);
     }
 
     @Override
@@ -28,13 +29,8 @@ public class Upgrade implements CommandExecutor {
 
         Player player = (Player) sender;
 
-        ItemStack item = player.getInventory().getItemInMainHand();
 
-        if(item.getType().equals(Material.AIR)){
-            return true;
-        }
-
-        player.getInventory().addItem(equipmentManager.upgrade(player, item, 2));
+        player.openInventory(upgradeInventory.openUpgradeInventory(player, new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR)));
         return true;
     }
 }

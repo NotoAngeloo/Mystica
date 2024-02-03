@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.Inventories.ReforgeInventory;
 import me.angeloo.mystica.Managers.EquipmentManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -21,16 +22,25 @@ public class Reforge implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
 
-        if(!(sender instanceof Player)){
-            sender.sendMessage("only players");
+        if(args.length == 1){
+
+            Player player = Bukkit.getPlayer(args[0]);
+
+            if(player == null){
+                sender.sendMessage("player doesn't exist");
+                return true;
+            }
+
+            if(!player.isOnline()){
+                sender.sendMessage("player not online");
+                return true;
+            }
+
+            player.openInventory(reforgeInventory.openReforgeInventory(player, new ItemStack(Material.AIR), false));
             return true;
         }
-
-        Player player = (Player) sender;
-
-        player.openInventory(reforgeInventory.openReforgeInventory(player, null, false));
 
         return true;
     }

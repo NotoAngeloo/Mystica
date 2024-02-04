@@ -1,8 +1,6 @@
 package me.angeloo.mystica.Components.Commands;
 
 import me.angeloo.mystica.Components.Inventories.ReforgeInventory;
-import me.angeloo.mystica.Managers.EquipmentManager;
-import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -23,6 +21,20 @@ public class Reforge implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+
+        if(args.length == 0){
+
+            if(!(sender instanceof Player)){
+                sender.sendMessage("only players");
+                return true;
+            }
+
+            Player player = (Player) sender;
+
+            player.openInventory(reforgeInventory.openReforgeInventory(player, new ItemStack(Material.AIR), false));
+
+            return true;
+        }
 
         if(args.length == 1){
 

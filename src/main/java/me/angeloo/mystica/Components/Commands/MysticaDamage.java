@@ -109,7 +109,7 @@ public class MysticaDamage implements CommandExecutor {
                     changeResourceHandler.subtractHealthFromEntity(player, damage, caster);
                     return true;
                 }
-                /*case "crush":{
+                case "crush":{
 
                     Player player = Bukkit.getPlayer(UUID.fromString(args[0]));
 
@@ -118,56 +118,26 @@ public class MysticaDamage implements CommandExecutor {
                         return true;
                     }
 
-                    double total = 0;
+                    boolean resist = false;
 
-                    assert caster != null;
-                    int level = profileManager.getAnyProfile(caster).getStats().getLevel();
+                    String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
-                    int skillLevel = (int) Math.ceil(((double) level / 5));
+                    if(subclass.equalsIgnoreCase("gladiator")
+                    || subclass.equalsIgnoreCase("templar")
+                    || subclass.equalsIgnoreCase("blood")){
+                        resist = true;
+                    }
 
-                    double damage = damageCalculator.calculateGettingDamaged(player, caster, "magical", amount * skillLevel);
-
-                    total = total + damage;
-
-                    //changeResourceHandler.subtractHealthFromPlayer(player, damage);
-
-                    int playerLevel = profileManager.getAnyProfile(player).getStats().getLevel();
-
-                    if(playerLevel >= level){
-                        changeResourceHandler.subtractHealthFromEntity(player, total);
+                    if(resist){
                         return true;
                     }
 
-                    int crushResist = profileManager.getAnyProfile(player).getCrushResist().getTotalCrushResist();
+                    double percent = profileManager.getAnyProfile(player).getTotalHealth() * (amount/100);
 
-                    int random = (int) (Math.random() * 100) + 1; // rolls a number between 1 and 100
-                    random -= 25;
+                    changeResourceHandler.subtractHealthFromEntity(player, percent, caster);
 
-                    if(random <= crushResist){
-                        changeResourceHandler.subtractHealthFromEntity(player, total);
-                        return true;
-                    }
-
-                    //Bukkit.getLogger().info(String.valueOf(crushResist));
-                    //Bukkit.getLogger().info("player crushed, roll was " + random);
-
-                    Stats stats = profileManager.getAnyProfile(player).getStats();
-                    GearStats gearStats = profileManager.getAnyProfile(player).getGearStats();
-                    TempStats tempStats = profileManager.getAnyProfile(player).getTempStats();
-                    StatsFromLevels statsFromLevels = profileManager.getAnyProfile(player).getStatsFromLevels();
-
-                    double actualMaxHealth = stats.getHealth() + gearStats.getHealth() + tempStats.getHealth() + statsFromLevels.getHealth();
-
-                    //in this case, time is the percentage the boss actually crushes for, example time is 50, if he crushes player loses 50% health
-                    double crushDamage = actualMaxHealth/time;
-
-                    total = total + crushDamage;
-
-                    changeResourceHandler.subtractHealthFromEntity(player, total);
-
-                    //changeResourceHandler.subtractHealthFromPlayer(player, crushDamage);
                     return true;
-                }*/
+                }
             }
 
 

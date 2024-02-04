@@ -23,6 +23,20 @@ public class Upgrade implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
 
+        if(args.length == 0){
+
+            if(!(sender instanceof Player)){
+                sender.sendMessage("only players");
+                return true;
+            }
+
+            Player player = (Player) sender;
+
+            player.openInventory(upgradeInventory.openUpgradeInventory(player, new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR)));
+
+            return true;
+        }
+
         if(args.length == 1){
 
             Player player = Bukkit.getPlayer(args[0]);

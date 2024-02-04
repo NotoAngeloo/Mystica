@@ -369,8 +369,12 @@ public class GeneralEventListener implements Listener {
 
             if(event.getSlot() == 40){
                 event.setCancelled(true);
+                ItemStack item = player.getItemOnCursor();
+                ItemStack tempItem = item.clone();
+                event.setCancelled(true);
                 player.setItemOnCursor(null);
                 player.openInventory(abilityInventory.openAbilityInventory(player, null, false));
+                player.getInventory().addItem(tempItem);
             }
 
         }

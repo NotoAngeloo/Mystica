@@ -21,6 +21,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.util.*;
@@ -38,6 +40,7 @@ public class ProfileManager {
     private final Map<String, Player> playerNameMap = new HashMap<>();
     private final Map<UUID, String> nonPlayerNameMap = new HashMap<>();
     private final Map<UUID, Location> bossHomes = new HashMap<>();
+    private final Map<UUID, BukkitTask> furyTasks = new HashMap<>();
 
 
     public ProfileManager(Mystica main) {
@@ -604,13 +607,42 @@ public class ProfileManager {
 
     }
 
+    public void startFuryTimer(UUID uuid, int time){
+
+        if(furyTasks.containsKey(uuid)){
+            furyTasks.get(uuid).cancel();
+        }
+
+        BukkitTask furyTask = new BukkitRunnable(){
+            int count = 0;
+            @Override
+            public void run(){
+
+                if(count>=time){
+
+                    Bukkit.getLogger().info("fury timer for " + uuid);
+
+                    if(MythicBukkit.inst().getAPIHelper().isMythicMob(uuid)){
+                        AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(Bukkit.getEntity(uuid)).getEntity();
+                        MythicBukkit.inst().getAPIHelper().getMythicMobInstance(Bukkit.getEntity(uuid)).signalMob(abstractEntity, "fury");
+                    }
+                    this.cancel();
+                    return;
+                }
+
+                count++;
+            }
+        }.runTaskTimer(main, 20, 20);
+
+        furyTasks.put(uuid, furyTask);
+
+    }
 
     public boolean resetBoss(UUID uuid){
 
         if(!bossHomes.containsKey(uuid)){
             return false;
         }
-
 
         Entity entity = Bukkit.getEntity(uuid);
 
@@ -620,15 +652,17 @@ public class ProfileManager {
 
         assert boss != null;
 
+        if(furyTasks.containsKey(boss.getUniqueId())){
+            furyTasks.get(boss.getUniqueId()).cancel();
+            furyTasks.remove(boss.getUniqueId());
+        }
+
+        Profile profile = nonPlayerProfiles.get(uuid);
+        double maxHealth = profile.getTotalHealth();
+        profile.setCurrentHealth(maxHealth);
         AttributeInstance maxHealthAttribute = boss.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-
-        double currentHealth = boss.getHealth();
-
         assert maxHealthAttribute != null;
-
-        double change = maxHealthAttribute.getBaseValue() - currentHealth;
-
-        Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(boss, change, true));
+        boss.setHealth(maxHealthAttribute.getBaseValue());
 
 
         boss.setAI(false);

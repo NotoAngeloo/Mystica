@@ -1,9 +1,9 @@
 package me.angeloo.mystica.Components.Commands;
 
+import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
-import me.angeloo.mystica.Utility.DamageCalculator;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,16 +14,16 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public class MysticaDamage implements CommandExecutor {
+public class MysticaEffect implements CommandExecutor {
 
     private final ProfileManager profileManager;
-    private final DamageCalculator damageCalculator;
     private final ChangeResourceHandler changeResourceHandler;
+    private final BuffAndDebuffManager buffAndDebuffManager;
 
-    public MysticaDamage(Mystica main) {
+    public MysticaEffect(Mystica main) {
         profileManager = main.getProfileManager();
-        damageCalculator = main.getDamageCalculator();
         changeResourceHandler = main.getChangeResourceHandler();
+        buffAndDebuffManager = main.getBuffAndDebuffManager();
     }
 
     @Override
@@ -34,7 +34,6 @@ public class MysticaDamage implements CommandExecutor {
             return true;
         }
 
-
         if (args.length == 4) {
 
             if(args[0].equalsIgnoreCase("<target.uuid>")){
@@ -43,56 +42,59 @@ public class MysticaDamage implements CommandExecutor {
 
             LivingEntity target = (LivingEntity) Bukkit.getEntity(UUID.fromString(args[0]));
             LivingEntity caster = (LivingEntity) Bukkit.getEntity(UUID.fromString(args[1]));
-            assert caster != null;
+
 
             if (target == null) {
                 sender.sendMessage("target null");
                 return true;
             }
 
-            if (!(target instanceof Player)) {
-                return true;
+            if (target instanceof Player) {
+                if (!((Player) target).isOnline()) {
+                    sender.sendMessage("player not online");
+                    return true;
+                }
+
+                Player player = (Player) target;
+
+                boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
+
+                if(deathStatus){
+                    return true;
+                }
             }
 
-            Player player = (Player) target;
-
-            if(!player.isOnline()){
-                return true;
-            }
-
-            if(profileManager.getAnyProfile(player).getIfDead()){
-                return true;
-            }
 
             String type = args[2];
-            double amount = Double.parseDouble(args[3]);
+            int amount = Integer.parseInt(args[3]);
 
             switch (type.toLowerCase()) {
+                case "crush":{
 
-                case "physical": {
+                    if(!(target instanceof Player)){
+                        return true;
+                    }
 
-                    int level = profileManager.getAnyProfile(caster).getStats().getLevel();
+                    String subclass = profileManager.getAnyProfile(target).getPlayerSubclass();
 
-                    int skillLevel = (int) Math.ceil(((double) level / 5));
+                    if(subclass.equalsIgnoreCase("gladiator")
+                            || subclass.equalsIgnoreCase("templar")
+                            || subclass.equalsIgnoreCase("blood")){
+                        return true;
+                    }
 
-                    double damage = damageCalculator.calculateGettingDamaged(player, caster, "physical", amount * skillLevel);
+                    double percent = profileManager.getAnyProfile(target).getTotalHealth() * ((double)amount/100);
 
-                    changeResourceHandler.subtractHealthFromEntity(player, damage, caster);
+                    changeResourceHandler.subtractHealthFromEntity(target, percent, caster);
+
                     return true;
                 }
-                case "magical": {
-
-                    int level = profileManager.getAnyProfile(caster).getStats().getLevel();
-
-                    int skillLevel = (int) Math.ceil(((double) level / 5));
-
-                    double damage = damageCalculator.calculateGettingDamaged(player, caster, "magical", amount * skillLevel);
-
-                    changeResourceHandler.subtractHealthFromEntity(player, damage, caster);
+                case "stun":{
+                    buffAndDebuffManager.getStun().applyStun(target, amount);
                     return true;
                 }
-                case "true":{
-                    changeResourceHandler.subtractHealthFromEntity(player, amount, caster);
+                case "immune":{
+                    buffAndDebuffManager.getImmune().applyImmune(target, amount);
                     return true;
                 }
             }
@@ -102,4 +104,5 @@ public class MysticaDamage implements CommandExecutor {
 
         return false;
     }
+
 }

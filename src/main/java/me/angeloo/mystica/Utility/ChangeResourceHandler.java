@@ -8,6 +8,7 @@ import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.Stats;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -261,15 +262,6 @@ public class ChangeResourceHandler {
 
         profileManager.getAnyProfile(player).setCurrentMana(newCurrentMana);
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(player, 0.0, true));
-    }
-
-    public void healPlayerToFull(Player player){
-
-        Profile playerProfile = profileManager.getAnyProfile(player);
-
-        double actualMaxHealth = playerProfile.getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player);
-        profileManager.getAnyProfile(player).setCurrentHealth(actualMaxHealth);
-        player.setHealth(20);
     }
 
     public Long getLastDamaged(UUID uuid){

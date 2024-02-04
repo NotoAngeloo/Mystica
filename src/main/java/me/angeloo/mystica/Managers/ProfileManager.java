@@ -51,7 +51,6 @@ public class ProfileManager {
             String id = uuid.toString();
             Profile profile = playerProfiles.get(uuid);
             Stats stats = profile.getStats();
-            StatsFromGear gearStats = profile.getGearStats();
 
             String playerClass = profile.getPlayerClass();
             String playerSubclass = profile.getPlayerSubclass();
@@ -156,17 +155,6 @@ public class ProfileManager {
 
                     int hp = stats.getHealth();
                     int mana = stats.getMana();
-
-                    //gearstats
-                    /*int gatk = config.getInt(id + ".gstats.atk");
-                    int gmag = config.getInt(id + ".gstats.mag");
-                    int ghp = config.getInt(id + ".gstats.hp");
-                    int gmana = config.getInt(id + ".gstats.mana");
-                    int gregen = config.getInt(id + ".gstats.regen");
-                    int gmregen = config.getInt(id + ".gstats.mana_regen");
-                    int gdef = config.getInt(id + ".gstats.def");
-                    int gmdef = config.getInt(id + ".gstats.mag_def");
-                    int gcrit = config.getInt(id + ".gstats.crit");*/
 
                     ItemStack[] savedInv = ((List<ItemStack>) config.get(id + ".savedInv")).toArray(new ItemStack[41]);
 
@@ -410,6 +398,16 @@ public class ProfileManager {
         newPlayer.getInventory().clear();
         newPlayer.sendMessage("You are playing a pre-release\nYour items and progress are subjected to being removed");
 
+    }
+
+    public void removePlayerProfile(Player player){
+
+        if(player.isOnline()){
+            player.kickPlayer("profile being removed");
+        }
+
+        playerProfiles.remove(player.getUniqueId());
+        playerNameMap.remove(player.getName());
     }
 
     public void createNewDefaultNonPlayerProfile(UUID uuid){

@@ -44,6 +44,14 @@ commands:
     description: allows testing of generate mechanic
     usage: /Generate
     permission: developer
+  ManualSave:
+    description: saves profiles manually
+    usage: /ManualSave
+    permission: developer
+  DeleteProfile:
+    description: deletes a profile
+    usage: /DeleteProfile
+    permission: developer
 
 permissions:
   developer:

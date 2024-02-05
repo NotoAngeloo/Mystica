@@ -60,6 +60,10 @@ commands:
     description: allows testing of generate mechanic
     usage: /Generate
     permission: developer
+  Identify:
+    description: allows testing of identify mechanic
+    usage: /Identify
+    permission: developer
   ManualSave:
     description: saves profiles manually
     usage: /ManualSave

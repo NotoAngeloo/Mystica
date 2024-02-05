@@ -184,6 +184,7 @@ public class BagInventory {
 
     private ItemStack getItem(ItemStack item, String name, String... lore){
         ItemMeta meta = item.getItemMeta();
+        assert meta != null;
         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
 
         List<String> lores = new ArrayList<>();

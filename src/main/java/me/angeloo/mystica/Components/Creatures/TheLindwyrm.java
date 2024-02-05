@@ -5,6 +5,7 @@ import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import me.angeloo.mystica.Components.Items.SoulStone;
+import me.angeloo.mystica.Components.Items.UnidentifiedEquipment;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
@@ -32,6 +33,10 @@ public class TheLindwyrm {
     public void makeProfile(UUID uuid){
 
         Entity entity = Bukkit.getEntity(uuid);
+
+        if(entity == null){
+            return;
+        }
 
         Player theClosestPlayersLeader = null;
 
@@ -81,11 +86,11 @@ public class TheLindwyrm {
             level = profileManager.getAnyProfile(theClosestPlayersLeader).getPlayerBossLevel().getBossLevel();
         }
 
-        int hp = 350 + (100 * (level-1));
-        int atk = 1 * level;
-        int mag = 1 * level;
-        int def = 4 * level;
-        int mdef = 4 * level;
+        int hp = 10000 + (100 * (level-1));
+        int atk = 50 + (25 * level-1);
+        int mag = 50 + (25 * level-1);
+        int def = 50 + (25 * level-1);
+        int mdef = 50 + (25 * level-1);
 
         Stats stats = new Stats(level, atk, mag, hp, 0, 0, 0, def, mdef, 0);
         Boolean isMovable = false;
@@ -266,6 +271,7 @@ public class TheLindwyrm {
             itemDrops.add(new SoulStone());
         }
 
+        itemDrops.add(new UnidentifiedEquipment(level));
 
         return itemDrops;
     }

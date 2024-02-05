@@ -100,6 +100,7 @@ public final class Mystica extends JavaPlugin {
         getCommand("Reforge").setExecutor(new Reforge(this));
         getCommand("Upgrade").setExecutor(new Upgrade(this));
         getCommand("Generate").setExecutor(new Generate(this));
+        getCommand("Identify").setExecutor(new Identify());
         getCommand("ManualSave").setExecutor(new ManualSave(this));
         getCommand("DeleteProfile").setExecutor(new DeleteProfile(this));
 

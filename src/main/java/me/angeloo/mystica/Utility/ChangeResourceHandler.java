@@ -283,6 +283,32 @@ public class ChangeResourceHandler {
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(player, 0.0, true));
     }
 
+    public void addXpToPlayer(Player player, float amount) {
+
+        float currentXp = player.getExp();
+        int currentLevel = player.getLevel();
+
+        //able to change this later
+        int maxServerLevel = 20;
+        if(currentLevel >= maxServerLevel){
+            currentLevel = maxServerLevel;
+            player.setLevel(currentLevel);
+            profileManager.getAnyProfile(player).getStats().setLevel(currentLevel);
+            return;
+        }
+
+        currentXp += amount;
+
+        if(currentXp >= 1.0f){
+            currentLevel += 1;
+            currentXp = 0.0f;
+        }
+
+        player.setLevel(currentLevel);
+        player.setExp(currentXp);
+        profileManager.getAnyProfile(player).getStats().setLevel(currentLevel);
+    }
+
     public Long getLastDamaged(UUID uuid){
 
         if(!lastDamaged.containsKey(uuid)){

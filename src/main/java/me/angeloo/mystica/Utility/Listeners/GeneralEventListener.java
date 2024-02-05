@@ -7,9 +7,11 @@ import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.Inventories.AbilityInventory;
+import me.angeloo.mystica.Components.Inventories.BagInventory;
 import me.angeloo.mystica.Components.Inventories.ClassSelectInventory;
 import me.angeloo.mystica.Components.Inventories.EquipmentInventory;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
+import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.CustomEvents.CustomDeathEvent;
 import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
@@ -71,6 +73,7 @@ public class GeneralEventListener implements Listener {
     private final CooldownDisplayer cooldownDisplayer;
     private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
     private final GearReader gearReader;
+    private final BagInventory bagInventory;
 
     private final DamageCalculator damageCalculator;
     private final ChangeResourceHandler changeResourceHandler;
@@ -102,6 +105,7 @@ public class GeneralEventListener implements Listener {
         shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, abilityManager);
         damageCalculator = main.getDamageCalculator();
         changeResourceHandler = main.getChangeResourceHandler();
+        bagInventory = main.getBagInventory();
         gearReader = new GearReader(main);
     }
 
@@ -557,6 +561,56 @@ public class GeneralEventListener implements Listener {
         }
 
         Bukkit.getServer().getPluginManager().callEvent(new CustomDeathEvent(lastPlayer, entity));
+
+    }
+
+    @EventHandler
+    public void customDeathEvent(CustomDeathEvent event){
+
+        Player player = event.getPlayerWhoKilled();
+
+        LivingEntity entity = event.getEntityWhoDied();
+
+        Yield yield = profileManager.getAnyProfile(entity).getYield();
+
+        float xpYield = yield.getXpYield();
+        List<ItemStack> itemDrops = yield.getItemYield();
+
+
+        PartiesAPI api = Parties.getApi();
+
+        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
+
+        assert partyPlayer != null;
+        if(partyPlayer.isInParty()){
+
+            Party party = api.getParty(partyPlayer.getPartyId());
+
+            assert party != null;
+            Set<UUID> partyMemberList = party.getMembers();
+
+            List<Player> partyList = new ArrayList<>();
+
+            for(UUID partyMemberId : partyMemberList){
+                Player partyMember = Bukkit.getPlayer(partyMemberId);
+                partyList.add(partyMember);
+            }
+
+            int numPlayers = partyList.size();
+
+            for(Player member : partyList){
+                changeResourceHandler.addXpToPlayer(member, (xpYield / numPlayers));
+
+                bagInventory.addItemsToPlayerBagByPickup(member, itemDrops);
+
+
+            }
+        }
+        else {
+            changeResourceHandler.addXpToPlayer(player, xpYield);
+
+            bagInventory.addItemsToPlayerBagByPickup(player, itemDrops);
+        }
 
     }
 

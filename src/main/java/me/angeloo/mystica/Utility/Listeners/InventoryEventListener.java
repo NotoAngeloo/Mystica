@@ -4,6 +4,7 @@ package me.angeloo.mystica.Utility.Listeners;
 import me.angeloo.mystica.Components.Inventories.*;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
+import me.angeloo.mystica.Managers.EquipmentManager;
 import me.angeloo.mystica.Managers.InventoryIndexingManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -11,6 +12,8 @@ import me.angeloo.mystica.Utility.ClassSetter;
 import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.EquipmentInformation;
 import me.angeloo.mystica.Utility.GearReader;
+import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,12 +24,16 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class InventoryEventListener implements Listener {
 
     private final ProfileManager profileManager;
+    private final EquipmentManager equipmentManager;
     private final ClassSetter classSetter;
     private final InventoryIndexingManager inventoryIndexingManager;
     private final BagInventory bagInventory;
@@ -36,12 +43,14 @@ public class InventoryEventListener implements Listener {
     private final SpecInventory specInventory;
     private final ReforgeInventory reforgeInventory;
     private final UpgradeInventory upgradeInventory;
+    private final IdentifyInventory identifyInventory;
     private final EquipmentInformation equipmentInformation;
     private final DisplayWeapons displayWeapons;
     private final GearReader gearReader;
 
     public InventoryEventListener(Mystica main){
         profileManager = main.getProfileManager();
+        equipmentManager = new EquipmentManager(main);
         classSetter = main.getClassSetter();
         inventoryIndexingManager = main.getInventoryIndexingManager();
         bagInventory = main.getBagInventory();
@@ -51,6 +60,7 @@ public class InventoryEventListener implements Listener {
         specInventory = new SpecInventory(main);
         reforgeInventory = new ReforgeInventory(main);
         upgradeInventory = new UpgradeInventory(main);
+        identifyInventory = new IdentifyInventory();
         equipmentInformation = new EquipmentInformation();
         displayWeapons = new DisplayWeapons(main);
         gearReader = new GearReader(main);
@@ -676,6 +686,102 @@ public class InventoryEventListener implements Listener {
 
         player.openInventory(new ClassSelectInventory().openClassSelect(index));
 
+    }
+
+    @EventHandler
+    public void IdentifyClick(InventoryClickEvent event){
+        if(!event.getView().getTitle().equals("Identify")){
+            return;
+        }
+        event.setCancelled(true);
+
+        Player player = (Player) event.getWhoClicked();
+
+        if(event.getClickedInventory() == null){
+            return;
+        }
+
+        ItemStack item = event.getCurrentItem();
+
+        if(item == null){
+            return;
+        }
+
+        Inventory topInv = event.getView().getTopInventory();
+
+        ItemStack old = topInv.getItem(13);
+
+        if(event.getClickedInventory() == topInv){
+
+            if(old == null){
+                return;
+            }
+
+            if(old.getType() != Material.IRON_INGOT){
+                return;
+            }
+
+            if(!old.hasItemMeta()){
+                return;
+            }
+
+            String colorlessName = old.getItemMeta().getDisplayName().replaceAll("§.", "");
+
+            if(!colorlessName.equalsIgnoreCase("unidentified equipment")){
+                return;
+            }
+
+            int slot = event.getSlot();
+
+            switch (slot){
+                case 22:{
+
+                    //check for stones here
+
+                    //check level
+                    ItemMeta meta = old.getItemMeta();
+                    assert meta != null;
+                    List<String> lores = meta.getLore();
+                    assert lores != null;
+                    int level = 0;
+                    String levelRegex = ".*\\b(?i:level:)\\s*(\\d+).*";
+                    Pattern levelPattern = Pattern.compile(levelRegex);
+                    for(String lore : lores){
+                        String colorlessString = lore.replaceAll("§.", "");
+                        Matcher levelMatcher = levelPattern.matcher(colorlessString);
+                        if(levelMatcher.matches()){
+                            level = Integer.parseInt(levelMatcher.group(1));
+                            break;
+                        }
+
+                    }
+
+                    if(level == 0){
+                        return;
+                    }
+
+                    player.getInventory().remove(old);
+                    player.getInventory().addItem(equipmentManager.generate(player,level));
+                    player.openInventory(identifyInventory.openIdentifyInventory(new ItemStack(Material.AIR)));
+                    return;
+                }
+
+            }
+
+            return;
+        }
+
+        if(!item.hasItemMeta()){
+            return;
+        }
+
+        String colorlessString = item.getItemMeta().getDisplayName().replaceAll("§.", "");
+
+        if(!colorlessString.equalsIgnoreCase("unidentified equipment")){
+            return;
+        }
+
+        player.openInventory(identifyInventory.openIdentifyInventory(item));
     }
 
     @EventHandler

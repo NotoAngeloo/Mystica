@@ -90,6 +90,8 @@ public final class Mystica extends JavaPlugin {
         getCommand("MysticaDamage").setExecutor(new MysticaDamage(this));
         getCommand("MysticaEffect").setExecutor(new MysticaEffect(this));
         getCommand("StartFuryTimer").setExecutor(new StartFuryTimer(this));
+        getCommand("SkillTargetValidCheck").setExecutor(new SkillTargetValidCheck(this));
+        getCommand("SkillHitValidCheck").setExecutor(new SkillHitValidCheck(this));
         getCommand("Bag").setExecutor(new Bag(this));
         getCommand("Equipment").setExecutor(new Equipment(this));
         getCommand("Trash").setExecutor(new Trash());

@@ -37,7 +37,7 @@ public class StartFuryTimer implements CommandExecutor {
         }
 
 
-        return false;
+        return true;
     }
 
 }

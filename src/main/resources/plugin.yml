@@ -36,6 +36,14 @@ commands:
     description: allows mms to start their fury timer
     usage: /StartFuryTimer <caster> <duration>
     permission: developer
+  SkillTargetValidCheck:
+    description: allows mms to check validity of their target
+    usage: /SkillTargetValidCheck <caster> <target>
+    permission: developer
+  SkillHitValidCheck:
+    description: allows mms to check validity of the player they hit
+    usage: /SkillHitValidCheck <caster> <target>
+    permission: developer
   ToggleGlobalPvp:
     description: toggles global pvp
     usage: /ToggleGlobalPvp

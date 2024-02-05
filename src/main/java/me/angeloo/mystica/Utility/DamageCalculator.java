@@ -18,13 +18,11 @@ public class DamageCalculator {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final DpsManager dpsManager;
 
-    private final Map<UUID, Boolean> seeingRawDamage;
 
     public DamageCalculator(Mystica main){
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         dpsManager = main.getDpsManager();
-        seeingRawDamage = new HashMap<>();
     }
 
     public boolean checkIfCrit(Player player, int bonus){
@@ -120,13 +118,6 @@ public class DamageCalculator {
 
         dpsManager.addDamageToDamageDealt(player, damage);
 
-        if(seeingRawDamage.containsKey(player.getUniqueId())){
-
-            if(seeingRawDamage.get(player.getUniqueId())){
-                player.sendMessage("you deal " + damage);
-            }
-
-        }
 
         return damage;
     }
@@ -179,34 +170,9 @@ public class DamageCalculator {
 
         damage = damage * buffAndDebuffManager.getTotalDamageMultipliers(entity, player);
 
-        if(seeingRawDamage.containsKey(player.getUniqueId())){
-
-            if(seeingRawDamage.get(player.getUniqueId())){
-                player.sendMessage("you take " + damage);
-            }
-
-        }
-
 
         return damage;
     }
 
-    public void toggleSeeingRawDamage(Player player){
 
-        if(!seeingRawDamage.containsKey(player.getUniqueId())){
-            seeingRawDamage.put(player.getUniqueId(), false);
-        }
-
-        if(seeingRawDamage.get(player.getUniqueId())){
-            seeingRawDamage.put(player.getUniqueId(), false);
-            player.sendMessage("see all damage dealt toggled false");
-            return;
-        }
-
-        if(!seeingRawDamage.get(player.getUniqueId())){
-            seeingRawDamage.put(player.getUniqueId(), true);
-            player.sendMessage("see all damage dealt toggled true");
-        }
-
-    }
 }

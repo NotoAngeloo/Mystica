@@ -613,10 +613,22 @@ public class ProfileManager {
             furyTasks.get(uuid).cancel();
         }
 
+        LivingEntity entity = (LivingEntity) Bukkit.getEntity(uuid);
+
+        if(entity == null){
+            return;
+        }
+
         BukkitTask furyTask = new BukkitRunnable(){
             int count = 0;
             @Override
             public void run(){
+
+                //check death here too
+                if(entity.isDead()){
+                    this.cancel();
+                    return;
+                }
 
                 if(count>=time){
 

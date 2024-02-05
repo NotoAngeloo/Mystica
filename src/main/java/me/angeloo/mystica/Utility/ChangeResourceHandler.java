@@ -31,6 +31,7 @@ public class ChangeResourceHandler {
     private final Map<UUID, BukkitTask> savedTask = new HashMap<>();
     private final Map<UUID, Double> damageSlot = new HashMap<>();
     private final Map<UUID, LinkedList<Double>> allSaved = new HashMap<>();
+    private final Map<UUID, Boolean> seeingRawDamage = new HashMap<>();
 
     public ChangeResourceHandler(Mystica main){
         this.main = main;
@@ -64,6 +65,16 @@ public class ChangeResourceHandler {
         if(entity instanceof Player){
             subtractHealthFromPlayer((Player) entity, damage);
             return;
+        }
+
+        if(damager instanceof Player){
+            if(seeingRawDamage.containsKey(damager.getUniqueId())){
+
+                if(seeingRawDamage.get(damager.getUniqueId())){
+                    damager.sendMessage("you deal " + damage);
+                }
+
+            }
         }
 
         double trueHearts = entity.getHealth();
@@ -111,6 +122,14 @@ public class ChangeResourceHandler {
         if(profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("divine")){
             addToSlot(player, damage);
             startTask(player);
+        }
+
+        if(seeingRawDamage.containsKey(player.getUniqueId())){
+
+            if(seeingRawDamage.get(player.getUniqueId())){
+                player.sendMessage("you take " + damage);
+            }
+
         }
 
         double trueHearts = player.getHealth();
@@ -353,6 +372,25 @@ public class ChangeResourceHandler {
 
     private double getSaved(Player player){
         return damageSlot.getOrDefault(player.getUniqueId(), 0.0);
+    }
+
+    public void toggleSeeingRawDamage(Player player){
+
+        if(!seeingRawDamage.containsKey(player.getUniqueId())){
+            seeingRawDamage.put(player.getUniqueId(), false);
+        }
+
+        if(seeingRawDamage.get(player.getUniqueId())){
+            seeingRawDamage.put(player.getUniqueId(), false);
+            player.sendMessage("see all damage dealt toggled false");
+            return;
+        }
+
+        if(!seeingRawDamage.get(player.getUniqueId())){
+            seeingRawDamage.put(player.getUniqueId(), true);
+            player.sendMessage("see all damage dealt toggled true");
+        }
+
     }
 
 }

@@ -32,6 +32,10 @@ commands:
     description: allows mms to inflict status using this plugin
     usage: /MysticaEffect <target> <caster> <type> <modifier>
     permission: developer
+  ToggleImmunity:
+    description: allows devs to not take damage on boss testing
+    usage: /ToggleImmunity
+    permission: developer
   StartFuryTimer:
     description: allows mms to start their fury timer
     usage: /StartFuryTimer <caster> <duration>

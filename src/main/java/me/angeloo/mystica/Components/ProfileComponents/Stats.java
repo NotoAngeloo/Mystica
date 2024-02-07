@@ -75,8 +75,8 @@ public class Stats {
         int magic = 50;
         int health = 100;
         int mana = 100;
-        int regen = 1;
-        int mana_regen = 1;
+        int regen = 10;
+        int mana_regen = 3;
         int defence = 50;
         int magic_defence = 50;
         int crit = 1;
@@ -134,9 +134,8 @@ public class Stats {
             case "blood":{
                 health+=(level*40);
                 regen+=(level*1.4);
-                mana_regen=30;
+                mana_regen=20;
                 attack+=(level);
-                mana=100;
                 defence+=(level*2);
                 magic_defence+=(level*2);
                 break;
@@ -144,9 +143,8 @@ public class Stats {
             case "doom":{
                 health+=(level*30);
                 regen+=(level*1.3);
-                mana_regen=30;
+                mana_regen=20;
                 attack+=(level*3);
-                mana=100;
                 defence+=(level);
                 magic_defence+=(level);
                 crit+=10;

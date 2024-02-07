@@ -94,6 +94,12 @@ public class MysticaEffect implements CommandExecutor {
                     return true;
                 }
                 case "immune":{
+
+                    if(buffAndDebuffManager.getImmune().getImmune(target)){
+                        buffAndDebuffManager.getImmune().removeImmune(target);
+                        return true;
+                    }
+
                     buffAndDebuffManager.getImmune().applyImmune(target, amount);
                     return true;
                 }

@@ -41,6 +41,10 @@ public class ChangeResourceHandler {
 
     public void subtractHealthFromEntity(LivingEntity entity, Double damage, LivingEntity damager){
 
+        if(buffAndDebuffManager.getImmune().getImmune(entity)){
+            return;
+        }
+
         if(buffAndDebuffManager.getWindWallBuff().getIfWindWallActive(entity)){
 
             if(damager == null){

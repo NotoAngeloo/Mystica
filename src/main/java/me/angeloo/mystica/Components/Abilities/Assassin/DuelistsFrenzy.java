@@ -204,7 +204,7 @@ public class DuelistsFrenzy {
                     double distanceThisTick = Math.min(distance, .5);
                     Vector downDir = center.toVector().subtract(current.toVector());
 
-                    if(distance>1){
+                    if(distanceThisTick!=0){
                         current.add(downDir.normalize().multiply(distanceThisTick));
                     }
 
@@ -248,6 +248,7 @@ public class DuelistsFrenzy {
                         return false;
                     }
                 }
+
                 return !target.isDead();
             }
 

@@ -40,7 +40,45 @@ public class DamageCalculator {
         return random <= (playerProfile.getTotalCrit()) + bonus;
     }
 
-    public Double calculateDamage(Player player, LivingEntity entity, String type, Double damage, boolean crit){
+    public double calculateHealing(LivingEntity target, LivingEntity healer, double amount, boolean crit){
+
+        amount = amount / 100;
+
+        double multiplierForCrit = 1;
+
+        if(crit){
+            multiplierForCrit = 1.5;
+            //maybe spawn particles on a crit here
+        }
+
+        double multiplierForHealerBonus = 1;
+
+        if(profileManager.getAnyProfile(healer).getPlayerSubclass().equalsIgnoreCase("shepard")
+        || profileManager.getAnyProfile(healer).getPlayerSubclass().equalsIgnoreCase("divine")){
+            multiplierForHealerBonus = 1.2;
+        }
+
+        double totalTargetHealth = profileManager.getAnyProfile(target).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(target);
+
+        amount = totalTargetHealth * amount;
+
+        if(profileManager.getAnyProfile(healer).getPlayerClass().equalsIgnoreCase("mystic")
+        || profileManager.getAnyProfile(healer).getPlayerClass().equalsIgnoreCase("elementalist")){
+            double magic = profileManager.getAnyProfile(healer).getTotalMagic();
+            amount += magic/20;
+        }
+        else{
+            double attack = profileManager.getAnyProfile(healer).getTotalAttack();
+            amount += attack/20;
+        }
+
+        amount *= multiplierForCrit;
+        amount *= multiplierForHealerBonus;
+
+        return amount;
+    }
+
+    public double calculateDamage(Player player, LivingEntity entity, String type, double damage, boolean crit){
 
         if(buffAndDebuffManager.getImmune().getImmune(entity)){
             return 0.0;
@@ -123,7 +161,7 @@ public class DamageCalculator {
     }
 
 
-    public double calculateGettingDamaged(Player player, LivingEntity entity, String type, Double damage){
+    public double calculateGettingDamaged(Player player, LivingEntity entity, String type, double damage){
 
         if(buffAndDebuffManager.getImmune().getImmune(player)){
             return 0.0;

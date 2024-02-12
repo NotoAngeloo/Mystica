@@ -49,7 +49,9 @@ public class SkillTargetValidCheck implements CommandExecutor {
                 return true;
             }
 
-            assert caster != null;
+            if(caster == null){
+                return true;
+            }
 
             BoundingBox hitBox = new BoundingBox(
                     caster.getLocation().getX() - 50,
@@ -80,7 +82,7 @@ public class SkillTargetValidCheck implements CommandExecutor {
             }
 
             if(!someone){
-                Bukkit.getLogger().info("none valid");
+                //Bukkit.getLogger().info("none valid");
                 return true;
             }
 
@@ -90,7 +92,10 @@ public class SkillTargetValidCheck implements CommandExecutor {
                 return true;
             }
 
-            assert target != null;
+            if (target == null){
+                return true;
+            }
+
 
             boolean targetDeathStatus = profileManager.getAnyProfile(target).getIfDead();
             boolean targetAggroValidity = aggroManager.getIfOnBlackList(target);

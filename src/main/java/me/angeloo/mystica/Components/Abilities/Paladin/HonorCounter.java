@@ -175,7 +175,11 @@ public class HonorCounter {
                 Vector direction = end.toVector().subtract(current.toVector());;
                 double distance = current.distance(end);
                 double distanceThisTick = Math.min(distance, .75);
-                current.add(direction.normalize().multiply(distanceThisTick));
+
+                if(distanceThisTick!=0){
+                    current.add(direction.normalize().multiply(distanceThisTick));
+                }
+
                 armorStand.teleport(current);
 
                 if (distance <= 1) {

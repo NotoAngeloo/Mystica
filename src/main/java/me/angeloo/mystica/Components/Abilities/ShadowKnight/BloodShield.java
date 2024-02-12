@@ -48,11 +48,19 @@ public class BloodShield {
             return;
         }
 
+        double cost = 50;
+
+        if(profileManager.getAnyProfile(player).getCurrentMana() < cost){
+            return;
+        }
+
+        changeResourceHandler.subTractManaFromPlayer(player, cost);
+
         combatManager.startCombatTimer(player);
 
         execute(player);
 
-        abilityReadyInMap.put(player.getUniqueId(), 30);
+        abilityReadyInMap.put(player.getUniqueId(), 50);
         new BukkitRunnable(){
             @Override
             public void run(){
@@ -80,7 +88,7 @@ public class BloodShield {
         double currentHealth = profileManager.getAnyProfile(player).getCurrentHealth();
         double missing = maxHealth-currentHealth;
 
-        changeResourceHandler.addHealthToEntity(player, missing * .5);
+        changeResourceHandler.addHealthToEntity(player, missing * .5, player);
 
         double shield = profileManager.getAnyProfile(player).getCurrentHealth();
         buffAndDebuffManager.getGenericShield().applyOrAddShield(player, shield);

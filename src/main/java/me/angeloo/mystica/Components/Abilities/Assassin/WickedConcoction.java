@@ -162,6 +162,7 @@ public class WickedConcoction {
         }
 
         double skillDamage = 50;
+        double healPercent = 5;
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
         skillDamage = skillDamage + ((int)(skillLevel/10));
         boolean finalHeal = heal;
@@ -187,7 +188,7 @@ public class WickedConcoction {
                 double distance = current.distance(targetWasLoc);
                 double distanceThisTick = Math.min(distance, .75);
 
-                if(distance!=0){
+                if(distanceThisTick!=0){
                     current.add(direction.normalize().multiply(distanceThisTick));
                 }
 
@@ -199,8 +200,10 @@ public class WickedConcoction {
 
                     cancelTask();
 
+                    boolean crit = damageCalculator.checkIfCrit(player, 0);
+
                     if(!finalHeal){
-                        boolean crit = damageCalculator.checkIfCrit(player, 0);
+
                         double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
 
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
@@ -210,18 +213,9 @@ public class WickedConcoction {
                         return;
                     }
 
-                    double totalTargetHealth = profileManager.getAnyProfile(target).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(target);
-                    double yourAttack = profileManager.getAnyProfile(player).getTotalAttack();
-                    boolean crit = damageCalculator.checkIfCrit(player, 0);
+                    double healAmount = damageCalculator.calculateHealing(target, player, healPercent, crit);
 
-                    double healAmount = totalTargetHealth * .05;
-                    healAmount = healAmount * (yourAttack/3);
-
-                    if(crit){
-                        healAmount = healAmount * 1.5;
-                    }
-
-                    changeResourceHandler.addHealthToEntity(target, healAmount);
+                    changeResourceHandler.addHealthToEntity(target, healAmount, player);
                     buffAndDebuffManager.getDamageReduction().applyDamageReduction(target, .95, 20*15);
                     //and damage reduction
 

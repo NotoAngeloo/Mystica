@@ -219,8 +219,10 @@ public class LavaQuake {
 
                 double distance = current.distance(end);
                 double distanceThisTick = Math.min(distance, .75);
-                current.add(finalDirection.normalize().multiply(distanceThisTick));
 
+                if(distanceThisTick!=0){
+                    current.add(finalDirection.normalize().multiply(distanceThisTick));
+                }
 
                 if(distance <=1){
                     this.cancel();

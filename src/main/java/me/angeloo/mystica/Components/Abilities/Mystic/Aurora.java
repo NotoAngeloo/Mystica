@@ -90,7 +90,7 @@ public class Aurora {
             return;
         }
 
-        double cost = 20;
+        double cost = 40;
 
         if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
             return;
@@ -102,7 +102,7 @@ public class Aurora {
 
         execute(player, target);
 
-        abilityReadyInMap.put(player.getUniqueId(), 21);
+        abilityReadyInMap.put(player.getUniqueId(), 35);
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -131,11 +131,14 @@ public class Aurora {
 
         Location center = target.getLocation().clone();
 
+        double healPercent = 10;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
+        healPercent = healPercent +  ((int)(skillLevel/10));
 
         double shieldAmount = (profileManager.getAnyProfile(player).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player) + skillLevel) * .5;
 
+        double finalHealPercent = healPercent;
         new BukkitRunnable(){
             final Set<LivingEntity> hitBySkill = new HashSet<>();
             Vector initialDirection;
@@ -195,13 +198,9 @@ public class Aurora {
                         }
 
                         if(shepard){
-                            double healAmount = (profileManager.getAnyProfile(thisPlayer).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(thisPlayer) + skillLevel) * .2;
-
-                            if(damageCalculator.checkIfCrit(player, 0)){
-                                healAmount = healAmount * 1.5;
-                            }
-
-                            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount);
+                            boolean crit = damageCalculator.checkIfCrit(player, 0);
+                            double healAmount = damageCalculator.calculateHealing(thisPlayer, player, finalHealPercent, crit);
+                            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, player);
                         }
 
                         if(hitBySkill.contains(thisPlayer)){

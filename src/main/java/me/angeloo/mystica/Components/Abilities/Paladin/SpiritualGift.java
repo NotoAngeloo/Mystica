@@ -124,6 +124,8 @@ public class SpiritualGift {
 
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
+        double healPercent = 5;
+        healPercent = healPercent +  ((int)(skillLevel/10));
 
         //every 15 levels is a +1
         int bonusDuration = (int)(skillLevel/15);
@@ -132,6 +134,7 @@ public class SpiritualGift {
 
         buffAndDebuffManager.getHaste().applyHaste(target, 3, duration);
 
+        double finalHealPercent = healPercent;
         new BukkitRunnable(){
             int count = 0;
             @Override
@@ -179,17 +182,10 @@ public class SpiritualGift {
                     return;
                 }
 
-                double healAmount = (profileManager.getAnyProfile(target).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(target)) * .05;
-                healAmount = healAmount + profileManager.getAnyProfile(player).getTotalAttack() * .2;
-                healAmount = healAmount * skillLevel;
-
                 boolean crit = damageCalculator.checkIfCrit(player, 0);
+                double healAmount = damageCalculator.calculateHealing(target, player, finalHealPercent, crit);
 
-                if(crit){
-                    healAmount = healAmount*1.5;
-                }
-
-                changeResourceHandler.addHealthToEntity(target, healAmount);
+                changeResourceHandler.addHealthToEntity(target, healAmount, player);
             }
 
         }.runTaskTimer(main, 0, 1);

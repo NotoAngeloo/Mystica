@@ -62,8 +62,9 @@ public class AggroTick {
 
                 for(Player player : originalAttackerList){
                     boolean blacklist = aggroManager.getIfOnBlackList(player);
+                    boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
 
-                    if(!blacklist){
+                    if(!blacklist && !deathStatus){
                         attackers.add(player);
                     }
                 }

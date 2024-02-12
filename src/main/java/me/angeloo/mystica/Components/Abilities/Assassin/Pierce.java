@@ -219,6 +219,7 @@ public class Pierce {
                         return false;
                     }
                 }
+
                 return !target.isDead();
             }
 

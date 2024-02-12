@@ -188,7 +188,7 @@ public class WeaknessStrike {
                     double distanceThisTick = Math.min(distance, .5);
                     Vector downDir = targetLoc.toVector().subtract(current.toVector());
 
-                    if(distance>1){
+                    if(distanceThisTick!=0){
                         current.add(downDir.normalize().multiply(distanceThisTick));
                     }
 
@@ -307,6 +307,7 @@ public class WeaknessStrike {
                         return false;
                     }
                 }
+
                 return !target.isDead();
             }
 

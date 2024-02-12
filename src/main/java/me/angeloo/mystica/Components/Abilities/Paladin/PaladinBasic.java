@@ -142,23 +142,18 @@ public class PaladinBasic {
 
     private void healTarget(Player player, Player target){
 
-        double totalTargetHealth = profileManager.getAnyProfile(target).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(target);
         boolean crit = damageCalculator.checkIfCrit(player, 0);
 
-        double healAmount = totalTargetHealth * .05;
+        double healPercent = 1;
 
-        healAmount = healAmount + representative.getAdditionalBonusFromBuff(player);
-
-        if(crit){
-            healAmount = healAmount * 1.5;
-        }
+        double healAmount = damageCalculator.calculateHealing(target, player, healPercent, crit);
 
         if(justiceMark.markProc(player, target)){
             markHealInstead(player, healAmount);
             return;
         }
 
-        changeResourceHandler.addHealthToEntity(target, healAmount);
+        changeResourceHandler.addHealthToEntity(target, healAmount, player);
 
         Location center = target.getLocation().clone().add(0,1,0);
 
@@ -180,7 +175,7 @@ public class PaladinBasic {
         List<LivingEntity> affected = justiceMark.getMarkedTargets(player);
 
         for(LivingEntity thisPlayer : affected){
-            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount);
+            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, player);
 
             Location center = thisPlayer.getLocation().clone().add(0,1,0);
 

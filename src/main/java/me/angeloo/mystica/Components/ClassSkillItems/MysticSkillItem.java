@@ -199,8 +199,8 @@ public class MysticSkillItem {
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_8_Level() + skillLevel.getSkill_8_Level_Bonus()),
                         "",
                         ChatColor.of(new Color(230,230,230)) + "Generate a Light Sigil",
-                        ChatColor.of(new Color(230,230,230)) + "that continuously heals",
-                        ChatColor.of(new Color(230,230,230)) + "all nearby allies. Your",
+                        ChatColor.of(new Color(230,230,230)) + "that continuously damages",
+                        ChatColor.of(new Color(230,230,230)) + "nearby enemies. Your",
                         ChatColor.of(new Color(230,230,230)) + "next " + ChatColor.of(new Color(155, 120, 197)) + "Purifying Blast " +
                         ChatColor.of(new Color(230,230,230)) + "has no",
                         ChatColor.of(new Color(230,230,230)) + "cast time");

@@ -108,12 +108,15 @@ public class Representative {
         wings.setItemMeta(meta);
         player.getInventory().setHelmet(wings);
 
+        double healPercent = 25;
         double level = profileManager.getAnyProfile(player).getStats().getLevel();
+        healPercent = healPercent +  ((int)(level/10));
         applyBuff(player, level);
         buffAndDebuffManager.getHaste().applyHaste(player, 3, 10*20);
 
         Location center = player.getLocation().clone();
 
+        double finalHealPercent = healPercent;
         new BukkitRunnable(){
             int count = 0;
             boolean aoe = true;
@@ -167,15 +170,8 @@ public class Representative {
                             }
 
                             boolean crit = damageCalculator.checkIfCrit(player, 0);
-                            double amount = (profileManager.getAnyProfile(hitPlayer).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(hitPlayer)) * .25;
-                            amount = amount + level;
-                            amount = amount + getAdditionalBonusFromBuff(player);
-
-                            if(crit){
-                                amount = amount * 1.5;
-                            }
-
-                            changeResourceHandler.addHealthToEntity(hitPlayer, amount);
+                            double healAmount = damageCalculator.calculateHealing(hitPlayer, player, finalHealPercent, crit);
+                            changeResourceHandler.addHealthToEntity(hitPlayer, healAmount, player);
 
                         }
                     }

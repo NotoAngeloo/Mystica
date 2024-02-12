@@ -218,8 +218,12 @@ public class Relentless {
 
                         double distance = current.distance(targetWasLoc);
                         double distanceThisTick = Math.min(distance, .75);
-                        current.add(direction.normalize().multiply(distanceThisTick));
-                        traveled = traveled + distanceThisTick;
+
+                        if(distanceThisTick!=0){
+                            current.add(direction.normalize().multiply(distanceThisTick));
+                            traveled = traveled + distanceThisTick;
+                        }
+
 
                         if(traveled < halfDistance){
                             current.add(direction.clone().crossProduct(new Vector(0,1,0).normalize().multiply(randomValue)));
@@ -227,8 +231,6 @@ public class Relentless {
                         else{
                             current.setDirection(direction);
                         }
-
-
 
                         armorStand.teleport(current);
 

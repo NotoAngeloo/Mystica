@@ -198,7 +198,11 @@ public class BlessedArrow {
                 Vector direction = targetWasLoc.toVector().subtract(current.toVector());
                 double distance = current.distance(targetWasLoc);
                 double distanceThisTick = Math.min(distance, .75);
-                current.add(direction.normalize().multiply(distanceThisTick));
+
+                if(distanceThisTick!=0){
+                    current.add(direction.normalize().multiply(distanceThisTick));
+                }
+
                 current.setDirection(direction);
 
                 armorStand.teleport(current);

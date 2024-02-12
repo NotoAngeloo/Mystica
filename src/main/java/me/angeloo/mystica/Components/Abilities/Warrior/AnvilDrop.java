@@ -196,9 +196,10 @@ public class AnvilDrop {
 
                 Vector direction = finalEnd.toVector().subtract(current.toVector());
 
-                current.add(direction.normalize().multiply(distanceThisTick));
-
-                traveled = traveled + distanceThisTick;
+                if(distanceThisTick!=0){
+                    current.add(direction.normalize().multiply(distanceThisTick));
+                    traveled = traveled + distanceThisTick;
+                }
 
                 if(traveled<half){
                     current.add(0,distanceThisTick,0);

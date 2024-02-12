@@ -172,6 +172,11 @@ public class Laceration {
             @Override
             public void run(){
 
+                if(profileManager.getIfResetProcessing(target)){
+                    this.cancel();
+                    return;
+                }
+
                 if(target.isDead()){
                     this.cancel();
                     return;

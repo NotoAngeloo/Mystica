@@ -218,8 +218,11 @@ public class ElementalistBasic {
                 Vector direction = targetWasLoc.toVector().subtract(current.toVector());
                 double distance = current.distance(targetWasLoc);
                 double distanceThisTick = Math.min(distance, 1);
-                current.add(direction.normalize().multiply(distanceThisTick));
-                traveled = traveled + distanceThisTick;
+
+                if(distanceThisTick!=0){
+                    current.add(direction.normalize().multiply(distanceThisTick));
+                    traveled = traveled + distanceThisTick;
+                }
 
                 if(traveled < halfDistance){
                     current.subtract(direction.clone().crossProduct(new Vector(0,1,0).normalize().multiply(distanceThisTick)));
@@ -319,8 +322,12 @@ public class ElementalistBasic {
                 Vector direction = targetWasLoc.toVector().subtract(current.toVector());
                 double distance = current.distance(targetWasLoc);
                 double distanceThisTick = Math.min(distance, 1);
-                current.add(direction.normalize().multiply(distanceThisTick));
-                traveled = traveled + distanceThisTick;
+
+                if(distanceThisTick!=0){
+                    current.add(direction.normalize().multiply(distanceThisTick));
+                    traveled = traveled + distanceThisTick;
+                }
+
 
                 if(traveled < halfDistance){
                     current.add(direction.clone().crossProduct(new Vector(0,1,0).normalize().multiply(distanceThisTick)));
@@ -405,7 +412,11 @@ public class ElementalistBasic {
 
                         Vector direction = targetWasLoc.toVector().subtract(playerLoc.toVector());
                         double distanceThisTick = Math.min(distance, .5);
-                        current.add(direction.normalize().multiply(distanceThisTick));
+
+                        if(distanceThisTick!=0){
+                            current.add(direction.normalize().multiply(distanceThisTick));
+                        }
+
 
                         ArmorStand armorStand = player.getWorld().spawn(current, ArmorStand.class);
                         armorStand.setInvisible(true);
@@ -434,7 +445,11 @@ public class ElementalistBasic {
                     double distanceThisTick = Math.min(distance, .5);
 
                     for(ArmorStand thisStand : armorStands){
-                        current.add(direction.normalize().multiply(distanceThisTick));
+
+                        if(distanceThisTick!=0){
+                            current.add(direction.normalize().multiply(distanceThisTick));
+                        }
+
                         thisStand.teleport(current);
                     }
 

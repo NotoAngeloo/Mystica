@@ -153,7 +153,7 @@ public class ChaosVoid {
                 }
 
                 if(ran%20 == 0){
-                    changeResourceHandler.addHealthToEntity(player, healAmount);
+                    changeResourceHandler.addHealthToEntity(player, healAmount, player);
                     Location center = player.getLocation().clone().add(0,1,0);
 
                     double increment = (2 * Math.PI) / 16; // angle between particles

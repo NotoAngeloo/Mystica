@@ -302,6 +302,9 @@ public class SpecInventory {
                 ChatColor.of(new Color(230,230,230)) + "by 30% every 20 seconds.",
                 ChatColor.of(new Color(155,120,197)) + "Aurora " + ChatColor.of(new Color(230,230,230)) + "area restores health to",
                 ChatColor.of(new Color(230,230,230)) + "all allies within",
+                ChatColor.of(new Color(155,120,197)) + "Light Sigil " +
+                        ChatColor.of(new Color(230,230,230)) + "restores allies health",
+                ChatColor.of(new Color(230,230,230)) + "instead",
                 "",
                 ChatColor.of(new Color(0,102,0)) + "Get Skill",
                 ChatColor.of(new Color(126, 101, 238)) + "Enlightenment",

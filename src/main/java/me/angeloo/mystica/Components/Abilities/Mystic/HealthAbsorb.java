@@ -141,7 +141,7 @@ public class HealthAbsorb {
         castTime = castTime - buffAndDebuffManager.getHaste().getHasteLevel(player);
         castTime = castTime * 20;
 
-        double skillDamage = 20;
+        double skillDamage = 25;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));
@@ -230,7 +230,6 @@ public class HealthAbsorb {
                 }
 
 
-
                 ArmorStand armorStand = player.getWorld().spawn(targetLoc, ArmorStand.class);
                 armorStand.setInvisible(true);
                 armorStand.setGravity(false);
@@ -287,11 +286,9 @@ public class HealthAbsorb {
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
                     double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
 
-                    double healed = damage * .5;
-
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
-                    changeResourceHandler.addHealthToEntity(player, healed);
+                    changeResourceHandler.addHealthToEntity(player, damage, player);
                 }
 
                 double percent = ((double) ran /(20*5)) * 100;

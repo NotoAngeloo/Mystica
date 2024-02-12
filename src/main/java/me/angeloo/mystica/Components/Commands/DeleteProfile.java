@@ -7,13 +7,16 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 public class DeleteProfile implements CommandExecutor {
 
+    private final Mystica main;
     private final ProfileManager profileManager;
 
     public DeleteProfile(Mystica main){
+        this.main = main;
         profileManager = main.getProfileManager();
     }
 
@@ -38,7 +41,13 @@ public class DeleteProfile implements CommandExecutor {
             return true;
         }
 
-        profileManager.removePlayerProfile(player);
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                profileManager.removePlayerProfile(player);
+            }
+        }.runTaskLater(main, 20);
+
 
         return true;
     }

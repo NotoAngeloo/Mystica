@@ -198,7 +198,10 @@ public class OrderShield {
                 Vector direction = targetWasLoc.toVector().subtract(current.toVector());
                 double distance = current.distance(targetWasLoc);
                 double distanceThisTick = Math.min(distance, .75);
-                current.add(direction.normalize().multiply(distanceThisTick));
+
+                if(distanceThisTick!=0){
+                    current.add(direction.normalize().multiply(distanceThisTick));
+                }
                 current.setDirection(rot);
 
                 armorStand.teleport(current);
@@ -261,7 +264,7 @@ public class OrderShield {
                     return;
                 }
 
-                changeResourceHandler.addHealthToEntity(player, amount);
+                changeResourceHandler.addHealthToEntity(player, amount, player);
 
                 if(count>=5){
                     this.cancel();

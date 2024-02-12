@@ -193,6 +193,7 @@ public class SearingChains {
                         chain.setItemMeta(meta);
 
                         double distanceThisTick = Math.min(distance, .7);
+
                         current.add(finalDirection.normalize().multiply(distanceThisTick));
                         distanceThisTick = Math.min(distance, .45);
                         currentLeft.add(finalDirection.normalize().multiply(distanceThisTick)).subtract(crossSection.clone().normalize().multiply(distanceThisTick));

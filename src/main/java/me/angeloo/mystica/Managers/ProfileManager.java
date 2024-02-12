@@ -41,6 +41,7 @@ public class ProfileManager {
     private final Map<UUID, String> nonPlayerNameMap = new HashMap<>();
     private final Map<UUID, Location> bossHomes = new HashMap<>();
     private final Map<UUID, BukkitTask> furyTasks = new HashMap<>();
+    private final Map<UUID, Boolean> resetProcessing = new HashMap<>();
 
 
     public ProfileManager(Mystica main) {
@@ -664,6 +665,8 @@ public class ProfileManager {
 
         assert boss != null;
 
+        processReset(boss);
+
         if(furyTasks.containsKey(boss.getUniqueId())){
             furyTasks.get(boss.getUniqueId()).cancel();
             furyTasks.remove(boss.getUniqueId());
@@ -690,6 +693,21 @@ public class ProfileManager {
         }
 
         return true;
+    }
+
+    private void processReset(LivingEntity entity){
+        resetProcessing.put(entity.getUniqueId(), true);
+
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                resetProcessing.remove(entity.getUniqueId());
+            }
+        }.runTaskLater(main, 60);
+    }
+
+    public boolean getIfResetProcessing(LivingEntity entity){
+        return resetProcessing.getOrDefault(entity.getUniqueId(), false);
     }
 
 }

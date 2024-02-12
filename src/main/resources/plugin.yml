@@ -76,6 +76,10 @@ commands:
     description: deletes a profile
     usage: /DeleteProfile
     permission: developer
+  ClearStands:
+    description: clears any lingering armorstands
+    usage: /ClearStands
+    permission: developer
 
 permissions:
   developer:

@@ -229,6 +229,7 @@ public class SoulReap {
 
                     double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage, crit);
                     damage = damage + extra;
+                    removeSoulMarks(player);
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
                 }
@@ -318,7 +319,7 @@ public class SoulReap {
 
         int stacks = getSoulMarks(player);
 
-        if(stacks >=4){
+        if(stacks>5){
             return;
         }
 

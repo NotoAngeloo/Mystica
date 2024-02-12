@@ -188,7 +188,10 @@ public class MeteorCrater {
                     double distance = current.distance(up);
                     double distanceThisTick = Math.min(distance, .5);
                     Vector upDir = up.toVector().subtract(current.toVector());
-                    current.add(upDir.normalize().multiply(distanceThisTick));
+
+                    if(distanceThisTick!=0){
+                        current.add(upDir.normalize().multiply(distanceThisTick));
+                    }
 
                     if(distance<=1){
                         going=false;
@@ -198,7 +201,10 @@ public class MeteorCrater {
                     double distance = current.distance(start);
                     double distanceThisTick = Math.min(distance, .5);
                     Vector downDir = start.toVector().subtract(current.toVector());
-                    current.add(downDir.normalize().multiply(distanceThisTick));
+
+                    if(distanceThisTick!=0){
+                        current.add(downDir.normalize().multiply(distanceThisTick));
+                    }
 
                     if(distance<=1){
                         land=true;

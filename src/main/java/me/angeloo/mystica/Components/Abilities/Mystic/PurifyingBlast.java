@@ -147,24 +147,15 @@ public class PurifyingBlast {
 
         skillDamage = skillDamage + ((int)(skillLevel/10));
 
-        double yourMagic = profileManager.getAnyProfile(player).getTotalMagic();
-        double healAmount = skillDamage + yourMagic;
+
+        double healPercent = skillDamage;
 
         String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
-
-        if(subclass.equalsIgnoreCase("shepard")){
-            healAmount = healAmount * 1.2;
-        }
-
-        if(damageCalculator.checkIfCrit(player, 0)){
-            healAmount = healAmount * 1.5;
-        }
 
         Location center = player.getLocation().clone();
 
         Set<LivingEntity> hitBySkill = new HashSet<>();
 
-        double finalHealAmount = healAmount;
         double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             double progress = 0;
@@ -209,7 +200,8 @@ public class PurifyingBlast {
                             changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
                         }
                         else{
-                            changeResourceHandler.addHealthToEntity(livingEntity, finalHealAmount);
+                            double healAmount  = damageCalculator.calculateHealing(livingEntity, player, healPercent, crit);
+                            changeResourceHandler.addHealthToEntity(livingEntity, healAmount, player);
                         }
 
                         continue;

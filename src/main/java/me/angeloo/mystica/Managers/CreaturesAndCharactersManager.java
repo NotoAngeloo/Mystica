@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Managers;
 
+import me.angeloo.mystica.Components.Creatures.BetaTester;
 import me.angeloo.mystica.Components.Creatures.TheLindwyrm;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
@@ -14,12 +15,13 @@ public class CreaturesAndCharactersManager {
     private final ProfileManager profileManager;
 
     private final TheLindwyrm theLindwyrm;
+    private final BetaTester betaTester;
 
 
     public CreaturesAndCharactersManager(Mystica main){
         profileManager = main.getProfileManager();
         theLindwyrm = new TheLindwyrm(main);
-
+        betaTester = new BetaTester(main);
     }
 
 
@@ -33,6 +35,10 @@ public class CreaturesAndCharactersManager {
             }
             case "Rock":{
                 makeImmortalObjectProfile(uuid);
+                break;
+            }
+            case "Beta Tester":{
+                betaTester.makeProfile(uuid);
                 break;
             }
             default:{

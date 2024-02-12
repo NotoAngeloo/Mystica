@@ -41,6 +41,10 @@ public class ChangeResourceHandler {
 
     public void subtractHealthFromEntity(LivingEntity entity, Double damage, LivingEntity damager){
 
+        if(profileManager.getIfResetProcessing(entity)){
+            return;
+        }
+
         if(buffAndDebuffManager.getImmune().getImmune(entity)){
             return;
         }
@@ -72,12 +76,8 @@ public class ChangeResourceHandler {
         }
 
         if(damager instanceof Player){
-            if(seeingRawDamage.containsKey(damager.getUniqueId())){
-
-                if(seeingRawDamage.get(damager.getUniqueId())){
-                    damager.sendMessage("you deal " + damage);
-                }
-
+            if(seeingRawDamage.getOrDefault(damager.getUniqueId(), false)){
+                damager.sendMessage("you deal " + damage);
             }
         }
 
@@ -177,7 +177,15 @@ public class ChangeResourceHandler {
         lastDamaged.put(player.getUniqueId(), (System.currentTimeMillis()/1000));
     }
 
-    public void addHealthToEntity(LivingEntity entity, Double health){
+    public void addHealthToEntity(LivingEntity entity, Double health, LivingEntity healer){
+
+        if(healer != null){
+            if(healer instanceof Player){
+                if(seeingRawDamage.getOrDefault(healer.getUniqueId() ,false)){
+                    healer.sendMessage("you heal " + health);
+                }
+            }
+        }
 
         if(entity instanceof Player){
             addHealthToPlayer((Player) entity, health);

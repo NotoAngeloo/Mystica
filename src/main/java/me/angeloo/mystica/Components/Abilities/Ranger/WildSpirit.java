@@ -157,6 +157,11 @@ public class WildSpirit {
             @Override
             public void run(){
 
+                if(profileManager.getAnyProfile(player).getIfDead()){
+                    despawn();
+                    return;
+                }
+
                 LivingEntity target = targetManager.getPlayerTarget(player);
 
                 if(target != null){
@@ -233,7 +238,11 @@ public class WildSpirit {
                 double distance = current.distance(enemyLoc);
 
                 double distanceThisTick = Math.min(distance, .3);
-                current.add(direction.normalize().multiply(distanceThisTick));
+
+                if(distanceThisTick!=0){
+                    current.add(direction.normalize().multiply(distanceThisTick));
+                }
+
                 current.setDirection(direction);
 
                 if(distance > 4){
@@ -275,7 +284,11 @@ public class WildSpirit {
                 double distance = current.distance(ownerLoc);
 
                 double distanceThisTick = Math.min(distance, .2);
-                current.add(direction.normalize().multiply(distanceThisTick));
+
+                if(distanceThisTick!=0){
+                    current.add(direction.normalize().multiply(distanceThisTick));
+                }
+
                 current.setDirection(direction);
 
                 if(distance > 4){
@@ -322,7 +335,7 @@ public class WildSpirit {
 
                     double healAmount = (attack * .1) * skillLevel;
 
-                    changeResourceHandler.addHealthToEntity(thisPlayer, healAmount);
+                    changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, player);
 
                 }
             }

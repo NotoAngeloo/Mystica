@@ -104,6 +104,7 @@ public final class Mystica extends JavaPlugin {
         getCommand("Identify").setExecutor(new Identify());
         getCommand("ManualSave").setExecutor(new ManualSave(this));
         getCommand("DeleteProfile").setExecutor(new DeleteProfile(this));
+        getCommand("ClearStands").setExecutor(new ClearStands());
 
         this.getServer().getPluginManager().registerEvents(new InventoryEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new GeneralEventListener(this), this);

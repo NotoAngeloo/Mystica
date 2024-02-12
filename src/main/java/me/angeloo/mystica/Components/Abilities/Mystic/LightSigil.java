@@ -1,12 +1,14 @@
 package me.angeloo.mystica.Components.Abilities.Mystic;
 
 import me.angeloo.mystica.Components.Abilities.MysticAbilities;
+import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -100,6 +102,8 @@ public class LightSigil {
 
     private void execute(Player player){
 
+        boolean shepard = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("shepard");
+
         purifyingBlast.queueInstantCast(player);
 
         Location spawnStart = player.getLocation().clone();
@@ -152,47 +156,80 @@ public class LightSigil {
                             current.getZ() + 10
                     );
 
-                    Set<Player> hitBySkill = new HashSet<>();
+                    Set<LivingEntity> hitBySkill = new HashSet<>();
 
-                    for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+                    if(shepard){
+                        for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
 
-                        if(!(entity instanceof Player)){
-                            continue;
+                            if(!(entity instanceof Player)){
+                                continue;
+                            }
+
+                            if(entity instanceof ArmorStand){
+                                continue;
+                            }
+
+                            Player thisPlayer = (Player) entity;
+
+                            if (pvpManager.pvpLogic(player, thisPlayer)) {
+                                continue;
+                            }
+
+                            hitBySkill.add(thisPlayer);
+
                         }
 
-                        if(entity instanceof ArmorStand){
-                            continue;
+                        //default
+                        LivingEntity healedEntity = player;
+
+                        double currentMissingHealth = 0;
+
+                        for(LivingEntity thisPlayer : hitBySkill){
+
+                            double maxHealth = profileManager.getAnyProfile(thisPlayer).getTotalHealth();
+                            double currentHealth = profileManager.getAnyProfile(thisPlayer).getCurrentHealth();
+                            double missingHealth = maxHealth - currentHealth;
+
+                            if(currentMissingHealth>missingHealth){
+                                currentMissingHealth = missingHealth;
+                                healedEntity = thisPlayer;
+                            }
+
                         }
+                        shootHealAtEntity(player, sigil, healedEntity);
+                    }
+                    else{
+                        for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
 
-                        Player thisPlayer = (Player) entity;
+                            if(!(entity instanceof LivingEntity)){
+                                continue;
+                            }
 
-                        if (pvpManager.pvpLogic(player, thisPlayer)) {
-                            continue;
+                            if(entity instanceof ArmorStand){
+                                continue;
+                            }
+
+                            LivingEntity thisEntity = (LivingEntity) entity;
+
+                            if(entity instanceof  Player){
+                                if(!pvpManager.pvpLogic(player, (Player) thisEntity)) {
+                                    continue;
+                                }
+                            }
+
+                            if(!pveChecker.pveLogic(thisEntity)){
+                                continue;
+                            }
+
+                            hitBySkill.add(thisEntity);
+
+                            for(LivingEntity livingEntity : hitBySkill){
+                                shootDamageAtEntity(player, sigil, livingEntity);
+                            }
+
                         }
-
-                        hitBySkill.add(thisPlayer);
-
                     }
 
-                    //default
-                    Player healedPlayer = player;
-
-                    double currentMissingHealth = 0;
-
-                    for(Player thisPlayer : hitBySkill){
-
-                        double maxHealth = profileManager.getAnyProfile(thisPlayer).getTotalHealth();
-                        double currentHealth = profileManager.getAnyProfile(thisPlayer).getCurrentHealth();
-                        double missingHealth = maxHealth - currentHealth;
-
-                        if(currentMissingHealth>missingHealth){
-                            currentMissingHealth = missingHealth;
-                            healedPlayer = thisPlayer;
-                        }
-
-                    }
-
-                    shootHealAtPlayer(player, sigil, healedPlayer);
 
                 }
 
@@ -211,12 +248,7 @@ public class LightSigil {
 
     }
 
-    private void shootHealAtPlayer(Player player, ArmorStand sigil, Player healedPlayer){
-
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
-
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level() +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
+    private void shootDamageAtEntity(Player player, ArmorStand sigil, LivingEntity damagedEntity){
 
         Location start = sigil.getLocation();
         start.subtract(0, 1, 0);
@@ -239,13 +271,19 @@ public class LightSigil {
         assert entityEquipment != null;
         entityEquipment.setHelmet(bolt);
 
+        double skillDamage = 7;
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
+        skillDamage = skillDamage  +  ((int)(skillLevel/10));
+
+        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
-            Location targetWasLoc = healedPlayer.getLocation().clone().subtract(0,1,0);
+            Location targetWasLoc = damagedEntity.getLocation().clone().subtract(0,1,0);
             @Override
             public void run(){
 
-                if(targetStillValid(healedPlayer)){
-                    Location targetLoc = healedPlayer.getLocation().clone().subtract(0,1,0);
+                if(targetStillValid(damagedEntity)){
+                    Location targetLoc = damagedEntity.getLocation().clone().subtract(0,1,0);
                     targetWasLoc = targetLoc.clone();
                 }
 
@@ -272,24 +310,109 @@ public class LightSigil {
 
                     cancelTask();
 
-                    double totalTargetHealth = profileManager.getAnyProfile(healedPlayer).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(healedPlayer);
-                    double yourMagic = profileManager.getAnyProfile(player).getTotalMagic();
+                    boolean crit = damageCalculator.checkIfCrit(player, 0);
+                    double damage = damageCalculator.calculateDamage(player, damagedEntity, "Magical", finalSkillDamage, crit);
+                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(damagedEntity, player));
+                    changeResourceHandler.subtractHealthFromEntity(damagedEntity, damage, player);
+
+                }
+
+            }
+
+            private boolean targetStillValid(LivingEntity target){
+
+                if(target instanceof Player){
+
+                    if(!((Player) target).isOnline()){
+                        return false;
+                    }
+
+                }
+
+                return !target.isDead();
+            }
+
+            private boolean sameWorld(Location loc1, Location loc2) {
+                return loc1.getWorld().equals(loc2.getWorld());
+            }
+
+            private void cancelTask() {
+                this.cancel();
+                armorStand.remove();
+            }
+        }.runTaskTimer(main, 0, 1);
+
+    }
+
+    private void shootHealAtEntity(Player player, ArmorStand sigil, LivingEntity healedEntity){
+
+        Location start = sigil.getLocation();
+        start.subtract(0, 1, 0);
+        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
+        armorStand.setInvisible(true);
+        armorStand.setGravity(false);
+        armorStand.setCollidable(false);
+        armorStand.setInvulnerable(true);
+        armorStand.setMarker(true);
+
+        EntityEquipment entityEquipment = armorStand.getEquipment();
+
+        ItemStack bolt = new ItemStack(Material.SPECTRAL_ARROW);
+        ItemMeta meta = bolt.getItemMeta();
+        assert meta != null;
+
+        meta.setCustomModelData(1);
+
+        bolt.setItemMeta(meta);
+        assert entityEquipment != null;
+        entityEquipment.setHelmet(bolt);
+
+        double healPercent = 5;
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
+        healPercent = healPercent +  ((int)(skillLevel/10));
+
+        double finalHealPercent = healPercent;
+        new BukkitRunnable(){
+            Location targetWasLoc = healedEntity.getLocation().clone().subtract(0,1,0);
+            @Override
+            public void run(){
+
+                if(targetStillValid(healedEntity)){
+                    Location targetLoc = healedEntity.getLocation().clone().subtract(0,1,0);
+                    targetWasLoc = targetLoc.clone();
+                }
+
+                Location current = armorStand.getLocation();
+
+                if (!sameWorld(current, targetWasLoc)) {
+                    cancelTask();
+                    return;
+                }
+
+                Vector direction = targetWasLoc.toVector().subtract(current.toVector());
+                double distance = current.distance(targetWasLoc);
+                double distanceThisTick = Math.min(distance, .75);
+
+                if(distanceThisTick !=0){
+                    current.add(direction.normalize().multiply(distanceThisTick));
+                }
+
+                current.setDirection(direction);
+
+                armorStand.teleport(current);
+
+                if (distance <= 1) {
+
+                    cancelTask();
+
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
 
-                    double healAmount = (totalTargetHealth + skillLevel) * .1;
-                    healAmount = healAmount * (yourMagic/4);
+                    double healAmount  = damageCalculator.calculateHealing(healedEntity, player, finalHealPercent, crit);
 
-                    if(subclass.equalsIgnoreCase("shepard")){
-                        healAmount = healAmount * 1.2;
-                    }
+                    changeResourceHandler.addHealthToEntity(healedEntity, healAmount, player);
 
-                    if(crit){
-                        healAmount = healAmount * 1.5;
-                    }
-
-                    changeResourceHandler.addHealthToEntity(healedPlayer, healAmount);
-
-                    Location center = healedPlayer.getLocation().clone().add(0,1,0);
+                    Location center = healedEntity.getLocation().clone().add(0,1,0);
 
                     double increment = (2 * Math.PI) / 16; // angle between particles
 
@@ -299,7 +422,7 @@ public class LightSigil {
                         double z = center.getZ() + (1 * Math.sin(angle));
                         Location loc = new Location(center.getWorld(), x, (center.getY()), z);
 
-                        healedPlayer.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1,0, 0, 0, 0);
+                        healedEntity.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1,0, 0, 0, 0);
                     }
 
                 }

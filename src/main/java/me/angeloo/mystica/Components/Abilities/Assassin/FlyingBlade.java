@@ -1,9 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Assassin;
 
 import me.angeloo.mystica.Components.Abilities.AssassinAbilities;
-import me.angeloo.mystica.Components.Abilities.Elementalist.CrystalStorm;
-import me.angeloo.mystica.Components.Abilities.Elementalist.ElementalBreath;
-import me.angeloo.mystica.Components.Abilities.ElementalistAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -13,14 +10,11 @@ import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -182,7 +176,11 @@ public class FlyingBlade {
                 Vector direction = targetWasLoc.toVector().subtract(current.toVector());
                 double distance = current.distance(targetWasLoc);
                 double distanceThisTick = Math.min(distance, .75);
-                current.add(direction.normalize().multiply(distanceThisTick));
+
+                if(distanceThisTick!=0){
+                    current.add(direction.normalize().multiply(distanceThisTick));
+                }
+
                 current.setDirection(direction);
 
                 armorStand.teleport(current);
@@ -213,7 +211,6 @@ public class FlyingBlade {
                     if(!((Player) target).isOnline()){
                         return false;
                     }
-
                 }
 
                 return !target.isDead();

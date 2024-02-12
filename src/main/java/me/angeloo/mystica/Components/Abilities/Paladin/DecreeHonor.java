@@ -159,12 +159,15 @@ public class DecreeHonor {
         entityEquipment.setHelmet(item);
 
         double skillDamage = 20;
+        double healPercent = 5;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));
+        healPercent = healPercent +  ((int)(skillLevel/10));
 
         abilityManager.setSkillRunning(player, true);
         double finalSkillDamage = skillDamage;
+        double finalHealPercent = healPercent;
         new BukkitRunnable(){
             double down = 0;
             @Override
@@ -218,20 +221,14 @@ public class DecreeHonor {
 
                     if(!pvpManager.pvpLogic(player, (Player) target)){
 
-                        double healAmount = (profileManager.getAnyProfile(target).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(target)) * .05;
-                        healAmount = healAmount + profileManager.getAnyProfile(player).getTotalAttack() * .2;
-                        healAmount = healAmount + ((int)(skillLevel/10));
-
-                        if(crit){
-                            healAmount = healAmount*1.5;
-                        }
+                        double healAmount  = damageCalculator.calculateHealing(target, player, finalHealPercent, crit);
 
                         if(justiceMark.markProc(player, target)){
                             markHealInstead(player, healAmount);
                             return;
                         }
 
-                        changeResourceHandler.addHealthToEntity(target, healAmount);
+                        changeResourceHandler.addHealthToEntity(target, healAmount, player);
                         return;
                     }
 
@@ -267,7 +264,7 @@ public class DecreeHonor {
         List<LivingEntity> affected = justiceMark.getMarkedTargets(player);
 
         for(LivingEntity thisPlayer : affected){
-            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount);
+            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, player);
 
             Location center = thisPlayer.getLocation().clone().add(0,1,0);
 

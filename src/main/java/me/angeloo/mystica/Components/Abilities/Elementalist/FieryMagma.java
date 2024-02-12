@@ -189,7 +189,10 @@ public class FieryMagma {
                 Vector direction = targetWasLoc.toVector().subtract(current.toVector());
                 double distance = current.distance(targetWasLoc);
                 double distanceThisTick = Math.min(distance, .75);
-                current.add(direction.normalize().multiply(distanceThisTick));
+
+                if(distanceThisTick!=0){
+                    current.add(direction.normalize().multiply(distanceThisTick));
+                }
 
                 armorStand.teleport(current);
 
@@ -243,6 +246,11 @@ public class FieryMagma {
                     int ticks = 0;
                     @Override
                     public void run(){
+
+                        if(profileManager.getIfResetProcessing(target)){
+                            this.cancel();
+                            return;
+                        }
 
                         if(target.isDead()){
                             this.cancel();

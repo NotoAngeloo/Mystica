@@ -176,7 +176,11 @@ public class DeathGaze {
 
                         Vector direction = targetWasLoc.toVector().subtract(playerLoc.toVector());
                         double distanceThisTick = Math.min(distance, .45);
-                        current.add(direction.normalize().multiply(distanceThisTick));
+
+                        if(distanceThisTick!=0){
+                            current.add(direction.normalize().multiply(distanceThisTick));
+                        }
+
                         current.setDirection(direction);
 
                         ArmorStand armorStand = player.getWorld().spawn(current.clone().subtract(0,5,0), ArmorStand.class);
@@ -230,7 +234,11 @@ public class DeathGaze {
                     double distanceThisTick = Math.min(distance, .45);
 
                     for (ArmorStand thisStand : armorStands) {
-                        current.add(direction.normalize().multiply(distanceThisTick));
+
+                        if(distanceThisTick!=0){
+                            current.add(direction.normalize().multiply(distanceThisTick));
+                        }
+
                         thisStand.teleport(current);
 
                     }

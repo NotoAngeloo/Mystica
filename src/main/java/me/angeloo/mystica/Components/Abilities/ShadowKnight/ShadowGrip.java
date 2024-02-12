@@ -96,7 +96,7 @@ public class ShadowGrip {
             return;
         }
 
-        double cost = 20;
+        double cost = 30;
 
         if(profileManager.getAnyProfile(player).getCurrentMana() < cost){
             return;
@@ -170,89 +170,62 @@ public class ShadowGrip {
         new BukkitRunnable(){
             boolean pulled = false;
             boolean going = true;
-            Location targetWasLoc = target.getLocation().clone();
             @Override
             public void run(){
 
-                if(targetStillValid(target)){
-                    Location targetLoc = target.getLocation();
-                    targetLoc = targetLoc.subtract(0,1,0);
-                    targetWasLoc = targetLoc.clone();
-                }
-
-                Location current = armorStand.getLocation();
-
-                if (!sameWorld(current, targetWasLoc)) {
+                if(!targetStillValid(player)){
                     cancelTask();
                     return;
                 }
 
+                if(!targetStillValid(target)){
+                    cancelTask();
+                    return;
+                }
+
+                Location playerLoc = player.getLocation();
+                playerLoc = playerLoc.subtract(0,1,0);
+                Location targetLoc = target.getLocation();
+                targetLoc = targetLoc.subtract(0,1,0);
+
+                Location current = armorStand.getLocation();
+
+                if (!sameWorld(current, targetLoc)) {
+                    cancelTask();
+                    return;
+                }
+
+                Vector direction;
+                double distance;
+
                 if(going){
-                    Vector direction = targetWasLoc.toVector().subtract(current.toVector());
-                    double distance = current.distance(targetWasLoc);
-
-                    if (distance <= 1) {
-
-                        boolean crit = damageCalculator.checkIfCrit(player, 0);
-                        double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
-
-                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                        changeResourceHandler.subtractHealthFromEntity(target, damage, player);
-
-
-                        if(blood){
-                            aggroManager.setAsHighPriorityTarget(target, player);
-                            if(target instanceof Player){
-                                targetManager.setPlayerTarget((Player) target, player);
-                                return;
-                            }
-                        }
-
-                        //also check and pull creature
-                        pullTarget();
-
-                        if(targetStillValid(target) && profileManager.getAnyProfile(target).getIsMovable()){
-                            pulled = true;
-                            buffAndDebuffManager.getPulled().applyPull(target);
-                        }
-
-                        going = false;
-                    }
-                    else{
-                        double distanceThisTick = Math.min(distance, .5);
-                        current.add(direction.normalize().multiply(distanceThisTick));
-                        current.setDirection(direction);
-                        armorStand.teleport(current);
-                    }
-
+                    direction = targetLoc.toVector().subtract(current.toVector());
+                    distance = current.distance(targetLoc);
                 }
                 else{
+                    direction = playerLoc.toVector().subtract(current.toVector());
+                    distance = current.distance(playerLoc);
+                }
 
-                    if(!player.isOnline()){
+                double distanceThisTick = Math.min(distance, .6);
+
+                if(distanceThisTick!=0){
+                    current.add(direction.normalize().multiply(distanceThisTick));
+                }
+
+                armorStand.teleport(current);
+
+                if(!going){
+
+                    if(distance <= 1){
                         cancelTask();
                         return;
                     }
 
-
-                    Vector direction = player.getLocation().toVector().subtract(current.toVector());
-                    double distance = current.distance(player.getLocation());
-
-                    if(distance <=1){
-
-                        cancelTask();
-                        return;
-                    }
-
-
-                    double distanceThisTick = Math.min(distance, .9);
-
-                    //do a wall check here
                     if(wallCheck(current, direction, distanceThisTick)){
                         cancelTask();
                         return;
                     }
-
-                    current.add(direction.normalize().multiply(distanceThisTick));
 
                     Vector opposite = direction.clone().multiply(-1);
                     current.setDirection(opposite);
@@ -270,9 +243,34 @@ public class ShadowGrip {
                         target.teleport(current.add(0,1,0));
 
                     }
-
                 }
 
+                if(going && distance <= 1){
+                    boolean crit = damageCalculator.checkIfCrit(player, 0);
+                    double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
+
+                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+
+
+                    if(blood){
+                        aggroManager.setAsHighPriorityTarget(target, player);
+                        if(target instanceof Player){
+                            targetManager.setPlayerTarget((Player) target, player);
+                            return;
+                        }
+                    }
+
+                    //also check and pull creature
+                    pullTarget();
+
+                    if(targetStillValid(target) && profileManager.getAnyProfile(target).getIsMovable()){
+                        pulled = true;
+                        buffAndDebuffManager.getPulled().applyPull(target);
+                    }
+
+                    going = false;
+                }
 
             }
 

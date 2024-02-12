@@ -203,7 +203,9 @@ public class DuranceOfTruth {
 
                     Vector direction = finalEnd.toVector().subtract(current.toVector());
 
-                    current.add(direction.normalize().multiply(distanceThisTick));
+                    if(distanceThisTick!=0){
+                        current.add(direction.normalize().multiply(distanceThisTick));
+                    }
 
                     traveled = traveled + distanceThisTick;
 
@@ -252,7 +254,7 @@ public class DuranceOfTruth {
 
                             if(count%20==0){
                                 double fivePercent = (profileManager.getAnyProfile(player).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player)) * .05;
-                                changeResourceHandler.addHealthToEntity(player, fivePercent);
+                                changeResourceHandler.addHealthToEntity(player, fivePercent, player);
 
                                 buffAndDebuffManager.getDamageReduction().applyDamageReduction(player, 0.95, 20);
                             }

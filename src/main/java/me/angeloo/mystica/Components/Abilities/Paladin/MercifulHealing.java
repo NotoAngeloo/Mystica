@@ -188,15 +188,12 @@ public class MercifulHealing {
 
                 double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level() +
                         profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
-                double healAmount = (profileManager.getAnyProfile(target).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(target)) * .1;
-                healAmount = healAmount + profileManager.getAnyProfile(player).getTotalAttack() * .5;
-                healAmount = healAmount + ((int)(skillLevel/10));
+                double healPercent = 10;
+                healPercent = healPercent+ ((int)(skillLevel/10));
 
                 boolean crit = damageCalculator.checkIfCrit(player, 0);
 
-                if(crit){
-                    healAmount = healAmount * 1.5;
-                }
+                double healAmount = damageCalculator.calculateHealing(target, player, healPercent, crit);
 
                 if(justiceMark.markProc(player, target)){
                     markHealInstead(player, healAmount);
@@ -204,7 +201,7 @@ public class MercifulHealing {
                     return;
                 }
 
-                changeResourceHandler.addHealthToEntity(target, healAmount);
+                changeResourceHandler.addHealthToEntity(target, healAmount, player);
                 unQueueMoveCast(player);
 
                 Location center = target.getLocation().clone().add(0,1,0);
@@ -244,7 +241,7 @@ public class MercifulHealing {
         List<LivingEntity> affected = justiceMark.getMarkedTargets(player);
 
         for(LivingEntity thisPlayer : affected){
-            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount);
+            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, player);
 
             Location center = thisPlayer.getLocation().clone().add(0,1,0);
 

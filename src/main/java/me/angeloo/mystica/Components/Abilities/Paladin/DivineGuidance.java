@@ -222,18 +222,10 @@ public class DivineGuidance {
         List<Player> affected = validPlayers.subList(0, Math.min(3, validPlayers.size()));
 
         for(Player thisPlayer : affected){
-            double totalTargetHealth = profileManager.getAnyProfile(thisPlayer).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(thisPlayer);
-            double yourAttack = profileManager.getAnyProfile(player).getTotalAttack();
+            double healPercent = 5;
             boolean crit = damageCalculator.checkIfCrit(player, 0);
-
-            double healAmount = totalTargetHealth * .05;
-            healAmount = healAmount * (yourAttack/3);
-
-            if(crit){
-                healAmount = healAmount * 1.5;
-            }
-
-            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount);
+            double healAmount = damageCalculator.calculateHealing(thisPlayer, player, healPercent, crit);
+            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, player);
 
             Location center = thisPlayer.getLocation().clone().add(0,1,0);
 

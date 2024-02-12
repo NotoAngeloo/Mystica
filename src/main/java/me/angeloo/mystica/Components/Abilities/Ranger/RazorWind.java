@@ -274,8 +274,10 @@ public class RazorWind {
                         }
 
                         double distanceThisTick = Math.min(distance, .6);
-                        current.add(direction.normalize().multiply(distanceThisTick));
 
+                        if(distanceThisTick!=0){
+                            current.add(direction.normalize().multiply(distanceThisTick));
+                        }
 
                         if (initialDirection == null) {
                             initialDirection = playerWasLoc.getDirection().setY(0).normalize();

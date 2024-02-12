@@ -211,6 +211,8 @@ public class GeneralEventListener implements Listener {
             }
         }
 
+        targetManager.getPlayerTarget(player);
+
         ArrayList<ItemStack> allPlayerItems = profileManager.getAnyProfile(player).getPlayerBag().getItems();
         ArrayList<ItemStack> itemsMinusTemp = new ArrayList<>();
         for(ItemStack item : allPlayerItems){
@@ -626,6 +628,38 @@ public class GeneralEventListener implements Listener {
             return;
         }
 
+        PartiesAPI api = Parties.getApi();
+        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
+
+        assert partyPlayer != null;
+        if(partyPlayer.isInParty()){
+            Party party = api.getParty(partyPlayer.getPartyId());
+
+            assert party != null;
+            Set<UUID> partyMemberList = party.getMembers();
+
+            party.getMembers().remove(partyPlayer.getPartyId());
+
+            //excludes the player
+            for(UUID memberID : partyMemberList){
+
+                //exclude dead players from this
+                Player member = Bukkit.getPlayer(memberID);
+
+                boolean partyMemberDeathStatus = profileManager.getAnyProfile(member).getIfDead();
+
+                if(partyMemberDeathStatus){
+                    continue;
+                }
+
+                boolean partyMemberCombatStatus = profileManager.getAnyProfile(member).getIfInCombat();
+
+                if(partyMemberCombatStatus){
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+        }
 
         if(event.getAction() == Action.RIGHT_CLICK_AIR
                 || event.getAction() == Action.RIGHT_CLICK_BLOCK){

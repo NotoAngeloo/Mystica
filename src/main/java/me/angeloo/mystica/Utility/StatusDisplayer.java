@@ -51,7 +51,6 @@ public class StatusDisplayer {
         statusString.append(centeringStatus).append(bigStatus).append(getClassStatus(player)).append(getBonusStatus(player));
 
 
-
         player.sendTitle(getBigClassStatus(player), String.valueOf(statusString), 0, 200, 0);
     }
 
@@ -211,6 +210,10 @@ public class StatusDisplayer {
                 statusString.append(applyRangerStatus(player));
                 break;
             }
+            case "shadow knight":{
+                statusString.append(applyShadowKnightStatus(player));
+                break;
+            }
         }
 
         return String.valueOf(statusString);
@@ -263,6 +266,45 @@ public class StatusDisplayer {
         if(cry > 0){
             statusString.append("\uE006");
         }
+
+        return String.valueOf(statusString);
+    }
+
+    private String applyShadowKnightStatus(Player player){
+        StringBuilder statusString = new StringBuilder();
+
+        int marks = abilityManager.getShadowKnightAbilities().getSoulReap().getSoulMarks(player);
+
+        switch (marks){
+            case 1:{
+                statusString.append("\uE016");
+                break;
+            }
+            case 2:{
+                statusString.append("\uE017");
+                break;
+            }
+            case 3:{
+                statusString.append("\uE018");
+                break;
+            }
+            case 4:{
+                statusString.append("\uE019");
+                break;
+            }
+            case 5:{
+                statusString.append("\uE01A");
+                break;
+            }
+        }
+
+        return String.valueOf(statusString);
+    }
+
+    private String getDebuffClassStatus(Player player){
+        StringBuilder statusString = new StringBuilder();
+
+        //put infections + pierce here, also on centering status, subtract the number of chars here
 
         return String.valueOf(statusString);
     }

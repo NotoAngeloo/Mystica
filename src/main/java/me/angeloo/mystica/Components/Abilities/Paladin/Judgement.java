@@ -202,14 +202,9 @@ public class Judgement {
 
                     if(!pvpManager.pvpLogic(player, (Player) target)){
 
-                        double healAmount = (profileManager.getAnyProfile(target).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(target)) * .05;
-                        healAmount = healAmount + profileManager.getAnyProfile(player).getTotalAttack() * .1;
-
-                        if(crit){
-                            healAmount = healAmount*1.5;
-                        }
-
-                        changeResourceHandler.addHealthToEntity(target, healAmount);
+                        double healAmountPercent = 5;
+                        double healAmount = damageCalculator.calculateHealing(target, player, healAmountPercent, crit);
+                        changeResourceHandler.addHealthToEntity(target, healAmount, player);
                         return;
                     }
 

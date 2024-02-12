@@ -92,7 +92,9 @@ public class Enlightenment {
     private void execute(Player player){
         //crit heal resets puri blast
 
+        double healPercent = 10;
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+        healPercent = healPercent + ((int)(skillLevel/10));
 
         Location center = player.getLocation();
 
@@ -121,19 +123,15 @@ public class Enlightenment {
                 continue;
             }
 
-            double totalTargetHealth = profileManager.getAnyProfile(healedPlayer).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(healedPlayer);
-            double yourMagic = profileManager.getAnyProfile(player).getTotalMagic();
             boolean crit = damageCalculator.checkIfCrit(player, 0);
 
-            double healAmount = (totalTargetHealth + skillLevel) * .1;
-            healAmount = healAmount * (yourMagic/4);
+            double healAmount  = damageCalculator.calculateHealing(healedPlayer, player, healPercent, crit);
 
             if(crit){
-                healAmount = healAmount * 1.5;
                 purifyingBlast.resetCooldown(player);
             }
 
-            changeResourceHandler.addHealthToEntity(healedPlayer, healAmount);
+            changeResourceHandler.addHealthToEntity(healedPlayer, healAmount, player);
             buffAndDebuffManager.getDamageReduction().applyDamageReduction(healedPlayer, .9, 20*10);
 
             double increment = (2 * Math.PI) / 16; // angle between particles

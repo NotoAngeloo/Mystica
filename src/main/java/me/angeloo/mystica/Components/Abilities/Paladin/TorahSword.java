@@ -221,7 +221,10 @@ public class TorahSword {
                 Vector direction1 = end.toVector().subtract(current1.toVector());
                 double distance1 = current1.distance(end);
                 double distanceThisTick1 = Math.min(distance1, 1);
-                current1.add(direction1.normalize().multiply(distanceThisTick1));
+
+                if(distanceThisTick1!=0){
+                    current1.add(direction1.normalize().multiply(distanceThisTick1));
+                }
 
                 if(distance1 > 1){
                     sword1.teleport(current1);
@@ -232,7 +235,10 @@ public class TorahSword {
                 Vector direction2 = end.toVector().subtract(current2.toVector());
                 double distance2 = current2.distance(end);
                 double distanceThisTick2 = Math.min(distance2, 1);
-                current2.add(direction2.normalize().multiply(distanceThisTick2));
+
+                if(distanceThisTick2!=0){
+                    current2.add(direction2.normalize().multiply(distanceThisTick2));
+                }
 
                 if(distance2 > 1 && count>=3){
                     sword2.teleport(current2);
@@ -243,7 +249,10 @@ public class TorahSword {
                 Vector direction3 = end.toVector().subtract(current3.toVector());
                 double distance3 = current3.distance(end);
                 double distanceThisTick3 = Math.min(distance3, 1);
-                current3.add(direction3.normalize().multiply(distanceThisTick3));
+
+                if(distanceThisTick3!=0){
+                    current3.add(direction3.normalize().multiply(distanceThisTick3));
+                }
 
                 if(distance3 > 1 && count>=5){
                     sword3.teleport(current3);

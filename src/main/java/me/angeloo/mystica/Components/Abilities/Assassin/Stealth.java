@@ -140,7 +140,7 @@ public class Stealth {
                     return;
                 }
 
-                if(count>=30){
+                if(count>=10){
                     this.cancel();
                     forceReveal(player, null);
                 }

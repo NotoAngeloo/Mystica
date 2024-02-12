@@ -90,31 +90,38 @@ public class BuffAndDebuffManager {
     public ConcoctionDebuff getConcoctionDebuff(){return concoctionDebuff;}
     public Pulled getPulled(){return pulled;}
 
-    public void removeAllBuffsAndDebuffs(Player player){
-        flamingSigilBuff.removeAttackBuff(player);
-        flamingSigilBuff.removeHealthBuff(player);
-        burningBlessingBuff.removeHealthBuff(player);
-        immune.removeImmune(player);
-        hidden.unhidePlayer(player);
-        immobile.removeImmobile(player);
-        sleep.forceWakeUp(player);
-        stun.removeStun(player);
-        speedUp.removeSpeedUp(player);
-        genericShield.removeShields(player);
-        windWallBuff.removeWindwall(player);
-        conjuringForceBuff.removeConjuringForceBuff(player);
-        shadowCrowsDebuff.removeCrowsDebuff(player);
-        wildRoarBuff.removeBuff(player);
-        haste.removeHaste(player);
-        damageReduction.removeReduction(player);
-        silence.removeSilence(player);
-        wellCrit.removeBonus(player);
-        modest.removeModest(player);
-        knockUp.removeKnockUp(player);
-        pierceBuff.removeBuff(player);
-        bladeTempestCrit.removeBonus(player);
-        concoctionDebuff.removeDebuff(player);
-        pulled.removePull(player);
+    public void removeAllBuffsAndDebuffs(LivingEntity entity){
+        flamingSigilBuff.removeAttackBuff(entity);
+        flamingSigilBuff.removeHealthBuff(entity);
+        burningBlessingBuff.removeHealthBuff(entity);
+        immune.removeImmune(entity);
+        immobile.removeImmobile(entity);
+        sleep.forceWakeUp(entity);
+        stun.removeStun(entity);
+        genericShield.removeShields(entity);
+        windWallBuff.removeWindwall(entity);
+        shadowCrowsDebuff.removeCrowsDebuff(entity);
+        wildRoarBuff.removeBuff(entity);
+        haste.removeHaste(entity);
+        damageReduction.removeReduction(entity);
+        silence.removeSilence(entity);
+        wellCrit.removeBonus(entity);
+        modest.removeModest(entity);
+        knockUp.removeKnockUp(entity);
+        pierceBuff.removeBuff(entity);
+        bladeTempestCrit.removeBonus(entity);
+        concoctionDebuff.removeDebuff(entity);
+        pulled.removePull(entity);
+
+        if(entity instanceof Player){
+            Player player = (Player) entity;
+
+            hidden.unhidePlayer(player);
+            speedUp.removeSpeedUp(player);
+            conjuringForceBuff.removeConjuringForceBuff(player);
+        }
+
+
     }
 
     //attacker, defender

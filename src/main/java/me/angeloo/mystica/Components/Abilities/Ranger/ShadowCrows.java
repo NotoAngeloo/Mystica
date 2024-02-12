@@ -171,6 +171,7 @@ public class ShadowCrows {
                 if(!player.isOnline()){
                     this.cancel();
                     armorStand.remove();
+                    return;
                 }
 
                 if(!targetStillValid(target)){
@@ -187,7 +188,11 @@ public class ShadowCrows {
 
                 double distance = current.distance(targetLoc);
                 double distanceThisTick = Math.min(distance, 2);
-                current.add(direction.normalize().multiply(distanceThisTick));
+
+                if(distanceThisTick!=0){
+                    current.add(direction.normalize().multiply(distanceThisTick));
+                }
+
                 armorStand.teleport(current);
 
                 if (distance <= 3) {
@@ -213,6 +218,10 @@ public class ShadowCrows {
                         return false;
                     }
 
+                }
+
+                if(profileManager.getIfResetProcessing(target)){
+                    return false;
                 }
 
                 return !target.isDead();

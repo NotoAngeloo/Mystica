@@ -257,9 +257,11 @@ public class LightWell {
 
                         Vector direction = end.toVector().subtract(orbCurrent.toVector());
 
-                        orbCurrent.add(direction.normalize().multiply(distanceThisTick));
+                        if(distanceThisTick!=0){
+                            orbCurrent.add(direction.normalize().multiply(distanceThisTick));
+                            traveled = traveled + distanceThisTick;
+                        }
 
-                        traveled = traveled + distanceThisTick;
 
                         if(traveled<half){
                             orbCurrent.add(0,distanceThisTick*2,0);

@@ -56,7 +56,7 @@ public class Dash {
 
         execute(player);
 
-        abilityReadyInMap.put(player.getUniqueId(), 13);
+        abilityReadyInMap.put(player.getUniqueId(), 33);
         new BukkitRunnable(){
             @Override
             public void run(){

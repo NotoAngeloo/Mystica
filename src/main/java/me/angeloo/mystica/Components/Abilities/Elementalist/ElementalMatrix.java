@@ -171,13 +171,13 @@ public class ElementalMatrix {
 
                 double maxHp = profileManager.getAnyProfile(partyMember).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(partyMember);
 
-                changeResourceHandler.addHealthToEntity(partyMember, maxHp * .05);
+                changeResourceHandler.addHealthToEntity(partyMember, maxHp * .05, player);
 
             }
         }
 
         double maxHp = profileManager.getAnyProfile(player).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player);
-        changeResourceHandler.addHealthToEntity(player, maxHp * .05);
+        changeResourceHandler.addHealthToEntity(player, maxHp * .05, player);
 
         double maxMp = profileManager.getAnyProfile(player).getTotalMana();
         changeResourceHandler.addManaToPlayer(player, maxMp * .05);
@@ -339,6 +339,10 @@ public class ElementalMatrix {
                         return false;
                     }
 
+                }
+
+                if(profileManager.getIfResetProcessing(target)){
+                    return false;
                 }
 
                 return !target.isDead();

@@ -143,7 +143,7 @@ public class ShadowOfDarkness {
         Location spawnLoc = target.getLocation().clone().add(spawnDirection.clone().normalize().multiply(10));
         spawnLoc.add(0,10,0);
 
-        ArmorStand armorStand = spawnLoc.getWorld().spawn(spawnLoc, ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(spawnLoc, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);

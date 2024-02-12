@@ -187,7 +187,7 @@ public class Assault {
                 double distance = current.distance(targetLoc);
                 double distanceThisTick = Math.min(distance, .5);
 
-                if(distance>1){
+                if(distanceThisTick>1){
                     current.add(direction.normalize().multiply(distanceThisTick));
                 }
 
@@ -224,6 +224,7 @@ public class Assault {
                         return false;
                     }
                 }
+
                 return !target.isDead();
             }
 

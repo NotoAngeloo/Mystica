@@ -297,8 +297,6 @@ public class MysticBasic {
 
     private void executeBasic(Player player){
 
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
-
         LivingEntity target;
 
         boolean healing = false;
@@ -362,7 +360,7 @@ public class MysticBasic {
         if(!healing){
             Location start = player.getLocation();
             start.subtract(0, 1, 0);
-            ArmorStand armorStand = start.getWorld().spawn(start, ArmorStand.class);
+            ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
             armorStand.setInvisible(true);
             armorStand.setGravity(false);
             armorStand.setCollidable(false);
@@ -450,20 +448,12 @@ public class MysticBasic {
         }
         else{
 
-            double totalTargetHealth = profileManager.getAnyProfile(target).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(target);
+
+            double healPercent = 1;
             boolean crit = damageCalculator.checkIfCrit(player, 0);
-            double healAmount = totalTargetHealth * .05;
+            double healAmount  = damageCalculator.calculateHealing(target, player, healPercent, crit);
 
-
-            if(subclass.equalsIgnoreCase("shepard")){
-                healAmount = healAmount * 1.2;
-            }
-
-            if(crit){
-                healAmount = healAmount * 1.5;
-            }
-
-            changeResourceHandler.addHealthToEntity(target, healAmount);
+            changeResourceHandler.addHealthToEntity(target, healAmount, player);
 
             Location center = target.getLocation().clone().add(0,1,0);
 

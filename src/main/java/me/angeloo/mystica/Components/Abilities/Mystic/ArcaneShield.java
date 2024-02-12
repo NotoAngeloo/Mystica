@@ -167,7 +167,7 @@ public class ArcaneShield {
                         return;
                     }
 
-                    changeResourceHandler.addHealthToEntity(target, thirtyPercent);
+                    changeResourceHandler.addHealthToEntity(target, thirtyPercent, player);
 
                     Location center = target.getLocation().clone().add(0,1,0);
 

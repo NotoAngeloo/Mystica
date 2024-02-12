@@ -233,8 +233,11 @@ public class DescendingInferno {
                     Vector directionLeft = targetWasLoc.toVector().subtract(currentLeft.toVector());
                     double distanceLeft = currentLeft.distance(targetWasLoc);
                     double distanceThisTickLeft = Math.min(distanceLeft, 1);
-                    currentLeft.add(directionLeft.normalize().multiply(distanceThisTickLeft));
-                    traveledLeft = traveledLeft + distanceThisTickLeft;
+
+                    if(distanceThisTickLeft!=0){
+                        currentLeft.add(directionLeft.normalize().multiply(distanceThisTickLeft));
+                        traveledLeft = traveledLeft + distanceThisTickLeft;
+                    }
 
                     if(traveledLeft < halfDistance){
                         currentLeft.subtract(directionLeft.clone().crossProduct(new Vector(0,1,0).normalize().multiply(distanceThisTickLeft)));
@@ -265,8 +268,12 @@ public class DescendingInferno {
                     Vector directionRight = targetWasLoc.toVector().subtract(currentRight.toVector());
                     double distanceRight = currentRight.distance(targetWasLoc);
                     double distanceThisTickRight = Math.min(distanceRight, 1);
-                    currentRight.add(directionRight.normalize().multiply(distanceThisTickRight));
-                    traveledRight = traveledRight + distanceThisTickRight;
+
+                    if(distanceThisTickRight!=0){
+                        currentRight.add(directionRight.normalize().multiply(distanceThisTickRight));
+                        traveledRight = traveledRight + distanceThisTickRight;
+
+                    }
 
                     if(traveledRight < halfDistance){
                         currentRight.add(directionRight.clone().crossProduct(new Vector(0,1,0).normalize().multiply(distanceThisTickRight)));
@@ -297,7 +304,11 @@ public class DescendingInferno {
                     Vector direction = targetWasLoc.toVector().subtract(currentMiddle.toVector());
                     double distance = currentMiddle.distance(targetWasLoc);
                     double distanceThisTick = Math.min(distance, .75);
-                    currentMiddle.add(direction.normalize().multiply(distanceThisTick));
+
+                    if(distanceThisTick!=0){
+                        currentMiddle.add(direction.normalize().multiply(distanceThisTick));
+                    }
+
                     armorStandMiddle.teleport(currentMiddle);
                     player.getWorld().spawnParticle(Particle.FLAME, currentMiddle.clone().add(0,1,0), 1, 0, 0, 0, 0);
 

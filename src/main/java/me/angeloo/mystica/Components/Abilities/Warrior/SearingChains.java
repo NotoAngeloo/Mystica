@@ -170,6 +170,7 @@ public class SearingChains {
             int count = 0;
             boolean hooked = false;
             boolean going = true;
+            final List<ArmorStand> all = new ArrayList<>();
             final List<ArmorStand> middle = new ArrayList<>();
             final List<ArmorStand> left = new ArrayList<>();
             final List<ArmorStand> right = new ArrayList<>();
@@ -208,6 +209,7 @@ public class SearingChains {
                         currentRight.setDirection(directionRight);
 
                         ArmorStand armorStand = player.getWorld().spawn(current.clone().subtract(0,5,0), ArmorStand.class);
+                        all.add(armorStand);
                         armorStand.setInvisible(true);
                         armorStand.setGravity(false);
                         armorStand.setCollidable(false);
@@ -220,6 +222,7 @@ public class SearingChains {
                         armorStand.teleport(current);
 
                         ArmorStand armorStand2 = player.getWorld().spawn(currentLeft.clone().subtract(0,5,0), ArmorStand.class);
+                        all.add(armorStand2);
                         armorStand2.setInvisible(true);
                         armorStand2.setGravity(false);
                         armorStand2.setCollidable(false);
@@ -232,6 +235,7 @@ public class SearingChains {
                         armorStand2.teleport(currentLeft);
 
                         ArmorStand armorStand3 = player.getWorld().spawn(currentRight.clone().subtract(0,5,0), ArmorStand.class);
+                        all.add(armorStand3);
                         armorStand3.setInvisible(true);
                         armorStand3.setGravity(false);
                         armorStand3.setCollidable(false);
@@ -331,7 +335,6 @@ public class SearingChains {
                                     validCCTargets.add(livingEntity);
                                     buffAndDebuffManager.getPulled().applyPull(livingEntity);
                                     targetManager.setPlayerTarget((Player) entity, player);
-                                    return;
                                 }
                                 continue;
                             }
@@ -428,18 +431,24 @@ public class SearingChains {
                         }
 
                         if(targetStillValid(entity)){
-
                             entity.teleport(entity.getLocation().add(direction.normalize().multiply(distanceThisTick)));
                         }
 
 
                     }
 
-                    if(count>=75){
+                    if(count>=60){
                         this.cancel();
+                        removeStands();
                     }
 
                     count++;
+                }
+            }
+
+            private void removeStands(){
+                for(ArmorStand stand : all){
+                    stand.remove();
                 }
             }
 

@@ -19,18 +19,18 @@ public class ClearStands implements CommandExecutor {
         }
 
 
-        World world = Bukkit.getWorld("world");
+        for(World world : Bukkit.getServer().getWorlds()){
+            for (LivingEntity entity : world.getLivingEntities()) {
 
-        assert world != null;
-        for (LivingEntity entity : world.getLivingEntities()) {
+                if(!(entity instanceof ArmorStand)){
+                    continue;
+                }
 
-            if(!(entity instanceof ArmorStand)){
-                continue;
+
+                entity.remove();
             }
-
-
-            entity.remove();
         }
+
 
         return true;
     }

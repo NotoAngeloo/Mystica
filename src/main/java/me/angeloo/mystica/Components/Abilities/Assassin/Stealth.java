@@ -33,6 +33,7 @@ public class Stealth {
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
     private final Map<UUID, Boolean> stealthed = new HashMap<>();
+    private final Map<UUID, Integer> timeInStealth = new HashMap<>();
 
     public Stealth(Mystica main, AbilityManager manager){
         this.main = main;
@@ -135,17 +136,24 @@ public class Stealth {
             @Override
             public void run(){
 
+                cooldownDisplayer.displayCooldown(player, 8);
+
                 if(!getIfStealthed(player)){
                     this.cancel();
+                    timeInStealth.remove(player.getUniqueId());
                     return;
                 }
 
                 if(count>=10){
                     this.cancel();
                     forceReveal(player, null);
+                    timeInStealth.remove(player.getUniqueId());
+                    return;
                 }
 
                 count++;
+
+                timeInStealth.put(player.getUniqueId(), count);
             }
         }.runTaskTimer(main, 0, 20);
 
@@ -215,6 +223,13 @@ public class Stealth {
     }
 
     public int getCooldown(Player player){
+
+        if(getIfStealthed(player)){
+            int time = timeInStealth.getOrDefault(player.getUniqueId(), 0);
+            return 10 - time;
+        }
+
+
         int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
 
         if(cooldown < 0){

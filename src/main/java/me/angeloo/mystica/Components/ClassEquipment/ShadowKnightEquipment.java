@@ -102,6 +102,7 @@ public class ShadowKnightEquipment {
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
+        meta.setUnbreakable(true);
 
         List<String> lores = new ArrayList<>();
 

@@ -13,6 +13,7 @@ import me.angeloo.mystica.Utility.GearReader;
 import me.angeloo.mystica.Utility.ProfileFileWriter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -21,6 +22,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -209,11 +212,14 @@ public class ProfileManager {
 
                     int bossLevel = config.getInt(id + ".boss_level");
 
+                    boolean tutorial = config.getBoolean(id + ".milestones.tutorial");
+
+                    Milestones milestones = new Milestones(tutorial);
+
                     PlayerBossLevel playerBossLevel = new PlayerBossLevel(bossLevel);
                     PlayerProfile profile = new PlayerProfile(false, false, hp, mana,
                             stats,
                             gearStats,
-                            points,
                             playerClass,
                             playerSubclass,
                             savedInv,
@@ -221,7 +227,9 @@ public class ProfileManager {
                             playerEquipment,
                             skillLevel,
                             equipSkills,
-                            playerBossLevel) {
+                            playerBossLevel,
+                            milestones,
+                            points) {
 
                         @Override
                         public Bal getBal() {
@@ -314,8 +322,6 @@ public class ProfileManager {
         Stats stats = new Stats(1,50,50,100,100,1,1,50,50, 1);
         StatsFromGear gearStats = new StatsFromGear( 0, 0,0,0,0,0,0,0,0);
 
-        Bal bal = new Bal(0);
-
         int currentHealth = 20;
         int currentMana = 20;
 
@@ -329,10 +335,13 @@ public class ProfileManager {
 
         PlayerBossLevel playerBossLevel = new PlayerBossLevel(1);
 
+        Milestones milestones = new Milestones(false);
+
+        Bal bal = new Bal(0);
+
         PlayerProfile profile = new PlayerProfile(false, false, currentHealth, currentMana,
                 stats,
                 gearStats,
-                bal,
                 "None",
                 "None",
                 new ItemStack[41],
@@ -340,13 +349,10 @@ public class ProfileManager {
                 playerEquipment,
                 skillLevel,
                 equipSkills,
-                playerBossLevel) {
+                playerBossLevel,
+                milestones,
+                bal) {
 
-
-            @Override
-            public Bal getBal() {
-                return null;
-            }
 
             @Override
             public Boolean getIsPassive() {
@@ -402,6 +408,15 @@ public class ProfileManager {
         newPlayer.getInventory().clear();
         newPlayer.sendMessage("You are playing a pre-release\nYour items and progress are subjected to being removed");
 
+        //interactions stuff
+        PluginManager pluginManager = Bukkit.getPluginManager();
+        Plugin interactions =  pluginManager.getPlugin("interactions");
+        if (interactions != null && interactions.isEnabled()) {
+            Server server = Bukkit.getServer();
+
+            server.dispatchCommand(server.getConsoleSender(), "interactions resetplayer " + newPlayer.getName() + " newPlayer");
+        }
+
     }
 
     public void removePlayerProfile(Player player){
@@ -410,8 +425,14 @@ public class ProfileManager {
             player.kickPlayer("profile being removed");
         }
 
-        playerProfiles.remove(player.getUniqueId());
-        playerNameMap.remove(player.getName());
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                playerProfiles.remove(player.getUniqueId());
+                playerNameMap.remove(player.getName());
+            }
+        }.runTaskLater(main, 20);
+
     }
 
     public void createNewDefaultNonPlayerProfile(UUID uuid){
@@ -573,6 +594,11 @@ public class ProfileManager {
 
             @Override
             public EquipSkills getEquipSkills() {
+                return null;
+            }
+
+            @Override
+            public Milestones getMilestones() {
                 return null;
             }
 

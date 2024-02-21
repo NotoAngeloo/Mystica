@@ -105,6 +105,7 @@ public final class Mystica extends JavaPlugin {
         getCommand("ManualSave").setExecutor(new ManualSave(this));
         getCommand("DeleteProfile").setExecutor(new DeleteProfile(this));
         getCommand("ClearStands").setExecutor(new ClearStands());
+        getCommand("SetMileStone").setExecutor(new SetMilestone(this));
 
         this.getServer().getPluginManager().registerEvents(new InventoryEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new GeneralEventListener(this), this);
@@ -127,6 +128,8 @@ public final class Mystica extends JavaPlugin {
         double size = 1775;
         border.setSize(size);
 
+        CreaturesAndCharactersManager creaturesAndCharactersManager = new CreaturesAndCharactersManager(this);
+        creaturesAndCharactersManager.spawnAllNpcs();
     }
 
     @Override

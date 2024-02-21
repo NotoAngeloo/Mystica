@@ -81,6 +81,10 @@ public class ChangeResourceHandler {
             }
         }
 
+        if(profileManager.getAnyProfile(entity).getImmortality()){
+            return;
+        }
+
         double trueHearts = entity.getHealth();
         Stats stats = profileManager.getAnyProfile(entity).getStats();
 

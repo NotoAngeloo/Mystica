@@ -12,11 +12,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class DeleteProfile implements CommandExecutor {
 
-    private final Mystica main;
     private final ProfileManager profileManager;
 
     public DeleteProfile(Mystica main){
-        this.main = main;
         profileManager = main.getProfileManager();
     }
 
@@ -41,13 +39,7 @@ public class DeleteProfile implements CommandExecutor {
             return true;
         }
 
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-                profileManager.removePlayerProfile(player);
-            }
-        }.runTaskLater(main, 20);
-
+        profileManager.removePlayerProfile(player);
 
         return true;
     }

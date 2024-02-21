@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.Inventories.ClassSelectInventory;
 import me.angeloo.mystica.Managers.InventoryIndexingManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,12 +15,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class ClassSelect implements CommandExecutor {
 
-    private final ProfileManager profileManager;
     private final ClassSelectInventory classSelectInventory;
     private final InventoryIndexingManager inventoryIndexingManager;
 
     public ClassSelect(Mystica main){
-        profileManager = main.getProfileManager();
         classSelectInventory = new ClassSelectInventory();
         inventoryIndexingManager = main.getInventoryIndexingManager();
     }
@@ -27,16 +26,41 @@ public class ClassSelect implements CommandExecutor {
     //figure out how to check player status before doing so, dont want them opening a dungeon
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
 
-        if(!(sender instanceof Player)){
-            sender.sendMessage("only players");
-            return true;
+        Player player = null;
+
+        if(args.length==0){
+            if(!(sender instanceof Player)){
+                sender.sendMessage("only players");
+                return true;
+            }
+
+            if(!sender.isOp()){
+                return true;
+            }
+
+            player = (Player) sender;
         }
 
-        Player player = (Player) sender;
+        if(args.length==1){
+            if(!sender.isOp()){
+                return true;
+            }
 
-        player.openInventory(classSelectInventory.openClassSelect(inventoryIndexingManager.getClassIndex(player)));
+            try{
+                player = Bukkit.getPlayer(args[0]);
+            }
+            catch (IllegalArgumentException e){
+                return true;
+            }
+
+        }
+
+        if(player != null){
+            player.openInventory(classSelectInventory.openClassSelect(inventoryIndexingManager.getClassIndex(player)));
+        }
+
 
         return true;
     }

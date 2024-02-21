@@ -4,6 +4,9 @@ main: me.angeloo.mystica.Mystica
 depend:
   - Parties
   - ProtocolLib
+softdepend:
+  - MythicMobs
+  - Interactions
 api-version: '1.19'
 commands:
   Trash:
@@ -17,7 +20,8 @@ commands:
     usage: /Equipment
   ClassSelect:
     description: opens class select
-    usage: /ClassSelect
+    usage: /ClassSelect <player>
+    permission: developer
   SeeRawDamage:
     description: allows for better testing of seeing damage
     usage: /SeeRawDamage
@@ -51,6 +55,10 @@ commands:
   ToggleGlobalPvp:
     description: toggles global pvp
     usage: /ToggleGlobalPvp
+    permission: developer
+  SetMilestone:
+    description: lets the game set milestones for players
+    usage: /SetMilestone <Player> <Milestone> <true/false>
     permission: developer
   Reforge:
     description: allows testing of reforge mechanic

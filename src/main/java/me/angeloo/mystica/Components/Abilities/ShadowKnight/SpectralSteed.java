@@ -253,6 +253,11 @@ public class SpectralSteed {
             public EquipSkills getEquipSkills() {
                 return null;
             }
+
+            @Override
+            public Milestones getMilestones() {
+                return null;
+            }
         };
         profileManager.addToNonPlayerProfiles(horse.getUniqueId(), nonPlayerProfile);
 

@@ -23,6 +23,7 @@ public interface Profile {
     void setStats(Stats stats);
     void setGearStats(StatsFromGear statsFromGear);
 
+
     int getTotalHealth();
     int getTotalMana();
     int getTotalAttack();
@@ -47,6 +48,8 @@ public interface Profile {
 
     PlayerBossLevel getPlayerBossLevel();
 
+
+
     Skill_Level getSkillLevels();
     EquipSkills getEquipSkills();
 
@@ -59,5 +62,5 @@ public interface Profile {
     Yield getYield();
 
 
-
+    Milestones getMilestones();
 }

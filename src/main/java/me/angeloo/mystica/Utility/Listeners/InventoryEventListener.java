@@ -230,6 +230,10 @@ public class InventoryEventListener implements Listener {
             return;
         }
 
+        if(!profileManager.getAnyProfile(player).getMilestones().getTutorial()){
+            return;
+        }
+
         ItemStack item = event.getCurrentItem();
 
         if(item == null){

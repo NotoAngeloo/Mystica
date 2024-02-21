@@ -101,7 +101,7 @@ public class TheLindwyrm {
         float xpYield = .01f;
 
         Yield yield = new Yield(xpYield, dropItems(level));
-        NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(hp, stats, isMovable, mortal, object, passive, yield) {
+        NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(hp, stats, isMovable, mortal, passive, object, yield) {
 
             @Override
             public Bal getBal() {
@@ -255,6 +255,11 @@ public class TheLindwyrm {
 
             @Override
             public EquipSkills getEquipSkills() {
+                return null;
+            }
+
+            @Override
+            public Milestones getMilestones() {
                 return null;
             }
         };

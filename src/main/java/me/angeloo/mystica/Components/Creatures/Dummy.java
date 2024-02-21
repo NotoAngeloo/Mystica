@@ -7,41 +7,24 @@ import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
-public class BetaTester {
+public class Dummy {
 
     private final ProfileManager profileManager;
 
-    public BetaTester(Mystica main){
+    public Dummy(Mystica main){
         profileManager = main.getProfileManager();
     }
 
     public void makeProfile(UUID uuid){
-
-        int level = 1;
-        int at = 60;
-        int mag = 50;
-        int hp = 257;
-        int mana = 0;
-        int regen = 0;
-        int manaregen = 0;
-        int def = 60;
-        int mdef = 60;
-        int crit = 0;
-
-        Stats stats = new Stats(level, at, mag, hp, mana, regen, manaregen, def, mdef, crit);
-        Boolean isMovable = true;
-        Boolean immmortal = false;
+        Stats stats = new Stats(1,1,1,1,1,10,1,1,1,0);
+        Boolean isMovable = false;
+        Boolean immortal = true;
         Boolean object = false;
         Boolean passive = false;
-
-        float xpYield = 0f;
-
-        Yield yield = new Yield(xpYield, new ArrayList<>());
-
-        NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(hp, stats, isMovable, immmortal, passive, object, yield) {
+        Yield yield = new Yield(0.0f, null);
+        NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(10, stats, isMovable, immortal, passive, object, yield) {
 
             @Override
             public Bal getBal() {
@@ -50,12 +33,12 @@ public class BetaTester {
 
             @Override
             public Boolean getIfDead() {
-                return false;
+                return null;
             }
 
             @Override
             public Boolean getIfInCombat() {
-                return false;
+                return null;
             }
 
             @Override
@@ -88,6 +71,7 @@ public class BetaTester {
                 return null;
             }
 
+
             @Override
             public void setGearStats(StatsFromGear statsFromGear) {
 
@@ -95,47 +79,47 @@ public class BetaTester {
 
             @Override
             public int getTotalHealth() {
-                return getStats().getHealth();
+                return 0;
             }
 
             @Override
             public int getTotalMana() {
-                return getStats().getMana();
+                return 0;
             }
 
             @Override
             public int getTotalAttack() {
-                return getStats().getAttack();
+                return 0;
             }
 
             @Override
             public int getTotalMagic() {
-                return getStats().getMagic();
+                return 0;
             }
 
             @Override
             public int getTotalDefense() {
-                return getStats().getDefense();
+                return 0;
             }
 
             @Override
             public int getTotalMagicDefense() {
-                return getStats().getMagic_Defense();
+                return 0;
             }
 
             @Override
             public int getTotalRegen() {
-                return getStats().getRegen();
+                return 0;
             }
 
             @Override
             public int getTotalManaRegen() {
-                return getStats().getMana_Regen();
+                return 0;
             }
 
             @Override
             public int getTotalCrit() {
-                return getStats().getCrit();
+                return 0;
             }
 
             @Override
@@ -204,7 +188,6 @@ public class BetaTester {
             }
         };
         profileManager.addToNonPlayerProfiles(uuid, nonPlayerProfile);
-
     }
 
 }

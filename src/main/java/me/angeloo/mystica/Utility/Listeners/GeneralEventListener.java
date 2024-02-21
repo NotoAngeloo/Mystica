@@ -873,7 +873,7 @@ public class GeneralEventListener implements Listener {
                 }
 
                 long currentTime = System.currentTimeMillis() / 1000;
-                if(currentTime - damageSoundCooldown.get(defender.getUniqueId()) > 1){
+                if(currentTime - damageSoundCooldown.get(defender.getUniqueId()) > 0.5){
                     ((Player) defender).playSound(defender, Sound.ENTITY_PLAYER_HURT, 1, 1);
                     damageSoundCooldown.put(defender.getUniqueId(), (System.currentTimeMillis() / 1000));
                 }

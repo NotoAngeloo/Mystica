@@ -74,6 +74,7 @@ public class GeneralEventListener implements Listener {
     private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
     private final GearReader gearReader;
     private final BagInventory bagInventory;
+    private final ClassSetter classSetter;
 
     private final DamageCalculator damageCalculator;
     private final ChangeResourceHandler changeResourceHandler;
@@ -107,6 +108,7 @@ public class GeneralEventListener implements Listener {
         changeResourceHandler = main.getChangeResourceHandler();
         bagInventory = main.getBagInventory();
         gearReader = new GearReader(main);
+        classSetter = new ClassSetter(main);
     }
 
     @EventHandler
@@ -1343,6 +1345,24 @@ public class GeneralEventListener implements Listener {
     public void StatusChange(StatusUpdateEvent event){
         Player player = event.getPlayer();
         statusDisplayer.displayStatus(player);
+    }
+
+    @EventHandler
+    public void LeaveTutorial(PlayerChangedWorldEvent event){
+
+        World world = event.getFrom();
+
+        if(!world.getName().startsWith("tutorial_")){
+            return;
+        }
+
+        Player player = event.getPlayer();
+
+        if(profileManager.getAnyProfile(player).getMilestones().getTutorial()){
+            return;
+        }
+
+        classSetter.setClass(player, "none");
     }
 
 

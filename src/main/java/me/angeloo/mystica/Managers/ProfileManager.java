@@ -121,6 +121,8 @@ public class ProfileManager {
 
             config.set(id + ".boss_level", playerBossLevel.getBossLevel());
 
+            config.set(id + ".milestones.tutorial", profile.getMilestones().getTutorial());
+
             profileFileWriter.saveProfileFile(uuid, config);
         }
     }

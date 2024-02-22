@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -56,7 +57,8 @@ public class GearReader {
         String regex = ".*?((?i:" + String.join("|", valid) + ")\\s*\\+\\s*(\\d+)).*";
         Pattern pattern = Pattern.compile(regex);
 
-        if(weapon!=null){
+        if(weapon!=null && !weapon.getType().equals(Material.AIR)){
+            
             ItemMeta meta = weapon.getItemMeta();
             assert meta != null;
             List<String> lores = meta.getLore();
@@ -149,7 +151,7 @@ public class GearReader {
             }
         }
 
-        if(offHand!=null){
+        if(offHand!=null && !offHand.getType().equals(Material.AIR)){
             ItemMeta meta = offHand.getItemMeta();
             assert meta != null;
             List<String> lores = meta.getLore();
@@ -236,7 +238,7 @@ public class GearReader {
             }
         }
 
-        if(helmet!=null){
+        if(helmet!=null && !helmet.getType().equals(Material.AIR)){
             ItemMeta meta = helmet.getItemMeta();
             assert meta != null;
             List<String> lores = meta.getLore();
@@ -323,7 +325,7 @@ public class GearReader {
             }
         }
 
-        if(chestPlate!=null){
+        if(chestPlate!=null && !chestPlate.getType().equals(Material.AIR)){
             ItemMeta meta = chestPlate.getItemMeta();
             assert meta != null;
             List<String> lores = meta.getLore();
@@ -410,7 +412,7 @@ public class GearReader {
             }
         }
 
-        if(leggings!=null){
+        if(leggings!=null && !leggings.getType().equals(Material.AIR)){
             ItemMeta meta = leggings.getItemMeta();
             assert meta != null;
             List<String> lores = meta.getLore();
@@ -497,7 +499,7 @@ public class GearReader {
             }
         }
 
-        if(boots!=null){
+        if(boots!=null && !boots.getType().equals(Material.AIR)){
             ItemMeta meta = boots.getItemMeta();
             assert meta != null;
             List<String> lores = meta.getLore();

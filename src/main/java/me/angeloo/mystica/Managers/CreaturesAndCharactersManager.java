@@ -62,9 +62,7 @@ public class CreaturesAndCharactersManager {
                 dummy.makeProfile(uuid);
                 break;
             }
-            case "Trenton Vocation":
-            case "Class Select":{
-                //Bukkit.getLogger().info("making");
+            case "Trenton Vocation": {
                 makeDefaultNonCombatantProfile(uuid);
                 break;
             }

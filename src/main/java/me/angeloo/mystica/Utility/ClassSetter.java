@@ -4,7 +4,9 @@ import me.angeloo.mystica.Components.ClassEquipment.*;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class ClassSetter {
 
@@ -100,6 +102,20 @@ public class ClassSetter {
                 playerProfile.getPlayerEquipment().setLeggings(assassinEquipment.getBaseLeggings());
                 playerProfile.getPlayerEquipment().setBoots(assassinEquipment.getBaseBoots());
                 break;
+            }
+            case "none":{
+                playerProfile.getPlayerEquipment().setWeapon(new ItemStack(Material.AIR));
+                playerProfile.getPlayerEquipment().setOffhand(new ItemStack(Material.AIR));
+                playerProfile.getPlayerEquipment().setHelmet(new ItemStack(Material.AIR));
+                playerProfile.getPlayerEquipment().setChestPlate(new ItemStack(Material.AIR));
+                playerProfile.getPlayerEquipment().setLeggings(new ItemStack(Material.AIR));
+                playerProfile.getPlayerEquipment().setBoots(new ItemStack(Material.AIR));
+                playerProfile.setPlayerClass(clazz);
+                profileManager.getAnyProfile(player).getStats().setLevelStats(profileManager.getAnyProfile(player).getStats().getLevel(), "none");
+                displayWeapons.displayWeapons(player);
+                displayWeapons.displayArmor(player);
+                gearReader.setGearStats(player);
+                return;
             }
         }
 

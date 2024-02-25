@@ -92,6 +92,14 @@ commands:
     description: allows mms to check for mystica data before determining which interaction to start
     usage: /MysticaInteractions <Interaction> <Player>
     permission: developer
+  PathTool:
+    description: gives player the path tool
+    usage: /PathTool
+    permission: developer
+  DisplayPath:
+    description: lets server display a path for the player
+    usage: /PathDisplay <Player> <x> <y> <z>
+    permission: developer
 
 permissions:
   developer:

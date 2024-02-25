@@ -8,8 +8,8 @@ import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.Inventories.AbilityInventory;
 import me.angeloo.mystica.Components.Inventories.BagInventory;
-import me.angeloo.mystica.Components.Inventories.ClassSelectInventory;
 import me.angeloo.mystica.Components.Inventories.EquipmentInventory;
+import me.angeloo.mystica.Components.Items.PathToolItem;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.CustomEvents.CustomDeathEvent;
@@ -55,6 +55,7 @@ public class GeneralEventListener implements Listener {
 
     private final Mystica main;
     private final ProfileManager profileManager;
+    private final PathingManager pathingManager;
     private final StealthTargetBlacklist stealthTargetBlacklist;
     private final AggroTick aggroTick;
     private final AggroManager aggroManager;
@@ -87,6 +88,7 @@ public class GeneralEventListener implements Listener {
     public GeneralEventListener(Mystica main){
         this.main = main;
         profileManager = main.getProfileManager();
+        pathingManager = main.getPathingManager();
         stealthTargetBlacklist = main.getStealthTargetBlacklist();
         aggroTick = main.getAggroTick();
         aggroManager = main.getAggroManager();
@@ -268,6 +270,71 @@ public class GeneralEventListener implements Listener {
             return;
         }
         event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void displayPathsWithTool(PlayerToggleSneakEvent event){
+        Player player = event.getPlayer();
+
+        if(!player.isOp()){
+            return;
+        }
+
+        if(player.getGameMode() != GameMode.CREATIVE) {
+            return;
+        }
+
+        ItemStack item = player.getInventory().getItemInMainHand();
+
+        ItemStack pathTool = new CustomItemConverter().convert(new PathToolItem(), 1);
+
+        if(!item.isSimilar(pathTool)){
+            return;
+        }
+
+        pathingManager.displayAllNearbyPaths(player);
+    }
+
+    @EventHandler
+    public void onPathTool(PlayerInteractEvent event){
+
+        Player player = event.getPlayer();
+
+        if(!player.isOp()){
+            return;
+        }
+
+        if(player.getGameMode() != GameMode.CREATIVE) {
+            return;
+        }
+
+        ItemStack item = player.getInventory().getItemInMainHand();
+
+        ItemStack pathTool = new CustomItemConverter().convert(new PathToolItem(), 1);
+
+        if(!item.isSimilar(pathTool)){
+            return;
+        }
+
+        event.setCancelled(true);
+
+        //depending on click add to list
+        if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
+            Block block = event.getClickedBlock();
+            assert block != null;
+            Location location = block.getLocation();
+            pathingManager.createPath(location);
+            return;
+        }
+
+        if(event.getAction() == Action.LEFT_CLICK_BLOCK){
+            Block block = event.getClickedBlock();
+            assert block != null;
+            Location location = block.getLocation();
+            pathingManager.deletePath(location);
+            return;
+        }
+
     }
 
     @EventHandler
@@ -1345,6 +1412,17 @@ public class GeneralEventListener implements Listener {
     public void StatusChange(StatusUpdateEvent event){
         Player player = event.getPlayer();
         statusDisplayer.displayStatus(player);
+    }
+
+    @EventHandler
+    public void WorldChange(PlayerChangedWorldEvent event){
+
+        Player player = event.getPlayer();
+
+        combatManager.forceCombatEnd(player);
+
+        displayWeapons.displayArmor(player);
+        displayWeapons.displayWeapons(player);
     }
 
     @EventHandler

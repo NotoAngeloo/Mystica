@@ -27,6 +27,8 @@ public final class Mystica extends JavaPlugin {
     private ProfileManager profileManager;
     private ProfileFileWriter profileFileWriter;
 
+    private PathingManager pathingManager;
+
     private ClassSetter classSetter;
     private StealthTargetBlacklist stealthTargetBlacklist;
     private TargetManager targetManager;
@@ -58,6 +60,9 @@ public final class Mystica extends JavaPlugin {
 
         profileManager = new ProfileManager(this);
         profileManager.loadProfilesFromConfig();
+
+        pathingManager = new PathingManager(this);
+        pathingManager.createOrLoadFolder();
 
         classSetter = new ClassSetter(this);
 
@@ -107,6 +112,8 @@ public final class Mystica extends JavaPlugin {
         getCommand("ClearStands").setExecutor(new ClearStands());
         getCommand("SetMileStone").setExecutor(new SetMilestone(this));
         getCommand("MysticaInteractions").setExecutor(new MysticaInteractions(this));
+        getCommand("PathTool").setExecutor(new PathTool());
+        getCommand("DisplayPath").setExecutor(new DisplayPath(this));
 
         this.getServer().getPluginManager().registerEvents(new InventoryEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new GeneralEventListener(this), this);
@@ -160,6 +167,7 @@ public final class Mystica extends JavaPlugin {
         }
 
         profileManager.saveProfilesToConfig();
+        pathingManager.saveFolder();
         Bukkit.getLogger().info("Mystica Disabled");
     }
 
@@ -168,6 +176,8 @@ public final class Mystica extends JavaPlugin {
     public ProfileManager getProfileManager(){
         return profileManager;
     }
+
+    public PathingManager getPathingManager(){return pathingManager;}
 
     public ClassSetter getClassSetter(){
         return classSetter;

@@ -80,6 +80,10 @@ commands:
     description: saves profiles manually
     usage: /ManualSave
     permission: developer
+  SavePaths:
+    description: saves paths manually
+    usage: /SavePaths
+    permission: developer
   DeleteProfile:
     description: deletes a profile
     usage: /DeleteProfile

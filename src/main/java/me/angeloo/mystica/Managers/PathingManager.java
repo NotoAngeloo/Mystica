@@ -15,6 +15,7 @@ import java.util.*;
 
 import org.bukkit.Color;
 import org.bukkit.Particle.DustOptions;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
@@ -70,19 +71,15 @@ public class PathingManager {
 
         try {
             config.save(file);
-            Bukkit.getLogger().info("Saved pathing file");
+            //Bukkit.getLogger().info("Saved pathing file");
         } catch (IOException exception) {
             Bukkit.getLogger().info("Error saving pathing file");
             exception.printStackTrace();
         }
     }
 
-    public void setDestination(Player player, Location destination){
-        destinations.put(player.getUniqueId(), destination);
-        calculatePath(player);
-    }
 
-    private void calculatePath(Player player){
+    public void calculatePath(Player player, Location destination){
 
         List<Location> paths = this.paths;
         List<Location> calculatedPath = new ArrayList<>();
@@ -95,7 +92,6 @@ public class PathingManager {
         Location start = player.getLocation();
         Block blockStart = player.getWorld().getBlockAt(start);
         start = blockStart.getLocation().subtract(0,1,0);
-        Location destination = destinations.get(player.getUniqueId());
         Block blockEnd = player.getWorld().getBlockAt(destination);
         destination = blockEnd.getLocation().subtract(0,1,0);
         Location finalStart = start;
@@ -139,7 +135,9 @@ public class PathingManager {
                 continue;
             }
 
-            calculatedPath.add(current.clone());
+            Location blockLocAtCurrent = current.getBlock().getLocation();
+
+            calculatedPath.add(blockLocAtCurrent.clone());
         }
 
         current = destination.clone();
@@ -175,14 +173,16 @@ public class PathingManager {
                 continue;
             }
 
-            calculatedPath.add(current.clone());
+            Location blockLocAtCurrent = current.getBlock().getLocation();
+
+            calculatedPath.add(blockLocAtCurrent.clone());
         }
 
 
        Location currentPath = pathEnd.clone();
 
         int radius = 1;
-        while (currentPath.distance(pathStart) > 1){
+        while (currentPath.distance(pathStart) >= 1){
             List<Location> valid = new ArrayList<>();
             for (int x = -radius; x <= radius; x++) {
                 for (int y = -radius; y <= radius; y++) {
@@ -201,6 +201,7 @@ public class PathingManager {
 
             if(valid.isEmpty()){
                 Bukkit.getLogger().info("error, path interrupted");
+                Bukkit.getLogger().info("interrupted at " + currentPath);
                 return;
             }
 
@@ -211,36 +212,105 @@ public class PathingManager {
 
         }
 
+        destinations.put(player.getUniqueId(), destination);
+        playerPaths.put(player.getUniqueId(), calculatedPath);
 
-
-
-
-        for(Location loc : calculatedPath){
+        /*for(Location loc : calculatedPath){
             player.spawnParticle(Particle.REDSTONE, loc.clone().add(0,1,0), 20, .1, .1, .1, 0, new DustOptions(Color.ORANGE, 2.0F));
-        }
+        }*/
     }
 
-    /*public void toggleDisplayingPaths(Player player){
+    public void startPathDisplayTask(Player player){
 
         if(displayTask.containsKey(player.getUniqueId())){
             displayTask.get(player.getUniqueId()).cancel();
-            displayTask.remove(player.getUniqueId());
-            return;
         }
 
         BukkitTask task = new BukkitRunnable(){
-
             @Override
             public void run(){
-                //.getLogger().info("test");
-                displayNearbyPaths(player);
+
+                double distanceDestination = player.getLocation().distance(destinations.get(player.getUniqueId()));
+
+                if(distanceDestination<5){
+                    cancelTask();
+                    return;
+                }
+
+                List<Location> paths = playerPaths.get(player.getUniqueId());
+                paths.sort(Comparator.comparingDouble(p -> p.distance(player.getLocation())));
+                Location closestPath = paths.get(0);
+
+                double distanceClosestPath = player.getLocation().distance(closestPath);
+
+                if(distanceClosestPath>20){
+                    cancelTask();
+                    return;
+                }
+
+                displayPlayerPath(player);
+
+            }
+
+            private void cancelTask(){
+                this.cancel();
+                destinations.remove(player.getUniqueId());
+                playerPaths.remove(player.getUniqueId());
+                displayTask.remove(player.getUniqueId());
             }
 
         }.runTaskTimer(main, 0, 20);
 
         displayTask.put(player.getUniqueId(), task);
+    }
 
-    }*/
+    private void displayPlayerPath(Player player){
+
+        if(!playerPaths.containsKey(player.getUniqueId())){
+            Bukkit.getLogger().info(player.getName() + " doesn't have a path");
+            return;
+        }
+
+        List<Location> playerPath = playerPaths.get(player.getUniqueId());
+        Location destination = destinations.get(player.getUniqueId());
+
+        Location current = player.getLocation();
+
+        Set<Location> nearby = new HashSet<>();
+
+        int radius = 20;
+
+        for (int x = -radius; x <= radius; x++) {
+            for (int y = -radius; y <= radius; y++) {
+                for (int z = -radius; z <= radius; z++) {
+                    Location blockLocation = current.clone().add(x, y, z);
+                    Block block = player.getWorld().getBlockAt(blockLocation);
+                    blockLocation = block.getLocation();
+
+                    if (blockLocation.distance(current) <= radius && !block.getType().isAir()) {
+                        nearby.add(blockLocation);
+                    }
+                }
+            }
+        }
+
+        double distancePlayerDestination = player.getLocation().distance(destination);
+
+        for(Location nearbyLocation : nearby){
+
+            double distancePathDestination = nearbyLocation.distance(destination);
+
+            if(playerPath.contains(nearbyLocation) && (distancePlayerDestination > distancePathDestination)){
+                player.spawnParticle(Particle.REDSTONE, nearbyLocation.add(0,1,0), 20, .1, .1, .1, 0, new DustOptions(Color.ORANGE, 2.0F));
+            }
+        }
+
+        if(distancePlayerDestination <= 20){
+            for(double i = 0; i < 20; i+=.5){
+                player.spawnParticle(Particle.REDSTONE, destinations.get(player.getUniqueId()).clone().add(0,i,0), 20, .1, .1, .1, 0, new DustOptions(Color.GREEN, 2.0F));
+            }
+        }
+    }
 
     public void displayAllNearbyPaths(Player player){
 
@@ -264,9 +334,6 @@ public class PathingManager {
             }
         }
 
-
-        //instead, run a calculation to determine which line should be displayed
-
         for(Location nearbyLocation : nearby){
             if(paths.contains(nearbyLocation)){
                 player.spawnParticle(Particle.REDSTONE, nearbyLocation.add(0,1,0), 20, .1, .1, .1, 0, new DustOptions(Color.ORANGE, 2.0F));
@@ -280,7 +347,6 @@ public class PathingManager {
         if(!paths.contains(location)){
             paths.add(location);
         }
-
     }
 
     public void deletePath(Location location){

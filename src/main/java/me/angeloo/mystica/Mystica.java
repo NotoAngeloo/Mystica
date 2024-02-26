@@ -114,6 +114,7 @@ public final class Mystica extends JavaPlugin {
         getCommand("MysticaInteractions").setExecutor(new MysticaInteractions(this));
         getCommand("PathTool").setExecutor(new PathTool());
         getCommand("DisplayPath").setExecutor(new DisplayPath(this));
+        getCommand("SavePaths").setExecutor(new SavePaths(this));
 
         this.getServer().getPluginManager().registerEvents(new InventoryEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new GeneralEventListener(this), this);

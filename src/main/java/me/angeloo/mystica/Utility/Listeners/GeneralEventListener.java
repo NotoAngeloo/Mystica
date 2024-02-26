@@ -199,6 +199,12 @@ public class GeneralEventListener implements Listener {
         targetManager.setPlayerTarget(player, null);
         buffAndDebuffManager.removeAllBuffsAndDebuffs(player);
         gearReader.setGearStats(player);
+
+        if(profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("none")){
+            pathingManager.calculatePath(player, new Location(player.getWorld(), 64, 99, -350));
+            pathingManager.startPathDisplayTask(player);
+        }
+
     }
 
     @EventHandler

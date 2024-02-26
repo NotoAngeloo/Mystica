@@ -42,7 +42,8 @@ public class DisplayPath implements CommandExecutor {
 
             assert player != null;
             Location destination = new Location(player.getWorld(), x, y, z);
-            pathingManager.setDestination(player, destination);
+            pathingManager.calculatePath(player, destination);
+            pathingManager.startPathDisplayTask(player);
 
         }
 

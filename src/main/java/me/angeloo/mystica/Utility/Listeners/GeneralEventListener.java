@@ -202,7 +202,6 @@ public class GeneralEventListener implements Listener {
 
         if(profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("none")){
             pathingManager.calculatePath(player, new Location(player.getWorld(), 64, 99, -350));
-            pathingManager.startPathDisplayTask(player);
         }
 
     }

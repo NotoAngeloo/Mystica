@@ -100,13 +100,20 @@ public class PathingManager {
         paths.sort(Comparator.comparingDouble(l -> l.distance(finalDestination)));
         Location pathEnd = paths.get(0);
 
+
         //calculate a line from the player to the start of the path
         Location current = start.clone();
         Vector directionToPath = pathStart.toVector().subtract(current.toVector()).setY(0);
         boolean nearPath = false;
         while (!nearPath){
 
-            current.add(directionToPath.normalize().multiply(1));
+            double distanceToPath = pathStart.distance(current);
+
+            if(distanceToPath>1){
+                current.add(directionToPath.normalize().multiply(1));
+            }
+
+
             //need to make sure 1. the block at the location is not air, 2. the block above is air
             boolean validBlock = true;
             while (validBlock){
@@ -127,7 +134,7 @@ public class PathingManager {
                 validBlock = false;
             }
 
-            double distanceToPath = pathStart.distance(current);
+            distanceToPath = pathStart.distance(current);
 
             if(distanceToPath<=1){
                 nearPath=true;
@@ -145,8 +152,13 @@ public class PathingManager {
         nearPath = false;
         while (!nearPath){
 
-            current.add(directionToPath.normalize().multiply(1));
-            //need to make sure 1. the block at the location is not air, 2. the block above is air
+            double distanceToPath = pathEnd.distance(current);
+
+            if(distanceToPath > 1){
+                current.add(directionToPath.normalize().multiply(1));
+            }
+
+
             boolean validBlock = true;
             while (validBlock){
 
@@ -166,7 +178,7 @@ public class PathingManager {
                 validBlock = false;
             }
 
-            double distanceToPath = pathEnd.distance(current);
+            distanceToPath = pathEnd.distance(current);
 
             if(distanceToPath<=1){
                 nearPath=true;
@@ -193,7 +205,7 @@ public class PathingManager {
             Set<Location> changedExtremities = new HashSet<>(extremities);
 
             if(changedExtremities.isEmpty()){
-                Bukkit.getLogger().info("error, no valid path");
+                //Bukkit.getLogger().info("error, no valid path");
                 break;
             }
 
@@ -203,6 +215,10 @@ public class PathingManager {
                 Set<Location> neighbors = getNeighbors(player, thisLoc);
                 neighbors.removeAll(checked);
                 extremities.addAll(neighbors);
+
+                if(calculatedPath.contains(thisLoc)){
+                    break;
+                }
 
                 if(neighbors.size() >= 2){
                     for(Location neighbor : neighbors){
@@ -251,6 +267,14 @@ public class PathingManager {
                 }
 
                 if(neighbors.contains(pathEnd)){
+
+                    for(Set<Location> specificPath : crossroadPaths){
+                        if(!specificPath.contains(thisLoc)){
+                            invalid.addAll(specificPath);
+                        }
+                    }
+
+                    pathBetweenStartAndEnd.addAll(neighbors);
                     pathBetweenStartAndEnd.addAll(checked);
                     pathBetweenStartAndEnd.removeAll(invalid);
                     break;
@@ -261,10 +285,13 @@ public class PathingManager {
         }
 
         calculatedPath.addAll(pathBetweenStartAndEnd);
+        playerPaths.put(player.getUniqueId(), calculatedPath);
+        destinations.put(player.getUniqueId(), destination);
+        startPathDisplayTask(player);
 
-        for(Location loc : calculatedPath){
+        /*for(Location loc : calculatedPath){
             player.spawnParticle(Particle.REDSTONE, loc.clone().add(0,1,0), 20, .1, .1, .1, 0, new DustOptions(Color.ORANGE, 2.0F));
-        }
+        }*/
     }
 
     private Set<Location> getNeighbors(Player player, Location origin){
@@ -287,168 +314,9 @@ public class PathingManager {
     }
 
 
-    public void calculatePathOld(Player player, Location destination){
-
-        List<Location> paths = this.paths;
-        List<Location> calculatedPath = new ArrayList<>();
-
-        if(paths.size() == 0){
-            Bukkit.getLogger().info("paths is empty");
-            return;
-        }
-
-        Location start = player.getLocation();
-        Block blockStart = player.getWorld().getBlockAt(start);
-        start = blockStart.getLocation().subtract(0,1,0);
-        Block blockEnd = player.getWorld().getBlockAt(destination);
-        destination = blockEnd.getLocation().subtract(0,1,0);
-        Location finalStart = start;
-        paths.sort(Comparator.comparingDouble(l -> l.distance(finalStart)));
-        Location pathStart = paths.get(0);
-        Location finalDestination = destination;
-        paths.sort(Comparator.comparingDouble(l -> l.distance(finalDestination)));
-        Location pathEnd = paths.get(0);
-
-        Location current = start.clone();
-        Vector directionToPath = pathStart.toVector().subtract(current.toVector()).setY(0);
-        Location finalCurrent = current;
-        Vector finalDirectionToPath = directionToPath;
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-                finalCurrent.add(finalDirectionToPath.normalize().multiply(1));
-                boolean validBlock = true;
-                while (validBlock){
-
-                    Block currentBlock = finalCurrent.getBlock();
-                    Block blockAbove = finalCurrent.clone().add(0,1,0).getBlock();
-
-                    if(currentBlock.getType().isAir()){
-                        finalCurrent.subtract(0,1,0);
-                        continue;
-                    }
-
-                    if(!blockAbove.getType().isAir()){
-                        finalCurrent.add(0,1,0);
-                        continue;
-                    }
-
-                    validBlock = false;
-                }
-
-                double distanceToPath = pathStart.distance(finalCurrent);
-
-                if(distanceToPath<=1){
-                    this.cancel();
-                    return;
-                }
-
-                Location blockLocAtCurrent = finalCurrent.getBlock().getLocation();
-                calculatedPath.add(blockLocAtCurrent.clone());
-
-            }
-
-
-        }.runTaskTimerAsynchronously(main,0,1);
-
-        current = destination.clone();
-        directionToPath = pathEnd.toVector().subtract(current.toVector()).setY(0);
-        Location finalCurrent1 = current;
-        Vector finalDirectionToPath1 = directionToPath;
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-                finalCurrent1.add(finalDirectionToPath1.normalize().multiply(1));
-
-                boolean validBlock = true;
-                while (validBlock){
-
-                    Block currentBlock = finalCurrent1.getBlock();
-                    Block blockAbove = finalCurrent1.clone().add(0,1,0).getBlock();
-
-                    if(currentBlock.getType().isAir()){
-                        finalCurrent1.subtract(0,1,0);
-                        continue;
-                    }
-
-                    if(!blockAbove.getType().isAir()){
-                        finalCurrent1.add(0,1,0);
-                        continue;
-                    }
-
-                    validBlock = false;
-                }
-
-                double distanceToPath = pathEnd.distance(finalCurrent1);
-
-                if(distanceToPath<=1){
-                    this.cancel();
-                    return;
-                }
-
-                Location blockLocAtCurrent = finalCurrent1.getBlock().getLocation();
-
-                calculatedPath.add(blockLocAtCurrent.clone());
-
-            }
-        }.runTaskTimerAsynchronously(main, 0,1);
-
-
-        final Location[] currentPath = {pathEnd.clone()};
-        int radius = 1;
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-                List<Location> valid = new ArrayList<>();
-                for (int x = -radius; x <= radius; x++) {
-                    for (int y = -radius; y <= radius; y++) {
-                        for (int z = -radius; z <=radius; z++) {
-                            Location blockLocation = currentPath[0].clone().add(x, y, z);
-                            Block block = player.getWorld().getBlockAt(blockLocation);
-                            blockLocation = block.getLocation();
-
-                            if (paths.contains(blockLocation) && !calculatedPath.contains(blockLocation)) {
-                                valid.add(blockLocation);
-                            }
-                        }
-                    }
-                }
-
-                if(valid.isEmpty()){
-                    Bukkit.getLogger().info("error, path interrupted");
-                    Bukkit.getLogger().info("interrupted at " + currentPath[0]);
-                    this.cancel();
-                    return;
-                }
-
-
-                valid.sort(Comparator.comparingDouble(l -> l.distance(pathStart)));
-                calculatedPath.add(valid.get(0));
-                currentPath[0] = valid.get(0);
-
-                if(currentPath[0].distance(pathStart) < 1){
-                    this.cancel();
-                    destinations.put(player.getUniqueId(), finalDestination);
-                    playerPaths.put(player.getUniqueId(), calculatedPath);
-                    startPathDisplayTask(player);
-                }
-            }
-        }.runTaskTimerAsynchronously(main,0,20);
-
-
-
-        //only put after all the tasks are done
-
-
-
-        /*for(Location loc : calculatedPath){
-            player.spawnParticle(Particle.REDSTONE, loc.clone().add(0,1,0), 20, .1, .1, .1, 0, new DustOptions(Color.ORANGE, 2.0F));
-        }*/
-    }
-
     private void startPathDisplayTask(Player player){
 
-        /*if(displayTask.containsKey(player.getUniqueId())){
+        if(displayTask.containsKey(player.getUniqueId())){
             displayTask.get(player.getUniqueId()).cancel();
         }
 
@@ -550,7 +418,7 @@ public class PathingManager {
             for(double i = 0; i < 20; i+=.5){
                 player.spawnParticle(Particle.REDSTONE, destinations.get(player.getUniqueId()).clone().add(0,i,0), 20, .1, .1, .1, 0, new DustOptions(Color.GREEN, 2.0F));
             }
-        }*/
+        }
     }
 
     public void displayAllNearbyPaths(Player player){

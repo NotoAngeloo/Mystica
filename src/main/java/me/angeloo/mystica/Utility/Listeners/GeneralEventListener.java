@@ -201,7 +201,9 @@ public class GeneralEventListener implements Listener {
         gearReader.setGearStats(player);
 
         if(profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("none")){
+
             pathingManager.calculatePath(player, new Location(player.getWorld(), 64, 99, -350));
+
         }
 
     }
@@ -329,6 +331,7 @@ public class GeneralEventListener implements Listener {
             assert block != null;
             Location location = block.getLocation();
             pathingManager.createPath(location);
+            pathingManager.displayAllNearbyPaths(player);
             return;
         }
 
@@ -337,6 +340,7 @@ public class GeneralEventListener implements Listener {
             assert block != null;
             Location location = block.getLocation();
             pathingManager.deletePath(location);
+            pathingManager.displayAllNearbyPaths(player);
             return;
         }
 

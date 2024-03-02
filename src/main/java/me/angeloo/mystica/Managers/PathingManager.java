@@ -191,97 +191,157 @@ public class PathingManager {
         }
 
 
-        Location source = pathStart.clone();
-
+        /*Set<Location> pathBetweenStartAndEnd = new HashSet<>();
+        Set<Set<Location>> splitPaths = new HashSet<>();
         Set<Location> extremities = new HashSet<>();
-        Set<Set<Location>> crossroadPaths = new HashSet<>();
+
         Set<Location> checked = new HashSet<>();
-        Set<Location> invalid = new HashSet<>();
-        Set<Location> pathBetweenStartAndEnd = new HashSet<>();
 
-        extremities.add(source);
-        while (true){
+        boolean stopChecking = false;
 
-            Set<Location> changedExtremities = new HashSet<>(extremities);
+        extremities.add(pathStart);
 
-            if(changedExtremities.isEmpty()){
-                //Bukkit.getLogger().info("error, no valid path");
+        while (!extremities.isEmpty()) {
+            Set<Location> nextExtremities = new HashSet<>();
+
+            if(pathStart == pathEnd){
+                pathBetweenStartAndEnd.add(pathStart);
                 break;
             }
 
-            for(Location thisLoc : changedExtremities){
-                checked.add(thisLoc);
-                extremities.remove(thisLoc);
-                Set<Location> neighbors = getNeighbors(player, thisLoc);
+
+            for (Location loc : extremities) {
+
+                checked.add(loc);
+
+                Set<Location> neighbors = getNeighbors(player, loc);
                 neighbors.removeAll(checked);
-                extremities.addAll(neighbors);
 
-                if(calculatedPath.contains(thisLoc)){
-                    break;
-                }
+                nextExtremities.addAll(neighbors);
 
-                if(neighbors.size() >= 2){
+                if (neighbors.size() >= 2) {
+
+                    Bukkit.getLogger().info(loc + " has " + neighbors.size());
+
                     for(Location neighbor : neighbors){
-                        Set<Location> newCrossroadPath = new HashSet<>();
-                        newCrossroadPath.add(neighbor);
-                        crossroadPaths.add(newCrossroadPath);
+                        Set<Location> splitPath = new HashSet<>();
+                        splitPath.add(loc);
+                        splitPath.add(neighbor);
+                        splitPaths.add(splitPath);
+                        //Bukkit.getLogger().info("newpath at " + neighbor);
                     }
-                }
 
-                if(neighbors.size() == 1){
-                    for(Set<Location> specificPath : crossroadPaths){
-                        if(specificPath.contains(thisLoc)){
-                            specificPath.addAll(neighbors);
-                        }
-                    }
 
                 }
 
-                if(neighbors.isEmpty()){
-                    //Bukkit.getLogger().info("dead end");
+                if (neighbors.size() == 1) {
 
-                    Set<Set<Location>> allPathsItsIn = new HashSet<>();
-
-                    for(Set<Location> specificPath : crossroadPaths){
-                        if(specificPath.contains(thisLoc)){
-                            allPathsItsIn.add(specificPath);
-                        }
+                    if(splitPaths.isEmpty()){
+                        Set<Location> splitPath = new HashSet<>();
+                        splitPath.add(loc);
+                        splitPath.addAll(neighbors);
+                        splitPaths.add(splitPath);
+                        //Bukkit.getLogger().info("newpath at " + neighbors.iterator().next());
                     }
-
-                    Set<Location> uniqueLocations = new HashSet<>();
-                    Set<Location> commonLocations = new HashSet<>();
-
-                    for(Set<Location> oneOfThePaths : allPathsItsIn){
-                        for (Location location : oneOfThePaths) {
-                            // If the location is not in the common locations set, add it to the unique locations set
-                            if (!commonLocations.contains(location)) {
-                                if (!uniqueLocations.add(location)) {
-                                    uniqueLocations.remove(location); // Remove if it's already in uniqueLocations
-                                    commonLocations.add(location); // Add to commonLocations
-                                }
+                    else{
+                        for (Set<Location> path : splitPaths) {
+                            if (path.contains(loc)) {
+                                path.addAll(neighbors);
+                                break;
                             }
                         }
                     }
 
-                    invalid.addAll(uniqueLocations);
                 }
 
+
                 if(neighbors.contains(pathEnd)){
-
-                    for(Set<Location> specificPath : crossroadPaths){
-                        if(!specificPath.contains(thisLoc)){
-                            invalid.addAll(specificPath);
-                        }
-                    }
-
-                    pathBetweenStartAndEnd.addAll(neighbors);
-                    pathBetweenStartAndEnd.addAll(checked);
-                    pathBetweenStartAndEnd.removeAll(invalid);
+                    //Bukkit.getLogger().info("pathend found");
+                    stopChecking = true;
                     break;
                 }
 
+
             }
 
+            extremities = nextExtremities;
+
+            if(stopChecking){
+                break;
+            }
+        }
+
+
+        for (Set<Location> path : splitPaths) {
+            if (path.contains(pathStart) && path.contains(pathEnd)) {
+                pathBetweenStartAndEnd.addAll(path);
+                break;
+            }
+        }*/
+
+        Set<Location> pathBetweenStartAndEnd = new HashSet<>();
+        Set<Set<Location>> branches = new HashSet<>();
+        Set<Location> extremities = new HashSet<>();
+        Set<Location> checked = new HashSet<>();
+        boolean stopChecking = false;
+
+        extremities.add(pathStart);
+
+        while (!extremities.isEmpty() && !stopChecking) {
+            Set<Location> nextExtremities = new HashSet<>();
+
+            for (Location loc : extremities) {
+                Set<Location> currentBranch = null;
+
+                // Find the current branch containing the loc
+                for (Set<Location> branch : branches) {
+                    if (branch.contains(loc)) {
+                        currentBranch = branch;
+                        break;
+                    }
+                }
+
+                // If no current branch found, create a new one
+                if (currentBranch == null) {
+                    currentBranch = new HashSet<>();
+                    currentBranch.add(loc);
+                    branches.add(currentBranch);
+                }
+
+                checked.add(loc);
+                Set<Location> neighbors = getNeighbors(player, loc);
+                neighbors.removeAll(checked);
+                nextExtremities.addAll(neighbors);
+
+                if (neighbors.size() >= 2) {
+                    // Create a new branch for each neighbor
+                    for (Location neighbor : neighbors) {
+                        Set<Location> newBranch = new HashSet<>(currentBranch); // Clone the current branch
+                        newBranch.add(neighbor); // Add the neighbor to the branch
+                        branches.add(newBranch); // Add the new branch to the set of branches
+                    }
+                }
+
+                if (neighbors.size() == 1) {
+                    // Extend the current branch
+                    currentBranch.addAll(neighbors);
+                }
+
+                if (neighbors.contains(pathEnd)) {
+                    stopChecking = true;
+                    break;
+                }
+            }
+
+            extremities = nextExtremities;
+        }
+
+// Find the branch that contains both pathStart and pathEnd
+        for (Set<Location> branch : branches) {
+            if (branch.contains(pathStart) && branch.contains(pathEnd)) {
+                pathBetweenStartAndEnd.addAll(branch);
+                break;
+            }
         }
 
         calculatedPath.addAll(pathBetweenStartAndEnd);
@@ -294,7 +354,7 @@ public class PathingManager {
         }*/
     }
 
-    private Set<Location> getNeighbors(Player player, Location origin){
+    /*private Set<Location> getNeighbors(Player player, Location origin){
         int radius = 1;
         Set<Location> neighbors = new HashSet<>();
         for (int x = -radius; x <= radius; x++) {
@@ -310,6 +370,32 @@ public class PathingManager {
             }
         }
         neighbors.remove(origin);
+        return neighbors;
+    }*/
+
+    private Set<Location> getNeighbors(Player player, Location origin) {
+        int radius = 1;
+        Set<Location> neighbors = new HashSet<>();
+        for (int x = -radius; x <= radius; x++) {
+            for (int y = -radius; y <= radius; y++) {
+                for (int z = -radius; z <= radius; z++) {
+                    if (x != 0 && z != 0) {
+                        // Skip diagonals
+                        continue;
+                    }
+                    // Skip the origin location
+                    if (x == 0 && y == 0 && z == 0) {
+                        continue;
+                    }
+                    Location blockLocation = origin.clone().add(x, y, z);
+                    Block block = player.getWorld().getBlockAt(blockLocation);
+                    blockLocation = block.getLocation();
+                    if (paths.contains(blockLocation)) {
+                        neighbors.add(blockLocation);
+                    }
+                }
+            }
+        }
         return neighbors;
     }
 

@@ -327,6 +327,11 @@ public class PathingManager {
                     currentBranch.addAll(neighbors);
                 }
 
+                if(neighbors.isEmpty()){
+                    //figure out better logic for here
+                    //Bukkit.getLogger().info("path interrupted at " + loc);
+                }
+
                 if (neighbors.contains(pathEnd)) {
                     stopChecking = true;
                     break;

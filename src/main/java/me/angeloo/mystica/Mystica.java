@@ -165,6 +165,11 @@ public final class Mystica extends JavaPlugin {
                 itemsMinusTemp.add(item);
             }
             profileManager.getAnyProfile(player).getPlayerBag().setItems(itemsMinusTemp);
+
+            if(player.getWorld().getName().startsWith("tutorial_") && !profileManager.getAnyProfile(player).getMilestones().getTutorial()){
+                classSetter.setClass(player, "none");
+            }
+
         }
 
         profileManager.saveProfilesToConfig();

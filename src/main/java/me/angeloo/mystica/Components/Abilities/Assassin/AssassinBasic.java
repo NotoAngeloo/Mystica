@@ -166,7 +166,13 @@ public class AssassinBasic {
                 Location warpLoc = targetLoc.add(targetDir.clone().normalize().multiply(-1.5));
                 warpLoc.setDirection(targetDir);
 
+                while (!warpLoc.getBlock().isPassable()){
+                    warpLoc.add(0,1,0);
+                }
+
                 player.teleport(warpLoc);
+
+
 
             }
 

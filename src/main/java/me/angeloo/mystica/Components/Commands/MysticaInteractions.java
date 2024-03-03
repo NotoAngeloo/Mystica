@@ -43,6 +43,11 @@ public class MysticaInteractions implements CommandExecutor {
 
             assert player != null;
 
+            if(profileManager.getAnyProfile(player).getIfInCombat() || profileManager.getAnyProfile(player).getIfDead()){
+                player.sendMessage("Can't do this right now");
+                return true;
+            }
+
             switch (conversation.toLowerCase()){
                 case "newplayer":{
                     if(profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("none")){
@@ -52,6 +57,9 @@ public class MysticaInteractions implements CommandExecutor {
 
                     server.dispatchCommand(server.getConsoleSender(), "interactions start newPlayer2 " + player.getName());
                     return true;
+                }
+                default:{
+                    server.dispatchCommand(server.getConsoleSender(), "interactions start " + conversation + " " + player.getName());
                 }
             }
 

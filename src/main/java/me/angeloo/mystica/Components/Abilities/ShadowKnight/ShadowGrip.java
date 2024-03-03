@@ -257,7 +257,6 @@ public class ShadowGrip {
                         aggroManager.setAsHighPriorityTarget(target, player);
                         if(target instanceof Player){
                             targetManager.setPlayerTarget((Player) target, player);
-                            return;
                         }
                     }
 

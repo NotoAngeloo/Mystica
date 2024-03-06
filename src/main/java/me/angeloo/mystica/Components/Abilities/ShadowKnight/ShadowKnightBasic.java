@@ -247,10 +247,10 @@ public class ShadowKnightBasic {
 
         if(targetToHit != null){
             targetManager.setPlayerTarget(player, targetToHit);
-            Location playerLoc = player.getLocation().clone();
-            Vector targetDir = targetToHit.getLocation().toVector().subtract(playerLoc.toVector());
-            playerLoc.setDirection(targetDir);
-            player.teleport(playerLoc);
+            //Location playerLoc = player.getLocation().clone();
+            //Vector targetDir = targetToHit.getLocation().toVector().subtract(playerLoc.toVector());
+            //playerLoc.setDirection(targetDir);
+            //player.teleport(playerLoc);
 
             boolean crit = damageCalculator.checkIfCrit(player, 0);
             double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", skillDamage, crit);
@@ -403,10 +403,10 @@ public class ShadowKnightBasic {
 
         if(targetToHit != null){
             targetManager.setPlayerTarget(player, targetToHit);
-            Location playerLoc = player.getLocation().clone();
-            Vector targetDir = targetToHit.getLocation().toVector().subtract(playerLoc.toVector());
-            playerLoc.setDirection(targetDir);
-            player.teleport(playerLoc);
+            //Location playerLoc = player.getLocation().clone();
+            //Vector targetDir = targetToHit.getLocation().toVector().subtract(playerLoc.toVector());
+            //playerLoc.setDirection(targetDir);
+            //player.teleport(playerLoc);
 
             boolean crit = damageCalculator.checkIfCrit(player, 0);
             double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", skillDamage, crit);
@@ -558,10 +558,10 @@ public class ShadowKnightBasic {
 
         if(targetToHit != null){
             targetManager.setPlayerTarget(player, targetToHit);
-            Location playerLoc = player.getLocation().clone();
-            Vector targetDir = targetToHit.getLocation().toVector().subtract(playerLoc.toVector());
-            playerLoc.setDirection(targetDir);
-            player.teleport(playerLoc);
+            //Location playerLoc = player.getLocation().clone();
+            //Vector targetDir = targetToHit.getLocation().toVector().subtract(playerLoc.toVector());
+            //playerLoc.setDirection(targetDir);
+            //player.teleport(playerLoc);
 
             boolean crit = damageCalculator.checkIfCrit(player, 0);
             double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", skillDamage, crit);

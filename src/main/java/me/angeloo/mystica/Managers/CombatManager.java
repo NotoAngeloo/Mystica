@@ -7,6 +7,7 @@ import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
+import me.angeloo.mystica.Utility.DamageHealthBoard;
 import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.StatusDisplayer;
 import net.md_5.bungee.api.ChatColor;
@@ -31,6 +32,7 @@ public class CombatManager {
     private final AbilityManager abilityManager;
     private final DpsManager dpsManager;
     private final StatusDisplayer statusDisplayer;
+    private final DamageHealthBoard damageHealthBoard;
 
     private final CooldownDisplayer cooldownDisplayer;
 
@@ -43,6 +45,7 @@ public class CombatManager {
         dpsManager = main.getDpsManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         statusDisplayer = new StatusDisplayer(main, manager);
+        damageHealthBoard = main.getDamageHealthBoard();
     }
 
 
@@ -139,6 +142,7 @@ public class CombatManager {
         dpsManager.removeDps(player);
         abilityManager.resetAbilityBuffs(player);
         statusDisplayer.clearPlayerStatus(player);
+        damageHealthBoard.removeScoreboard(player);
     }
 
     private ItemStack getItem(ItemStack item, String name, String... lore){

@@ -12,10 +12,7 @@ import me.angeloo.mystica.Components.Inventories.EquipmentInventory;
 import me.angeloo.mystica.Components.Items.PathToolItem;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
-import me.angeloo.mystica.CustomEvents.CustomDeathEvent;
-import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
-import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
-import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
+import me.angeloo.mystica.CustomEvents.*;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Tasks.AggroTick;
@@ -46,6 +43,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.scoreboard.Score;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
@@ -76,6 +74,7 @@ public class GeneralEventListener implements Listener {
     private final GearReader gearReader;
     private final BagInventory bagInventory;
     private final ClassSetter classSetter;
+    private final DamageHealthBoard damageHealthBoard;
 
     private final DamageCalculator damageCalculator;
     private final ChangeResourceHandler changeResourceHandler;
@@ -111,6 +110,7 @@ public class GeneralEventListener implements Listener {
         bagInventory = main.getBagInventory();
         gearReader = new GearReader(main);
         classSetter = new ClassSetter(main);
+        damageHealthBoard = main.getDamageHealthBoard();
     }
 
     @EventHandler
@@ -120,14 +120,23 @@ public class GeneralEventListener implements Listener {
         }
 
         for (World world : Bukkit.getWorlds()) {
-            for (LivingEntity entity : world.getLivingEntities()) {
+            for (Entity entity : world.getEntities()) {
 
-                if(entity instanceof Player){
-                    continue;
+                if(entity instanceof LivingEntity){
+                    if(entity instanceof Player){
+                        continue;
+                    }
+
+                    entity.remove();
                 }
 
-                entity.remove();
+
+                if(entity.getType() == EntityType.TEXT_DISPLAY){
+                    entity.remove();
+                }
             }
+
+
         }
     }
 
@@ -917,6 +926,7 @@ public class GeneralEventListener implements Listener {
                 combatManager.startCombatTimer(defenderPlayer);
             }
 
+
         }
 
         //targeting bar
@@ -975,6 +985,56 @@ public class GeneralEventListener implements Listener {
             MythicBukkit.inst().getAPIHelper().getMythicMobInstance(defender).signalMob(abstractEntity, "damage");
         }
 
+    }
+
+    @EventHandler
+    public void boardUpdate(BoardValueUpdateEvent event){
+
+        LivingEntity damager = event.getDamager();
+        LivingEntity damaged = event.getDamaged();
+
+        PartiesAPI api = Parties.getApi();
+
+        if(damager instanceof Player){
+            PartyPlayer partyPlayer = api.getPartyPlayer(damager.getUniqueId());
+
+            assert partyPlayer != null;
+            if(partyPlayer.isInParty()){
+                Party party = api.getParty(partyPlayer.getPartyId());
+                assert party != null;
+                Set<UUID> partyMemberList = party.getMembers();
+                for (UUID memberId : partyMemberList){
+
+                    Player partyMember = Bukkit.getPlayer(memberId);
+
+                    if(partyMember == null){
+                        continue;
+                    }
+
+                    damageHealthBoard.update(partyMember);
+                }
+            }
+        }
+
+        if(damaged instanceof Player){
+            PartyPlayer damagedPartyPlayer = api.getPartyPlayer(damaged.getUniqueId());
+            assert damagedPartyPlayer != null;
+            if(damagedPartyPlayer.isInParty()){
+                Party party = api.getParty(damagedPartyPlayer.getPartyId());
+                assert party != null;
+                Set<UUID> partyMemberList = party.getMembers();
+                for (UUID memberId : partyMemberList){
+
+                    Player partyMember = Bukkit.getPlayer(memberId);
+
+                    if(partyMember == null){
+                        continue;
+                    }
+
+                    damageHealthBoard.update(partyMember);
+                }
+            }
+        }
     }
 
     @EventHandler
@@ -1133,6 +1193,7 @@ public class GeneralEventListener implements Listener {
 
 
         LivingEntity entity = event.getEntity();
+
 
         if(entity instanceof Player){
             return;

@@ -1,5 +1,10 @@
 package me.angeloo.mystica.Utility;
 
+import com.alessiodp.parties.api.Parties;
+import com.alessiodp.parties.api.interfaces.PartiesAPI;
+import com.alessiodp.parties.api.interfaces.Party;
+import com.alessiodp.parties.api.interfaces.PartyPlayer;
+import me.angeloo.mystica.CustomEvents.BoardValueUpdateEvent;
 import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
 import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Managers.ProfileManager;
@@ -14,10 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class ChangeResourceHandler {
 
@@ -72,6 +74,7 @@ public class ChangeResourceHandler {
 
         if(entity instanceof Player){
             subtractHealthFromPlayer((Player) entity, damage);
+            Bukkit.getServer().getPluginManager().callEvent(new BoardValueUpdateEvent(damager, entity));
             return;
         }
 
@@ -79,6 +82,7 @@ public class ChangeResourceHandler {
             if(seeingRawDamage.getOrDefault(damager.getUniqueId(), false)){
                 damager.sendMessage("you deal " + damage);
             }
+            Bukkit.getServer().getPluginManager().callEvent(new BoardValueUpdateEvent(damager, entity));
         }
 
         if(profileManager.getAnyProfile(entity).getImmortality()){

@@ -12,6 +12,9 @@ commands:
   Trash:
     description: allows players to throw away items
     usage: /Trash
+  ToggleBoardType:
+    description: allows players to toggle which board they see
+    usage: /ToggleBoardType
   Bag:
     description: opens the players bag
     usage: /Bag

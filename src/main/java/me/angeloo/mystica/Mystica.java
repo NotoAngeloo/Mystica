@@ -44,6 +44,7 @@ public final class Mystica extends JavaPlugin {
     private PveChecker pveChecker;
     private DamageCalculator damageCalculator;
     private ChangeResourceHandler changeResourceHandler;
+    private DamageHealthBoard damageHealthBoard;
 
     private BagInventory bagInventory;
 
@@ -76,6 +77,8 @@ public final class Mystica extends JavaPlugin {
         changeResourceHandler = new ChangeResourceHandler(this);
 
         dpsManager = new DpsManager();
+
+        damageHealthBoard = new DamageHealthBoard(this);
 
         damageCalculator = new DamageCalculator(this);
 
@@ -115,6 +118,7 @@ public final class Mystica extends JavaPlugin {
         getCommand("PathTool").setExecutor(new PathTool());
         getCommand("DisplayPath").setExecutor(new DisplayPath(this));
         getCommand("SavePaths").setExecutor(new SavePaths(this));
+        getCommand("ToggleBoardType").setExecutor(new ToggleBoardType(this));
 
         this.getServer().getPluginManager().registerEvents(new InventoryEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new GeneralEventListener(this), this);
@@ -246,6 +250,8 @@ public final class Mystica extends JavaPlugin {
     public BagInventory getBagInventory(){
         return bagInventory;
     }
+
+    public DamageHealthBoard getDamageHealthBoard(){return damageHealthBoard;}
 
     public ProfileFileWriter getProfileFileWriter(){
         return profileFileWriter;

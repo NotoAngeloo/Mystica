@@ -26,6 +26,8 @@ public class MysticaInteractions implements CommandExecutor {
             return true;
         }
 
+        //Bukkit.getLogger().info("calling");
+
         if(args.length==2){
 
             Server server = Bukkit.getServer();

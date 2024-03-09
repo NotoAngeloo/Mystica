@@ -2,9 +2,7 @@ package me.angeloo.mystica.Managers;
 
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import io.lumine.mythic.bukkit.MythicBukkit;
-import me.angeloo.mystica.Components.Creatures.BetaTester;
-import me.angeloo.mystica.Components.Creatures.Dummy;
-import me.angeloo.mystica.Components.Creatures.TheLindwyrm;
+import me.angeloo.mystica.Components.Creatures.*;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
@@ -12,6 +10,9 @@ import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
@@ -23,6 +24,8 @@ public class CreaturesAndCharactersManager {
     private final TheLindwyrm theLindwyrm;
     private final BetaTester betaTester;
     private final Dummy dummy;
+    private final NewPlayerNpc newPlayerNpc;
+    private final LindwyrmNpc lindwyrmNpc;
 
 
     public CreaturesAndCharactersManager(Mystica main){
@@ -30,19 +33,17 @@ public class CreaturesAndCharactersManager {
         theLindwyrm = new TheLindwyrm(main);
         betaTester = new BetaTester(main);
         dummy = new Dummy(main);
+        newPlayerNpc = new NewPlayerNpc(main);
+        lindwyrmNpc = new LindwyrmNpc(main);
     }
 
-    public void spawnAllNpcs(){
+    public void spawnAllNpcs() throws InvalidMobTypeException {
 
-        try {
-            MythicBukkit.inst().getAPIHelper().spawnMythicMob("NewPlayerNpc", new Location(Bukkit.getWorld("world"), 64, 99, -350, -130, 0));
-            //616, 101, -88, 90, 0
-            MythicBukkit.inst().getAPIHelper().spawnMythicMob("LindwyrmNpc", new Location(Bukkit.getWorld("world"), 617, 100, -88, 90, 0));
-        }
-        catch (InvalidMobTypeException e) {
-            throw new RuntimeException(e);
-        }
+        newPlayerNpc.spawn();
+        lindwyrmNpc.spawn();
     }
+
+
 
     public void makeNpcProfile(String name, UUID uuid){
 

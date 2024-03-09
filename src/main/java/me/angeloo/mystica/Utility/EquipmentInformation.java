@@ -22,6 +22,7 @@ public class EquipmentInformation {
         allEquipmentTypes.add(Material.CHAINMAIL_CHESTPLATE);
         allEquipmentTypes.add(Material.CHAINMAIL_LEGGINGS);
         allEquipmentTypes.add(Material.CHAINMAIL_BOOTS);
+        allEquipmentTypes.add(Material.IRON_NUGGET);
 
     }
 

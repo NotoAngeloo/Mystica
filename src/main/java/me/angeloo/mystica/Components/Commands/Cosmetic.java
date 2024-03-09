@@ -5,6 +5,7 @@ import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DisplayWeapons;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -44,21 +45,50 @@ public class Cosmetic implements CommandExecutor {
 
             PlayerEquipment equipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
+            ItemStack weapon = equipment.getWeapon();
+            ItemMeta weaponMeta = weapon.getItemMeta();;
+            ItemStack offhand = equipment.getOffhand();
+            ItemMeta offhandMeta = offhand.getItemMeta();
+
+            ItemStack helmet = equipment.getHelmet();
+            ItemMeta helmetMeta = helmet.getItemMeta();
+
             ItemStack chestPlate = equipment.getChestPlate();
             ItemMeta chestMeta = chestPlate.getItemMeta();
             ItemStack leggings = equipment.getLeggings();
             ItemMeta leggingMeta = leggings.getItemMeta();
             ItemStack boots = equipment.getBoots();
-            ItemMeta bootMeta = boots.getItemMeta();;
+            ItemMeta bootMeta = boots.getItemMeta();
+
+            ItemStack newHelmet = new ItemStack(Material.IRON_NUGGET);
+            helmetMeta.setDisplayName(ChatColor.of(new Color( 89, 147, 153)) + "Divine Helmet");
+
+
+            weaponMeta.setDisplayName(ChatColor.of(new Color( 89, 147, 153)) + "Divine Sword");
+            weaponMeta.setCustomModelData(4);
+            offhandMeta.setDisplayName(ChatColor.of(new Color( 89, 147, 153)) + "Divine Shield");
+            offhandMeta.setCustomModelData(5);
 
 
             chestMeta.setDisplayName(ChatColor.of(new Color( 89, 147, 153)) + "Divine Plate");
             leggingMeta.setDisplayName(ChatColor.of(new Color( 89, 147, 153)) + "Divine Breeches");
             bootMeta.setDisplayName(ChatColor.of(new Color( 89, 147, 153)) + "Divine Boots");
 
+            newHelmet.setItemMeta(helmetMeta);
+
+            weapon.setItemMeta(weaponMeta);
+            offhand.setItemMeta(offhandMeta);
+
             chestPlate.setItemMeta(chestMeta);
             leggings.setItemMeta(leggingMeta);
             boots.setItemMeta(bootMeta);
+
+
+
+            equipment.setWeapon(weapon);
+            equipment.setOffhand(offhand);
+
+            equipment.setHelmet(newHelmet);
 
             equipment.setChestPlate(chestPlate);
             equipment.setLeggings(leggings);

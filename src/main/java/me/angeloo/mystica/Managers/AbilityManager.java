@@ -295,32 +295,12 @@ public class AbilityManager {
         int cooldown;
 
         switch (clazz.toLowerCase()){
-            case "elementalist":{
+            case "elementalist":
+            case "shadow knight":
+            case "paladin":
+            case "ranger":
+            case "warrior": {
 
-                if(abilityNumber==-1){
-                    cooldown = elementalistAbilities.getUltimateCooldown(player);
-                }
-                else{
-                    cooldown = elementalistAbilities.getAbilityCooldown(player, abilityNumber);
-                }
-
-                if(cooldown == 1){
-                    return 1;
-                }
-
-                return 0;
-            }
-            case "ranger":{
-                if(abilityNumber==-1){
-                    cooldown = rangerAbilities.getUltimateCooldown(player);
-                }
-                else{
-                    cooldown = rangerAbilities.getAbilityCooldown(player, abilityNumber);
-                }
-
-                if(cooldown == 1){
-                    return 1;
-                }
 
                 return 0;
             }
@@ -335,48 +315,6 @@ public class AbilityManager {
                 }
                 else{
                     cooldown = mysticAbilities.getAbilityCooldown(player, abilityNumber);
-                }
-
-                if(cooldown == 1){
-                    return 1;
-                }
-
-                return 0;
-            }
-            case "shadow knight":{
-                if(abilityNumber==-1){
-                    cooldown = shadowKnightAbilities.getUltimateCooldown(player);
-                }
-                else{
-                    cooldown = shadowKnightAbilities.getAbilityCooldown(player, abilityNumber);
-                }
-
-                if(cooldown == 1){
-                    return 1;
-                }
-
-                return 0;
-            }
-            case "paladin":{
-                if(abilityNumber==-1){
-                    cooldown = paladinAbilities.getUltimateCooldown(player);
-                }
-                else{
-                    cooldown = paladinAbilities.getAbilityCooldown(player, abilityNumber);
-                }
-
-                if(cooldown == 1){
-                    return 1;
-                }
-
-                return 0;
-            }
-            case "warrior":{
-                if(abilityNumber==-1){
-                    cooldown = warriorAbilities.getUltimateCooldown(player);
-                }
-                else{
-                    cooldown = warriorAbilities.getAbilityCooldown(player, abilityNumber);
                 }
 
                 if(cooldown == 1){

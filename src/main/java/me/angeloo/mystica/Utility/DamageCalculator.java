@@ -154,7 +154,7 @@ public class DamageCalculator {
         damage = damage * buffAndDebuffManager.getTotalDamageMultipliers(player, entity);
         damage = damage + buffAndDebuffManager.getTotalDamageAddition(player, entity);
 
-        dpsManager.addDamageToDamageDealt(player, damage);
+        dpsManager.addToDamageDealt(player, damage);
 
 
         return damage;

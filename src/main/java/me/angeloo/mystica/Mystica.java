@@ -77,7 +77,7 @@ public final class Mystica extends JavaPlugin {
 
         changeResourceHandler = new ChangeResourceHandler(this);
 
-        dpsManager = new DpsManager();
+        dpsManager = new DpsManager(this);
 
         damageHealthBoard = new DamageHealthBoard(this);
 

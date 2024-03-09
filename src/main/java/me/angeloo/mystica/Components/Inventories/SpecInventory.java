@@ -139,7 +139,7 @@ public class SpecInventory {
     }
 
     private ItemStack getPyromancerItem(){
-        return getItem(Material.CYAN_DYE, 17,
+        return getItem(Material.CYAN_DYE, 9,
                 ChatColor.of(new Color(250, 102, 0)) + "Pyromancer",
                 "",
                 ChatColor.of(new Color(0,102,0)) + "Each level",
@@ -159,7 +159,7 @@ public class SpecInventory {
     }
 
     private ItemStack getConjurerItem(){
-        return getItem(Material.CYAN_DYE, 21,
+        return getItem(Material.CYAN_DYE, 10,
                 ChatColor.of(new Color(153, 0, 255)) + "Conjurer",
                 "",
                 ChatColor.of(new Color(0,102,0)) + "Each level",
@@ -206,7 +206,7 @@ public class SpecInventory {
     }*/
 
     private ItemStack getScoutItem(){
-        return getItem(Material.LIME_DYE, 17,
+        return getItem(Material.LIME_DYE, 9,
                 ChatColor.of(new Color(34, 111, 80)) + "Scout",
                 "",
                 ChatColor.of(new Color(0,102,0)) + "Each level",
@@ -228,7 +228,7 @@ public class SpecInventory {
     }
 
     private ItemStack getTamerItem(){
-        return getItem(Material.LIME_DYE, 19,
+        return getItem(Material.LIME_DYE, 10,
                 ChatColor.of(new Color(0, 117, 94)) + "Animal Tamer",
                 "",
                 ChatColor.of(new Color(0,102,0)) + "Each level",
@@ -321,7 +321,7 @@ public class SpecInventory {
     }
 
     private ItemStack getBloodItem(){
-        return getItem(Material.RED_DYE, 0,
+        return getItem(Material.RED_DYE, 9,
                 ChatColor.of(new Color(213, 33, 3)) + "Blood",
                 "",
                 ChatColor.of(new Color(0,102,0)) + "Each level",
@@ -352,7 +352,7 @@ public class SpecInventory {
     }
 
     private ItemStack getDoomItem(){
-        return getItem(Material.RED_DYE, 0,
+        return getItem(Material.RED_DYE, 10,
                 ChatColor.of(new Color(3, 7, 219)) + "Doom",
                 "",
                 ChatColor.of(new Color(0,102,0)) + "Each level",

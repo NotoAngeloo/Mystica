@@ -43,6 +43,11 @@ public class Cosmetic implements CommandExecutor {
                 return true;
             }
 
+            if(!profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("divine")){
+                player.sendMessage("wrong subclass");
+                return true;
+            }
+
             PlayerEquipment equipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
             ItemStack weapon = equipment.getWeapon();

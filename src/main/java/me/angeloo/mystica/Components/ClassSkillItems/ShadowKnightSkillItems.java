@@ -37,7 +37,7 @@ public class ShadowKnightSkillItems {
         switch(number){
 
             case 1:{
-                return getItem(Material.RED_DYE, 0,
+                return getItem(Material.RED_DYE, 1,
                         ChatColor.of(new Color(213, 33, 3)) + "Infection",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_1_Level() + skillLevel.getSkill_1_Level_Bonus()),
                         "",
@@ -45,7 +45,7 @@ public class ShadowKnightSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "target for continuous damage");
             }
             case 2:{
-                return getItem(Material.RED_DYE, 0,
+                return getItem(Material.RED_DYE, 2,
                         ChatColor.of(new Color(213, 33, 3)) + "Spiritual Attack",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_2_Level() + skillLevel.getSkill_2_Level_Bonus()),
                         "",
@@ -53,7 +53,7 @@ public class ShadowKnightSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "ally to strike your target from above");
             }
             case 3:{
-                return getItem(Material.RED_DYE, 0,
+                return getItem(Material.RED_DYE, 3,
                         ChatColor.of(new Color(213, 33, 3)) + "Burial Ground",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_3_Level() + skillLevel.getSkill_3_Level_Bonus()),
                         "",
@@ -63,7 +63,7 @@ public class ShadowKnightSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "over time.");
             }
             case 4:{
-                return getItem(Material.RED_DYE, 0,
+                return getItem(Material.RED_DYE, 4,
                         ChatColor.of(new Color(213, 33, 3)) + "Bloodsucker",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_4_Level() + skillLevel.getSkill_4_Level_Bonus()),
                         "",
@@ -71,7 +71,7 @@ public class ShadowKnightSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "to restore your own health.");
             }
             case 5:{
-                return getItem(Material.RED_DYE, 0,
+                return getItem(Material.RED_DYE, 5,
                         ChatColor.of(new Color(213, 33, 3)) + "Soul Reap",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_5_Level() + skillLevel.getSkill_5_Level_Bonus()),
                         "",
@@ -82,7 +82,7 @@ public class ShadowKnightSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "increased by 30%");
             }
             case 6:{
-                return getItem(Material.RED_DYE, 0,
+                return getItem(Material.RED_DYE, 6,
                         ChatColor.of(new Color(213, 33, 3)) + "Shadow Grip",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_6_Level() + skillLevel.getSkill_6_Level_Bonus()),
                         "",
@@ -93,7 +93,7 @@ public class ShadowKnightSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "you");
             }
             case 7:{
-                return getItem(Material.RED_DYE, 0,
+                return getItem(Material.RED_DYE, 7,
                         ChatColor.of(new Color(213, 33, 3)) + "Spectral Steed",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_7_Level() + skillLevel.getSkill_7_Level_Bonus()),
                         "",
@@ -104,7 +104,7 @@ public class ShadowKnightSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "may use abilities while mounted");
             }
             case 8:{
-                return getItem(Material.RED_DYE, 0,
+                return getItem(Material.RED_DYE, 8,
                         ChatColor.of(new Color(213, 33, 3)) + "Soulcrack",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_8_Level() + skillLevel.getSkill_8_Level_Bonus()),
                         "",
@@ -126,7 +126,7 @@ public class ShadowKnightSkillItems {
 
         switch(subClass.toLowerCase()){
             case "blood":{
-                return getItem(Material.RED_DYE, 0,
+                return getItem(Material.RED_DYE, 9,
                         ChatColor.of(new Color(213, 33, 3)) + "Blood Shield",
                         ChatColor.of(new Color(0,102,0)) + "Level " + level,
                         "",
@@ -139,7 +139,7 @@ public class ShadowKnightSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "duration by 3 seconds");
             }
             case "doom":{
-                return getItem(Material.RED_DYE, 0,
+                return getItem(Material.RED_DYE, 10,
                         ChatColor.of(new Color(3, 7, 219)) + "Annihilation",
                         ChatColor.of(new Color(0,102,0)) + "Level " + level,
                         "",

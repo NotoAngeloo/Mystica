@@ -46,7 +46,7 @@ public class ElementalistSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "and shoot it at the enemy");
             }
             case 2:{
-                return getItem(Material.CYAN_DYE, 3,
+                return getItem(Material.CYAN_DYE, 2,
                         ChatColor.of(new Color(153, 204, 255)) + "Fiery Magma",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_2_Level() + skillLevel.getSkill_2_Level_Bonus()),
                         "",
@@ -56,7 +56,7 @@ public class ElementalistSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "dealing damage to nearby enemies");
             }
             case 3:{
-                return getItem(Material.CYAN_DYE, 5,
+                return getItem(Material.CYAN_DYE, 3,
                         ChatColor.of(new Color(153, 204, 255)) + "Descending Inferno",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_3_Level() + skillLevel.getSkill_3_Level_Bonus()),
                         "",
@@ -66,7 +66,7 @@ public class ElementalistSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "impact");
             }
             case 4:{
-                return getItem(Material.CYAN_DYE, 7,
+                return getItem(Material.CYAN_DYE, 4,
                         ChatColor.of(new Color(153, 204, 255)) + "Windrush Form",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_4_Level() + skillLevel.getSkill_4_Level_Bonus()),
                         "",
@@ -76,7 +76,7 @@ public class ElementalistSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "damaging enemies on the target path");
             }
             case 5:{
-                return getItem(Material.CYAN_DYE, 9,
+                return getItem(Material.CYAN_DYE, 5,
                         ChatColor.of(new Color(153, 204, 255)) + "Wind Wall",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_5_Level() + skillLevel.getSkill_5_Level_Bonus()),
                         "",
@@ -85,7 +85,7 @@ public class ElementalistSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "a certain amount of damage");
             }
             case 6:{
-                return getItem(Material.CYAN_DYE, 11,
+                return getItem(Material.CYAN_DYE, 6,
                         ChatColor.of(new Color(153, 204, 255)) + "Dragon Breathing",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_6_Level() + skillLevel.getSkill_6_Level_Bonus()),
                         "",
@@ -97,7 +97,7 @@ public class ElementalistSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "to continue burning for 5 seconds");
             }
             case 7:{
-                return getItem(Material.CYAN_DYE, 13,
+                return getItem(Material.CYAN_DYE, 7,
                         ChatColor.of(new Color(153, 204, 255)) + "Elemental Breath",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_7_Level() + skillLevel.getSkill_7_Level_Bonus()),
                         "",
@@ -115,7 +115,7 @@ public class ElementalistSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "damage");
             }
             case 8:{
-                return getItem(Material.CYAN_DYE, 15,
+                return getItem(Material.CYAN_DYE, 8,
                         ChatColor.of(new Color(153, 204, 255)) + "Elemental Matrix",
                         ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_8_Level() + skillLevel.getSkill_8_Level_Bonus()),
                         "",
@@ -140,7 +140,7 @@ public class ElementalistSkillItems {
 
         switch(subClass.toLowerCase()){
             case "pyromancer":{
-                return getItem(Material.CYAN_DYE, 17,
+                return getItem(Material.CYAN_DYE, 9,
                         ChatColor.of(new Color(250, 102, 0)) + "Fiery Wing",
                         ChatColor.of(new Color(0,102,0)) + "Level "  + level,
                         "",
@@ -148,21 +148,8 @@ public class ElementalistSkillItems {
                         ChatColor.of(new Color(230,230,230)) + "towards an enemy, dealing massive",
                         ChatColor.of(new Color(230,230,230)) + "damage on arrival");
             }
-            case "cryomancer":{
-                return getItem(Material.CYAN_DYE, 19,
-                        ChatColor.of(new Color(153, 204, 255)) + "Crystal Storm",
-                        ChatColor.of(new Color(0,102,0)) + "Level "  + level,
-                        "",
-                        ChatColor.of(new Color(230,230,230)) + "Summon a storm cloud that pelts",
-                        ChatColor.of(new Color(230,230,230)) + "the area with icicles. Hitting",
-                        ChatColor.of(new Color(230,230,230)) + "an enemy effected by the storm",
-                        ChatColor.of(new Color(230,230,230)) + "with " + ChatColor.of(new Color(153, 204, 255)) + "Ice Bolt " +
-                                ChatColor.of(new Color(230,230,230)) + "resets the cooldown",
-                        ChatColor.of(new Color(230,230,230)) + "of "  +ChatColor.of(new Color(153, 204, 255)) + "Ice Bolt"
-                        );
-            }
             case "conjurer":{
-                return getItem(Material.CYAN_DYE, 21,
+                return getItem(Material.CYAN_DYE, 10,
                         ChatColor.of(new Color(153, 0, 255)) + "Conjuring Force",
                         ChatColor.of(new Color(0,102,0)) + "Level "  + level,
                         "",

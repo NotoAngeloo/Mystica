@@ -113,7 +113,7 @@ public class RallyingCry {
         }.runTaskTimer(main, 0,20);
 
         Location start = player.getLocation();
-        ArmorStand armorStand = start.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);

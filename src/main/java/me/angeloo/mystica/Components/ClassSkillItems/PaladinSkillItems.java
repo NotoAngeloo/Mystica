@@ -106,7 +106,9 @@ public class PaladinSkillItems {
                             "",
                             ChatColor.of(new Color(230,230,230)) + "Reduce the damage cause by the",
                             ChatColor.of(new Color(230,230,230)) + "enemy target as well as increase",
-                            ChatColor.of(new Color(230,230,230)) + "the damage they take");
+                            ChatColor.of(new Color(230,230,230)) + "the damage they take.",
+                            ChatColor.of(new Color(230,230,230)) + "In addition, put the target",
+                            ChatColor.of(new Color(230,230,230)) + "to sleep.");
                 }
                 case 8:{
                     return getItem(Material.YELLOW_DYE, 0,

@@ -1258,11 +1258,20 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
-    public void removeTarget(PlayerDropItemEvent event){
+    public void removeTargetOrTeamTarget(PlayerDropItemEvent event){
 
         Player player = event.getPlayer();
 
-        targetManager.setPlayerTarget(player, null);
+        boolean teamTarget = player.isSneaking();
+
+        if(teamTarget){
+            targetManager.setTeamTarget(player);
+        }
+        else{
+            targetManager.setPlayerTarget(player, null);
+        }
+
+
 
         if(player.getGameMode() != GameMode.CREATIVE){
             event.setCancelled(true);

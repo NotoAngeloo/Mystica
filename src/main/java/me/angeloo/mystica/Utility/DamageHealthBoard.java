@@ -27,6 +27,11 @@ public class DamageHealthBoard {
 
     public void update(Player player){
 
+        if(!profileManager.getAnyProfile(player).getIfInCombat()){
+            removeScoreboard(player);
+            return;
+        }
+
         PartiesAPI api = Parties.getApi();
         PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
 

@@ -1,6 +1,5 @@
 package me.angeloo.mystica.Managers;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -19,6 +18,7 @@ public class DpsManager {
         if(!playerDamageDealt.containsKey(player.getUniqueId())){
             playerDamageDealt.put(player.getUniqueId(), 0.0);
         }
+
         double oldDamage = playerDamageDealt.get(player.getUniqueId());
         double newDamage = oldDamage + damage;
         playerDamageDealt.put(player.getUniqueId(), newDamage);

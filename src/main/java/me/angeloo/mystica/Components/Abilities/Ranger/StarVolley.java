@@ -159,7 +159,7 @@ public class StarVolley {
             }
         }.runTaskLater(main, 20*3);
 
-        ArmorStand armorStand = spawnStart.getWorld().spawn(spawnStart, ArmorStand.class);
+        ArmorStand armorStand = player.getWorld().spawn(spawnStart, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -202,8 +202,6 @@ public class StarVolley {
                 if (distance <= 1) {
 
                     cancelTask();
-
-                    double level = profileManager.getAnyProfile(player).getStats().getLevel();
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
 

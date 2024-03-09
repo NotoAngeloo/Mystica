@@ -119,6 +119,7 @@ public final class Mystica extends JavaPlugin {
         getCommand("DisplayPath").setExecutor(new DisplayPath(this));
         getCommand("SavePaths").setExecutor(new SavePaths(this));
         getCommand("ToggleBoardType").setExecutor(new ToggleBoardType(this));
+        getCommand("Cosmetic").setExecutor(new Cosmetic(this));
 
         this.getServer().getPluginManager().registerEvents(new InventoryEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new GeneralEventListener(this), this);

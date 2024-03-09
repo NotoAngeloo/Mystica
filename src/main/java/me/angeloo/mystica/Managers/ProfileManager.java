@@ -122,6 +122,8 @@ public class ProfileManager {
             config.set(id + ".boss_level", playerBossLevel.getBossLevel());
 
             config.set(id + ".milestones.tutorial", profile.getMilestones().getTutorial());
+            config.set(id + ".milestones.divine", profile.getMilestones().getDivine());
+            config.set(id + ".milestones.chaos", profile.getMilestones().getChaos());
 
             profileFileWriter.saveProfileFile(uuid, config);
         }
@@ -215,8 +217,10 @@ public class ProfileManager {
                     int bossLevel = config.getInt(id + ".boss_level");
 
                     boolean tutorial = config.getBoolean(id + ".milestones.tutorial");
+                    boolean divine = config.getBoolean(id + ".milestones.divine");
+                    boolean chaos = config.getBoolean(id +".milestones.chaos");
 
-                    Milestones milestones = new Milestones(tutorial);
+                    Milestones milestones = new Milestones(tutorial, divine, chaos);
 
                     PlayerBossLevel playerBossLevel = new PlayerBossLevel(bossLevel);
                     PlayerProfile profile = new PlayerProfile(false, false, hp, mana,
@@ -337,7 +341,7 @@ public class ProfileManager {
 
         PlayerBossLevel playerBossLevel = new PlayerBossLevel(1);
 
-        Milestones milestones = new Milestones(false);
+        Milestones milestones = new Milestones(false, false, false);
 
         Bal bal = new Bal(0);
 
@@ -661,7 +665,7 @@ public class ProfileManager {
 
                 if(count>=time){
 
-                    Bukkit.getLogger().info("fury timer for " + uuid);
+                    //Bukkit.getLogger().info("fury timer for " + uuid);
 
                     if(MythicBukkit.inst().getAPIHelper().isMythicMob(uuid)){
                         AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(Bukkit.getEntity(uuid)).getEntity();

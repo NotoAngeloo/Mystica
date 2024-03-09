@@ -62,40 +62,6 @@ public class ClassSelectInventory {
             }
         }
 
-        /*inv.setItem(15, getItem(Material.ARROW, 0,ChatColor.of(new Color(0, 153, 51)) + "Select"));
-
-
-
-        inv.setItem(4, getClassItem(clazz));
-
-        if(!clazz.equalsIgnoreCase("mystic")){
-            inv.setItem(19, getMysticItem());
-        }
-
-        if(!clazz.equalsIgnoreCase("elementalist")){
-            inv.setItem(20, getElementalistItem());
-        }
-
-        if(!clazz.equalsIgnoreCase("ranger")){
-            inv.setItem(21, getRangerItem());
-        }
-
-        if(!clazz.equalsIgnoreCase("shadow knight")){
-            inv.setItem(22, getShadowKnightItem());
-        }
-
-        if(!clazz.equalsIgnoreCase("paladin")){
-            inv.setItem(23, getPaladinItem());
-        }
-
-        if(!clazz.equalsIgnoreCase("warrior")){
-            inv.setItem(24, getWarriorItem());
-        }
-
-        if(!clazz.equalsIgnoreCase("assassin")){
-            inv.setItem(25, getAssassinItem());
-        }*/
-
         return inv;
     }
 
@@ -134,9 +100,9 @@ public class ClassSelectInventory {
                 ChatColor.of(new Color(126, 101, 238)) + "Shepard",
                 ChatColor.of(new Color(217, 217, 217)) + "Long Range Healer",
                 "",
-                ChatColor.of(new Color(59, 14, 114)) + "Chaos",
+                /*ChatColor.of(new Color(59, 14, 114)) + "Chaos",
                 ChatColor.of(new Color(217, 217, 217)) + "Long Range Dps",
-                "",
+                "",*/
                 ChatColor.of(new Color(155, 120, 197)) + "Arcane Master",
                 ChatColor.of(new Color(217, 217, 217)) + "Long Range Hybrid Dps"
         );
@@ -164,10 +130,10 @@ public class ClassSelectInventory {
                 ChatColor.of(new Color(217, 217, 217)) + "Tank",
                 "",
                 ChatColor.of(new Color(207, 214, 61)) + "Dawn",
-                ChatColor.of(new Color(217, 217, 217)) + "Short Range Dps",
+                ChatColor.of(new Color(217, 217, 217)) + "Short Range Dps"/*,
                 "",
                 ChatColor.of(new Color(207, 180, 129)) + "Divine",
-                ChatColor.of(new Color(217, 217, 217)) + "Medium Range Healer"
+                ChatColor.of(new Color(217, 217, 217)) + "Medium Range Healer"*/
         );
     }
 

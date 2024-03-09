@@ -107,6 +107,10 @@ commands:
     description: lets server display a path for the player
     usage: /PathDisplay <Player> <x> <y> <z>
     permission: developer
+  Cosmetic:
+    description: lets dev test cosmetics
+    usage: /Cosmetic
+    permission: developer
 
 permissions:
   developer:

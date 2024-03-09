@@ -36,6 +36,8 @@ public class CreaturesAndCharactersManager {
 
         try {
             MythicBukkit.inst().getAPIHelper().spawnMythicMob("NewPlayerNpc", new Location(Bukkit.getWorld("world"), 64, 99, -350, -130, 0));
+            //616, 101, -88, 90, 0
+            MythicBukkit.inst().getAPIHelper().spawnMythicMob("LindwyrmNpc", new Location(Bukkit.getWorld("world"), 617, 100, -88, 90, 0));
         }
         catch (InvalidMobTypeException e) {
             throw new RuntimeException(e);
@@ -62,7 +64,8 @@ public class CreaturesAndCharactersManager {
                 dummy.makeProfile(uuid);
                 break;
             }
-            case "Trenton Vocation": {
+            case "Trenton Vocation":
+            case "Dungeon Dan":{
                 makeDefaultNonCombatantProfile(uuid);
                 break;
             }

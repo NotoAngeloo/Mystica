@@ -1,5 +1,9 @@
 package me.angeloo.mystica.Managers;
 
+import com.alessiodp.parties.api.Parties;
+import com.alessiodp.parties.api.interfaces.PartiesAPI;
+import com.alessiodp.parties.api.interfaces.Party;
+import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.PveChecker;
 import me.angeloo.mystica.Utility.StealthTargetBlacklist;
@@ -14,9 +18,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class TargetManager {
 
@@ -152,6 +154,51 @@ public class TargetManager {
         if(theClosestEntity != null){
             setPlayerTarget(player, theClosestEntity);
         }
+
+    }
+
+    public void setTeamTarget(Player player){
+
+        PartiesAPI api = Parties.getApi();
+        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
+
+        assert partyPlayer != null;
+        if(!partyPlayer.isInParty()){
+            return;
+        }
+
+        Party party = api.getParty(partyPlayer.getPartyId());
+        assert party != null;
+        Set<UUID> partySet = party.getMembers();
+
+        List<Player> partyList = new ArrayList<>();
+
+        for(UUID id : partySet){
+            Player partyMember = Bukkit.getPlayer(id);
+
+            if(partyMember == null){
+                continue;
+            }
+
+
+            if(partyMember == player){
+                continue;
+            }
+
+            if(profileManager.getAnyProfile(partyMember).getIfDead()){
+                continue;
+            }
+
+            partyList.add(partyMember);
+        }
+
+        //depending on preference, sort it
+        partyList.sort(Comparator.comparingDouble(p -> profileManager.getAnyProfile(p).getCurrentHealth()/(double)profileManager.getAnyProfile(p).getTotalHealth()));
+
+        if(partyList.size()>0){
+            setPlayerTarget(player, partyList.get(0));
+        }
+
 
     }
 

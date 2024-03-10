@@ -2,16 +2,14 @@ package me.angeloo.mystica.Utility.Listeners;
 
 
 import me.angeloo.mystica.Components.Inventories.*;
+import me.angeloo.mystica.Components.Items.SoulStone;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Managers.EquipmentManager;
 import me.angeloo.mystica.Managers.InventoryIndexingManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.ClassSetter;
-import me.angeloo.mystica.Utility.DisplayWeapons;
-import me.angeloo.mystica.Utility.EquipmentInformation;
-import me.angeloo.mystica.Utility.GearReader;
+import me.angeloo.mystica.Utility.*;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -44,6 +42,8 @@ public class InventoryEventListener implements Listener {
     private final EquipmentInformation equipmentInformation;
     private final DisplayWeapons displayWeapons;
     private final GearReader gearReader;
+    private final BossLevelInv bossLevelInv;
+    private final CustomItemConverter customItemConverter;
 
     public InventoryEventListener(Mystica main){
         profileManager = main.getProfileManager();
@@ -61,6 +61,8 @@ public class InventoryEventListener implements Listener {
         equipmentInformation = new EquipmentInformation();
         displayWeapons = new DisplayWeapons(main);
         gearReader = new GearReader(main);
+        bossLevelInv = new BossLevelInv(main);
+        customItemConverter = new CustomItemConverter();
     }
 
     @EventHandler
@@ -806,6 +808,7 @@ public class InventoryEventListener implements Listener {
         }
 
         Inventory topInv = event.getView().getTopInventory();
+        Inventory bottomInv = event.getView().getBottomInventory();
 
         ItemStack old = topInv.getItem(11);
 
@@ -821,6 +824,13 @@ public class InventoryEventListener implements Listener {
                 case 13:{
 
                     //check for stones here
+                    ItemStack comparison = customItemConverter.convert(new SoulStone(), 1);
+
+                    if(!bottomInv.contains(comparison)){
+                        return;
+                    }
+
+                    bottomInv.remove(comparison);
 
                     player.openInventory(reforgeInventory.openReforgeInventory(player, old, true));
                     return;
@@ -971,6 +981,53 @@ public class InventoryEventListener implements Listener {
 
         //add to whichever slot is available, if any
 
+    }
+
+    @EventHandler
+    public void onBossInvClick(InventoryClickEvent event){
+        if(!event.getView().getTitle().equals("Change Boss Level")) {
+            return;
+        }
+        event.setCancelled(true);
+
+        Player player = (Player) event.getWhoClicked();
+
+        if(event.getClickedInventory() == null){
+            return;
+        }
+
+        if(event.getClickedInventory().getHolder() instanceof Player){
+            //no player inv stuff
+            return;
+        }
+
+        if(event.getInventory().getItem(event.getSlot()) == null){
+            return;
+        }
+
+        if(!event.getClick().isLeftClick() && !event.getClick().isRightClick()){
+            //only left clicks allowed in this fine establishment
+            return;
+        }
+
+        int level = profileManager.getAnyProfile(player).getPlayerBossLevel().getBossLevel();
+
+        switch ((event.getCurrentItem().getItemMeta().getDisplayName())) {
+            case "Decrease":{
+                if(level <=1){
+                    player.sendMessage("You cannot go any lower");
+                    break;
+                }
+                profileManager.getAnyProfile(player).getPlayerBossLevel().setBossLevel(level - 1);
+                break;
+            }
+            case "Increase":{
+                profileManager.getAnyProfile(player).getPlayerBossLevel().setBossLevel(level + 1);
+                break;
+            }
+        }
+
+        player.openInventory(bossLevelInv.openBossLevelInv(player));
     }
 
 }

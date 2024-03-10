@@ -111,6 +111,14 @@ commands:
     description: lets dev test cosmetics
     usage: /Cosmetic
     permission: developer
+  BossLevel:
+    description: lets mms open boss level inv
+    usage: /BossLevel
+    permission: developer
+  GiveSoulStone:
+    description: lets devs give soulstones
+    usage: /GiveSoulStone <player> <amount>
+    permission: developer
 
 permissions:
   developer:

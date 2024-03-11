@@ -1,0 +1,85 @@
+package me.angeloo.mystica.Components.Creatures;
+
+import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
+import io.lumine.mythic.bukkit.MythicBukkit;
+import me.angeloo.mystica.Managers.ProfileManager;
+import me.angeloo.mystica.Mystica;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.BoundingBox;
+
+public class ArchbishopNpc {
+
+    private final Mystica main;
+    private final ProfileManager profileManager;
+
+    public ArchbishopNpc(Mystica main){
+        this.main = main;
+        profileManager = main.getProfileManager();
+    }
+
+    public void spawn() throws InvalidMobTypeException {
+
+        World world = Bukkit.getWorld("world");
+        assert world != null;
+
+        Location spawnLoc = new Location(world, -11.5, 102, -251.5, 180, 0);
+
+
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+
+                BoundingBox hitBox = new BoundingBox(
+                        spawnLoc.getX() - 20,
+                        spawnLoc.getY() - 20,
+                        spawnLoc.getZ() - 20,
+                        spawnLoc.getX() + 20,
+                        spawnLoc.getY() + 20,
+                        spawnLoc.getZ() + 20
+                );
+
+                for(Entity entity : world.getNearbyEntities(hitBox)){
+                    if(entity instanceof Player){
+                        try {
+                            MythicBukkit.inst().getAPIHelper().spawnMythicMob("ArchbishopNpc", spawnLoc);
+                        } catch (InvalidMobTypeException e) {
+                            throw new RuntimeException(e);
+                        }
+                        removeNearbyEntities();
+                        this.cancel();
+                    }
+                }
+
+            }
+
+            private void removeNearbyEntities(){
+
+                for(Entity entity : world.getNearbyEntities(spawnLoc, 2, 2, 2)){
+                    if(entity instanceof Player){
+                        continue;
+                    }
+
+                    if(!(entity instanceof LivingEntity)){
+                        continue;
+                    }
+
+                    LivingEntity livingEntity = (LivingEntity) entity;
+
+                    if(!profileManager.getAnyProfile(livingEntity).getImmortality()){
+                        livingEntity.remove();
+                    }
+                }
+
+            }
+
+        }.runTaskTimer(main, 0, 20);
+
+    }
+
+}

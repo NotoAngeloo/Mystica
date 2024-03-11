@@ -1,6 +1,8 @@
 package me.angeloo.mystica.Managers;
 
+import me.angeloo.mystica.CustomEvents.BoardValueUpdateEvent;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -74,9 +76,9 @@ public class DpsManager {
                     savedTask.remove(player.getUniqueId());
                 }
 
-                if(ran<3){
-                    ran++;
-                }
+                Bukkit.getServer().getPluginManager().callEvent(new BoardValueUpdateEvent(player));
+
+                ran++;
             }
         }.runTaskTimer(main, 20, 20);
 

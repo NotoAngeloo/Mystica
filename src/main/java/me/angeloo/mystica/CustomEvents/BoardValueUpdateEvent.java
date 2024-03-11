@@ -9,21 +9,14 @@ public class BoardValueUpdateEvent extends Event {
 
     public static final HandlerList handlers = new HandlerList();
 
-    private final LivingEntity damager;
-    private final LivingEntity damaged;
+    private final Player player;
 
-    public BoardValueUpdateEvent(LivingEntity damager, LivingEntity damaged){
-        this.damager = damager;
-        this.damaged = damaged;
+
+    public BoardValueUpdateEvent(Player player){
+        this.player = player;
     }
 
-    public LivingEntity getDamager(){
-        return damager;
-    }
-
-    public LivingEntity getDamaged(){
-        return damaged;
-    }
+    public Player getPlayer(){return player;}
 
     public HandlerList getHandlers() {
         return handlers;

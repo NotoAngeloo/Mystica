@@ -72,7 +72,7 @@ public class ChangeResourceHandler {
 
         if(entity instanceof Player){
             subtractHealthFromPlayer((Player) entity, damage);
-            Bukkit.getServer().getPluginManager().callEvent(new BoardValueUpdateEvent(damager, entity));
+            Bukkit.getServer().getPluginManager().callEvent(new BoardValueUpdateEvent((Player) entity));
             return;
         }
 
@@ -80,7 +80,6 @@ public class ChangeResourceHandler {
             if(seeingRawDamage.getOrDefault(damager.getUniqueId(), false)){
                 damager.sendMessage("you deal " + damage);
             }
-            Bukkit.getServer().getPluginManager().callEvent(new BoardValueUpdateEvent(damager, entity));
         }
 
         if(profileManager.getAnyProfile(entity).getImmortality()){

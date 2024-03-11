@@ -26,6 +26,7 @@ public class CreaturesAndCharactersManager {
     private final Dummy dummy;
     private final NewPlayerNpc newPlayerNpc;
     private final LindwyrmNpc lindwyrmNpc;
+    private final ArchbishopNpc archbishopNpc;
 
 
     public CreaturesAndCharactersManager(Mystica main){
@@ -35,12 +36,14 @@ public class CreaturesAndCharactersManager {
         dummy = new Dummy(main);
         newPlayerNpc = new NewPlayerNpc(main);
         lindwyrmNpc = new LindwyrmNpc(main);
+        archbishopNpc = new ArchbishopNpc(main);
     }
 
     public void spawnAllNpcs() throws InvalidMobTypeException {
 
         newPlayerNpc.spawn();
         lindwyrmNpc.spawn();
+        archbishopNpc.spawn();
     }
 
 
@@ -66,7 +69,9 @@ public class CreaturesAndCharactersManager {
                 break;
             }
             case "Trenton Vocation":
-            case "Dungeon Dan":{
+            case "Dungeon Dan":
+                //perhaps make it check which mob is actually is before making it
+            case "Archbishop Hasbrudan":{
                 makeDefaultNonCombatantProfile(uuid);
                 break;
             }

@@ -990,51 +990,29 @@ public class GeneralEventListener implements Listener {
     @EventHandler
     public void boardUpdate(BoardValueUpdateEvent event){
 
-        LivingEntity damager = event.getDamager();
-        LivingEntity damaged = event.getDamaged();
+        Player player = event.getPlayer();
 
         PartiesAPI api = Parties.getApi();
 
-        if(damager instanceof Player){
-            PartyPlayer partyPlayer = api.getPartyPlayer(damager.getUniqueId());
+        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
 
-            assert partyPlayer != null;
-            if(partyPlayer.isInParty()){
-                Party party = api.getParty(partyPlayer.getPartyId());
-                assert party != null;
-                Set<UUID> partyMemberList = party.getMembers();
-                for (UUID memberId : partyMemberList){
+        assert partyPlayer != null;
+        if(partyPlayer.isInParty()){
+            Party party = api.getParty(partyPlayer.getPartyId());
+            assert party != null;
+            Set<UUID> partyMemberList = party.getMembers();
+            for (UUID memberId : partyMemberList){
 
-                    Player partyMember = Bukkit.getPlayer(memberId);
+                Player partyMember = Bukkit.getPlayer(memberId);
 
-                    if(partyMember == null){
-                        continue;
-                    }
-
-                    damageHealthBoard.update(partyMember);
+                if(partyMember == null){
+                    continue;
                 }
+
+                damageHealthBoard.update(partyMember);
             }
         }
 
-        if(damaged instanceof Player){
-            PartyPlayer damagedPartyPlayer = api.getPartyPlayer(damaged.getUniqueId());
-            assert damagedPartyPlayer != null;
-            if(damagedPartyPlayer.isInParty()){
-                Party party = api.getParty(damagedPartyPlayer.getPartyId());
-                assert party != null;
-                Set<UUID> partyMemberList = party.getMembers();
-                for (UUID memberId : partyMemberList){
-
-                    Player partyMember = Bukkit.getPlayer(memberId);
-
-                    if(partyMember == null){
-                        continue;
-                    }
-
-                    damageHealthBoard.update(partyMember);
-                }
-            }
-        }
     }
 
     @EventHandler

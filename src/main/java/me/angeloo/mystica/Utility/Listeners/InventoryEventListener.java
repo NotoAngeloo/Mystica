@@ -5,11 +5,14 @@ import me.angeloo.mystica.Components.Inventories.*;
 import me.angeloo.mystica.Components.Items.SoulStone;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
+import me.angeloo.mystica.CustomEvents.BoardValueUpdateEvent;
+import me.angeloo.mystica.CustomEvents.HelpfulHintEvent;
 import me.angeloo.mystica.Managers.EquipmentManager;
 import me.angeloo.mystica.Managers.InventoryIndexingManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.*;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,6 +22,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +30,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class InventoryEventListener implements Listener {
+
+    private final Mystica main;
 
     private final ProfileManager profileManager;
     private final EquipmentManager equipmentManager;
@@ -46,6 +52,7 @@ public class InventoryEventListener implements Listener {
     private final CustomItemConverter customItemConverter;
 
     public InventoryEventListener(Mystica main){
+        this.main = main;
         profileManager = main.getProfileManager();
         equipmentManager = new EquipmentManager(main);
         classSetter = main.getClassSetter();
@@ -664,6 +671,15 @@ public class InventoryEventListener implements Listener {
         if (name.equalsIgnoreCase("select")) {
             classSetter.setClass(player, className);
             player.closeInventory();
+
+            new BukkitRunnable(){
+                @Override
+                public void run(){
+                    Bukkit.getServer().getPluginManager().callEvent(new HelpfulHintEvent(player));
+                }
+            }.runTaskLater(main, 60);
+
+
             return;
         }
 

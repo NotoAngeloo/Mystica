@@ -124,6 +124,7 @@ public class ProfileManager {
             config.set(id + ".milestones.tutorial", profile.getMilestones().getTutorial());
             config.set(id + ".milestones.divine", profile.getMilestones().getDivine());
             config.set(id + ".milestones.chaos", profile.getMilestones().getChaos());
+            config.set(id + ".milestones.firstdungeon", profile.getMilestones().getFirstDungeon());
 
             profileFileWriter.saveProfileFile(uuid, config);
         }
@@ -219,8 +220,9 @@ public class ProfileManager {
                     boolean tutorial = config.getBoolean(id + ".milestones.tutorial");
                     boolean divine = config.getBoolean(id + ".milestones.divine");
                     boolean chaos = config.getBoolean(id +".milestones.chaos");
+                    boolean firstDungeon = config.getBoolean(id + ".milestones.firstdungeon");
 
-                    Milestones milestones = new Milestones(tutorial, divine, chaos);
+                    Milestones milestones = new Milestones(tutorial, divine, chaos, firstDungeon);
 
                     PlayerBossLevel playerBossLevel = new PlayerBossLevel(bossLevel);
                     PlayerProfile profile = new PlayerProfile(false, false, hp, mana,
@@ -341,7 +343,7 @@ public class ProfileManager {
 
         PlayerBossLevel playerBossLevel = new PlayerBossLevel(1);
 
-        Milestones milestones = new Milestones(false, false, false);
+        Milestones milestones = new Milestones(false, false, false, false);
 
         Bal bal = new Bal(0);
 

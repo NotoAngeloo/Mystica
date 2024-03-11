@@ -17,6 +17,7 @@ import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Tasks.AggroTick;
 import me.angeloo.mystica.Utility.*;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
@@ -210,10 +211,15 @@ public class GeneralEventListener implements Listener {
         gearReader.setGearStats(player);
 
         if(profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("none")){
-
             pathingManager.calculatePath(player, new Location(player.getWorld(), 64, 99, -350));
-
         }
+
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                Bukkit.getServer().getPluginManager().callEvent(new HelpfulHintEvent(player));
+            }
+        }.runTaskLater(main, 60);
 
     }
 
@@ -1498,6 +1504,22 @@ public class GeneralEventListener implements Listener {
         }
 
         classSetter.setClass(player, "none");
+    }
+
+    @EventHandler
+    public void onHelpfulHint(HelpfulHintEvent event){
+
+        Player player = event.getPlayer();
+        //perhaps add a string variable to manually apply a hint
+
+        if(!profileManager.getAnyProfile(player).getMilestones().getFirstDungeon()
+                && profileManager.getAnyProfile(player).getMilestones().getTutorial()){
+            player.sendMessage(ChatColor.of(new java.awt.Color(255, 128, 0)) + "Helpful Hint: " +
+                    ChatColor.RESET + "Speaking with Npcs might lead you to an adventure");
+            return;
+        }
+
+        //more hints to come, dependant on milestones
     }
 
 

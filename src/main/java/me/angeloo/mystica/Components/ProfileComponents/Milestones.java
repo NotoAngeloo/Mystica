@@ -6,14 +6,18 @@ public class Milestones {
     private boolean Tutorial;
     private boolean Divine;
     private boolean Chaos;
+    private boolean FirstDungeon;
 
     public Milestones(
             boolean tutorial,
             boolean divine,
-            boolean chaos){
+            boolean chaos,
+        boolean firstDungeon
+    ){
         Tutorial = tutorial;
         Divine = divine;
         Chaos = chaos;
+        FirstDungeon = firstDungeon;
     }
 
     public boolean getTutorial(){
@@ -28,6 +32,7 @@ public class Milestones {
         return Chaos;
     }
 
+    public boolean getFirstDungeon(){return FirstDungeon;}
 
     private void setTutorial(boolean tutorial) {
         Tutorial = tutorial;
@@ -40,6 +45,8 @@ public class Milestones {
     private void setChaos(boolean chaos){
         Chaos = chaos;
     }
+
+    private void setFirstDungeon(boolean firstDungeon){FirstDungeon = firstDungeon;}
 
     public void setMilestone(String milestone, Boolean to){
 
@@ -54,6 +61,10 @@ public class Milestones {
             }
             case "chaos":{
                 setChaos(to);
+                break;
+            }
+            case "firstdungeon":{
+                setFirstDungeon(to);
                 break;
             }
         }

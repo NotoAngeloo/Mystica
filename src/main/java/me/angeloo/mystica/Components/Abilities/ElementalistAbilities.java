@@ -10,7 +10,6 @@ public class ElementalistAbilities {
 
     private final ProfileManager profileManager;
     private final FieryWing fieryWing;
-    private final CrystalStorm crystalStorm;
     private final ConjuringForce conjuringForce;
     private final ElementalBreath elementalBreath;
     private final FieryMagma fieryMagma;
@@ -25,7 +24,6 @@ public class ElementalistAbilities {
     public ElementalistAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
         fieryWing = new FieryWing(main, manager);
-        crystalStorm = new CrystalStorm(main, manager);
         conjuringForce = new ConjuringForce(main, manager);
         elementalBreath = new ElementalBreath(main, manager);
         fieryMagma = new FieryMagma(main, manager, this);
@@ -87,10 +85,6 @@ public class ElementalistAbilities {
                 conjuringForce.use(player);
                 return;
             }
-            case "cryomancer":{
-                crystalStorm.use(player);
-                return;
-            }
         }
 
     }
@@ -134,9 +128,6 @@ public class ElementalistAbilities {
             case "conjurer":{
                 return conjuringForce.getCooldown(player);
             }
-            case "cryomancer":{
-                return crystalStorm.getCooldown(player);
-            }
         }
 
         return 0;
@@ -148,5 +139,4 @@ public class ElementalistAbilities {
     public ElementalBreath getElementalBreath() {
         return elementalBreath;
     }
-    public CrystalStorm getCrystalStorm(){return crystalStorm;}
 }

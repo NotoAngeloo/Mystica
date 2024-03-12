@@ -24,7 +24,6 @@ public class WildRoar {
     private final PvpManager pvpManager;
     private final CombatManager combatManager;
     private final ChangeResourceHandler changeResourceHandler;
-    private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
@@ -35,7 +34,6 @@ public class WildRoar {
         pvpManager = main.getPvpManager();
         combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
     public void use(Player player){
@@ -66,7 +64,6 @@ public class WildRoar {
             public void run(){
 
                 if(abilityReadyInMap.get(player.getUniqueId()) <= 0){
-                    cooldownDisplayer.displayUltimateCooldown(player);
                     this.cancel();
                     return;
                 }
@@ -75,7 +72,6 @@ public class WildRoar {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayUltimateCooldown(player);
 
             }
         }.runTaskTimer(main, 0,20);

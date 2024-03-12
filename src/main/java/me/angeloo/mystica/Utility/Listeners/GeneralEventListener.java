@@ -70,7 +70,6 @@ public class GeneralEventListener implements Listener {
     private final EquipmentInformation equipmentInformation;
     private final DisplayWeapons displayWeapons;
     private final StatusDisplayer statusDisplayer;
-    private final CooldownDisplayer cooldownDisplayer;
     private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
     private final GearReader gearReader;
     private final BagInventory bagInventory;
@@ -104,7 +103,6 @@ public class GeneralEventListener implements Listener {
         equipmentInformation = new EquipmentInformation();
         displayWeapons = new DisplayWeapons(main);
         statusDisplayer = new StatusDisplayer(main, abilityManager);
-        cooldownDisplayer = new CooldownDisplayer(main, abilityManager);
         shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, abilityManager);
         damageCalculator = main.getDamageCalculator();
         changeResourceHandler = main.getChangeResourceHandler();
@@ -587,30 +585,6 @@ public class GeneralEventListener implements Listener {
         player.sendMessage("you can't do that right now");
     }
 
-
-    @EventHandler
-    public void combatFollow(PlayerItemHeldEvent event){
-        Player player = event.getPlayer();
-
-        boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
-        boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
-
-        if(!combatStatus){
-            return;
-        }
-
-        if(deathStatus){
-            return;
-        }
-
-        ItemStack weapon = player.getInventory().getItemInMainHand();
-        int newSlot = event.getNewSlot();
-        int oldSlot = event.getPreviousSlot();
-        player.getInventory().setItem(newSlot, weapon);
-        player.getInventory().setItem(oldSlot, cooldownDisplayer.getOldItem(player, oldSlot));
-        shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player, newSlot);
-    }
-
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event){
         Player player = event.getEntity();
@@ -919,7 +893,7 @@ public class GeneralEventListener implements Listener {
 
             Player defenderPlayer = (Player) defender;
 
-            shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(defenderPlayer, defenderPlayer.getInventory().getHeldItemSlot());
+            shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(defenderPlayer);
 
             if(!event.getIfPositive()){
 
@@ -1137,7 +1111,29 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
-    public void useAbility(PlayerSwapHandItemsEvent event){
+    public void useAbility(PlayerItemHeldEvent event){
+
+        Player player = event.getPlayer();
+
+        if(!profileManager.getAnyProfile(player).getIfInCombat()){
+            return;
+        }
+
+        if(profileManager.getAnyProfile(player).getIfDead()){
+            return;
+        }
+
+        event.setCancelled(true);
+        int newSlot = event.getNewSlot();
+
+        EquipSkills equipSkills = profileManager.getAnyProfile(player).getEquipSkills();
+        int abilityNumber = equipSkills.getAnySlot()[newSlot-1];
+        abilityManager.useAbility(player, abilityNumber);
+
+    }
+
+    @EventHandler
+    public void useUltimate(PlayerSwapHandItemsEvent event){
         event.setCancelled(true);
 
         Player player = event.getPlayer();
@@ -1155,21 +1151,7 @@ public class GeneralEventListener implements Listener {
             return;
         }
 
-        //use ability
-
-        int slot = player.getInventory().getHeldItemSlot();
-
-        if(slot == 8){
-            abilityManager.useUltimate(player);
-        }
-        else{
-            EquipSkills equipSkills = profileManager.getAnyProfile(player).getEquipSkills();
-            int abilityNumber = equipSkills.getAnySlot()[slot];
-            abilityManager.useAbility(player, abilityNumber);
-        }
-
-
-
+        abilityManager.useUltimate(player);
     }
 
     @EventHandler
@@ -1499,7 +1481,7 @@ public class GeneralEventListener implements Listener {
 
         Player player = event.getPlayer();
 
-        if(profileManager.getAnyProfile(player).getMilestones().getTutorial()){
+        if(profileManager.getAnyProfile(player).getMilestones().getMilestone("tutorial")){
             return;
         }
 
@@ -1512,8 +1494,8 @@ public class GeneralEventListener implements Listener {
         Player player = event.getPlayer();
         //perhaps add a string variable to manually apply a hint
 
-        if(!profileManager.getAnyProfile(player).getMilestones().getFirstDungeon()
-                && profileManager.getAnyProfile(player).getMilestones().getTutorial()){
+        if(!profileManager.getAnyProfile(player).getMilestones().getMilestone("firstdungeon")
+                && profileManager.getAnyProfile(player).getMilestones().getMilestone("tutorial")){
             player.sendMessage(ChatColor.of(new java.awt.Color(255, 128, 0)) + "Helpful Hint: " +
                     ChatColor.RESET + "Speaking with Npcs might lead you to an adventure");
             return;

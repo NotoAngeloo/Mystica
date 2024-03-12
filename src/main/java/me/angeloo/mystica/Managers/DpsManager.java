@@ -99,9 +99,6 @@ public class DpsManager {
             sum+=value;
         }
 
-        //Bukkit.getLogger().info(String.valueOf(sum));
-        //Bukkit.getLogger().info(String.valueOf(values));
-
         return sum;
     }
 
@@ -111,7 +108,7 @@ public class DpsManager {
 
         values.add(amount);
 
-        if(values.size()>3){
+        if(values.size()>10){
             values.removeFirst();
         }
 
@@ -135,6 +132,7 @@ public class DpsManager {
             savedTask.get(player.getUniqueId()).cancel();
         }
 
+        savedTask.remove(player.getUniqueId());
         allSaved.remove(player.getUniqueId());
         damageSlot.remove(player.getUniqueId());
     }

@@ -31,7 +31,6 @@ public class Representative {
     private final ChangeResourceHandler changeResourceHandler;
     private final DamageCalculator damageCalculator;
     private final PvpManager pvpManager;
-    private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
@@ -46,7 +45,6 @@ public class Representative {
         changeResourceHandler = main.getChangeResourceHandler();
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
-        cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
     public void use(Player player){
@@ -77,7 +75,6 @@ public class Representative {
             public void run() {
 
                 if (abilityReadyInMap.get(player.getUniqueId()) <= 0) {
-                    cooldownDisplayer.displayUltimateCooldown(player);
                     this.cancel();
                     return;
                 }
@@ -85,7 +82,6 @@ public class Representative {
                 int cooldown = abilityReadyInMap.get(player.getUniqueId()) - 1;
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayUltimateCooldown(player);
 
             }
         }.runTaskTimer(main, 0, 20);

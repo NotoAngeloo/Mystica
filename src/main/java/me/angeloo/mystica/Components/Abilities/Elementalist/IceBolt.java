@@ -37,7 +37,6 @@ public class IceBolt {
     private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
-    private final CrystalStorm crystalStorm;
     private final ElementalBreath elementalBreath;
     private final CooldownDisplayer cooldownDisplayer;
 
@@ -54,7 +53,6 @@ public class IceBolt {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
-        crystalStorm = elementalistAbilities.getCrystalStorm();
         elementalBreath = elementalistAbilities.getElementalBreath();
     }
 
@@ -244,9 +242,6 @@ public class IceBolt {
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
 
-                    if(crystalStorm.getIfEntityEffected(target)){
-                        resetSkillCooldown(player);
-                    }
                 }
 
             }

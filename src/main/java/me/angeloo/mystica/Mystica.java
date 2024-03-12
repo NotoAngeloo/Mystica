@@ -75,9 +75,8 @@ public final class Mystica extends JavaPlugin {
         buffAndDebuffManager = new BuffAndDebuffManager(this);
         targetManager = new TargetManager(this);
 
-        changeResourceHandler = new ChangeResourceHandler(this);
-
         dpsManager = new DpsManager(this);
+        changeResourceHandler = new ChangeResourceHandler(this);
 
         damageHealthBoard = new DamageHealthBoard(this);
 
@@ -178,7 +177,7 @@ public final class Mystica extends JavaPlugin {
             }
             profileManager.getAnyProfile(player).getPlayerBag().setItems(itemsMinusTemp);
 
-            if(player.getWorld().getName().startsWith("tutorial_") && !profileManager.getAnyProfile(player).getMilestones().getTutorial()){
+            if(player.getWorld().getName().startsWith("tutorial_") && !profileManager.getAnyProfile(player).getMilestones().getMilestone("tutorial")){
                 classSetter.setClass(player, "none");
             }
 

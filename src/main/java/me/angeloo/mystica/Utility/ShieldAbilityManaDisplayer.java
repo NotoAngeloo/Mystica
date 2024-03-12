@@ -28,13 +28,13 @@ public class ShieldAbilityManaDisplayer {
         allSkillItems = new AllSkillItems(main);
     }
 
-    public void displayPlayerHealthPlusInfo(Player player, int slot){
+    public void displayPlayerHealthPlusInfo(Player player){
 
         StringBuilder fullBar = new StringBuilder();
 
         String shieldString = getShieldString(player);
         String manaString = getManaBar(player);
-        String statusString = ChatColor.GRAY + getPlayerStatus(player, slot);
+        String statusString = ChatColor.GRAY + getUltimateStatus(player);
 
         String colorlessString = statusString.replaceAll("§.", "");
 
@@ -109,65 +109,39 @@ public class ShieldAbilityManaDisplayer {
         return String.valueOf(manaBar);
     }
 
-    private String getPlayerStatus(Player player, int hotBarSlot){
-
+    private String getUltimateStatus(Player player){
         boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
 
         if(!combatStatus){
             return " ";
         }
 
-        //int hotBarSlot = player.getInventory().getHeldItemSlot();
-
-        int cooldown;
-
-        EquipSkills equipSkills = profileManager.getAnyProfile(player).getEquipSkills();
-
-        if(hotBarSlot == 8){
-
-            if(!allSkillItems.getUltimate(player).hasItemMeta()){
-                return " ";
-            }
-
-            cooldown = abilityManager.getUltimateCooldown(player);
-
-            if(cooldown <= 0){
-
-                ItemStack ultimateItem = allSkillItems.getUltimate(player);
-
-                if(ultimateItem.getType().equals(Material.AIR)){
-                    return " ";
-                }
-
-                String abilityName = ultimateItem.getItemMeta().getDisplayName();
-
-                abilityName = abilityName.replaceAll("§.", "");
-
-
-                return abilityName;
-            }
-
-            return String.valueOf(cooldown);
-        }
-
-        int abilityNumber = equipSkills.getAnySlot()[hotBarSlot];
-
-        if(abilityNumber <=0){
+        if(!allSkillItems.getUltimate(player).hasItemMeta()){
             return " ";
         }
 
-        cooldown = abilityManager.getCooldown(player, abilityNumber);
+        int cooldown = abilityManager.getUltimateCooldown(player);
 
-        if(cooldown <=0){
+        if(cooldown <= 0){
 
-            String abilityName = allSkillItems.getPlayerSkill(player, abilityNumber).getItemMeta().getDisplayName();
+            //TODO: a unicode character for each ultimate
+
+            ItemStack ultimateItem = allSkillItems.getUltimate(player);
+
+            if(ultimateItem.getType().equals(Material.AIR)){
+                return " ";
+            }
+
+            String abilityName = ultimateItem.getItemMeta().getDisplayName();
+
             abilityName = abilityName.replaceAll("§.", "");
+
 
             return abilityName;
         }
 
         return String.valueOf(cooldown);
-
     }
+
 
 }

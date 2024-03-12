@@ -236,7 +236,7 @@ public class InventoryEventListener implements Listener {
             return;
         }
 
-        if(!profileManager.getAnyProfile(player).getMilestones().getTutorial()){
+        if(!profileManager.getAnyProfile(player).getMilestones().getMilestone("tutorial")){
             return;
         }
 

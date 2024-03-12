@@ -16,13 +16,11 @@ public class DamageCalculator {
 
     private final ProfileManager profileManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
-    private final DpsManager dpsManager;
 
 
     public DamageCalculator(Mystica main){
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
-        dpsManager = main.getDpsManager();
     }
 
     public boolean checkIfCrit(Player player, int bonus){
@@ -154,7 +152,6 @@ public class DamageCalculator {
         damage = damage * buffAndDebuffManager.getTotalDamageMultipliers(player, entity);
         damage = damage + buffAndDebuffManager.getTotalDamageAddition(player, entity);
 
-        dpsManager.addToDamageDealt(player, damage);
 
 
         return damage;

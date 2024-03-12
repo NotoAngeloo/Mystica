@@ -60,7 +60,7 @@ public class SpecInventory {
             case "mystic":{
                 inv.setItem(11, getShepardItem());
                 //chaos is a secret subclass
-                if(profileManager.getAnyProfile(player).getMilestones().getChaos()){
+                if(profileManager.getAnyProfile(player).getMilestones().getMilestone("chaos")){
                     inv.setItem(13, getChaosItem());
                 }
 
@@ -75,7 +75,7 @@ public class SpecInventory {
             case "paladin":{
                 inv.setItem(11, getTemplarItem());
                 //secret
-                if(profileManager.getAnyProfile(player).getMilestones().getDivine()){
+                if(profileManager.getAnyProfile(player).getMilestones().getMilestone("divine")){
                     inv.setItem(13, getDivineItem());
                 }
 

@@ -25,6 +25,8 @@ public class AbilityInventory {
         allSkillItems = new AllSkillItems(main);
     }
 
+
+    //TODO: make this look a little better
     public Inventory openAbilityInventory(Player player, ItemStack skill, boolean equipping){
 
         EquipSkills equipSkills = profileManager.getAnyProfile(player).getEquipSkills();
@@ -95,6 +97,7 @@ public class AbilityInventory {
         ItemStack item = new ItemStack(material);
 
         ItemMeta meta = item.getItemMeta();
+        assert meta != null;
         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
 
         List<String> lores = new ArrayList<>();

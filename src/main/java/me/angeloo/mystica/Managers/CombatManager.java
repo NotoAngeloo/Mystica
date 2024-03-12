@@ -51,6 +51,11 @@ public class CombatManager {
             profileManager.getAnyProfile(player).setSavedInv(player.getInventory().getContents());
             player.getInventory().clear();
 
+            DisplayWeapons displayWeapons = new DisplayWeapons(main);
+            displayWeapons.displayArmor(player);
+
+            player.getInventory().setHeldItemSlot(0);
+
             PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
             if(playerEquipment.getWeapon() != null){
@@ -60,10 +65,6 @@ public class CombatManager {
             if (playerEquipment.getOffhand() != null){
                 player.getInventory().setItemInOffHand(playerEquipment.getOffhand());
             }
-
-            DisplayWeapons displayWeapons = new DisplayWeapons(main);
-            displayWeapons.displayArmor(player);
-
 
             player.getInventory().setItem(13, getItem(new ItemStack(Material.BARRIER), "Exit Combat"));
             cooldownDisplayer.initializeItems(player);

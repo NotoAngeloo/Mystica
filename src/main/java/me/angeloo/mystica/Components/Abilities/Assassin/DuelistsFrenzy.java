@@ -32,7 +32,6 @@ public class DuelistsFrenzy {
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final AbilityManager abilityManager;
-    private final CooldownDisplayer cooldownDisplayer;
 
     private final Stealth stealth;
     private final Combo combo;
@@ -51,7 +50,6 @@ public class DuelistsFrenzy {
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
-        cooldownDisplayer = new CooldownDisplayer(main, manager);
         combo = assassinAbilities.getCombo();
         stealth = assassinAbilities.getStealth();
     }
@@ -119,7 +117,6 @@ public class DuelistsFrenzy {
             public void run(){
 
                 if(abilityReadyInMap.get(player.getUniqueId()) <= 0){
-                    cooldownDisplayer.displayUltimateCooldown(player);
                     this.cancel();
                     return;
                 }
@@ -128,7 +125,6 @@ public class DuelistsFrenzy {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayUltimateCooldown(player);
 
             }
         }.runTaskTimer(main, 0,20);

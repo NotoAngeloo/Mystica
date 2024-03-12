@@ -28,7 +28,6 @@ public class Enlightenment {
     private final ChangeResourceHandler changeResourceHandler;
     private final DamageCalculator damageCalculator;
     private final PvpManager pvpManager;
-    private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
@@ -42,7 +41,6 @@ public class Enlightenment {
         changeResourceHandler = main.getChangeResourceHandler();
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
-        cooldownDisplayer = new CooldownDisplayer(main, manager);
         purifyingBlast = mysticAbilities.getPurifyingBlast();
     }
 
@@ -73,7 +71,6 @@ public class Enlightenment {
             public void run() {
 
                 if (abilityReadyInMap.get(player.getUniqueId()) <= 0) {
-                    cooldownDisplayer.displayUltimateCooldown(player);
                     this.cancel();
                     return;
                 }
@@ -83,7 +80,6 @@ public class Enlightenment {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayUltimateCooldown(player);
 
             }
         }.runTaskTimer(main, 0, 20);

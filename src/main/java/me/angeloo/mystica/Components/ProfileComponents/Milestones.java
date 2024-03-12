@@ -1,73 +1,25 @@
 package me.angeloo.mystica.Components.ProfileComponents;
 
 
+import java.util.Map;
+
 public class Milestones {
 
-    private boolean Tutorial;
-    private boolean Divine;
-    private boolean Chaos;
-    private boolean FirstDungeon;
+    private final Map<String, Boolean> allMilestones;
 
-    public Milestones(
-            boolean tutorial,
-            boolean divine,
-            boolean chaos,
-        boolean firstDungeon
-    ){
-        Tutorial = tutorial;
-        Divine = divine;
-        Chaos = chaos;
-        FirstDungeon = firstDungeon;
+    public Milestones(Map<String, Boolean> allMilestones){
+        this.allMilestones = allMilestones;
     }
 
-    public boolean getTutorial(){
-        return Tutorial;
+    public void setMilestone(String milestone, boolean to){
+        allMilestones.put(milestone, to);
     }
 
-    public boolean getDivine(){
-        return Divine;
+    public boolean getMilestone(String milestone){
+        return allMilestones.getOrDefault(milestone, false);
     }
 
-    public boolean getChaos(){
-        return Chaos;
-    }
-
-    public boolean getFirstDungeon(){return FirstDungeon;}
-
-    private void setTutorial(boolean tutorial) {
-        Tutorial = tutorial;
-    }
-
-    private void setDivine(boolean divine){
-        Divine = divine;
-    }
-
-    private void setChaos(boolean chaos){
-        Chaos = chaos;
-    }
-
-    private void setFirstDungeon(boolean firstDungeon){FirstDungeon = firstDungeon;}
-
-    public void setMilestone(String milestone, Boolean to){
-
-        switch (milestone.toLowerCase()){
-            case "tutorial":{
-                setTutorial(to);
-                break;
-            }
-            case "divine":{
-                setDivine(to);
-                break;
-            }
-            case "chaos":{
-                setChaos(to);
-                break;
-            }
-            case "firstdungeon":{
-                setFirstDungeon(to);
-                break;
-            }
-        }
-
+    public Map<String, Boolean> getAllMilestones(){
+        return allMilestones;
     }
 }

@@ -9,21 +9,15 @@ public class HealthChangeEvent extends Event {
     public static final HandlerList handlers = new HandlerList();
 
     private final LivingEntity entity;
-    private final Double change;
     private final Boolean isPositive;
 
-    public HealthChangeEvent(LivingEntity entity, Double change, Boolean isPositive){
+    public HealthChangeEvent(LivingEntity entity, Boolean isPositive){
         this.entity = entity;
-        this.change = change;
         this.isPositive = isPositive;
     }
 
 
     public LivingEntity getEntity(){return entity;}
-
-    public Double getChange() {
-        return change;
-    }
 
     public Boolean getIfPositive(){return isPositive;}
 

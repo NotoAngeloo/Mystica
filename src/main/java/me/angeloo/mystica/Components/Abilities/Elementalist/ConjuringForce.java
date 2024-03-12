@@ -27,7 +27,6 @@ public class ConjuringForce {
     private final CombatManager combatManager;
     private final PvpManager pvpManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
-    private final CooldownDisplayer cooldownDisplayer;
     private final ChangeResourceHandler changeResourceHandler;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -39,7 +38,6 @@ public class ConjuringForce {
         pvpManager = main.getPvpManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
     public void use(Player player){
@@ -69,7 +67,6 @@ public class ConjuringForce {
             public void run() {
 
                 if (abilityReadyInMap.get(player.getUniqueId()) <= 0) {
-                    cooldownDisplayer.displayUltimateCooldown(player);
                     this.cancel();
                     return;
                 }
@@ -79,7 +76,6 @@ public class ConjuringForce {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayUltimateCooldown(player);
 
             }
         }.runTaskTimer(main, 0, 20);

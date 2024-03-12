@@ -31,8 +31,6 @@ public class EvilSpirit {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final AbilityManager abilityManager;
     private final ChangeResourceHandler changeResourceHandler;
-    private final CooldownDisplayer cooldownDisplayer;
-
     private final Map<UUID, Integer> chaosShards = new HashMap<>();
     private final Map<UUID, Boolean> isEvilSpirit = new HashMap<>();
 
@@ -43,7 +41,6 @@ public class EvilSpirit {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         abilityManager = manager;
         changeResourceHandler = main.getChangeResourceHandler();
-        cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
     public void use(Player player){
@@ -208,13 +205,11 @@ public class EvilSpirit {
         }
 
         chaosShards.put(player.getUniqueId(), current);
-        cooldownDisplayer.displayChaosMysticUltimateItem(player, getChaosShards(player) >= 6);
         Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
     }
 
     public void removeShards(Player player){
         chaosShards.put(player.getUniqueId(), 0);
-        cooldownDisplayer.displayChaosMysticUltimateItem(player, getChaosShards(player) >= 6);
         Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
     }
 

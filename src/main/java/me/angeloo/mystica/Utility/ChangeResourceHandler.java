@@ -5,6 +5,7 @@ import me.angeloo.mystica.Components.ProfileComponents.Stats;
 import me.angeloo.mystica.CustomEvents.BoardValueUpdateEvent;
 import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
 import me.angeloo.mystica.Managers.BuffAndDebuffManager;
+import me.angeloo.mystica.Managers.DpsManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
@@ -27,6 +28,7 @@ public class ChangeResourceHandler {
     private final Map<UUID, Long> lastDamaged = new HashMap<>();
 
     private final BuffAndDebuffManager buffAndDebuffManager;
+    private final DpsManager dpsManager;
 
     private final Map<UUID, BukkitTask> savedTask = new HashMap<>();
     private final Map<UUID, Double> damageSlot = new HashMap<>();
@@ -37,6 +39,7 @@ public class ChangeResourceHandler {
         this.main = main;
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
+        dpsManager = main.getDpsManager();
     }
 
     public void subtractHealthFromEntity(LivingEntity entity, Double damage, LivingEntity damager){
@@ -77,9 +80,12 @@ public class ChangeResourceHandler {
         }
 
         if(damager instanceof Player){
+
             if(seeingRawDamage.getOrDefault(damager.getUniqueId(), false)){
                 damager.sendMessage("you deal " + damage);
             }
+
+            dpsManager.addToDamageDealt((Player) damager, damage);
         }
 
         if(profileManager.getAnyProfile(entity).getImmortality()){
@@ -118,7 +124,7 @@ public class ChangeResourceHandler {
 
         double trueDifference = trueHearts - newTrueHearts;
 
-        Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, trueDifference, false));
+        Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, false));
 
     }
 
@@ -177,7 +183,7 @@ public class ChangeResourceHandler {
 
         double trueDifference = trueHearts - newTrueHearts;
 
-        Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(player, trueDifference, false));
+        Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(player, false));
 
         lastDamaged.put(player.getUniqueId(), (System.currentTimeMillis()/1000));
     }
@@ -228,7 +234,7 @@ public class ChangeResourceHandler {
 
         double trueDifference = trueHearts - newTrueHearts;
 
-        Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, trueDifference, true));
+        Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, true));
     }
 
     private void addHealthToPlayer(Player player, Double health){
@@ -272,7 +278,7 @@ public class ChangeResourceHandler {
 
         double trueDifference = trueHearts - newTrueHearts;
 
-        Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(player, trueDifference, true));
+        Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(player, true));
 
     }
 
@@ -297,7 +303,7 @@ public class ChangeResourceHandler {
         }
 
         profileManager.getAnyProfile(player).setCurrentMana(newCurrentMana);
-        Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(player, 0.0, true));
+        Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(player, true));
     }
 
     public void addXpToPlayer(Player player, float amount) {

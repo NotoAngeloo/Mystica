@@ -96,7 +96,7 @@ public class NaturalRegenTick extends BukkitRunnable {
                 continue;
             }
 
-            shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player, player.getInventory().getHeldItemSlot());
+            shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
 
         }
     }

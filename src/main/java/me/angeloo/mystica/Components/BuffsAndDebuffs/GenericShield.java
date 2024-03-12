@@ -23,7 +23,7 @@ public class GenericShield {
         double newAmount = currentAmount + additional;
 
         shieldAmount.put(entity.getUniqueId(), newAmount);
-        Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, 0.0, true));
+        Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, true));
     }
 
     public double removeSomeShieldAndReturnHowMuchOver(LivingEntity entity, double amount){
@@ -37,13 +37,13 @@ public class GenericShield {
         }
 
         shieldAmount.put(entity.getUniqueId(), newAmount);
-        Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, 0.0, true));
+        Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, true));
         return 0;
     }
 
     public void removeShields(LivingEntity entity){
         shieldAmount.remove(entity.getUniqueId());
-        Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, 0.0, true));
+        Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, true));
     }
 
     public double getCurrentShieldAmount(LivingEntity entity){

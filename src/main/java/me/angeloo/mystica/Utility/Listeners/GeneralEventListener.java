@@ -44,7 +44,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.scoreboard.Score;
+
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
@@ -215,7 +215,12 @@ public class GeneralEventListener implements Listener {
         new BukkitRunnable(){
             @Override
             public void run(){
-                Bukkit.getServer().getPluginManager().callEvent(new HelpfulHintEvent(player));
+
+                if(profileManager.getAnyProfile(player).getMilestones().getMilestone("tutorial")
+                && !profileManager.getAnyProfile(player).getMilestones().getMilestone("firstdungeon")){
+                    Bukkit.getServer().getPluginManager().callEvent(new HelpfulHintEvent(player, "npcspeak"));
+                }
+
             }
         }.runTaskLater(main, 60);
 
@@ -880,6 +885,10 @@ public class GeneralEventListener implements Listener {
                 return;
             }
 
+            if(profileManager.getIfResetProcessing(defender)){
+                return;
+            }
+
             aggroTick.startAggroTaskFor(defender);
         }
 
@@ -1492,16 +1501,23 @@ public class GeneralEventListener implements Listener {
     public void onHelpfulHint(HelpfulHintEvent event){
 
         Player player = event.getPlayer();
-        //perhaps add a string variable to manually apply a hint
 
-        if(!profileManager.getAnyProfile(player).getMilestones().getMilestone("firstdungeon")
-                && profileManager.getAnyProfile(player).getMilestones().getMilestone("tutorial")){
-            player.sendMessage(ChatColor.of(new java.awt.Color(255, 128, 0)) + "Helpful Hint: " +
-                    ChatColor.RESET + "Speaking with Npcs might lead you to an adventure");
-            return;
+        String whatHint = event.getWhatHint();;
+
+
+        switch (whatHint.toLowerCase()){
+            case "npcspeak":{
+                player.sendMessage(ChatColor.of(new java.awt.Color(255, 128, 0)) + "Helpful Hint: " +
+                        ChatColor.RESET + "Speaking with Npcs might lead you to an adventure");
+                return;
+            }
+            case "combatend":{
+                player.sendMessage(ChatColor.of(new java.awt.Color(255, 128, 0)) + "Helpful Hint: " +
+                        ChatColor.RESET + "Open your inventory to exit combat");
+                return;
+            }
         }
 
-        //more hints to come, dependant on milestones
     }
 
 

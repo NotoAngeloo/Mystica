@@ -3,8 +3,10 @@ package me.angeloo.mystica.Utility;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Managers.ProfileManager;
+import me.angeloo.mystica.Managers.TargetManager;
 import net.md_5.bungee.api.ChatColor;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.awt.*;
@@ -14,22 +16,28 @@ import java.util.Map;
 public class StatusDisplayer {
 
     private final ProfileManager profileManager;
+    private final TargetManager targetManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final AbilityManager abilityManager;
+    private final IconCalculator iconCalculator;
 
     public StatusDisplayer(Mystica main, AbilityManager manager) {
         profileManager = main.getProfileManager();
+        targetManager = main.getTargetManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         abilityManager = manager;
+        iconCalculator = new IconCalculator();
     }
 
     public void displayStatus(Player player) {
 
         if(!profileManager.getAnyProfile(player).getIfInCombat()){
+            clearPlayerStatus(player);
             return;
         }
 
         if(profileManager.getAnyProfile(player).getIfDead()){
+            clearPlayerStatus(player);
             return;
         }
 
@@ -42,19 +50,32 @@ public class StatusDisplayer {
 
         int amountStatusChar = colorlessClassStatus.length() + colorlessBonusStatus.length();
 
-        StringBuilder centeringStatus = new StringBuilder();
+        int amountDebuffChar = getDebuffClassStatus(player).replaceAll("§.", "").length();
 
-        for(int i = 0; i<amountStatusChar; i++){
-            centeringStatus.append(" ");
+
+        StringBuilder leftSide = new StringBuilder();
+        StringBuilder rightSide = new StringBuilder();
+
+        if(amountStatusChar > amountDebuffChar){
+            for(int i = 0; i<amountStatusChar-amountDebuffChar; i++){
+                leftSide.append(" ");
+            }
         }
 
-        statusString.append(centeringStatus).append(bigStatus).append(getClassStatus(player)).append(getBonusStatus(player));
+        if(amountStatusChar < amountDebuffChar){
+            for(int i = 0; i<amountDebuffChar-amountStatusChar; i++){
+                rightSide.append(" ");
+            }
+        }
+
+
+        statusString.append(leftSide).append(getDebuffClassStatus(player)).append(bigStatus).append(getClassStatus(player)).append(getBonusStatus(player)).append(rightSide);
 
 
         player.sendTitle(getBigClassStatus(player), String.valueOf(statusString), 0, 200, 0);
     }
 
-    public void clearPlayerStatus(Player player){
+    private void clearPlayerStatus(Player player){
         player.sendTitle("", "", 0, 2, 0);
     }
 
@@ -252,7 +273,48 @@ public class StatusDisplayer {
         int breathTime = abilityManager.getElementalistAbilities().getElementalBreath().getIfBuffTime(player);
 
         if (breathTime > 0) {
-            statusString.append("\uE004");
+            //calculate which icon to display
+
+            int maxDuration = abilityManager.getElementalistAbilities().getElementalBreath().getDuration(player);
+
+            int icon = iconCalculator.calculate(breathTime, maxDuration);
+
+            switch (icon){
+                case 8:{
+                    statusString.append("\uE004");
+                    break;
+                }
+                case 7:{
+                    statusString.append("\uE01B");
+                    break;
+                }
+                case 6:{
+                    statusString.append("\uE01C");
+                    break;
+                }
+                case 5:{
+                    statusString.append("\uE01D");
+                    break;
+                }
+                case 4:{
+                    statusString.append("\uE01E");
+                    break;
+                }
+                case 3:{
+                    statusString.append("\uE01F");
+                    break;
+                }
+                case 2:{
+                    statusString.append("\uE020");
+                    break;
+                }
+                case 1:{
+                    statusString.append("\uE021");
+                    break;
+                }
+            }
+
+
         }
 
         return String.valueOf(statusString);
@@ -264,7 +326,43 @@ public class StatusDisplayer {
         int cry = abilityManager.getRangerAbilities().getRallyingCry().getIfBuffTime(player);
 
         if(cry > 0){
-            statusString.append("\uE006");
+            int icon =iconCalculator.calculate(cry, 10);
+
+            switch (icon){
+                case 8:{
+                    statusString.append("\uE006");
+                    break;
+                }
+                case 7:{
+                    statusString.append("\uE029");
+                    break;
+                }
+                case 6:{
+                    statusString.append("\uE02A");
+                    break;
+                }
+                case 5:{
+                    statusString.append("\uE02B");
+                    break;
+                }
+                case 4:{
+                    statusString.append("\uE02C");
+                    break;
+                }
+                case 3:{
+                    statusString.append("\uE02D");
+                    break;
+                }
+                case 2:{
+                    statusString.append("\uE02E");
+                    break;
+                }
+                case 1:{
+                    statusString.append("\uE02F");
+                    break;
+                }
+            }
+
         }
 
         return String.valueOf(statusString);
@@ -304,7 +402,103 @@ public class StatusDisplayer {
     private String getDebuffClassStatus(Player player){
         StringBuilder statusString = new StringBuilder();
 
-        //put infections + pierce here, also on centering status, subtract the number of chars here
+
+        String clazz = profileManager.getAnyProfile(player).getPlayerClass();
+
+        switch (clazz.toLowerCase()){
+            case "shadow knight":{
+                //get target and if they are infected, get the time left
+                LivingEntity target = targetManager.getPlayerTarget(player);
+                if(target == null){
+                    break;
+                }
+
+                int timeLeft = abilityManager.getShadowKnightAbilities().getInfection().getPlayerInfectionTime(player);
+
+                if(timeLeft>0){
+                    boolean enhanced = abilityManager.getShadowKnightAbilities().getInfection().getIfEnhanced(player);
+
+                    int icon = iconCalculator.calculate(timeLeft, 10);
+
+                    if(enhanced){
+                        switch (icon){
+                            case 8:{
+                                statusString.append("\uE038");
+                                break;
+                            }
+                            case 7:{
+                                statusString.append("\uE039");
+                                break;
+                            }
+                            case 6:{
+                                statusString.append("\uE03A");
+                                break;
+                            }
+                            case 5:{
+                                statusString.append("\uE03B");
+                                break;
+                            }
+                            case 4:{
+                                statusString.append("\uE03C");
+                                break;
+                            }
+                            case 3:{
+                                statusString.append("\uE03D");
+                                break;
+                            }
+                            case 2:{
+                                statusString.append("\uE03E");
+                                break;
+                            }
+                            case 1:{
+                                statusString.append("\uE03F");
+                                break;
+                            }
+                        }
+                    }
+                    else{
+                        switch (icon){
+                            case 8:{
+                                statusString.append("\uE030");
+                                break;
+                            }
+                            case 7:{
+                                statusString.append("\uE031");
+                                break;
+                            }
+                            case 6:{
+                                statusString.append("\uE032");
+                                break;
+                            }
+                            case 5:{
+                                statusString.append("\uE033");
+                                break;
+                            }
+                            case 4:{
+                                statusString.append("\uE034");
+                                break;
+                            }
+                            case 3:{
+                                statusString.append("\uE035");
+                                break;
+                            }
+                            case 2:{
+                                statusString.append("\uE036");
+                                break;
+                            }
+                            case 1:{
+                                statusString.append("\uE037");
+                                break;
+                            }
+                        }
+                    }
+                }
+
+
+
+                break;
+            }
+        }
 
         return String.valueOf(statusString);
     }
@@ -314,8 +508,45 @@ public class StatusDisplayer {
         StringBuilder statusString = new StringBuilder();
 
         //wild roar
-        if(buffAndDebuffManager.getWildRoarBuff().getIfWildRoarBuff(player)){
-            statusString.append("\uE007");
+        if(buffAndDebuffManager.getWildRoarBuff().getBuffTime(player) > 0){
+            int icon = iconCalculator.calculate(buffAndDebuffManager.getWildRoarBuff().getBuffTime(player), 10);
+
+            switch (icon){
+                case 8:{
+                    statusString.append("\uE007");
+                    break;
+                }
+                case 7:{
+                    statusString.append("\uE022");
+                    break;
+                }
+                case 6:{
+                    statusString.append("\uE023");
+                    break;
+                }
+                case 5:{
+                    statusString.append("\uE024");
+                    break;
+                }
+                case 4:{
+                    statusString.append("\uE025");
+                    break;
+                }
+                case 3:{
+                    statusString.append("\uE026");
+                    break;
+                }
+                case 2:{
+                    statusString.append("\uE027");
+                    break;
+                }
+                case 1:{
+                    statusString.append("\uE028");
+                    break;
+                }
+            }
+
+
         }
 
         if(buffAndDebuffManager.getConjuringForceBuff().getIfConjForceBuff(player)){

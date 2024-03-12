@@ -90,15 +90,18 @@ public class ElementalBreath {
 
     }
 
-    private void execute(Player player){
-
+    public int getDuration(Player player){
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level() +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
 
         int bonus = ((int)(skillLevel/10));
 
+        return 15 + bonus;
+    }
 
-        buffActiveMap.put(player.getUniqueId(), 15 + bonus);
+    private void execute(Player player){
+
+        buffActiveMap.put(player.getUniqueId(), getDuration(player));
         Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
         new BukkitRunnable(){
             @Override

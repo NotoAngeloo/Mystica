@@ -8,6 +8,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DisplayWeapons {
 
     private final ProfileManager profileManager;
@@ -62,6 +65,13 @@ public class DisplayWeapons {
             ItemMeta meta = displayedWeapon.getItemMeta();
             meta.setDisplayName(profileManager.getAnyProfile(player).getPlayerClass());
             meta.setLore(null);
+
+            List<String> lore = new ArrayList<>();
+            lore.add("click to open skill menu");
+            lore.add("");
+
+            meta.setLore(lore);
+
             int displayModel = meta.getCustomModelData();
             displayModel = displayModel + 2;
             meta.setCustomModelData(displayModel);

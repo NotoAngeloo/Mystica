@@ -692,6 +692,8 @@ public class ProfileManager {
             return false;
         }
 
+        //Bukkit.getLogger().info("reseting boss");
+
         Entity entity = Bukkit.getEntity(uuid);
 
         LivingEntity boss = (LivingEntity) entity;
@@ -722,7 +724,15 @@ public class ProfileManager {
 
             AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(boss).getEntity();
 
-            MythicBukkit.inst().getAPIHelper().getMythicMobInstance(boss).signalMob(abstractEntity, "reset");
+            new BukkitRunnable(){
+                @Override
+                public void run(){
+                    MythicBukkit.inst().getAPIHelper().getMythicMobInstance(boss).signalMob(abstractEntity, "reset");
+                    if(!getIfResetProcessing(boss)){
+                        this.cancel();
+                    }
+                }
+            }.runTaskTimer(main, 0, 1);
 
 
         }
@@ -738,7 +748,7 @@ public class ProfileManager {
             public void run(){
                 resetProcessing.remove(entity.getUniqueId());
             }
-        }.runTaskLater(main, 60);
+        }.runTaskLater(main, 80);
     }
 
     public boolean getIfResetProcessing(LivingEntity entity){

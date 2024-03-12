@@ -38,12 +38,6 @@ public class AggroTick {
             return;
         }
 
-        /*boolean alwaysPassive = profileManager.getAnyProfile(entity).getPassivity().getAlwaysPassive();
-
-        if(alwaysPassive){
-            return;
-        }*/
-
         BukkitTask aggroTask = new BukkitRunnable() {
 
             @Override

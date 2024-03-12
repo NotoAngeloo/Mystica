@@ -10,12 +10,17 @@ public class HelpfulHintEvent extends Event{
 
     private final Player player;
 
-    public HelpfulHintEvent(Player player){
+    private final String whatHint;
+
+
+    public HelpfulHintEvent(Player player, String whatHint){
         this.player = player;
+        this.whatHint = whatHint;
     }
 
 
     public Player getPlayer(){return player;}
+    public String getWhatHint(){return whatHint;}
 
     public HandlerList getHandlers() {
         return handlers;

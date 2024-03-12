@@ -14,7 +14,7 @@ public abstract class PlayerProfile implements Profile{
     private Stats stats;
     private StatsFromGear statsFromGear;
 
-    private String  playerClass;
+    private String playerClass;
     private String playerSubclass;
 
     private ItemStack[] savedInv;

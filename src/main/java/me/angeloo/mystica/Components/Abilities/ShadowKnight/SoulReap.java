@@ -7,7 +7,6 @@ import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
-import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
@@ -224,7 +223,7 @@ public class SoulReap {
                     double extra = 0;
 
                     if(doom && infection.getIfEnhanced(player)){
-                        extra = infection.soulReapToRemove(player, target);
+                        extra = infection.soulReapToRemove(player);
                     }
 
                     double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage, crit);

@@ -99,7 +99,7 @@ public class WildRoar {
                 continue;
             }
 
-            boolean hasBuffAlready = buffAndDebuffManager.getWildRoarBuff().getIfWildRoarBuff(thisPlayer);
+            boolean hasBuffAlready = buffAndDebuffManager.getWildRoarBuff().getBuffTime(thisPlayer) > 0;
 
             if(hasBuffAlready){
                 continue;

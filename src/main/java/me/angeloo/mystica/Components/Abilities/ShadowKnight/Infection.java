@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.Abilities.ShadowKnight;
 
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
@@ -43,7 +44,16 @@ public class Infection {
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
     //who is infected, who started it, time left
-    private final Map<UUID, Map<Player, Integer>> infections = new HashMap<>();
+    //private final Map<UUID, Map<Player, Integer>> infections = new HashMap<>();
+
+    //player, who they infected
+    private final Map<UUID, LivingEntity> infectionTarget = new HashMap<>();
+    //player, timeleft
+    private final Map<UUID, Integer> infectionTime = new HashMap<>();
+    //player, task
+    private final Map<UUID, BukkitTask> infectionTask = new HashMap<>();
+
+
     private final Map<Player, Boolean> enhanced = new HashMap<>();
     private final Map<UUID, BukkitTask> enhancedTaskMap = new HashMap<>();
 
@@ -191,9 +201,7 @@ public class Infection {
 
                 if (distance <= 1) {
                     cancelTask();
-
                     startOrResetInfection(player, target);
-
                 }
             }
 
@@ -223,59 +231,44 @@ public class Infection {
 
     private void startOrResetInfection(Player player, LivingEntity entity){
 
-        if(!infections.containsKey(entity.getUniqueId())){
-            infections.put(entity.getUniqueId(), new HashMap<>());
+        infectionTarget.put(player.getUniqueId(), entity);
+        infectionTime.put(player.getUniqueId(), 11);
+
+        if(infectionTask.containsKey(player.getUniqueId())){
+            infectionTask.get(player.getUniqueId()).cancel();
         }
 
-        Map<Player, Integer> thisInfectionInstance = infections.get(entity.getUniqueId());
-
-        if(!thisInfectionInstance.containsKey(player)){
-            startInfectionTask(player, entity);
-        }
-
-        thisInfectionInstance.put(player, 10);
-
-        infections.put(entity.getUniqueId(), thisInfectionInstance);
-
-    }
-
-    private void startInfectionTask(Player player, LivingEntity entity){
-
-        new BukkitRunnable(){
+        BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                int timeLeft = getTimeLeftOfThisInfection(entity, player);
+                int timeLeft = getPlayerInfectionTime(player);
 
                 if(timeLeft <=0 ){
-                    this.cancel();
-                    infections.get(entity.getUniqueId()).remove(player);
+                    cancelTask();
                     return;
                 }
 
                 if(entity.isDead()){
-                    this.cancel();
-                    infections.get(entity.getUniqueId()).remove(player);
+                    cancelTask();
                     return;
                 }
 
                 if(entity instanceof Player){
 
                     if(profileManager.getAnyProfile(entity).getIfDead()){
-                        this.cancel();
-                        infections.get(entity.getUniqueId()).remove(player);
+                        cancelTask();
                         return;
                     }
 
                     if(!((Player) entity).isOnline()){
-                        this.cancel();
-                        infections.get(entity.getUniqueId()).remove(player);
+                        cancelTask();
                         return;
                     }
                 }
 
                 if(profileManager.getIfResetProcessing(entity)){
-                    this.cancel();
+                    cancelTask();
                     return;
                 }
 
@@ -294,43 +287,45 @@ public class Infection {
                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(entity, player));
                 changeResourceHandler.subtractHealthFromEntity(entity, damage, player);
 
+                //Bukkit.getLogger().info("damaging");
+
                 timeLeft --;
 
-                infections.get(entity.getUniqueId()).put(player, timeLeft);
+                infectionTime.put(player.getUniqueId(), timeLeft);
+
+                Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
 
             }
+
+            private void cancelTask(){
+                this.cancel();
+                infectionTime.remove(player.getUniqueId());
+                infectionTarget.remove(player.getUniqueId());
+                infectionTask.remove(player.getUniqueId());
+                Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+            }
+
         }.runTaskTimer(main, 20, 20);
 
+        infectionTask.put(player.getUniqueId(), task);
     }
 
-    public int getTimeLeftOfThisInfection(LivingEntity entity, Player player){
-
-        if(!infections.containsKey(entity.getUniqueId())){
-            return 0;
-        }
-
-        Map<Player, Integer> thisInfectionInstance = infections.get(entity.getUniqueId());
-
-        return thisInfectionInstance.getOrDefault(player, 0);
+    public int getPlayerInfectionTime(Player player){
+        return infectionTime.getOrDefault(player.getUniqueId(), 0);
     }
+
+
 
     public boolean getIfEnhanced(Player player){
         return enhanced.getOrDefault(player, false);
     }
 
     public boolean getIfThisPlayerInfectThisEntity(Player player, LivingEntity entity){
-
-        if(!infections.containsKey(entity.getUniqueId())){
-            return false;
+        if(infectionTarget.containsKey(player.getUniqueId())){
+            return infectionTarget.get(player.getUniqueId()) == entity;
         }
 
-        Map<Player, Integer> entityMap = infections.get(entity.getUniqueId());
-
-        if(!entityMap.containsKey(player)){
-            return false;
-        }
-
-        return entityMap.get(player) > 0;
+        return false;
     }
 
     public void infectionEnhancement(Player player, LivingEntity entity){
@@ -341,10 +336,13 @@ public class Infection {
             enhancedTaskMap.get(player.getUniqueId()).cancel();
         }
 
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
                 enhanced.remove(player);
+                Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
             }
         }.runTaskLater(main, 20*10);
 
@@ -352,23 +350,25 @@ public class Infection {
     }
 
 
-    public double soulReapToRemove(Player player, LivingEntity entity){
+    public double soulReapToRemove(Player player){
 
         double damage = 6;
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level() +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level() +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
 
-        double time = getTimeLeftOfThisInfection(entity, player);
+        double time = getPlayerInfectionTime(player);
 
         double total = damage * skillLevel * time;
 
-        infections.get(entity.getUniqueId()).remove(player);
+        infectionTime.remove(player.getUniqueId());
+        infectionTarget.remove(player.getUniqueId());
+        infectionTask.remove(player.getUniqueId());
 
         return total;
     }
 
-    public  void removeEnhancement(Player player){
+    public void removeEnhancement(Player player){
         enhanced.put(player, false);
     }
 

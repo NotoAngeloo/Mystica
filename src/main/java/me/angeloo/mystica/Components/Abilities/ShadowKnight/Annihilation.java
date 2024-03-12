@@ -180,6 +180,11 @@ public class Annihilation {
                     return;
                 }
 
+                if(profileManager.getAnyProfile(player).getIfDead()){
+                    cancelTask();
+                    return;
+                }
+
                 Location start = player.getLocation().clone();
                 Location loc = start.clone().subtract(0,3,0);
 
@@ -235,7 +240,9 @@ public class Annihilation {
 
             private void hitTarget(){
 
-
+                if(profileManager.getIfResetProcessing(target)){
+                    return;
+                }
 
                 boolean crit = damageCalculator.checkIfCrit(player, 0);
                 double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);

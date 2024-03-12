@@ -1,12 +1,15 @@
 package me.angeloo.mystica.Managers;
 
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
+import me.angeloo.mystica.CustomEvents.HelpfulHintEvent;
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageHealthBoard;
 import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.StatusDisplayer;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -23,7 +26,6 @@ public class CombatManager {
     private final ProfileManager profileManager;
     private final AbilityManager abilityManager;
     private final DpsManager dpsManager;
-    private final StatusDisplayer statusDisplayer;
     private final DamageHealthBoard damageHealthBoard;
 
     private final CooldownDisplayer cooldownDisplayer;
@@ -36,7 +38,6 @@ public class CombatManager {
         abilityManager = manager;
         dpsManager = main.getDpsManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
-        statusDisplayer = new StatusDisplayer(main, manager);
         damageHealthBoard = main.getDamageHealthBoard();
     }
 
@@ -66,13 +67,14 @@ public class CombatManager {
                 player.getInventory().setItemInOffHand(playerEquipment.getOffhand());
             }
 
+            Bukkit.getServer().getPluginManager().callEvent(new HelpfulHintEvent(player, "combatend"));
             player.getInventory().setItem(13, getItem(new ItemStack(Material.BARRIER), "Exit Combat"));
             cooldownDisplayer.initializeItems(player);
         }
 
         profileManager.getAnyProfile(player).setIfInCombat(true);
         lastCalledCombat.put(player.getUniqueId(), System.currentTimeMillis());
-        statusDisplayer.displayStatus(player);
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
     }
 
 
@@ -134,7 +136,7 @@ public class CombatManager {
 
         dpsManager.removeDps(player);
         abilityManager.resetAbilityBuffs(player);
-        statusDisplayer.clearPlayerStatus(player);
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
         damageHealthBoard.removeScoreboard(player);
     }
 

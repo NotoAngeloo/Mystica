@@ -7,6 +7,7 @@ import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
@@ -40,7 +41,9 @@ public class SoulReap {
     private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final CooldownDisplayer cooldownDisplayer;
 
+    private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
     private final Map<UUID, Integer> soulMarks = new HashMap<>();
 
@@ -57,6 +60,7 @@ public class SoulReap {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
         infection = shadowKnightAbilities.getInfection();
     }
 
@@ -106,7 +110,24 @@ public class SoulReap {
 
         execute(player);
 
+        abilityReadyInMap.put(player.getUniqueId(), 10);
+        new BukkitRunnable(){
+            @Override
+            public void run(){
 
+                if(abilityReadyInMap.get(player.getUniqueId()) <= 0){
+                    this.cancel();
+                    return;
+                }
+
+                int cooldown = abilityReadyInMap.get(player.getUniqueId()) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+
+                abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(player, 5);
+
+            }
+        }.runTaskTimer(main, 0,20);
     }
 
     private void execute(Player player){
@@ -333,5 +354,14 @@ public class SoulReap {
         Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
     }
 
+    public int getCooldown(Player player){
+        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+
+        if(cooldown < 0){
+            cooldown = 0;
+        }
+
+        return cooldown;
+    }
 
 }

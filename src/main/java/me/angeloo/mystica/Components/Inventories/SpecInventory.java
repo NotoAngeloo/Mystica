@@ -325,7 +325,7 @@ public class SpecInventory {
                 ChatColor.of(new Color(213, 33, 3)) + "Blood",
                 "",
                 ChatColor.of(new Color(0,102,0)) + "Each level",
-                ChatColor.of(new Color(230,230,230)) + "+40 Health, +1 Attack, +2 Both Defense",
+                ChatColor.of(new Color(230,230,230)) + "+30 Health, +1 Attack, +2 Both Defense",
                 "",
                 ChatColor.of(new Color(230,230,230)) + "Gain Crushing Resistance",
                 "",
@@ -335,7 +335,7 @@ public class SpecInventory {
                 ChatColor.of(new Color(230,230,230)) + "gives you 20% damage reduction.",
                 ChatColor.of(new Color(213, 33, 3)) + "Bloodsucker " +
                         ChatColor.of(new Color(230,230,230)) + "restores an additional",
-                ChatColor.of(new Color(230,230,230)) + "30% of your maximum health",
+                ChatColor.of(new Color(230,230,230)) + "10% of your maximum health",
                 ChatColor.of(new Color(213, 33, 3)) + "Shadow Grip " +
                         ChatColor.of(new Color(230,230,230)) + "now taunts.",
                 "",
@@ -356,7 +356,7 @@ public class SpecInventory {
                 ChatColor.of(new Color(3, 7, 219)) + "Doom",
                 "",
                 ChatColor.of(new Color(0,102,0)) + "Each level",
-                ChatColor.of(new Color(230,230,230)) + "+30 Health, +3 Attack, +1 Both Defense",
+                ChatColor.of(new Color(230,230,230)) + "+20 Health, +3 Attack, +1 Both Defense",
                 "",
                 ChatColor.of(new Color(230,230,230)) + "Crit rate increased by 10%",
                 "",

@@ -727,6 +727,12 @@ public class ProfileManager {
             new BukkitRunnable(){
                 @Override
                 public void run(){
+
+                    if(home.getWorld() == null){
+                        this.cancel();
+                        return;
+                    }
+
                     MythicBukkit.inst().getAPIHelper().getMythicMobInstance(boss).signalMob(abstractEntity, "reset");
                     if(!getIfResetProcessing(boss)){
                         this.cancel();

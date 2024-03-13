@@ -32,7 +32,6 @@ public class SpectralSteed {
     private final ProfileManager profileManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CombatManager combatManager;
-    private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -42,7 +41,6 @@ public class SpectralSteed {
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
-        changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 

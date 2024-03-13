@@ -132,9 +132,9 @@ public class Stats {
                 break;
             }
             case "blood":{
-                health+=(level*40);
+                health+=(level*30);
                 regen+=(level*1.4);
-                mana_regen=20;
+                mana_regen=10;
                 attack+=(level);
                 defence+=(level*2);
                 magic_defence+=(level*2);
@@ -143,7 +143,7 @@ public class Stats {
             case "doom":{
                 health+=(level*30);
                 regen+=(level*1.3);
-                mana_regen=20;
+                mana_regen=10;
                 attack+=(level*3);
                 defence+=(level);
                 magic_defence+=(level);

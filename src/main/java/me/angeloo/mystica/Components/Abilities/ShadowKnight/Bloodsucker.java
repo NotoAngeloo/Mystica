@@ -5,6 +5,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.*;
@@ -16,6 +17,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class Bloodsucker {
 
@@ -29,8 +34,11 @@ public class Bloodsucker {
     private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final CooldownDisplayer cooldownDisplayer;
 
     private final BloodShield bloodShield;
+
+    private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
     public Bloodsucker(Mystica main, AbilityManager manager, ShadowKnightAbilities abilities){
         this.main = main;
@@ -42,6 +50,7 @@ public class Bloodsucker {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
         bloodShield = abilities.getBloodShield();
     }
 
@@ -92,6 +101,25 @@ public class Bloodsucker {
 
         execute(player);
 
+        abilityReadyInMap.put(player.getUniqueId(), 15);
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+
+                if(abilityReadyInMap.get(player.getUniqueId()) <= 0){
+                    this.cancel();
+                    return;
+                }
+
+                int cooldown = abilityReadyInMap.get(player.getUniqueId()) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+
+                abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(player, 4);
+
+            }
+        }.runTaskTimer(main, 0,20);
+
     }
 
     private void execute(Player player){
@@ -127,10 +155,10 @@ public class Bloodsucker {
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));
 
-        double healAmount = (profileManager.getAnyProfile(player).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(player)) * .1;
+        double healAmount = (profileManager.getAnyProfile(player).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(player)) * .05;
 
         if(blood){
-            healAmount =  healAmount + (profileManager.getAnyProfile(player).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player)) * .3;
+            healAmount =  healAmount + (profileManager.getAnyProfile(player).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player)) * .1;
             bloodShield.increaseDuration(player);
         }
 
@@ -206,6 +234,16 @@ public class Bloodsucker {
                 armorStand.remove();
             }
         }.runTaskTimer(main, 0, 1);
+    }
+
+    public int getCooldown(Player player){
+        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+
+        if(cooldown < 0){
+            cooldown = 0;
+        }
+
+        return cooldown;
     }
 
 

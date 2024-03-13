@@ -124,10 +124,13 @@ public class Soulcrack {
 
         skillDamage = skillDamage * .25;
 
-        changeResourceHandler.addManaToPlayer(player, 100.0);
+        double manaRestoration = 50;
+
+        manaRestoration = manaRestoration/ (double) castTime;
 
         abilityManager.setCasting(player, true);
         double finalSkillDamage = skillDamage;
+        double finalManaRestoration = manaRestoration;
         new BukkitRunnable(){
             int ran = 0;
             Vector initialDirection;
@@ -151,6 +154,8 @@ public class Soulcrack {
                 if(ran%10==0){
                     damageNear();
                 }
+
+                changeResourceHandler.addManaToPlayer(player, finalManaRestoration);
 
                 double percent = ((double) ran / castTime) * 100;
 

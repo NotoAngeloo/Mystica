@@ -1,5 +1,7 @@
 package me.angeloo.mystica.Utility;
 
+import io.lumine.mythic.api.adapters.AbstractEntity;
+import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.Stats;
 import me.angeloo.mystica.CustomEvents.BoardValueUpdateEvent;
@@ -19,6 +21,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class ChangeResourceHandler {
 
@@ -43,6 +46,7 @@ public class ChangeResourceHandler {
     }
 
     public void subtractHealthFromEntity(LivingEntity entity, Double damage, LivingEntity damager){
+
 
         if(profileManager.getIfResetProcessing(entity)){
             return;
@@ -89,6 +93,13 @@ public class ChangeResourceHandler {
         }
 
         if(profileManager.getAnyProfile(entity).getImmortality()){
+
+            if(MythicBukkit.inst().getAPIHelper().isMythicMob(entity.getUniqueId())){
+
+                AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).getEntity();
+                MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).signalMob(abstractEntity, "damage");
+            }
+
             return;
         }
 
@@ -108,6 +119,7 @@ public class ChangeResourceHandler {
         double ratio = newCurrentHealth / actualMaxHealth;
 
         double maxHealth = entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+
         int hearts = (int) Math.ceil(ratio * maxHealth);
 
         if(hearts < 0){

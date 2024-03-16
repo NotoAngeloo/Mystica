@@ -90,16 +90,21 @@ public class CombatManager {
 
     public void tryToEndCombat(Player player){
 
-        long currentTime = System.currentTimeMillis();
-        long lastCalled = getLastCalledCombat(player);
-
-        if(currentTime - lastCalled > 10000){
+        if(canLeaveCombat(player)){
             forceCombatEnd(player);
         }
         else{
-            player.sendMessage(((10000 -(currentTime - lastCalled))/1000) + " seconds left");
+            player.sendMessage(((10000 -(System.currentTimeMillis() - getLastCalledCombat(player)))/1000) + " seconds left");
         }
 
+    }
+
+    public boolean canLeaveCombat(Player player){
+
+        long currentTime = System.currentTimeMillis();
+        long lastCalled = getLastCalledCombat(player);
+
+        return currentTime - lastCalled > 10000;
     }
 
     public void forceCombatEnd(Player player){

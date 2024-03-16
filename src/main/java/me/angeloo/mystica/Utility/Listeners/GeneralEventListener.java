@@ -10,6 +10,7 @@ import me.angeloo.mystica.Components.Inventories.AbilityInventory;
 import me.angeloo.mystica.Components.Inventories.BagInventory;
 import me.angeloo.mystica.Components.Inventories.EquipmentInventory;
 import me.angeloo.mystica.Components.Items.PathToolItem;
+import me.angeloo.mystica.Components.Items.RezItem;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.CustomEvents.*;
@@ -75,6 +76,7 @@ public class GeneralEventListener implements Listener {
     private final BagInventory bagInventory;
     private final ClassSetter classSetter;
     private final DamageHealthBoard damageHealthBoard;
+    private final CustomItemConverter customItemConverter;
 
     private final DamageCalculator damageCalculator;
     private final ChangeResourceHandler changeResourceHandler;
@@ -110,6 +112,7 @@ public class GeneralEventListener implements Listener {
         gearReader = new GearReader(main);
         classSetter = new ClassSetter(main);
         damageHealthBoard = main.getDamageHealthBoard();
+        customItemConverter = new CustomItemConverter();
     }
 
     @EventHandler
@@ -177,14 +180,7 @@ public class GeneralEventListener implements Listener {
                 hasBadItem = true;
             }
 
-            ItemStack rezItem = new ItemStack(Material.ENDER_EYE);
-            ItemMeta rezMeta = rezItem.getItemMeta();
-            assert rezMeta != null;
-            rezMeta.setDisplayName("Revive");
-            List<String> lore = new ArrayList<>();
-            lore.add("Right Click to Revive");
-            rezMeta.setLore(lore);
-            rezItem.setItemMeta(rezMeta);
+            ItemStack rezItem = customItemConverter.convert(new RezItem(), 1);
 
             if(playerInventory.contains(rezItem)){
                 hasBadItem = true;
@@ -217,7 +213,8 @@ public class GeneralEventListener implements Listener {
             public void run(){
 
                 if(profileManager.getAnyProfile(player).getMilestones().getMilestone("tutorial")
-                && !profileManager.getAnyProfile(player).getMilestones().getMilestone("firstdungeon")){
+                && !profileManager.getAnyProfile(player).getMilestones().getMilestone("firstdungeon")
+                && !player.getWorld().getName().startsWith("tutorial_")){
                     Bukkit.getServer().getPluginManager().callEvent(new HelpfulHintEvent(player, "npcspeak"));
                 }
 
@@ -700,6 +697,20 @@ public class GeneralEventListener implements Listener {
             return;
         }
 
+        if(item == null){
+            return;
+        }
+
+        if(!item.isSimilar(customItemConverter.convert(new RezItem(), 1))) {
+            return;
+        }
+
+        if(event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK){
+            return;
+        }
+
+        event.setCancelled(true);
+
         PartiesAPI api = Parties.getApi();
         PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
 
@@ -718,6 +729,10 @@ public class GeneralEventListener implements Listener {
                 //exclude dead players from this
                 Player member = Bukkit.getPlayer(memberID);
 
+                if(member == null){
+                    continue;
+                }
+
                 boolean partyMemberDeathStatus = profileManager.getAnyProfile(member).getIfDead();
 
                 if(partyMemberDeathStatus){
@@ -728,19 +743,20 @@ public class GeneralEventListener implements Listener {
 
                 if(partyMemberCombatStatus){
                     event.setCancelled(true);
+                    
+                    if(combatManager.canLeaveCombat(member)){
+                        //request them
+                        member.sendMessage(ChatColor.of(new java.awt.Color(0, 153, 0)) + player.getName() + ChatColor.RESET + " requests that you exit combat.");
+                    }
+
                     return;
                 }
             }
         }
 
-        if(event.getAction() == Action.RIGHT_CLICK_AIR
-                || event.getAction() == Action.RIGHT_CLICK_BLOCK){
-            if(item != null && item.getType() == Material.ENDER_EYE && item.getItemMeta().getDisplayName().equalsIgnoreCase("Revive")){
-                event.setCancelled(true);
-                deathManager.playerNowLive(player, false, null);
-                displayWeapons.displayWeapons(player);
-            }
-        }
+        deathManager.playerNowLive(player, false, null);
+        displayWeapons.displayWeapons(player);
+
     }
 
     @EventHandler
@@ -919,17 +935,7 @@ public class GeneralEventListener implements Listener {
         }
 
         //targeting bar
-        for(Map.Entry<UUID, LivingEntity> entry: targetManager.getTargetMap().entrySet()){
-            UUID playerID = entry.getKey();
-            Player player = Bukkit.getPlayer(playerID);
-            Entity target = entry.getValue();
-
-            if(target != null && target.equals(defender)){
-                assert player != null;
-                targetManager.updateTargetBar(player);
-
-            }
-        }
+        Bukkit.getServer().getPluginManager().callEvent(new TargetBarShouldUpdateEvent(defender));
 
         if(immortal || immune){
             return;
@@ -972,6 +978,25 @@ public class GeneralEventListener implements Listener {
         if(MythicBukkit.inst().getAPIHelper().isMythicMob(defender.getUniqueId())){
             AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(defender).getEntity();
             MythicBukkit.inst().getAPIHelper().getMythicMobInstance(defender).signalMob(abstractEntity, "damage");
+        }
+
+    }
+
+    @EventHandler
+    public void targetBarUpdate(TargetBarShouldUpdateEvent event){
+
+        LivingEntity target = event.getTarget();
+
+        for(Map.Entry<UUID, LivingEntity> entry: targetManager.getTargetMap().entrySet()){
+            UUID playerID = entry.getKey();
+            Player player = Bukkit.getPlayer(playerID);
+            Entity playerTarget = entry.getValue();
+
+            if(playerTarget != null && playerTarget.equals(target)){
+                assert player != null;
+                targetManager.updateTargetBar(player);
+
+            }
         }
 
     }
@@ -1473,6 +1498,7 @@ public class GeneralEventListener implements Listener {
 
         Player player = event.getPlayer();
 
+        targetManager.setPlayerTarget(player, null);
         combatManager.forceCombatEnd(player);
 
         displayWeapons.displayArmor(player);
@@ -1508,7 +1534,7 @@ public class GeneralEventListener implements Listener {
         switch (whatHint.toLowerCase()){
             case "npcspeak":{
                 player.sendMessage(ChatColor.of(new java.awt.Color(255, 128, 0)) + "Helpful Hint: " +
-                        ChatColor.RESET + "Speaking with Npcs might lead you to an adventure");
+                        ChatColor.RESET + "Some of the townsfolk may give directions.");
                 return;
             }
             case "combatend":{

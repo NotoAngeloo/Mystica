@@ -133,14 +133,53 @@ public class ShieldAbilityManaDisplayer {
             }
 
             String abilityName = ultimateItem.getItemMeta().getDisplayName();
-
             abilityName = abilityName.replaceAll("§.", "");
 
 
-            return abilityName;
+            return abilityUnicode(abilityName);
         }
 
         return String.valueOf(cooldown);
+    }
+
+    private String abilityUnicode(String abilityName){
+
+        StringBuilder unicode = new StringBuilder();
+
+        switch (abilityName.toLowerCase()){
+
+            case "conjuring force":{
+                unicode.append("\uE043");
+                break;
+            }
+            case "fiery wing":{
+                unicode.append("\uE044");
+                break;
+            }
+            case "wild roar":{
+                unicode.append("\uE045");
+                break;
+            }
+            case "star volley":{
+                unicode.append("\uE040");
+                break;
+            }
+            case "annihilation":{
+                unicode.append("\uE041");
+                break;
+            }
+            case "blood shield":{
+                unicode.append("\uE042");
+                break;
+            }
+
+            default:{
+                unicode.append(abilityName);
+                break;
+            }
+        }
+
+        return String.valueOf(unicode);
     }
 
 

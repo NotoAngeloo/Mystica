@@ -45,8 +45,13 @@ public class MysticaInteractions implements CommandExecutor {
 
             assert player != null;
 
-            if(profileManager.getAnyProfile(player).getIfInCombat() || profileManager.getAnyProfile(player).getIfDead()){
-                player.sendMessage("Can't do this right now");
+            if(profileManager.getAnyProfile(player).getIfInCombat()){
+                player.sendMessage("Can't start a conversation in combat.");
+                return true;
+            }
+
+            if(profileManager.getAnyProfile(player).getIfDead()){
+                player.sendMessage("Can't start a conversation while dead.");
                 return true;
             }
 

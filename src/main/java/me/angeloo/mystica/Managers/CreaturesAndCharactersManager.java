@@ -24,6 +24,7 @@ public class CreaturesAndCharactersManager {
     private final TheLindwyrm theLindwyrm;
     private final BetaTester betaTester;
     private final Dummy dummy;
+    private final MadDummy madDummy;
     private final NewPlayerNpc newPlayerNpc;
     private final LindwyrmNpc lindwyrmNpc;
     private final ArchbishopNpc archbishopNpc;
@@ -34,13 +35,13 @@ public class CreaturesAndCharactersManager {
         theLindwyrm = new TheLindwyrm(main);
         betaTester = new BetaTester(main);
         dummy = new Dummy(main);
+        madDummy = new MadDummy(main);
         newPlayerNpc = new NewPlayerNpc(main);
         lindwyrmNpc = new LindwyrmNpc(main);
         archbishopNpc = new ArchbishopNpc(main);
     }
 
     public void spawnAllNpcs() throws InvalidMobTypeException {
-
         newPlayerNpc.spawn();
         lindwyrmNpc.spawn();
         archbishopNpc.spawn();
@@ -51,16 +52,16 @@ public class CreaturesAndCharactersManager {
     public void makeNpcProfile(String name, UUID uuid){
 
         switch (name){
-            case "The Lindwyrm":{
+            case "Lindwyrm":{
                 theLindwyrm.makeProfile(uuid);
                 profileManager.setBossHome(uuid);
                 break;
             }
-            case "Rock":{
+            case "LindwyrmRock":{
                 makeImmortalObjectProfile(uuid);
                 break;
             }
-            case "Beta Tester":{
+            case "BetaTester":{
                 betaTester.makeProfile(uuid);
                 break;
             }
@@ -68,10 +69,16 @@ public class CreaturesAndCharactersManager {
                 dummy.makeProfile(uuid);
                 break;
             }
-            case "Trenton Vocation":
-            case "Dungeon Dan":
+            case "MadDummy":{
+                madDummy.makeProfile(uuid);
+                profileManager.setBossHome(uuid);
+                break;
+            }
+            case "NewPlayerNpc":
+            case "ClassTutorial":
+            case "LindwyrmNpc":
                 //perhaps make it check which mob is actually is before making it
-            case "Archbishop Hasbrudan":{
+            case "ArchbishopNpc":{
                 makeDefaultNonCombatantProfile(uuid);
                 break;
             }

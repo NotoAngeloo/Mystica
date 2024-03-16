@@ -675,7 +675,12 @@ public class InventoryEventListener implements Listener {
             new BukkitRunnable(){
                 @Override
                 public void run(){
-                    Bukkit.getServer().getPluginManager().callEvent(new HelpfulHintEvent(player, "NpcSpeak"));
+
+                    if(!player.getWorld().getName().startsWith("tutorial_")){
+                        Bukkit.getServer().getPluginManager().callEvent(new HelpfulHintEvent(player, "NpcSpeak"));
+                    }
+
+
                 }
             }.runTaskLater(main, 60);
 

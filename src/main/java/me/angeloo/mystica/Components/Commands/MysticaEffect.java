@@ -83,6 +83,10 @@ public class MysticaEffect implements CommandExecutor {
                         return true;
                     }
 
+                    if(subclass.equalsIgnoreCase("executioner")){
+                        amount *= .5;
+                    }
+
                     double percent = profileManager.getAnyProfile(target).getTotalHealth() * ((double)amount/100);
 
                     changeResourceHandler.subtractHealthFromEntity(target, percent, caster);

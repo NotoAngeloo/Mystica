@@ -165,6 +165,7 @@ public class WildSpirit {
                 LivingEntity target = targetManager.getPlayerTarget(player);
 
                 if(target != null){
+
                     if(target instanceof Player){
                         if(pvpManager.pvpLogic(player, (Player) target)){
                             wolfTarget = target;
@@ -198,6 +199,12 @@ public class WildSpirit {
 
                 if(wolfTarget == null){
                     wolfTarget = player;
+                }
+
+                if(wolf.getWorld() != player.getWorld()
+                || wolf.getWorld() != wolfTarget.getWorld()){
+                    despawn();
+                    return;
                 }
 
                 if(wolfTarget == player){

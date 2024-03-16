@@ -4,6 +4,7 @@ import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
+import me.angeloo.mystica.CustomEvents.TargetBarShouldUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.PlayerProfile;
@@ -720,23 +721,44 @@ public class ProfileManager {
         boss.setAI(false);
         boss.teleport(home);
 
-        if(MythicBukkit.inst().getAPIHelper().isMythicMob(uuid)){
+        Bukkit.getServer().getPluginManager().callEvent(new TargetBarShouldUpdateEvent(boss));
 
-            AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(boss).getEntity();
+        if(MythicBukkit.inst().getAPIHelper().isMythicMob(uuid)){
 
             new BukkitRunnable(){
                 @Override
                 public void run(){
+
+                    if(!getIfResetProcessing(boss)){
+                        this.cancel();
+                        return;
+                    }
+
+                    Entity entity = Bukkit.getEntity(uuid);
+
+                    if(entity == null){
+                        this.cancel();
+                        return;
+                    }
+
+                    LivingEntity boss = (LivingEntity) entity;
+
+
+                    AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(boss).getEntity();
+
+                    if(abstractEntity == null){
+                        this.cancel();
+                        return;
+                    }
 
                     if(home.getWorld() == null){
                         this.cancel();
                         return;
                     }
 
+
                     MythicBukkit.inst().getAPIHelper().getMythicMobInstance(boss).signalMob(abstractEntity, "reset");
-                    if(!getIfResetProcessing(boss)){
-                        this.cancel();
-                    }
+
                 }
             }.runTaskTimer(main, 0, 1);
 

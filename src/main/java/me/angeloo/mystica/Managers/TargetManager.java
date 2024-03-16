@@ -204,6 +204,8 @@ public class TargetManager {
 
     private BossBar startTargetBar(Player player, LivingEntity entity){
 
+        //Bukkit.getLogger().info(entity.getName());
+
         BossBar bossBar;
         int level;
 

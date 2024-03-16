@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Managers;
 
 import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
+import me.angeloo.mystica.CustomEvents.TargetBarShouldUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
@@ -61,6 +62,7 @@ public class DeathManager {
         abilityManager.resetAbilityBuffs(player);
         dpsManager.removeDps(player);
         Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+        Bukkit.getServer().getPluginManager().callEvent(new TargetBarShouldUpdateEvent(player));
     }
 
     public void playerNowLive(Player player, Boolean bySkill, Player playerWhoCastSkill){
@@ -106,6 +108,7 @@ public class DeathManager {
         scoreboard.clearSlot(DisplaySlot.SIDEBAR);
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(""));
         Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+        Bukkit.getServer().getPluginManager().callEvent(new TargetBarShouldUpdateEvent(player));
     }
 
 }

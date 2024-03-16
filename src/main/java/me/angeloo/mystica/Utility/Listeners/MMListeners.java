@@ -21,7 +21,8 @@ public class MMListeners implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onMythicSpawn(MythicMobSpawnEvent event){
 
-        String name = event.getMob().getDisplayName();
+        String name = event.getMob().getMobType();
+
         UUID id = event.getMob().getUniqueId();
         profileManager.addToNonPlayerNameMap(name, id);
 

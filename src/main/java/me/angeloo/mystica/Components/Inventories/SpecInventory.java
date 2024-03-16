@@ -460,6 +460,7 @@ public class SpecInventory {
                 ChatColor.of(new Color(230,230,230)) + "+15 Health, +3 Attack, +100 mana, +1 Both Defense",
                 "",
                 ChatColor.of(new Color(230,230,230)) + "Crit rate increased by 10%",
+                ChatColor.of(new Color(230,230,230)) + "Gain partial Crushing Resistance",
                 "",
                 ChatColor.of(new Color(214, 126, 61)) + "Anvil Drop" +
                         ChatColor.of(new Color(230,230,230)) + " crit rate increased by 15%",

@@ -1,107 +1,45 @@
 package me.angeloo.mystica.Components.Creatures;
 
-import com.alessiodp.parties.api.Parties;
-import com.alessiodp.parties.api.interfaces.PartiesAPI;
-import com.alessiodp.parties.api.interfaces.Party;
-import com.alessiodp.parties.api.interfaces.PartyPlayer;
-import me.angeloo.mystica.Components.Items.SoulStone;
-import me.angeloo.mystica.Components.Items.UnidentifiedEquipment;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
-public class TheLindwyrm {
+public class MadDummy {
 
     private final ProfileManager profileManager;
 
-
-    public TheLindwyrm(Mystica main){
+    public MadDummy(Mystica main){
         profileManager = main.getProfileManager();
-
     }
 
     public void makeProfile(UUID uuid){
 
-        Entity entity = Bukkit.getEntity(uuid);
-
-        if(entity == null){
-            return;
-        }
-
-        Player theClosestPlayersLeader = null;
-
-        double closestDistanceSquared = Double.MAX_VALUE;
-        Player closestPlayer = null;
-
-
-        for (Player player : entity.getWorld().getPlayers()) {
-            double distanceSquared = player.getLocation().distanceSquared(entity.getLocation());
-            if (distanceSquared < closestDistanceSquared) {
-                closestDistanceSquared = distanceSquared;
-                closestPlayer = player;
-            }
-        }
-
-        PartiesAPI api = Parties.getApi();
-
-        if(closestPlayer != null){
-            PartyPlayer partyPlayer = api.getPartyPlayer(closestPlayer.getUniqueId());
-
-            assert partyPlayer != null;
-            if(partyPlayer.isInParty()){
-
-                Party party = api.getParty(partyPlayer.getPartyId());
-
-                assert party != null;
-                UUID partyLeaderId = party.getLeader();
-
-                assert partyLeaderId != null;
-
-                theClosestPlayersLeader = Bukkit.getPlayer(partyLeaderId);
-
-
-            }
-            else{
-                theClosestPlayersLeader = closestPlayer;
-            }
-
-            assert theClosestPlayersLeader != null;
-            //Bukkit.getLogger().info(theClosestPlayersLeader.getName());
-
-        }
-
         int level = 1;
+        int attack = 50;
+        int magic = 50;
+        int health = 500;
+        int mana = 0;
+        int regen = 0;
+        int mana_regen = 0;
+        int defense = 50;
+        int magic_defense = 50;
+        int crit = 0;
 
-        if(theClosestPlayersLeader != null){
-            level = profileManager.getAnyProfile(theClosestPlayersLeader).getPlayerBossLevel().getBossLevel();
-        }
+        Stats stats = new Stats(level,attack,magic,health,mana,regen,mana_regen,defense,magic_defense,crit);
 
-        int hp = 10000 + (100 * (level-1));
-        int atk = 50 + (25 * level-1);
-        int mag = 50 + (25 * level-1);
-        int def = 40 + (25 * level-1);
-        int mdef = 40 + (25 * level-1);
-
-        Stats stats = new Stats(level, atk, mag, hp, 0, 0, 0, def, mdef, 0);
-        Boolean isMovable = false;
+        Boolean isMovable = true;
         Boolean immortal = false;
         Boolean object = false;
         Boolean passive = false;
+        Yield yield = new Yield(0.0f, null);
 
-        float xpYield = .01f;
-
-        Yield yield = new Yield(xpYield, dropItems(level));
-        NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(hp, stats, isMovable, immortal, passive, object, yield) {
+        NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(health, stats, isMovable, immortal, passive, object, yield) {
 
             @Override
             public Bal getBal() {
@@ -110,12 +48,12 @@ public class TheLindwyrm {
 
             @Override
             public Boolean getIfDead() {
-                return false;
+                return null;
             }
 
             @Override
             public Boolean getIfInCombat() {
-                return false;
+                return null;
             }
 
             @Override
@@ -148,6 +86,7 @@ public class TheLindwyrm {
                 return null;
             }
 
+
             @Override
             public void setGearStats(StatsFromGear statsFromGear) {
 
@@ -155,47 +94,47 @@ public class TheLindwyrm {
 
             @Override
             public int getTotalHealth() {
-                return getStats().getHealth();
+                return health;
             }
 
             @Override
             public int getTotalMana() {
-                return getStats().getMana();
+                return mana;
             }
 
             @Override
             public int getTotalAttack() {
-                return getStats().getAttack();
+                return attack;
             }
 
             @Override
             public int getTotalMagic() {
-                return getStats().getMagic();
+                return magic;
             }
 
             @Override
             public int getTotalDefense() {
-                return getStats().getDefense();
+                return defense;
             }
 
             @Override
             public int getTotalMagicDefense() {
-                return getStats().getMagic_Defense();
+                return magic_defense;
             }
 
             @Override
             public int getTotalRegen() {
-                return getStats().getRegen();
+                return regen;
             }
 
             @Override
             public int getTotalManaRegen() {
-                return getStats().getMana_Regen();
+                return mana_regen;
             }
 
             @Override
             public int getTotalCrit() {
-                return getStats().getCrit();
+                return crit;
             }
 
             @Override
@@ -266,19 +205,6 @@ public class TheLindwyrm {
         profileManager.addToNonPlayerProfiles(uuid, nonPlayerProfile);
 
 
-    }
-
-    public List<ItemStack> dropItems(int level){
-
-        List<ItemStack> itemDrops = new ArrayList<>();
-
-        for(int i = 0; i<(10 * level); i++){
-            itemDrops.add(new SoulStone());
-        }
-
-        itemDrops.add(new UnidentifiedEquipment(level));
-
-        return itemDrops;
     }
 
 }

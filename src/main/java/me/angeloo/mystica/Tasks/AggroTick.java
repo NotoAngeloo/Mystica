@@ -48,7 +48,9 @@ public class AggroTick {
                     return;
                 }
 
-                //LivingEntity targetedEntity = ((Creature) entity).getTarget();
+                /*LivingEntity targetedEntity = ((Creature) entity).getTarget();
+                assert targetedEntity != null;
+                Bukkit.getLogger().info(targetedEntity.getName());*/
 
                 List<Player> originalAttackerList = aggroManager.getAttackerList(entity);
 

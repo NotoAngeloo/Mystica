@@ -119,6 +119,9 @@ commands:
     description: lets devs give soulstones
     usage: /GiveSoulStone <player> <amount>
     permission: developer
+  Breakaway:
+    description: lets players go to their spawn if stuck
+    usage: /Breakaway
 
 permissions:
   developer:

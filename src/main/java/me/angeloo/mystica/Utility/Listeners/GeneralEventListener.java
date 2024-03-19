@@ -723,6 +723,8 @@ public class GeneralEventListener implements Listener {
                     //and mark it as cleared
                     firstClearManager.markCleared(bossName, level);
                     firstClearManager.saveFolder();
+
+                    //perhaps give all the players an achievement as well
                 }
 
             }

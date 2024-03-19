@@ -126,6 +126,7 @@ public final class Mystica extends JavaPlugin {
         getCommand("Cosmetic").setExecutor(new Cosmetic(this));
         getCommand("BossLevel").setExecutor(new BossLevel(this));
         getCommand("GiveSoulStone").setExecutor(new GiveSoulStone(this));
+        getCommand("Breakaway").setExecutor(new Breakaway(this));
 
         this.getServer().getPluginManager().registerEvents(new InventoryEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new GeneralEventListener(this), this);

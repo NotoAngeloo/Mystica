@@ -192,94 +192,6 @@ public class PathingManager {
         }
 
 
-        /*Set<Location> pathBetweenStartAndEnd = new HashSet<>();
-        Set<Set<Location>> splitPaths = new HashSet<>();
-        Set<Location> extremities = new HashSet<>();
-
-        Set<Location> checked = new HashSet<>();
-
-        boolean stopChecking = false;
-
-        extremities.add(pathStart);
-
-        while (!extremities.isEmpty()) {
-            Set<Location> nextExtremities = new HashSet<>();
-
-            if(pathStart == pathEnd){
-                pathBetweenStartAndEnd.add(pathStart);
-                break;
-            }
-
-
-            for (Location loc : extremities) {
-
-                checked.add(loc);
-
-                Set<Location> neighbors = getNeighbors(player, loc);
-                neighbors.removeAll(checked);
-
-                nextExtremities.addAll(neighbors);
-
-                if (neighbors.size() >= 2) {
-
-                    Bukkit.getLogger().info(loc + " has " + neighbors.size());
-
-                    for(Location neighbor : neighbors){
-                        Set<Location> splitPath = new HashSet<>();
-                        splitPath.add(loc);
-                        splitPath.add(neighbor);
-                        splitPaths.add(splitPath);
-                        //Bukkit.getLogger().info("newpath at " + neighbor);
-                    }
-
-
-                }
-
-                if (neighbors.size() == 1) {
-
-                    if(splitPaths.isEmpty()){
-                        Set<Location> splitPath = new HashSet<>();
-                        splitPath.add(loc);
-                        splitPath.addAll(neighbors);
-                        splitPaths.add(splitPath);
-                        //Bukkit.getLogger().info("newpath at " + neighbors.iterator().next());
-                    }
-                    else{
-                        for (Set<Location> path : splitPaths) {
-                            if (path.contains(loc)) {
-                                path.addAll(neighbors);
-                                break;
-                            }
-                        }
-                    }
-
-                }
-
-
-                if(neighbors.contains(pathEnd)){
-                    //Bukkit.getLogger().info("pathend found");
-                    stopChecking = true;
-                    break;
-                }
-
-
-            }
-
-            extremities = nextExtremities;
-
-            if(stopChecking){
-                break;
-            }
-        }
-
-
-        for (Set<Location> path : splitPaths) {
-            if (path.contains(pathStart) && path.contains(pathEnd)) {
-                pathBetweenStartAndEnd.addAll(path);
-                break;
-            }
-        }*/
-
         Set<Location> pathBetweenStartAndEnd = new HashSet<>();
         Set<Set<Location>> branches = new HashSet<>();
         Set<Location> extremities = new HashSet<>();
@@ -355,29 +267,8 @@ public class PathingManager {
         destinations.put(player.getUniqueId(), destination);
         startPathDisplayTask(player);
 
-        /*for(Location loc : calculatedPath){
-            player.spawnParticle(Particle.REDSTONE, loc.clone().add(0,1,0), 20, .1, .1, .1, 0, new DustOptions(Color.ORANGE, 2.0F));
-        }*/
     }
 
-    /*private Set<Location> getNeighbors(Player player, Location origin){
-        int radius = 1;
-        Set<Location> neighbors = new HashSet<>();
-        for (int x = -radius; x <= radius; x++) {
-            for (int y = -radius; y <= radius; y++) {
-                for (int z = -radius; z <=radius; z++) {
-                    Location blockLocation = origin.clone().add(x, y, z);
-                    Block block = player.getWorld().getBlockAt(blockLocation);
-                    blockLocation = block.getLocation();
-                    if (paths.contains(blockLocation)) {
-                        neighbors.add(blockLocation);
-                    }
-                }
-            }
-        }
-        neighbors.remove(origin);
-        return neighbors;
-    }*/
 
     private Set<Location> getNeighbors(Player player, Location origin) {
         int radius = 1;

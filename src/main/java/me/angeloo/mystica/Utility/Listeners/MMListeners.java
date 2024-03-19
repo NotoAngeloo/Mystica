@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Utility.Listeners;
 
 
+import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobSpawnEvent;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -26,6 +27,7 @@ public class MMListeners implements Listener {
         UUID id = event.getMob().getUniqueId();
         profileManager.addToNonPlayerNameMap(name, id);
 
-
     }
+
+
 }

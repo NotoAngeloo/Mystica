@@ -18,6 +18,7 @@ import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -219,10 +220,17 @@ public class ProfileManager {
 
                     Map<String, Boolean> allMilestones = new HashMap<>();
 
-                    allMilestones.put("tutorial", config.getBoolean(id + ".milestones.tutorial"));
+                    ConfigurationSection milestonesSection = config.getConfigurationSection(id + ".milestones");
+                    if (milestonesSection != null) {
+                        for (String milestone : milestonesSection.getKeys(false)) {
+                            allMilestones.put(milestone, milestonesSection.getBoolean(milestone));
+                        }
+                    }
+
+                    /*allMilestones.put("tutorial", config.getBoolean(id + ".milestones.tutorial"));
                     allMilestones.put("divive", config.getBoolean(id + ".milestones.divine"));
                     allMilestones.put("chaos", config.getBoolean(id + ".milestones.chaos"));
-                    allMilestones.put("firstdungeon", config.getBoolean(id + ".milestones.firstdungeon"));
+                    allMilestones.put("firstdungeon", config.getBoolean(id + ".milestones.firstdungeon"));*/
 
                     Milestones milestones = new Milestones(allMilestones);
 

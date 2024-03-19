@@ -5,6 +5,7 @@ import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import io.lumine.mythic.api.adapters.AbstractEntity;
+import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.Inventories.AbilityInventory;
 import me.angeloo.mystica.Components.Inventories.BagInventory;
@@ -81,6 +82,8 @@ public class GeneralEventListener implements Listener {
     private final DamageCalculator damageCalculator;
     private final ChangeResourceHandler changeResourceHandler;
 
+    private final FirstClearManager firstClearManager;
+
     private final Map<UUID, BukkitTask> countdownTasks = new HashMap<>();
     private final Map<UUID, Boolean> dropCheck = new HashMap<>();
 
@@ -113,6 +116,7 @@ public class GeneralEventListener implements Listener {
         classSetter = new ClassSetter(main);
         damageHealthBoard = main.getDamageHealthBoard();
         customItemConverter = new CustomItemConverter();
+        firstClearManager = main.getFirstClearManager();
     }
 
     @EventHandler
@@ -647,11 +651,10 @@ public class GeneralEventListener implements Listener {
         float xpYield = yield.getXpYield();
         List<ItemStack> itemDrops = yield.getItemYield();
 
+        Set<Player> victors = new HashSet<>();
 
         PartiesAPI api = Parties.getApi();
-
         PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
-
         assert partyPlayer != null;
         if(partyPlayer.isInParty()){
 
@@ -660,27 +663,72 @@ public class GeneralEventListener implements Listener {
             assert party != null;
             Set<UUID> partyMemberList = party.getMembers();
 
-            List<Player> partyList = new ArrayList<>();
+            //List<Player> partyList = new ArrayList<>();
 
             for(UUID partyMemberId : partyMemberList){
                 Player partyMember = Bukkit.getPlayer(partyMemberId);
-                partyList.add(partyMember);
+
+                if(partyMember==null){
+                    continue;
+                }
+
+                changeResourceHandler.addXpToPlayer(partyMember, (xpYield / partyMemberList.size()));
+                bagInventory.addItemsToPlayerBagByPickup(partyMember, itemDrops);
+                victors.add(partyMember);
             }
 
-            int numPlayers = partyList.size();
-
-            for(Player member : partyList){
-                changeResourceHandler.addXpToPlayer(member, (xpYield / numPlayers));
-
-                bagInventory.addItemsToPlayerBagByPickup(member, itemDrops);
-
-
-            }
         }
         else {
             changeResourceHandler.addXpToPlayer(player, xpYield);
-
             bagInventory.addItemsToPlayerBagByPickup(player, itemDrops);
+            victors.add(player);
+        }
+
+
+
+        //check bosshomes
+        if(profileManager.getIfEntityIsBoss(entity.getUniqueId())){
+
+            //check if mm too
+            if(MythicBukkit.inst().getAPIHelper().isMythicMob(entity.getUniqueId())){
+                String bossName = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).getMobType();
+
+                int level = profileManager.getAnyProfile(entity).getStats().getLevel();
+
+                //check if the boss has been cleared at this level yet
+                if(!firstClearManager.getIfBossHasBeenClearedAtThisLevel(bossName, level)){
+
+                    //build a string
+                    StringBuilder announcement = new StringBuilder();
+
+                    announcement.append(ChatColor.of(new java.awt.Color(127, 0, 255))).append("Server First Clear!\n");
+                    announcement.append(ChatColor.RESET).append("Congratulations to ");
+
+                    for(Player victor : victors){
+                        announcement.append(ChatColor.of(new java.awt.Color(0, 102, 204)));
+                        announcement.append(victor.getName()).append(" ");
+                    }
+
+                    announcement.append(ChatColor.RESET);
+                    announcement.append("for defeating ");
+                    announcement.append(ChatColor.of(new java.awt.Color(102, 0, 0)));
+                    announcement.append(bossName);
+                    announcement.append(ChatColor.RESET);
+                    announcement.append(" at level ");
+                    announcement.append(ChatColor.of(new java.awt.Color(0, 102, 0)));
+                    announcement.append(level);
+
+                    Bukkit.getServer().broadcastMessage(String.valueOf(announcement));
+
+                    //and mark it as cleared
+                    firstClearManager.markCleared(bossName, level);
+                    firstClearManager.saveFolder();
+                }
+
+            }
+
+
+
         }
 
     }

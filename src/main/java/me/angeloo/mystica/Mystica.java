@@ -49,6 +49,8 @@ public final class Mystica extends JavaPlugin {
 
     private BagInventory bagInventory;
 
+    private FirstClearManager firstClearManager;
+
     private ProtocolManager protocolManager;
 
     @Override
@@ -90,6 +92,8 @@ public final class Mystica extends JavaPlugin {
         inventoryIndexingManager = new InventoryIndexingManager();
         bagInventory = new BagInventory(this);
 
+        firstClearManager = new FirstClearManager(this);
+        firstClearManager.createOrLoadFolder();
 
         aggroTick = new AggroTick(this);
 
@@ -185,6 +189,7 @@ public final class Mystica extends JavaPlugin {
 
         profileManager.saveProfilesToConfig();
         pathingManager.saveFolder();
+        firstClearManager.saveFolder();
         Bukkit.getLogger().info("Mystica Disabled");
     }
 
@@ -263,6 +268,8 @@ public final class Mystica extends JavaPlugin {
     public ProfileFileWriter getProfileFileWriter(){
         return profileFileWriter;
     }
+
+    public FirstClearManager getFirstClearManager(){return firstClearManager;}
 
     public ProtocolManager getProtocolManager(){return protocolManager;}
 

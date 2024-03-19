@@ -121,12 +121,13 @@ public class PathingManager {
                 Block currentBlock = current.getBlock();
                 Block blockAbove = current.clone().add(0,1,0).getBlock();
 
-                if(currentBlock.getType().isAir()){
+                //was is air
+                if(currentBlock.isPassable()){
                     current.subtract(0,1,0);
                     continue;
                 }
 
-                if(!blockAbove.getType().isAir()){
+                if(!blockAbove.isPassable()){
                     current.add(0,1,0);
                     continue;
                 }
@@ -165,12 +166,12 @@ public class PathingManager {
                 Block currentBlock = current.getBlock();
                 Block blockAbove = current.clone().add(0,1,0).getBlock();
 
-                if(currentBlock.getType().isAir()){
+                if(currentBlock.isPassable()){
                     current.subtract(0,1,0);
                     continue;
                 }
 
-                if(!blockAbove.getType().isAir()){
+                if(!blockAbove.isPassable()){
                     current.add(0,1,0);
                     continue;
                 }

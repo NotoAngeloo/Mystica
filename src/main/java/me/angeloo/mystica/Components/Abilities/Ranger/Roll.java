@@ -6,6 +6,7 @@ import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -83,7 +84,20 @@ public class Roll {
     private void execute(Player player){
 
         Location start = player.getLocation();
-        Vector direction = start.getDirection().normalize().multiply(-1);
+
+
+        Vector direction = start.getDirection().normalize();
+
+        double shieldAmount = (profileManager.getAnyProfile(player).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player)) / 4;
+
+
+        if(player.isSneaking()){
+            direction.multiply(-1);
+            shieldAmount*=2;
+        }
+
+
+        buffAndDebuffManager.getGenericShield().applyOrAddShield(player, shieldAmount);
 
         double forwardPower = 3;
         double jumpPower = .2;
@@ -93,14 +107,13 @@ public class Roll {
         //also give a shield and increase move speed
         buffAndDebuffManager.getSpeedUp().applySpeedUp(player, .3f);
 
-        double fourthHealth = (profileManager.getAnyProfile(player).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(player)) / 4;
-        buffAndDebuffManager.getGenericShield().applyOrAddShield(player, fourthHealth);
 
+        double finalShieldAmount = shieldAmount;
         new BukkitRunnable(){
             @Override
             public void run(){
                 buffAndDebuffManager.getSpeedUp().removeSpeedUp(player);
-                buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(player, fourthHealth);
+                buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(player, finalShieldAmount);
             }
         }.runTaskLater(main, 100);
 

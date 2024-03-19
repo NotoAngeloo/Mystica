@@ -11,10 +11,12 @@ import me.angeloo.mystica.Utility.StatusDisplayer;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 
 
 import java.util.*;
@@ -70,6 +72,15 @@ public class CombatManager {
             Bukkit.getServer().getPluginManager().callEvent(new HelpfulHintEvent(player, "combatend"));
             player.getInventory().setItem(13, getItem(new ItemStack(Material.BARRIER), "Exit Combat"));
             cooldownDisplayer.initializeItems(player);
+
+            /*PluginManager pluginManager = Bukkit.getPluginManager();
+            Plugin interactions =  pluginManager.getPlugin("interactions");
+            if (interactions != null && interactions.isEnabled()) {
+                Server server = Bukkit.getServer();
+
+                server.dispatchCommand(server.getConsoleSender(), "interactions stop " + player.getName());
+            }*/
+
         }
 
         profileManager.getAnyProfile(player).setIfInCombat(true);

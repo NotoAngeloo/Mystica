@@ -28,6 +28,7 @@ public class CreaturesAndCharactersManager {
     private final NewPlayerNpc newPlayerNpc;
     private final LindwyrmNpc lindwyrmNpc;
     private final ArchbishopNpc archbishopNpc;
+    private final HansNpc hansNpc;
 
 
     public CreaturesAndCharactersManager(Mystica main){
@@ -39,12 +40,14 @@ public class CreaturesAndCharactersManager {
         newPlayerNpc = new NewPlayerNpc(main);
         lindwyrmNpc = new LindwyrmNpc(main);
         archbishopNpc = new ArchbishopNpc(main);
+        hansNpc = new HansNpc(main);
     }
 
     public void spawnAllNpcs() throws InvalidMobTypeException {
         newPlayerNpc.spawn();
         lindwyrmNpc.spawn();
         archbishopNpc.spawn();
+        hansNpc.spawn();
     }
 
 
@@ -74,6 +77,7 @@ public class CreaturesAndCharactersManager {
                 profileManager.setBossHome(uuid);
                 break;
             }
+            case "HansNpc":
             case "NewPlayerNpc":
             case "ClassTutorial":
             case "LindwyrmNpc":

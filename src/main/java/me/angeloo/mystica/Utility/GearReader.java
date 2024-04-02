@@ -26,7 +26,6 @@ public class GearReader {
         boolean ignoreMana = profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("shadow knight");
 
         int attack = 0;
-        int magic = 0;
         int health = 0;
         int mana = 0;
         int regen = 0;
@@ -53,7 +52,7 @@ public class GearReader {
         ItemStack leggings = equipment.getLeggings();
         ItemStack boots = equipment.getBoots();
 
-        String[] valid = {"attack","magic","health","mana","regen","mana regen","defense","magic defense","crit","skill \\d+"};
+        String[] valid = {"attack","health","mana","regen","mana regen","defense","magic defense","crit","skill \\d+"};
         String regex = ".*?((?i:" + String.join("|", valid) + ")\\s*\\+\\s*(\\d+)).*";
         Pattern pattern = Pattern.compile(regex);
 
@@ -81,10 +80,6 @@ public class GearReader {
                 switch (stat.toLowerCase()){
                     case "attack":{
                         attack+=amount;
-                        break;
-                    }
-                    case "magic":{
-                        magic+=amount;
                         break;
                     }
                     case "crit":{
@@ -170,10 +165,6 @@ public class GearReader {
                         attack+=amount;
                         break;
                     }
-                    case "magic":{
-                        magic+=amount;
-                        break;
-                    }
                     case "health":{
                         health+=amount;
                         break;
@@ -255,10 +246,6 @@ public class GearReader {
                 switch (stat.toLowerCase()){
                     case "attack":{
                         attack+=amount;
-                        break;
-                    }
-                    case "magic":{
-                        magic+=amount;
                         break;
                     }
                     case "health":{
@@ -344,10 +331,6 @@ public class GearReader {
                         attack+=amount;
                         break;
                     }
-                    case "magic":{
-                        magic+=amount;
-                        break;
-                    }
                     case "health":{
                         health+=amount;
                         break;
@@ -429,10 +412,6 @@ public class GearReader {
                 switch (stat.toLowerCase()){
                     case "attack":{
                         attack+=amount;
-                        break;
-                    }
-                    case "magic":{
-                        magic+=amount;
                         break;
                     }
                     case "health":{
@@ -518,10 +497,6 @@ public class GearReader {
                         attack+=amount;
                         break;
                     }
-                    case "magic":{
-                        magic+=amount;
-                        break;
-                    }
                     case "health":{
                         health+=amount;
                         break;
@@ -591,7 +566,7 @@ public class GearReader {
             mana_regen = 0;
         }
 
-        profileManager.getAnyProfile(player).getGearStats().setAllGearStats(attack,magic,health,mana,regen,mana_regen,defense,magic_defense,crit);
+        profileManager.getAnyProfile(player).getGearStats().setAllGearStats(attack,health,mana,regen,mana_regen,defense,magic_defense,crit);
         profileManager.getAnyProfile(player).getSkillLevels().setAllSkillLevelBonus(skill_1,skill_2,skill_3,skill_4,skill_5,skill_6,skill_7,skill_8);
 
     }

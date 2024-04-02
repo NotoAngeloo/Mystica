@@ -23,6 +23,7 @@ public class AbilityManager {
 
     private final Map<Player, Boolean> skillRunning = new HashMap<>();
 
+    private final NoneAbilities noneAbilities;
     private final ElementalistAbilities elementalistAbilities;
     private final RangerAbilities rangerAbilities;
     private final MysticAbilities mysticAbilities;
@@ -38,6 +39,7 @@ public class AbilityManager {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = new CombatManager(main, this);
 
+        noneAbilities = new NoneAbilities(main, this);
         elementalistAbilities = new ElementalistAbilities(main, this);
         rangerAbilities = new RangerAbilities(main, this);
         mysticAbilities = new MysticAbilities(main, this);
@@ -104,6 +106,10 @@ public class AbilityManager {
                 assassinAbilities.useAssassinAbility(player, abilityNumber);
                 return;
             }
+            case "none":{
+                noneAbilities.useNoneAbility(player, abilityNumber);
+                return;
+            }
         }
     }
 
@@ -153,6 +159,10 @@ public class AbilityManager {
             }
             case "assassin":{
                 assassinAbilities.useAssassinBasic(player);
+                return;
+            }
+            case "none":{
+                noneAbilities.useNoneBasic(player);
                 return;
             }
         }
@@ -246,6 +256,9 @@ public class AbilityManager {
             case "assassin":{
                 return assassinAbilities.getAbilityCooldown(player, abilityNumber);
             }
+            case "none":{
+                return noneAbilities.getAbilityCooldown(player, abilityNumber);
+            }
         }
 
         return 0;
@@ -311,15 +324,8 @@ public class AbilityManager {
                         return mysticAbilities.getChaosMysticModelData(player);
                     }
 
-                    cooldown = mysticAbilities.getUltimateCooldown(player);
-                }
-                else{
-                    cooldown = mysticAbilities.getAbilityCooldown(player, abilityNumber);
                 }
 
-                if(cooldown == 1){
-                    return 1;
-                }
 
                 return 0;
             }
@@ -333,13 +339,7 @@ public class AbilityManager {
                 if(abilityNumber==-1){
                     cooldown = assassinAbilities.getUltimateCooldown(player);
                 }
-                else{
-                    cooldown = assassinAbilities.getAbilityCooldown(player, abilityNumber);
-                }
 
-                if(cooldown == 1){
-                    return 1;
-                }
 
                 return 0;
             }
@@ -376,6 +376,7 @@ public class AbilityManager {
     }
     public void setCasting(Player player, boolean casting){
         castMap.put(player, casting);
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
     }
     public void setCastBar(Player player, double percent){
         percentCastBar.put(player, percent);

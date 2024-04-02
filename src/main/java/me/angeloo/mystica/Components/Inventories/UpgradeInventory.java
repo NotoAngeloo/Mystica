@@ -62,7 +62,7 @@ public class UpgradeInventory {
             int newLevel = equipmentManager.getItemLevel(fodder);
 
             if(newLevel > oldLevel){
-                inv.setItem(15, equipmentManager.upgrade(player, oldItem, newLevel));
+                inv.setItem(15, equipmentManager.upgrade(oldItem, newLevel));
             }
             else{
                 inv.setItem(15, getItem(Material.RED_DYE, 0,"",

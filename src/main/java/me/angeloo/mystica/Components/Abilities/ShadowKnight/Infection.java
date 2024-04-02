@@ -273,7 +273,7 @@ public class Infection {
                 }
 
                 double skillDamage = 7;
-                double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level() +
+                double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                         profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
                 skillDamage = skillDamage + ((int)(skillLevel/10));
 
@@ -354,7 +354,7 @@ public class Infection {
 
         double damage = 6;
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level() +
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
 
         double time = getPlayerInfectionTime(player);

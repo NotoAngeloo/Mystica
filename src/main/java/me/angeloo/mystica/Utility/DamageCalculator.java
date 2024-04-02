@@ -60,15 +60,8 @@ public class DamageCalculator {
 
         amount = totalTargetHealth * amount;
 
-        if(profileManager.getAnyProfile(healer).getPlayerClass().equalsIgnoreCase("mystic")
-        || profileManager.getAnyProfile(healer).getPlayerClass().equalsIgnoreCase("elementalist")){
-            double magic = profileManager.getAnyProfile(healer).getTotalMagic();
-            amount += magic/20;
-        }
-        else{
-            double attack = profileManager.getAnyProfile(healer).getTotalAttack();
-            amount += attack/20;
-        }
+        double attack = profileManager.getAnyProfile(healer).getTotalAttack();
+        amount += attack/20;
 
         amount *= multiplierForCrit;
         amount *= multiplierForHealerBonus;
@@ -114,7 +107,7 @@ public class DamageCalculator {
 
             if(type.equalsIgnoreCase("Magical")){
 
-                attack = playerProfile.getTotalMagic();
+                attack = playerProfile.getTotalAttack();
                 defence = enemyProfile.getTotalMagicDefense();
 
                 damage = (damage * multiplierForCrit)
@@ -141,7 +134,7 @@ public class DamageCalculator {
 
             if(type.equalsIgnoreCase("Magical")){
 
-                attack = playerProfile.getTotalMagic();
+                attack = playerProfile.getTotalAttack();
                 defence = enemyProfile.getStats().getMagic_Defense();
 
                 damage = (damage * multiplierForCrit)
@@ -152,7 +145,9 @@ public class DamageCalculator {
         damage = damage * buffAndDebuffManager.getTotalDamageMultipliers(player, entity);
         damage = damage + buffAndDebuffManager.getTotalDamageAddition(player, entity);
 
-
+        if(buffAndDebuffManager.getBlocking().getIfBlocking(entity)){
+            damage*=.5;
+        }
 
         return damage;
     }
@@ -196,7 +191,7 @@ public class DamageCalculator {
 
         if(type.equalsIgnoreCase("Magical")){
 
-            attack = enemyProfile.getStats().getMagic();
+            attack = enemyProfile.getStats().getAttack();
             defence = playerProfile.getTotalMagicDefense();
 
             damage = (damage * multiplierForCrit)
@@ -205,6 +200,9 @@ public class DamageCalculator {
 
         damage = damage * buffAndDebuffManager.getTotalDamageMultipliers(entity, player);
 
+        if(buffAndDebuffManager.getBlocking().getIfBlocking(player)){
+            damage*=.5;
+        }
 
         return damage;
     }

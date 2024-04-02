@@ -272,7 +272,7 @@ public class LightSigil {
         entityEquipment.setHelmet(bolt);
 
         double skillDamage = 7;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level() +
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
         skillDamage = skillDamage  +  ((int)(skillLevel/10));
 
@@ -368,7 +368,7 @@ public class LightSigil {
         entityEquipment.setHelmet(bolt);
 
         double healPercent = 5;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level() +
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
         healPercent = healPercent +  ((int)(skillLevel/10));
 

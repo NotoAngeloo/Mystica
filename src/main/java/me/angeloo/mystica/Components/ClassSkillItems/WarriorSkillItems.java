@@ -20,6 +20,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import static me.angeloo.mystica.Mystica.levelColor;
+import static me.angeloo.mystica.Mystica.warriorColor;
+
 public class WarriorSkillItems {
 
     private final ProfileManager profileManager;
@@ -38,78 +41,78 @@ public class WarriorSkillItems {
 
             case 1:{
                 return getItem(Material.ORANGE_DYE, 0,
-                        ChatColor.of(new Color(214, 126, 61)) + "Lava Quake",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_1_Level() + skillLevel.getSkill_1_Level_Bonus()),
+                        ChatColor.of(warriorColor) + "Lava Quake",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_1_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Deal damage to enemies in",
-                        ChatColor.of(new Color(230,230,230)) + "a cone in front of you. In",
-                        ChatColor.of(new Color(230,230,230)) + "addition, shield yourself");
+                        ChatColor.of(Color.WHITE) + "Deal damage to enemies in",
+                        ChatColor.of(Color.WHITE) + "a cone in front of you. In",
+                        ChatColor.of(Color.WHITE) + "addition, shield yourself");
             }
             case 2:{
                 return getItem(Material.ORANGE_DYE, 0,
-                        ChatColor.of(new Color(214, 126, 61)) + "Searing Chains",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_2_Level() + skillLevel.getSkill_2_Level_Bonus()),
+                        ChatColor.of(warriorColor) + "Searing Chains",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_2_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Snare nearby enemies in",
-                        ChatColor.of(new Color(230,230,230)) + "a cone in front of you,",
-                        ChatColor.of(new Color(230,230,230)) + "pulling them closer. Enemies",
-                        ChatColor.of(new Color(230,230,230)) + "hit are taunted as well as slowed");
+                        ChatColor.of(Color.WHITE) + "Snare nearby enemies in",
+                        ChatColor.of(Color.WHITE) + "a cone in front of you,",
+                        ChatColor.of(Color.WHITE) + "pulling them closer. Enemies",
+                        ChatColor.of(Color.WHITE) + "hit are taunted as well as slowed");
             }
             case 3:{
                 return getItem(Material.ORANGE_DYE, 0,
-                        ChatColor.of(new Color(214, 126, 61)) + "Tempest Rage",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_3_Level() + skillLevel.getSkill_3_Level_Bonus()),
+                        ChatColor.of(warriorColor) + "Tempest Rage",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_3_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Deal continuous moderate",
-                        ChatColor.of(new Color(230,230,230)) + "damage to nearby enemies");
+                        ChatColor.of(Color.WHITE) + "Deal continuous moderate",
+                        ChatColor.of(Color.WHITE) + "damage to nearby enemies");
             }
             case 4:{
                 return getItem(Material.ORANGE_DYE, 0,
-                        ChatColor.of(new Color(214, 126, 61)) + "Meteor Crater",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_4_Level() + skillLevel.getSkill_4_Level_Bonus()),
+                        ChatColor.of(warriorColor) + "Meteor Crater",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_4_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Deal heavy damage and",
-                        ChatColor.of(new Color(230,230,230)) + "inflict stun. Extra damage",
-                        ChatColor.of(new Color(230,230,230)) + "is dealt if the target is above",
-                        ChatColor.of(new Color(230,230,230)) + "70% of their max Hp");
+                        ChatColor.of(Color.WHITE) + "Deal heavy damage and",
+                        ChatColor.of(Color.WHITE) + "inflict stun. Extra damage",
+                        ChatColor.of(Color.WHITE) + "is dealt if the target is above",
+                        ChatColor.of(Color.WHITE) + "70% of their max Hp");
             }
             case 5:{
                 return getItem(Material.ORANGE_DYE, 0,
-                        ChatColor.of(new Color(214, 126, 61)) + "Anvil Drop",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_5_Level() + skillLevel.getSkill_5_Level_Bonus()),
+                        ChatColor.of(warriorColor) + "Anvil Drop",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_5_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Leap towards the target",
-                        ChatColor.of(new Color(230,230,230)) + "and knock them in the air.",
-                        ChatColor.of(new Color(230,230,230)) + "If you are already within",
-                        ChatColor.of(new Color(230,230,230)) + "range, knock them in the",
-                        ChatColor.of(new Color(230,230,230)) + "air without leaping");
+                        ChatColor.of(Color.WHITE) + "Leap towards the target",
+                        ChatColor.of(Color.WHITE) + "and knock them in the air.",
+                        ChatColor.of(Color.WHITE) + "If you are already within",
+                        ChatColor.of(Color.WHITE) + "range, knock them in the",
+                        ChatColor.of(Color.WHITE) + "air without leaping");
             }
             case 6:{
                 return getItem(Material.ORANGE_DYE, 0,
-                        ChatColor.of(new Color(214, 126, 61)) + "Flaming Sigil",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_6_Level() + skillLevel.getSkill_6_Level_Bonus()),
+                        ChatColor.of(warriorColor) + "Flaming Sigil",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_6_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Strike the ground with",
-                        ChatColor.of(new Color(230,230,230)) + "your totem, increasing your",
-                        ChatColor.of(new Color(230,230,230)) + "max Hp as well as Attack");
+                        ChatColor.of(Color.WHITE) + "Strike the ground with",
+                        ChatColor.of(Color.WHITE) + "your totem, increasing your",
+                        ChatColor.of(Color.WHITE) + "max Hp as well as Attack");
             }
             case 7:{
                 return getItem(Material.ORANGE_DYE, 0,
-                        ChatColor.of(new Color(214, 126, 61)) + "Magma Spikes",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_7_Level() + skillLevel.getSkill_7_Level_Bonus()),
+                        ChatColor.of(warriorColor) + "Magma Spikes",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_7_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Deal heavy damage to the",
-                        ChatColor.of(new Color(230,230,230)) + "nearby area, juggling all",
-                        ChatColor.of(new Color(230,230,230)) + "nearby foes");
+                        ChatColor.of(Color.WHITE) + "Deal heavy damage to the",
+                        ChatColor.of(Color.WHITE) + "nearby area, juggling all",
+                        ChatColor.of(Color.WHITE) + "nearby foes");
             }
             case 8:{
                 return getItem(Material.ORANGE_DYE, 0,
-                        ChatColor.of(new Color(214, 126, 61)) + "Burning Blessing",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_8_Level() + skillLevel.getSkill_8_Level_Bonus()),
+                        ChatColor.of(warriorColor) + "Burning Blessing",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_8_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Temporarily increase your max",
-                        ChatColor.of(new Color(230,230,230)) + "Hp, as well as heal yourself",
-                        ChatColor.of(new Color(230,230,230)) + "for 25% of it");
+                        ChatColor.of(Color.WHITE) + "Temporarily increase your max",
+                        ChatColor.of(Color.WHITE) + "Hp, as well as heal yourself",
+                        ChatColor.of(Color.WHITE) + "for 25% of it");
             }
         }
 
@@ -125,24 +128,24 @@ public class WarriorSkillItems {
         switch(subClass.toLowerCase()){
             case "gladiator":{
                 return getItem(Material.ORANGE_DYE, 0,
-                        ChatColor.of(new Color(214, 126, 102)) + "Gladiator Heart",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + level,
+                        ChatColor.of(warriorColor) + "Gladiator Heart",
+                        ChatColor.of(levelColor) + "Level " + level,
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Gain a shield to absorb your",
-                        ChatColor.of(new Color(230,230,230)) + "level% of your max health for",
-                        ChatColor.of(new Color(230,230,230)) + "5 seconds. While active",
-                        ChatColor.of(new Color(230,230,230)) + "increase your damage resistance");
+                        ChatColor.of(Color.WHITE) + "Gain a shield to absorb your",
+                        ChatColor.of(Color.WHITE) + "level% of your max health for",
+                        ChatColor.of(Color.WHITE) + "5 seconds. While active",
+                        ChatColor.of(Color.WHITE) + "increase your damage resistance");
             }
             case "executioner":{
                 return getItem(Material.ORANGE_DYE, 0,
-                        ChatColor.of(new Color(214, 126, 61)) + "Death Gaze",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + level,
+                        ChatColor.of(warriorColor) + "Death Gaze",
+                        ChatColor.of(levelColor) + "Level " + level,
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Hook your target, pulling",
-                        ChatColor.of(new Color(230,230,230)) + "them towards you and stunning",
-                        ChatColor.of(new Color(230,230,230)) + "them. If they are unable to be",
-                        ChatColor.of(new Color(230,230,230)) + "pulled, go to their position",
-                        ChatColor.of(new Color(230,230,230)) + "instead");
+                        ChatColor.of(Color.WHITE) + "Hook your target, pulling",
+                        ChatColor.of(Color.WHITE) + "them towards you and stunning",
+                        ChatColor.of(Color.WHITE) + "them. If they are unable to be",
+                        ChatColor.of(Color.WHITE) + "pulled, go to their position",
+                        ChatColor.of(Color.WHITE) + "instead");
             }
         }
 

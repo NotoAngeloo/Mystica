@@ -172,7 +172,7 @@ public class DuranceOfTruth {
 
         //player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, end, 0, 0, 0, 0);
         double skillDamage = 25;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level() +
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));
 

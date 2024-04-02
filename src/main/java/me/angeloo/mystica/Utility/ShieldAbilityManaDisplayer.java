@@ -172,7 +172,14 @@ public class ShieldAbilityManaDisplayer {
                 unicode.append("\uE042");
                 break;
             }
-
+            case "arcane missiles":{
+                unicode.append("\uE046");
+                break;
+            }
+            case "enlightenment":{
+                unicode.append("\uE047");
+                break;
+            }
             default:{
                 unicode.append(abilityName);
                 break;

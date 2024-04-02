@@ -13,12 +13,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 
-public class LindwyrmNpc {
+public class HoLeeNpc {
 
     private final Mystica main;
     private final ProfileManager profileManager;
 
-    public LindwyrmNpc(Mystica main){
+    public HoLeeNpc(Mystica main){
         this.main = main;
         profileManager = main.getProfileManager();
     }
@@ -28,8 +28,7 @@ public class LindwyrmNpc {
         World world = Bukkit.getWorld("world");
         assert world != null;
 
-        Location spawnLoc = new Location(world, 617, 100, -88, 90, 0);
-
+        Location spawnLoc = new Location(world, -77, 69, 452, 90, 0);
 
 
         new BukkitRunnable(){
@@ -48,7 +47,7 @@ public class LindwyrmNpc {
                 for(Entity entity : world.getNearbyEntities(hitBox)){
                     if(entity instanceof Player){
                         try {
-                            MythicBukkit.inst().getAPIHelper().spawnMythicMob("LindwyrmNpc", spawnLoc);
+                            MythicBukkit.inst().getAPIHelper().spawnMythicMob("HoLeeNpc", spawnLoc);
                         } catch (InvalidMobTypeException e) {
                             throw new RuntimeException(e);
                         }

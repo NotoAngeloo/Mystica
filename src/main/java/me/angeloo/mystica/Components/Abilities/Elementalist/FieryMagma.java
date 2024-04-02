@@ -162,7 +162,7 @@ public class FieryMagma {
         entityEquipment.setHelmet(meteorItem);
 
         double skillDamage = 20;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level() +
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
 
         skillDamage = skillDamage + ((int)(skillLevel/10));

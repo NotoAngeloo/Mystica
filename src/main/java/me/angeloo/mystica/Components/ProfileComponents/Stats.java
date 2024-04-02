@@ -4,7 +4,6 @@ public class Stats {
 
     private int Level;
     private int Attack;
-    private int Magic;
     private int Health;
     private int Mana;
     private int Regen;
@@ -14,10 +13,9 @@ public class Stats {
     private int Crit;
 
 
-    public Stats(int level, int attack, int magic, int health, int mana, int regen, int mana_regen, int defense, int magic_defense, int crit) {
+    public Stats(int level, int attack, int health, int mana, int regen, int mana_regen, int defense, int magic_defense, int crit) {
         Level = level;
         Attack = attack;
-        Magic = magic;
         Health = health;
         Mana = mana;
         Regen = regen;
@@ -31,10 +29,6 @@ public class Stats {
 
     public int getAttack() {
         return Attack;
-    }
-
-    public int getMagic() {
-        return Magic;
     }
 
     public int getHealth() {
@@ -69,10 +63,10 @@ public class Stats {
     public void setLevel(int level){Level = level;}
 
 
-    public void setLevelStats(int level, String subclass){
+    public void setLevelStats(int level, String playerClass, String subclass){
 
+        //base
         int attack = 50;
-        int magic = 50;
         int health = 100;
         int mana = 100;
         int regen = 10;
@@ -81,90 +75,208 @@ public class Stats {
         int magic_defence = 50;
         int crit = 1;
 
-        switch (subclass.toLowerCase()){
-
-            case "pyromancer":
-            case "chaos":
-            case "arcane master":{
-                health+=(level*15);
-                regen+=(level*1.15);
-                mana_regen+=(level*1.15);
-                magic+=(level*3);
-                mana+=(level*100);
-                defence+=(level);
-                magic_defence+=(level);
-                crit+=10;
-                break;
-            }
-            case "conjurer":
-            case "shepard": {
-                health+=(level*30);
-                regen+=(level*1.3);
-                mana_regen+=(level*1.3);
-                magic+=(level*2);
-                mana+=(level*100);
-                defence+=(level);
-                magic_defence+=(level);
-                break;
-            }
-            case "scout":
-            case "executioner":
-            case "dawn":
-            case "duelist":{
-                health+=(level*15);
-                regen+=(level*1.15);
-                mana_regen+=(level*1.15);
-                attack+=(level*3);
-                mana+=(level*100);
-                defence+=(level);
-                magic_defence+=(level);
-                crit+=10;
-                break;
-            }
-            case "animal tamer":
-            case "divine":
-            case "alchemist":{
-                health+=(level*30);
+        switch (playerClass.toLowerCase()){
+            case "assassin":{
                 attack+=(level*2);
+                health+=(level*15);
+                regen+=(level*1.15);
                 mana+=(level*100);
+                mana_regen+=(level*1.15);
                 defence+=(level);
                 magic_defence+=(level);
+
+                switch (subclass.toLowerCase()){
+                    case "duelist":{
+                        attack+=level;
+                        crit+=10;
+                        break;
+                    }
+                    case "alchemist":{
+                        health+=(level*15);
+                        regen+=(level*1.15);
+                        break;
+                    }
+                }
+
+
                 break;
             }
-            case "blood":{
-                health+=(level*30);
-                regen+=(level*1.4);
-                mana_regen=10;
-                attack+=(level);
-                defence+=(level*2);
-                magic_defence+=(level*2);
-                break;
-            }
-            case "doom":{
-                health+=(level*30);
-                regen+=(level*1.3);
-                mana_regen=10;
-                attack+=(level*3);
+            case "elementalist":{
+
+                attack+=(level*2);
+                health+=(level*15);
+                regen+=(level*1.15);
+                mana+=(level*100);
+                mana_regen+=(level*1.15);
                 defence+=(level);
                 magic_defence+=(level);
-                crit+=10;
+
+                switch (subclass.toLowerCase()){
+                    case "pyromancer":{
+                        attack+=level;
+                        crit+=10;
+                        break;
+                    }
+                    case "conjurer":{
+                        health+=(level*15);
+                        regen+=(level*1.15);
+                        break;
+                    }
+                }
+
                 break;
             }
-            case "templar":
-            case "gladiator":{
-                health+=(level*30);
-                regen+=(level*1.3);
-                mana_regen+=(level*1.3);
-                attack+=(level);
-                mana+=(level*200);
-                defence+=(level*2);
-                magic_defence+=(level*2);
+            case "mystic":{
+
+                attack+=(level*2);
+                health+=(level*15);
+                regen+=(level*1.15);
+                mana+=(level*100);
+                mana_regen+=(level*1.15);
+                defence+=(level);
+                magic_defence+=(level);
+
+                switch (subclass.toLowerCase()){
+                    case "arcane master":
+                    case "chaos":{
+                        attack+=level;
+                        crit+=10;
+                        break;
+                    }
+                    case "shepard":{
+                        health+=(level*15);
+                        regen+=(level*1.15);
+                        break;
+                    }
+                }
+
                 break;
+            }
+            case "paladin":{
+
+                attack+=(level*2);
+                health+=(level*15);
+                regen+=(level*1.15);
+                mana+=(level*100);
+                mana_regen+=(level*1.15);
+                defence+=(level);
+                magic_defence+=(level);
+
+                switch (subclass.toLowerCase()){
+                    case "dawn": {
+                        attack+=level;
+                        crit+=10;
+                        break;
+                    }
+                    case "divine":{
+                        health+=(level*15);
+                        regen+=(level*1.15);
+                        break;
+                    }
+                    case "templar":{
+                        attack-=(level);
+                        health+=(level*15);
+                        regen+=(level*1.15);
+                        defence+=(level);
+                        magic_defence+=(level);
+                        break;
+                    }
+                }
+
+                break;
+            }
+            case "ranger":{
+                attack+=(level*2);
+                health+=(level*15);
+                regen+=(level*1.15);
+                mana+=(level*100);
+                mana_regen+=(level*1.15);
+                defence+=(level);
+                magic_defence+=(level);
+
+                switch (subclass.toLowerCase()){
+                    case "scout":{
+                        attack+=level;
+                        crit+=10;
+                        break;
+                    }
+                    case "animal tamer":{
+                        health+=(level*15);
+                        regen+=(level*1.15);
+                        break;
+                    }
+                }
+
+
+                break;
+            }
+            case "shadow knight":{
+                attack+=(level*2);
+                health+=(level*15);
+                regen+=(level*1.15);
+                mana_regen=10;
+                defence+=(level);
+                magic_defence+=(level);
+
+                switch (subclass.toLowerCase()){
+                    case "doom": {
+                        attack+=level;
+                        crit+=10;
+                        break;
+                    }
+                    case "blood":{
+                        attack-=(level);
+                        health+=(level*15);
+                        regen+=(level*1.15);
+                        defence+=(level);
+                        magic_defence+=(level);
+                        break;
+                    }
+                }
+
+                break;
+            }
+            case "warrior":{
+
+                attack+=(level*2);
+                health+=(level*15);
+                regen+=(level*1.15);
+                mana+=(level*100);
+                mana_regen+=(level*1.15);
+                defence+=(level);
+                magic_defence+=(level);
+
+                switch (subclass.toLowerCase()){
+                    case "executioner": {
+                        attack+=level;
+                        crit+=10;
+                        break;
+                    }
+                    case "gladiator":{
+                        attack-=(level);
+                        health+=(level*15);
+                        regen+=(level*1.15);
+                        defence+=(level);
+                        magic_defence+=(level);
+                        break;
+                    }
+                }
+
+                break;
+            }
+            case "none":{
+                attack+=(level*2);
+                health+=(level*15);
+                regen+=(level*1.15);
+                mana+=(level*100);
+                mana_regen+=(level*1.15);
+                defence+=(level);
+                magic_defence+=(level);
             }
         }
 
+
         Attack = attack;
-        Magic = magic;
         Health = health;
         Mana = mana;
         Regen = regen;
@@ -173,6 +285,7 @@ public class Stats {
         Magic_Defense = magic_defence;
         Crit = crit;
     }
+
 
 
 }

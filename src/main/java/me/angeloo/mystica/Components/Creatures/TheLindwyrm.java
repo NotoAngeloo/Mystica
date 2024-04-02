@@ -88,11 +88,10 @@ public class TheLindwyrm {
 
         int hp = 10000 + (100 * (level-1));
         int atk = 50 + (25 * level-1);
-        int mag = 50 + (25 * level-1);
         int def = 40 + (25 * level-1);
         int mdef = 40 + (25 * level-1);
 
-        Stats stats = new Stats(level, atk, mag, hp, 0, 0, 0, def, mdef, 0);
+        Stats stats = new Stats(level, atk, hp, 0, 0, 0, def, mdef, 0);
         Boolean isMovable = false;
         Boolean immortal = false;
         Boolean object = false;
@@ -166,11 +165,6 @@ public class TheLindwyrm {
             @Override
             public int getTotalAttack() {
                 return getStats().getAttack();
-            }
-
-            @Override
-            public int getTotalMagic() {
-                return getStats().getMagic();
             }
 
             @Override

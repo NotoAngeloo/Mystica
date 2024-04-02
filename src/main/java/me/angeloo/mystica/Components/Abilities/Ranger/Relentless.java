@@ -145,7 +145,7 @@ public class Relentless {
 
         castTime = castTime - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level() +
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
         double skillDamage = 40;
         skillDamage = skillDamage + ((int)(skillLevel/10));

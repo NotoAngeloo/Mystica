@@ -37,7 +37,7 @@ public class ReforgeInventory {
         inv.setItem(15, new ItemStack(Material.AIR));
 
         if(calculateNewItem){
-            inv.setItem(15, equipmentManager.reforge(player, oldItem));
+            inv.setItem(15, equipmentManager.reforge(oldItem));
         }
 
         return inv;

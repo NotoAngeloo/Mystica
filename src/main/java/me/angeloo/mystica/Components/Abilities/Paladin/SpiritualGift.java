@@ -122,7 +122,7 @@ public class SpiritualGift {
 
     private void execute(Player player, LivingEntity target){
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level() +
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
         double healPercent = 5;
         healPercent = healPercent +  ((int)(skillLevel/10));

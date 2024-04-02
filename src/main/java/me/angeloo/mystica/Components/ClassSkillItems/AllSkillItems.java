@@ -1,7 +1,5 @@
 package me.angeloo.mystica.Components.ClassSkillItems;
 
-import me.angeloo.mystica.Components.Abilities.AssassinAbilities;
-import me.angeloo.mystica.Components.Abilities.Paladin.PaladinBasic;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -14,6 +12,7 @@ public class AllSkillItems {
 
     private final ProfileManager profileManager;
 
+    private final NoneSkillItems noneSkillItems;
     private final ElementalistSkillItems elementalistSkillItems;
     private final RangerSkillItems rangerSkillItems;
     private final MysticSkillItem mysticSkillItem;
@@ -24,6 +23,7 @@ public class AllSkillItems {
 
     public AllSkillItems(Mystica main){
         profileManager = main.getProfileManager();
+        noneSkillItems = new NoneSkillItems(main);
         elementalistSkillItems = new ElementalistSkillItems(main);
         rangerSkillItems = new RangerSkillItems(main);
         mysticSkillItem = new MysticSkillItem(main);
@@ -60,6 +60,9 @@ public class AllSkillItems {
             }
             case "assassin":{
                 return assassinSkillItems.getSkill(skillNumber, player);
+            }
+            case "none":{
+                return noneSkillItems.getSkill(skillNumber, player);
             }
         }
 

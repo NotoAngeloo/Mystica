@@ -134,7 +134,7 @@ public class ReigningSword {
         Set<LivingEntity> hitBySkill = new HashSet<>();
 
         double skillDamage = 25;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level() +
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
 
         skillDamage = skillDamage + ((int)(skillLevel/10));

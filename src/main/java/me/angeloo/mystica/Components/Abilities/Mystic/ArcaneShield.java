@@ -126,11 +126,11 @@ public class ArcaneShield {
             needToRemove.put(target.getUniqueId(), false);
         }
 
-        int skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level() +
+        int skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
 
         double fivePercent = (profileManager.getAnyProfile(target).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(target)) / 20;
-        double shieldAmount = fivePercent + (((double) profileManager.getAnyProfile(player).getTotalMagic() / 3) + skillLevel);
+        double shieldAmount = fivePercent + (((double) profileManager.getAnyProfile(player).getTotalAttack() / 3) + skillLevel);
 
         buffAndDebuffManager.getGenericShield().applyOrAddShield(target, shieldAmount);
 

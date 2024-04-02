@@ -141,7 +141,7 @@ public class RazorWind {
 
         LivingEntity target = targetManager.getPlayerTarget(player);
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level() +
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
         double skillDamage = 40;
 

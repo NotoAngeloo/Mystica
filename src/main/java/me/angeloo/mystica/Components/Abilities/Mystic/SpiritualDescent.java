@@ -145,7 +145,7 @@ public class SpiritualDescent {
         Location origin = target.getLocation().clone().subtract(0,1.3,0);
 
         double skillDamage = 5;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level() +
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));
 

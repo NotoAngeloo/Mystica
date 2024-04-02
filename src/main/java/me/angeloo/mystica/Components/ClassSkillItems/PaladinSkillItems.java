@@ -20,6 +20,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import static me.angeloo.mystica.Mystica.levelColor;
+import static me.angeloo.mystica.Mystica.paladinColor;
+
 public class PaladinSkillItems {
 
     private final ProfileManager profileManager;
@@ -40,85 +43,85 @@ public class PaladinSkillItems {
 
                 case 1:{
                     return getItem(Material.YELLOW_DYE, 0,
-                            ChatColor.of(new Color(207, 180, 129)) + "Decree of Honor",
-                            ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_1_Level() + skillLevel.getSkill_1_Level_Bonus()),
+                            ChatColor.of(paladinColor) + "Decree of Honor",
+                            ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_1_Level_Bonus()),
                             "",
-                            ChatColor.of(new Color(230,230,230)) + "Damage enemies or",
-                            ChatColor.of(new Color(230,230,230)) + "heal friendly units.",
-                            ChatColor.of(new Color(230,230,230)) + "Landing a crit makes",
-                            ChatColor.of(new Color(230,230,230)) + "your next " + ChatColor.of(new Color(207, 180, 129)) + "Merciful Healing",
-                            ChatColor.of(new Color(230,230,230)) + "able to be cast while",
-                            ChatColor.of(new Color(230,230,230)) + "moving");
+                            ChatColor.of(Color.WHITE) + "Damage enemies or",
+                            ChatColor.of(Color.WHITE) + "heal friendly units.",
+                            ChatColor.of(Color.WHITE) + "Landing a crit makes",
+                            ChatColor.of(Color.WHITE) + "your next " + ChatColor.of(paladinColor) + "Merciful Healing",
+                            ChatColor.of(Color.WHITE) + "able to be cast while",
+                            ChatColor.of(Color.WHITE) + "moving");
                 }
                 case 2:{
                     return getItem(Material.YELLOW_DYE, 0,
-                            ChatColor.of(new Color(207, 180, 129)) + "Merciful Healing",
-                            ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_2_Level() + skillLevel.getSkill_2_Level_Bonus()),
+                            ChatColor.of(paladinColor) + "Merciful Healing",
+                            ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_2_Level_Bonus()),
                             "",
-                            ChatColor.of(new Color(230,230,230)) + "After a cast, heal a",
-                            ChatColor.of(new Color(230,230,230)) + "friendly unit for a",
-                            ChatColor.of(new Color(230,230,230)) + "large amount of Hp");
+                            ChatColor.of(Color.WHITE) + "After a cast, heal a",
+                            ChatColor.of(Color.WHITE) + "friendly unit for a",
+                            ChatColor.of(Color.WHITE) + "large amount of Hp");
                 }
                 case 3:{
                     return getItem(Material.YELLOW_DYE, 0,
-                            ChatColor.of(new Color(207, 180, 129)) + "Honorable Counter",
-                            ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_3_Level() + skillLevel.getSkill_3_Level_Bonus()),
+                            ChatColor.of(paladinColor) + "Honorable Counter",
+                            ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_3_Level_Bonus()),
                             "",
-                            ChatColor.of(new Color(230,230,230)) + "Deal damage to a nearby enemy.",
-                            ChatColor.of(new Color(230,230,230)) + "Additionally, deal the amount",
-                            ChatColor.of(new Color(230,230,230)) + "of damage equal to the damage",
-                            ChatColor.of(new Color(230,230,230)) + "you have taken in the last 3",
-                            ChatColor.of(new Color(230,230,230)) + "seconds");
+                            ChatColor.of(Color.WHITE) + "Deal damage to a nearby enemy.",
+                            ChatColor.of(Color.WHITE) + "Additionally, deal the amount",
+                            ChatColor.of(Color.WHITE) + "of damage equal to the damage",
+                            ChatColor.of(Color.WHITE) + "you have taken in the last 3",
+                            ChatColor.of(Color.WHITE) + "seconds");
                 }
                 case 4:{
                     return getItem(Material.YELLOW_DYE, 0,
-                            ChatColor.of(new Color(207, 180, 129)) + "Divine Infusion",
-                            ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_4_Level() + skillLevel.getSkill_4_Level_Bonus()),
+                            ChatColor.of(paladinColor) + "Divine Infusion",
+                            ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_4_Level_Bonus()),
                             "",
-                            ChatColor.of(new Color(230,230,230)) + "Drop an infusion to the",
-                            ChatColor.of(new Color(230,230,230)) + "target area, dealing continuous",
-                            ChatColor.of(new Color(230,230,230)) + "damage to enemies and shielding",
-                            ChatColor.of(new Color(230,230,230)) + "allies. Players in its range gain",
-                            ChatColor.of(new Color(230,230,230)) + "speed up effect");
+                            ChatColor.of(Color.WHITE) + "Drop an infusion to the",
+                            ChatColor.of(Color.WHITE) + "target area, dealing continuous",
+                            ChatColor.of(Color.WHITE) + "damage to enemies and shielding",
+                            ChatColor.of(Color.WHITE) + "allies. Players in its range gain",
+                            ChatColor.of(Color.WHITE) + "speed up effect");
                 }
                 case 5:{
                     return getItem(Material.YELLOW_DYE, 0,
-                            ChatColor.of(new Color(207, 180, 129)) + "Spiritual Gift",
-                            ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_5_Level() + skillLevel.getSkill_5_Level_Bonus()),
+                            ChatColor.of(paladinColor) + "Spiritual Gift",
+                            ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_5_Level_Bonus()),
                             "",
-                            ChatColor.of(new Color(230,230,230)) + "Grant damage reduction, haste and",
-                            ChatColor.of(new Color(230,230,230)) + "increase the damage they deal for",
-                            ChatColor.of(new Color(230,230,230)) + "8 seconds. Heal the target when",
-                            ChatColor.of(new Color(230,230,230)) + "the effect runs out");
+                            ChatColor.of(Color.WHITE) + "Grant damage reduction, haste and",
+                            ChatColor.of(Color.WHITE) + "increase the damage they deal for",
+                            ChatColor.of(Color.WHITE) + "8 seconds. Heal the target when",
+                            ChatColor.of(Color.WHITE) + "the effect runs out");
                 }
                 case 6:{
                     return getItem(Material.YELLOW_DYE, 0,
-                            ChatColor.of(new Color(207, 180, 129)) + "Sacred Aegis",
-                            ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_6_Level() + skillLevel.getSkill_6_Level_Bonus()),
+                            ChatColor.of(paladinColor) + "Sacred Aegis",
+                            ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_6_Level_Bonus()),
                             "",
-                            ChatColor.of(new Color(230,230,230)) + "Grant damage immunity to a",
-                            ChatColor.of(new Color(230,230,230)) + "friendly target");
+                            ChatColor.of(Color.WHITE) + "Grant damage immunity to a",
+                            ChatColor.of(Color.WHITE) + "friendly target");
                 }
                 case 7:{
                     return getItem(Material.YELLOW_DYE, 0,
-                            ChatColor.of(new Color(207, 180, 129)) + "Modest Calling",
-                            ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_7_Level() + skillLevel.getSkill_7_Level_Bonus()),
+                            ChatColor.of(paladinColor) + "Modest Calling",
+                            ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_7_Level_Bonus()),
                             "",
-                            ChatColor.of(new Color(230,230,230)) + "Reduce the damage cause by the",
-                            ChatColor.of(new Color(230,230,230)) + "enemy target as well as increase",
-                            ChatColor.of(new Color(230,230,230)) + "the damage they take.",
-                            ChatColor.of(new Color(230,230,230)) + "In addition, put the target",
-                            ChatColor.of(new Color(230,230,230)) + "to sleep.");
+                            ChatColor.of(Color.WHITE) + "Reduce the damage cause by the",
+                            ChatColor.of(Color.WHITE) + "enemy target as well as increase",
+                            ChatColor.of(Color.WHITE) + "the damage they take.",
+                            ChatColor.of(Color.WHITE) + "In addition, put the target",
+                            ChatColor.of(Color.WHITE) + "to sleep.");
                 }
                 case 8:{
                     return getItem(Material.YELLOW_DYE, 0,
-                            ChatColor.of(new Color(207, 180, 129)) + "Mark of Justice",
-                            ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_8_Level() + skillLevel.getSkill_8_Level_Bonus()),
+                            ChatColor.of(paladinColor) + "Mark of Justice",
+                            ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_8_Level_Bonus()),
                             "",
-                            ChatColor.of(new Color(230,230,230)) + "Set a marker on a friendly unit",
-                            ChatColor.of(new Color(230,230,230)) + "as well as 4 nearby allies within",
-                            ChatColor.of(new Color(230,230,230)) + "range. Healing a marked ally",
-                            ChatColor.of(new Color(230,230,230)) + "also heals other marked allies");
+                            ChatColor.of(Color.WHITE) + "Set a marker on a friendly unit",
+                            ChatColor.of(Color.WHITE) + "as well as 4 nearby allies within",
+                            ChatColor.of(Color.WHITE) + "range. Healing a marked ally",
+                            ChatColor.of(Color.WHITE) + "also heals other marked allies");
                 }
             }
         }
@@ -127,85 +130,85 @@ public class PaladinSkillItems {
 
             case 1:{
                 return getItem(Material.YELLOW_DYE, 0,
-                        ChatColor.of(new Color(207, 214, 61)) + "Torah Sword",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_1_Level() + skillLevel.getSkill_1_Level_Bonus()),
+                        ChatColor.of(paladinColor) + "Torah Sword",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_1_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Summon several swords",
-                        ChatColor.of(new Color(230,230,230)) + "to fall from the sky to",
-                        ChatColor.of(new Color(230,230,230)) + "attack your target");
+                        ChatColor.of(Color.WHITE) + "Summon several swords",
+                        ChatColor.of(Color.WHITE) + "to fall from the sky to",
+                        ChatColor.of(Color.WHITE) + "attack your target");
             }
             case 2:{
                 return getItem(Material.YELLOW_DYE, 0,
-                        ChatColor.of(new Color(207, 214, 61)) + "Divine Guidance",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_2_Level() + skillLevel.getSkill_2_Level_Bonus()),
+                        ChatColor.of(paladinColor) + "Divine Guidance",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_2_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Deal area damage to",
-                        ChatColor.of(new Color(230,230,230)) + "nearby enemies and heal",
-                        ChatColor.of(new Color(230,230,230)) + "three nearby allies with",
-                        ChatColor.of(new Color(230,230,230)) + "the lowest Hp percentage");
+                        ChatColor.of(Color.WHITE) + "Deal area damage to",
+                        ChatColor.of(Color.WHITE) + "nearby enemies and heal",
+                        ChatColor.of(Color.WHITE) + "three nearby allies with",
+                        ChatColor.of(Color.WHITE) + "the lowest Hp percentage");
             }
             case 3:{
                 return getItem(Material.YELLOW_DYE, 0,
-                        ChatColor.of(new Color(207, 214, 61)) + "Reigning Sword",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_3_Level() + skillLevel.getSkill_3_Level_Bonus()),
+                        ChatColor.of(paladinColor) + "Reigning Sword",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_3_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Attack nearby enemies",
-                        ChatColor.of(new Color(230,230,230)) + "and grant yourself a shield");
+                        ChatColor.of(Color.WHITE) + "Attack nearby enemies",
+                        ChatColor.of(Color.WHITE) + "and grant yourself a shield");
             }
             case 4:{
                 return getItem(Material.YELLOW_DYE, 0,
-                        ChatColor.of(new Color(207, 214, 61)) + "Sword of the Covenant",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_4_Level() + skillLevel.getSkill_4_Level_Bonus()),
+                        ChatColor.of(paladinColor) + "Sword of the Covenant",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_4_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Concentrate the faith of",
-                        ChatColor.of(new Color(230,230,230)) + "Paladins in one sword, dealing",
-                        ChatColor.of(new Color(230,230,230)) + "damage to the target with the",
-                        ChatColor.of(new Color(230,230,230)) + "swing of a giant sword. Ignites",
-                        ChatColor.of(new Color(230,230,230)) + "the ground beneath the target with",
-                        ChatColor.of(new Color(230,230,230)) + "holy light, dealing continuous damage",
-                        ChatColor.of(new Color(230,230,230)) + "to enemies standing on it");
+                        ChatColor.of(Color.WHITE) + "Concentrate the faith of",
+                        ChatColor.of(Color.WHITE) + "Paladins in one sword, dealing",
+                        ChatColor.of(Color.WHITE) + "damage to the target with the",
+                        ChatColor.of(Color.WHITE) + "swing of a giant sword. Ignites",
+                        ChatColor.of(Color.WHITE) + "the ground beneath the target with",
+                        ChatColor.of(Color.WHITE) + "holy light, dealing continuous damage",
+                        ChatColor.of(Color.WHITE) + "to enemies standing on it");
             }
             case 5:{
                 return getItem(Material.YELLOW_DYE, 0,
-                        ChatColor.of(new Color(207, 214, 61)) + "Shield of Order",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_5_Level() + skillLevel.getSkill_5_Level_Bonus()),
+                        ChatColor.of(paladinColor) + "Shield of Order",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_5_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Consume 10% of your max Hp to",
-                        ChatColor.of(new Color(230,230,230)) + "throw your shield to deal damage",
-                        ChatColor.of(new Color(230,230,230)) + "to the target. Gain an effect to",
-                        ChatColor.of(new Color(230,230,230)) + "restore your Hp continuously");
+                        ChatColor.of(Color.WHITE) + "Consume 10% of your max Hp to",
+                        ChatColor.of(Color.WHITE) + "throw your shield to deal damage",
+                        ChatColor.of(Color.WHITE) + "to the target. Gain an effect to",
+                        ChatColor.of(Color.WHITE) + "restore your Hp continuously");
             }
             case 6:{
                 return getItem(Material.YELLOW_DYE, 0,
-                        ChatColor.of(new Color(207, 214, 61)) + "Glory of Paladins",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_6_Level() + skillLevel.getSkill_6_Level_Bonus()),
+                        ChatColor.of(paladinColor) + "Glory of Paladins",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_6_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Gain Glory of Paladins for yourself",
-                        ChatColor.of(new Color(230,230,230)) + "causing your basic attacks to deal",
-                        ChatColor.of(new Color(230,230,230)) + "additional damage. Increase your max",
-                        ChatColor.of(new Color(230,230,230)) + "Hp, and give your basic attacks a",
-                        ChatColor.of(new Color(230,230,230)) + "chance to restore Hp");
+                        ChatColor.of(Color.WHITE) + "Gain Glory of Paladins for yourself",
+                        ChatColor.of(Color.WHITE) + "causing your basic attacks to deal",
+                        ChatColor.of(Color.WHITE) + "additional damage. Increase your max",
+                        ChatColor.of(Color.WHITE) + "Hp, and give your basic attacks a",
+                        ChatColor.of(Color.WHITE) + "chance to restore Hp");
             }
             case 7:{
                 return getItem(Material.YELLOW_DYE, 0,
-                        ChatColor.of(new Color(207, 214, 61)) + "Durance of Truth",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_7_Level() + skillLevel.getSkill_7_Level_Bonus()),
+                        ChatColor.of(paladinColor) + "Durance of Truth",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_7_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Leap toward your target and",
-                        ChatColor.of(new Color(230,230,230)) + "create a Durance of Truth around",
-                        ChatColor.of(new Color(230,230,230)) + "them. While in the durance, gain",
-                        ChatColor.of(new Color(230,230,230)) + "damage reduction and Hp regen.",
-                        ChatColor.of(new Color(230,230,230)) + "Enemies who leave the Durance",
-                        ChatColor.of(new Color(230,230,230)) + "become silenced");
+                        ChatColor.of(Color.WHITE) + "Leap toward your target and",
+                        ChatColor.of(Color.WHITE) + "create a Durance of Truth around",
+                        ChatColor.of(Color.WHITE) + "them. While in the durance, gain",
+                        ChatColor.of(Color.WHITE) + "damage reduction and Hp regen.",
+                        ChatColor.of(Color.WHITE) + "Enemies who leave the Durance",
+                        ChatColor.of(Color.WHITE) + "become silenced");
             }
             case 8:{
                 return getItem(Material.YELLOW_DYE, 0,
-                        ChatColor.of(new Color(207, 214, 61)) + "Judgement",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_8_Level() + skillLevel.getSkill_8_Level_Bonus()),
+                        ChatColor.of(paladinColor) + "Judgement",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_8_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Summon a light pillar from",
-                        ChatColor.of(new Color(230,230,230)) + "the sky, to either heal an",
-                        ChatColor.of(new Color(230,230,230)) + "ally or damage an enemy");
+                        ChatColor.of(Color.WHITE) + "Summon a light pillar from",
+                        ChatColor.of(Color.WHITE) + "the sky, to either heal an",
+                        ChatColor.of(Color.WHITE) + "ally or damage an enemy");
             }
         }
 
@@ -221,36 +224,36 @@ public class PaladinSkillItems {
         switch(subClass.toLowerCase()){
             case "templar":{
                 return getItem(Material.YELLOW_DYE, 0,
-                        ChatColor.of(new Color(207, 180, 80)) + "Shield of Sanctity",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + level,
+                        ChatColor.of(paladinColor) + "Shield of Sanctity",
+                        ChatColor.of(levelColor) + "Level " + level,
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Gain a shield to absorb",
-                        ChatColor.of(new Color(230,230,230)) + (String.valueOf(level)) + "% of your max health for",
-                        ChatColor.of(new Color(230,230,230)) + "5 seconds. While active,",
-                        ChatColor.of(new Color(230,230,230)) + "restore your health.");
+                        ChatColor.of(Color.WHITE) + "Gain a shield to absorb",
+                        ChatColor.of(Color.WHITE) + (String.valueOf(level)) + "% of your max health for",
+                        ChatColor.of(Color.WHITE) + "5 seconds. While active,",
+                        ChatColor.of(Color.WHITE) + "restore your health.");
             }
             case "divine":{
                 return getItem(Material.YELLOW_DYE, 0,
-                        ChatColor.of(new Color(207, 180, 129)) + "Representative",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + level,
+                        ChatColor.of(paladinColor) + "Representative",
+                        ChatColor.of(levelColor) + "Level " + level,
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Instantly heal nearby allies",
-                        ChatColor.of(new Color(230,230,230)) + "and grant yourself haste as",
-                        ChatColor.of(new Color(230,230,230)) + "well as your healing and damage",
-                        ChatColor.of(new Color(230,230,230)) + "for 10 seconds. This skill is",
-                        ChatColor.of(new Color(230,230,230)) + "unaffected by haste");
+                        ChatColor.of(Color.WHITE) + "Instantly heal nearby allies",
+                        ChatColor.of(Color.WHITE) + "and grant yourself haste as",
+                        ChatColor.of(Color.WHITE) + "well as your healing and damage",
+                        ChatColor.of(Color.WHITE) + "for 10 seconds. This skill is",
+                        ChatColor.of(Color.WHITE) + "unaffected by haste");
             }
             case "dawn":{
                 return getItem(Material.YELLOW_DYE, 0,
-                        ChatColor.of(new Color(207, 214, 61)) + "Well of Light",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + level,
+                        ChatColor.of(paladinColor) + "Well of Light",
+                        ChatColor.of(levelColor) + "Level " + level,
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Summon a well that deals",
-                        ChatColor.of(new Color(230,230,230)) + "area damage. This also",
-                        ChatColor.of(new Color(230,230,230)) + "leaves behind orbs that",
-                        ChatColor.of(new Color(230,230,230)) + "can be collected to increase",
-                        ChatColor.of(new Color(230,230,230)) + "your crit rate by 10% until",
-                        ChatColor.of(new Color(230,230,230)) + "you land a critical hit");
+                        ChatColor.of(Color.WHITE) + "Summon a well that deals",
+                        ChatColor.of(Color.WHITE) + "area damage. This also",
+                        ChatColor.of(Color.WHITE) + "leaves behind orbs that",
+                        ChatColor.of(Color.WHITE) + "can be collected to increase",
+                        ChatColor.of(Color.WHITE) + "your crit rate by 10% until",
+                        ChatColor.of(Color.WHITE) + "you land a critical hit");
             }
         }
 

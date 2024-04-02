@@ -1,6 +1,5 @@
 package me.angeloo.mystica.Managers;
 
-import me.angeloo.mystica.Mystica;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -34,5 +33,6 @@ public class InventoryIndexingManager {
     public void setClassIndex(Player player, Integer index){
         classIndex.put(player.getUniqueId(), index);
     }
+
 
 }

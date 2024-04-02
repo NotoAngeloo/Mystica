@@ -2,20 +2,29 @@ package me.angeloo.mystica.Components.Commands;
 
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.Locations;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Server;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 public class MysticaInteractions implements CommandExecutor {
 
     private final ProfileManager profileManager;
+    private final Locations locations;
 
     public MysticaInteractions(Mystica main){
         profileManager = main.getProfileManager();
+        locations = main.getLocations();
     }
 
     @Override
@@ -36,6 +45,8 @@ public class MysticaInteractions implements CommandExecutor {
 
             Player player;
 
+            //Bukkit.getLogger().info(args[0] + " " + args[1]);
+
             try {
                 player = Bukkit.getPlayer(args[1]);
             }
@@ -46,31 +57,39 @@ public class MysticaInteractions implements CommandExecutor {
             assert player != null;
 
 
-
-            if(profileManager.getAnyProfile(player).getIfInCombat() && !conversation.equalsIgnoreCase("dungeonLeave")){
-                player.sendMessage("Can't start a conversation in combat.");
+            if(profileManager.getAnyProfile(player).getIfInCombat()){
+                player.sendMessage("Can't do this in combat");
                 return true;
             }
 
-            if(profileManager.getAnyProfile(player).getIfDead() && !conversation.equalsIgnoreCase("dungeonLeave")){
-                player.sendMessage("Can't start a conversation while dead.");
+            if(profileManager.getAnyProfile(player).getIfDead()){
+                player.sendMessage("Can't do this while dead");
                 return true;
             }
+
 
             switch (conversation.toLowerCase()){
-                case "newplayer":{
-                    if(profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("none")){
-                        server.dispatchCommand(server.getConsoleSender(), "interactions start newPlayer " + player.getName());
-                        return true;
+                case "fasttravel":{
+                    //check location
+
+                    Location closest = locations.getNearestLocation(player);
+
+                    if (closest.equals(locations.caveOfLindwyrm())) {
+                        profileManager.getAnyProfile(player).getMilestones().setMilestone("visitedloc1", true);
+                    } else if (closest.equals(locations.windbluff())) {
+                        profileManager.getAnyProfile(player).getMilestones().setMilestone("visitedloc2", true);
+                    } else if (closest.equals(locations.outpost())) {
+                        profileManager.getAnyProfile(player).getMilestones().setMilestone("visitedloc3", true);
                     }
 
-                    server.dispatchCommand(server.getConsoleSender(), "interactions start newPlayer2 " + player.getName());
+                    server.dispatchCommand(server.getConsoleSender(), "interactions start " + conversation + " " + player.getName());
                     return true;
                 }
                 default:{
                     server.dispatchCommand(server.getConsoleSender(), "interactions start " + conversation + " " + player.getName());
                 }
             }
+
 
         }
 

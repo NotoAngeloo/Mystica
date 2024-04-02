@@ -60,7 +60,7 @@ public class Warp {
 
         double maxDistance = 8 + buffAndDebuffManager.getTotalRangeModifier(player);
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level() +
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
 
         maxDistance = maxDistance + ((int)(skillLevel/15));

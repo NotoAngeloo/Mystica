@@ -182,9 +182,6 @@ public abstract class PlayerProfile implements Profile{
     public int getTotalAttack(){
         return stats.getAttack() + statsFromGear.getAttack();
     }
-    public int getTotalMagic(){
-        return stats.getMagic() + statsFromGear.getMagic();
-    }
     public int getTotalMana(){
         return stats.getMana() + statsFromGear.getMana();
     }

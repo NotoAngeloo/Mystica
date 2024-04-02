@@ -15,12 +15,10 @@ public class CooldownDisplayer {
     private final ProfileManager profileManager;
     private final AbilityManager abilityManager;
     private final AllSkillItems allSkillItems;
-    private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
 
     public CooldownDisplayer(Mystica main, AbilityManager manager) {
         profileManager = main.getProfileManager();
         abilityManager = manager;
-        shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, manager);
         allSkillItems = new AllSkillItems(main);
     }
 

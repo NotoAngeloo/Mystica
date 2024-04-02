@@ -20,6 +20,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import static me.angeloo.mystica.Mystica.*;
+import static me.angeloo.mystica.Mystica.levelColor;
+
 public class MysticSkillItem {
 
     private final ProfileManager profileManager;
@@ -41,60 +44,60 @@ public class MysticSkillItem {
 
                 case 1:{
                     return getItem(Material.PURPLE_DYE, 0,
-                            ChatColor.of(new Color(155, 120, 197)) + "Chaos Void",
-                            ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_1_Level() + skillLevel.getSkill_1_Level_Bonus()),
+                            ChatColor.of(mysticColor) + "Chaos Void",
+                            ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_1_Level_Bonus()),
                             "",
-                            ChatColor.of(new Color(230,230,230)) + "Hide underground to recover your",
-                            ChatColor.of(new Color(230,230,230)) + "health. You are unable to take",
-                            ChatColor.of(new Color(230,230,230)) + "damage, but are also unable to move");
+                            ChatColor.of(Color.WHITE) + "Hide underground to recover your",
+                            ChatColor.of(Color.WHITE) + "health. You are unable to take",
+                            ChatColor.of(Color.WHITE) + "damage, but are also unable to move");
                 }
 
                 case 2:{
                     return getItem(Material.PURPLE_DYE, 0,
-                            ChatColor.of(new Color(155, 120, 197)) + "Plague Curse",
-                            ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_2_Level() + skillLevel.getSkill_2_Level_Bonus()),
+                            ChatColor.of(mysticColor) + "Plague Curse",
+                            ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_2_Level_Bonus()),
                             "",
-                            ChatColor.of(new Color(230,230,230)) + "Deal damage to your target and",
-                            ChatColor.of(new Color(230,230,230)) + "all nearby enemies. All hit enemies",
-                            ChatColor.of(new Color(230,230,230)) + "will take damage and become cursed.",
-                            ChatColor.of(new Color(230,230,230)) + "Using this skill gains a chaos shard");
+                            ChatColor.of(Color.WHITE) + "Deal damage to your target and",
+                            ChatColor.of(Color.WHITE) + "all nearby enemies. All hit enemies",
+                            ChatColor.of(Color.WHITE) + "will take damage and become cursed.",
+                            ChatColor.of(Color.WHITE) + "Using this skill gains a chaos shard");
                 }
 
                 case 3:{
                     return getItem(Material.PURPLE_DYE, 0,
-                            ChatColor.of(new Color(155, 120, 197)) + "Shadow of Darkness",
-                            ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_3_Level() + skillLevel.getSkill_3_Level_Bonus()),
+                            ChatColor.of(mysticColor) + "Shadow of Darkness",
+                            ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_3_Level_Bonus()),
                             "",
-                            ChatColor.of(new Color(230,230,230)) + "Cause a meteor of chaos energy",
-                            ChatColor.of(new Color(230,230,230)) + "to fall from the sky and hit",
-                            ChatColor.of(new Color(230,230,230)) + "your target. More damage is dealt",
-                            ChatColor.of(new Color(230,230,230)) + "depending on how may chaos shards",
-                            ChatColor.of(new Color(230,230,230)) + "you possess");
+                            ChatColor.of(Color.WHITE) + "Cause a meteor of chaos energy",
+                            ChatColor.of(Color.WHITE) + "to fall from the sky and hit",
+                            ChatColor.of(Color.WHITE) + "your target. More damage is dealt",
+                            ChatColor.of(Color.WHITE) + "depending on how may chaos shards",
+                            ChatColor.of(Color.WHITE) + "you possess");
                 }
 
                 case 4:{
                     return getItem(Material.PURPLE_DYE, 0,
-                            ChatColor.of(new Color(155, 120, 197)) + "Flickering Chaos",
-                            ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_4_Level() + skillLevel.getSkill_4_Level_Bonus()),
+                            ChatColor.of(mysticColor) + "Flickering Chaos",
+                            ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_4_Level_Bonus()),
                             "",
-                            ChatColor.of(new Color(230,230,230)) + "Teleport, either toward your target",
-                            ChatColor.of(new Color(230,230,230)) + "or in front you");
+                            ChatColor.of(Color.WHITE) + "Teleport, either toward your target",
+                            ChatColor.of(Color.WHITE) + "or in front you");
                 }
 
                 case 5:{
                     return getItem(Material.PURPLE_DYE, 0,
-                            ChatColor.of(new Color(155, 120, 197)) + "Spiritual Descent",
-                            ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_5_Level() + skillLevel.getSkill_5_Level_Bonus()),
+                            ChatColor.of(mysticColor) + "Spiritual Descent",
+                            ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_5_Level_Bonus()),
                             "",
-                            ChatColor.of(new Color(230,230,230)) + "Erupt the ground under your target",
-                            ChatColor.of(new Color(230,230,230)) + "with chaos energy.",
-                            ChatColor.of(new Color(230,230,230)) + "Using this skill gains a chaos shard");
+                            ChatColor.of(Color.WHITE) + "Erupt the ground under your target",
+                            ChatColor.of(Color.WHITE) + "with chaos energy.",
+                            ChatColor.of(Color.WHITE) + "Using this skill gains a chaos shard");
                 }
 
                 case 6: {
                     return getItem(Material.PURPLE_DYE, 0,
-                            ChatColor.of(new Color(155, 120, 197)) + "Chaos Lash",
-                            ChatColor.of(new Color(0, 102, 0)) + "Level " + (skillLevel.getSkill_6_Level() + skillLevel.getSkill_6_Level_Bonus()),
+                            ChatColor.of(mysticColor) + "Chaos Lash",
+                            ChatColor.of(new Color(0, 102, 0)) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_6_Level_Bonus()),
                             "",
                             ChatColor.of(new Color(230, 230, 230)) + "Release chaotic flames toward your",
                             ChatColor.of(new Color(230, 230, 230)) + "target during a short period of time",
@@ -104,8 +107,8 @@ public class MysticSkillItem {
 
                 case 7: {
                     return getItem(Material.PURPLE_DYE, 0,
-                            ChatColor.of(new Color(155, 120, 197)) + "Cursing Voice",
-                            ChatColor.of(new Color(0, 102, 0)) + "Level " + (skillLevel.getSkill_7_Level() + skillLevel.getSkill_7_Level_Bonus()),
+                            ChatColor.of(mysticColor) + "Cursing Voice",
+                            ChatColor.of(new Color(0, 102, 0)) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_7_Level_Bonus()),
                             "",
                             ChatColor.of(new Color(230, 230, 230)) + "Cause your target to fall asleep.",
                             ChatColor.of(new Color(230, 230, 230)) + "If they take damage, they awaken");
@@ -113,8 +116,8 @@ public class MysticSkillItem {
 
                 case 8: {
                     return getItem(Material.PURPLE_DYE, 0,
-                            ChatColor.of(new Color(155, 120, 197)) + "Health Absorb",
-                            ChatColor.of(new Color(0, 102, 0)) + "Level " + (skillLevel.getSkill_8_Level() + skillLevel.getSkill_8_Level_Bonus()),
+                            ChatColor.of(mysticColor) + "Health Absorb",
+                            ChatColor.of(new Color(0, 102, 0)) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_8_Level_Bonus()),
                             "",
                             ChatColor.of(new Color(230, 230, 230)) + "Leech life from your target, restoring",
                             ChatColor.of(new Color(230, 230, 230)) + "your own health");
@@ -127,83 +130,83 @@ public class MysticSkillItem {
         switch (number){
 
             case 1:{
-                return getItem(Material.PURPLE_DYE, 0,
-                        ChatColor.of(new Color(155, 120, 197)) + "Arcane Shield",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_1_Level() + skillLevel.getSkill_1_Level_Bonus()),
+                return getItem(Material.PURPLE_DYE, 1,
+                        ChatColor.of(mysticColor) + "Arcane Shield",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_1_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Raise a shield of arcane energy",
-                        ChatColor.of(new Color(230,230,230)) + "around your target that absorbs",
-                        ChatColor.of(new Color(230,230,230)) + "damage");
+                        ChatColor.of(Color.WHITE) + "Raise a shield of arcane energy",
+                        ChatColor.of(Color.WHITE) + "around your target that absorbs",
+                        ChatColor.of(Color.WHITE) + "damage");
             }
 
             case 2:{
-                return getItem(Material.PURPLE_DYE, 0,
-                        ChatColor.of(new Color(155, 120, 197)) + "Purifying Blast",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_2_Level() + skillLevel.getSkill_2_Level_Bonus()),
+                return getItem(Material.PURPLE_DYE, 2,
+                        ChatColor.of(mysticColor) + "Purifying Blast",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_2_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Surround yourself with a ring",
-                        ChatColor.of(new Color(230,230,230)) + "of arcane energy, healing allies",
-                        ChatColor.of(new Color(230,230,230)) + "and damaging enemies");
+                        ChatColor.of(Color.WHITE) + "Surround yourself with a ring",
+                        ChatColor.of(Color.WHITE) + "of arcane energy, healing allies",
+                        ChatColor.of(Color.WHITE) + "and damaging enemies");
             }
 
             case 3:{
-                return getItem(Material.PURPLE_DYE, 0,
-                        ChatColor.of(new Color(155, 120, 197)) + "Force of Will",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_3_Level() + skillLevel.getSkill_3_Level_Bonus()),
+                return getItem(Material.PURPLE_DYE, 3,
+                        ChatColor.of(mysticColor) + "Force of Will",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_3_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Channel arcane energy to deal",
-                        ChatColor.of(new Color(230,230,230)) + "continuous damage to your target");
+                        ChatColor.of(Color.WHITE) + "Channel arcane energy to deal",
+                        ChatColor.of(Color.WHITE) + "continuous damage to your target");
             }
 
             case 4:{
-                return getItem(Material.PURPLE_DYE, 0,
-                        ChatColor.of(new Color(155, 120, 197)) + "Dreadfall",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_4_Level() + skillLevel.getSkill_4_Level_Bonus()),
+                return getItem(Material.PURPLE_DYE, 4,
+                        ChatColor.of(mysticColor) + "Dreadfall",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_4_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Summon a void meteor that deals",
-                        ChatColor.of(new Color(230,230,230)) + "heavy area damage");
+                        ChatColor.of(Color.WHITE) + "Summon a void meteor that deals",
+                        ChatColor.of(Color.WHITE) + "heavy area damage");
             }
 
             case 5:{
-                return getItem(Material.PURPLE_DYE, 0,
-                        ChatColor.of(new Color(155, 120, 197)) + "Void Walk",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_5_Level() + skillLevel.getSkill_5_Level_Bonus()),
+                return getItem(Material.PURPLE_DYE, 5,
+                        ChatColor.of(mysticColor) + "Void Walk",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_5_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Teleport, either toward your target",
-                        ChatColor.of(new Color(230,230,230)) + "or in front you");
+                        ChatColor.of(Color.WHITE) + "Teleport, either toward your target",
+                        ChatColor.of(Color.WHITE) + "or in front you");
             }
 
             case 6:{
-                return getItem(Material.PURPLE_DYE, 0,
-                        ChatColor.of(new Color(155, 120, 197)) + "Aurora",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_6_Level() + skillLevel.getSkill_6_Level_Bonus()),
+                return getItem(Material.PURPLE_DYE, 6,
+                        ChatColor.of(mysticColor) + "Aurora",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_6_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Summon an arcane energy barrier to",
-                        ChatColor.of(new Color(230,230,230)) + "surround the target ally. All allies",
-                        ChatColor.of(new Color(230,230,230)) + "within are protected by a shield");
+                        ChatColor.of(Color.WHITE) + "Summon an arcane energy barrier to",
+                        ChatColor.of(Color.WHITE) + "surround the target ally. All allies",
+                        ChatColor.of(Color.WHITE) + "within are protected by a shield");
             }
 
             case 7:{
-                return getItem(Material.PURPLE_DYE, 0,
-                        ChatColor.of(new Color(155, 120, 197)) + "Arcane Contract",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_7_Level() + skillLevel.getSkill_7_Level_Bonus()),
+                return getItem(Material.PURPLE_DYE, 7,
+                        ChatColor.of(mysticColor) + "Arcane Contract",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_7_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Revive one dead player. Using this",
-                        ChatColor.of(new Color(230,230,230)) + "skill also puts it in cooldown for",
-                        ChatColor.of(new Color(230,230,230)) + "allied mystics");
+                        ChatColor.of(Color.WHITE) + "Revive one dead player. Using this",
+                        ChatColor.of(Color.WHITE) + "skill also puts it in cooldown for",
+                        ChatColor.of(Color.WHITE) + "allied mystics");
             }
 
             case 8:{
-                return getItem(Material.PURPLE_DYE, 0,
-                        ChatColor.of(new Color(155, 120, 197)) + "Light Sigil",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_8_Level() + skillLevel.getSkill_8_Level_Bonus()),
+                return getItem(Material.PURPLE_DYE, 8,
+                        ChatColor.of(mysticColor) + "Light Sigil",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_8_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Generate a Light Sigil",
-                        ChatColor.of(new Color(230,230,230)) + "that continuously damages",
-                        ChatColor.of(new Color(230,230,230)) + "nearby enemies. Your",
-                        ChatColor.of(new Color(230,230,230)) + "next " + ChatColor.of(new Color(155, 120, 197)) + "Purifying Blast " +
-                        ChatColor.of(new Color(230,230,230)) + "has no",
-                        ChatColor.of(new Color(230,230,230)) + "cast time");
+                        ChatColor.of(Color.WHITE) + "Generate a Light Sigil",
+                        ChatColor.of(Color.WHITE) + "that continuously damages",
+                        ChatColor.of(Color.WHITE) + "nearby enemies. Your",
+                        ChatColor.of(Color.WHITE) + "next " + ChatColor.of(mysticColor) + "Purifying Blast " +
+                        ChatColor.of(Color.WHITE) + "has no",
+                        ChatColor.of(Color.WHITE) + "cast time");
             }
 
         }
@@ -220,35 +223,35 @@ public class MysticSkillItem {
         switch (subClass.toLowerCase()){
             case "chaos":{
                 return getItem(Material.PURPLE_DYE, 0,
-                        ChatColor.of(new Color(59, 14, 114)) + "Evil Spirit",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + level,
+                        ChatColor.of(mysticColor) + "Evil Spirit",
+                        ChatColor.of(levelColor) + "Level " + level,
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Transform into the embodiment",
-                        ChatColor.of(new Color(230,230,230)) + "of chaos, with the one goal",
-                        ChatColor.of(new Color(230,230,230)) + "of destroying your enemies.",
-                        ChatColor.of(new Color(230,230,230)) + "Your skills build up chaos ",
-                        ChatColor.of(new Color(230,230,230)) + "shards. When you have six",
-                        ChatColor.of(new Color(230,230,230)) + "this skill is able to be cast");
+                        ChatColor.of(Color.WHITE) + "Transform into the embodiment",
+                        ChatColor.of(Color.WHITE) + "of chaos, with the one goal",
+                        ChatColor.of(Color.WHITE) + "of destroying your enemies.",
+                        ChatColor.of(Color.WHITE) + "Your skills build up chaos ",
+                        ChatColor.of(Color.WHITE) + "shards. When you have six",
+                        ChatColor.of(Color.WHITE) + "this skill is able to be cast");
             }
 
             case "arcane master":{
-                return getItem(Material.PURPLE_DYE, 0,
-                        ChatColor.of(new Color(155, 120, 197)) + "Arcane Missiles",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + level,
+                return getItem(Material.PURPLE_DYE, 9,
+                        ChatColor.of(mysticColor) + "Arcane Missiles",
+                        ChatColor.of(levelColor) + "Level " + level,
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Rapidly fire multiple projectiles",
-                        ChatColor.of(new Color(230,230,230)) + "of pure arcane energy that bombard",
-                        ChatColor.of(new Color(230,230,230)) + "your enemy");
+                        ChatColor.of(Color.WHITE) + "Rapidly fire multiple projectiles",
+                        ChatColor.of(Color.WHITE) + "of pure arcane energy that bombard",
+                        ChatColor.of(Color.WHITE) + "your enemy");
             }
 
             case "shepard":{
-                return getItem(Material.PURPLE_DYE, 0,
-                        ChatColor.of(new Color(126, 101, 238)) + "Enlightenment",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + level,
+                return getItem(Material.PURPLE_DYE, 10,
+                        ChatColor.of(mysticColor) + "Enlightenment",
+                        ChatColor.of(levelColor) + "Level " + level,
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Instantly heal nearby allies",
-                        ChatColor.of(new Color(230,230,230)) + "and give them a 10% damage",
-                        ChatColor.of(new Color(230,230,230)) + "reduction buff for 5 seconds");
+                        ChatColor.of(Color.WHITE) + "Instantly heal nearby allies",
+                        ChatColor.of(Color.WHITE) + "and give them a 10% damage",
+                        ChatColor.of(Color.WHITE) + "reduction buff for 5 seconds");
             }
         }
 

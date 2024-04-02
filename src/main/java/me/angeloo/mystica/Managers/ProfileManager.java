@@ -3,14 +3,13 @@ package me.angeloo.mystica.Managers;
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
-import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
 import me.angeloo.mystica.CustomEvents.TargetBarShouldUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.PlayerProfile;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
-import me.angeloo.mystica.Utility.GearReader;
+import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.ProfileFileWriter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -38,6 +37,7 @@ public class ProfileManager {
 
     private final File dataFolder;
     private final ProfileFileWriter profileFileWriter;
+    private final PathingManager pathingManager;
 
     private final Map<UUID, PlayerProfile> playerProfiles = new HashMap<>();
     private final Map<UUID, NonPlayerProfile> nonPlayerProfiles = new HashMap<>();
@@ -53,6 +53,7 @@ public class ProfileManager {
         this.main = main;
         dataFolder = main.getDataFolder();
         profileFileWriter = main.getProfileFileWriter();
+        pathingManager = main.getPathingManager();
     }
 
     public void saveProfilesToConfig(){
@@ -80,7 +81,6 @@ public class ProfileManager {
 
             config.set(id + ".name", playername);
 
-
             config.set(id + ".stats.level", stats.getLevel());
 
             config.set(id + ".class", playerClass);
@@ -93,15 +93,6 @@ public class ProfileManager {
             config.set(id + ".bagUnlocks", playerBag.getNumUnlocks());
 
             config.set(id + ".equipment", playerEquipment.getEquipment());
-
-            config.set(id + ".skill_level.skill1", skillLevel.getSkill_1_Level());
-            config.set(id + ".skill_level.skill2", skillLevel.getSkill_2_Level());
-            config.set(id + ".skill_level.skill3", skillLevel.getSkill_3_Level());
-            config.set(id + ".skill_level.skill4", skillLevel.getSkill_4_Level());
-            config.set(id + ".skill_level.skill5", skillLevel.getSkill_5_Level());
-            config.set(id + ".skill_level.skill6", skillLevel.getSkill_6_Level());
-            config.set(id + ".skill_level.skill7", skillLevel.getSkill_7_Level());
-            config.set(id + ".skill_level.skill8", skillLevel.getSkill_8_Level());
 
             config.set(id + ".skill_level.skill1_bonus", skillLevel.getSkill_1_Level_Bonus());
             config.set(id + ".skill_level.skill2_bonus", skillLevel.getSkill_2_Level_Bonus());
@@ -162,9 +153,10 @@ public class ProfileManager {
                     //stats
                     int level = config.getInt(id + ".stats.level");
 
-                    Stats stats = new Stats(level,50,50,100,100,1,1,50,50, 1);
+                    Stats stats = new Stats(level,50,100,100,1,1,50,50, 1);
+                    assert playerClass != null;
                     assert playerSubclass != null;
-                    stats.setLevelStats(level, playerSubclass);
+                    stats.setLevelStats(level, playerClass, playerSubclass);
 
                     int hp = stats.getHealth();
                     int mana = stats.getMana();
@@ -179,17 +171,7 @@ public class ProfileManager {
                     ItemStack[] equipment = ((List<ItemStack>) config.get(id + ".equipment")).toArray(new ItemStack[6]);
                     PlayerEquipment playerEquipment = new PlayerEquipment(equipment);
 
-                    StatsFromGear gearStats = new StatsFromGear(0, 0, 0, 0, 0, 0, 0, 0, 0);
-
-
-                    int skill1 = config.getInt(id + ".skill_level.skill1");
-                    int skill2 = config.getInt(id + ".skill_level.skill2");
-                    int skill3 = config.getInt(id + ".skill_level.skill3");
-                    int skill4 = config.getInt(id + ".skill_level.skill4");
-                    int skill5 = config.getInt(id + ".skill_level.skill5");
-                    int skill6 = config.getInt(id + ".skill_level.skill6");
-                    int skill7 = config.getInt(id + ".skill_level.skill7");
-                    int skill8 = config.getInt(id + ".skill_level.skill8");
+                    StatsFromGear gearStats = new StatsFromGear(0, 0, 0, 0, 0, 0, 0, 0);
 
                     int skill1_bonus = config.getInt(id + ".skill_level.skill1_bonus");
                     int skill2_bonus = config.getInt(id + ".skill_level.skill2_bonus");
@@ -213,7 +195,7 @@ public class ProfileManager {
 
                     EquipSkills equipSkills = new EquipSkills(slots);
 
-                    Skill_Level skillLevel = new Skill_Level(skill1, skill2, skill3, skill4, skill5, skill6, skill7, skill8,
+                    Skill_Level skillLevel = new Skill_Level(
                             skill1_bonus, skill2_bonus, skill3_bonus, skill4_bonus, skill5_bonus, skill6_bonus, skill7_bonus, skill8_bonus);
 
                     int bossLevel = config.getInt(id + ".boss_level");
@@ -226,11 +208,6 @@ public class ProfileManager {
                             allMilestones.put(milestone, milestonesSection.getBoolean(milestone));
                         }
                     }
-
-                    /*allMilestones.put("tutorial", config.getBoolean(id + ".milestones.tutorial"));
-                    allMilestones.put("divive", config.getBoolean(id + ".milestones.divine"));
-                    allMilestones.put("chaos", config.getBoolean(id + ".milestones.chaos"));
-                    allMilestones.put("firstdungeon", config.getBoolean(id + ".milestones.firstdungeon"));*/
 
                     Milestones milestones = new Milestones(allMilestones);
 
@@ -248,11 +225,6 @@ public class ProfileManager {
                             playerBossLevel,
                             milestones,
                             points) {
-
-                        @Override
-                        public Bal getBal() {
-                            return null;
-                        }
 
                         @Override
                         public Boolean getIsPassive() {
@@ -335,10 +307,10 @@ public class ProfileManager {
     }
 
 
-    public void createNewPlayerProfile(UUID uuid){
+    private void createNewPlayerProfile(UUID uuid){
 
-        Stats stats = new Stats(1,50,50,100,100,1,1,50,50, 1);
-        StatsFromGear gearStats = new StatsFromGear( 0, 0,0,0,0,0,0,0,0);
+        Stats stats = new Stats(1,50,100,100,1,1,50,50, 1);
+        StatsFromGear gearStats = new StatsFromGear( 0, 0,0,0,0,0,0,0);
 
         int currentHealth = 20;
         int currentMana = 20;
@@ -346,10 +318,20 @@ public class ProfileManager {
         PlayerBag playerBag = new PlayerBag(new ArrayList<>(), 0);
         PlayerEquipment playerEquipment = new PlayerEquipment(new ItemStack[6]);
 
-        Skill_Level skillLevel = new Skill_Level(1,1,1,1,1,1,1,1,
+        Skill_Level skillLevel = new Skill_Level(
                 0,0,0,0,0,0,0,0);
 
-        EquipSkills equipSkills = new EquipSkills(new int[8]);
+        int[] defaultSkillSlots = new int[8];
+        defaultSkillSlots[0] = 1;
+        defaultSkillSlots[1] = 2;
+        defaultSkillSlots[2] = 3;
+        defaultSkillSlots[3] = 4;
+        defaultSkillSlots[4] = 5;
+        defaultSkillSlots[5] = 6;
+        defaultSkillSlots[6] = 7;
+        defaultSkillSlots[7] = 8;
+
+        EquipSkills equipSkills = new EquipSkills(defaultSkillSlots);
 
         PlayerBossLevel playerBossLevel = new PlayerBossLevel(1);
 
@@ -432,9 +414,13 @@ public class ProfileManager {
         if (interactions != null && interactions.isEnabled()) {
             Server server = Bukkit.getServer();
 
-            server.dispatchCommand(server.getConsoleSender(), "interactions resetplayer " + newPlayer.getName() + " newPlayer");
+            server.dispatchCommand(server.getConsoleSender(), "interactions resetplayer " + newPlayer.getName() + " newplayer");
+            server.dispatchCommand(server.getConsoleSender(), "interactions resetplayer " + newPlayer.getName() + " captain");
+            server.dispatchCommand(server.getConsoleSender(), "interactions resetplayer " + newPlayer.getName() + " HoLee");
         }
 
+        pathingManager.calculatePath(newPlayer, new Location(newPlayer.getWorld(), 64, 99, -350));
+        new DisplayWeapons(main).displayWeapons(newPlayer);
     }
 
     public void removePlayerProfile(Player player){
@@ -449,12 +435,12 @@ public class ProfileManager {
                 playerProfiles.remove(player.getUniqueId());
                 playerNameMap.remove(player.getName());
             }
-        }.runTaskLater(main, 20);
+        }.runTaskLater(main, 5);
 
     }
 
     public void createNewDefaultNonPlayerProfile(UUID uuid){
-        Stats stats = new Stats(1,1,1,1,0,0,0,1,1,0);
+        Stats stats = new Stats(1,1,1,0,0,0,1,1,0);
         double currentHealth = 1;
         Yield yield = new Yield(0, null);
         NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(currentHealth, stats, true, false, false, false, yield) {
@@ -517,11 +503,6 @@ public class ProfileManager {
             @Override
             public int getTotalAttack() {
                 return getStats().getAttack();
-            }
-
-            @Override
-            public int getTotalMagic() {
-                return getStats().getMagic();
             }
 
             @Override

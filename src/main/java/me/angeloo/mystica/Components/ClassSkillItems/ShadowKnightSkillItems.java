@@ -20,6 +20,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import static me.angeloo.mystica.Mystica.levelColor;
+import static me.angeloo.mystica.Mystica.shadowKnightColor;
+
 public class ShadowKnightSkillItems {
 
     private final ProfileManager profileManager;
@@ -38,80 +41,80 @@ public class ShadowKnightSkillItems {
 
             case 1:{
                 return getItem(Material.RED_DYE, 1,
-                        ChatColor.of(new Color(213, 33, 3)) + "Infection",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_1_Level() + skillLevel.getSkill_1_Level_Bonus()),
+                        ChatColor.of(shadowKnightColor) + "Infection",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_1_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Launch a projectile that infects your",
-                        ChatColor.of(new Color(230,230,230)) + "target for continuous damage");
+                        ChatColor.of(Color.WHITE) + "Launch a projectile that infects your",
+                        ChatColor.of(Color.WHITE) + "target for continuous damage");
             }
             case 2:{
                 return getItem(Material.RED_DYE, 2,
-                        ChatColor.of(new Color(213, 33, 3)) + "Spiritual Attack",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_2_Level() + skillLevel.getSkill_2_Level_Bonus()),
+                        ChatColor.of(shadowKnightColor) + "Spiritual Attack",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_2_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Summon the hand of your spiritual",
-                        ChatColor.of(new Color(230,230,230)) + "ally to strike your target from above");
+                        ChatColor.of(Color.WHITE) + "Summon the hand of your spiritual",
+                        ChatColor.of(Color.WHITE) + "ally to strike your target from above");
             }
             case 3:{
                 return getItem(Material.RED_DYE, 3,
-                        ChatColor.of(new Color(213, 33, 3)) + "Burial Ground",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_3_Level() + skillLevel.getSkill_3_Level_Bonus()),
+                        ChatColor.of(shadowKnightColor) + "Burial Ground",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_3_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Summon a graveyard beneath your",
-                        ChatColor.of(new Color(230,230,230)) + "feet. Standing within restores",
-                        ChatColor.of(new Color(230,230,230)) + "your health and your energy",
-                        ChatColor.of(new Color(230,230,230)) + "over time.");
+                        ChatColor.of(Color.WHITE) + "Summon a graveyard beneath your",
+                        ChatColor.of(Color.WHITE) + "feet. Standing within restores",
+                        ChatColor.of(Color.WHITE) + "your health and your energy",
+                        ChatColor.of(Color.WHITE) + "over time.");
             }
             case 4:{
                 return getItem(Material.RED_DYE, 4,
-                        ChatColor.of(new Color(213, 33, 3)) + "Bloodsucker",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_4_Level() + skillLevel.getSkill_4_Level_Bonus()),
+                        ChatColor.of(shadowKnightColor) + "Bloodsucker",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_4_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Leech life from your target",
-                        ChatColor.of(new Color(230,230,230)) + "to restore your own health.");
+                        ChatColor.of(Color.WHITE) + "Leech life from your target",
+                        ChatColor.of(Color.WHITE) + "to restore your own health.");
             }
             case 5:{
                 return getItem(Material.RED_DYE, 5,
-                        ChatColor.of(new Color(213, 33, 3)) + "Soul Reap",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_5_Level() + skillLevel.getSkill_5_Level_Bonus()),
+                        ChatColor.of(shadowKnightColor) + "Soul Reap",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_5_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Strike your target, piercing",
-                        ChatColor.of(new Color(230,230,230)) + "their very soul. If they",
-                        ChatColor.of(new Color(230,230,230)) + "are beneath 30% of their",
-                        ChatColor.of(new Color(230,230,230)) + "maximum health, damage is",
-                        ChatColor.of(new Color(230,230,230)) + "increased by 30%");
+                        ChatColor.of(Color.WHITE) + "Strike your target, piercing",
+                        ChatColor.of(Color.WHITE) + "their very soul. If they",
+                        ChatColor.of(Color.WHITE) + "are beneath 30% of their",
+                        ChatColor.of(Color.WHITE) + "maximum health, damage is",
+                        ChatColor.of(Color.WHITE) + "increased by 30%");
             }
             case 6:{
                 return getItem(Material.RED_DYE, 6,
-                        ChatColor.of(new Color(213, 33, 3)) + "Shadow Grip",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_6_Level() + skillLevel.getSkill_6_Level_Bonus()),
+                        ChatColor.of(shadowKnightColor) + "Shadow Grip",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_6_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "The hand of your spiritual",
-                        ChatColor.of(new Color(230,230,230)) + "ally pulls your target toward",
-                        ChatColor.of(new Color(230,230,230)) + "you. This ability causes",
-                        ChatColor.of(new Color(230,230,230)) + "the hit enemy to target",
-                        ChatColor.of(new Color(230,230,230)) + "you");
+                        ChatColor.of(Color.WHITE) + "The hand of your spiritual",
+                        ChatColor.of(Color.WHITE) + "ally pulls your target toward",
+                        ChatColor.of(Color.WHITE) + "you. This ability causes",
+                        ChatColor.of(Color.WHITE) + "the hit enemy to target",
+                        ChatColor.of(Color.WHITE) + "you");
             }
             case 7:{
                 return getItem(Material.RED_DYE, 7,
-                        ChatColor.of(new Color(213, 33, 3)) + "Spectral Steed",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_7_Level() + skillLevel.getSkill_7_Level_Bonus()),
+                        ChatColor.of(shadowKnightColor) + "Spectral Steed",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_7_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Summon your spectral steed",
-                        ChatColor.of(new Color(230,230,230)) + "to increase your combative",
-                        ChatColor.of(new Color(230,230,230)) + "advantage. Your movement",
-                        ChatColor.of(new Color(230,230,230)) + "speed is increased and you",
-                        ChatColor.of(new Color(230,230,230)) + "may use abilities while mounted");
+                        ChatColor.of(Color.WHITE) + "Summon your spectral steed",
+                        ChatColor.of(Color.WHITE) + "to increase your combative",
+                        ChatColor.of(Color.WHITE) + "advantage. Your movement",
+                        ChatColor.of(Color.WHITE) + "speed is increased and you",
+                        ChatColor.of(Color.WHITE) + "may use abilities while mounted");
             }
             case 8:{
                 return getItem(Material.RED_DYE, 8,
-                        ChatColor.of(new Color(213, 33, 3)) + "Soulcrack",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_8_Level() + skillLevel.getSkill_8_Level_Bonus()),
+                        ChatColor.of(shadowKnightColor) + "Soulcrack",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_8_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Strike all foes around you.",
-                        ChatColor.of(new Color(230,230,230)) + "This ability restores your",
-                        ChatColor.of(new Color(230,230,230)) + "energy instead of consuming",
-                        ChatColor.of(new Color(230,230,230)) + "it.");
+                        ChatColor.of(Color.WHITE) + "Strike all foes around you.",
+                        ChatColor.of(Color.WHITE) + "This ability restores your",
+                        ChatColor.of(Color.WHITE) + "energy instead of consuming",
+                        ChatColor.of(Color.WHITE) + "it.");
             }
         }
 
@@ -127,27 +130,27 @@ public class ShadowKnightSkillItems {
         switch(subClass.toLowerCase()){
             case "blood":{
                 return getItem(Material.RED_DYE, 9,
-                        ChatColor.of(new Color(213, 33, 3)) + "Blood Shield",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + level,
+                        ChatColor.of(shadowKnightColor) + "Blood Shield",
+                        ChatColor.of(levelColor) + "Level " + level,
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Instantly heal 50% of your",
-                        ChatColor.of(new Color(230,230,230)) + "missing health. Shield yourself",
-                        ChatColor.of(new Color(230,230,230)) + "for an equivalent of your current",
-                        ChatColor.of(new Color(230,230,230)) + "health for 10 seconds. While active,",
-                        ChatColor.of(new Color(230,230,230)) + "casting " + ChatColor.of(new Color(213, 33, 3)) + "Bloodsucker " +
-                                ChatColor.of(new Color(230,230,230)) + "increases the",
-                        ChatColor.of(new Color(230,230,230)) + "duration by 3 seconds");
+                        ChatColor.of(Color.WHITE) + "Instantly heal 50% of your",
+                        ChatColor.of(Color.WHITE) + "missing health. Shield yourself",
+                        ChatColor.of(Color.WHITE) + "for an equivalent of your current",
+                        ChatColor.of(Color.WHITE) + "health for 10 seconds. While active,",
+                        ChatColor.of(Color.WHITE) + "casting " + ChatColor.of(shadowKnightColor) + "Bloodsucker " +
+                                ChatColor.of(Color.WHITE) + "increases the",
+                        ChatColor.of(Color.WHITE) + "duration by 3 seconds");
             }
             case "doom":{
                 return getItem(Material.RED_DYE, 10,
-                        ChatColor.of(new Color(3, 7, 219)) + "Annihilation",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + level,
+                        ChatColor.of(shadowKnightColor) + "Annihilation",
+                        ChatColor.of(levelColor) + "Level " + level,
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Your spiritual ally strikes",
-                        ChatColor.of(new Color(230,230,230)) + "your foe with a powerful sweep,",
-                        ChatColor.of(new Color(230,230,230)) + "enhancing any " +
-                                ChatColor.of(new Color(213, 33, 3)) + "Infections " + ChatColor.of(new Color(230,230,230)) + "and",
-                        ChatColor.of(new Color(230,230,230)) + "refreshing its duration");
+                        ChatColor.of(Color.WHITE) + "Your spiritual ally strikes",
+                        ChatColor.of(Color.WHITE) + "your foe with a powerful sweep,",
+                        ChatColor.of(Color.WHITE) + "enhancing any " +
+                                ChatColor.of(shadowKnightColor) + "Infections " + ChatColor.of(Color.WHITE) + "and",
+                        ChatColor.of(Color.WHITE) + "refreshing its duration");
             }
         }
 

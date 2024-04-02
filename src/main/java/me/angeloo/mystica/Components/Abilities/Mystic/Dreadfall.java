@@ -156,7 +156,7 @@ public class Dreadfall {
         entityEquipment.setHelmet(meteorItem);
 
         double skillDamage = 25;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level() +
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
 
         skillDamage = skillDamage + ((int)(skillLevel/10));
@@ -252,7 +252,7 @@ public class Dreadfall {
                                 }
 
                                 if(arcane && crit){
-                                    double fifteenPercent = (double) profileManager.getAnyProfile(player).getTotalMagic() * .15;
+                                    double fifteenPercent = (double) profileManager.getAnyProfile(player).getTotalAttack() * .15;
                                     changeResourceHandler.subtractHealthFromEntity(target, fifteenPercent, player);
                                 }
 
@@ -271,7 +271,7 @@ public class Dreadfall {
                             }
 
                             if(arcane && crit){
-                                double fifteenPercent = (double) profileManager.getAnyProfile(player).getTotalMagic() * .15;
+                                double fifteenPercent = (double) profileManager.getAnyProfile(player).getTotalAttack() * .15;
                                 changeResourceHandler.subtractHealthFromEntity(target, fifteenPercent, player);
                             }
 

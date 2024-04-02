@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static me.angeloo.mystica.Mystica.elementalistColor;
+import static me.angeloo.mystica.Mystica.menuColor;
+
 public class ElementalistEquipment {
 
     public ElementalistEquipment(){
@@ -23,73 +26,73 @@ public class ElementalistEquipment {
     public ItemStack getBaseWeapon(){
 
         return getItem(Material.STICK, 1,
-                ChatColor.of(new Color(153, 204, 255)) + "Elementalist's Catalyst",
-                ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
-                ChatColor.of(new Color(176, 159, 109)) + "Main Hand",
+                ChatColor.of(elementalistColor) + "Elementalist's Catalyst",
+                ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + "1",
+                ChatColor.of(menuColor) + "Main Hand",
                 "",
-                ChatColor.of(new Color(255,255,255)) + "Magic + 3",
-                ChatColor.of(new Color(255,255,255)) + "Health + 18",
+                ChatColor.of(Color.WHITE) + "Attack + 3",
+                ChatColor.of(Color.WHITE) + "Health + 18",
                 "",
-                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(153, 204, 255)) + "Elementalist");
+                ChatColor.of(menuColor) + "Requires " + ChatColor.of(elementalistColor) + "Elementalist");
     }
 
     public ItemStack getBaseOffhand(){
         return getItem(Material.STICK, 2,
-                ChatColor.of(new Color(153, 204, 255)) + "Elementalist's Circlet",
-                ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
-                ChatColor.of(new Color(176, 159, 109)) + "Secondary",
+                ChatColor.of(elementalistColor) + "Elementalist's Circlet",
+                ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + "1",
+                ChatColor.of(menuColor) + "Secondary",
                 "",
-                ChatColor.of(new Color(255,255,255)) + "Health + 18",
-                ChatColor.of(new Color(255,255,255)) + "Defense + 4",
-                ChatColor.of(new Color(255,255,255)) + "Magic Defense + 4",
+                ChatColor.of(Color.WHITE) + "Health + 18",
+                ChatColor.of(Color.WHITE) + "Defense + 4",
+                ChatColor.of(Color.WHITE) + "Magic Defense + 4",
                 "",
-                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(153, 204, 255)) + "Elementalist");
+                ChatColor.of(menuColor) + "Requires " + ChatColor.of(elementalistColor) + "Elementalist");
     }
 
     public ItemStack getBaseHelmet(){
         return getItem(Material.CHAIN, 1,
-                ChatColor.of(new Color(153, 204, 255)) + "Elementalist's Hood",
-                ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
-                ChatColor.of(new Color(176, 159, 109)) + "Helmet",
+                ChatColor.of(elementalistColor) + "Elementalist's Hood",
+                ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + "1",
+                ChatColor.of(menuColor) + "Helmet",
                 "",
-                ChatColor.of(new Color(255,255,255)) + "Health + 50",
+                ChatColor.of(Color.WHITE) + "Health + 50",
                 "",
-                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(153, 204, 255)) + "Elementalist");
+                ChatColor.of(menuColor) + "Requires " + ChatColor.of(elementalistColor) + "Elementalist");
     }
 
     public ItemStack getBaseChestPlate(){
         return getItem(Material.CHAINMAIL_CHESTPLATE, 1,
-                ChatColor.of(new Color(153, 204, 255)) + "Elementalist's Tunic",
-                ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
-                ChatColor.of(new Color(176, 159, 109)) + "Chestplate",
+                ChatColor.of(elementalistColor) + "Elementalist's Tunic",
+                ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + "1",
+                ChatColor.of(menuColor) + "Chestplate",
                 "",
-                ChatColor.of(new Color(255,255,255)) + "Health + 31",
-                ChatColor.of(new Color(255,255,255)) + "Defense + 4",
-                ChatColor.of(new Color(255,255,255)) + "Magic Defense + 4",
+                ChatColor.of(Color.WHITE) + "Health + 31",
+                ChatColor.of(Color.WHITE) + "Defense + 4",
+                ChatColor.of(Color.WHITE) + "Magic Defense + 4",
                 "",
-                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(153, 204, 255)) + "Elementalist");
+                ChatColor.of(menuColor) + "Requires " + ChatColor.of(elementalistColor) + "Elementalist");
     }
 
     public ItemStack getBaseLeggings(){
         return getItem(Material.CHAINMAIL_LEGGINGS, 1,
-                ChatColor.of(new Color(153, 204, 255)) + "Elementalist's Breeches",
-                ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
-                ChatColor.of(new Color(176, 159, 109)) + "Leggings",
+                ChatColor.of(elementalistColor) + "Elementalist's Breeches",
+                ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + "1",
+                ChatColor.of(menuColor) + "Leggings",
                 "",
-                ChatColor.of(new Color(255,255,255)) + "Magic + 4",
+                ChatColor.of(Color.WHITE) + "Attack + 4",
                 "",
-                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(153, 204, 255)) + "Elementalist");
+                ChatColor.of(menuColor) + "Requires " + ChatColor.of(elementalistColor) + "Elementalist");
     }
 
     public ItemStack getBaseBoots(){
         return getItem(Material.CHAINMAIL_BOOTS, 1,
-                ChatColor.of(new Color(153, 204, 255)) + "Elementalist's Boots",
-                ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
-                ChatColor.of(new Color(176, 159, 109)) + "Boots",
+                ChatColor.of(elementalistColor) + "Elementalist's Boots",
+                ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + "1",
+                ChatColor.of(menuColor) + "Boots",
                 "",
-                ChatColor.of(new Color(255,255,255)) + "Magic + 2",
+                ChatColor.of(Color.WHITE) + "Attack + 2",
                 "",
-                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(153, 204, 255)) + "Elementalist");
+                ChatColor.of(menuColor) + "Requires " + ChatColor.of(elementalistColor) + "Elementalist");
     }
 
     private ItemStack getItem(Material material, int modelData, String name, String ... lore){

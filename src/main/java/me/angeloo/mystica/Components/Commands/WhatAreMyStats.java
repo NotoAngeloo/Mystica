@@ -28,7 +28,6 @@ public class WhatAreMyStats implements CommandExecutor {
 
         int level = profileManager.getAnyProfile(player).getStats().getLevel();
         int attack = profileManager.getAnyProfile(player).getTotalAttack();
-        int magic = profileManager.getAnyProfile(player).getTotalMagic();
         int health = profileManager.getAnyProfile(player).getTotalHealth();
         int mana = profileManager.getAnyProfile(player).getTotalMana();
         int regen = profileManager.getAnyProfile(player).getTotalRegen();
@@ -39,7 +38,6 @@ public class WhatAreMyStats implements CommandExecutor {
 
         player.sendMessage("level: " + level);
         player.sendMessage("attack: " + attack);
-        player.sendMessage("magic: " + magic);
         player.sendMessage("health: " + health);
         player.sendMessage("mana: " + mana);
         player.sendMessage("regen: " + regen);

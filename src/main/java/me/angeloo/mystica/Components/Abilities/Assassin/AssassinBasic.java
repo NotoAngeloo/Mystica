@@ -167,7 +167,7 @@ public class AssassinBasic {
                 warpLoc.setDirection(targetDir);
 
                 while (!warpLoc.getBlock().isPassable()){
-                    warpLoc.add(0,1,0);
+                    warpLoc.add(0,.1,0);
                 }
 
                 player.teleport(warpLoc);

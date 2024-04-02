@@ -4,6 +4,9 @@ import me.angeloo.mystica.Components.ClassEquipment.*;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -11,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 public class ClassSetter {
 
     private final ProfileManager profileManager;
+    private final NoneEquipment noneEquipment;
     private final ElementalistEquipment elementalistEquipment;
     private final RangerEquipment rangerEquipment;
     private final MysticEquipment mysticEquipment;
@@ -23,6 +27,7 @@ public class ClassSetter {
 
     public ClassSetter(Mystica main){
         profileManager = main.getProfileManager();
+        noneEquipment = new NoneEquipment();
         elementalistEquipment = new ElementalistEquipment();
         rangerEquipment = new RangerEquipment();
         mysticEquipment = new MysticEquipment();
@@ -104,14 +109,14 @@ public class ClassSetter {
                 break;
             }
             case "none":{
-                playerProfile.getPlayerEquipment().setWeapon(new ItemStack(Material.AIR));
+                playerProfile.getPlayerEquipment().setWeapon(noneEquipment.getBaseWeapon());
                 playerProfile.getPlayerEquipment().setOffhand(new ItemStack(Material.AIR));
                 playerProfile.getPlayerEquipment().setHelmet(new ItemStack(Material.AIR));
                 playerProfile.getPlayerEquipment().setChestPlate(new ItemStack(Material.AIR));
                 playerProfile.getPlayerEquipment().setLeggings(new ItemStack(Material.AIR));
                 playerProfile.getPlayerEquipment().setBoots(new ItemStack(Material.AIR));
                 playerProfile.setPlayerClass(clazz);
-                profileManager.getAnyProfile(player).getStats().setLevelStats(profileManager.getAnyProfile(player).getStats().getLevel(), "none");
+                profileManager.getAnyProfile(player).getStats().setLevelStats(profileManager.getAnyProfile(player).getStats().getLevel(), "none", "none");
                 displayWeapons.displayWeapons(player);
                 displayWeapons.displayArmor(player);
                 gearReader.setGearStats(player);
@@ -121,8 +126,15 @@ public class ClassSetter {
 
         playerProfile.setPlayerClass(clazz);
         playerProfile.setPlayerSubclass("none");
-        profileManager.getAnyProfile(player).getStats().setLevelStats(profileManager.getAnyProfile(player).getStats().getLevel(), "none");
+        profileManager.getAnyProfile(player).getStats().setLevelStats(profileManager.getAnyProfile(player).getStats().getLevel(), clazz, "none");
         player.sendMessage("You are now a(n) " + clazz);
+        player.sendMessage("");
+        ComponentBuilder classGuideMessage = new ComponentBuilder(ChatColor.of(new java.awt.Color(255, 128, 0)) + "Click here " +
+                ChatColor.RESET + "to see a brief class guide")
+                .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/classguide"));
+
+        player.spigot().sendMessage(classGuideMessage.create());
+
         displayWeapons.displayWeapons(player);
         displayWeapons.displayArmor(player);
         gearReader.setGearStats(player);

@@ -118,7 +118,7 @@ public class BladeTempest {
         item.setItemMeta(meta);
 
         double skillDamage = 20;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level() +
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));
 

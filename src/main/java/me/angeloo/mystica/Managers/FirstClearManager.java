@@ -6,10 +6,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class FirstClearManager {
 
@@ -24,7 +26,93 @@ public class FirstClearManager {
         this.dataFolder = main.getDataFolder();
     }
 
-    public void createOrLoadFolder(){
+    public boolean getIfBossHasBeenClearedAtThisLevel(String name, int level){
+
+        if(firstClears.containsKey(name)){
+
+            List<Integer> bossLevelClears = firstClears.get(name);
+
+            return bossLevelClears.contains(level);
+        }
+
+        return false;
+    }
+
+    public void createOrLoadFolder() {
+        String folderName = "firstclears";
+        String fileName = folderName + ".yml";
+
+        File folder = new File(dataFolder, folderName);
+        File file = new File(folder, fileName);
+
+        if (!file.exists()) {
+            folder.mkdirs();
+            main.saveResource(folderName + "/" + fileName, false);
+            Bukkit.getLogger().info("Making a new yml file");
+        } else {
+            Bukkit.getLogger().info("Loading " + fileName);
+        }
+
+        try {
+            config.load(file);
+        } catch (IOException | InvalidConfigurationException exception) {
+            Bukkit.getLogger().info("Error loading " + fileName);
+            exception.printStackTrace();
+        }
+
+        // Parse existing data from the file
+        ConfigurationSection section = config.getConfigurationSection("");
+        if (section != null) {
+            for (String bossName : section.getKeys(false)) {
+                ConfigurationSection bossSection = section.getConfigurationSection(bossName);
+                if (bossSection != null) {
+                    List<Integer> firstClearsForBoss = new ArrayList<>();
+                    for (String level : bossSection.getKeys(false)) {
+                        firstClearsForBoss.add(Integer.parseInt(level));
+
+                        List<String> playerNames = bossSection.getStringList(level);
+
+                        // Do something with playerNames later
+                    }
+                    firstClears.put(bossName, firstClearsForBoss);
+                }
+            }
+        }
+    }
+
+    public void markCleared(String name, int level, Set<Player> players) {
+        String folderName = "firstclears";
+        String fileName = folderName + ".yml";
+
+        File folder = new File(dataFolder, folderName);
+        File file = new File(folder, fileName);
+
+        // Load existing data from the file
+        try {
+            config.load(file);
+        } catch (IOException | InvalidConfigurationException exception) {
+            Bukkit.getLogger().info("Error loading " + fileName);
+            exception.printStackTrace();
+        }
+
+        // Update firstClears map with the new cleared level
+        List<Integer> clears = firstClears.computeIfAbsent(name, k -> new ArrayList<>());
+        clears.add(level);
+
+        // Update the player names for the specific boss level
+        config.set(name + "." + level, players.stream().map(Player::getName).collect(Collectors.toList()));
+
+        // Save the updated data to the file
+        try {
+            config.save(file);
+        } catch (IOException exception) {
+            Bukkit.getLogger().info("Error saving " + fileName);
+            exception.printStackTrace();
+        }
+    }
+
+
+    /*public void createOrLoadFolder(){
         String fileName = "firstclears.yml";
 
         File file = new File(dataFolder, fileName);
@@ -44,60 +132,59 @@ public class FirstClearManager {
             exception.printStackTrace();
         }
 
-        //apply to map from file here
         ConfigurationSection section = config.getConfigurationSection("");
         if (section != null) {
             for (String bossName : section.getKeys(false)) {
-                List<Integer> firstClearsForBoss = new ArrayList<>(section.getIntegerList(bossName));
-                firstClears.put(bossName, firstClearsForBoss);
+                ConfigurationSection bossSection = section.getConfigurationSection(bossName);
+                if (bossSection != null) {
+                    List<Integer> firstClearsForBoss = new ArrayList<>();
+                    for (String level : bossSection.getKeys(false)) {
+                        firstClearsForBoss.add(Integer.parseInt(level));
+
+                        List<String> playerNames = bossSection.getStringList(level);
+
+                        //do something with this later
+                    }
+                    firstClears.put(bossName, firstClearsForBoss);
+
+                }
             }
         }
 
     }
 
-    public void saveFolder(){
 
-        for(String bossName : firstClears.keySet()){
-            config.set(bossName, firstClears.get(bossName));
-        }
 
+
+    public void markCleared(String name, int level, Set<Player> players) {
         String fileName = "firstclears.yml";
         File file = new File(dataFolder, fileName);
 
+        // Load existing data from the file
         try {
-            config.save(file);
-        } catch (IOException exception) {
-            Bukkit.getLogger().info("Error saving firstclears file");
+            config.load(file);
+        } catch (IOException | InvalidConfigurationException exception) {
+            Bukkit.getLogger().info("Error loading " + fileName);
             exception.printStackTrace();
         }
 
-    }
+        List<Integer> clears = firstClears.computeIfAbsent(name, k -> new ArrayList<>());
 
-    public boolean getIfBossHasBeenClearedAtThisLevel(String name, int level){
-
-        if(firstClears.containsKey(name)){
-
-            List<Integer> bossLevelClears = firstClears.get(name);
-
-            return bossLevelClears.contains(level);
-        }
-
-        return false;
-    }
-
-    public void markCleared(String name, int level){
-
-        List<Integer> clears = new ArrayList<>();
-
-        if(firstClears.containsKey(name)){
-            clears = firstClears.get(name);
-        }
-
+        // Add the new level to the list of clears
         clears.add(level);
 
-        firstClears.put(name, clears);
+        // Update the player names for the specific boss level
+        config.set(name + "." + level, players.stream().map(Player::getName).collect(Collectors.toList()));
 
-    }
+        // Save the updated data to the file
+        try {
+            config.save(file);
+        } catch (IOException exception) {
+            Bukkit.getLogger().info("Error saving " + fileName);
+            exception.printStackTrace();
+        }
+    }*/
+
 
 
 }

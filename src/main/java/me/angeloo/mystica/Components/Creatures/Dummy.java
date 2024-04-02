@@ -18,7 +18,7 @@ public class Dummy {
     }
 
     public void makeProfile(UUID uuid){
-        Stats stats = new Stats(1,1,1,1,1,10,1,1,1,0);
+        Stats stats = new Stats(1,1,1,1,10,1,1,1,0);
         Boolean isMovable = false;
         Boolean immortal = true;
         Boolean object = false;
@@ -89,11 +89,6 @@ public class Dummy {
 
             @Override
             public int getTotalAttack() {
-                return 0;
-            }
-
-            @Override
-            public int getTotalMagic() {
                 return 0;
             }
 

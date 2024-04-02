@@ -221,7 +221,7 @@ public class AnvilDrop {
         boolean executioner = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("executioner");
 
         double skillDamage = 25;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level() +
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));
 

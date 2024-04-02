@@ -38,36 +38,44 @@ public class PathingManager {
     }
 
     public void createOrLoadFolder(){
+        String subfolderName = "paths"; // Subfolder name
+
+        File subfolder = new File(dataFolder, subfolderName); // Path to the subfolder
+        if (!subfolder.exists()) {
+            subfolder.mkdirs(); // Create the subfolder if it doesn't exist
+        }
 
         String fileName = "pathing.yml";
+        File file = new File(subfolder, fileName); // Path to the YAML file inside the subfolder
 
-        File file = new File(dataFolder, fileName);
-
-        if(!file.exists()){
-            file.getParentFile().mkdirs();
-            main.saveResource(fileName, false);
+        if (!file.exists()) {
+            // If the file doesn't exist, save the default resource
+            main.saveResource(subfolderName + "/" + fileName, false);
             Bukkit.getLogger().info("Making a new yml file");
-        }
-        else{
+        } else {
             Bukkit.getLogger().info("Loading " + fileName);
         }
-        try{
+
+        try {
             config.load(file);
-        } catch (IOException | InvalidConfigurationException exception){
+            paths = (List<Location>) config.getList("paths", new ArrayList<>());
+        } catch (IOException | InvalidConfigurationException exception) {
             Bukkit.getLogger().info("Error loading " + fileName);
             exception.printStackTrace();
         }
-
-        paths = (List<Location>) config.getList("paths", new ArrayList<Location>());
-
     }
 
     public void saveFolder(){
+        String subfolderName = "paths"; // Subfolder name
+        File subfolder = new File(dataFolder, subfolderName); // Path to the subfolder
+        if (!subfolder.exists()) {
+            subfolder.mkdirs(); // Create the subfolder if it doesn't exist
+        }
+
+        String fileName = "paths/pathing.yml";
+        File file = new File(subfolder, fileName); // Path to the YAML file inside the subfolder
 
         config.set("paths", paths);
-
-        String fileName = "pathing.yml";
-        File file = new File(dataFolder, fileName);
 
         try {
             config.save(file);
@@ -319,6 +327,11 @@ public class PathingManager {
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
+
+                if(player.getWorld() != destination.getWorld()){
+                    cancelTask();
+                    return;
+                }
 
                 double distanceDestination = player.getLocation().distance(destination);
 

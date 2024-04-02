@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Managers;
 
+import me.angeloo.mystica.Components.ClassEquipment.NoneEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.CustomEvents.HelpfulHintEvent;
 import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
@@ -63,6 +64,9 @@ public class CombatManager {
 
             if(playerEquipment.getWeapon() != null){
                 player.getInventory().setItemInMainHand(playerEquipment.getWeapon());
+            }
+            else{
+                player.getInventory().setItemInMainHand(new NoneEquipment().getBaseWeapon());
             }
 
             if (playerEquipment.getOffhand() != null){

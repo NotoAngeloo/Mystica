@@ -33,16 +33,10 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.PluginDisableEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -78,6 +72,7 @@ public class GeneralEventListener implements Listener {
     private final ClassSetter classSetter;
     private final DamageHealthBoard damageHealthBoard;
     private final CustomItemConverter customItemConverter;
+    private final Locations locations;
 
     private final DamageCalculator damageCalculator;
     private final ChangeResourceHandler changeResourceHandler;
@@ -87,6 +82,7 @@ public class GeneralEventListener implements Listener {
     private final Map<UUID, BukkitTask> countdownTasks = new HashMap<>();
     private final Map<UUID, Boolean> dropCheck = new HashMap<>();
 
+    private final Map<UUID, Long> breakawayCooldown = new HashMap<>();
     private final Map<UUID, Long> damageSoundCooldown = new HashMap<>();
 
     public GeneralEventListener(Mystica main){
@@ -117,6 +113,7 @@ public class GeneralEventListener implements Listener {
         damageHealthBoard = main.getDamageHealthBoard();
         customItemConverter = new CustomItemConverter();
         firstClearManager = main.getFirstClearManager();
+        locations = new Locations(main);
     }
 
     @EventHandler
@@ -208,9 +205,6 @@ public class GeneralEventListener implements Listener {
         buffAndDebuffManager.removeAllBuffsAndDebuffs(player);
         gearReader.setGearStats(player);
 
-        if(profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("none")){
-            pathingManager.calculatePath(player, new Location(player.getWorld(), 64, 99, -350));
-        }
 
         new BukkitRunnable(){
             @Override
@@ -443,45 +437,178 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
+    public void menuInitialization(PlayerJoinEvent event){
+        Player player = event.getPlayer();
+        setMenuItems(player.getOpenInventory().getTopInventory());
+    }
+
+    @EventHandler
+    public void menuClose(InventoryCloseEvent event){
+        String title = event.getView().getTitle();
+
+        if(title.equalsIgnoreCase("crafting")){
+            event.getView().getTopInventory().clear();
+        }
+
+        Player player = (Player) event.getPlayer();
+
+
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+
+                if(player.getOpenInventory().getTitle().equalsIgnoreCase("crafting")
+                        && player.getGameMode().equals(GameMode.SURVIVAL)){
+
+                    this.cancel();
+                    Inventory crafting = event.getView().getTopInventory();
+                    setMenuItems(crafting);
+                    player.updateInventory();
+                }
+
+            }
+        }.runTaskTimer(main, 0, 20);
+
+    }
+
+    private void setMenuItems(Inventory inventory){
+
+        inventory.setItem(1, getItem(Material.OAK_SAPLING, 0, ChatColor.of(new java.awt.Color(0,102,0)) + "Skills",
+                "click to open skill menu"));
+        inventory.setItem(2, getItem(Material.CHEST, 0, ChatColor.of(new java.awt.Color(176, 159, 109)) + "Bag",
+                "click to open bag"));
+        inventory.setItem(3, getItem(Material.PAPER, 0, "Coming Soon",
+                "to own on dvd and vhs"));
+        inventory.setItem(4, getItem(Material.SKELETON_SKULL, 0, ChatColor.of(new java.awt.Color(176, 0, 0)) + "Stuck",
+                "click to teleport to your spawn"));
+    }
+
+    private ItemStack getItem(Material material, int modelData, String name, String ... lore){
+
+        ItemStack item = new ItemStack(material);
+
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
+
+        List<String> lores = new ArrayList<>();
+
+        for (String s : lore){
+            lores.add(ChatColor.translateAlternateColorCodes('&', s));
+        }
+
+        meta.setLore(lores);
+        meta.setCustomModelData(modelData);
+
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    @EventHandler
+    public void menuClick(InventoryClickEvent event){
+        Inventory clickedInv = event.getClickedInventory();
+        if (clickedInv == null) {
+            return;
+        }
+
+        String title = event.getView().getTitle();
+
+        if(!title.equalsIgnoreCase("crafting")){
+            return;
+        }
+
+        if(clickedInv.getType() == InventoryType.PLAYER){
+            return;
+        }
+
+        Player player = (Player) event.getWhoClicked();
+
+        ItemStack item = player.getItemOnCursor();
+        ItemStack tempItem = item.clone();
+        event.setCancelled(true);
+        player.setItemOnCursor(null);
+        player.getInventory().addItem(tempItem);
+
+
+        switch (event.getSlot()){
+            case 1:{
+                player.openInventory(abilityInventory.openAbilityInventory(player, new ItemStack(Material.AIR), false));
+                break;
+            }
+            case 2:{
+                player.openInventory(bagInventory.openBagInventory(player, inventoryIndexingManager.getBagIndex(player)));
+                break;
+            }
+            case 4:{
+                if(profileManager.getAnyProfile(player).getIfInCombat()){
+                    player.sendMessage("cannot use in combat");
+                    return;
+                }
+
+                if(profileManager.getAnyProfile(player).getIfDead()){
+                    player.sendMessage("cannot use while dead");
+                    return;
+                }
+
+                if(breakawayCooldown.get(player.getUniqueId()) == null){
+                    breakawayCooldown.put(player.getUniqueId(), (System.currentTimeMillis() / 1000) - 300);
+                }
+
+                long currentTime = System.currentTimeMillis() / 1000;
+                if(currentTime - breakawayCooldown.get(player.getUniqueId()) < 300){
+                    player.sendMessage("command on cooldown");
+                    return;
+                }
+                breakawayCooldown.put(player.getUniqueId(), currentTime);
+
+                player.teleport(player.getWorld().getSpawnLocation());
+                break;
+            }
+        }
+
+
+    }
+
+    @EventHandler
     public void noOffHandEquip(InventoryClickEvent event){
         Inventory clickedInv = event.getClickedInventory();
         if (clickedInv == null) {
             return;
         }
 
-        if(clickedInv.getType() == InventoryType.PLAYER){
-            String title = event.getView().getTitle();
-
-            if(!title.equalsIgnoreCase("crafting")){
-                return;
-            }
-
-            Player player = (Player) event.getWhoClicked();
-
-            if(player.getGameMode().equals(GameMode.CREATIVE)){
-                return;
-            }
-
-            if(event.getClick().equals(ClickType.SWAP_OFFHAND)){
-                event.setCancelled(true);
-            }
-
-            if(event.getSlotType() != InventoryType.SlotType.QUICKBAR){
-                return;
-            }
-
-            if(event.getSlot() == 40){
-                event.setCancelled(true);
-                ItemStack item = player.getItemOnCursor();
-                ItemStack tempItem = item.clone();
-                event.setCancelled(true);
-                player.setItemOnCursor(null);
-                player.openInventory(abilityInventory.openAbilityInventory(player, null, false));
-                player.getInventory().addItem(tempItem);
-            }
-
+        if(clickedInv.getType() != InventoryType.PLAYER){
+            return;
         }
 
+        String title = event.getView().getTitle();
+
+        if(!title.equalsIgnoreCase("crafting")){
+            return;
+        }
+
+        Player player = (Player) event.getWhoClicked();
+
+        if(player.getGameMode().equals(GameMode.CREATIVE)){
+            return;
+        }
+
+        if(event.getClick().equals(ClickType.SWAP_OFFHAND)){
+            event.setCancelled(true);
+        }
+
+        if(event.getSlotType() != InventoryType.SlotType.QUICKBAR){
+            return;
+        }
+
+        if(event.getSlot() == 40){
+            event.setCancelled(true);
+            ItemStack item = player.getItemOnCursor();
+            ItemStack tempItem = item.clone();
+            event.setCancelled(true);
+            player.setItemOnCursor(null);
+            player.openInventory(equipmentInventory.openEquipmentInventory(player, new ItemStack(Material.AIR), false));
+            player.getInventory().addItem(tempItem);
+        }
     }
 
     @EventHandler
@@ -691,12 +818,13 @@ public class GeneralEventListener implements Listener {
 
             //check if mm too
             if(MythicBukkit.inst().getAPIHelper().isMythicMob(entity.getUniqueId())){
-                String bossName = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).getMobType();
+                String bossType = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).getMobType();
+                String bossName = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).getDisplayName();
 
                 int level = profileManager.getAnyProfile(entity).getStats().getLevel();
 
                 //check if the boss has been cleared at this level yet
-                if(!firstClearManager.getIfBossHasBeenClearedAtThisLevel(bossName, level)){
+                if(!firstClearManager.getIfBossHasBeenClearedAtThisLevel(bossType, level)){
 
                     //build a string
                     StringBuilder announcement = new StringBuilder();
@@ -721,10 +849,10 @@ public class GeneralEventListener implements Listener {
                     Bukkit.getServer().broadcastMessage(String.valueOf(announcement));
 
                     //and mark it as cleared
-                    firstClearManager.markCleared(bossName, level);
-                    firstClearManager.saveFolder();
+                    firstClearManager.markCleared(bossType, level, victors);
 
                     //perhaps give all the players an achievement as well
+                    //somthing something victors
                 }
 
             }
@@ -733,6 +861,58 @@ public class GeneralEventListener implements Listener {
 
         }
 
+    }
+
+    @EventHandler
+    public void teleportPlayer(PlayerInteractEvent event){
+        Player player = event.getPlayer();
+        ItemStack item = event.getItem();
+
+        boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
+
+        if(deathStatus){
+            return;
+        }
+
+        if(item == null){
+            return;
+        }
+
+        if(event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK){
+            return;
+        }
+
+
+        String colorlessName = item.getItemMeta().getDisplayName().replaceAll("§.", "");
+        ItemStack singleItem = customItemConverter.convert(item, 1);
+
+        //add a cooldown
+        switch (colorlessName.toLowerCase()){
+            case "teleport: stonemont":{
+                event.setCancelled(true);
+                player.getInventory().remove(singleItem);
+                player.teleport(locations.stonemont());
+                break;
+            }
+            case "teleport: cave of the lindwyrm":{
+                event.setCancelled(true);
+                player.getInventory().remove(singleItem);
+                player.teleport(locations.caveOfLindwyrm());
+                break;
+            }
+            case "teleport: windbluff prison":{
+                event.setCancelled(true);
+                player.getInventory().remove(singleItem);
+                player.teleport(locations.windbluff());
+                break;
+            }
+            case "teleport: traders outpost":{
+                event.setCancelled(true);
+                player.getInventory().remove(singleItem);
+                player.teleport(locations.outpost());
+                break;
+            }
+        }
     }
 
     @EventHandler
@@ -993,27 +1173,25 @@ public class GeneralEventListener implements Listener {
 
         if(!event.getIfPositive()){
 
-            if(!(defender instanceof Player)){
 
-                if(!profileManager.getIfEntityIsBoss(defender.getUniqueId())){
-                    defender.getWorld().spawnParticle(Particle.REDSTONE, defender.getLocation(), 50, 0.5, 0.5, 0.5, new Particle.DustOptions(Color.RED, 1));
-                }
+            if(damageSoundCooldown.get(defender.getUniqueId()) == null){
+                damageSoundCooldown.put(defender.getUniqueId(), (System.currentTimeMillis() / 1000) - 1);
             }
-            else{
 
-                if(damageSoundCooldown.get(defender.getUniqueId()) == null){
-                    damageSoundCooldown.put(defender.getUniqueId(), (System.currentTimeMillis() / 1000) - 1);
-                }
+            long currentTime = System.currentTimeMillis() / 1000;
 
-                long currentTime = System.currentTimeMillis() / 1000;
+            if(defender instanceof Player){
                 if(currentTime - damageSoundCooldown.get(defender.getUniqueId()) > 0.5){
+
                     ((Player) defender).playSound(defender, Sound.ENTITY_PLAYER_HURT, 1, 1);
                     damageSoundCooldown.put(defender.getUniqueId(), (System.currentTimeMillis() / 1000));
                 }
 
                 abilityManager.getWarriorAbilities().getSearingChains().tryToDecreaseCooldown((Player) defender);
                 abilityManager.getAssassinAbilities().getStealth().stealthBonusCheck((Player) defender, null);
+
             }
+
 
             buffAndDebuffManager.getSleep().forceWakeUp(defender);
 
@@ -1582,11 +1760,6 @@ public class GeneralEventListener implements Listener {
 
 
         switch (whatHint.toLowerCase()){
-            case "npcspeak":{
-                player.sendMessage(ChatColor.of(new java.awt.Color(255, 128, 0)) + "Helpful Hint: " +
-                        ChatColor.RESET + "Some of the townsfolk may give directions.");
-                return;
-            }
             case "combatend":{
                 player.sendMessage(ChatColor.of(new java.awt.Color(255, 128, 0)) + "Helpful Hint: " +
                         ChatColor.RESET + "Open your inventory to exit combat");

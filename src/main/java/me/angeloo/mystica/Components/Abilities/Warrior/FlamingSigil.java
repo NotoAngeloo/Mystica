@@ -101,7 +101,7 @@ public class FlamingSigil {
         boolean gladiator = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("gladiator");
 
         double buffAmount = 5;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level() +
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
         buffAmount = buffAmount + ((int)(skillLevel/10));
 

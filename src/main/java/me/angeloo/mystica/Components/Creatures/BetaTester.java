@@ -22,7 +22,6 @@ public class BetaTester {
 
         int level = 1;
         int at = 60;
-        int mag = 50;
         int hp = 257;
         int mana = 0;
         int regen = 0;
@@ -31,7 +30,7 @@ public class BetaTester {
         int mdef = 60;
         int crit = 0;
 
-        Stats stats = new Stats(level, at, mag, hp, mana, regen, manaregen, def, mdef, crit);
+        Stats stats = new Stats(level, at, hp, mana, regen, manaregen, def, mdef, crit);
         Boolean isMovable = true;
         Boolean immmortal = false;
         Boolean object = false;
@@ -106,11 +105,6 @@ public class BetaTester {
             @Override
             public int getTotalAttack() {
                 return getStats().getAttack();
-            }
-
-            @Override
-            public int getTotalMagic() {
-                return getStats().getMagic();
             }
 
             @Override

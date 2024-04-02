@@ -190,6 +190,10 @@ public class StatusDisplayer {
                     color = new Color(214, 126, 61);
                     break;
                 }
+                case "none":{
+                    color = new Color(255, 255, 255);
+                    break;
+                }
             }
 
             statusString.append(ChatColor.of(color)).append("[");

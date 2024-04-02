@@ -161,7 +161,7 @@ public class HonorCounter {
         Location end = target.getLocation();
 
         double skillDamage = 30;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level() +
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));
         double bonus = changeResourceHandler.getAllSaved(player);

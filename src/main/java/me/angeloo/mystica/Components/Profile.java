@@ -27,7 +27,6 @@ public interface Profile {
     int getTotalHealth();
     int getTotalMana();
     int getTotalAttack();
-    int getTotalMagic();
     int getTotalDefense();
     int getTotalMagicDefense();
     int getTotalRegen();
@@ -47,7 +46,6 @@ public interface Profile {
     PlayerEquipment getPlayerEquipment();
 
     PlayerBossLevel getPlayerBossLevel();
-
 
 
     Skill_Level getSkillLevels();

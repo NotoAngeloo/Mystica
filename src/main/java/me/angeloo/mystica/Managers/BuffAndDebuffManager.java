@@ -33,6 +33,7 @@ public class BuffAndDebuffManager {
     private final BladeTempestCrit bladeTempestCrit;
     private final ConcoctionDebuff concoctionDebuff;
     private final Pulled pulled;
+    private final Blocking blocking;
 
     public BuffAndDebuffManager(Mystica main){
         profileManager = main.getProfileManager();
@@ -60,6 +61,7 @@ public class BuffAndDebuffManager {
         bladeTempestCrit = new BladeTempestCrit(main);
         concoctionDebuff = new ConcoctionDebuff(main);
         pulled = new Pulled(main);
+        blocking = new Blocking(main);
     }
 
     public Immune getImmune(){return immune;}
@@ -89,6 +91,7 @@ public class BuffAndDebuffManager {
     public BladeTempestCrit getBladeTempestCrit(){return bladeTempestCrit;}
     public ConcoctionDebuff getConcoctionDebuff(){return concoctionDebuff;}
     public Pulled getPulled(){return pulled;}
+    public Blocking getBlocking(){return blocking;}
 
     public void removeAllBuffsAndDebuffs(LivingEntity entity){
         flamingSigilBuff.removeAttackBuff(entity);
@@ -112,6 +115,7 @@ public class BuffAndDebuffManager {
         bladeTempestCrit.removeBonus(entity);
         concoctionDebuff.removeDebuff(entity);
         pulled.removePull(entity);
+        blocking.removeBlocking(entity);
 
         if(entity instanceof Player){
             Player player = (Player) entity;

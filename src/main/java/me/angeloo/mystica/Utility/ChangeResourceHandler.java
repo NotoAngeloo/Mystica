@@ -134,8 +134,6 @@ public class ChangeResourceHandler {
 
         double newTrueHearts = entity.getHealth();
 
-        double trueDifference = trueHearts - newTrueHearts;
-
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, false));
 
     }
@@ -192,8 +190,6 @@ public class ChangeResourceHandler {
         player.setHealth(hearts);
 
         double newTrueHearts = player.getHealth();
-
-        double trueDifference = trueHearts - newTrueHearts;
 
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(player, false));
 

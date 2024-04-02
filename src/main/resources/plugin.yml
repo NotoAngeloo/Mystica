@@ -4,6 +4,7 @@ main: me.angeloo.mystica.Mystica
 depend:
   - Parties
   - ProtocolLib
+  - PlaceholderAPI
 softdepend:
   - MythicMobs
   - Interactions
@@ -25,6 +26,9 @@ commands:
     description: opens class select
     usage: /ClassSelect <player>
     permission: developer
+  ClassGuide:
+    description: opens class guide
+    usage: /classguide
   SeeRawDamage:
     description: allows for better testing of seeing damage
     usage: /SeeRawDamage
@@ -119,9 +123,10 @@ commands:
     description: lets devs give soulstones
     usage: /GiveSoulStone <player> <amount>
     permission: developer
-  Breakaway:
-    description: lets players go to their spawn if stuck
-    usage: /Breakaway
+  FastTravel:
+    description: lets mms open fast travel ui
+    usage: /FastTravel <player>
+    permission: developer
 
 permissions:
   developer:

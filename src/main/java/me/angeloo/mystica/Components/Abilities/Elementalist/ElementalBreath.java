@@ -91,7 +91,7 @@ public class ElementalBreath {
     }
 
     public int getDuration(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level() +
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
 
         int bonus = ((int)(skillLevel/10));

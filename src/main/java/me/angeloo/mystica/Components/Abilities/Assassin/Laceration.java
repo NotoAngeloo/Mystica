@@ -154,7 +154,7 @@ public class Laceration {
         }
 
         double skillDamage = 7;
-        double level = profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level()
+        double level = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel())
                 + profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
         skillDamage = skillDamage + ((int)(level/10));
         bleedDamage = bleedDamage + ((int)(level/10));

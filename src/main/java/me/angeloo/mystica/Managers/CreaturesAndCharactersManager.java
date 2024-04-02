@@ -1,18 +1,11 @@
 package me.angeloo.mystica.Managers;
 
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
-import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.Creatures.*;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.Mystica;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
@@ -26,10 +19,11 @@ public class CreaturesAndCharactersManager {
     private final Dummy dummy;
     private final MadDummy madDummy;
     private final NewPlayerNpc newPlayerNpc;
-    private final LindwyrmNpc lindwyrmNpc;
     private final ArchbishopNpc archbishopNpc;
     private final HansNpc hansNpc;
-
+    private final HoLeeNpc hoLeeNpc;
+    private final CaptainNpc captainNpc;
+    private final FastTravelNpc fastTravelNpc;
 
     public CreaturesAndCharactersManager(Mystica main){
         profileManager = main.getProfileManager();
@@ -38,16 +32,20 @@ public class CreaturesAndCharactersManager {
         dummy = new Dummy(main);
         madDummy = new MadDummy(main);
         newPlayerNpc = new NewPlayerNpc(main);
-        lindwyrmNpc = new LindwyrmNpc(main);
         archbishopNpc = new ArchbishopNpc(main);
         hansNpc = new HansNpc(main);
+        hoLeeNpc = new HoLeeNpc(main);
+        captainNpc = new CaptainNpc(main);
+        fastTravelNpc = new FastTravelNpc(main);
     }
 
     public void spawnAllNpcs() throws InvalidMobTypeException {
         newPlayerNpc.spawn();
-        lindwyrmNpc.spawn();
         archbishopNpc.spawn();
         hansNpc.spawn();
+        hoLeeNpc.spawn();
+        captainNpc.spawn();
+        fastTravelNpc.spawnAll();
     }
 
 
@@ -60,6 +58,7 @@ public class CreaturesAndCharactersManager {
                 profileManager.setBossHome(uuid);
                 break;
             }
+            case "HeartTendril":
             case "LindwyrmRock":{
                 makeImmortalObjectProfile(uuid);
                 break;
@@ -77,11 +76,12 @@ public class CreaturesAndCharactersManager {
                 profileManager.setBossHome(uuid);
                 break;
             }
+            case "FastTravelNpc":
+            case "HoLeeNpc":
+            case "CaptainNpc":
             case "HansNpc":
             case "NewPlayerNpc":
             case "ClassTutorial":
-            case "LindwyrmNpc":
-                //perhaps make it check which mob is actually is before making it
             case "ArchbishopNpc":{
                 makeDefaultNonCombatantProfile(uuid);
                 break;
@@ -94,7 +94,7 @@ public class CreaturesAndCharactersManager {
     }
 
     private void makeDefaultNonCombatantProfile(UUID uuid){
-        Stats stats = new Stats(1,1,1,1,1,10,1,0,0,0);
+        Stats stats = new Stats(1,1,1,1,10,1,0,0,0);
         Boolean isMovable = false;
         Boolean immortal = true;
         Boolean object = false;
@@ -167,10 +167,6 @@ public class CreaturesAndCharactersManager {
                 return 0;
             }
 
-            @Override
-            public int getTotalMagic() {
-                return 0;
-            }
 
             @Override
             public int getTotalDefense() {
@@ -268,7 +264,7 @@ public class CreaturesAndCharactersManager {
     }
 
     private void makeImmortalObjectProfile(UUID uuid){
-        Stats stats = new Stats(1,1,1,1,1,10,1,0,0,0);
+        Stats stats = new Stats(1,1,1,1,10,1,0,0,0);
         Boolean isMovable = false;
         Boolean immortal = true;
         Boolean object = true;
@@ -338,11 +334,6 @@ public class CreaturesAndCharactersManager {
 
             @Override
             public int getTotalAttack() {
-                return 0;
-            }
-
-            @Override
-            public int getTotalMagic() {
                 return 0;
             }
 

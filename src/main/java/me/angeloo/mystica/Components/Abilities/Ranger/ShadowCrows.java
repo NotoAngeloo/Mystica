@@ -157,7 +157,7 @@ public class ShadowCrows {
         assert entityEquipment != null;
         entityEquipment.setHelmet(crow);
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level() +
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
         double skillDamage = 2;
 

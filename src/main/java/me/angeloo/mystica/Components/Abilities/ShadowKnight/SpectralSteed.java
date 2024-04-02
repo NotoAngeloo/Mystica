@@ -93,7 +93,7 @@ public class SpectralSteed {
         assert world != null;
         SkeletonHorse horse = (SkeletonHorse) world.spawnEntity(spawnLoc, EntityType.SKELETON_HORSE);
 
-        Stats stats = new Stats(profileManager.getAnyProfile(player).getStats().getLevel(), 1, 1, 1, 1, 1, 1, 1, 1, 1);
+        Stats stats = new Stats(profileManager.getAnyProfile(player).getStats().getLevel(), 1,  1, 1, 1, 1, 1, 1, 1);
         Yield yield = new Yield(0, new ArrayList<>());
 
         NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(1,stats,false,true, true, true, yield) {
@@ -159,11 +159,6 @@ public class SpectralSteed {
 
             @Override
             public int getTotalAttack() {
-                return 1;
-            }
-
-            @Override
-            public int getTotalMagic() {
                 return 1;
             }
 

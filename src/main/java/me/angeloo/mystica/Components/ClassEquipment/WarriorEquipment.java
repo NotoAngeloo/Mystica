@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static me.angeloo.mystica.Mystica.menuColor;
+import static me.angeloo.mystica.Mystica.warriorColor;
+
 public class WarriorEquipment {
 
     public WarriorEquipment(){
@@ -23,73 +26,73 @@ public class WarriorEquipment {
     public ItemStack getBaseWeapon(){
 
         return getItem(Material.BRICK, 1,
-                ChatColor.of(new Color(214, 126, 61)) + "Warrior's Axe",
-                ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
-                ChatColor.of(new Color(176, 159, 109)) + "Main Hand",
+                ChatColor.of(warriorColor) + "Warrior's Axe",
+                ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + "1",
+                ChatColor.of(menuColor) + "Main Hand",
                 "",
-                ChatColor.of(new Color(255,255,255)) + "Attack + 3",
-                ChatColor.of(new Color(255,255,255)) + "Health + 18",
+                ChatColor.of(Color.WHITE) + "Attack + 3",
+                ChatColor.of(Color.WHITE) + "Health + 18",
                 "",
-                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(214, 126, 61)) + "Warrior");
+                ChatColor.of(menuColor) + "Requires " + ChatColor.of(warriorColor) + "Warrior");
     }
 
     public ItemStack getBaseOffhand(){
         return getItem(Material.BRICK, 2,
-                ChatColor.of(new Color(214, 126, 61)) + "Warrior's Shield",
-                ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
-                ChatColor.of(new Color(176, 159, 109)) + "Secondary",
+                ChatColor.of(warriorColor) + "Warrior's Shield",
+                ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + "1",
+                ChatColor.of(menuColor) + "Secondary",
                 "",
-                ChatColor.of(new Color(255,255,255)) + "Health + 18",
-                ChatColor.of(new Color(255,255,255)) + "Defense + 4",
-                ChatColor.of(new Color(255,255,255)) + "Magic Defense + 4",
+                ChatColor.of(Color.WHITE) + "Health + 18",
+                ChatColor.of(Color.WHITE) + "Defense + 4",
+                ChatColor.of(Color.WHITE) + "Magic Defense + 4",
                 "",
-                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(214, 126, 61)) + "Warrior");
+                ChatColor.of(menuColor) + "Requires " + ChatColor.of(warriorColor) + "Warrior");
     }
 
     public ItemStack getBaseHelmet(){
         return getItem(Material.CHAIN, 6,
-                ChatColor.of(new Color(214, 126, 61)) + "Warrior's Helmet",
-                ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
-                ChatColor.of(new Color(176, 159, 109)) + "Helmet",
+                ChatColor.of(warriorColor) + "Warrior's Helmet",
+                ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + "1",
+                ChatColor.of(menuColor) + "Helmet",
                 "",
-                ChatColor.of(new Color(255,255,255)) + "Health + 50",
+                ChatColor.of(Color.WHITE) + "Health + 50",
                 "",
-                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(214, 126, 61)) + "Warrior");
+                ChatColor.of(menuColor) + "Requires " + ChatColor.of(warriorColor) + "Warrior");
     }
 
     public ItemStack getBaseChestPlate(){
         return getItem(Material.CHAINMAIL_CHESTPLATE, 6,
-                ChatColor.of(new Color(214, 126, 61)) + "Warrior's Plate",
-                ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
-                ChatColor.of(new Color(176, 159, 109)) + "Chestplate",
+                ChatColor.of(warriorColor) + "Warrior's Plate",
+                ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + "1",
+                ChatColor.of(menuColor) + "Chestplate",
                 "",
-                ChatColor.of(new Color(255,255,255)) + "Health + 31",
-                ChatColor.of(new Color(255,255,255)) + "Defense + 4",
-                ChatColor.of(new Color(255,255,255)) + "Magic Defense + 4",
+                ChatColor.of(Color.WHITE) + "Health + 31",
+                ChatColor.of(Color.WHITE) + "Defense + 4",
+                ChatColor.of(Color.WHITE) + "Magic Defense + 4",
                 "",
-                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(214, 126, 61)) + "Warrior");
+                ChatColor.of(menuColor) + "Requires " + ChatColor.of(warriorColor) + "Warrior");
     }
 
     public ItemStack getBaseLeggings(){
         return getItem(Material.CHAINMAIL_LEGGINGS, 6,
-                ChatColor.of(new Color(214, 126, 61)) + "Warrior's Breeches",
-                ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
-                ChatColor.of(new Color(176, 159, 109)) + "Leggings",
+                ChatColor.of(warriorColor) + "Warrior's Breeches",
+                ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + "1",
+                ChatColor.of(menuColor) + "Leggings",
                 "",
-                ChatColor.of(new Color(255,255,255)) + "Attack + 4",
+                ChatColor.of(Color.WHITE) + "Attack + 4",
                 "",
-                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(214, 126, 61)) + "Warrior");
+                ChatColor.of(menuColor) + "Requires " + ChatColor.of(warriorColor) + "Warrior");
     }
 
     public ItemStack getBaseBoots(){
         return getItem(Material.CHAINMAIL_BOOTS, 6,
-                ChatColor.of(new Color(214, 126, 61)) + "Warrior's Boots",
-                ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
-                ChatColor.of(new Color(176, 159, 109)) + "Boots",
+                ChatColor.of(warriorColor) + "Warrior's Boots",
+                ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + "1",
+                ChatColor.of(menuColor) + "Boots",
                 "",
-                ChatColor.of(new Color(255,255,255)) + "Attack + 2",
+                ChatColor.of(Color.WHITE) + "Attack + 2",
                 "",
-                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(214, 126, 61)) + "Warrior");
+                ChatColor.of(menuColor) + "Requires " + ChatColor.of(warriorColor) + "Warrior");
     }
 
     private ItemStack getItem(Material material, int modelData, String name, String ... lore){

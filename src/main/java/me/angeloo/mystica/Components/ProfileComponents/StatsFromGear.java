@@ -3,7 +3,6 @@ package me.angeloo.mystica.Components.ProfileComponents;
 public class StatsFromGear {
 
     private int Attack;
-    private int Magic;
     private int Health;
     private int Mana;
     private int Regen;
@@ -13,9 +12,8 @@ public class StatsFromGear {
     private int Crit;
 
 
-    public StatsFromGear(int attack, int magic, int health, int mana, int regen, int mana_regen, int defense, int magic_defense, int crit) {
+    public StatsFromGear(int attack, int health, int mana, int regen, int mana_regen, int defense, int magic_defense, int crit) {
         Attack = attack;
-        Magic = magic;
         Health = health;
         Mana = mana;
         Regen = regen;
@@ -26,10 +24,6 @@ public class StatsFromGear {
     }
     public int getAttack() {
         return Attack;
-    }
-
-    public int getMagic() {
-        return Magic;
     }
 
     public int getHealth() {
@@ -61,9 +55,8 @@ public class StatsFromGear {
     }
 
 
-    public void setAllGearStats(int attack, int magic, int health, int mana, int regen, int mana_regen, int defense, int magic_defense, int crit){
+    public void setAllGearStats(int attack, int health, int mana, int regen, int mana_regen, int defense, int magic_defense, int crit){
         Attack = attack;
-        Magic = magic;
         Health = health;
         Mana = mana;
         Regen = regen;

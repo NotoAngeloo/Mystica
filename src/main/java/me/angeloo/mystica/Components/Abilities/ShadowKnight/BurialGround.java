@@ -111,7 +111,7 @@ public class BurialGround {
         armorStand.teleport(start);
 
         double healAmount = (profileManager.getAnyProfile(player).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(player)) * .03;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level() +
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
         healAmount = healAmount + ((int)(skillLevel/10));
 

@@ -196,7 +196,7 @@ public class TorahSword {
 
         Location end = target.getLocation().clone().subtract(0,2,0);
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level() +
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
         double skillDamage = 7;
 

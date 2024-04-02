@@ -19,6 +19,7 @@ public class EquipmentInformation {
         allEquipmentTypes.add(Material.DIAMOND_SWORD);
         allEquipmentTypes.add(Material.BRICK);
         allEquipmentTypes.add(Material.CHAIN);
+        allEquipmentTypes.add(Material.KELP);
         allEquipmentTypes.add(Material.CHAINMAIL_CHESTPLATE);
         allEquipmentTypes.add(Material.CHAINMAIL_LEGGINGS);
         allEquipmentTypes.add(Material.CHAINMAIL_BOOTS);

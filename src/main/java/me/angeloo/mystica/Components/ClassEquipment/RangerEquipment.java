@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static me.angeloo.mystica.Mystica.menuColor;
+import static me.angeloo.mystica.Mystica.rangerColor;
+
 public class RangerEquipment {
 
     public RangerEquipment(){
@@ -23,73 +26,73 @@ public class RangerEquipment {
     public ItemStack getBaseWeapon(){
 
         return getItem(Material.FEATHER, 1,
-                ChatColor.of(new Color(34, 111, 80)) + "Ranger's Bow",
-                ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
-                ChatColor.of(new Color(176, 159, 109)) + "Main Hand",
+                ChatColor.of(rangerColor) + "Ranger's Bow",
+                ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + "1",
+                ChatColor.of(menuColor) + "Main Hand",
                 "",
-                ChatColor.of(new Color(255,255,255)) + "Attack + 3",
-                ChatColor.of(new Color(255,255,255)) + "Health + 18",
+                ChatColor.of(Color.WHITE) + "Attack + 3",
+                ChatColor.of(Color.WHITE) + "Health + 18",
                 "",
-                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(34, 111, 80)) + "Ranger");
+                ChatColor.of(menuColor) + "Requires " + ChatColor.of(rangerColor) + "Ranger");
     }
 
     public ItemStack getBaseOffhand(){
         return getItem(Material.FEATHER, 2,
-                ChatColor.of(new Color(34, 111, 80)) + "Ranger's Quiver",
-                ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
-                ChatColor.of(new Color(176, 159, 109)) + "Secondary",
+                ChatColor.of(rangerColor) + "Ranger's Quiver",
+                ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + "1",
+                ChatColor.of(menuColor) + "Secondary",
                 "",
-                ChatColor.of(new Color(255,255,255)) + "Health + 18",
-                ChatColor.of(new Color(255,255,255)) + "Defense + 4",
-                ChatColor.of(new Color(255,255,255)) + "Magic Defense + 4",
+                ChatColor.of(Color.WHITE) + "Health + 18",
+                ChatColor.of(Color.WHITE) + "Defense + 4",
+                ChatColor.of(Color.WHITE) + "Magic Defense + 4",
                 "",
-                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(34, 111, 80)) + "Ranger");
+                ChatColor.of(menuColor) + "Requires " + ChatColor.of(rangerColor) + "Ranger");
     }
 
     public ItemStack getBaseHelmet(){
         return getItem(Material.CHAIN, 2,
-                ChatColor.of(new Color(34, 111, 80)) + "Ranger's Hood",
-                ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
-                ChatColor.of(new Color(176, 159, 109)) + "Helmet",
+                ChatColor.of(rangerColor) + "Ranger's Hood",
+                ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + "1",
+                ChatColor.of(menuColor) + "Helmet",
                 "",
-                ChatColor.of(new Color(255,255,255)) + "Health + 50",
+                ChatColor.of(Color.WHITE) + "Health + 50",
                 "",
-                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(34, 111, 80)) + "Ranger");
+                ChatColor.of(menuColor) + "Requires " + ChatColor.of(rangerColor) + "Ranger");
     }
 
     public ItemStack getBaseChestPlate(){
         return getItem(Material.CHAINMAIL_CHESTPLATE, 2,
-                ChatColor.of(new Color(34, 111, 80)) + "Ranger's Tunic",
-                ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
-                ChatColor.of(new Color(176, 159, 109)) + "Chestplate",
+                ChatColor.of(rangerColor) + "Ranger's Tunic",
+                ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + "1",
+                ChatColor.of(menuColor) + "Chestplate",
                 "",
-                ChatColor.of(new Color(255,255,255)) + "Health + 31",
-                ChatColor.of(new Color(255,255,255)) + "Defense + 4",
-                ChatColor.of(new Color(255,255,255)) + "Magic Defense + 4",
+                ChatColor.of(Color.WHITE) + "Health + 31",
+                ChatColor.of(Color.WHITE) + "Defense + 4",
+                ChatColor.of(Color.WHITE) + "Magic Defense + 4",
                 "",
-                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(34, 111, 80)) + "Ranger");
+                ChatColor.of(menuColor) + "Requires " + ChatColor.of(rangerColor) + "Ranger");
     }
 
     public ItemStack getBaseLeggings(){
         return getItem(Material.CHAINMAIL_LEGGINGS, 2,
-                ChatColor.of(new Color(34, 111, 80)) + "Ranger's Breeches",
-                ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
-                ChatColor.of(new Color(176, 159, 109)) + "Leggings",
+                ChatColor.of(rangerColor) + "Ranger's Breeches",
+                ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + "1",
+                ChatColor.of(menuColor) + "Leggings",
                 "",
-                ChatColor.of(new Color(255,255,255)) + "Attack + 4",
+                ChatColor.of(Color.WHITE) + "Attack + 4",
                 "",
-                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(34, 111, 80)) + "Ranger");
+                ChatColor.of(menuColor) + "Requires " + ChatColor.of(rangerColor) + "Ranger");
     }
 
     public ItemStack getBaseBoots(){
         return getItem(Material.CHAINMAIL_BOOTS, 2,
-                ChatColor.of(new Color(34, 111, 80)) + "Ranger's Boots",
-                ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + "1",
-                ChatColor.of(new Color(176, 159, 109)) + "Boots",
+                ChatColor.of(rangerColor) + "Ranger's Boots",
+                ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + "1",
+                ChatColor.of(menuColor) + "Boots",
                 "",
-                ChatColor.of(new Color(255,255,255)) + "Attack + 2",
+                ChatColor.of(Color.WHITE) + "Attack + 2",
                 "",
-                ChatColor.of(new Color(176, 159, 109)) + "Requires " + ChatColor.of(new Color(34, 111, 80)) + "Ranger");
+                ChatColor.of(menuColor) + "Requires " + ChatColor.of(rangerColor) + "Ranger");
     }
 
     private ItemStack getItem(Material material, int modelData, String name, String ... lore){

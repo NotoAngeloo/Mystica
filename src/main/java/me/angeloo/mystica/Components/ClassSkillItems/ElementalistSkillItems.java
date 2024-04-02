@@ -21,6 +21,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import static me.angeloo.mystica.Mystica.elementalistColor;
+import static me.angeloo.mystica.Mystica.levelColor;
+
 public class ElementalistSkillItems {
 
     private final ProfileManager profileManager;
@@ -39,93 +42,93 @@ public class ElementalistSkillItems {
 
             case 1:{
                 return getItem(Material.CYAN_DYE, 1,
-                        ChatColor.of(new Color(153, 204, 255)) + "Ice Bolt",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_1_Level() + skillLevel.getSkill_1_Level_Bonus()),
+                        ChatColor.of(elementalistColor) + "Ice Bolt",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_1_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Channel water to form an ice arrow",
-                        ChatColor.of(new Color(230,230,230)) + "and shoot it at the enemy");
+                        ChatColor.of(Color.WHITE) + "Channel water to form an ice arrow",
+                        ChatColor.of(Color.WHITE) + "and shoot it at the enemy");
             }
             case 2:{
                 return getItem(Material.CYAN_DYE, 2,
-                        ChatColor.of(new Color(153, 204, 255)) + "Fiery Magma",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_2_Level() + skillLevel.getSkill_2_Level_Bonus()),
+                        ChatColor.of(elementalistColor) + "Fiery Magma",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_2_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Summon a burning meteorite from the sky",
-                        ChatColor.of(new Color(230,230,230)) + "to hit the enemy, dealing sustained",
-                        ChatColor.of(new Color(230,230,230)) + "damage for 3 seconds before exploding,",
-                        ChatColor.of(new Color(230,230,230)) + "dealing damage to nearby enemies");
+                        ChatColor.of(Color.WHITE) + "Summon a burning meteorite from the sky",
+                        ChatColor.of(Color.WHITE) + "to hit the enemy, dealing sustained",
+                        ChatColor.of(Color.WHITE) + "damage for 3 seconds before exploding,",
+                        ChatColor.of(Color.WHITE) + "dealing damage to nearby enemies");
             }
             case 3:{
                 return getItem(Material.CYAN_DYE, 3,
-                        ChatColor.of(new Color(153, 204, 255)) + "Descending Inferno",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_3_Level() + skillLevel.getSkill_3_Level_Bonus()),
+                        ChatColor.of(elementalistColor) + "Descending Inferno",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_3_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Turn a thick strand of flame energy",
-                        ChatColor.of(new Color(230,230,230)) + "into three blazing fireballs which hurtle",
-                        ChatColor.of(new Color(230,230,230)) + "towards the target, causing damage on",
-                        ChatColor.of(new Color(230,230,230)) + "impact");
+                        ChatColor.of(Color.WHITE) + "Turn a thick strand of flame energy",
+                        ChatColor.of(Color.WHITE) + "into three blazing fireballs which hurtle",
+                        ChatColor.of(Color.WHITE) + "towards the target, causing damage on",
+                        ChatColor.of(Color.WHITE) + "impact");
             }
             case 4:{
                 return getItem(Material.CYAN_DYE, 4,
-                        ChatColor.of(new Color(153, 204, 255)) + "Windrush Form",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_4_Level() + skillLevel.getSkill_4_Level_Bonus()),
+                        ChatColor.of(elementalistColor) + "Windrush Form",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_4_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Calls a strong wind to envelop the",
-                        ChatColor.of(new Color(230,230,230)) + "caster, expediting movement and",
-                        ChatColor.of(new Color(230,230,230)) + "reducing incoming damage while",
-                        ChatColor.of(new Color(230,230,230)) + "damaging enemies on the target path");
+                        ChatColor.of(Color.WHITE) + "Calls a strong wind to envelop the",
+                        ChatColor.of(Color.WHITE) + "caster, expediting movement and",
+                        ChatColor.of(Color.WHITE) + "reducing incoming damage while",
+                        ChatColor.of(Color.WHITE) + "damaging enemies on the target path");
             }
             case 5:{
                 return getItem(Material.CYAN_DYE, 5,
-                        ChatColor.of(new Color(153, 204, 255)) + "Wind Wall",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_5_Level() + skillLevel.getSkill_5_Level_Bonus()),
+                        ChatColor.of(elementalistColor) + "Wind Wall",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_5_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "The dancing airstream forms a wind",
-                        ChatColor.of(new Color(230,230,230)) + "shield, absorbing and reflecting",
-                        ChatColor.of(new Color(230,230,230)) + "a certain amount of damage");
+                        ChatColor.of(Color.WHITE) + "The dancing airstream forms a wind",
+                        ChatColor.of(Color.WHITE) + "shield, absorbing and reflecting",
+                        ChatColor.of(Color.WHITE) + "a certain amount of damage");
             }
             case 6:{
                 return getItem(Material.CYAN_DYE, 6,
-                        ChatColor.of(new Color(153, 204, 255)) + "Dragon Breathing",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_6_Level() + skillLevel.getSkill_6_Level_Bonus()),
+                        ChatColor.of(elementalistColor) + "Dragon Breathing",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_6_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Channel the fire elements beneath",
-                        ChatColor.of(new Color(230,230,230)) + "your feet, summoning a fire dragon to",
-                        ChatColor.of(new Color(230,230,230)) + "spray forth its fiery breath, causing",
-                        ChatColor.of(new Color(230,230,230)) + "damage to the enemy on the path",
-                        ChatColor.of(new Color(230,230,230)) + "ahead, and causing affected enemies",
-                        ChatColor.of(new Color(230,230,230)) + "to continue burning for 5 seconds");
+                        ChatColor.of(Color.WHITE) + "Channel the fire elements beneath",
+                        ChatColor.of(Color.WHITE) + "your feet, summoning a fire dragon to",
+                        ChatColor.of(Color.WHITE) + "spray forth its fiery breath, causing",
+                        ChatColor.of(Color.WHITE) + "damage to the enemy on the path",
+                        ChatColor.of(Color.WHITE) + "ahead, and causing affected enemies",
+                        ChatColor.of(Color.WHITE) + "to continue burning for 5 seconds");
             }
             case 7:{
                 return getItem(Material.CYAN_DYE, 7,
-                        ChatColor.of(new Color(153, 204, 255)) + "Elemental Breath",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_7_Level() + skillLevel.getSkill_7_Level_Bonus()),
+                        ChatColor.of(elementalistColor) + "Elemental Breath",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_7_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Listen to the elements, surround",
-                        ChatColor.of(new Color(230,230,230)) + "yourself with their force, enhancing the",
-                        ChatColor.of(new Color(230,230,230)) + "effects of " + ChatColor.of(new Color(153, 204, 255)) + "Ice Bolt "
-                                + ChatColor.of(new Color(230,230,230)) + "and " + ChatColor.of(new Color(153, 204, 255)) + "Descending",
-                        ChatColor.of(new Color(153, 204, 255)) + "Inferno" + ChatColor.of(new Color(230,230,230)) + ". " +
-                        ChatColor.of(new Color(153, 204, 255)) + "Ice Bolt " + ChatColor.of(new Color(230,230,230)) + "becomes " +
-                                ChatColor.of(new Color(153, 204, 255)) + "Ice Lance",
-                        ChatColor.of(new Color(230,230,230)) + "dealing double damage. Fireballs from",
-                        ChatColor.of(new Color(153, 204, 255)) + "Descending Inferno "
-                                + ChatColor.of(new Color(230,230,230)) + "explode upon",
-                        ChatColor.of(new Color(230,230,230)) + "hitting targets, dealing area of effect",
-                        ChatColor.of(new Color(230,230,230)) + "damage");
+                        ChatColor.of(Color.WHITE) + "Listen to the elements, surround",
+                        ChatColor.of(Color.WHITE) + "yourself with their force, enhancing the",
+                        ChatColor.of(Color.WHITE) + "effects of " + ChatColor.of(elementalistColor) + "Ice Bolt "
+                                + ChatColor.of(Color.WHITE) + "and " + ChatColor.of(elementalistColor) + "Descending",
+                        ChatColor.of(elementalistColor) + "Inferno" + ChatColor.of(Color.WHITE) + ". " +
+                        ChatColor.of(elementalistColor) + "Ice Bolt " + ChatColor.of(Color.WHITE) + "becomes " +
+                                ChatColor.of(elementalistColor) + "Ice Lance",
+                        ChatColor.of(Color.WHITE) + "dealing double damage. Fireballs from",
+                        ChatColor.of(elementalistColor) + "Descending Inferno "
+                                + ChatColor.of(Color.WHITE) + "explode upon",
+                        ChatColor.of(Color.WHITE) + "hitting targets, dealing area of effect",
+                        ChatColor.of(Color.WHITE) + "damage");
             }
             case 8:{
                 return getItem(Material.CYAN_DYE, 8,
-                        ChatColor.of(new Color(153, 204, 255)) + "Elemental Matrix",
-                        ChatColor.of(new Color(0,102,0)) + "Level " + (skillLevel.getSkill_8_Level() + skillLevel.getSkill_8_Level_Bonus()),
+                        ChatColor.of(elementalistColor) + "Elemental Matrix",
+                        ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_8_Level_Bonus()),
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Condense the elements to create a",
-                        ChatColor.of(new Color(230,230,230)) + "magic circle under the enemy's feet,",
-                        ChatColor.of(new Color(230,230,230)) + "dealing sustained damage to affected",
-                        ChatColor.of(new Color(230,230,230)) + "enemies for 5 seconds, while providing",
-                        ChatColor.of(new Color(230,230,230)) + "a healing effect for allies. When the",
-                        ChatColor.of(new Color(230,230,230)) + "circle expires, it explodes, inflicting",
-                        ChatColor.of(new Color(230,230,230)) + "high damage in the area");
+                        ChatColor.of(Color.WHITE) + "Condense the elements to create a",
+                        ChatColor.of(Color.WHITE) + "magic circle under the enemy's feet,",
+                        ChatColor.of(Color.WHITE) + "dealing sustained damage to affected",
+                        ChatColor.of(Color.WHITE) + "enemies for 5 seconds, while providing",
+                        ChatColor.of(Color.WHITE) + "a healing effect for allies. When the",
+                        ChatColor.of(Color.WHITE) + "circle expires, it explodes, inflicting",
+                        ChatColor.of(Color.WHITE) + "high damage in the area");
             }
         }
 
@@ -141,21 +144,21 @@ public class ElementalistSkillItems {
         switch(subClass.toLowerCase()){
             case "pyromancer":{
                 return getItem(Material.CYAN_DYE, 9,
-                        ChatColor.of(new Color(250, 102, 0)) + "Fiery Wing",
-                        ChatColor.of(new Color(0,102,0)) + "Level "  + level,
+                        ChatColor.of(elementalistColor) + "Fiery Wing",
+                        ChatColor.of(levelColor) + "Level "  + level,
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Summon an elemental that charges",
-                        ChatColor.of(new Color(230,230,230)) + "towards an enemy, dealing massive",
-                        ChatColor.of(new Color(230,230,230)) + "damage on arrival");
+                        ChatColor.of(Color.WHITE) + "Summon an elemental that charges",
+                        ChatColor.of(Color.WHITE) + "towards an enemy, dealing massive",
+                        ChatColor.of(Color.WHITE) + "damage on arrival");
             }
             case "conjurer":{
                 return getItem(Material.CYAN_DYE, 10,
-                        ChatColor.of(new Color(153, 0, 255)) + "Conjuring Force",
-                        ChatColor.of(new Color(0,102,0)) + "Level "  + level,
+                        ChatColor.of(elementalistColor) + "Conjuring Force",
+                        ChatColor.of(levelColor) + "Level "  + level,
                         "",
-                        ChatColor.of(new Color(230,230,230)) + "Summon a force shield centered around",
-                        ChatColor.of(new Color(230,230,230)) + "you, enhancing damage and range of all",
-                        ChatColor.of(new Color(230,230,230)) + "allies within");
+                        ChatColor.of(Color.WHITE) + "Summon a force shield centered around",
+                        ChatColor.of(Color.WHITE) + "you, enhancing damage and range of all",
+                        ChatColor.of(Color.WHITE) + "allies within");
             }
         }
 

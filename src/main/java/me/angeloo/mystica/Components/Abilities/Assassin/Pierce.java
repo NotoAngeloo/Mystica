@@ -163,7 +163,7 @@ public class Pierce {
 
         abilityManager.setSkillRunning(player, true);
         double skillDamage = 30;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level() +
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));
         double finalSkillDamage = skillDamage;

@@ -5,9 +5,11 @@
       <element id="module-output" name="Mystica" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/comphenix/protocol/ProtocolLib/4.8.0/ProtocolLib-4.8.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.12.8/byte-buddy-1.12.8.jar" path-in-jar="/" />
-      <element id="file-copy" path="$PROJECT_DIR$/src/main/java/default-profile.yml" />
-      <element id="file-copy" path="$PROJECT_DIR$/src/main/java/pathing.yml" />
-      <element id="file-copy" path="$PROJECT_DIR$/src/main/java/firstclears.yml" />
+      <element id="dir-copy" path="$PROJECT_DIR$/src/main/resources/paths" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/paths/pathing.yml" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/firstclears/firstclears.yml" />
+      <element id="dir-copy" path="$PROJECT_DIR$/src/main/resources/firstclears" />
+      <element id="dir-copy" path="$PROJECT_DIR$/src/main/resources/playerdata" />
     </root>
   </artifact>
 </component>

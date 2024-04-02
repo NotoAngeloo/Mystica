@@ -168,7 +168,7 @@ public class DragonBreathing {
         entityEquipment.setHelmet(dragonItem);
 
         double skillDamage = 35;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level() +
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
 
         skillDamage = skillDamage + ((int)(skillLevel/10));

@@ -139,7 +139,7 @@ public class WildSpirit {
         boolean scout = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("scout");
 
         double attack = profileManager.getAnyProfile(player).getTotalAttack();
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level() +
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
         double skillDamage = 10;
 

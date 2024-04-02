@@ -80,7 +80,7 @@ public class BurningBlessing {
     private void execute(Player player){
 
         double buffAmount = 5;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level() +
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
         buffAmount = buffAmount + ((int)(skillLevel/10));
 

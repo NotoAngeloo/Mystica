@@ -84,7 +84,7 @@ public class DamageHealthBoard {
 
                     Score partyMemberName = objective.getScore(partyMember.getName());
 
-                    int healthPercent = (int) (Math.round(profileManager.getAnyProfile(partyMember).getCurrentHealth() / profileManager.getAnyProfile(partyMember).getTotalHealth()) * 100);
+                    int healthPercent = (int) Math.round((profileManager.getAnyProfile(partyMember).getCurrentHealth() / (double) profileManager.getAnyProfile(partyMember).getTotalHealth()) * 100);
 
 
 

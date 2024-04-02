@@ -19,6 +19,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 
 public final class Mystica extends JavaPlugin {
@@ -46,12 +48,24 @@ public final class Mystica extends JavaPlugin {
     private DamageCalculator damageCalculator;
     private ChangeResourceHandler changeResourceHandler;
     private DamageHealthBoard damageHealthBoard;
+    private Locations locations;
 
     private BagInventory bagInventory;
 
     private FirstClearManager firstClearManager;
 
     private ProtocolManager protocolManager;
+
+    public static Color assassinColor = new java.awt.Color(214, 61, 207);
+    public static Color elementalistColor = new Color(153, 204, 255);
+    public static Color mysticColor = new Color(155, 120, 197);
+    public static Color paladinColor = new Color(207, 214, 61);
+    public static Color rangerColor = new Color(34, 111, 80);
+    public static Color shadowKnightColor = new Color(213, 33, 3);
+    public static Color warriorColor = new Color(214, 126, 61);
+
+    public static Color menuColor = new Color(176, 159, 109);
+    public static Color levelColor = new Color(0,102,0);
 
     @Override
     public void onEnable() {
@@ -60,13 +74,13 @@ public final class Mystica extends JavaPlugin {
 
         protocolManager = ProtocolLibrary.getProtocolManager();
 
+        pathingManager = new PathingManager(this);
+        pathingManager.createOrLoadFolder();
+
         profileFileWriter = new ProfileFileWriter(this);
 
         profileManager = new ProfileManager(this);
         profileManager.loadProfilesFromConfig();
-
-        pathingManager = new PathingManager(this);
-        pathingManager.createOrLoadFolder();
 
         classSetter = new ClassSetter(this);
 
@@ -126,7 +140,8 @@ public final class Mystica extends JavaPlugin {
         getCommand("Cosmetic").setExecutor(new Cosmetic(this));
         getCommand("BossLevel").setExecutor(new BossLevel(this));
         getCommand("GiveSoulStone").setExecutor(new GiveSoulStone(this));
-        getCommand("Breakaway").setExecutor(new Breakaway(this));
+        getCommand("FastTravel").setExecutor(new FastTravel(this));
+        getCommand("ClassGuide").setExecutor(new ClassGuide(this));
 
         this.getServer().getPluginManager().registerEvents(new InventoryEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new GeneralEventListener(this), this);
@@ -141,6 +156,11 @@ public final class Mystica extends JavaPlugin {
 
         Bukkit.getLogger().info("Mystica Enabled");
 
+        if(getServer().getPluginManager().getPlugin("PlaceholderAPI") != null){
+            PapiHook.registerHook(this);
+        }
+
+
         World island = Bukkit.getWorld("world");
         assert island != null;
         WorldBorder border = island.getWorldBorder();
@@ -148,6 +168,9 @@ public final class Mystica extends JavaPlugin {
         border.setCenter(center);
         double size = 1775;
         border.setSize(size);
+
+        locations = new Locations(this);
+        locations.displayDungeonEnters();
 
         CreaturesAndCharactersManager creaturesAndCharactersManager = new CreaturesAndCharactersManager(this);
         try {
@@ -190,7 +213,6 @@ public final class Mystica extends JavaPlugin {
 
         profileManager.saveProfilesToConfig();
         pathingManager.saveFolder();
-        firstClearManager.saveFolder();
         Bukkit.getLogger().info("Mystica Disabled");
     }
 
@@ -271,6 +293,8 @@ public final class Mystica extends JavaPlugin {
     }
 
     public FirstClearManager getFirstClearManager(){return firstClearManager;}
+
+    public Locations getLocations(){return locations;}
 
     public ProtocolManager getProtocolManager(){return protocolManager;}
 

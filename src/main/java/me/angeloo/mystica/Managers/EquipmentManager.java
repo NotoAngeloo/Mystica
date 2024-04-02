@@ -3,7 +3,6 @@ package me.angeloo.mystica.Managers;
 import me.angeloo.mystica.Components.ClassEquipment.*;
 import me.angeloo.mystica.Mystica;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -18,10 +17,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static me.angeloo.mystica.Mystica.menuColor;
+
 public class EquipmentManager {
 
     private final ProfileManager profileManager;
 
+    private final NoneEquipment noneEquipment;
     private final AssassinEquipment assassinEquipment;
     private final ElementalistEquipment elementalistEquipment;
     private final MysticEquipment mysticEquipment;
@@ -32,6 +34,7 @@ public class EquipmentManager {
 
     public EquipmentManager(Mystica main){
         profileManager = main.getProfileManager();
+        noneEquipment = new NoneEquipment();
         assassinEquipment = new AssassinEquipment();
         elementalistEquipment = new ElementalistEquipment();
         mysticEquipment = new MysticEquipment();
@@ -277,23 +280,25 @@ public class EquipmentManager {
                 }
                 break;
             }
+            case "none":{
+                baseGear = noneEquipment.getBaseWeapon();
+                break;
+            }
         }
 
         if(baseGear.getType().equals(Material.AIR)){
             return baseGear;
         }
 
-        return upgrade(player, baseGear, level);
+        return upgrade(baseGear, level);
     }
 
-    public ItemStack upgrade(Player player, ItemStack equipment, int newLevel){
+    public ItemStack upgrade(ItemStack equipment, int newLevel){
 
         if(equipment.getType().equals(Material.AIR)){
             return equipment;
         }
 
-        boolean magic = profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("mystic")
-                || profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("elementalist");
 
         ItemMeta meta = equipment.getItemMeta();
         assert meta != null;
@@ -310,15 +315,15 @@ public class EquipmentManager {
 
         List<String> newLore = new ArrayList<>();
         List<String> randomStats = new ArrayList<>();
-        newLore.add(ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + newLevel);
+        newLore.add(ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + newLevel);
 
         //get the slot of the item
         String slot = lores.get(1).replaceAll("§.", "");
-        newLore.add(ChatColor.of(new Color(176, 159, 109)) + slot);
+        newLore.add(ChatColor.of(menuColor) + slot);
         newLore.add("");
 
         //get what the base stats are
-        String[] valid = {"attack","magic","health","mana","regen","mana regen","defense","magic defense","crit"};
+        String[] valid = {"attack","health","mana","regen","mana regen","defense","magic defense","crit"};
         String regex = ".*?((?i:" + String.join("|", valid) + ")\\s*\\+\\s*(\\d+)).*";
         Pattern pattern = Pattern.compile(regex);
         for (String lore : lores){
@@ -356,7 +361,7 @@ public class EquipmentManager {
                     //Bukkit.getLogger().info(skillNumber + " " + skillLevel);
                 }
 
-                if(name.equalsIgnoreCase("magic") || name.equalsIgnoreCase("attack")){
+                if(name.equalsIgnoreCase("attack")){
                     name = "offense";
                 }
 
@@ -379,14 +384,7 @@ public class EquipmentManager {
                         //calculate the stat based on the value
                         switch(name.toLowerCase()){
                             case "offense":{
-
-                                if(magic){
-                                    newLore.add("Magic + " + statCalculatorOffenseDefense(newLevel, value));
-                                }
-                                else{
-                                    newLore.add("Attack + " + statCalculatorOffenseDefense(newLevel, value));
-                                }
-
+                                newLore.add("Attack + " + statCalculatorOffenseDefense(newLevel, value));
                                 break;
                             }
                             case "crit":{
@@ -417,10 +415,6 @@ public class EquipmentManager {
                                 newLore.add("Mana Regen + " + statCalculatorRegen(newLevel, value));
                                 break;
                             }
-                            /*case "skill":{
-                                newLore.add("Skill " + skillNumber + " + " + skillLevel);
-                                break;
-                            }*/
                         }
                     }
 
@@ -457,10 +451,8 @@ public class EquipmentManager {
         return newItem;
     }
 
-    public ItemStack reforge(Player player, ItemStack equipment){
+    public ItemStack reforge(ItemStack equipment){
 
-        boolean magic = profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("mystic")
-                || profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("elementalist");
 
         ItemMeta meta = equipment.getItemMeta();
         assert meta != null;
@@ -634,14 +626,7 @@ public class EquipmentManager {
 
             NamespacedKey key = new NamespacedKey(Mystica.getPlugin(), "offense_" + i);
             statRolls.set(key, PersistentDataType.INTEGER, statPercent);
-
-            if(magic){
-                newRandomStats.add("Magic + " + statCalculatorOffenseDefense(level, statPercent));
-            }
-            else{
-                newRandomStats.add("Attack + " + statCalculatorOffenseDefense(level, statPercent));
-            }
-
+            newRandomStats.add("Attack + " + statCalculatorOffenseDefense(level, statPercent));
         }
 
         for(int i=0;i<critCounter;i++){

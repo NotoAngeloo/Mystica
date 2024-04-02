@@ -197,7 +197,7 @@ public class Stealth {
 
         double skillDamage = 40;
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level() +
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));
 

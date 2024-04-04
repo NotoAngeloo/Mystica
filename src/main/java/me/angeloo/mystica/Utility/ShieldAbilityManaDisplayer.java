@@ -25,7 +25,7 @@ public class ShieldAbilityManaDisplayer {
         profileManager = main.getProfileManager();
         abilityManager = manager;
         buffAndDebuffManager = main.getBuffAndDebuffManager();
-        allSkillItems = new AllSkillItems(main);
+        allSkillItems = abilityManager.getAllSkillItems();
     }
 
     public void displayPlayerHealthPlusInfo(Player player){

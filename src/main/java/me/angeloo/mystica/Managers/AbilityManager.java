@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Managers;
 
 import me.angeloo.mystica.Components.Abilities.*;
+import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Mystica;
@@ -31,11 +32,14 @@ public class AbilityManager {
     private final WarriorAbilities warriorAbilities;
     private final AssassinAbilities assassinAbilities;
 
+    private final AllSkillItems allSkillItems;
+
     private final CombatManager combatManager;
 
     public AbilityManager(Mystica main){
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
+        allSkillItems = new AllSkillItems(main, this);
         combatManager = new CombatManager(main, this);
 
         noneAbilities = new NoneAbilities(main, this);
@@ -46,6 +50,8 @@ public class AbilityManager {
         paladinAbilities = new PaladinAbilities(main, this);
         warriorAbilities = new WarriorAbilities(main, this);
         assassinAbilities = new AssassinAbilities(main, this);
+
+
     }
 
     public void useAbility(Player player, int abilityNumber){
@@ -333,6 +339,7 @@ public class AbilityManager {
     public CombatManager getCombatManager(){
         return combatManager;
     }
+    public AllSkillItems getAllSkillItems(){return allSkillItems;}
 
     public ElementalistAbilities getElementalistAbilities(){return elementalistAbilities;}
     public RangerAbilities getRangerAbilities(){return rangerAbilities;}

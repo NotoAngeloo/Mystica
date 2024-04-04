@@ -28,9 +28,9 @@ public class RangerSkillItems {
     private final ProfileManager profileManager;
     private final AbilityManager abilityManager;
 
-    public RangerSkillItems(Mystica main){
+    public RangerSkillItems(Mystica main,AbilityManager manager){
         profileManager = main.getProfileManager();
-        abilityManager = main.getAbilityManager();
+        abilityManager = manager;
     }
 
     public ItemStack getSkill(int number, Player player){

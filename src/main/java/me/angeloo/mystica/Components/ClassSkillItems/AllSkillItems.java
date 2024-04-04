@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.ClassSkillItems;
 
 import me.angeloo.mystica.Components.Profile;
+import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Material;
@@ -21,16 +22,17 @@ public class AllSkillItems {
     private final WarriorSkillItems warriorSkillItems;
     private final AssassinSkillItems assassinSkillItems;
 
-    public AllSkillItems(Mystica main){
+    public AllSkillItems(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
         noneSkillItems = new NoneSkillItems(main);
-        elementalistSkillItems = new ElementalistSkillItems(main);
-        rangerSkillItems = new RangerSkillItems(main);
-        mysticSkillItem = new MysticSkillItem(main);
-        shadowKnightSkillItems = new ShadowKnightSkillItems(main);
-        paladinSkillItems = new PaladinSkillItems(main);
-        warriorSkillItems = new WarriorSkillItems(main);
-        assassinSkillItems = new AssassinSkillItems(main);
+        elementalistSkillItems = new ElementalistSkillItems(main, manager);
+        rangerSkillItems = new RangerSkillItems(main, manager);
+        mysticSkillItem = new MysticSkillItem(main, manager);
+        shadowKnightSkillItems = new ShadowKnightSkillItems(main, manager);
+        paladinSkillItems = new PaladinSkillItems(main, manager);
+        warriorSkillItems = new WarriorSkillItems(main, manager);
+        assassinSkillItems = new AssassinSkillItems(main, manager);
+
     }
 
     public ItemStack getPlayerSkill(Player player, int skillNumber){

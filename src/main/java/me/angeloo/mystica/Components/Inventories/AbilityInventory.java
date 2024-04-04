@@ -22,7 +22,7 @@ public class AbilityInventory {
 
     public AbilityInventory(Mystica main){
         profileManager = main.getProfileManager();
-        allSkillItems = new AllSkillItems(main);
+        allSkillItems = new AllSkillItems(main, main.getAbilityManager());
     }
 
 

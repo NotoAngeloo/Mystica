@@ -29,9 +29,9 @@ public class MysticSkillItem {
     private final ProfileManager profileManager;
     private final AbilityManager abilityManager;
 
-    public MysticSkillItem(Mystica main){
+    public MysticSkillItem(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
-        abilityManager = main.getAbilityManager();
+        abilityManager = manager;
     }
 
     public ItemStack getSkill(int number, Player player){

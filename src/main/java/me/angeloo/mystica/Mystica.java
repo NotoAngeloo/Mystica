@@ -3,6 +3,7 @@ package me.angeloo.mystica;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
+import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Commands.*;
 import me.angeloo.mystica.Components.Inventories.BagInventory;
 import me.angeloo.mystica.Managers.*;
@@ -41,6 +42,7 @@ public final class Mystica extends JavaPlugin {
     private PvpManager pvpManager;
     private CombatManager combatManager;
     private BuffAndDebuffManager buffAndDebuffManager;
+    private AllSkillItems allSkillItems;
     private AbilityManager abilityManager;
     private DeathManager deathManager;
     private InventoryIndexingManager inventoryIndexingManager;
@@ -100,7 +102,6 @@ public final class Mystica extends JavaPlugin {
 
         abilityManager = new AbilityManager(this);
         combatManager = abilityManager.getCombatManager();
-
         deathManager = new DeathManager(this);
 
         inventoryIndexingManager = new InventoryIndexingManager();

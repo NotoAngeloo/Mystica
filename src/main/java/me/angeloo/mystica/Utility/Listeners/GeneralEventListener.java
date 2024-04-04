@@ -260,6 +260,13 @@ public class GeneralEventListener implements Listener {
         }
 
         targetManager.setPlayerTarget(player, null);
+
+        if(player.getWorld().getName().startsWith("tutorial_")){
+            //remove class
+            if(!profileManager.getAnyProfile(player).getMilestones().getMilestone("tutorial")){
+                classSetter.setClass(player, "none");
+            }
+        }
     }
 
     //maybe ill make items to be added to a bag, when implemented. just to stop items being deleted when combat end

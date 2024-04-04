@@ -28,9 +28,9 @@ public class WarriorSkillItems {
     private final ProfileManager profileManager;
     private final AbilityManager abilityManager;
 
-    public WarriorSkillItems(Mystica main){
+    public WarriorSkillItems(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
-        abilityManager = main.getAbilityManager();
+        abilityManager = manager;
     }
 
     public ItemStack getSkill(int number, Player player){

@@ -100,13 +100,12 @@ public class FieryMagma {
             return;
         }
 
-        double cost = 2;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -161,13 +160,7 @@ public class FieryMagma {
         assert entityEquipment != null;
         entityEquipment.setHelmet(meteorItem);
 
-        double skillDamage = 20;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
-
-        skillDamage = skillDamage + ((int)(skillLevel/10));
-
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
             @Override
@@ -326,7 +319,7 @@ public class FieryMagma {
                                 hitBySkill.add(livingEntity);
 
                                 boolean crit2 = damageCalculator.checkIfCrit(player, 0);
-                                double damage = (damageCalculator.calculateDamage(player, livingEntity, "Magical", finalSkillDamage * skillLevel, crit2));
+                                double damage = (damageCalculator.calculateDamage(player, livingEntity, "Magical", finalSkillDamage, crit2));
 
                                 //pvp logic
                                 if(entity instanceof Player){
@@ -352,7 +345,17 @@ public class FieryMagma {
 
         }.runTaskTimer(main, 0, 1);
 
+    }
 
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
+
+        return 20 + ((int)(skillLevel/10));
+    }
+
+    public double getCost(){
+        return 5;
     }
 
     public int getCooldown(Player player){

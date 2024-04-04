@@ -19,7 +19,6 @@ public class AbilityManager {
 
     private final Map<Player, Boolean> castMap = new HashMap<>();
     private final Map<Player, Double> percentCastBar = new HashMap<>();
-    private final Map<UUID, Long> globalCooldown = new HashMap<>();
 
     private final Map<Player, Boolean> skillRunning = new HashMap<>();
 
@@ -55,15 +54,6 @@ public class AbilityManager {
             return;
         }
 
-        if(globalCooldown.get(player.getUniqueId()) == null){
-            globalCooldown.put(player.getUniqueId(), (System.currentTimeMillis() / 1000) - 1);
-        }
-
-        long currentTime = System.currentTimeMillis() / 1000;
-        if(currentTime - globalCooldown.get(player.getUniqueId()) < 1){
-            return;
-        }
-        globalCooldown.put(player.getUniqueId(), currentTime);
 
         if(getIfCasting(player)){
             return;
@@ -174,15 +164,6 @@ public class AbilityManager {
             return;
         }
 
-        if(globalCooldown.get(player.getUniqueId()) == null){
-            globalCooldown.put(player.getUniqueId(), (System.currentTimeMillis() / 1000) - 1);
-        }
-
-        long currentTime = System.currentTimeMillis() / 1000;
-        if(currentTime - globalCooldown.get(player.getUniqueId()) < 1){
-            return;
-        }
-        globalCooldown.put(player.getUniqueId(), currentTime);
 
         if(getIfCasting(player)){
             return;

@@ -68,7 +68,7 @@ public class Stats {
         //base
         int attack = 50;
         int health = 100;
-        int mana = 100;
+        int mana = 200;
         int regen = 10;
         int mana_regen = 3;
         int defence = 50;

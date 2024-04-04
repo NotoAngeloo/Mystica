@@ -86,13 +86,12 @@ public class CursingVoice {
             return;
         }
 
-        double cost = 10;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -173,6 +172,10 @@ public class CursingVoice {
         }.runTaskTimer(main, 0, 3);
 
 
+    }
+
+    public double getCost(){
+        return 10;
     }
 
     public int getCooldown(Player player){

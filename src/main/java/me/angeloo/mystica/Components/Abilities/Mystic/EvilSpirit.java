@@ -55,13 +55,12 @@ public class EvilSpirit {
             return;
         }
 
-        double cost = 20;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
         execute(player);
@@ -222,5 +221,8 @@ public class EvilSpirit {
         return 0;
     }
 
+    public double getCost(){
+        return 40;
+    }
 
 }

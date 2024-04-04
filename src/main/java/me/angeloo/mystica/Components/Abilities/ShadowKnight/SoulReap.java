@@ -98,13 +98,12 @@ public class SoulReap {
         }
 
 
-        double cost = 30;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana() < cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana() < getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -227,11 +226,7 @@ public class SoulReap {
                     }
 
                     //damage
-                    double skillDamage = 20 + (2*getSoulMarks(player));
-                    double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                            profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
-
-                    skillDamage = skillDamage + ((int)(skillLevel/10));
+                    double skillDamage = getSkillDamage(player);
 
                     double targetHealthPercent = profileManager.getAnyProfile(target).getCurrentHealth() / (profileManager.getAnyProfile(target).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(target));
 
@@ -362,6 +357,18 @@ public class SoulReap {
         }
 
         return cooldown;
+    }
+
+    public double getSkillDamage(Player player){
+        double skillDamage = 40 + (2*getSoulMarks(player));
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
+
+        return skillDamage + ((int)(skillLevel/10));
+    }
+
+    public double getCost(){
+        return 30;
     }
 
 }

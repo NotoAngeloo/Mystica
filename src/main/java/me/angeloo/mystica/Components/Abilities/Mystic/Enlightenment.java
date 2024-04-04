@@ -53,13 +53,12 @@ public class Enlightenment {
             return;
         }
 
-        double cost = 20;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -88,9 +87,7 @@ public class Enlightenment {
     private void execute(Player player){
         //crit heal resets puri blast
 
-        double healPercent = 10;
-        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
-        healPercent = healPercent + ((int)(skillLevel/10));
+
 
         Location center = player.getLocation();
 
@@ -121,7 +118,7 @@ public class Enlightenment {
 
             boolean crit = damageCalculator.checkIfCrit(player, 0);
 
-            double healAmount  = damageCalculator.calculateHealing(healedPlayer, player, healPercent, crit);
+            double healAmount  = damageCalculator.calculateHealing(healedPlayer, player, getHealPercent(player), crit);
 
             if(crit){
                 purifyingBlast.resetCooldown(player);
@@ -143,6 +140,15 @@ public class Enlightenment {
 
         }
 
+    }
+
+    public double getHealPercent(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+        return 10 + ((int)(skillLevel/10));
+    }
+
+    public double getCost(){
+        return 20;
     }
 
     public int getCooldown(Player player){

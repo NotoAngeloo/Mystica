@@ -2,6 +2,7 @@ package me.angeloo.mystica.Components.ClassSkillItems;
 
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.Skill_Level;
+import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import net.md_5.bungee.api.ChatColor;
@@ -20,15 +21,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import static me.angeloo.mystica.Mystica.levelColor;
-import static me.angeloo.mystica.Mystica.paladinColor;
+import static me.angeloo.mystica.Mystica.*;
+import static me.angeloo.mystica.Mystica.mysticColor;
 
 public class PaladinSkillItems {
 
     private final ProfileManager profileManager;
+    private final AbilityManager abilityManager;
 
     public PaladinSkillItems(Mystica main){
         profileManager = main.getProfileManager();
+        abilityManager = main.getAbilityManager();
     }
 
     public ItemStack getSkill(int number, Player player){
@@ -45,6 +48,9 @@ public class PaladinSkillItems {
                     return getItem(Material.YELLOW_DYE, 0,
                             ChatColor.of(paladinColor) + "Decree of Honor",
                             ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_1_Level_Bonus()),
+                            ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getDecreeHonor().getSkillDamage(player)) + " damage",
+                            ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getDecreeHonor().getHealPercent(player)) + "% health restored",
+                            ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getPaladinAbilities().getDecreeHonor().getCost()) + " mana",
                             "",
                             ChatColor.of(Color.WHITE) + "Damage enemies or",
                             ChatColor.of(Color.WHITE) + "heal friendly units.",
@@ -57,6 +63,8 @@ public class PaladinSkillItems {
                     return getItem(Material.YELLOW_DYE, 0,
                             ChatColor.of(paladinColor) + "Merciful Healing",
                             ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_2_Level_Bonus()),
+                            ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getMercifulHealing().getHealPercent(player)) + "% health restored",
+                            ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getPaladinAbilities().getMercifulHealing().getCost()) + " mana",
                             "",
                             ChatColor.of(Color.WHITE) + "After a cast, heal a",
                             ChatColor.of(Color.WHITE) + "friendly unit for a",
@@ -66,6 +74,8 @@ public class PaladinSkillItems {
                     return getItem(Material.YELLOW_DYE, 0,
                             ChatColor.of(paladinColor) + "Honorable Counter",
                             ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_3_Level_Bonus()),
+                            ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getHonorCounter().getSkillDamage(player)) + " damage + (bonus)",
+                            ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getPaladinAbilities().getHonorCounter().getCost()) + " mana",
                             "",
                             ChatColor.of(Color.WHITE) + "Deal damage to a nearby enemy.",
                             ChatColor.of(Color.WHITE) + "Additionally, deal the amount",
@@ -77,6 +87,8 @@ public class PaladinSkillItems {
                     return getItem(Material.YELLOW_DYE, 0,
                             ChatColor.of(paladinColor) + "Divine Infusion",
                             ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_4_Level_Bonus()),
+                            ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getDivineInfusion().getSkillDamage(player)) + " damage",
+                            ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getPaladinAbilities().getDivineInfusion().getCost()) + " mana",
                             "",
                             ChatColor.of(Color.WHITE) + "Drop an infusion to the",
                             ChatColor.of(Color.WHITE) + "target area, dealing continuous",
@@ -88,6 +100,9 @@ public class PaladinSkillItems {
                     return getItem(Material.YELLOW_DYE, 0,
                             ChatColor.of(paladinColor) + "Spiritual Gift",
                             ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_5_Level_Bonus()),
+                            ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getSpiritualGift().getHealPercent(player)) + "% healing",
+                            ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getSpiritualGift().getDuration(player)/20) + " duration",
+                            ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getPaladinAbilities().getSpiritualGift().getCost()) + " mana",
                             "",
                             ChatColor.of(Color.WHITE) + "Grant damage reduction, haste and",
                             ChatColor.of(Color.WHITE) + "increase the damage they deal for",
@@ -98,6 +113,8 @@ public class PaladinSkillItems {
                     return getItem(Material.YELLOW_DYE, 0,
                             ChatColor.of(paladinColor) + "Sacred Aegis",
                             ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_6_Level_Bonus()),
+                            ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getSacredAegis().getSkillCooldown(player)) + " cooldown",
+                            ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getPaladinAbilities().getSacredAegis().getCost()) + " mana",
                             "",
                             ChatColor.of(Color.WHITE) + "Grant damage immunity to a",
                             ChatColor.of(Color.WHITE) + "friendly target");
@@ -106,6 +123,8 @@ public class PaladinSkillItems {
                     return getItem(Material.YELLOW_DYE, 0,
                             ChatColor.of(paladinColor) + "Modest Calling",
                             ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_7_Level_Bonus()),
+                            ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getModestCalling().getSkillDamage(player)) + " damage",
+                            ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getPaladinAbilities().getModestCalling().getCost()) + " mana",
                             "",
                             ChatColor.of(Color.WHITE) + "Reduce the damage cause by the",
                             ChatColor.of(Color.WHITE) + "enemy target as well as increase",
@@ -117,6 +136,7 @@ public class PaladinSkillItems {
                     return getItem(Material.YELLOW_DYE, 0,
                             ChatColor.of(paladinColor) + "Mark of Justice",
                             ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_8_Level_Bonus()),
+                            ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getPaladinAbilities().getJusticeMark().getCost()) + " mana",
                             "",
                             ChatColor.of(Color.WHITE) + "Set a marker on a friendly unit",
                             ChatColor.of(Color.WHITE) + "as well as 4 nearby allies within",
@@ -132,6 +152,8 @@ public class PaladinSkillItems {
                 return getItem(Material.YELLOW_DYE, 0,
                         ChatColor.of(paladinColor) + "Torah Sword",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_1_Level_Bonus()),
+                        ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getTorahSword().getSkillDamage(player)) + " damage x 3",
+                        ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getPaladinAbilities().getTorahSword().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Summon several swords",
                         ChatColor.of(Color.WHITE) + "to fall from the sky to",
@@ -141,6 +163,8 @@ public class PaladinSkillItems {
                 return getItem(Material.YELLOW_DYE, 0,
                         ChatColor.of(paladinColor) + "Divine Guidance",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_2_Level_Bonus()),
+                        ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getDivineGuidance().getSkillDamage(player)) + " damage",
+                        ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getPaladinAbilities().getDivineGuidance().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Deal area damage to",
                         ChatColor.of(Color.WHITE) + "nearby enemies and heal",
@@ -151,6 +175,8 @@ public class PaladinSkillItems {
                 return getItem(Material.YELLOW_DYE, 0,
                         ChatColor.of(paladinColor) + "Reigning Sword",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_3_Level_Bonus()),
+                        ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getReigningSword().getSkillDamage(player)) + " damage",
+                        ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getPaladinAbilities().getReigningSword().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Attack nearby enemies",
                         ChatColor.of(Color.WHITE) + "and grant yourself a shield");
@@ -159,6 +185,8 @@ public class PaladinSkillItems {
                 return getItem(Material.YELLOW_DYE, 0,
                         ChatColor.of(paladinColor) + "Sword of the Covenant",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_4_Level_Bonus()),
+                        ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getCovenantSword().getSkillDamage(player)) + " damage",
+                        ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getPaladinAbilities().getCovenantSword().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Concentrate the faith of",
                         ChatColor.of(Color.WHITE) + "Paladins in one sword, dealing",
@@ -172,6 +200,8 @@ public class PaladinSkillItems {
                 return getItem(Material.YELLOW_DYE, 0,
                         ChatColor.of(paladinColor) + "Shield of Order",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_5_Level_Bonus()),
+                        ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getOrderShield().getSkillDamage(player)) + " damage",
+                        ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getPaladinAbilities().getOrderShield().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Consume 10% of your max Hp to",
                         ChatColor.of(Color.WHITE) + "throw your shield to deal damage",
@@ -182,6 +212,8 @@ public class PaladinSkillItems {
                 return getItem(Material.YELLOW_DYE, 0,
                         ChatColor.of(paladinColor) + "Glory of Paladins",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_6_Level_Bonus()),
+                        ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getGloryOfPaladins().getSkillDamage(player)) + " damage",
+                        ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getPaladinAbilities().getGloryOfPaladins().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Gain Glory of Paladins for yourself",
                         ChatColor.of(Color.WHITE) + "causing your basic attacks to deal",
@@ -193,6 +225,8 @@ public class PaladinSkillItems {
                 return getItem(Material.YELLOW_DYE, 0,
                         ChatColor.of(paladinColor) + "Durance of Truth",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_7_Level_Bonus()),
+                        ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getDuranceOfTruth().getSkillDamage(player)) + " damage",
+                        ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getPaladinAbilities().getDuranceOfTruth().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Leap toward your target and",
                         ChatColor.of(Color.WHITE) + "create a Durance of Truth around",
@@ -205,6 +239,8 @@ public class PaladinSkillItems {
                 return getItem(Material.YELLOW_DYE, 0,
                         ChatColor.of(paladinColor) + "Judgement",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_8_Level_Bonus()),
+                        ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getJudgement().getSkillDamage(player)) + " damage",
+                        ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getPaladinAbilities().getJudgement().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Summon a light pillar from",
                         ChatColor.of(Color.WHITE) + "the sky, to either heal an",
@@ -226,9 +262,10 @@ public class PaladinSkillItems {
                 return getItem(Material.YELLOW_DYE, 0,
                         ChatColor.of(paladinColor) + "Shield of Sanctity",
                         ChatColor.of(levelColor) + "Level " + level,
+                        ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getPaladinAbilities().getSanctityShield().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Gain a shield to absorb",
-                        ChatColor.of(Color.WHITE) + (String.valueOf(level)) + "% of your max health for",
+                        ChatColor.of(Color.WHITE) + String.valueOf(abilityManager.getPaladinAbilities().getSanctityShield().getShieldAmount(player)) + "% of your max health for",
                         ChatColor.of(Color.WHITE) + "5 seconds. While active,",
                         ChatColor.of(Color.WHITE) + "restore your health.");
             }
@@ -236,6 +273,8 @@ public class PaladinSkillItems {
                 return getItem(Material.YELLOW_DYE, 0,
                         ChatColor.of(paladinColor) + "Representative",
                         ChatColor.of(levelColor) + "Level " + level,
+                        ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getRepresentative().getHealPercent(player)) + "% healing",
+                        ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getPaladinAbilities().getRepresentative().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Instantly heal nearby allies",
                         ChatColor.of(Color.WHITE) + "and grant yourself haste as",
@@ -247,6 +286,8 @@ public class PaladinSkillItems {
                 return getItem(Material.YELLOW_DYE, 0,
                         ChatColor.of(paladinColor) + "Well of Light",
                         ChatColor.of(levelColor) + "Level " + level,
+                        ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getLightWell().getSkillDamage(player)) + " damage",
+                        ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getPaladinAbilities().getLightWell().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Summon a well that deals",
                         ChatColor.of(Color.WHITE) + "area damage. This also",

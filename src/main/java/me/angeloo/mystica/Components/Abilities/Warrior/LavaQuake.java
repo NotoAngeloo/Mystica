@@ -59,13 +59,12 @@ public class LavaQuake {
             return;
         }
 
-        double cost = 5;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -144,10 +143,7 @@ public class LavaQuake {
 
         Location end = current.clone().add(direction.multiply(8));
 
-        double skillDamage = 20;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
-        skillDamage = skillDamage + ((int)(skillLevel/10));
+
 
         double maxHealth = profileManager.getAnyProfile(player).getTotalHealth();
         double shield = maxHealth * .1;
@@ -158,7 +154,7 @@ public class LavaQuake {
 
         Vector finalDirection = direction;
         Vector crossSection = finalDirection.clone().crossProduct(new Vector(0,1,0)).normalize();
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             double offset = .1;
             @Override
@@ -250,6 +246,16 @@ public class LavaQuake {
         }
 
         return cooldown;
+    }
+
+    public double getCost(){
+        return 5;
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
+        return 25 + ((int)(skillLevel/10));
     }
 
 }

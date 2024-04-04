@@ -242,4 +242,22 @@ public class MysticAbilities {
     public EvilSpirit getEvilSpirit(){return evilSpirit;}
     public PlagueCurse getPlagueCurse(){return plagueCurse;}
     public PurifyingBlast getPurifyingBlast(){return purifyingBlast;}
+    public ChaosVoid getChaosVoid(){return chaosVoid;}
+    public ShadowOfDarkness getShadowOfDarkness(){return shadowOfDarkness;}
+    public Warp getWarp() {
+        return warp;
+    }
+    public SpiritualDescent getSpiritualDescent(){return spiritualDescent;}
+    public ChaosLash getChaosLash(){return chaosLash;}
+    public CursingVoice getCursingVoice(){return cursingVoice;}
+    public HealthAbsorb getHealthAbsorb(){return healthAbsorb;}
+    public  ArcaneShield getArcaneShield(){return arcaneShield;}
+    public ForceOfWill getForceOfWill(){return forceOfWill;}
+    public Dreadfall getDreadfall(){return dreadfall;}
+    public Aurora getAurora(){return aurora;}
+    public ArcaneContract getArcaneContract(){return arcaneContract;}
+    public LightSigil getLightSigil(){return lightSigil;}
+    public MysticBasic getMysticBasic(){return mysticBasic;}
+    public ArcaneMissiles getArcaneMissiles(){return arcaneMissiles;}
+    public Enlightenment getEnlightenment(){return enlightenment;}
 }

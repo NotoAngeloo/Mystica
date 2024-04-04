@@ -106,13 +106,12 @@ public class WeaknessStrike {
             return;
         }
 
-        double cost = 20;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -146,13 +145,10 @@ public class WeaknessStrike {
         Location start = player.getLocation().clone();
         Location up = start.clone().add(0,3,0);
 
-        double skillDamage = 20;
+        double skillDamage = getSkillDamage(player);
 
-        skillDamage = skillDamage + (10 * combo.removeAnAmountOfPoints(player, combo.getComboPoints(player)));
+        skillDamage = skillDamage + (15 * combo.removeAnAmountOfPoints(player, combo.getComboPoints(player)));
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
-        skillDamage = skillDamage + ((int)(skillLevel/10));
 
         abilityManager.setSkillRunning(player, true);
         double finalSkillDamage = skillDamage;
@@ -326,6 +322,17 @@ public class WeaknessStrike {
 
         }.runTaskTimer(main, 0, 1);
 
+    }
+
+    public double getSkillDamage(Player player){
+
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
+        return 30 + ((int)(skillLevel/10));
+    }
+
+    public double getCost(){
+        return 20;
     }
 
     public int getCooldown(Player player){

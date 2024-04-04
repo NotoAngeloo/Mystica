@@ -95,13 +95,12 @@ public class ModestCalling {
             return;
         }
 
-        double cost = 5;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -131,8 +130,6 @@ public class ModestCalling {
 
     private void execute(Player player){
 
-        //TODO:icon over head when i get them
-
         LivingEntity target = targetManager.getPlayerTarget(player);
 
         ArmorStand armorStand = player.getWorld().spawn(target.getLocation().clone().add(0,10,0), ArmorStand.class);
@@ -153,10 +150,8 @@ public class ModestCalling {
         entityEquipment.setHelmet(item);
 
 
-        double skillDamage = 20;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
-        skillDamage = skillDamage + ((int)(skillLevel/10));
 
         double multiplier =  1 + (int)(skillLevel/15);
 
@@ -168,7 +163,7 @@ public class ModestCalling {
 
         Location end = target.getLocation().clone();
 
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         double finalMultiplier = multiplier;
         new BukkitRunnable(){
             @Override
@@ -212,6 +207,17 @@ public class ModestCalling {
         }.runTaskTimer(main, 0, 1);
 
 
+    }
+
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
+        return 20 + ((int)(skillLevel/10));
+    }
+
+    public double getCost(){
+        return 10;
     }
 
     public int getCooldown(Player player){

@@ -89,13 +89,12 @@ public class ForceOfWill {
             return;
         }
 
-        double cost = 5;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -126,19 +125,15 @@ public class ForceOfWill {
 
         LivingEntity target = targetManager.getPlayerTarget(player);
 
-        double skillDamage = 20;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
-        skillDamage = skillDamage + ((int)(skillLevel/10));
+
 
         abilityManager.setCasting(player, true);
         double castTime = 4;
         castTime = castTime - buffAndDebuffManager.getHaste().getHasteLevel(player);
         castTime = castTime * 20;
 
-        skillDamage = skillDamage/castTime;
+        double skillDamage = getSkillDamage(player)/castTime;
 
-        double finalSkillDamage = skillDamage;
         double finalCastTime = castTime;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
@@ -199,7 +194,7 @@ public class ForceOfWill {
                 }
 
                 boolean crit = damageCalculator.checkIfCrit(player, 0);
-                double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
+                double damage = damageCalculator.calculateDamage(player, target, "Magical", skillDamage, crit);
                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                 changeResourceHandler.subtractHealthFromEntity(target, damage, player);
 
@@ -231,6 +226,16 @@ public class ForceOfWill {
         double baseRange = 20;
         double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
         return baseRange + extraRange;
+    }
+
+    public double getCost(){
+        return 5;
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
+        return 20 + ((int)(skillLevel/10));
     }
 
     public int getCooldown(Player player){

@@ -61,13 +61,12 @@ public class FlamingSigil {
             return;
         }
 
-        double cost = 10;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -100,10 +99,7 @@ public class FlamingSigil {
         boolean executioner = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("executioner");
         boolean gladiator = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("gladiator");
 
-        double buffAmount = 5;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
-        buffAmount = buffAmount + ((int)(skillLevel/10));
+
 
         Location spawnStart = player.getLocation().clone();
 
@@ -128,7 +124,7 @@ public class FlamingSigil {
         Location center = sigil.getLocation();
 
         Set<LivingEntity> hitBySkill = new HashSet<>();
-        double finalBuffAmount = buffAmount;
+        double finalBuffAmount = getBuffAmount(player);
         new BukkitRunnable(){
             int ran = 0;
             @Override
@@ -209,6 +205,12 @@ public class FlamingSigil {
         }.runTaskTimer(main, 0, 1);
     }
 
+    public double getBuffAmount(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
+        return 5 + ((int)(skillLevel/10));
+    }
+
     public int getCooldown(Player player){
         int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
 
@@ -217,6 +219,10 @@ public class FlamingSigil {
         }
 
         return cooldown;
+    }
+
+    public double getCost(){
+        return 10;
     }
 
 }

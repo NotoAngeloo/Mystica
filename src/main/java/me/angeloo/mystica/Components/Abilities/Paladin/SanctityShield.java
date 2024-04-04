@@ -44,13 +44,12 @@ public class SanctityShield {
             return;
         }
 
-        double cost = 20;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -78,10 +77,9 @@ public class SanctityShield {
 
     private void execute(Player player){
 
-        double maxHealth = profileManager.getAnyProfile(player).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(player);
-        double level = profileManager.getAnyProfile(player).getStats().getLevel();
-        double shield = (level / maxHealth) * 100;
-        double healAmount = maxHealth * (level/100);
+
+        double healAmount = getHealAmount(player);
+        double shield = getShieldAmount(player);
 
         buffAndDebuffManager.getGenericShield().applyOrAddShield(player, shield);
 
@@ -101,7 +99,7 @@ public class SanctityShield {
                     return;
                 }
 
-                changeResourceHandler.addManaToPlayer(player, healAmount);
+                changeResourceHandler.addHealthToEntity(player, healAmount, player);
 
                 if(count>=5){
                     this.cancel();
@@ -111,6 +109,22 @@ public class SanctityShield {
             }
         }.runTaskTimer(main, 0, 20);
 
+    }
+
+    public double getShieldAmount(Player player){
+        double maxHealth = profileManager.getAnyProfile(player).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(player);
+        double level = profileManager.getAnyProfile(player).getStats().getLevel();
+        return  (level + 10 / maxHealth) * 100;
+    }
+
+    public double getHealAmount(Player player){
+        double maxHealth = profileManager.getAnyProfile(player).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(player);
+        double level = profileManager.getAnyProfile(player).getStats().getLevel();
+        return maxHealth * ((level + 5) /100);
+    }
+
+    public double getCost(){
+        return 20;
     }
 
     public int getCooldown(Player player){

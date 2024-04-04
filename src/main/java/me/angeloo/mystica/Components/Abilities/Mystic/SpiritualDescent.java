@@ -101,13 +101,12 @@ public class SpiritualDescent {
             return;
         }
 
-        double cost = 10;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -144,12 +143,8 @@ public class SpiritualDescent {
 
         Location origin = target.getLocation().clone().subtract(0,1.3,0);
 
-        double skillDamage = 5;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
-        skillDamage = skillDamage + ((int)(skillLevel/10));
 
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             int count = 0;
             @Override
@@ -254,9 +249,15 @@ public class SpiritualDescent {
             }
         }.runTaskTimer(main, 0, 6);
 
-
-
     }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
+        return 5 + ((int)(skillLevel/10));
+    }
+
+    public double getCost(){return 10;}
 
 
     public int getCooldown(Player player){

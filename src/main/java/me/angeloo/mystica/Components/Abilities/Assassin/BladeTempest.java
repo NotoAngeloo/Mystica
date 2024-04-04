@@ -65,13 +65,12 @@ public class BladeTempest {
             return;
         }
 
-        double cost = 10;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -117,14 +116,10 @@ public class BladeTempest {
         meta.setCustomModelData(2);
         item.setItemMeta(meta);
 
-        double skillDamage = 20;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
-        skillDamage = skillDamage + ((int)(skillLevel/10));
 
         final boolean[] trigger = {false};
         Set<LivingEntity> hitBySkill = new HashSet<>();
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         for(int i = 0;i<6;i++){
 
             direction.rotateAroundY(Math.toRadians(60));
@@ -232,7 +227,15 @@ public class BladeTempest {
 
     }
 
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
+        return 30 + ((int)(skillLevel/10));
+    }
 
+    public double getCost(){
+        return 10;
+    }
 
     public int getCooldown(Player player){
         int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);

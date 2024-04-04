@@ -96,13 +96,12 @@ public class FlyingBlade {
             return;
         }
 
-        double cost = 10;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -147,15 +146,8 @@ public class FlyingBlade {
         entityEquipment.setHelmet(weapon);
         armorStand.teleport(start);
 
-        double skillDamage = 25;
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
-
-        skillDamage = skillDamage + ((int)(skillLevel/10));
-
-
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
             @Override
@@ -226,6 +218,18 @@ public class FlyingBlade {
             }
         }.runTaskTimer(main, 0, 1);
 
+    }
+
+    public double getCost(){
+        return 10;
+    }
+
+    public double getSkillDamage(Player player){
+
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
+
+        return 25 + ((int)(skillLevel/10));
     }
 
     public int getCooldown(Player player){

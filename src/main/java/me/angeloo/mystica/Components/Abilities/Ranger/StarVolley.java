@@ -92,13 +92,12 @@ public class StarVolley {
             return;
         }
 
-        double cost = 20;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -172,13 +171,11 @@ public class StarVolley {
         assert entityEquipment != null;
         entityEquipment.setHelmet(arrow);
 
-        double skillDamage = 60;
-        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
-        skillDamage = skillDamage + ((int)(skillLevel/10));
+
 
         Location end = target.getLocation().clone().subtract(0,2,0);
 
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             @Override
             public void run(){
@@ -231,6 +228,15 @@ public class StarVolley {
         }
 
         abilityReadyInMap.put(player.getUniqueId(), current);
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+        return 60 + ((int)(skillLevel/10));
+    }
+
+    public double getCost(){
+        return 20;
     }
 
     public int getCooldown(Player player){

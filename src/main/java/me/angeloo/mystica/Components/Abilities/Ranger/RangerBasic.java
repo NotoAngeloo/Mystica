@@ -191,15 +191,8 @@ public class RangerBasic {
         assert entityEquipment != null;
         entityEquipment.setHelmet(arrow);
 
-        double skillDamage = 5;
-        if(rallyingCry.getIfBuffTime(player) > 0){
-            skillDamage = skillDamage * 1.25;
-        }
-        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
 
-        skillDamage = skillDamage + ((int)(skillLevel/10));
-
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
             @Override
@@ -294,15 +287,9 @@ public class RangerBasic {
         assert entityEquipment != null;
         entityEquipment.setHelmet(arrow);
 
-        double skillDamage = 10;
-        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
-        if(rallyingCry.getIfBuffTime(player) > 0){
-            skillDamage = skillDamage * 1.25;
-        }
 
-        skillDamage = skillDamage + ((int)(skillLevel/10));
 
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
             @Override
@@ -377,5 +364,15 @@ public class RangerBasic {
             }
         }.runTaskTimer(main, 0, 1);
 
+    }
+
+    public double getSkillDamage(Player player){
+        double skillDamage = 10;
+        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+        if(rallyingCry.getIfBuffTime(player) > 0){
+            skillDamage = skillDamage * 1.25;
+        }
+
+        return skillDamage + ((int)(skillLevel/10));
     }
 }

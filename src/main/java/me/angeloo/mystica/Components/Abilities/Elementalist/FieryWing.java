@@ -96,13 +96,11 @@ public class FieryWing {
             return;
         }
 
-        double cost = 20;
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -152,13 +150,8 @@ public class FieryWing {
         assert entityEquipment2 != null;
         entityEquipment2.setHelmet(spawnItem);
 
-        double skillDamage = 60;
-
-        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
-        skillDamage = skillDamage + ((int)(skillLevel/10));
-
         abilityManager.setSkillRunning(player, true);
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             boolean spawned = false;
             int ran = 0;
@@ -324,6 +317,15 @@ public class FieryWing {
     public void removeInflame(Player player){
         inflameMap.put(player.getUniqueId(), 0);
         Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+    }
+
+    public double getCost() {
+        return 20;
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+        return 60 + ((int)(skillLevel/10));
     }
 
     public int getCooldown(Player player){

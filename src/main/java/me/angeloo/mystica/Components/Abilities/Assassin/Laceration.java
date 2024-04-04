@@ -95,13 +95,12 @@ public class Laceration {
             return;
         }
 
-        double cost = 5;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -139,28 +138,34 @@ public class Laceration {
         Location targetLoc = target.getLocation();
         Vector targetDir = targetLoc.toVector().subtract(playerLoc.toVector());
 
-        Location warpLoc = targetLoc.add(targetDir.clone().normalize().multiply(-1.5));
-        warpLoc.setDirection(targetDir);
+        if(playerLoc!=targetLoc){
+            Location warpLoc = targetLoc.add(targetDir.clone().normalize().multiply(-1.5));
+            warpLoc.setDirection(targetDir);
 
-        player.teleport(warpLoc);
+            while (!warpLoc.getBlock().isPassable()){
+                warpLoc.add(0,.1,0);
+            }
+
+            if(player.isSneaking()){
+                player.teleport(warpLoc);
+            }
+
+
+        }
+
+
         player.getWorld().spawnParticle(Particle.REDSTONE, targetLoc, 50, .5, 1, .5, 1, new Particle.DustOptions(Color.RED, 1.0f));
 
-        double bleedDamage = 3;
+        double bleedDamage = getBleedDamage(player);
 
         if(alchemist){
             int comboPoints = combo.removeAnAmountOfPoints(player, combo.getComboPoints(player));
-
             bleedDamage = bleedDamage + comboPoints;
         }
 
-        double skillDamage = 7;
-        double level = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel())
-                + profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
-        skillDamage = skillDamage + ((int)(level/10));
-        bleedDamage = bleedDamage + ((int)(level/10));
 
         boolean crit = damageCalculator.checkIfCrit(player, 0);
-        double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage, crit);
+        double damage = damageCalculator.calculateDamage(player, target, "Physical", getSkillDamage(player), crit);
         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
         changeResourceHandler.subtractHealthFromEntity(target, damage, player);
         stealth.stealthBonusCheck(player, target);
@@ -208,6 +213,22 @@ public class Laceration {
 
             }
         }.runTaskTimer(main, 20, 20);
+    }
+
+    public double getSkillDamage(Player player){
+        double level = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel())
+                + profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
+        return 17 + ((int)(level/10));
+    }
+
+    public double getBleedDamage(Player player){
+        double level = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel())
+                + profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
+        return 5 + ((int)(level/10));
+    }
+
+    public double getCost(){
+        return 10;
     }
 
     public int getCooldown(Player player){

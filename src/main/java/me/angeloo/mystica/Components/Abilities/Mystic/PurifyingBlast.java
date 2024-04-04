@@ -59,13 +59,12 @@ public class PurifyingBlast {
             return;
         }
 
-        double cost = 10;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -141,22 +140,15 @@ public class PurifyingBlast {
             instantCast.remove(player.getUniqueId());
         }
 
-        double skillDamage = 30;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
-
-        skillDamage = skillDamage + ((int)(skillLevel/10));
 
 
-        double healPercent = skillDamage;
-
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        double healPercent = getSkillDamage(player);
 
         Location center = player.getLocation().clone();
 
         Set<LivingEntity> hitBySkill = new HashSet<>();
 
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             double progress = 0;
             final int maxDistance = 10;
@@ -248,7 +240,7 @@ public class PurifyingBlast {
         abilityReadyInMap.put(player.getUniqueId(), 0);
     }
 
-    private boolean getInstantCast(Player player){
+    public boolean getInstantCast(Player player){
         return instantCast.getOrDefault(player.getUniqueId(), false);
     }
 
@@ -260,5 +252,16 @@ public class PurifyingBlast {
         }
 
         return cooldown;
+    }
+
+    public double getCost(){
+        return 10;
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
+
+        return 30 + ((int)(skillLevel/10));
     }
 }

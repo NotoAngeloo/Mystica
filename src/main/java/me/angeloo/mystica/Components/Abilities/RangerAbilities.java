@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.Abilities;
 
 import me.angeloo.mystica.Components.Abilities.Ranger.*;
+import me.angeloo.mystica.Components.ClassSkillItems.RangerSkillItems;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -139,8 +140,15 @@ public class RangerAbilities {
     public RallyingCry getRallyingCry() {
         return rallyingCry;
     }
-
     public StarVolley getStarVolley() {
         return starVolley;
     }
+    public BitingRain getBitingRain(){return bitingRain;}
+    public ShadowCrows getShadowCrows(){return shadowCrows;}
+    public Relentless getRelentless(){return relentless;}
+    public RazorWind getRazorWind(){return razorWind;}
+    public BlessedArrow getBlessedArrow(){return blessedArrow;}
+    public WildSpirit getWildSpirit(){return wildSpirit;}
+    public Roll getRoll(){return roll;}
+    public WildRoar getWildRoar(){return wildRoar;}
 }

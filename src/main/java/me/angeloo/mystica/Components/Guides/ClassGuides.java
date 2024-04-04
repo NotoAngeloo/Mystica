@@ -86,7 +86,7 @@ public class ClassGuides {
                         ChatColor.of(elementalistColor) + "Windrush Form" +
                         "\n\n" +
                         ChatColor.RESET + "Prioritize Casting " +
-                        ChatColor.of(elementalistColor) + "Descending Inferno and Ice Bolt" +
+                        ChatColor.of(elementalistColor) + "Descending Inferno and Ice Bolt " +
                         ChatColor.RESET + "When " + ChatColor.of(elementalistColor) + "Elemental Breath " +
                         ChatColor.RESET + "is active."
 

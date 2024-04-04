@@ -100,13 +100,12 @@ public class BitingRain {
             return;
         }
 
-        double cost = 5;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -145,13 +144,9 @@ public class BitingRain {
 
         Set<LivingEntity> hitBySkill = new HashSet<>();
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
-        double skillDamage = 20;
 
-        skillDamage = skillDamage + ((int)(skillLevel/10));
 
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             final Set<ArmorStand> allStands = new HashSet<>();
             int count = 0;
@@ -351,8 +346,16 @@ public class BitingRain {
 
         }.runTaskTimer(main, 0, 1);
 
+    }
 
+    public double getCost(){
+        return 5;
+    }
 
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
+        return 20 + ((int)(skillLevel/10));
     }
 
     public int getCooldown(Player player){

@@ -320,6 +320,7 @@ public class ElementalistBasic {
                 }
 
                 Vector direction = targetWasLoc.toVector().subtract(current.toVector());
+                current.setDirection(direction);
                 double distance = current.distance(targetWasLoc);
                 double distanceThisTick = Math.min(distance, 1);
 

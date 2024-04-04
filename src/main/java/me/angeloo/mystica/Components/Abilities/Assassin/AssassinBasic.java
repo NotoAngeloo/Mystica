@@ -151,9 +151,7 @@ public class AssassinBasic {
             targetToHit = firstHit;
         }
 
-        double skillDamage = 7;
-        double level = profileManager.getAnyProfile(player).getStats().getLevel();
-        skillDamage = skillDamage + ((int)(level/10));
+
 
         if(targetToHit != null){
             targetManager.setPlayerTarget(player, targetToHit);
@@ -170,15 +168,16 @@ public class AssassinBasic {
                     warpLoc.add(0,.1,0);
                 }
 
-                player.teleport(warpLoc);
-
+                if(player.isSneaking()){
+                    player.teleport(warpLoc);
+                }
 
 
             }
 
 
             boolean crit = damageCalculator.checkIfCrit(player, 0);
-            double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", skillDamage, crit);
+            double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", getSkillDamage(player), crit);
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, player));
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, player);
@@ -190,6 +189,11 @@ public class AssassinBasic {
         }
 
 
+    }
+
+    public double getSkillDamage(Player player){
+        double level = profileManager.getAnyProfile(player).getStats().getLevel();
+        return 14 + ((int)(level/10));
     }
 
 }

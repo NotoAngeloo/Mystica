@@ -96,13 +96,12 @@ public class DivineInfusion {
             return;
         }
 
-        double cost = 5;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -154,14 +153,11 @@ public class DivineInfusion {
         assert entityEquipment != null;
         entityEquipment.setItemInMainHand(item);
 
-        double skillDamage = 5;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
-        skillDamage = skillDamage + ((int)(skillLevel/10));
+
 
         Set<Player> hitBySkill = new HashSet<>();
 
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             int count = 0;
             boolean down = true;
@@ -254,7 +250,7 @@ public class DivineInfusion {
 
                             hitBySkill.add(thisPlayer);
 
-                            double amount = (profileManager.getAnyProfile(thisPlayer).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(thisPlayer)) * .05;
+                            double amount = (profileManager.getAnyProfile(thisPlayer).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(thisPlayer)) * .05;
                             buffAndDebuffManager.getSpeedUp().applySpeedUp(thisPlayer, .3f);
                             buffAndDebuffManager.getGenericShield().applyOrAddShield(thisPlayer,amount);
                             removeBuffsLater(thisPlayer, amount);
@@ -288,6 +284,16 @@ public class DivineInfusion {
 
         }.runTaskTimer(main,0,1);
 
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
+        return 15 + ((int)(skillLevel/10));
+    }
+
+    public double getCost(){
+        return 10;
     }
 
     public int getCooldown(Player player){

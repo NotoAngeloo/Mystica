@@ -81,13 +81,12 @@ public class SpiritualGift {
             return;
         }
 
-        double cost = 10;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -122,19 +121,14 @@ public class SpiritualGift {
 
     private void execute(Player player, LivingEntity target){
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
-        double healPercent = 5;
-        healPercent = healPercent +  ((int)(skillLevel/10));
+
 
         //every 15 levels is a +1
-        int bonusDuration = (int)(skillLevel/15);
 
-        int duration = (5*20) + (bonusDuration*20);
 
-        buffAndDebuffManager.getHaste().applyHaste(target, 3, duration);
+        buffAndDebuffManager.getHaste().applyHaste(target, 3, getDuration(player));
 
-        double finalHealPercent = healPercent;
+        double finalHealPercent = getHealPercent(player);
         new BukkitRunnable(){
             int count = 0;
             @Override
@@ -158,7 +152,7 @@ public class SpiritualGift {
                     target.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1,0, 0, 0, 0);
                 }
 
-                if(count>=duration){
+                if(count>=getDuration(player)){
                     this.cancel();
                     healTarget(target);
                 }
@@ -190,6 +184,23 @@ public class SpiritualGift {
 
         }.runTaskTimer(main, 0, 1);
 
+    }
+
+    public double getCost(){
+        return 10;
+    }
+
+    public double getHealPercent(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
+        return 5 +  ((int)(skillLevel/10));
+    }
+
+    public int getDuration(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
+        int bonusDuration = (int)(skillLevel/15);
+        return  (5*20) + (bonusDuration*20);
     }
 
     public int getCooldown(Player player){

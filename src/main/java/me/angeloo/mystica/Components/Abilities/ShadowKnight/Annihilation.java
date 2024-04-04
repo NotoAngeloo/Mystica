@@ -97,13 +97,12 @@ public class Annihilation {
             return;
         }
 
-        double cost = 30;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana() < cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana() < getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -160,12 +159,10 @@ public class Annihilation {
         assert entityEquipment != null;
         entityEquipment.setHelmet(item);
 
-        double skillDamage = 35;
-        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
-        skillDamage = skillDamage + ((int)(skillLevel/10));
+
 
         abilityManager.setSkillRunning(player, true);
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             int ran = 0;
             int height = 0;
@@ -257,6 +254,15 @@ public class Annihilation {
 
         }.runTaskTimer(main, 0, 1);
 
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+        return 45 + ((int)(skillLevel/10));
+    }
+
+    public double getCost(){
+        return 30;
     }
 
     public int getCooldown(Player player){

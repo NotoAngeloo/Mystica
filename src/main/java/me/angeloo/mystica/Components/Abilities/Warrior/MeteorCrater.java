@@ -74,13 +74,12 @@ public class MeteorCrater {
             return;
         }
 
-        double cost = 20;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -158,13 +157,10 @@ public class MeteorCrater {
         Location end = start.clone().add(direction.multiply(2));
         end.setDirection(direction);
 
-        double skillDamage = 40;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
-        skillDamage = skillDamage + ((int)(skillLevel/10));
+
 
         abilityManager.setSkillRunning(player, true);
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         Vector finalDirection = direction;
         new BukkitRunnable(){
             ArmorStand stand;
@@ -335,5 +331,15 @@ public class MeteorCrater {
         }
 
         return cooldown;
+    }
+
+    public double getCost(){
+        return 20;
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
+        return 50 + ((int)(skillLevel/10));
     }
 }

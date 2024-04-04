@@ -60,7 +60,8 @@ public class ShieldAbilityManaDisplayer {
         Profile playerProfile = profileManager.getAnyProfile(player);
 
         double maxHp = playerProfile.getTotalHealth();
-        double shieldAmount = buffAndDebuffManager.getGenericShield().getCurrentShieldAmount(player);
+        double shieldAmount = buffAndDebuffManager.getGenericShield().getCurrentShieldAmount(player) +
+                buffAndDebuffManager.getWindWallBuff().getWallHealth(player);
         int percent = (int) Math.floor((shieldAmount/maxHp) * 100);
 
         StringBuilder shieldBar = new StringBuilder().append(ChatColor.YELLOW);

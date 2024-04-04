@@ -69,13 +69,12 @@ public class MagmaSpikes {
             return;
         }
 
-        double cost = 10;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -109,10 +108,7 @@ public class MagmaSpikes {
         Location up = start.clone().add(0,4,0);
 
 
-        double skillDamage = 30;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
-        skillDamage = skillDamage + ((int)(skillLevel/10));
+        double skillDamage = getSkillDamage(player);
 
         abilityManager.setSkillRunning(player, true);
         skillDamage = skillDamage / 2;
@@ -397,6 +393,17 @@ public class MagmaSpikes {
         }
 
         return cooldown;
+    }
+
+    public double getCost(){
+        return 10;
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
+        return 40 + ((int)(skillLevel/10));
+
     }
 
 }

@@ -147,12 +147,8 @@ public class MysticBasic {
         assert entityEquipment != null;
         entityEquipment.setHelmet(bolt);
 
-        double skillDamage = 5;
-        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
 
-        skillDamage = skillDamage + ((int)(skillLevel/10));
-
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
             @Override
@@ -203,9 +199,6 @@ public class MysticBasic {
             }
 
             private void aoeAttack(){
-                double skillDamage = 40;
-                double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
-                skillDamage = skillDamage + ((int)(skillLevel/10));
 
                 Set<LivingEntity> hitBySkill = new HashSet<>();
 
@@ -252,7 +245,7 @@ public class MysticBasic {
                     hitBySkill.add(livingEntity);
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = (damageCalculator.calculateDamage(player, livingEntity, "Magical", skillDamage, crit));
+                    double damage = (damageCalculator.calculateDamage(player, livingEntity, "Magical", getSkillDamage(player), crit));
 
                     //pvp logic
                     if(entity instanceof Player){
@@ -379,11 +372,8 @@ public class MysticBasic {
             assert entityEquipment != null;
             entityEquipment.setHelmet(bolt);
 
-            double skillDamage = 5;
-            double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
 
-            skillDamage = skillDamage + ((int)(skillLevel/10));
-            double finalSkillDamage = skillDamage;
+            double finalSkillDamage = getSkillDamage(player);
             new BukkitRunnable(){
                 Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
                 @Override
@@ -472,8 +462,17 @@ public class MysticBasic {
 
         }
 
+    }
 
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
 
+       return 5 + ((int)(skillLevel/10));
+    }
+
+    public double getEvilSpiritDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+        return 40 + ((int)(skillLevel/10));
     }
 
 }

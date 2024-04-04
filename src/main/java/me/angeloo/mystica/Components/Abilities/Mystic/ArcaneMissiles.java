@@ -92,13 +92,12 @@ public class ArcaneMissiles {
             return;
         }
 
-        double cost = 20;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -132,9 +131,7 @@ public class ArcaneMissiles {
     private void execute(Player player){
         LivingEntity target = targetManager.getPlayerTarget(player);
 
-        double skillDamage = 55;
-        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
-        skillDamage = skillDamage + ((int)(skillLevel/10));
+        double skillDamage = getSkillDamage(player);
 
         double ticks = 10;
         ticks = ticks - buffAndDebuffManager.getHaste().getHasteLevel(player);
@@ -371,6 +368,15 @@ public class ArcaneMissiles {
 
 
         }.runTaskTimer(main, 0, 6);
+    }
+
+    public double getCost(){
+        return 20;
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+        return 55 + ((int)(skillLevel/10));
     }
 
     public int getCooldown(Player player){

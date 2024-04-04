@@ -94,13 +94,12 @@ public class BlessedArrow {
             return;
         }
 
-        double cost = 10;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -132,12 +131,9 @@ public class BlessedArrow {
 
         boolean scout = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("scout");
 
-        double skillDamage = 20;
-
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
-
-        skillDamage = skillDamage + ((int)(skillLevel/10));
+        double skillDamage = getSkillDamage(player);
 
         if(rallyingCry.getIfBuffTime(player) > 0){
             skillDamage = skillDamage * 1.25;
@@ -282,6 +278,17 @@ public class BlessedArrow {
         }
 
         return cooldown;
+    }
+
+    public double getCost(){
+        return 10;
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
+
+        return 20 + ((int)(skillLevel/10));
     }
 
 }

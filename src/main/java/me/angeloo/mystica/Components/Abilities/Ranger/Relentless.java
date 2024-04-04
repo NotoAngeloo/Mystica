@@ -95,13 +95,12 @@ public class Relentless {
             return;
         }
 
-        double cost = 20;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -145,11 +144,7 @@ public class Relentless {
 
         castTime = castTime - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
-        double skillDamage = 40;
-        skillDamage = skillDamage + ((int)(skillLevel/10));
-
+        double skillDamage = getSkillDamage(player);
 
         abilityManager.setCasting(player, true);
         buffAndDebuffManager.getSpeedUp().applySpeedUp(player, .3f);
@@ -297,6 +292,16 @@ public class Relentless {
 
         }.runTaskTimer(main, 0, 4);
 
+    }
+
+    public double getCost(){
+        return 20;
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
+        return 40 + ((int)(skillLevel/10));
     }
 
     public int getCooldown(Player player){

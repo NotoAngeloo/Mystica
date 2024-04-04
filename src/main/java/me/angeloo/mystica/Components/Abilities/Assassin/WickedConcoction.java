@@ -96,13 +96,12 @@ public class WickedConcoction {
             return;
         }
 
-        double cost = 20;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -157,12 +156,9 @@ public class WickedConcoction {
             }
         }
 
-        double skillDamage = 50;
-        double healPercent = 5;
-        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
-        skillDamage = skillDamage + ((int)(skillLevel/10));
+
         boolean finalHeal = heal;
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
             @Override
@@ -209,7 +205,7 @@ public class WickedConcoction {
                         return;
                     }
 
-                    double healAmount = damageCalculator.calculateHealing(target, player, healPercent, crit);
+                    double healAmount = damageCalculator.calculateHealing(target, player, getHealPercent(), crit);
 
                     changeResourceHandler.addHealthToEntity(target, healAmount, player);
                     buffAndDebuffManager.getDamageReduction().applyDamageReduction(target, .95, 20*15);
@@ -243,6 +239,19 @@ public class WickedConcoction {
 
         }.runTaskTimer(main, 0, 1);
 
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+        return 50 + ((int)(skillLevel/10));
+    }
+
+    public double getCost(){
+        return 20;
+    }
+
+    public double getHealPercent(){
+        return 10;
     }
 
     public int getCooldown(Player player){

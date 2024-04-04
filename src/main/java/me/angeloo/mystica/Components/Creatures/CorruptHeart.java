@@ -20,14 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class TheLindwyrm {
+public class CorruptHeart {
 
     private final ProfileManager profileManager;
 
-
-    public TheLindwyrm(Mystica main){
+    public CorruptHeart(Mystica main){
         profileManager = main.getProfileManager();
-
     }
 
     public void makeProfile(UUID uuid){
@@ -86,10 +84,10 @@ public class TheLindwyrm {
             level = profileManager.getAnyProfile(theClosestPlayersLeader).getPlayerBossLevel().getBossLevel();
         }
 
-        int hp = 10000 + (100 * (level-1));
+        int hp = 6000 + (100 * (level-1));
         int atk = 50 + (25 * level-1);
-        int def = 40 + (25 * level-1);
-        int mdef = 40 + (25 * level-1);
+        int def = 30 + (20 * level-1);
+        int mdef = 30 + (20 * level-1);
 
         Stats stats = new Stats(level, atk, hp, 0, 0, 0, def, mdef, 0);
         Boolean isMovable = false;
@@ -266,11 +264,9 @@ public class TheLindwyrm {
 
         List<ItemStack> itemDrops = new ArrayList<>();
 
-        for(int i = 0; i<=(10 * level); i++){
+        for(int i = 0; i<=(2 * level); i++){
             itemDrops.add(new SoulStone());
         }
-
-        itemDrops.add(new UnidentifiedEquipment(level));
 
         return itemDrops;
     }

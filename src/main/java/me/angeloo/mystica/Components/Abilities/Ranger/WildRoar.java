@@ -46,13 +46,12 @@ public class WildRoar {
             return;
         }
 
-        double cost = 20;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -113,13 +112,11 @@ public class WildRoar {
         allValidPlayers.sort(Comparator.comparingDouble(p -> p.getLocation().distance(start)));
         List<Player> affected = allValidPlayers.subList(0, Math.min(5, allValidPlayers.size()));
 
-        double level = profileManager.getAnyProfile(player).getStats().getLevel();
 
-        double buffAmountPerLevel = 1.25;
 
         for(Player thisPlayer : affected){
 
-            buffAndDebuffManager.getWildRoarBuff().applyBuff(thisPlayer, level * buffAmountPerLevel);
+            buffAndDebuffManager.getWildRoarBuff().applyBuff(thisPlayer, getBuffAmount(player));
 
             ArmorStand armorStand = player.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
             armorStand.setInvisible(true);
@@ -162,8 +159,14 @@ public class WildRoar {
             }.runTaskTimer(main, 0, 1);
         }
 
+    }
 
+    public double getBuffAmount(Player player){
+        return profileManager.getAnyProfile(player).getStats().getLevel() * 1.25;
+    }
 
+    public double getCost(){
+        return 20;
     }
 
     public int getCooldown(Player player){

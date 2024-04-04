@@ -56,13 +56,12 @@ public class GloryOfPaladins {
             return;
         }
 
-        double cost = 10;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -184,13 +183,9 @@ public class GloryOfPaladins {
             return;
         }
 
-        double skillDamage = 20;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
-        skillDamage = skillDamage + ((int)(skillLevel/10));
 
         boolean crit = damageCalculator.checkIfCrit(player, 0);
-        double damage = damageCalculator.calculateDamage(player, livingEntity, "Physical", skillDamage, crit);
+        double damage = damageCalculator.calculateDamage(player, livingEntity, "Physical", getSkillDamage(player), crit);
 
         changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
 
@@ -200,6 +195,16 @@ public class GloryOfPaladins {
         if(random >= 25){
             changeResourceHandler.addHealthToEntity(player, healAmount, player);
         }
+    }
+
+    public double getCost(){
+        return 10;
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
+        return 25 + ((int)(skillLevel/10));
     }
 
     public int getIfBuffTime(Player player){

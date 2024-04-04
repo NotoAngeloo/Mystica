@@ -43,8 +43,6 @@ public class Infection {
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    //who is infected, who started it, time left
-    //private final Map<UUID, Map<Player, Integer>> infections = new HashMap<>();
 
     //player, who they infected
     private final Map<UUID, LivingEntity> infectionTarget = new HashMap<>();
@@ -272,10 +270,7 @@ public class Infection {
                     return;
                 }
 
-                double skillDamage = 7;
-                double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                        profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
-                skillDamage = skillDamage + ((int)(skillLevel/10));
+                double skillDamage = getSkillDamage(player);
 
                 if(getIfEnhanced(player)){
                     skillDamage = skillDamage * 2;
@@ -383,5 +378,10 @@ public class Infection {
         return cooldown;
     }
 
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
+        return 10 + ((int)(skillLevel/10));
+    }
 
 }

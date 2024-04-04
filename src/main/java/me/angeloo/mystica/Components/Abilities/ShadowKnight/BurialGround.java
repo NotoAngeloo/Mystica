@@ -110,12 +110,8 @@ public class BurialGround {
 
         armorStand.teleport(start);
 
-        double healAmount = (profileManager.getAnyProfile(player).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(player)) * .03;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
-        healAmount = healAmount + ((int)(skillLevel/10));
 
-        double finalHealAmount = healAmount;
+        double finalHealAmount = getHealPercent(player);
         new BukkitRunnable(){
             int ran = 0;
             @Override
@@ -135,7 +131,7 @@ public class BurialGround {
                 if(playerValid()){
 
                     changeResourceHandler.addHealthToEntity(player, finalHealAmount, player);
-                    changeResourceHandler.addManaToPlayer(player, 10.0);
+                    changeResourceHandler.addManaToPlayer(player, getEnergyRefund());
 
                     if(blood){
                         buffAndDebuffManager.getDamageReduction().applyDamageReduction(player, .8, 0);
@@ -182,6 +178,16 @@ public class BurialGround {
 
     }
 
+    public double getHealPercent(Player player){
+        double healAmount = (profileManager.getAnyProfile(player).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player)) * .03;
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
+        return healAmount + ((int)(skillLevel/10));
+    }
+
+    public double getEnergyRefund(){
+        return 10;
+    }
 
     public int getCooldown(Player player){
         int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
@@ -192,5 +198,6 @@ public class BurialGround {
 
         return cooldown;
     }
+
 
 }

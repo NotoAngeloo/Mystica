@@ -72,13 +72,12 @@ public class CovenantSword {
             return;
         }
 
-        double cost = 10;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -176,15 +175,12 @@ public class CovenantSword {
 
         sword.teleport(start);
 
-        double skillDamage = 30;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
-        skillDamage = skillDamage + ((int)(skillLevel/10));
+
 
         abilityManager.setCasting(player, true);
 
         boolean finalTargeted = targeted;
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             boolean stage1 = false;
             Vector initialDirection;
@@ -334,7 +330,7 @@ public class CovenantSword {
 
             private void ignite(Location center){
 
-                double skillDamage = 5;
+                double skillDamage = 10;
                 double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                         profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
 
@@ -427,6 +423,16 @@ public class CovenantSword {
         }
 
         return 1;
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
+        return 40 + ((int)(skillLevel/10));
+    }
+
+    public double getCost(){
+        return 20;
     }
 
     public int getCooldown(Player player){

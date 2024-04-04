@@ -296,9 +296,6 @@ public class PaladinBasic {
 
         boolean targetHit = false;
 
-        double skillDamage = 7;
-        double level = profileManager.getAnyProfile(player).getStats().getLevel();
-        skillDamage = skillDamage + ((int)(level/10));
 
         for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
 
@@ -358,7 +355,7 @@ public class PaladinBasic {
             //player.teleport(playerLoc);
 
             boolean crit = damageCalculator.checkIfCrit(player, 0);
-            double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", skillDamage
+            double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", getSkillDamage(player)
                     + representative.getAdditionalBonusFromBuff(player), crit);
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, player));
@@ -452,9 +449,7 @@ public class PaladinBasic {
 
         boolean targetHit = false;
 
-        double skillDamage = 7;
-        double level = profileManager.getAnyProfile(player).getStats().getLevel();
-        skillDamage = skillDamage + ((int)(level/10));
+
 
         for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
 
@@ -513,7 +508,7 @@ public class PaladinBasic {
             //player.teleport(playerLoc);
 
             boolean crit = damageCalculator.checkIfCrit(player, 0);
-            double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", skillDamage
+            double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", getSkillDamage(player)
                     + representative.getAdditionalBonusFromBuff(player), crit);
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, player));
@@ -611,9 +606,6 @@ public class PaladinBasic {
 
         boolean targetHit = false;
 
-        double skillDamage = 7;
-        double level = profileManager.getAnyProfile(player).getStats().getLevel();
-        skillDamage = skillDamage + ((int)(level/10));
 
         for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
 
@@ -672,7 +664,7 @@ public class PaladinBasic {
             //player.teleport(playerLoc);
 
             boolean crit = damageCalculator.checkIfCrit(player, 0);
-            double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", skillDamage
+            double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", getSkillDamage(player)
                     + representative.getAdditionalBonusFromBuff(player), crit);
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, player));
@@ -767,9 +759,6 @@ public class PaladinBasic {
 
         boolean targetHit = false;
 
-        double skillDamage = 7;
-        double level = profileManager.getAnyProfile(player).getStats().getLevel();
-        skillDamage = skillDamage + ((int)(level/10));
 
         for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
 
@@ -828,7 +817,7 @@ public class PaladinBasic {
             //player.teleport(playerLoc);
 
             boolean crit = damageCalculator.checkIfCrit(player, 0);
-            double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", skillDamage
+            double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", getSkillDamage(player)
                     + representative.getAdditionalBonusFromBuff(player), crit);
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, player));
@@ -875,6 +864,11 @@ public class PaladinBasic {
 
         }.runTaskTimer(main, 0, 2);
 
+    }
+
+    public double getSkillDamage(Player player){
+        double level = profileManager.getAnyProfile(player).getStats().getLevel();
+        return 14 + ((int)(level/10));
     }
 
 }

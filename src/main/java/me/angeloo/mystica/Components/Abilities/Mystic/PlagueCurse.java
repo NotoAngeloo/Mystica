@@ -101,13 +101,12 @@ public class PlagueCurse {
             return;
         }
 
-        double cost = 5;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -161,11 +160,7 @@ public class PlagueCurse {
         assert entityEquipment != null;
         entityEquipment.setHelmet(curseItem);
 
-        double skillDamage = 30;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
-
-        skillDamage = skillDamage + ((int)(skillLevel/10));
+        double skillDamage = getSkillDamage(player);
 
         skillDamage = skillDamage / 10;
 
@@ -314,6 +309,17 @@ public class PlagueCurse {
 
         }.runTaskTimer(main, 0, 1);
 
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
+
+        return 30 + ((int)(skillLevel/10));
+    }
+
+    public double getCost(){
+        return 5;
     }
 
     public boolean getIfCursed(LivingEntity entity){

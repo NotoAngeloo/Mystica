@@ -38,7 +38,7 @@ public class WindWallBuff {
 
     public double calculateHowMuchDamageIsReflected(LivingEntity owner, double damage){
 
-        double windwallCurrentHp = windWallMap.get(owner.getUniqueId());
+        double windwallCurrentHp = getWallHealth(owner);
         double newHp = windwallCurrentHp - damage;
         windWallMap.put(owner.getUniqueId(), newHp);
 
@@ -68,6 +68,10 @@ public class WindWallBuff {
 
     public void removeWindwall(LivingEntity owner){
         windWallMap.remove(owner.getUniqueId());
+    }
+
+    public double getWallHealth(LivingEntity entity){
+        return windWallMap.getOrDefault(entity.getUniqueId(), 0.0);
     }
 
 }

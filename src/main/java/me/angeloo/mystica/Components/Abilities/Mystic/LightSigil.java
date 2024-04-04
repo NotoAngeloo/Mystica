@@ -2,6 +2,7 @@ package me.angeloo.mystica.Components.Abilities.Mystic;
 
 import me.angeloo.mystica.Components.Abilities.MysticAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
@@ -64,13 +65,12 @@ public class LightSigil {
             return;
         }
 
-        double cost = 5;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -105,6 +105,7 @@ public class LightSigil {
         boolean shepard = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("shepard");
 
         purifyingBlast.queueInstantCast(player);
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
 
         Location spawnStart = player.getLocation().clone();
 
@@ -271,12 +272,8 @@ public class LightSigil {
         assert entityEquipment != null;
         entityEquipment.setHelmet(bolt);
 
-        double skillDamage = 7;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
-        skillDamage = skillDamage  +  ((int)(skillLevel/10));
 
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             Location targetWasLoc = damagedEntity.getLocation().clone().subtract(0,1,0);
             @Override
@@ -452,6 +449,16 @@ public class LightSigil {
             }
         }.runTaskTimer(main, 0, 1);
 
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
+        return 7 +  ((int)(skillLevel/10));
+    }
+
+    public double getCost(){
+        return 5;
     }
 
     public int getCooldown(Player player){

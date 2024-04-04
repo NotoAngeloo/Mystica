@@ -49,13 +49,12 @@ public class ConjuringForce {
             return;
         }
 
-        double cost = 20;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -85,9 +84,6 @@ public class ConjuringForce {
 
         Location start = player.getLocation().clone();
 
-
-        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
-        double buffAmount = 5 + skillLevel;
 
         new BukkitRunnable(){
             int ran = 0;
@@ -189,7 +185,7 @@ public class ConjuringForce {
                         continue;
                     }
 
-                    buffAndDebuffManager.getConjuringForceBuff().applyConjuringForceBuff(thisPlayer, buffAmount);
+                    buffAndDebuffManager.getConjuringForceBuff().applyConjuringForceBuff(thisPlayer, getBuffAmount(player));
 
 
                 }
@@ -212,6 +208,15 @@ public class ConjuringForce {
             }
 
         }.runTaskTimer(main, 0, 1);
+    }
+
+    public double getCost(){
+        return 20;
+    }
+
+    public double getBuffAmount(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+        return 5 + skillLevel;
     }
 
     public int getCooldown(Player player){

@@ -91,13 +91,12 @@ public class MercifulHealing {
             return;
         }
 
-        double cost = 20;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -186,14 +185,11 @@ public class MercifulHealing {
 
             private void healTarget(LivingEntity target){
 
-                double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                        profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
-                double healPercent = 10;
-                healPercent = healPercent+ ((int)(skillLevel/10));
+
 
                 boolean crit = damageCalculator.checkIfCrit(player, 0);
 
-                double healAmount = damageCalculator.calculateHealing(target, player, healPercent, crit);
+                double healAmount = damageCalculator.calculateHealing(target, player, getHealPercent(player), crit);
 
                 if(justiceMark.markProc(player, target)){
                     markHealInstead(player, healAmount);
@@ -280,6 +276,16 @@ public class MercifulHealing {
         }
 
         return cooldown;
+    }
+
+    public double getHealPercent(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
+        return  10 + ((int)(skillLevel/10));
+    }
+
+    public double getCost(){
+        return 20;
     }
 
 }

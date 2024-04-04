@@ -57,13 +57,12 @@ public class RallyingCry {
             return;
         }
 
-        double cost = 10;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -153,6 +152,10 @@ public class RallyingCry {
 
         }.runTaskTimer(main, 0, 1);
 
+    }
+
+    public double getCost(){
+        return 10;
     }
 
     public int getIfBuffTime(Player player){

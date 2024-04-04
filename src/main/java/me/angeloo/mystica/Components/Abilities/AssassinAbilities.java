@@ -143,5 +143,13 @@ public class AssassinAbilities {
     public Stealth getStealth(){return stealth;}
     public Combo getCombo(){return combo;}
     public DuelistsFrenzy getDuelistsFrenzy(){return duelistsFrenzy;}
+    public Assault getAssault(){return assault;}
+    public Laceration getLaceration(){return laceration;}
+    public WeaknessStrike getWeaknessStrike(){return weaknessStrike;}
+    public Pierce getPierce(){return pierce;}
+    public Dash getDash(){return dash;}
+    public BladeTempest getBladeTempest(){return bladeTempest;}
+    public FlyingBlade getFlyingBlade(){return flyingBlade;}
+    public WickedConcoction getWickedConcoction(){return wickedConcoction;}
 
 }

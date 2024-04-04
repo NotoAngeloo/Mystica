@@ -101,13 +101,12 @@ public class TorahSword {
             return;
         }
 
-        double cost = 5;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -196,11 +195,7 @@ public class TorahSword {
 
         Location end = target.getLocation().clone().subtract(0,2,0);
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
-        double skillDamage = 7;
 
-        skillDamage = skillDamage + ((int)(skillLevel/10));
 
         int critValue = 0;
 
@@ -210,7 +205,7 @@ public class TorahSword {
 
 
         int finalCritValue = critValue;
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             int count = 0;
             @Override
@@ -321,6 +316,16 @@ public class TorahSword {
 
         }.runTaskTimer(main, 0, 1);
 
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
+        return 10 + ((int)(skillLevel/10));
+    }
+
+    public double getCost(){
+        return 5;
     }
 
     public int getCooldown(Player player){

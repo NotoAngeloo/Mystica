@@ -117,14 +117,11 @@ public class Soulcrack {
         player.getInventory().setItemInOffHand(null);
         armorStand.teleport(start);
 
-        double skillDamage = 30;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
-        skillDamage = skillDamage + ((int)(skillLevel/10));
+        double skillDamage =getSkillDamage(player);
 
         skillDamage = skillDamage * .25;
 
-        double manaRestoration = 50;
+        double manaRestoration = getEnergyRestored();
 
         manaRestoration = manaRestoration/ (double) castTime;
 
@@ -244,6 +241,16 @@ public class Soulcrack {
 
         }.runTaskTimer(main, 0, 1);
 
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
+        return 50 + ((int)(skillLevel/10));
+    }
+
+    public double getEnergyRestored(){
+        return 50;
     }
 
     public int getCooldown(Player player){

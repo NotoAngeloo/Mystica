@@ -96,13 +96,12 @@ public class ShadowGrip {
             return;
         }
 
-        double cost = 30;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana() < cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana() < getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -134,11 +133,7 @@ public class ShadowGrip {
 
         boolean blood = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("blood");
 
-        double skillDamage = 15;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
 
-        skillDamage = skillDamage + ((int)(skillLevel/10));
         
         LivingEntity target = targetManager.getPlayerTarget(player);
 
@@ -166,7 +161,7 @@ public class ShadowGrip {
         entityEquipment.setHelmet(hand);
 
         abilityManager.setSkillRunning(player, true);
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             boolean pulled = false;
             boolean going = true;
@@ -336,6 +331,17 @@ public class ShadowGrip {
         }
 
         return cooldown;
+    }
+
+    public double getCost(){
+        return 30;
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
+
+        return 15 + ((int)(skillLevel/10));
     }
 
 }

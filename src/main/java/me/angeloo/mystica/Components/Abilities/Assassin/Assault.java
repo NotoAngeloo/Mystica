@@ -101,13 +101,12 @@ public class Assault {
             return;
         }
 
-        double cost = 5;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -157,13 +156,8 @@ public class Assault {
         stand.setRightArmPose(new EulerAngle(Math.toRadians(180), Math.toRadians(0), Math.toRadians(0)));
         stand.teleport(start.clone().add(0,.5,0));
 
-        double skillDamage = 20;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
-        skillDamage = skillDamage + ((int)(skillLevel/10));
-
+        double skillDamage = getSkillDamage(player);
         abilityManager.setSkillRunning(player, true);
-        double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             int angle = 180;
             @Override
@@ -201,7 +195,7 @@ public class Assault {
                 if(angle>=360){
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
+                    double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
@@ -237,6 +231,15 @@ public class Assault {
         }.runTaskTimer(main, 0, 1);
     }
 
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
+        return 30 + ((int)(skillLevel/10));
+    }
+
+    public double getCost(){
+        return 5;
+    }
 
     public int getCooldown(Player player){
         int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);

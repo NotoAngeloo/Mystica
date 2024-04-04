@@ -135,5 +135,14 @@ public class WarriorAbilities {
     }
 
     public SearingChains getSearingChains(){return searingChains;}
+    public LavaQuake getLavaQuake(){return lavaQuake;}
+    public TempestRage getTempestRage(){return tempestRage;}
+    public MeteorCrater getMeteorCrater(){return meteorCrater;}
+    public AnvilDrop getAnvilDrop(){return anvilDrop;}
+    public FlamingSigil getFlamingSigil(){return flamingSigil;}
+    public MagmaSpikes getMagmaSpikes(){return magmaSpikes;}
+    public BurningBlessing getBurningBlessing(){return burningBlessing;}
+    public DeathGaze getDeathGaze(){return deathGaze;}
+    public GladiatorHeart getGladiatorHeart(){return gladiatorHeart;}
 
 }

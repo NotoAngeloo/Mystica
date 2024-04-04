@@ -101,13 +101,12 @@ public class DragonBreathing {
             return;
         }
 
-        double cost = 10;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -167,13 +166,8 @@ public class DragonBreathing {
         assert entityEquipment != null;
         entityEquipment.setHelmet(dragonItem);
 
-        double skillDamage = 35;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
 
-        skillDamage = skillDamage + ((int)(skillLevel/10));
-
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             final Location end = target.getLocation().add(0, 5, 0);
             final Set<LivingEntity> hitBySkill = new HashSet<>();
@@ -184,6 +178,7 @@ public class DragonBreathing {
                 Location current = armorStand.getLocation();
 
                 Vector direction = end.toVector().subtract(current.toVector());
+                current.setDirection(direction);
                 double distance = current.distance(end);
                 double distanceThisTick = Math.min(distance, .5);
 
@@ -347,6 +342,17 @@ public class DragonBreathing {
 
         }.runTaskTimer(main, 0, 1);
 
+    }
+
+    public  double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
+
+        return 35 + ((int)(skillLevel/10));
+    }
+
+    public double getCost(){
+        return 10;
     }
 
     public int getCooldown(Player player){

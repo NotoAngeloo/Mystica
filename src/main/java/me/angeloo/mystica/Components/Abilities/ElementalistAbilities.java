@@ -139,4 +139,16 @@ public class ElementalistAbilities {
     public ElementalBreath getElementalBreath() {
         return elementalBreath;
     }
+    public IceBolt getIceBolt(){return iceBolt;}
+    public DescendingInferno getDescendingInferno(){return descendingInferno;}
+    public FieryMagma getFieryMagma(){return fieryMagma;}
+    public WindrushForm getWindrushForm() {
+        return windrushForm;
+    }
+    public WindWall getWindWall() {
+        return windWall;
+    }
+    public DragonBreathing getDragonBreathing(){return dragonBreathing;}
+    public ElementalMatrix getElemental_matrix(){return elemental_matrix;}
+    public ConjuringForce getConjuringForce(){return conjuringForce;}
 }

@@ -61,13 +61,11 @@ public class DivineGuidance {
             return;
         }
 
-        double cost = 5;
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -178,11 +176,7 @@ public class DivineGuidance {
 
         hammer4.teleport(h4spawn);
 
-        double skillDamage = 25;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
 
-        skillDamage = skillDamage + ((int)(skillLevel/10));
 
         BoundingBox hitBox = new BoundingBox(
                 start.getX() - 4,
@@ -241,7 +235,7 @@ public class DivineGuidance {
             }
         }
 
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             Vector initialDirection;
             double angle = 0;
@@ -364,6 +358,17 @@ public class DivineGuidance {
 
         }.runTaskTimer(main, 0, 1);
 
+    }
+
+    public double getCost(){
+        return 5;
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
+
+        return 30 + ((int)(skillLevel/10));
     }
 
     public int getCooldown(Player player){

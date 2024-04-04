@@ -85,13 +85,12 @@ public class ArcaneContract {
             return;
         }
 
-        double cost = 20;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         PartiesAPI api = Parties.getApi();
 
@@ -185,6 +184,10 @@ public class ArcaneContract {
                 cooldownDisplayer.displayCooldown(player, 7);
             }
         }.runTaskTimer(main, 0,20);
+    }
+
+    public double getCost(){
+        return 20;
     }
 
     public int getCooldown(Player player){

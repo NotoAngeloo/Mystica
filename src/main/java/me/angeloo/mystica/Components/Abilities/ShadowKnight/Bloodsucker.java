@@ -89,13 +89,12 @@ public class Bloodsucker {
         }
 
 
-        double cost = 20;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana() < cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana() < getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -150,21 +149,14 @@ public class Bloodsucker {
         entityEquipment.setHelmet(boltItem);
 
 
-        double skillDamage = 20;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
-        skillDamage = skillDamage + ((int)(skillLevel/10));
-
-        double healAmount = (profileManager.getAnyProfile(player).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(player)) * .05;
 
         if(blood){
-            healAmount =  healAmount + (profileManager.getAnyProfile(player).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player)) * .1;
             bloodShield.increaseDuration(player);
         }
 
 
-        double finalHealAmount = healAmount;
-        double finalSkillDamage = skillDamage;
+        double finalHealAmount = getHealPercent(player);
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
             @Override
@@ -244,6 +236,26 @@ public class Bloodsucker {
         }
 
         return cooldown;
+    }
+
+    public double getCost(){
+        return 20;
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
+        return 30 + ((int)(skillLevel/10));
+    }
+
+    public double getHealPercent(Player player){
+        double healAmount = (profileManager.getAnyProfile(player).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(player)) * .05;
+
+        if(profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("blood")){
+            healAmount =  healAmount + (profileManager.getAnyProfile(player).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player)) * .1;
+        }
+
+        return healAmount;
     }
 
 

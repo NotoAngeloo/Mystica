@@ -44,13 +44,11 @@ public class GladiatorHeart {
             return;
         }
 
-        double cost = 20;
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -81,8 +79,7 @@ public class GladiatorHeart {
     private void execute(Player player){
 
         double maxHealth = profileManager.getAnyProfile(player).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(player);
-        double level = profileManager.getAnyProfile(player).getStats().getLevel();
-        double shield = (level / maxHealth) * 100;
+        double shield = getShieldAmount(player);
 
         buffAndDebuffManager.getGenericShield().applyOrAddShield(player, shield);
         //.8 is 20% damage reduction
@@ -119,6 +116,12 @@ public class GladiatorHeart {
 
     }
 
+    public double getShieldAmount(Player player){
+        double maxHealth = profileManager.getAnyProfile(player).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(player);
+        double level = profileManager.getAnyProfile(player).getStats().getLevel();
+        return  (level + 10 / maxHealth) * 100;
+    }
+
     public int getCooldown(Player player){
         int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
 
@@ -127,6 +130,10 @@ public class GladiatorHeart {
         }
 
         return cooldown;
+    }
+
+    public double getCost(){
+        return 20;
     }
 
 }

@@ -46,13 +46,12 @@ public class BloodShield {
             return;
         }
 
-        double cost = 50;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana() < cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana() < getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -137,6 +136,10 @@ public class BloodShield {
         duration += 3;
 
         shieldTime.put(player.getUniqueId(), duration);
+    }
+
+    public double getCost(){
+        return 50;
     }
 
     public int getCooldown(Player player){

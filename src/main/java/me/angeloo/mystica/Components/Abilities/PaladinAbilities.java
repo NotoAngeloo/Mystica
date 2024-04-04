@@ -234,5 +234,18 @@ public class PaladinAbilities {
         return gloryOfPaladins;
     }
     public Judgement getJudgement(){return judgement;}
-
+    public DecreeHonor getDecreeHonor(){return decreeHonor;}
+    public HonorCounter getHonorCounter(){return honorCounter;}
+    public DivineInfusion getDivineInfusion(){return divineInfusion;}
+    public SpiritualGift getSpiritualGift(){return spiritualGift;}
+    public SacredAegis getSacredAegis(){return sacredAegis;}
+    public ModestCalling getModestCalling(){return modestCalling;}
+    public TorahSword getTorahSword(){return torahSword;}
+    public DivineGuidance getDivineGuidance(){return divineGuidance;}
+    public ReigningSword getReigningSword(){return reigningSword;}
+    public CovenantSword getCovenantSword(){return covenantSword;}
+    public OrderShield getOrderShield(){return orderShield;}
+    public DuranceOfTruth getDuranceOfTruth(){return duranceOfTruth;}
+    public SanctityShield getSanctityShield(){return sanctityShield;}
+    public LightWell getLightWell(){return lightWell;}
 }

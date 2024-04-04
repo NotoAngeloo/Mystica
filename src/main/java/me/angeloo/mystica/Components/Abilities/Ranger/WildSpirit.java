@@ -73,13 +73,12 @@ public class WildSpirit {
             return;
         }
 
-        double cost = 10;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -139,17 +138,13 @@ public class WildSpirit {
         boolean scout = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("scout");
 
         double attack = profileManager.getAnyProfile(player).getTotalAttack();
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
-        double skillDamage = 10;
 
-        skillDamage = skillDamage + ((int)(skillLevel/10));
 
         boolean tamer = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("animal tamer");
 
         ArmorStand wolf = wildSpiritMap.get(player.getUniqueId());
 
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             int wolfAttackReadyIn = 0;
             LivingEntity wolfTarget = null;
@@ -340,6 +335,8 @@ public class WildSpirit {
                         }
                     }
 
+                    double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                            profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
                     double healAmount = (attack * .1) * skillLevel;
 
                     changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, player);
@@ -367,6 +364,16 @@ public class WildSpirit {
         }
 
         return cooldown;
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
+        return 10 + ((int)(skillLevel/10));
+    }
+
+    public double getCost(){
+        return 10;
     }
 
 }

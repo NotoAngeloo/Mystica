@@ -96,13 +96,12 @@ public class RazorWind {
             return;
         }
 
-        double cost = 20;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -141,11 +140,7 @@ public class RazorWind {
 
         LivingEntity target = targetManager.getPlayerTarget(player);
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
-        double skillDamage = 40;
-
-        skillDamage = skillDamage + ((int)(skillLevel/10));
+        double skillDamage = getSkillDamage(player);
 
         double castTime = 20;
 
@@ -154,7 +149,6 @@ public class RazorWind {
         abilityManager.setCasting(player, true);
         player.setWalkSpeed(.06f);
 
-        double finalSkillDamage = skillDamage;
         double finalCastTime = castTime;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
@@ -308,7 +302,7 @@ public class RazorWind {
                                     buffAndDebuffManager.getHaste().applyHaste(player, 1, 2*20);
                                 }
 
-                                double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
+                                double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage, crit);
 
                                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                                 changeResourceHandler.subtractHealthFromEntity(target, damage, player);
@@ -357,6 +351,16 @@ public class RazorWind {
         }
 
         return cooldown;
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
+        return 40 + ((int)(skillLevel/10));
+    }
+
+    public double getCost(){
+        return 20;
     }
 
 }

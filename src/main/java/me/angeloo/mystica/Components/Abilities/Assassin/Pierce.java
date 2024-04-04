@@ -103,13 +103,12 @@ public class Pierce {
             return;
         }
 
-        double cost = 5;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combo.removeAnAmountOfPoints(player, 1);
 
@@ -162,11 +161,8 @@ public class Pierce {
         stand.teleport(start.clone().add(0,.5,0));
 
         abilityManager.setSkillRunning(player, true);
-        double skillDamage = 30;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
-        skillDamage = skillDamage + ((int)(skillLevel/10));
-        double finalSkillDamage = skillDamage;
+
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             int rAngle = 0;
             int lAngle = 0;
@@ -230,6 +226,16 @@ public class Pierce {
             }
 
         }.runTaskTimer(main, 0, 1);
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
+        return 40 + ((int)(skillLevel/10));
+    }
+
+    public double getCost(){
+        return 5;
     }
 
     public int getCooldown(Player player){

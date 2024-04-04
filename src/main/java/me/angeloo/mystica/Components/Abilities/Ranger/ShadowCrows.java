@@ -97,13 +97,12 @@ public class ShadowCrows {
             return;
         }
 
-        double cost = 5;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -157,13 +156,9 @@ public class ShadowCrows {
         assert entityEquipment != null;
         entityEquipment.setHelmet(crow);
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
-        double skillDamage = 2;
 
-        skillDamage = skillDamage + ((int)(skillLevel/10));
 
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             @Override
             public void run(){
@@ -303,6 +298,14 @@ public class ShadowCrows {
         }
 
         return 0;
+    }
+
+    public double getCost(){return 5;}
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
+        return 2 + ((int)(skillLevel/10));
     }
 
     public int getCooldown(Player player){

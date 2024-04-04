@@ -63,13 +63,12 @@ public class Stealth {
 
         if(!getIfStealthed(player)){
 
-            double cost = 10;
 
-            if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+            if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
                 return;
             }
 
-            changeResourceHandler.subTractManaFromPlayer(player, cost);
+            changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
             vanish(player);
             return;
@@ -195,14 +194,9 @@ public class Stealth {
             return;
         }
 
-        double skillDamage = 40;
-
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
-        skillDamage = skillDamage + ((int)(skillLevel/10));
 
         boolean crit = damageCalculator.checkIfCrit(player, 0);
-        double damage = damageCalculator.calculateDamage(player, victim, "Physical", skillDamage, crit);
+        double damage = damageCalculator.calculateDamage(player, victim, "Physical", getSkillDamage(player), crit);
 
         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(victim, player));
         changeResourceHandler.subtractHealthFromEntity(victim, damage, player);
@@ -216,6 +210,16 @@ public class Stealth {
 
         forceReveal(player, entity);
 
+    }
+
+    public double getCost(){
+        return 10;
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
+        return 50 + ((int)(skillLevel/10));
     }
 
     public boolean getIfStealthed(Player player){

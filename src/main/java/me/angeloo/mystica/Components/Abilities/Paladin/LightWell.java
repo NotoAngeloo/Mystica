@@ -62,13 +62,11 @@ public class LightWell {
             return;
         }
 
-        double cost = 20;
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -115,12 +113,10 @@ public class LightWell {
         assert entityEquipment != null;
         entityEquipment.setHelmet(item);
 
-        double skillDamage = 20;
-        double level = profileManager.getAnyProfile(player).getStats().getLevel();
-        skillDamage = skillDamage + ((int)(level/10));
+
 
         Location current = well.getLocation();
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             Vector initialDirection;
             int angle = 0;
@@ -346,6 +342,15 @@ public class LightWell {
 
         }.runTaskTimer(main, 0, 1);
 
+    }
+
+    public double getSkillDamage(Player player){
+        double level = profileManager.getAnyProfile(player).getStats().getLevel();
+        return 35 + ((int)(level/10));
+    }
+
+    public double getCost(){
+        return 20;
     }
 
     public int getCooldown(Player player){

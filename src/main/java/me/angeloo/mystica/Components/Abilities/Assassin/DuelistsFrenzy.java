@@ -99,13 +99,11 @@ public class DuelistsFrenzy {
             return;
         }
 
-        double cost = 20;
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -135,13 +133,10 @@ public class DuelistsFrenzy {
 
         LivingEntity target = targetManager.getPlayerTarget(player);
 
-        double skillDamage = 120;
         combo.removeAnAmountOfPoints(player, combo.getComboPoints(player));
-        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
-        skillDamage = skillDamage + ((int)(skillLevel/10));
 
         abilityManager.setSkillRunning(player, true);
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             boolean up = true;
             Vector initialDirection;
@@ -255,6 +250,15 @@ public class DuelistsFrenzy {
 
         }.runTaskTimer(main, 0, 1);
 
+    }
+
+    public double getCost(){
+        return 20;
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+        return 150 + ((int)(skillLevel/10));
     }
 
     private void applyFrenzy(Player player){

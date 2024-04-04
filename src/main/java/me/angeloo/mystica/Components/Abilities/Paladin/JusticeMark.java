@@ -72,13 +72,12 @@ public class JusticeMark {
             return;
         }
 
-        double cost = 5;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -176,6 +175,10 @@ public class JusticeMark {
         return marked.getOrDefault(player.getUniqueId(), new ArrayList<>());
     }
 
+    public double getCost(){
+        return 5;
+    }
+
     public int getCooldown(Player player){
 
         int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
@@ -185,7 +188,6 @@ public class JusticeMark {
         }
 
         return cooldown;
-
     }
 
 }

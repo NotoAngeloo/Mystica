@@ -15,6 +15,7 @@ public class CreaturesAndCharactersManager {
     private final ProfileManager profileManager;
 
     private final TheLindwyrm theLindwyrm;
+    private final CorruptHeart corruptHeart;
     private final BetaTester betaTester;
     private final Dummy dummy;
     private final MadDummy madDummy;
@@ -28,6 +29,7 @@ public class CreaturesAndCharactersManager {
     public CreaturesAndCharactersManager(Mystica main){
         profileManager = main.getProfileManager();
         theLindwyrm = new TheLindwyrm(main);
+        corruptHeart = new CorruptHeart(main);
         betaTester = new BetaTester(main);
         dummy = new Dummy(main);
         madDummy = new MadDummy(main);
@@ -55,6 +57,11 @@ public class CreaturesAndCharactersManager {
         switch (name){
             case "Lindwyrm":{
                 theLindwyrm.makeProfile(uuid);
+                profileManager.setBossHome(uuid);
+                break;
+            }
+            case "CorruptHeart":{
+                corruptHeart.makeProfile(uuid);
                 profileManager.setBossHome(uuid);
                 break;
             }

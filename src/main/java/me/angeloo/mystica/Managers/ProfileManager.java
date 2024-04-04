@@ -35,7 +35,7 @@ public class ProfileManager {
 
     private final Mystica main;
 
-    private final File dataFolder;
+    private final File subFolder;
     private final ProfileFileWriter profileFileWriter;
     private final PathingManager pathingManager;
 
@@ -51,7 +51,13 @@ public class ProfileManager {
 
     public ProfileManager(Mystica main) {
         this.main = main;
-        dataFolder = main.getDataFolder();
+        File dataFolder = main.getDataFolder();
+        String subfolderName = "playerdata"; // Subfolder name
+        File subfolder = new File(dataFolder, subfolderName); // Path to the subfolder
+        if (!subfolder.exists()) {
+            subfolder.mkdirs(); // Create the subfolder if it doesn't exist
+        }
+        this.subFolder = subfolder;
         profileFileWriter = main.getProfileFileWriter();
         pathingManager = main.getPathingManager();
     }
@@ -124,7 +130,7 @@ public class ProfileManager {
 
     public void loadProfilesFromConfig(){
 
-        File[] profileFiles = dataFolder.listFiles();
+        File[] profileFiles = subFolder.listFiles();
 
         if(profileFiles != null){
             for(File file : profileFiles){
@@ -342,8 +348,8 @@ public class ProfileManager {
         PlayerProfile profile = new PlayerProfile(false, false, currentHealth, currentMana,
                 stats,
                 gearStats,
-                "None",
-                "None",
+                "none",
+                "none",
                 new ItemStack[41],
                 playerBag,
                 playerEquipment,

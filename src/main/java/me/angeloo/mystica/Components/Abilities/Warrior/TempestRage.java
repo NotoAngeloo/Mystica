@@ -64,22 +64,16 @@ public class TempestRage {
 
         combatManager.startCombatTimer(player);
 
-        double cost = 10;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         execute(player);
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
-
         int cooldown = 10;
-
-        cooldown = cooldown - ((int)(skillLevel/15));
 
         abilityReadyInMap.put(player.getUniqueId(), cooldown);
         new BukkitRunnable() {
@@ -122,10 +116,7 @@ public class TempestRage {
         assert entityEquipment != null;
         entityEquipment.setHelmet(item);
 
-        double skillDamage = 20;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
-        skillDamage = skillDamage + ((int)(skillLevel/10));
+        double skillDamage = getSkillDamage(player);
 
         int ticks = 6;
 
@@ -233,6 +224,16 @@ public class TempestRage {
         }
 
         return cooldown;
+    }
+
+    public double getCost(){
+        return 10;
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
+        return 40 + ((int)(skillLevel/10));
     }
 
 }

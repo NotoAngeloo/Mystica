@@ -13,6 +13,8 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import static me.angeloo.mystica.Mystica.*;
+
 public class StatusDisplayer {
 
     private final ProfileManager profileManager;
@@ -172,26 +174,26 @@ public class StatusDisplayer {
 
             switch (clazz.toLowerCase()){
                 case "ranger":{
-                    color = new Color(34, 111, 80);
+                    color = rangerColor;
                     break;
                 }
                 case "mystic":{
-                    color = new Color(155, 120, 197);
+                    color = mysticColor;
                     break;
                 }
                 case "shadow knight":{
-                    color = new Color(213, 33, 3);
+                    color = shadowKnightColor;
                     break;
                 }
                 case "paladin":{
-                    color = new Color(207, 214, 61);
+                    color = paladinColor;
                     break;
                 }case "warrior":{
-                    color = new Color(214, 126, 61);
+                    color = warriorColor;
                     break;
                 }
                 case "none":{
-                    color = new Color(255, 255, 255);
+                    color = Color.WHITE;
                     break;
                 }
             }
@@ -226,17 +228,21 @@ public class StatusDisplayer {
 
         String clazz = profileManager.getAnyProfile(player).getPlayerClass();
 
-        switch (clazz.toLowerCase()){
-            case "elementalist":{
+        switch (clazz.toLowerCase()) {
+            case "elementalist": {
                 statusString.append(applyElementalistStatuses(player));
                 break;
             }
-            case "ranger":{
+            case "ranger": {
                 statusString.append(applyRangerStatus(player));
                 break;
             }
-            case "shadow knight":{
+            case "shadow knight": {
                 statusString.append(applyShadowKnightStatus(player));
+                break;
+            }
+            case "mystic": {
+                statusString.append(applyMysticStatus(player));
                 break;
             }
         }
@@ -398,6 +404,18 @@ public class StatusDisplayer {
                 statusString.append("\uE01A");
                 break;
             }
+        }
+
+        return String.valueOf(statusString);
+    }
+
+    private String applyMysticStatus(Player player){
+        StringBuilder statusString = new StringBuilder();
+
+        boolean instantCast = abilityManager.getMysticAbilities().getPurifyingBlast().getInstantCast(player);
+
+        if(instantCast){
+            statusString.append("\uE048");
         }
 
         return String.valueOf(statusString);

@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.Abilities;
 
 
+import me.angeloo.mystica.Components.Abilities.Paladin.SpiritualGift;
 import me.angeloo.mystica.Components.Abilities.ShadowKnight.*;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
@@ -136,5 +137,11 @@ public class ShadowKnightAbilities {
     public Infection getInfection(){return infection;}
     public SoulReap getSoulReap(){return soulReap;}
     public BloodShield getBloodShield(){return bloodShield;}
+    public SpiritualAttack getSpiritualAttack(){return spiritualAttack;}
+    public BurialGround getBurialGround(){return burialGround;}
+    public Bloodsucker getBloodsucker(){return bloodsucker;}
+    public ShadowGrip getShadowGrip(){return shadowGrip;}
+    public Soulcrack getSoulcrack(){return soulcrack;}
+    public Annihilation getAnnihilation(){return annihilation;}
 
 }

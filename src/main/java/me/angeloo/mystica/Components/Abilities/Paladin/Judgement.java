@@ -100,13 +100,12 @@ public class Judgement {
             return;
         }
 
-        double cost = 10;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -157,12 +156,9 @@ public class Judgement {
         assert entityEquipment != null;
         entityEquipment.setHelmet(item);
 
-        double skillDamage = 25;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
-        skillDamage = skillDamage + ((int)(skillLevel/10));
 
-        double finalSkillDamage = skillDamage;
+
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             double down = 0;
             @Override
@@ -265,6 +261,16 @@ public class Judgement {
 
         abilityReadyInMap.put(player.getUniqueId(), 0);
 
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
+        return 30 + ((int)(skillLevel/10));
+    }
+
+    public double getCost(){
+        return 10;
     }
 
     public int getCooldown(Player player){

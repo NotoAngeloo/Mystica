@@ -98,13 +98,12 @@ public class ElementalMatrix {
             return;
         }
 
-        double cost = 5;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -134,7 +133,6 @@ public class ElementalMatrix {
 
     private void execute(Player player){
 
-        boolean cryomancer = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("cryomancer");
         boolean conjurer = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("conjurer");
 
         PartiesAPI api = Parties.getApi();
@@ -205,11 +203,8 @@ public class ElementalMatrix {
 
         int ticks = 5;
 
-        double skillDamage = 10;
+        double skillDamage = getSkillDamage(player);
 
-        if(cryomancer){
-            skillDamage = skillDamage * 2;
-        }
 
         if(conjurer){
 
@@ -221,10 +216,7 @@ public class ElementalMatrix {
             skillDamage = skillDamage * (1 + percent);
         }
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
 
-        skillDamage = skillDamage + ((int)(skillLevel/10));
 
 
         double finalSkillDamage = skillDamage;
@@ -355,6 +347,16 @@ public class ElementalMatrix {
 
         }.runTaskTimer(main, 0, 1);
 
+    }
+
+    public double getCost(){
+        return 5;
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
+        return 10 + ((int)(skillLevel/10));
     }
 
     public int getCooldown(Player player){

@@ -85,26 +85,22 @@ public class SacredAegis {
             return;
         }
 
-        double cost = 20;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
         execute(player, (Player)target);
 
-        int cooldown = 120;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
-        cooldown = cooldown - ((int) skillLevel/15);
 
 
 
-        abilityReadyInMap.put(player.getUniqueId(), cooldown);
+
+        abilityReadyInMap.put(player.getUniqueId(), getSkillCooldown(player));
         new BukkitRunnable(){
             @Override
             public void run(){
@@ -246,6 +242,16 @@ public class SacredAegis {
 
         }.runTaskTimer(main, 0, 1);
 
+    }
+
+    public double getCost(){
+        return 20;
+    }
+
+    public int getSkillCooldown(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
+        return 120 - ((int) skillLevel/15);
     }
 
     public int getCooldown(Player player){

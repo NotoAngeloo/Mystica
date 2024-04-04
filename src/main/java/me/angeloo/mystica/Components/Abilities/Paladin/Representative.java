@@ -57,13 +57,12 @@ public class Representative {
             return;
         }
 
-        double cost = 20;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -104,15 +103,13 @@ public class Representative {
         wings.setItemMeta(meta);
         player.getInventory().setHelmet(wings);
 
-        double healPercent = 25;
         double level = profileManager.getAnyProfile(player).getStats().getLevel();
-        healPercent = healPercent +  ((int)(level/10));
         applyBuff(player, level);
         buffAndDebuffManager.getHaste().applyHaste(player, 3, 10*20);
 
         Location center = player.getLocation().clone();
 
-        double finalHealPercent = healPercent;
+        double finalHealPercent = getHealPercent(player);
         new BukkitRunnable(){
             int count = 0;
             boolean aoe = true;
@@ -217,5 +214,13 @@ public class Representative {
         return cooldown;
     }
 
+    public double getHealPercent(Player player){
+        double level = profileManager.getAnyProfile(player).getStats().getLevel();
+        return 25 +  ((int)(level/10));
+    }
+
+    public double getCost() {
+        return 20;
+    }
 
 }

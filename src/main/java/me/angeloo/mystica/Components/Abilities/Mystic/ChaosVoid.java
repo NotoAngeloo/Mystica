@@ -54,13 +54,12 @@ public class ChaosVoid {
             return;
         }
 
-        double cost = 20;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -188,6 +187,10 @@ public class ChaosVoid {
             }
         }.runTaskTimer(main, 0, 1);
 
+    }
+
+    public double getCost(){
+        return 20;
     }
 
     public int getCooldown(Player player){

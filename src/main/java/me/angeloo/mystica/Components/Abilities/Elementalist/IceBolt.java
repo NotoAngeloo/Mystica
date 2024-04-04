@@ -98,13 +98,12 @@ public class IceBolt {
             return;
         }
 
-        double cost = 5;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -133,7 +132,6 @@ public class IceBolt {
     
     private void execute(Player player){
 
-        boolean cryomancer = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("cryomancer");
         boolean conjurer = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("conjurer");
 
         boolean breathActive = elementalBreath.getIfBuffTime(player)>0;
@@ -167,12 +165,7 @@ public class IceBolt {
         assert entityEquipment != null;
         entityEquipment.setHelmet(boltItem);
 
-        double skillDamage = 20;
-
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
-
-        skillDamage = skillDamage + ((int)(skillLevel/10));
+        double skillDamage = getSkillDamage(player);
 
         if(conjurer){
 
@@ -184,10 +177,6 @@ public class IceBolt {
             skillDamage = skillDamage * (1 + percent);
         }
 
-        if(cryomancer){
-            skillDamage = skillDamage * (1.5);
-            elementalBreath.reduceCooldown(player);
-        }
 
         if(breathActive){
             skillDamage = skillDamage * 2;
@@ -271,8 +260,16 @@ public class IceBolt {
 
     }
 
-    private void resetSkillCooldown(Player player){
-        abilityReadyInMap.put(player.getUniqueId(), 0);
+    public double getSkillDamage(Player player){
+
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
+
+        return 20 + ((int)(skillLevel/10));
+    }
+
+    public double getCost(){
+        return 5;
     }
 
     public int getCooldown(Player player){

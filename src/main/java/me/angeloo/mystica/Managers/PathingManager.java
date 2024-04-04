@@ -72,7 +72,7 @@ public class PathingManager {
             subfolder.mkdirs(); // Create the subfolder if it doesn't exist
         }
 
-        String fileName = "paths/pathing.yml";
+        String fileName = "pathing.yml";
         File file = new File(subfolder, fileName); // Path to the YAML file inside the subfolder
 
         config.set("paths", paths);

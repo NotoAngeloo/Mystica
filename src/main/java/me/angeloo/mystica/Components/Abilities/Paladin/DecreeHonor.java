@@ -103,13 +103,12 @@ public class DecreeHonor {
             return;
         }
 
-        double cost = 5;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
         combatManager.startCombatTimer(player);
 
@@ -158,16 +157,11 @@ public class DecreeHonor {
         assert entityEquipment != null;
         entityEquipment.setHelmet(item);
 
-        double skillDamage = 20;
-        double healPercent = 5;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
-        skillDamage = skillDamage + ((int)(skillLevel/10));
-        healPercent = healPercent +  ((int)(skillLevel/10));
+
 
         abilityManager.setSkillRunning(player, true);
-        double finalSkillDamage = skillDamage;
-        double finalHealPercent = healPercent;
+        double finalSkillDamage = getSkillDamage(player);
+        double finalHealPercent = getHealPercent(player);
         new BukkitRunnable(){
             double down = 0;
             @Override
@@ -280,6 +274,22 @@ public class DecreeHonor {
             }
         }
 
+    }
+
+    public double getSkillDamage(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
+        return 20 + ((int)(skillLevel/10));
+    }
+
+    public double getHealPercent(Player player){
+        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
+                profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
+        return 5 +  ((int)(skillLevel/10));
+    }
+
+    public double getCost(){
+        return 5;
     }
 
     public int getCooldown(Player player){

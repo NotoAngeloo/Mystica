@@ -60,7 +60,6 @@ public class AbilityManager {
             return;
         }
 
-
         if(getIfCasting(player)){
             return;
         }
@@ -68,6 +67,8 @@ public class AbilityManager {
         if(getIfSkillRunning(player)){
             return;
         }
+
+        interruptBasic(player);
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
@@ -122,6 +123,7 @@ public class AbilityManager {
         if(buffAndDebuffManager.getIfCantAct(player)){
             return;
         }
+
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
@@ -376,5 +378,15 @@ public class AbilityManager {
 
     public boolean getIfSkillRunning(Player player){return skillRunning.getOrDefault(player, false);}
     public void setSkillRunning(Player player, boolean running){skillRunning.put(player, running);}
+
+    public void interruptBasic(Player player){
+        elementalistAbilities.getElementalistBasic().stopBasicRunning(player);
+        rangerAbilities.getRangerBasic().stopBasicRunning(player);
+        mysticAbilities.getMysticBasic().stopBasicRunning(player);
+        assassinAbilities.getAssassinBasic().stopBasicRunning(player);
+        paladinAbilities.getPaladinBasic().stopBasicRunning(player);
+        shadowKnightAbilities.getShadowKnightBasic().stopBasicRunning(player);
+        warriorAbilities.getWarriorBasic().stopBasicRunning(player);
+    }
 
 }

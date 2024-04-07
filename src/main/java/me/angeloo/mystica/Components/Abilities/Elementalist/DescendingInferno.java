@@ -214,6 +214,7 @@ public class DescendingInferno {
             boolean middleActive =  true;
             boolean inflamedAlready = false;
             boolean needToInflame = false;
+            int count = 0;
             @Override
             public void run() {
 
@@ -336,6 +337,11 @@ public class DescendingInferno {
                     this.cancel();
                 }
 
+                if(count>200){
+                    this.cancel();
+                }
+
+                count++;
             }
 
             private boolean targetStillValid(LivingEntity target){

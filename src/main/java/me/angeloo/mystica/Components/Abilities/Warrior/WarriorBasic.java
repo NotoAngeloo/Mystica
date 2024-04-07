@@ -39,7 +39,7 @@ public class WarriorBasic {
     private final ChangeResourceHandler changeResourceHandler;
 
     private final Map<UUID, Integer> basicStageMap = new HashMap<>();
-    private final Map<UUID, Boolean> basicReadyMap = new HashMap<>();
+    private final Map<UUID, BukkitTask> basicRunning = new HashMap<>();
 
     private final Map<UUID, BukkitTask> removeBasicStageTaskMap = new HashMap<>();
 
@@ -61,16 +61,9 @@ public class WarriorBasic {
             basicStageMap.put(player.getUniqueId(), 1);
         }
 
-        if(!basicReadyMap.containsKey(player.getUniqueId())){
-            basicReadyMap.put(player.getUniqueId(), true);
-        }
-
-
-        if(!basicReadyMap.get(player.getUniqueId())){
+        if(getIfBasicRunning(player)){
             return;
         }
-
-        tryToRemoveBasicStage(player);
 
         executeBasic(player);
 
@@ -95,55 +88,44 @@ public class WarriorBasic {
 
     private void executeBasic(Player player){
 
-        basicReadyMap.put(player.getUniqueId(), false);
+        BukkitTask task = new BukkitRunnable(){
+            @Override
+            public void run(){
 
-        switch (basicStageMap.get(player.getUniqueId())){
-            case 1:{
-                basicStage1(player, 2);
-                new BukkitRunnable(){
-                    @Override
-                    public void run(){
-                        basicReadyMap.put(player.getUniqueId(), true);
+                tryToRemoveBasicStage(player);
+                switch (basicStageMap.get(player.getUniqueId())) {
+                    case 1: {
+                        basicStage1(player, 2);
+                        break;
                     }
-                }.runTaskLater(main, 10);
-                break;
-            }
-            case 2:{
-                basicStage2(player, 3);
-                new BukkitRunnable(){
-                    @Override
-                    public void run(){
-                        basicReadyMap.put(player.getUniqueId(), true);
+                    case 2: {
+                        basicStage2(player, 3);
+                        break;
                     }
-                }.runTaskLater(main, 10);
-                break;
-            }
-            case 3:{
-                basicStage1(player, 4);
-                new BukkitRunnable(){
-                    @Override
-                    public void run(){
-                        basicReadyMap.put(player.getUniqueId(), true);
+                    case 3: {
+                        basicStage1(player, 4);
+                        break;
                     }
-                }.runTaskLater(main, 10);
-                break;
-            }
-            case 4:{
-                basicStage2(player, 1);
-                new BukkitRunnable(){
-                    @Override
-                    public void run(){
-                        basicReadyMap.put(player.getUniqueId(), true);
+                    case 4: {
+                        basicStage2(player, 5);
+                        break;
                     }
-                }.runTaskLater(main, 20);
-                break;
+                    case 5: {
+                        basicStage4(player);
+                        break;
+                    }
+                }
+                combatManager.startCombatTimer(player);
             }
-
-
-        }
+        }.runTaskTimer(main, 0, 10);
+        basicRunning.put(player.getUniqueId(), task);
 
 
         combatManager.startCombatTimer(player);
+    }
+
+    private void basicStage4(Player player){
+        basicStageMap.put(player.getUniqueId(), 1);
     }
 
     private void basicStage1(Player player, int newStage){
@@ -245,10 +227,6 @@ public class WarriorBasic {
 
         if(targetToHit != null){
             targetManager.setPlayerTarget(player, targetToHit);
-            //Location playerLoc = player.getLocation().clone();
-            //Vector targetDir = targetToHit.getLocation().toVector().subtract(playerLoc.toVector());
-            //playerLoc.setDirection(targetDir);
-            //player.teleport(playerLoc);
 
             boolean crit = damageCalculator.checkIfCrit(player, 0);
             double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", getSkillDamage(player), crit);
@@ -256,6 +234,9 @@ public class WarriorBasic {
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, player));
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, player);
 
+        }
+        else{
+            stopBasicRunning(player);
         }
 
         new BukkitRunnable(){
@@ -276,8 +257,6 @@ public class WarriorBasic {
                 current.subtract(crossProduct.multiply(traveled));
 
                 armorStand.teleport(current);
-
-                //player.getWorld().spawnParticle(Particle.SPELL_WITCH, current.clone().add(0,1,0), 1, 0, 0, 0, 0);
 
                 if(traveled>=2){
                     cancelTask();
@@ -398,17 +377,15 @@ public class WarriorBasic {
 
         if(targetToHit != null){
             targetManager.setPlayerTarget(player, targetToHit);
-            //Location playerLoc = player.getLocation().clone();
-            //Vector targetDir = targetToHit.getLocation().toVector().subtract(playerLoc.toVector());
-            //playerLoc.setDirection(targetDir);
-            //player.teleport(playerLoc);
 
             boolean crit = damageCalculator.checkIfCrit(player, 0);
             double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", getSkillDamage(player), crit);
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, player));
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, player);
-
+        }
+        else{
+            stopBasicRunning(player);
         }
 
         new BukkitRunnable(){
@@ -449,6 +426,17 @@ public class WarriorBasic {
 
         }.runTaskTimer(main, 0, 1);
 
+    }
+
+    private boolean getIfBasicRunning(Player player){
+        return basicRunning.containsKey(player.getUniqueId());
+    }
+
+    public void stopBasicRunning(Player player){
+        if(basicRunning.containsKey(player.getUniqueId())){
+            basicRunning.get(player.getUniqueId()).cancel();
+            basicRunning.remove(player.getUniqueId());
+        }
     }
 
     public double getSkillDamage(Player player){

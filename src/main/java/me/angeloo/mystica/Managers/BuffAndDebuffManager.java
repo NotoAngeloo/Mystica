@@ -181,4 +181,6 @@ public class BuffAndDebuffManager {
                 || knockUp.getIfKnockUp(entity)
                 || pulled.getIfPulled(entity);
     }
+
+
 }

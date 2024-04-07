@@ -46,7 +46,7 @@ public class PaladinBasic {
     private final GloryOfPaladins gloryOfPaladins;
 
     private final Map<UUID, Integer> basicStageMap = new HashMap<>();
-    private final Map<UUID, Boolean> basicReadyMap = new HashMap<>();
+    private final Map<UUID, BukkitTask> basicRunning = new HashMap<>();
 
     private final Map<UUID, BukkitTask> removeBasicStageTaskMap = new HashMap<>();
 
@@ -67,51 +67,14 @@ public class PaladinBasic {
 
     public void useBasic(Player player){
 
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
-
         if(!basicStageMap.containsKey(player.getUniqueId())){
             basicStageMap.put(player.getUniqueId(), 1);
         }
 
-        if(!basicReadyMap.containsKey(player.getUniqueId())){
-            basicReadyMap.put(player.getUniqueId(), true);
-        }
-
-
-        if(!basicReadyMap.get(player.getUniqueId())){
+        if(getIfBasicRunning(player)){
             return;
         }
 
-        if(subclass.equalsIgnoreCase("divine")){
-
-            if(targetManager.getPlayerTarget(player) == null){
-                healTarget(player, player);
-                return;
-            }
-
-            if(targetManager.getPlayerTarget(player) instanceof Player){
-                Player target = (Player) targetManager.getPlayerTarget(player);
-
-                if(!pvpManager.pvpLogic(player, target)){
-
-                    Location playerLocation = player.getLocation();
-                    Location targetLocation = target.getLocation();
-
-                    double distance = playerLocation.distance(targetLocation);
-
-                    if (distance > getRange(player)) {
-                        return;
-                    }
-
-                    healTarget(player, target);
-                    return;
-                }
-            }
-
-
-        }
-
-        tryToRemoveBasicStage(player);
 
         executeBasic(player);
 
@@ -196,55 +159,81 @@ public class PaladinBasic {
 
     private void executeBasic(Player player){
 
-        basicReadyMap.put(player.getUniqueId(), false);
+        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
-        switch (basicStageMap.get(player.getUniqueId())){
-            case 1:{
-                basicStage1(player);
-                new BukkitRunnable(){
-                    @Override
-                    public void run(){
-                        basicReadyMap.put(player.getUniqueId(), true);
+        BukkitTask task = new BukkitRunnable(){
+            @Override
+            public void run(){
+
+                if(subclass.equalsIgnoreCase("divine")){
+
+                    if(targetManager.getPlayerTarget(player) == null){
+                        healTarget(player, player);
+                        return;
                     }
-                }.runTaskLater(main, 10);
-                break;
-            }
-            case 2:{
-                basicStage2(player);
-                new BukkitRunnable(){
-                    @Override
-                    public void run(){
-                        basicReadyMap.put(player.getUniqueId(), true);
+
+                    if(targetManager.getPlayerTarget(player) instanceof Player){
+                        Player target = (Player) targetManager.getPlayerTarget(player);
+
+                        if(!pvpManager.pvpLogic(player, target)){
+
+                            Location playerLocation = player.getLocation();
+                            Location targetLocation = target.getLocation();
+
+                            double distance = playerLocation.distance(targetLocation);
+
+                            if (distance > getRange(player)) {
+                                stopBasicRunning(player);
+                                return;
+                            }
+
+                            healTarget(player, target);
+                            return;
+                        }
                     }
-                }.runTaskLater(main, 10);
-                break;
-            }
-            case 3:{
-                basicStage3(player);
-                new BukkitRunnable(){
-                    @Override
-                    public void run(){
-                        basicReadyMap.put(player.getUniqueId(), true);
+
+                }
+
+                //check heal instead here
+
+                tryToRemoveBasicStage(player);
+                switch (basicStageMap.get(player.getUniqueId())){
+                    case 1:{
+                        basicStage1(player);
+                        break;
                     }
-                }.runTaskLater(main, 10);
-                break;
-            }
-            case 4:{
-                basicStage4(player);
-                new BukkitRunnable(){
-                    @Override
-                    public void run(){
-                        basicReadyMap.put(player.getUniqueId(), true);
+                    case 2:{
+                        basicStage2(player);
+                        break;
                     }
-                }.runTaskLater(main, 20);
-                break;
+                    case 3:{
+                        basicStage3(player);
+                        break;
+                    }
+                    case 4:{
+                        basicStage4(player);
+                        break;
+                    }
+                    case 5:{
+                        basicStage5(player);
+                        break;
+
+                    }
+
+
+                }
+
+                combatManager.startCombatTimer(player);
             }
+        }.runTaskTimer(main, 0, 15);
+        basicRunning.put(player.getUniqueId(), task);
 
 
-        }
 
+    }
 
-        combatManager.startCombatTimer(player);
+    private void basicStage5(Player player){
+        basicStageMap.put(player.getUniqueId(), 1);
     }
 
     private void basicStage1(Player player){
@@ -349,10 +338,6 @@ public class PaladinBasic {
 
         if(targetToHit != null){
             targetManager.setPlayerTarget(player, targetToHit);
-            //Location playerLoc = player.getLocation().clone();
-            //Vector targetDir = targetToHit.getLocation().toVector().subtract(playerLoc.toVector());
-            //playerLoc.setDirection(targetDir);
-            //player.teleport(playerLoc);
 
             boolean crit = damageCalculator.checkIfCrit(player, 0);
             double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", getSkillDamage(player)
@@ -363,6 +348,9 @@ public class PaladinBasic {
 
             gloryOfPaladins.procGlory(player, targetToHit);
 
+        }
+        else{
+            stopBasicRunning(player);
         }
 
         new BukkitRunnable(){
@@ -502,10 +490,7 @@ public class PaladinBasic {
 
         if(targetToHit != null){
             targetManager.setPlayerTarget(player, targetToHit);
-            //Location playerLoc = player.getLocation().clone();
-            //Vector targetDir = targetToHit.getLocation().toVector().subtract(playerLoc.toVector());
-            //playerLoc.setDirection(targetDir);
-            //player.teleport(playerLoc);
+
 
             boolean crit = damageCalculator.checkIfCrit(player, 0);
             double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", getSkillDamage(player)
@@ -516,6 +501,9 @@ public class PaladinBasic {
 
             gloryOfPaladins.procGlory(player, targetToHit);
 
+        }
+        else{
+            stopBasicRunning(player);
         }
 
         new BukkitRunnable(){
@@ -658,10 +646,7 @@ public class PaladinBasic {
 
         if(targetToHit != null){
             targetManager.setPlayerTarget(player, targetToHit);
-            //Location playerLoc = player.getLocation().clone();
-            //Vector targetDir = targetToHit.getLocation().toVector().subtract(playerLoc.toVector());
-            //playerLoc.setDirection(targetDir);
-            //player.teleport(playerLoc);
+
 
             boolean crit = damageCalculator.checkIfCrit(player, 0);
             double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", getSkillDamage(player)
@@ -672,6 +657,9 @@ public class PaladinBasic {
 
             gloryOfPaladins.procGlory(player, targetToHit);
 
+        }
+        else{
+            stopBasicRunning(player);
         }
 
         new BukkitRunnable(){
@@ -714,7 +702,7 @@ public class PaladinBasic {
 
     private void basicStage4(Player player){
 
-        basicStageMap.put(player.getUniqueId(), 1);
+        basicStageMap.put(player.getUniqueId(), 5);
 
         Location start = player.getLocation().clone().subtract(0,3,0);
 
@@ -811,10 +799,7 @@ public class PaladinBasic {
 
         if(targetToHit != null){
             targetManager.setPlayerTarget(player, targetToHit);
-            //Location playerLoc = player.getLocation().clone();
-            //Vector targetDir = targetToHit.getLocation().toVector().subtract(playerLoc.toVector());
-            //playerLoc.setDirection(targetDir);
-            //player.teleport(playerLoc);
+
 
             boolean crit = damageCalculator.checkIfCrit(player, 0);
             double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", getSkillDamage(player)
@@ -824,6 +809,9 @@ public class PaladinBasic {
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, player);
 
             gloryOfPaladins.procGlory(player, targetToHit);
+        }
+        else{
+            stopBasicRunning(player);
         }
 
         new BukkitRunnable(){
@@ -864,6 +852,17 @@ public class PaladinBasic {
 
         }.runTaskTimer(main, 0, 2);
 
+    }
+
+    private boolean getIfBasicRunning(Player player){
+        return basicRunning.containsKey(player.getUniqueId());
+    }
+
+    public void stopBasicRunning(Player player){
+        if(basicRunning.containsKey(player.getUniqueId())){
+            basicRunning.get(player.getUniqueId()).cancel();
+            basicRunning.remove(player.getUniqueId());
+        }
     }
 
     public double getSkillDamage(Player player){

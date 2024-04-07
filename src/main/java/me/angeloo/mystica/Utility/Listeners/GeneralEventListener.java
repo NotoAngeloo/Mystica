@@ -1496,6 +1496,7 @@ public class GeneralEventListener implements Listener {
     public void removeTargetOrTeamTarget(PlayerDropItemEvent event){
 
         Player player = event.getPlayer();
+        abilityManager.interruptBasic(player);
 
         boolean teamTarget = player.isSneaking();
 
@@ -1524,7 +1525,10 @@ public class GeneralEventListener implements Listener {
             return;
         }
 
+
+
         Player player = event.getPlayer();
+        abilityManager.interruptBasic(player);
 
         double baseRange = 20;
         double bonusRange = buffAndDebuffManager.getTotalRangeModifier(player);

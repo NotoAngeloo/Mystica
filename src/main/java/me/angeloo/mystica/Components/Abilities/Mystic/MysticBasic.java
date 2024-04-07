@@ -16,6 +16,7 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
@@ -36,7 +37,7 @@ public class MysticBasic {
 
     private final EvilSpirit evilSpirit;
 
-    private final Map<UUID, Boolean> basicReadyMap = new HashMap<>();
+    private final Map<UUID, BukkitTask> basicRunning = new HashMap<>();
 
     public MysticBasic(Mystica main, AbilityManager manager, MysticAbilities mysticAbilities){
         this.main = main;
@@ -55,12 +56,7 @@ public class MysticBasic {
 
         String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
-        if(!basicReadyMap.containsKey(player.getUniqueId())){
-            basicReadyMap.put(player.getUniqueId(), true);
-        }
-
-
-        if(!basicReadyMap.get(player.getUniqueId())){
+        if(getIfBasicRunning(player)){
             return;
         }
 
@@ -107,17 +103,55 @@ public class MysticBasic {
             return;
         }
 
-        basicReadyMap.put(player.getUniqueId(), false);
-        combatManager.startCombatTimer(player);
-
-        new BukkitRunnable(){
+        BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
-                basicReadyMap.put(player.getUniqueId(), true);
-            }
-        }.runTaskLater(main, 12);
 
-        //change this later
+                double totalRange = getRange(player);
+
+                targetManager.setTargetToNearestValid(player, totalRange);
+
+                LivingEntity target = targetManager.getPlayerTarget(player);
+
+                if(target == null){
+                    stopBasicRunning(player);
+                    return;
+                }
+
+                if (target instanceof Player) {
+                    if (!pvpManager.pvpLogic(player, (Player) target)) {
+                        stopBasicRunning(player);
+                        return;
+                    }
+                }
+
+                if(!(target instanceof Player)){
+                    if(!pveChecker.pveLogic(target)){
+                        stopBasicRunning(player);
+                        return;
+                    }
+                }
+
+                double distance = player.getLocation().distance(target.getLocation());
+
+                if(distance > totalRange){
+                    stopBasicRunning(player);
+                    return;
+                }
+
+                basicStageChaos(player);
+                combatManager.startCombatTimer(player);
+            }
+        }.runTaskTimer(main, 0, 15);
+        basicRunning.put(player.getUniqueId(), task);
+
+
+    }
+
+    private void basicStageChaos(Player player){
+
+        LivingEntity target = targetManager.getPlayerTarget(player);
+
         boolean evilSpirit = this.evilSpirit.getIfEvilSpirit(player);
 
         Location start = player.getLocation();
@@ -285,11 +319,23 @@ public class MysticBasic {
                 armorStand.remove();
             }
         }.runTaskTimer(main, 0, 1);
-
     }
 
     private void executeBasic(Player player){
 
+        BukkitTask task = new BukkitRunnable(){
+            @Override
+            public void run(){
+                basicStage(player);
+                combatManager.startCombatTimer(player);
+            }
+        }.runTaskTimer(main, 0, 15);
+        basicRunning.put(player.getUniqueId(), task);
+
+
+    }
+
+    private void basicStage(Player player){
         LivingEntity target;
 
         boolean healing = false;
@@ -305,6 +351,7 @@ public class MysticBasic {
         if(target != player){
             if(target.isDead()){
                 targetManager.setPlayerTarget(player, null);
+                stopBasicRunning(player);
                 return;
             }
 
@@ -317,6 +364,7 @@ public class MysticBasic {
 
                     if(targetDeathStatus){
                         targetManager.setPlayerTarget(player, null);
+                        stopBasicRunning(player);
                         return;
                     }
                 }
@@ -326,6 +374,7 @@ public class MysticBasic {
 
             if(!(target instanceof Player)){
                 if(!pveChecker.pveLogic(target)){
+                    stopBasicRunning(player);
                     return;
                 }
             }
@@ -337,18 +386,10 @@ public class MysticBasic {
         double distance = playerLocation.distance(targetLocation);
 
         if (distance > getRange(player)) {
+            stopBasicRunning(player);
             return;
         }
 
-        basicReadyMap.put(player.getUniqueId(), false);
-        combatManager.startCombatTimer(player);
-
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-                basicReadyMap.put(player.getUniqueId(), true);
-            }
-        }.runTaskLater(main, 12);
 
         if(!healing){
             Location start = player.getLocation();
@@ -461,7 +502,17 @@ public class MysticBasic {
 
 
         }
+    }
 
+    private boolean getIfBasicRunning(Player player){
+        return basicRunning.containsKey(player.getUniqueId());
+    }
+
+    public void stopBasicRunning(Player player){
+        if(basicRunning.containsKey(player.getUniqueId())){
+            basicRunning.get(player.getUniqueId()).cancel();
+            basicRunning.remove(player.getUniqueId());
+        }
     }
 
 

@@ -38,7 +38,7 @@ public class ShadowKnightBasic {
     private final ChangeResourceHandler changeResourceHandler;
 
     private final Map<UUID, Integer> basicStageMap = new HashMap<>();
-    private final Map<UUID, Boolean> basicReadyMap = new HashMap<>();
+    private final Map<UUID, BukkitTask> basicRunning = new HashMap<>();
 
     private final Map<UUID, BukkitTask> removeBasicStageTaskMap = new HashMap<>();
 
@@ -60,12 +60,7 @@ public class ShadowKnightBasic {
             basicStageMap.put(player.getUniqueId(), 1);
         }
 
-        if(!basicReadyMap.containsKey(player.getUniqueId())){
-            basicReadyMap.put(player.getUniqueId(), true);
-        }
-
-
-        if(!basicReadyMap.get(player.getUniqueId())){
+        if(getIfBasicRunning(player)){
             return;
         }
 
@@ -94,55 +89,42 @@ public class ShadowKnightBasic {
 
     private void executeBasic(Player player){
 
-        basicReadyMap.put(player.getUniqueId(), false);
+        BukkitTask task = new BukkitRunnable(){
+            @Override
+            public void run(){
 
-        switch (basicStageMap.get(player.getUniqueId())){
-            case 1:{
-                basicStage1(player, 2);
-                new BukkitRunnable(){
-                    @Override
-                    public void run(){
-                        basicReadyMap.put(player.getUniqueId(), true);
+                tryToRemoveBasicStage(player);
+                switch (basicStageMap.get(player.getUniqueId())) {
+                    case 1: {
+                        basicStage1(player, 2);
+                        break;
                     }
-                }.runTaskLater(main, 10);
-                break;
-            }
-            case 2:{
-                basicStage2(player);
-                new BukkitRunnable(){
-                    @Override
-                    public void run(){
-                        basicReadyMap.put(player.getUniqueId(), true);
+                    case 2: {
+                        basicStage2(player);
+                        break;
                     }
-                }.runTaskLater(main, 10);
-                break;
-            }
-            case 3:{
-                basicStage1(player, 4);
-                new BukkitRunnable(){
-                    @Override
-                    public void run(){
-                        basicReadyMap.put(player.getUniqueId(), true);
+                    case 3: {
+                        basicStage1(player, 4);
+                        break;
                     }
-                }.runTaskLater(main, 10);
-                break;
-            }
-            case 4:{
-                basicStage3(player);
-                new BukkitRunnable(){
-                    @Override
-                    public void run(){
-                        basicReadyMap.put(player.getUniqueId(), true);
+                    case 4: {
+                        basicStage3(player);
+                        break;
                     }
-                }.runTaskLater(main, 20);
-                break;
+                    case 5: {
+                        basicStage4(player);
+                        break;
+                    }
+                }
+                combatManager.startCombatTimer(player);
             }
+        }.runTaskTimer(main, 0, 10);
+        basicRunning.put(player.getUniqueId(), task);
 
+    }
 
-        }
-
-
-        combatManager.startCombatTimer(player);
+    private void basicStage4(Player player){
+        basicStageMap.put(player.getUniqueId(), 1);
     }
 
     private void basicStage1(Player player, int newStage){
@@ -255,6 +237,9 @@ public class ShadowKnightBasic {
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, player));
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, player);
 
+        }
+        else{
+            stopBasicRunning(player);
         }
 
         new BukkitRunnable(){
@@ -396,10 +381,6 @@ public class ShadowKnightBasic {
 
         if(targetToHit != null){
             targetManager.setPlayerTarget(player, targetToHit);
-            //Location playerLoc = player.getLocation().clone();
-            //Vector targetDir = targetToHit.getLocation().toVector().subtract(playerLoc.toVector());
-            //playerLoc.setDirection(targetDir);
-            //player.teleport(playerLoc);
 
             boolean crit = damageCalculator.checkIfCrit(player, 0);
             double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", getSkillDamage(player), crit);
@@ -407,6 +388,9 @@ public class ShadowKnightBasic {
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, player));
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, player);
 
+        }
+        else{
+            stopBasicRunning(player);
         }
 
         new BukkitRunnable(){
@@ -449,7 +433,7 @@ public class ShadowKnightBasic {
 
     private void basicStage3(Player player){
 
-        basicStageMap.put(player.getUniqueId(), 1);
+        basicStageMap.put(player.getUniqueId(), 5);
 
         Location start = player.getLocation().clone().subtract(0,3,0);
 
@@ -478,8 +462,6 @@ public class ShadowKnightBasic {
 
 
         Location loc = player.getLocation().clone().add(direction.multiply(1.25));
-
-        //player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, loc, 1, 0, 0, 0, 0);
 
         BoundingBox hitBox = new BoundingBox(
                 loc.getX() - 3,
@@ -549,10 +531,6 @@ public class ShadowKnightBasic {
 
         if(targetToHit != null){
             targetManager.setPlayerTarget(player, targetToHit);
-            //Location playerLoc = player.getLocation().clone();
-            //Vector targetDir = targetToHit.getLocation().toVector().subtract(playerLoc.toVector());
-            //playerLoc.setDirection(targetDir);
-            //player.teleport(playerLoc);
 
             boolean crit = damageCalculator.checkIfCrit(player, 0);
             double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", getSkillDamage(player), crit);
@@ -560,6 +538,9 @@ public class ShadowKnightBasic {
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, player));
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, player);
 
+        }
+        else{
+            stopBasicRunning(player);
         }
 
         new BukkitRunnable(){
@@ -602,6 +583,16 @@ public class ShadowKnightBasic {
 
     }
 
+    private boolean getIfBasicRunning(Player player){
+        return basicRunning.containsKey(player.getUniqueId());
+    }
+
+    public void stopBasicRunning(Player player){
+        if(basicRunning.containsKey(player.getUniqueId())){
+            basicRunning.get(player.getUniqueId()).cancel();
+            basicRunning.remove(player.getUniqueId());
+        }
+    }
 
     public double getSkillDamage(Player player){
         double level = profileManager.getAnyProfile(player).getStats().getLevel();

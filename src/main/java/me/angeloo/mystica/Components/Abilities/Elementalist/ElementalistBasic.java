@@ -36,9 +36,11 @@ public class ElementalistBasic {
     private final ChangeResourceHandler changeResourceHandler;
 
     private final Map<UUID, Integer> basicStageMap = new HashMap<>();
-    private final Map<UUID, Boolean> basicReadyMap = new HashMap<>();
+
+    private final Map<UUID, BukkitTask> basicRunning = new HashMap<>();
 
     private final Map<UUID, BukkitTask> removeBasicStageTaskMap = new HashMap<>();
+
 
     public ElementalistBasic(Mystica main, AbilityManager manager){
         this.main = main;
@@ -54,17 +56,17 @@ public class ElementalistBasic {
 
     public void use(Player player){
 
+
         if(!basicStageMap.containsKey(player.getUniqueId())){
             basicStageMap.put(player.getUniqueId(), 1);
         }
 
-        if(!basicReadyMap.containsKey(player.getUniqueId())){
-            basicReadyMap.put(player.getUniqueId(), true);
+        if(getIfBasicRunning(player)){
+            return;
         }
 
-        double baseRange = 20;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
-        double totalRange = baseRange + extraRange;
+
+        double totalRange = getRange(player);
 
         targetManager.setTargetToNearestValid(player, totalRange);
 
@@ -92,59 +94,82 @@ public class ElementalistBasic {
             return;
         }
 
-        if(!basicReadyMap.get(player.getUniqueId())){
-            return;
-        }
-
-        tryToRemoveBasicStage(player);
 
         executeBasic(player);
 
     }
 
-
+    private double getRange(Player player){
+        double baseRange = 20;
+        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
+        return  baseRange + extraRange;
+    }
 
     private void executeBasic(Player player){
 
-        basicReadyMap.put(player.getUniqueId(), false);
+        BukkitTask task = new BukkitRunnable(){
+            @Override
+            public void run(){
 
+                double totalRange = getRange(player);
 
+                targetManager.setTargetToNearestValid(player, totalRange);
 
-        switch (basicStageMap.get(player.getUniqueId())){
-            case 1:{
-                basicStage1(player);
-                new BukkitRunnable(){
-                    @Override
-                    public void run(){
-                        basicReadyMap.put(player.getUniqueId(), true);
+                LivingEntity target = targetManager.getPlayerTarget(player);
+
+                if(target == null){
+                    stopBasicRunning(player);
+                    return;
+                }
+
+                if (target instanceof Player) {
+                    if (!pvpManager.pvpLogic(player, (Player) target)) {
+                        stopBasicRunning(player);
+                        return;
                     }
-                }.runTaskLater(main, 10);
-                break;
-            }
-            case 2:{
-                basicStage2(player);
-                new BukkitRunnable(){
-                    @Override
-                    public void run(){
-                        basicReadyMap.put(player.getUniqueId(), true);
+                }
+
+                if(!(target instanceof Player)){
+                    if(!pveChecker.pveLogic(target)){
+                        stopBasicRunning(player);
+                        return;
                     }
-                }.runTaskLater(main, 10);
-                break;
-            }
-            case 3:{
-                basicStage3(player);
-                new BukkitRunnable(){
-                    @Override
-                    public void run(){
-                        basicReadyMap.put(player.getUniqueId(), true);
-                    }
-                }.runTaskLater(main, 20);
-                break;
-            }
-        }
+                }
+
+                double distance = player.getLocation().distance(target.getLocation());
+
+                if(distance > totalRange){
+                    stopBasicRunning(player);
+                    return;
+                }
 
 
-        combatManager.startCombatTimer(player);
+                tryToRemoveBasicStage(player);
+                switch (basicStageMap.get(player.getUniqueId())){
+                    case 1:{
+                        basicStage1(player);
+                        break;
+                    }
+                    case 2:{
+                        basicStage2(player);
+                        break;
+                    }
+                    case 3:{
+                        basicStage3(player);
+                        break;
+                    }
+                    case 4:{
+                        basicStage4(player);
+                        break;
+                    }
+                }
+
+                combatManager.startCombatTimer(player);
+            }
+        }.runTaskTimer(main, 0, 10);
+        basicRunning.put(player.getUniqueId(), task);
+
+
     }
 
     private void tryToRemoveBasicStage(Player player){
@@ -365,11 +390,15 @@ public class ElementalistBasic {
 
     }
 
+    private void basicStage4(Player player){
+        basicStageMap.put(player.getUniqueId(), 1);
+    }
+
     private void basicStage3(Player player){
 
         LivingEntity target = targetManager.getPlayerTarget(player);
 
-        basicStageMap.put(player.getUniqueId(), 1);
+        basicStageMap.put(player.getUniqueId(), 4);
 
 
         double finalSkillDamage = getSkillDamage(player);
@@ -497,6 +526,16 @@ public class ElementalistBasic {
 
     }
 
+    private boolean getIfBasicRunning(Player player){
+        return basicRunning.containsKey(player.getUniqueId());
+    }
+
+    public void stopBasicRunning(Player player){
+        if(basicRunning.containsKey(player.getUniqueId())){
+            basicRunning.get(player.getUniqueId()).cancel();
+            basicRunning.remove(player.getUniqueId());
+        }
+    }
 
     public double getSkillDamage(Player player){
 

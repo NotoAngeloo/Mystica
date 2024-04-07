@@ -43,7 +43,6 @@ public final class Mystica extends JavaPlugin {
     private PvpManager pvpManager;
     private CombatManager combatManager;
     private BuffAndDebuffManager buffAndDebuffManager;
-    private AllSkillItems allSkillItems;
     private AbilityManager abilityManager;
     private DeathManager deathManager;
     private InventoryIndexingManager inventoryIndexingManager;
@@ -75,7 +74,9 @@ public final class Mystica extends JavaPlugin {
 
         plugin = this;
 
-        protocolManager = ProtocolLibrary.getProtocolManager();
+        if(getServer().getPluginManager().getPlugin("ProtocolLib") != null){
+            protocolManager = ProtocolLibrary.getProtocolManager();
+        }
 
         pathingManager = new PathingManager(this);
         pathingManager.createOrLoadFolder();
@@ -303,6 +304,8 @@ public final class Mystica extends JavaPlugin {
 
     public Locations getLocations(){return locations;}
 
-    public ProtocolManager getProtocolManager(){return protocolManager;}
+    public ProtocolManager getProtocolManager(){
+        return protocolManager;
+    }
 
 }

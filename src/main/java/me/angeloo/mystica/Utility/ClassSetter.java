@@ -109,7 +109,7 @@ public class ClassSetter {
                 break;
             }
             case "none":{
-                playerProfile.getPlayerEquipment().setWeapon(noneEquipment.getBaseWeapon());
+                playerProfile.getPlayerEquipment().setWeapon(new ItemStack(Material.AIR));
                 playerProfile.getPlayerEquipment().setOffhand(new ItemStack(Material.AIR));
                 playerProfile.getPlayerEquipment().setHelmet(new ItemStack(Material.AIR));
                 playerProfile.getPlayerEquipment().setChestPlate(new ItemStack(Material.AIR));

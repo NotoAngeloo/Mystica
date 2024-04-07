@@ -143,5 +143,6 @@ public class ShadowKnightAbilities {
     public ShadowGrip getShadowGrip(){return shadowGrip;}
     public Soulcrack getSoulcrack(){return soulcrack;}
     public Annihilation getAnnihilation(){return annihilation;}
+    public ShadowKnightBasic getShadowKnightBasic(){return shadowKnightBasic;}
 
 }

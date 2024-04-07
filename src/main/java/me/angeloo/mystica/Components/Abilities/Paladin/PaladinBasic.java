@@ -868,7 +868,7 @@ public class PaladinBasic {
 
     public double getSkillDamage(Player player){
         double level = profileManager.getAnyProfile(player).getStats().getLevel();
-        return 14 + ((int)(level/10));
+        return 10 + ((int)(level/10));
     }
 
 }

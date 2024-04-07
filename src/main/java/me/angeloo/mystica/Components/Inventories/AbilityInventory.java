@@ -1,7 +1,9 @@
 package me.angeloo.mystica.Components.Inventories;
 
+import me.angeloo.mystica.Components.ClassEquipment.NoneEquipment;
 import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
+import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
@@ -86,7 +88,8 @@ public class AbilityInventory {
 
 
             //inv slot 35 occupied by ultimate
-            inv.setItem(44, allSkillItems.getUltimate(player));
+            //inv.setItem(44, allSkillItems.getUltimate(player));
+            inv.setItem(44, allSkillItems.getBasic(player));
         }
 
 

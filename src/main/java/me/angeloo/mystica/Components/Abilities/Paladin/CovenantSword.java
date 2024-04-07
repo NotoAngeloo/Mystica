@@ -330,7 +330,7 @@ public class CovenantSword {
 
             private void ignite(Location center){
 
-                double skillDamage = 10;
+                double skillDamage = 5;
                 double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                         profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
 

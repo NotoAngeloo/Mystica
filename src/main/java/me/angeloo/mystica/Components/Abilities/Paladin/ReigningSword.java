@@ -272,7 +272,7 @@ public class ReigningSword {
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
 
-        return 35 + ((int)(skillLevel/10));
+        return 25 + ((int)(skillLevel/10));
     }
 
     public int getCooldown(Player player){

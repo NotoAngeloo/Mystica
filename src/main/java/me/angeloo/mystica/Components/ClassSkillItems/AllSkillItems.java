@@ -72,7 +72,6 @@ public class AllSkillItems {
     }
 
 
-
     public ItemStack getUltimate(Player player){
 
         Profile playerProfile = profileManager.getAnyProfile(player);
@@ -99,6 +98,37 @@ public class AllSkillItems {
             }
             case "assassin":{
                 return assassinSkillItems.getUltimate(player);
+            }
+        }
+
+        return new ItemStack(Material.AIR);
+    }
+
+    public ItemStack getBasic(Player player){
+        Profile playerProfile = profileManager.getAnyProfile(player);
+        String clazz = playerProfile.getPlayerClass();
+
+        switch (clazz.toLowerCase()){
+            case "elementalist":{
+                return elementalistSkillItems.getBasic(player);
+            }
+            case "ranger":{
+                return rangerSkillItems.getBasic(player);
+            }
+            case "mystic":{
+                return mysticSkillItem.getBasic(player);
+            }
+            case "shadow knight":{
+                return shadowKnightSkillItems.getBasic(player);
+            }
+            case "paladin":{
+                return paladinSkillItems.getBasic(player);
+            }
+            case "warrior":{
+                return warriorSkillItems.getBasic(player);
+            }
+            case "assassin":{
+                return assassinSkillItems.getBasic(player);
             }
         }
 

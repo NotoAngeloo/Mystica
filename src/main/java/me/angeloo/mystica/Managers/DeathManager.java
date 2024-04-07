@@ -60,6 +60,7 @@ public class DeathManager {
         player.setInvisible(true);
         player.setGlowing(true);
         abilityManager.resetAbilityBuffs(player);
+        abilityManager.setSkillRunning(player, false);
         dpsManager.removeDps(player);
         Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
         Bukkit.getServer().getPluginManager().callEvent(new TargetBarShouldUpdateEvent(player));

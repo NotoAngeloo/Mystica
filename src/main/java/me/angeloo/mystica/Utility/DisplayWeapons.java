@@ -58,7 +58,7 @@ public class DisplayWeapons {
 
         ItemStack weapon = equipment.getWeapon();
 
-        if(weapon != null){
+        if(weapon != null && !weapon.getType().isAir()){
             displayedWeapon = equipment.getWeapon().clone();
         }
 

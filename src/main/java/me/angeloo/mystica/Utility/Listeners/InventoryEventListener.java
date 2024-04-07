@@ -36,6 +36,7 @@ public class InventoryEventListener implements Listener {
     private final ProfileManager profileManager;
     private final EquipmentManager equipmentManager;
     private final ClassSetter classSetter;
+    private final ClassSwapper classSwapper;
     private final InventoryIndexingManager inventoryIndexingManager;
     private final BagInventory bagInventory;
     private final BuyInvSlotsInventory buyInvSlotsInventory;
@@ -58,6 +59,7 @@ public class InventoryEventListener implements Listener {
         profileManager = main.getProfileManager();
         equipmentManager = new EquipmentManager(main);
         classSetter = main.getClassSetter();
+        classSwapper = main.getClassSwapper();
         inventoryIndexingManager = main.getInventoryIndexingManager();
         bagInventory = main.getBagInventory();
         buyInvSlotsInventory = new BuyInvSlotsInventory(main);
@@ -113,9 +115,15 @@ public class InventoryEventListener implements Listener {
 
         Player player = (Player) event.getPlayer();
 
-        displayWeapons.displayWeapons(player);
-        displayWeapons.displayArmor(player);
-        gearReader.setGearStats(player);
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                displayWeapons.displayWeapons(player);
+                displayWeapons.displayArmor(player);
+                gearReader.setGearStats(player);
+            }
+        }.runTaskLater(main, 1);
+
     }
 
     @EventHandler
@@ -496,10 +504,8 @@ public class InventoryEventListener implements Listener {
 
         if(skillSlots.contains(slot)){
 
-            int skillNumber = slot + 1;
-
-            if(equipSkills.whichSlotIsTheSkillEquippedIn(skillNumber) != -1){
-                equipSkills.setAnySlot(equipSkills.whichSlotIsTheSkillEquippedIn(skillNumber), 0);
+            if(equipSkills.whichSlotIsTheSkillEquippedIn(slot) != -1){
+                equipSkills.setAnySlot(equipSkills.whichSlotIsTheSkillEquippedIn(slot), 0);
                 player.openInventory(abilityInventory.openAbilityInventory(player, item, true));
                 return;
             }
@@ -709,6 +715,83 @@ public class InventoryEventListener implements Listener {
     }
 
     @EventHandler
+    public void classSwapper(InventoryClickEvent event){
+        if(!event.getView().getTitle().equals("Swap Class")){
+            return;
+        }
+        event.setCancelled(true);
+
+        if(event.getClickedInventory() == null){
+            return;
+        }
+
+        Inventory inv = event.getView().getTopInventory();
+
+        if(event.getClickedInventory() != inv){
+            return;
+        }
+
+        ItemStack item = event.getCurrentItem();
+
+        if(item == null){
+            return;
+        }
+
+        if(!item.hasItemMeta()){
+            return;
+        }
+
+        Player player = (Player) event.getWhoClicked();
+
+        String name = item.getItemMeta().getDisplayName();
+        name = name.replaceAll("§.", "");
+
+        ItemStack classItem = event.getView().getTopInventory().getItem(13);
+        assert classItem != null;
+        String className = classItem.getItemMeta().getDisplayName().replaceAll("§.", "");
+
+        if (name.equalsIgnoreCase("select")) {
+
+            if(classSwapper.hasEquipment(player)){
+                player.sendMessage("Remove your Equipment");
+                return;
+            }
+
+            if(profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase(className)){
+                player.sendMessage("You are already this class");
+                return;
+            }
+
+            classSwapper.swapClass(player, className);
+            player.closeInventory();
+            return;
+        }
+
+        int index = inventoryIndexingManager.getClassIndex(player);
+
+        if(name.equalsIgnoreCase("next")){
+            index++;
+        }
+
+        if(name.equalsIgnoreCase("previous")){
+            index--;
+        }
+
+        if(index<0){
+            index = 6;
+        }
+
+        if(index>6){
+            index = 0;
+        }
+
+        inventoryIndexingManager.setClassIndex(player, index);
+
+        player.openInventory(new ClassSelectInventory().openClassSwap(index));
+
+    }
+
+    @EventHandler
     public void IdentifyClick(InventoryClickEvent event){
         if(!event.getView().getTitle().equals("Identify")){
             return;
@@ -843,11 +926,30 @@ public class InventoryEventListener implements Listener {
                     //check for stones here
                     ItemStack comparison = customItemConverter.convert(new SoulStone(), 1);
 
-                    if(!bottomInv.contains(comparison)){
+                    ItemStack stone = new ItemStack(Material.LAPIS_LAZULI);
+                    boolean hasItem = false;
+                    for(ItemStack thisItem : bottomInv.getContents()){
+
+                        if(thisItem == null){
+                            continue;
+                        }
+
+                        if(thisItem.isSimilar(comparison)){
+                            hasItem = true;
+                            stone = thisItem;
+                            break;
+                        }
+
+                    }
+
+                    if(!hasItem){
                         return;
                     }
 
-                    bottomInv.remove(comparison);
+                    if(stone.getAmount() >= 1){
+                        stone.setAmount(stone.getAmount() - 1);
+                    }
+
 
                     player.openInventory(reforgeInventory.openReforgeInventory(player, old, true));
                     return;
@@ -887,6 +989,129 @@ public class InventoryEventListener implements Listener {
 
         player.openInventory(reforgeInventory.openReforgeInventory(player, item, false));
 
+    }
+
+    @EventHandler
+    public void gearSwapClick(InventoryClickEvent event){
+        if(!event.getView().getTitle().equals("Convert Equipment")){
+            return;
+        }
+        event.setCancelled(true);
+
+
+        Player player = (Player) event.getWhoClicked();
+
+        if(event.getClickedInventory() == null){
+            return;
+        }
+
+        ItemStack item = event.getCurrentItem();
+
+        if(item == null){
+            return;
+        }
+
+        Inventory topInv = event.getView().getTopInventory();
+        Inventory bottomInv = event.getView().getBottomInventory();
+
+
+       if(event.getClickedInventory()==bottomInv){
+           List<Material> validEquipment = equipmentInformation.getAllEquipmentTypes();
+           Material itemType = item.getType();
+
+           if(!validEquipment.contains(itemType)){
+               return;
+           }
+
+           if(!isInventoryFull(topInv)){
+               bottomInv.remove(item);
+               topInv.addItem(item);
+           }
+
+       }
+
+        List<Material> validEquipment = equipmentInformation.getAllEquipmentTypes();
+        Material itemType = item.getType();
+
+        if(event.getClickedInventory()==topInv){
+
+            if(item.getItemMeta().getDisplayName().equalsIgnoreCase("swap")){
+                //swap all items
+                for (ItemStack equipment : topInv.getContents()){
+
+                    if(equipment == null){
+                        continue;
+                    }
+
+                    if(!validEquipment.contains(equipment.getType())){
+                        continue;
+                    }
+
+                    topInv.remove(equipment);
+                    topInv.addItem(equipmentManager.swap(player, equipment));
+
+                }
+
+                return;
+            }
+
+
+
+            if(!validEquipment.contains(itemType)){
+                return;
+            }
+
+            if(!isInventoryFull(bottomInv)){
+                topInv.remove(item);
+                bottomInv.addItem(item);
+            }
+
+        }
+
+
+    }
+
+    @EventHandler
+    public void gearSwapClose(InventoryCloseEvent event){
+        if(!event.getView().getTitle().equals("Convert Equipment")){
+            return;
+        }
+
+        Player player = (Player) event.getPlayer();
+
+
+        Inventory topInv = event.getView().getTopInventory();
+
+        List<Material> validEquipment = equipmentInformation.getAllEquipmentTypes();
+        for(ItemStack item : topInv.getContents()){
+
+            if(item == null){
+                continue;
+            }
+
+            Material itemType = item.getType();
+
+            if(!validEquipment.contains(itemType)){
+                continue;
+            }
+
+            player.getInventory().addItem(item);
+        }
+
+
+    }
+
+    private boolean isInventoryFull(Inventory inventory) {
+        int occupiedSlots = 0;
+        int totalSlots = inventory.getSize();
+
+        for (ItemStack item : inventory.getContents()) {
+            if (item != null && !item.getType().isAir()) {
+                occupiedSlots++;
+            }
+        }
+
+        return occupiedSlots >= totalSlots;
     }
 
     @EventHandler

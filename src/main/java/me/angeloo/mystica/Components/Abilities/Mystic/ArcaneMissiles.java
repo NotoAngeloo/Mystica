@@ -376,7 +376,7 @@ public class ArcaneMissiles {
 
     public double getSkillDamage(Player player){
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
-        return 55 + ((int)(skillLevel/10));
+        return 70 + ((int)(skillLevel/10));
     }
 
     public int getCooldown(Player player){

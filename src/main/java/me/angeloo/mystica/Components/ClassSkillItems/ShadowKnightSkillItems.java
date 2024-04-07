@@ -1,6 +1,8 @@
 package me.angeloo.mystica.Components.ClassSkillItems;
 
+import me.angeloo.mystica.Components.ClassEquipment.NoneEquipment;
 import me.angeloo.mystica.Components.Profile;
+import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.Skill_Level;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
@@ -45,7 +47,7 @@ public class ShadowKnightSkillItems {
                 return getItem(1,
                         ChatColor.of(shadowKnightColor) + "Infection",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_1_Level_Bonus()),
-                        ChatColor.of(shadowKnightColor) + String.valueOf(abilityManager.getShadowKnightAbilities().getInfection().getSkillDamage(player)) + " damage",
+                        ChatColor.of(shadowKnightColor) + String.valueOf(abilityManager.getShadowKnightAbilities().getInfection().getSkillDamage(player)) + " power",
                         "",
                         ChatColor.of(Color.WHITE) + "Launch a projectile that infects your",
                         ChatColor.of(Color.WHITE) + "target for continuous damage");
@@ -54,7 +56,7 @@ public class ShadowKnightSkillItems {
                 return getItem(2,
                         ChatColor.of(shadowKnightColor) + "Spiritual Attack",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_2_Level_Bonus()),
-                        ChatColor.of(shadowKnightColor) + String.valueOf(abilityManager.getShadowKnightAbilities().getSpiritualAttack().getSkillDamage(player)) + " damage",
+                        ChatColor.of(shadowKnightColor) + String.valueOf(abilityManager.getShadowKnightAbilities().getSpiritualAttack().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.RED) + String.valueOf(abilityManager.getShadowKnightAbilities().getSpiritualAttack().getCost()) + " energy",
                         "",
                         ChatColor.of(Color.WHITE) + "Summon the hand of your spiritual",
@@ -76,7 +78,7 @@ public class ShadowKnightSkillItems {
                 return getItem(4,
                         ChatColor.of(shadowKnightColor) + "Bloodsucker",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_4_Level_Bonus()),
-                        ChatColor.of(shadowKnightColor) + String.valueOf(abilityManager.getShadowKnightAbilities().getBloodsucker().getSkillDamage(player)) + " damage",
+                        ChatColor.of(shadowKnightColor) + String.valueOf(abilityManager.getShadowKnightAbilities().getBloodsucker().getSkillDamage(player)) + " power",
                         ChatColor.of(shadowKnightColor) + String.valueOf(abilityManager.getShadowKnightAbilities().getBloodsucker().getHealPercent(player)) + "% healed",
                         ChatColor.of(Color.RED) + String.valueOf(abilityManager.getShadowKnightAbilities().getBloodsucker().getCost()) + " energy",
                         "",
@@ -87,7 +89,7 @@ public class ShadowKnightSkillItems {
                 return getItem(5,
                         ChatColor.of(shadowKnightColor) + "Soul Reap",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_5_Level_Bonus()),
-                        ChatColor.of(shadowKnightColor) + String.valueOf(abilityManager.getShadowKnightAbilities().getSoulReap().getSkillDamage(player)) + " damage + modifiers",
+                        ChatColor.of(shadowKnightColor) + String.valueOf(abilityManager.getShadowKnightAbilities().getSoulReap().getSkillDamage(player)) + " power + modifiers",
                         ChatColor.of(Color.RED) + String.valueOf(abilityManager.getShadowKnightAbilities().getSoulReap().getCost()) + " energy",
                         "",
                         ChatColor.of(Color.WHITE) + "Strike your target, piercing",
@@ -100,7 +102,7 @@ public class ShadowKnightSkillItems {
                 return getItem(6,
                         ChatColor.of(shadowKnightColor) + "Shadow Grip",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_6_Level_Bonus()),
-                        ChatColor.of(shadowKnightColor) + String.valueOf(abilityManager.getShadowKnightAbilities().getShadowGrip().getSkillDamage(player)) + " damage",
+                        ChatColor.of(shadowKnightColor) + String.valueOf(abilityManager.getShadowKnightAbilities().getShadowGrip().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.RED) + String.valueOf(abilityManager.getShadowKnightAbilities().getShadowGrip().getCost()) + " energy",
                         "",
                         ChatColor.of(Color.WHITE) + "The hand of your spiritual",
@@ -124,7 +126,7 @@ public class ShadowKnightSkillItems {
                 return getItem(8,
                         ChatColor.of(shadowKnightColor) + "Soulcrack",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_8_Level_Bonus()),
-                        ChatColor.of(shadowKnightColor) + String.valueOf(abilityManager.getShadowKnightAbilities().getSoulcrack().getSkillDamage(player)) + " damage",
+                        ChatColor.of(shadowKnightColor) + String.valueOf(abilityManager.getShadowKnightAbilities().getSoulcrack().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.RED) + String.valueOf(abilityManager.getShadowKnightAbilities().getSoulcrack().getEnergyRestored()) + " energy restored",
                         "",
                         ChatColor.of(Color.WHITE) + "Strike all foes around you.",
@@ -162,7 +164,7 @@ public class ShadowKnightSkillItems {
                 return getItem(10,
                         ChatColor.of(shadowKnightColor) + "Annihilation",
                         ChatColor.of(levelColor) + "Level " + level,
-                        ChatColor.of(shadowKnightColor) + String.valueOf(abilityManager.getShadowKnightAbilities().getAnnihilation().getSkillDamage(player)) + " damage",
+                        ChatColor.of(shadowKnightColor) + String.valueOf(abilityManager.getShadowKnightAbilities().getAnnihilation().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.RED) + String.valueOf(abilityManager.getShadowKnightAbilities().getAnnihilation().getCost()) + " energy",
                         "",
                         ChatColor.of(Color.WHITE) + "Your spiritual ally strikes",
@@ -174,6 +176,34 @@ public class ShadowKnightSkillItems {
         }
 
         return new ItemStack(Material.AIR);
+    }
+
+    public ItemStack getBasic(Player player){
+
+        Profile playerProfile = profileManager.getAnyProfile(player);
+
+        ItemStack basicItem = new NoneEquipment().getBaseWeapon();
+
+        PlayerEquipment equipment = playerProfile.getPlayerEquipment();
+
+        ItemStack weapon = equipment.getWeapon();
+
+        if(weapon != null && !weapon.getType().isAir()){
+            basicItem = equipment.getWeapon().clone();
+        }
+
+        ItemMeta basicMeta = basicItem.getItemMeta();
+        List<String> basicLore = new ArrayList<>();
+
+        int level = playerProfile.getStats().getLevel();
+        basicLore.add(ChatColor.of(levelColor) + "Level "  + level);
+        basicLore.add(ChatColor.of(shadowKnightColor) + String.valueOf(abilityManager.getShadowKnightAbilities().getShadowKnightBasic().getSkillDamage(player)) + " power");
+
+        basicMeta.setLore(basicLore);
+        basicItem.setItemMeta(basicMeta);
+
+
+        return basicItem;
     }
 
     private ItemStack getItem(int modelData, String name, String ... lore) {

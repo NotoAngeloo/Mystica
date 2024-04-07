@@ -189,12 +189,8 @@ public class ElementalistBasic {
         assert entityEquipment != null;
         entityEquipment.setHelmet(fireballItem);
 
-        double skillDamage = 5;
-        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
 
-        skillDamage = skillDamage + ((int)(skillLevel/10));
-
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable() {
             final double initialDistance = armorStand.getLocation().distance(target.getLocation());
             final double halfDistance = initialDistance/2;
@@ -293,12 +289,8 @@ public class ElementalistBasic {
         assert entityEquipment != null;
         entityEquipment.setHelmet(iceBallItem);
 
-        double skillDamage = 5;
-        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
 
-        skillDamage = skillDamage + ((int)(skillLevel/10));
-
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable() {
             final double initialDistance = armorStand.getLocation().distance(target.getLocation());
             final double halfDistance = initialDistance/2;
@@ -379,12 +371,8 @@ public class ElementalistBasic {
 
         basicStageMap.put(player.getUniqueId(), 1);
 
-        double skillDamage = 5;
-        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
 
-        skillDamage = skillDamage + ((int)(skillLevel/10));
-
-        double finalSkillDamage = skillDamage;
+        double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
             final List<ArmorStand> armorStands = new ArrayList<>();
@@ -413,6 +401,7 @@ public class ElementalistBasic {
 
                         Vector direction = targetWasLoc.toVector().subtract(playerLoc.toVector());
                         double distanceThisTick = Math.min(distance, .5);
+                        current.setDirection(direction);
 
                         if(distanceThisTick!=0){
                             current.add(direction.normalize().multiply(distanceThisTick));
@@ -451,6 +440,7 @@ public class ElementalistBasic {
                             current.add(direction.normalize().multiply(distanceThisTick));
                         }
 
+                        current.setDirection(direction);
                         thisStand.teleport(current);
                     }
 
@@ -507,5 +497,11 @@ public class ElementalistBasic {
 
     }
 
+
+    public double getSkillDamage(Player player){
+
+        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+        return 5 + ((int)(skillLevel/10));
+    }
 
 }

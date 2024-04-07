@@ -47,7 +47,7 @@ public class CreaturesAndCharactersManager {
         hansNpc.spawn();
         hoLeeNpc.spawn();
         captainNpc.spawn();
-        fastTravelNpc.spawnAll();
+        //fastTravelNpc.spawnAll();
     }
 
 

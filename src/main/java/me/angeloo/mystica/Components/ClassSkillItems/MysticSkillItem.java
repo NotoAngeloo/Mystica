@@ -1,6 +1,8 @@
 package me.angeloo.mystica.Components.ClassSkillItems;
 
+import me.angeloo.mystica.Components.ClassEquipment.NoneEquipment;
 import me.angeloo.mystica.Components.Profile;
+import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.Skill_Level;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
@@ -60,7 +62,7 @@ public class MysticSkillItem {
                     return getItem(0,
                             ChatColor.of(mysticColor) + "Plague Curse",
                             ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_2_Level_Bonus()),
-                            ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getPlagueCurse().getSkillDamage(player)) + " damage",
+                            ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getPlagueCurse().getSkillDamage(player)) + " power",
                             ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getMysticAbilities().getPlagueCurse().getCost()) + " mana",
                             "",
                             ChatColor.of(Color.WHITE) + "Deal damage to your target and",
@@ -109,7 +111,7 @@ public class MysticSkillItem {
                     return getItem(0,
                             ChatColor.of(mysticColor) + "Chaos Lash",
                             ChatColor.of(new Color(0, 102, 0)) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_6_Level_Bonus()),
-                            ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getChaosLash().getSkillDamage(player)) + " damage",
+                            ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getChaosLash().getSkillDamage(player)) + " power",
                             ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getMysticAbilities().getChaosLash().getCost()) + " mana",
                             "",
                             ChatColor.of(new Color(230, 230, 230)) + "Release chaotic flames toward your",
@@ -132,7 +134,7 @@ public class MysticSkillItem {
                     return getItem(0,
                             ChatColor.of(mysticColor) + "Health Absorb",
                             ChatColor.of(new Color(0, 102, 0)) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_8_Level_Bonus()),
-                            ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getHealthAbsorb().getSkillDamage(player)) + " damage",
+                            ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getHealthAbsorb().getSkillDamage(player)) + " power",
                             ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getMysticAbilities().getHealthAbsorb().getCost()) + " mana",
                             "",
                             ChatColor.of(new Color(230, 230, 230)) + "Leech life from your target, restoring",
@@ -160,7 +162,7 @@ public class MysticSkillItem {
                 return getItem(2,
                         ChatColor.of(mysticColor) + "Purifying Blast",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_2_Level_Bonus()),
-                        ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getPurifyingBlast().getSkillDamage(player)) + " damage",
+                        ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getPurifyingBlast().getSkillDamage(player)) + " power",
                         ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getPurifyingBlast().getSkillDamage(player)) + "% health restored",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getMysticAbilities().getPurifyingBlast().getCost()) + " mana",
                         "",
@@ -173,7 +175,7 @@ public class MysticSkillItem {
                 return getItem(3,
                         ChatColor.of(mysticColor) + "Force of Will",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_3_Level_Bonus()),
-                        ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getForceOfWill().getSkillDamage(player)) + " damage",
+                        ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getForceOfWill().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getMysticAbilities().getForceOfWill().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Channel arcane energy to deal",
@@ -184,7 +186,7 @@ public class MysticSkillItem {
                 return getItem(4,
                         ChatColor.of(mysticColor) + "Dreadfall",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_4_Level_Bonus()),
-                        ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getDreadfall().getSkillDamage(player)) + " damage",
+                        ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getDreadfall().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getMysticAbilities().getDreadfall().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Summon a void meteor that deals",
@@ -227,7 +229,7 @@ public class MysticSkillItem {
                 return getItem(8,
                         ChatColor.of(mysticColor) + "Light Sigil",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_8_Level_Bonus()),
-                        ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getLightSigil().getSkillDamage(player)) + " damage",
+                        ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getLightSigil().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getMysticAbilities().getLightSigil().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Generate a Light Sigil",
@@ -254,7 +256,7 @@ public class MysticSkillItem {
                 return getItem(0,
                         ChatColor.of(mysticColor) + "Evil Spirit",
                         ChatColor.of(levelColor) + "Level " + level,
-                        ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getMysticBasic().getEvilSpiritDamage(player)) + " damage",
+                        ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getMysticBasic().getEvilSpiritDamage(player)) + " power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getMysticAbilities().getEvilSpirit().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Transform into the embodiment",
@@ -269,7 +271,7 @@ public class MysticSkillItem {
                 return getItem(9,
                         ChatColor.of(mysticColor) + "Arcane Missiles",
                         ChatColor.of(levelColor) + "Level " + level,
-                        ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getArcaneMissiles().getSkillDamage(player)) + " damage",
+                        ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getArcaneMissiles().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getMysticAbilities().getArcaneMissiles().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Rapidly fire multiple projectiles",
@@ -291,6 +293,34 @@ public class MysticSkillItem {
         }
 
         return new ItemStack(Material.AIR);
+    }
+
+    public ItemStack getBasic(Player player){
+
+        Profile playerProfile = profileManager.getAnyProfile(player);
+
+        ItemStack basicItem = new NoneEquipment().getBaseWeapon();
+
+        PlayerEquipment equipment = playerProfile.getPlayerEquipment();
+
+        ItemStack weapon = equipment.getWeapon();
+
+        if(weapon != null && !weapon.getType().isAir()){
+            basicItem = equipment.getWeapon().clone();
+        }
+
+        ItemMeta basicMeta = basicItem.getItemMeta();
+        List<String> basicLore = new ArrayList<>();
+
+        int level = playerProfile.getStats().getLevel();
+        basicLore.add(ChatColor.of(levelColor) + "Level "  + level);
+        basicLore.add(ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getMysticBasic().getSkillDamage(player)) + " power");
+
+        basicMeta.setLore(basicLore);
+        basicItem.setItemMeta(basicMeta);
+
+
+        return basicItem;
     }
 
     private ItemStack getItem(int modelData, String name, String ... lore) {

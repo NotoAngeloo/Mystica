@@ -1396,7 +1396,7 @@ public class GeneralEventListener implements Listener {
         int newSlot = event.getNewSlot();
 
         EquipSkills equipSkills = profileManager.getAnyProfile(player).getEquipSkills();
-        int abilityNumber = equipSkills.getAnySlot()[newSlot-1];
+        int abilityNumber = equipSkills.getAnySlot()[newSlot];
         abilityManager.useAbility(player, abilityNumber);
 
     }

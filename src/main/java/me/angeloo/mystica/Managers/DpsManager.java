@@ -16,6 +16,7 @@ public class DpsManager {
 
     private final Mystica main;
 
+    private final int dpsTime = 20;
 
     private final Map<UUID, BukkitTask> savedTask = new HashMap<>();
     private final Map<UUID, Double> damageSlot = new HashMap<>();
@@ -70,7 +71,7 @@ public class DpsManager {
                 addSaved(player, getSaved(player));
                 clearSaved(player);
 
-                if(ran>=10 && getAllSaved(player)==0.0){
+                if(ran>=dpsTime && getAllSaved(player)==0.0){
                     this.cancel();
                     removeAllSaved(player);
                     savedTask.remove(player.getUniqueId());
@@ -108,7 +109,7 @@ public class DpsManager {
 
         values.add(amount);
 
-        if(values.size()>10){
+        if(values.size()>dpsTime){
             values.removeFirst();
         }
 

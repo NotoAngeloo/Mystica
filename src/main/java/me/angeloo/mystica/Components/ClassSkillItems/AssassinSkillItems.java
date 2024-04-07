@@ -1,6 +1,8 @@
 package me.angeloo.mystica.Components.ClassSkillItems;
 
+import me.angeloo.mystica.Components.ClassEquipment.NoneEquipment;
 import me.angeloo.mystica.Components.Profile;
+import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.Skill_Level;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
@@ -21,8 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import static me.angeloo.mystica.Mystica.assassinColor;
-import static me.angeloo.mystica.Mystica.levelColor;
+import static me.angeloo.mystica.Mystica.*;
 
 public class AssassinSkillItems {
 
@@ -46,7 +47,7 @@ public class AssassinSkillItems {
                 return getItem(0,
                         ChatColor.of(assassinColor) + "Assault",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_1_Level_Bonus()),
-                        ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getAssault().getSkillDamage(player)) + " damage",
+                        ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getAssault().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getAssassinAbilities().getAssault().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Assault your target, inflicting",
@@ -56,7 +57,7 @@ public class AssassinSkillItems {
                 return getItem(0,
                         ChatColor.of(assassinColor) + "Laceration",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_2_Level_Bonus()),
-                        ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getLaceration().getSkillDamage(player)) + " damage",
+                        ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getLaceration().getSkillDamage(player)) + " power",
                         ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getLaceration().getBleedDamage(player)) + " x 10 damage over time",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getAssassinAbilities().getLaceration().getCost()) + " mana",
                         "",
@@ -68,7 +69,7 @@ public class AssassinSkillItems {
                 return getItem(0,
                         ChatColor.of(assassinColor) + "Weakness Strike",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_3_Level_Bonus()),
-                        ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getWeaknessStrike().getSkillDamage(player)) + " damage + (15 x combo)",
+                        ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getWeaknessStrike().getSkillDamage(player)) + " power + (15 x combo)",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getAssassinAbilities().getWeaknessStrike().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Attack your target with",
@@ -80,7 +81,7 @@ public class AssassinSkillItems {
                 return getItem(0,
                         ChatColor.of(assassinColor) + "Pierce",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_4_Level_Bonus()),
-                        ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getPierce().getSkillDamage(player)) + " damage",
+                        ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getPierce().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getAssassinAbilities().getPierce().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Pierce through your targets",
@@ -102,7 +103,7 @@ public class AssassinSkillItems {
                 return getItem(0,
                         ChatColor.of(assassinColor) + "Blade Tempest",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_6_Level_Bonus()),
-                        ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getBladeTempest().getSkillDamage(player)) + " damage",
+                        ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getBladeTempest().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getAssassinAbilities().getBladeTempest().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Unleash a flurry of knives",
@@ -114,7 +115,7 @@ public class AssassinSkillItems {
                 return getItem(0,
                         ChatColor.of(assassinColor) + "Flying Blade",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_7_Level_Bonus()),
-                        ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getFlyingBlade().getSkillDamage(player)) + " damage",
+                        ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getFlyingBlade().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getAssassinAbilities().getFlyingBlade().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Throw your weapon towards",
@@ -125,7 +126,7 @@ public class AssassinSkillItems {
                 return getItem(0,
                         ChatColor.of(assassinColor) + "Stealth",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_8_Level_Bonus()),
-                        ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getStealth().getSkillDamage(player)) + " damage",
+                        ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getStealth().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getAssassinAbilities().getStealth().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Hide in the shadows. Your",
@@ -149,7 +150,7 @@ public class AssassinSkillItems {
                 return getItem(0,
                         ChatColor.of(assassinColor) + "Duelist's Frenzy",
                         ChatColor.of(levelColor) + "Level " + level,
-                        ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getDuelistsFrenzy().getSkillDamage(player)) + " damage",
+                        ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getDuelistsFrenzy().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getAssassinAbilities().getDuelistsFrenzy().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Consume your combo points",
@@ -163,7 +164,7 @@ public class AssassinSkillItems {
                 return getItem(0,
                         ChatColor.of(assassinColor) + "Wicked Concoction",
                         ChatColor.of(levelColor) + "Level " + level,
-                        ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getWickedConcoction().getSkillDamage(player)) + " damage",
+                        ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getWickedConcoction().getSkillDamage(player)) + " power",
                         ChatColor.of(assassinColor) + "heals " + abilityManager.getAssassinAbilities().getWickedConcoction().getHealPercent() + "% health",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getAssassinAbilities().getWickedConcoction().getCost()) + " mana",
                         "",
@@ -179,6 +180,34 @@ public class AssassinSkillItems {
         }
 
         return new ItemStack(Material.AIR);
+    }
+
+    public ItemStack getBasic(Player player){
+
+        Profile playerProfile = profileManager.getAnyProfile(player);
+
+        ItemStack basicItem = new NoneEquipment().getBaseWeapon();
+
+        PlayerEquipment equipment = playerProfile.getPlayerEquipment();
+
+        ItemStack weapon = equipment.getWeapon();
+
+        if(weapon != null && !weapon.getType().isAir()){
+            basicItem = equipment.getWeapon().clone();
+        }
+
+
+        ItemMeta basicMeta = basicItem.getItemMeta();;
+        List<String> basicLore = new ArrayList<>();
+
+        int level = playerProfile.getStats().getLevel();
+        basicLore.add(ChatColor.of(levelColor) + "Level "  + level);
+        basicLore.add(ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getAssassinBasic().getSkillDamage(player)) + " power");
+
+        basicMeta.setLore(basicLore);
+        basicItem.setItemMeta(basicMeta);
+
+        return basicItem;
     }
 
     private ItemStack getItem(int modelData, String name, String ... lore) {

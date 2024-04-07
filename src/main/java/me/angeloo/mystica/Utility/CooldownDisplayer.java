@@ -51,7 +51,7 @@ public class CooldownDisplayer {
                 abilityItem.setItemMeta(meta);
             }
 
-            player.getInventory().setItem(i + 1, abilityItem);
+            player.getInventory().setItem(i, abilityItem);
         }
 
     }
@@ -68,7 +68,6 @@ public class CooldownDisplayer {
         //get skillslot too
         EquipSkills equipSkills = profileManager.getAnyProfile(player).getEquipSkills();
         int equippedIn = equipSkills.whichSlotIsTheSkillEquippedIn(abilityNumber);
-        equippedIn++;
 
         ItemStack abilityItem = allSkillItems.getPlayerSkill(player, abilityNumber);
         int cooldown = abilityManager.getCooldown(player, abilityNumber);

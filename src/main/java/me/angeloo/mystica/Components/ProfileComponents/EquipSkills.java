@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 
 public class EquipSkills {
 
-    //slot 8 always taken by ultimate
     private final int[] slots;
 
     //if taken by 0, there is no skill
@@ -94,7 +93,7 @@ public class EquipSkills {
         for(int i=0;i<=7; i++){
 
             if(skillNumber == slots[i]){
-                return  i;
+                return i;
             }
         }
         return -1;

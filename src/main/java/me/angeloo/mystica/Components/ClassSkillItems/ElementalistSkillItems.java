@@ -1,7 +1,9 @@
 package me.angeloo.mystica.Components.ClassSkillItems;
 
 
+import me.angeloo.mystica.Components.ClassEquipment.NoneEquipment;
 import me.angeloo.mystica.Components.Profile;
+import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.Skill_Level;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
@@ -46,7 +48,7 @@ public class ElementalistSkillItems {
                 return getItem(1,
                         ChatColor.of(elementalistColor) + "Ice Bolt",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_1_Level_Bonus()),
-                        ChatColor.of(elementalistColor) + String.valueOf(abilityManager.getElementalistAbilities().getIceBolt().getSkillDamage(player)) + " damage",
+                        ChatColor.of(elementalistColor) + String.valueOf(abilityManager.getElementalistAbilities().getIceBolt().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getElementalistAbilities().getIceBolt().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Channel water to form an ice arrow",
@@ -56,7 +58,7 @@ public class ElementalistSkillItems {
                 return getItem(2,
                         ChatColor.of(elementalistColor) + "Fiery Magma",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_2_Level_Bonus()),
-                        ChatColor.of(elementalistColor) + String.valueOf(abilityManager.getElementalistAbilities().getFieryMagma().getSkillDamage(player)) + " damage +  (" +
+                        ChatColor.of(elementalistColor) + String.valueOf(abilityManager.getElementalistAbilities().getFieryMagma().getSkillDamage(player)) + " power +  (" +
                                 abilityManager.getElementalistAbilities().getFieryMagma().getSkillDamage(player) * .10 + " x 3)",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getElementalistAbilities().getFieryMagma().getCost()) + " mana",
                         "",
@@ -100,7 +102,7 @@ public class ElementalistSkillItems {
                 return getItem(6,
                         ChatColor.of(elementalistColor) + "Dragon Breathing",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_6_Level_Bonus()),
-                        ChatColor.of(elementalistColor) + String.valueOf(abilityManager.getElementalistAbilities().getDragonBreathing().getSkillDamage(player)) + " damage + " +
+                        ChatColor.of(elementalistColor) + String.valueOf(abilityManager.getElementalistAbilities().getDragonBreathing().getSkillDamage(player)) + " power + " +
                                 (abilityManager.getElementalistAbilities().getDragonBreathing().getSkillDamage(player) * .1) + " x 5",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getElementalistAbilities().getDragonBreathing().getCost()) + " mana",
                         "",
@@ -134,7 +136,7 @@ public class ElementalistSkillItems {
                 return getItem(8,
                         ChatColor.of(elementalistColor) + "Elemental Matrix",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_8_Level_Bonus()),
-                        ChatColor.of(elementalistColor) + String.valueOf(abilityManager.getElementalistAbilities().getElemental_matrix().getSkillDamage(player)) + " damage x 2",
+                        ChatColor.of(elementalistColor) + String.valueOf(abilityManager.getElementalistAbilities().getElemental_matrix().getSkillDamage(player)) + " power x 2",
                         ChatColor.of(elementalistColor) + "heals 5% health + mana",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getElementalistAbilities().getElemental_matrix().getCost()) + " mana",
                         "",
@@ -162,7 +164,7 @@ public class ElementalistSkillItems {
                 return getItem(9,
                         ChatColor.of(elementalistColor) + "Fiery Wing",
                         ChatColor.of(levelColor) + "Level "  + level,
-                        ChatColor.of(elementalistColor) + String.valueOf(abilityManager.getElementalistAbilities().getFieryWing().getSkillDamage(player)) + " damage",
+                        ChatColor.of(elementalistColor) + String.valueOf(abilityManager.getElementalistAbilities().getFieryWing().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getElementalistAbilities().getFieryWing().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Summon an elemental that charges",
@@ -183,6 +185,34 @@ public class ElementalistSkillItems {
         }
 
         return new ItemStack(Material.AIR);
+    }
+
+    public ItemStack getBasic(Player player){
+
+        Profile playerProfile = profileManager.getAnyProfile(player);
+
+        ItemStack basicItem = new NoneEquipment().getBaseWeapon();
+
+        PlayerEquipment equipment = playerProfile.getPlayerEquipment();
+
+        ItemStack weapon = equipment.getWeapon();
+
+        if(weapon != null && !weapon.getType().isAir()){
+            basicItem = equipment.getWeapon().clone();
+        }
+
+        ItemMeta basicMeta = basicItem.getItemMeta();
+        List<String> basicLore = new ArrayList<>();
+
+        int level = playerProfile.getStats().getLevel();
+        basicLore.add(ChatColor.of(levelColor) + "Level "  + level);
+        basicLore.add(ChatColor.of(elementalistColor) + String.valueOf(abilityManager.getElementalistAbilities().getElementalistBasic().getSkillDamage(player)) + " power");
+
+        basicMeta.setLore(basicLore);
+        basicItem.setItemMeta(basicMeta);
+
+
+        return basicItem;
     }
 
     private ItemStack getItem(int modelData, String name, String ... lore){

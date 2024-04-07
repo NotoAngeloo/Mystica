@@ -1,6 +1,8 @@
 package me.angeloo.mystica.Components.ClassSkillItems;
 
+import me.angeloo.mystica.Components.ClassEquipment.NoneEquipment;
 import me.angeloo.mystica.Components.Profile;
+import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.Skill_Level;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
@@ -45,7 +47,7 @@ public class RangerSkillItems {
                 return getItem(1,
                         ChatColor.of(rangerColor) + "Biting Rain",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_1_Level_Bonus()),
-                        ChatColor.of(rangerColor) + String.valueOf(abilityManager.getRangerAbilities().getBitingRain().getSkillDamage(player)) + " damage",
+                        ChatColor.of(rangerColor) + String.valueOf(abilityManager.getRangerAbilities().getBitingRain().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getRangerAbilities().getBitingRain().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "A shower of arrows deals",
@@ -56,7 +58,7 @@ public class RangerSkillItems {
                 return getItem(2,
                         ChatColor.of(rangerColor) + "Shadow Crows",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_2_Level_Bonus()),
-                        ChatColor.of(rangerColor) + String.valueOf(abilityManager.getRangerAbilities().getShadowCrows().getSkillDamage(player)) + " damage",
+                        ChatColor.of(rangerColor) + String.valueOf(abilityManager.getRangerAbilities().getShadowCrows().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getRangerAbilities().getShadowCrows()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Summon a flock of crows that inflict",
@@ -66,7 +68,7 @@ public class RangerSkillItems {
                 return getItem(3,
                         ChatColor.of(rangerColor) + "Relentless",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_3_Level_Bonus()),
-                        ChatColor.of(rangerColor) + String.valueOf(abilityManager.getRangerAbilities().getRelentless().getSkillDamage(player)) + " damage",
+                        ChatColor.of(rangerColor) + String.valueOf(abilityManager.getRangerAbilities().getRelentless().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getRangerAbilities().getRelentless()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "A barrage of arrows deal heavy",
@@ -78,7 +80,7 @@ public class RangerSkillItems {
                 return getItem(4,
                         ChatColor.of(rangerColor) + "Razor Wind",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_4_Level_Bonus()),
-                        ChatColor.of(rangerColor) + String.valueOf(abilityManager.getRangerAbilities().getRazorWind().getSkillDamage(player)) + " damage",
+                        ChatColor.of(rangerColor) + String.valueOf(abilityManager.getRangerAbilities().getRazorWind().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getRangerAbilities().getRazorWind()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "A charged attack that launches a",
@@ -89,7 +91,7 @@ public class RangerSkillItems {
                 return getItem(5,
                         ChatColor.of(rangerColor) + "Blessed Arrow",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_5_Level_Bonus()),
-                        ChatColor.of(rangerColor) + String.valueOf(abilityManager.getRangerAbilities().getBlessedArrow().getSkillDamage(player)) + " damage",
+                        ChatColor.of(rangerColor) + String.valueOf(abilityManager.getRangerAbilities().getBlessedArrow().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getRangerAbilities().getBlessedArrow()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "An arrow enchanted with magic",
@@ -111,7 +113,7 @@ public class RangerSkillItems {
                 return getItem(7,
                         ChatColor.of(rangerColor) + "Wild Spirit",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_7_Level_Bonus()),
-                        ChatColor.of(rangerColor) + String.valueOf(abilityManager.getRangerAbilities().getWildSpirit().getSkillDamage(player)) + " damage/hit",
+                        ChatColor.of(rangerColor) + String.valueOf(abilityManager.getRangerAbilities().getWildSpirit().getSkillDamage(player)) + " power/hit",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getRangerAbilities().getWildSpirit()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Summon a spirit wolf that",
@@ -143,7 +145,7 @@ public class RangerSkillItems {
                 return getItem(9,
                         ChatColor.of(rangerColor) + "Star Volley",
                         ChatColor.of(levelColor) + "Level " + level,
-                        ChatColor.of(rangerColor) + String.valueOf(abilityManager.getRangerAbilities().getStarVolley().getSkillDamage(player)) + " damage",
+                        ChatColor.of(rangerColor) + String.valueOf(abilityManager.getRangerAbilities().getStarVolley().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getRangerAbilities().getStarVolley()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Summon an arrow from the stars",
@@ -163,6 +165,34 @@ public class RangerSkillItems {
         }
 
         return new ItemStack(Material.AIR);
+    }
+
+    public ItemStack getBasic(Player player){
+
+        Profile playerProfile = profileManager.getAnyProfile(player);
+
+        ItemStack basicItem = new NoneEquipment().getBaseWeapon();
+
+        PlayerEquipment equipment = playerProfile.getPlayerEquipment();
+
+        ItemStack weapon = equipment.getWeapon();
+
+        if(weapon != null && !weapon.getType().isAir()){
+            basicItem = equipment.getWeapon().clone();
+        }
+
+        ItemMeta basicMeta = basicItem.getItemMeta();
+        List<String> basicLore = new ArrayList<>();
+
+        int level = playerProfile.getStats().getLevel();
+        basicLore.add(ChatColor.of(levelColor) + "Level "  + level);
+        basicLore.add(ChatColor.of(rangerColor) + String.valueOf(abilityManager.getRangerAbilities().getRangerBasic().getSkillDamage(player)) + " power");
+
+        basicMeta.setLore(basicLore);
+        basicItem.setItemMeta(basicMeta);
+
+
+        return basicItem;
     }
 
     private ItemStack getItem(int modelData, String name, String ... lore) {

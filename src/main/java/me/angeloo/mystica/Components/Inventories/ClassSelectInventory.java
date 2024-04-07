@@ -18,6 +18,52 @@ public class ClassSelectInventory {
 
     }
 
+    public Inventory openClassSwap(int index){
+        Inventory inv = Bukkit.createInventory(null, 9 * 3,"Swap Class");
+
+        //13 is mid
+
+        inv.setItem(22, getItem(Material.LIME_DYE, 0,"Select"));
+
+        inv.setItem(15, getItem(Material.ARROW,0,"Next"));
+
+        inv.setItem(11, getItem(Material.ARROW, 0, "Previous"));
+
+
+        switch (index){
+            case 0:{
+                inv.setItem(13, getAssassinItem());
+                break;
+            }
+            case 1:{
+                inv.setItem(13, getElementalistItem());
+                break;
+            }
+            case 2:{
+                inv.setItem(13, getMysticItem());
+                break;
+            }
+            case 3:{
+                inv.setItem(13, getPaladinItem());
+                break;
+            }
+            case 4:{
+                inv.setItem(13, getRangerItem());
+                break;
+            }
+            case 5:{
+                inv.setItem(13, getShadowKnightItem());
+                break;
+            }
+            case 6:{
+                inv.setItem(13, getWarriorItem());
+                break;
+            }
+        }
+
+        return inv;
+    }
+
     public Inventory openClassSelect(int index){
 
         Inventory inv = Bukkit.createInventory(null, 9 * 3,"Select a Class");

@@ -34,6 +34,7 @@ public final class Mystica extends JavaPlugin {
     private PathingManager pathingManager;
 
     private ClassSetter classSetter;
+    private ClassSwapper classSwapper;
     private StealthTargetBlacklist stealthTargetBlacklist;
     private TargetManager targetManager;
     private AggroTick aggroTick;
@@ -85,6 +86,7 @@ public final class Mystica extends JavaPlugin {
         profileManager.loadProfilesFromConfig();
 
         classSetter = new ClassSetter(this);
+        classSwapper = new ClassSwapper(this);
 
         pveChecker = new PveChecker(this);
         pvpManager = new PvpManager(this);
@@ -123,6 +125,8 @@ public final class Mystica extends JavaPlugin {
         getCommand("Equipment").setExecutor(new Equipment(this));
         getCommand("Trash").setExecutor(new Trash());
         getCommand("ClassSelect").setExecutor(new ClassSelect(this));
+        getCommand("ClassSwap").setExecutor(new ClassSwap(this));
+        getCommand("GearSwap").setExecutor(new GearSwap());
         getCommand("WhatAreMyStats").setExecutor(new WhatAreMyStats(this));
         getCommand("ToggleImmunity").setExecutor(new ToggleImmunity(this));
         getCommand("Reforge").setExecutor(new Reforge(this));
@@ -228,6 +232,8 @@ public final class Mystica extends JavaPlugin {
     public ClassSetter getClassSetter(){
         return classSetter;
     }
+
+    public ClassSwapper getClassSwapper(){return classSwapper;}
 
     public StealthTargetBlacklist getStealthTargetBlacklist(){return stealthTargetBlacklist;}
 

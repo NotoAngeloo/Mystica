@@ -58,7 +58,7 @@ public class CombatManager {
             DisplayWeapons displayWeapons = new DisplayWeapons(main);
             displayWeapons.displayArmor(player);
 
-            player.getInventory().setHeldItemSlot(0);
+            player.getInventory().setHeldItemSlot(8);
 
             PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 

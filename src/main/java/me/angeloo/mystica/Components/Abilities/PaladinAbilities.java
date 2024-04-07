@@ -248,4 +248,5 @@ public class PaladinAbilities {
     public DuranceOfTruth getDuranceOfTruth(){return duranceOfTruth;}
     public SanctityShield getSanctityShield(){return sanctityShield;}
     public LightWell getLightWell(){return lightWell;}
+    public PaladinBasic getPaladinBasic(){return paladinBasic;}
 }

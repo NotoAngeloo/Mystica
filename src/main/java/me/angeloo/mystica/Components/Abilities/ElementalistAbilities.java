@@ -151,4 +151,5 @@ public class ElementalistAbilities {
     public DragonBreathing getDragonBreathing(){return dragonBreathing;}
     public ElementalMatrix getElemental_matrix(){return elemental_matrix;}
     public ConjuringForce getConjuringForce(){return conjuringForce;}
+    public ElementalistBasic getElementalistBasic(){return elementalistBasic;}
 }

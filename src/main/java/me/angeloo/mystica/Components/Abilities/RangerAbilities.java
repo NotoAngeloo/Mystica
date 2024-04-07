@@ -151,4 +151,5 @@ public class RangerAbilities {
     public WildSpirit getWildSpirit(){return wildSpirit;}
     public Roll getRoll(){return roll;}
     public WildRoar getWildRoar(){return wildRoar;}
+    public RangerBasic getRangerBasic(){return rangerBasic;}
 }

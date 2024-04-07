@@ -1,6 +1,8 @@
 package me.angeloo.mystica.Components.ClassSkillItems;
 
+import me.angeloo.mystica.Components.ClassEquipment.NoneEquipment;
 import me.angeloo.mystica.Components.Profile;
+import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.Skill_Level;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
@@ -45,7 +47,7 @@ public class WarriorSkillItems {
                 return getItem(Material.ORANGE_DYE, 0,
                         ChatColor.of(warriorColor) + "Lava Quake",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_1_Level_Bonus()),
-                        ChatColor.of(warriorColor) + String.valueOf(abilityManager.getWarriorAbilities().getLavaQuake().getSkillDamage(player)) + " damage",
+                        ChatColor.of(warriorColor) + String.valueOf(abilityManager.getWarriorAbilities().getLavaQuake().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getWarriorAbilities().getLavaQuake().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Deal damage to enemies in",
@@ -56,7 +58,7 @@ public class WarriorSkillItems {
                 return getItem(Material.ORANGE_DYE, 0,
                         ChatColor.of(warriorColor) + "Searing Chains",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_2_Level_Bonus()),
-                        ChatColor.of(warriorColor) + String.valueOf(abilityManager.getWarriorAbilities().getSearingChains().getSkillDamage(player)) + " damage",
+                        ChatColor.of(warriorColor) + String.valueOf(abilityManager.getWarriorAbilities().getSearingChains().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getWarriorAbilities().getSearingChains().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Snare nearby enemies in",
@@ -68,7 +70,7 @@ public class WarriorSkillItems {
                 return getItem(Material.ORANGE_DYE, 0,
                         ChatColor.of(warriorColor) + "Tempest Rage",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_3_Level_Bonus()),
-                        ChatColor.of(warriorColor) + String.valueOf(abilityManager.getWarriorAbilities().getTempestRage().getSkillDamage(player)) + " damage",
+                        ChatColor.of(warriorColor) + String.valueOf(abilityManager.getWarriorAbilities().getTempestRage().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getWarriorAbilities().getTempestRage().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Deal continuous moderate",
@@ -78,7 +80,7 @@ public class WarriorSkillItems {
                 return getItem(Material.ORANGE_DYE, 0,
                         ChatColor.of(warriorColor) + "Meteor Crater",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_4_Level_Bonus()),
-                        ChatColor.of(warriorColor) + String.valueOf(abilityManager.getWarriorAbilities().getMeteorCrater().getSkillDamage(player)) + " damage",
+                        ChatColor.of(warriorColor) + String.valueOf(abilityManager.getWarriorAbilities().getMeteorCrater().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getWarriorAbilities().getMeteorCrater().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Deal heavy damage and",
@@ -90,7 +92,7 @@ public class WarriorSkillItems {
                 return getItem(Material.ORANGE_DYE, 0,
                         ChatColor.of(warriorColor) + "Anvil Drop",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_5_Level_Bonus()),
-                        ChatColor.of(warriorColor) + String.valueOf(abilityManager.getWarriorAbilities().getAnvilDrop().getSkillDamage(player)) + " damage",
+                        ChatColor.of(warriorColor) + String.valueOf(abilityManager.getWarriorAbilities().getAnvilDrop().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getWarriorAbilities().getAnvilDrop().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Leap towards the target",
@@ -114,7 +116,7 @@ public class WarriorSkillItems {
                 return getItem(Material.ORANGE_DYE, 0,
                         ChatColor.of(warriorColor) + "Magma Spikes",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_7_Level_Bonus()),
-                        ChatColor.of(warriorColor) + String.valueOf(abilityManager.getWarriorAbilities().getMagmaSpikes().getSkillDamage(player)) + " damage",
+                        ChatColor.of(warriorColor) + String.valueOf(abilityManager.getWarriorAbilities().getMagmaSpikes().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getWarriorAbilities().getMagmaSpikes().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Deal heavy damage to the",
@@ -159,7 +161,7 @@ public class WarriorSkillItems {
                 return getItem(Material.ORANGE_DYE, 0,
                         ChatColor.of(warriorColor) + "Death Gaze",
                         ChatColor.of(levelColor) + "Level " + level,
-                        ChatColor.of(warriorColor) + String.valueOf(abilityManager.getWarriorAbilities().getDeathGaze().getSkillDamage(player)) + " damage",
+                        ChatColor.of(warriorColor) + String.valueOf(abilityManager.getWarriorAbilities().getDeathGaze().getSkillDamage(player)) + " power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getWarriorAbilities().getDeathGaze().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Hook your target, pulling",
@@ -171,6 +173,34 @@ public class WarriorSkillItems {
         }
 
         return new ItemStack(Material.AIR);
+    }
+
+    public ItemStack getBasic(Player player){
+
+        Profile playerProfile = profileManager.getAnyProfile(player);
+
+        ItemStack basicItem = new NoneEquipment().getBaseWeapon();
+
+        PlayerEquipment equipment = playerProfile.getPlayerEquipment();
+
+        ItemStack weapon = equipment.getWeapon();
+
+        if(weapon != null && !weapon.getType().isAir()){
+            basicItem = equipment.getWeapon().clone();
+        }
+
+        ItemMeta basicMeta = basicItem.getItemMeta();
+        List<String> basicLore = new ArrayList<>();
+
+        int level = playerProfile.getStats().getLevel();
+        basicLore.add(ChatColor.of(levelColor) + "Level "  + level);
+        basicLore.add(ChatColor.of(warriorColor) + String.valueOf(abilityManager.getWarriorAbilities().getWarriorBasic().getSkillDamage(player)) + " power");
+
+        basicMeta.setLore(basicLore);
+        basicItem.setItemMeta(basicMeta);
+
+
+        return basicItem;
     }
 
     private ItemStack getItem(Material material, int modelData, String name, String ... lore) {

@@ -311,7 +311,7 @@ public class Dreadfall {
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
 
-        return 25 + ((int)(skillLevel/10));
+        return 50 + ((int)(skillLevel/10));
     }
 
     public double getCost(){

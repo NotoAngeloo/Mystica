@@ -66,6 +66,329 @@ public class EquipmentManager {
         return level;
     }
 
+    public ItemStack swap(Player player, ItemStack oldItem) {
+
+
+        String clazz = profileManager.getAnyProfile(player).getPlayerClass();
+
+        ItemMeta selectedMeta = oldItem.getItemMeta();
+        assert selectedMeta != null;
+        List<String> lore = selectedMeta.getLore();
+        assert lore != null;
+        String equipSlot = lore.get(1);
+        equipSlot = equipSlot.replaceAll("§.", "");
+
+        switch (clazz.toLowerCase()) {
+            case "assassin": {
+                switch (equipSlot.toLowerCase()){
+                    case "main hand":{
+                        selectedMeta.setDisplayName(assassinEquipment.getBaseWeapon().getItemMeta().getDisplayName());
+                        oldItem.setType(Material.FLINT);
+                        break;
+                    }
+                    case "secondary":{
+                        selectedMeta.setDisplayName(assassinEquipment.getBaseOffhand().getItemMeta().getDisplayName());
+                        oldItem.setType(Material.FLINT);
+                        break;
+                    }
+                    case "helmet":{
+                        selectedMeta.setDisplayName(assassinEquipment.getBaseHelmet().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(7);
+                        break;
+                    }
+                    case "chestplate":{
+                        selectedMeta.setDisplayName(assassinEquipment.getBaseChestPlate().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(7);
+                        break;
+                    }
+                    case "leggings":{
+                        selectedMeta.setDisplayName(assassinEquipment.getBaseLeggings().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(7);
+                        break;
+                    }
+                    case "boots":{
+                        selectedMeta.setDisplayName(assassinEquipment.getBaseBoots().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(7);
+                        break;
+                    }
+                }
+
+                int requireLine = -1;
+                for(String loreline : selectedMeta.getLore()){
+                    if(loreline.contains("Requires")){
+                        requireLine = selectedMeta.getLore().indexOf(loreline);
+                        break;
+                    }
+                }
+                lore.set(requireLine, assassinEquipment.getBaseWeapon().getItemMeta().getLore().get(6));
+                break;
+            }
+            case "elementalist": {
+                switch (equipSlot.toLowerCase()){
+                    case "main hand":{
+                        selectedMeta.setDisplayName(elementalistEquipment.getBaseWeapon().getItemMeta().getDisplayName());
+                        oldItem.setType(Material.STICK);
+                        break;
+                    }
+                    case "secondary":{
+                        selectedMeta.setDisplayName(elementalistEquipment.getBaseOffhand().getItemMeta().getDisplayName());
+                        oldItem.setType(Material.STICK);
+                        break;
+                    }
+                    case "helmet":{
+                        selectedMeta.setDisplayName(elementalistEquipment.getBaseHelmet().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(1);
+                        break;
+                    }
+                    case "chestplate":{
+                        selectedMeta.setDisplayName(elementalistEquipment.getBaseChestPlate().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(1);
+                        break;
+                    }
+                    case "leggings":{
+                        selectedMeta.setDisplayName(elementalistEquipment.getBaseLeggings().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(1);
+                        break;
+                    }
+                    case "boots":{
+                        selectedMeta.setDisplayName(elementalistEquipment.getBaseBoots().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(1);
+                        break;
+                    }
+                }
+                int requireLine = -1;
+                for(String loreline : selectedMeta.getLore()){
+                    if(loreline.contains("Requires")){
+                        requireLine = selectedMeta.getLore().indexOf(loreline);
+                        break;
+                    }
+                }
+                lore.set(requireLine, elementalistEquipment.getBaseWeapon().getItemMeta().getLore().get(6));
+                break;
+            }
+            case "mystic": {
+                switch (equipSlot.toLowerCase()){
+                    case "main hand":{
+                        selectedMeta.setDisplayName(mysticEquipment.getBaseWeapon().getItemMeta().getDisplayName());
+                        oldItem.setType(Material.BLAZE_ROD);
+                        break;
+                    }
+                    case "secondary":{
+                        selectedMeta.setDisplayName(mysticEquipment.getBaseOffhand().getItemMeta().getDisplayName());
+                        oldItem.setType(Material.BLAZE_ROD);
+                        break;
+                    }
+                    case "helmet":{
+                        selectedMeta.setDisplayName(mysticEquipment.getBaseHelmet().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(3);
+                        break;
+                    }
+                    case "chestplate":{
+                        selectedMeta.setDisplayName(mysticEquipment.getBaseChestPlate().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(3);
+                        break;
+                    }
+                    case "leggings":{
+                        selectedMeta.setDisplayName(mysticEquipment.getBaseLeggings().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(3);
+                        break;
+                    }
+                    case "boots":{
+                        selectedMeta.setDisplayName(mysticEquipment.getBaseBoots().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(3);
+                        break;
+                    }
+                }
+                int requireLine = -1;
+                for(String loreline : selectedMeta.getLore()){
+                    if(loreline.contains("Requires")){
+                        requireLine = selectedMeta.getLore().indexOf(loreline);
+                        break;
+                    }
+                }
+                lore.set(requireLine, mysticEquipment.getBaseWeapon().getItemMeta().getLore().get(6));
+                break;
+            }
+            case "paladin": {
+                switch (equipSlot.toLowerCase()){
+                    case "main hand":{
+                        selectedMeta.setDisplayName(paladinEquipment.getBaseWeapon().getItemMeta().getDisplayName());
+                        oldItem.setType(Material.IRON_SWORD);
+                        break;
+                    }
+                    case "secondary":{
+                        selectedMeta.setDisplayName(paladinEquipment.getBaseOffhand().getItemMeta().getDisplayName());
+                        oldItem.setType(Material.IRON_SWORD);
+                        break;
+                    }
+                    case "helmet":{
+                        selectedMeta.setDisplayName(paladinEquipment.getBaseHelmet().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(5);
+                        break;
+                    }
+                    case "chestplate":{
+                        selectedMeta.setDisplayName(paladinEquipment.getBaseChestPlate().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(5);
+                        break;
+                    }
+                    case "leggings":{
+                        selectedMeta.setDisplayName(paladinEquipment.getBaseLeggings().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(5);
+                        break;
+                    }
+                    case "boots":{
+                        selectedMeta.setDisplayName(paladinEquipment.getBaseBoots().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(5);
+                        break;
+                    }
+                }
+                int requireLine = -1;
+                for(String loreline : selectedMeta.getLore()){
+                    if(loreline.contains("Requires")){
+                        requireLine = selectedMeta.getLore().indexOf(loreline);
+                        break;
+                    }
+                }
+                lore.set(requireLine, paladinEquipment.getBaseWeapon().getItemMeta().getLore().get(6));
+                break;
+            }
+            case "ranger": {
+                switch (equipSlot.toLowerCase()){
+                    case "main hand":{
+                        selectedMeta.setDisplayName(rangerEquipment.getBaseWeapon().getItemMeta().getDisplayName());
+                        oldItem.setType(Material.FEATHER);
+                        break;
+                    }
+                    case "secondary":{
+                        selectedMeta.setDisplayName(rangerEquipment.getBaseOffhand().getItemMeta().getDisplayName());
+                        oldItem.setType(Material.FEATHER);
+                        break;
+                    }
+                    case "helmet":{
+                        selectedMeta.setDisplayName(rangerEquipment.getBaseHelmet().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(2);
+                        break;
+                    }
+                    case "chestplate":{
+                        selectedMeta.setDisplayName(rangerEquipment.getBaseChestPlate().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(2);
+                        break;
+                    }
+                    case "leggings":{
+                        selectedMeta.setDisplayName(rangerEquipment.getBaseLeggings().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(2);
+                        break;
+                    }
+                    case "boots":{
+                        selectedMeta.setDisplayName(rangerEquipment.getBaseBoots().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(2);
+                        break;
+                    }
+                }
+                int requireLine = -1;
+                for(String loreline : selectedMeta.getLore()){
+                    if(loreline.contains("Requires")){
+                        requireLine = selectedMeta.getLore().indexOf(loreline);
+                        break;
+                    }
+                }
+                lore.set(requireLine, rangerEquipment.getBaseWeapon().getItemMeta().getLore().get(6));
+                break;
+            }
+            case "shadow knight": {
+                switch (equipSlot.toLowerCase()){
+                    case "main hand":{
+                        selectedMeta.setDisplayName(shadowKnightEquipment.getBaseWeapon().getItemMeta().getDisplayName());
+                        oldItem.setType(Material.DIAMOND_SWORD);
+                        break;
+                    }
+                    case "secondary":{
+                        selectedMeta.setDisplayName(shadowKnightEquipment.getBaseOffhand().getItemMeta().getDisplayName());
+                        oldItem.setType(Material.DIAMOND_SWORD);
+                        break;
+                    }
+                    case "helmet":{
+                        selectedMeta.setDisplayName(shadowKnightEquipment.getBaseHelmet().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(4);
+                        break;
+                    }
+                    case "chestplate":{
+                        selectedMeta.setDisplayName(shadowKnightEquipment.getBaseChestPlate().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(4);
+                        break;
+                    }
+                    case "leggings":{
+                        selectedMeta.setDisplayName(shadowKnightEquipment.getBaseLeggings().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(4);
+                        break;
+                    }
+                    case "boots":{
+                        selectedMeta.setDisplayName(shadowKnightEquipment.getBaseBoots().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(4);
+                        break;
+                    }
+                }
+                int requireLine = -1;
+                for(String loreline : selectedMeta.getLore()){
+                    if(loreline.contains("Requires")){
+                        requireLine = selectedMeta.getLore().indexOf(loreline);
+                        break;
+                    }
+                }
+                lore.set(requireLine, shadowKnightEquipment.getBaseWeapon().getItemMeta().getLore().get(6));
+                break;
+            }
+            case "warrior": {
+                switch (equipSlot.toLowerCase()){
+                    case "main hand":{
+                        selectedMeta.setDisplayName(warriorEquipment.getBaseWeapon().getItemMeta().getDisplayName());
+                        oldItem.setType(Material.BRICK);
+                        break;
+                    }
+                    case "secondary":{
+                        selectedMeta.setDisplayName(warriorEquipment.getBaseOffhand().getItemMeta().getDisplayName());
+                        oldItem.setType(Material.BRICK);
+                        break;
+                    }
+                    case "helmet":{
+                        selectedMeta.setDisplayName(warriorEquipment.getBaseHelmet().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(6);
+                        break;
+                    }
+                    case "chestplate":{
+                        selectedMeta.setDisplayName(warriorEquipment.getBaseChestPlate().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(6);
+                        break;
+                    }
+                    case "leggings":{
+                        selectedMeta.setDisplayName(warriorEquipment.getBaseLeggings().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(6);
+                        break;
+                    }
+                    case "boots":{
+                        selectedMeta.setDisplayName(warriorEquipment.getBaseBoots().getItemMeta().getDisplayName());
+                        selectedMeta.setCustomModelData(6);
+                        break;
+                    }
+                }
+                int requireLine = -1;
+                for(String loreline : selectedMeta.getLore()){
+                    if(loreline.contains("Requires")){
+                        requireLine = selectedMeta.getLore().indexOf(loreline);
+                        break;
+                    }
+                }
+                lore.set(requireLine, assassinEquipment.getBaseWeapon().getItemMeta().getLore().get(6));
+                break;
+            }
+        }
+
+        selectedMeta.setLore(lore);
+        oldItem.setItemMeta(selectedMeta);
+
+        return oldItem;
+    }
+
     public ItemStack generate(Player player, int level){
 
         ItemStack baseGear = new ItemStack(Material.AIR);

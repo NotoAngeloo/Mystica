@@ -454,7 +454,7 @@ public class LightSigil {
     public double getSkillDamage(Player player){
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
-        return 7 +  ((int)(skillLevel/10));
+        return 14 +  ((int)(skillLevel/10));
     }
 
     public double getCost(){

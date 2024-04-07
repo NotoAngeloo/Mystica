@@ -464,6 +464,7 @@ public class MysticBasic {
 
     }
 
+
     public double getSkillDamage(Player player){
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
 

@@ -151,5 +151,6 @@ public class AssassinAbilities {
     public BladeTempest getBladeTempest(){return bladeTempest;}
     public FlyingBlade getFlyingBlade(){return flyingBlade;}
     public WickedConcoction getWickedConcoction(){return wickedConcoction;}
+    public AssassinBasic getAssassinBasic(){return assassinBasic;}
 
 }

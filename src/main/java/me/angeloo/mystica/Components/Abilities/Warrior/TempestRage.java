@@ -152,12 +152,12 @@ public class TempestRage {
 
                 if(timeRan%20==0){
                     BoundingBox hitBox = new BoundingBox(
-                            player.getLocation().getX() - 5,
+                            player.getLocation().getX() - 6,
                             player.getLocation().getY() - 2,
-                            player.getLocation().getZ() - 5,
-                            player.getLocation().getX() + 5,
+                            player.getLocation().getZ() - 6,
+                            player.getLocation().getX() + 6,
                             player.getLocation().getY() + 6,
-                            player.getLocation().getZ() + 5
+                            player.getLocation().getZ() + 6
                     );
 
                     for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
@@ -233,7 +233,7 @@ public class TempestRage {
     public double getSkillDamage(Player player){
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
-        return 40 + ((int)(skillLevel/10));
+        return 60 + ((int)(skillLevel/10));
     }
 
 }

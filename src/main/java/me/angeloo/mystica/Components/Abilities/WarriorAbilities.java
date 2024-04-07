@@ -144,5 +144,5 @@ public class WarriorAbilities {
     public BurningBlessing getBurningBlessing(){return burningBlessing;}
     public DeathGaze getDeathGaze(){return deathGaze;}
     public GladiatorHeart getGladiatorHeart(){return gladiatorHeart;}
-
+    public WarriorBasic getWarriorBasic(){return warriorBasic;}
 }

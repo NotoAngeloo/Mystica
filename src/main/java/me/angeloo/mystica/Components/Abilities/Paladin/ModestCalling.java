@@ -195,6 +195,10 @@ public class ModestCalling {
 
                     buffAndDebuffManager.getModest().apply(target, finalMultiplier, time);
                     buffAndDebuffManager.getSleep().applySleep(target, time);
+
+                    if(target instanceof Player){
+                        buffAndDebuffManager.getGenericShield().removeShields(target);
+                    }
                 }
 
             }

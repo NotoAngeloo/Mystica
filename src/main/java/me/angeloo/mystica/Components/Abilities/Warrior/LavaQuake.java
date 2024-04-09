@@ -198,6 +198,7 @@ public class LavaQuake {
                     if(entity instanceof Player){
                         if(pvpManager.pvpLogic(player, (Player) entity)){
                             changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                            buffAndDebuffManager.getGenericShield().removeShields(livingEntity);
                         }
                         continue;
                     }

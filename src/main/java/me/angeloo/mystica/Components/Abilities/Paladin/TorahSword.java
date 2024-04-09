@@ -268,6 +268,10 @@ public class TorahSword {
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
 
+                    if(target instanceof Player){
+                        buffAndDebuffManager.getGenericShield().removeShields(target);
+                    }
+
                 }
 
                 if (distance2 <= 1) {
@@ -283,6 +287,10 @@ public class TorahSword {
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+
+                    if(target instanceof Player){
+                        buffAndDebuffManager.getGenericShield().removeShields(target);
+                    }
 
                 }
 
@@ -301,6 +309,10 @@ public class TorahSword {
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+
+                    if(target instanceof Player){
+                        buffAndDebuffManager.getGenericShield().removeShields(target);
+                    }
 
                 }
 

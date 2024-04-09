@@ -208,8 +208,11 @@ public class Bloodsucker {
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
-
                     changeResourceHandler.addHealthToEntity(player, finalHealAmount, player);
+
+                    if(target instanceof Player){
+                        buffAndDebuffManager.getGenericShield().removeShields(target);
+                    }
 
                 }
 

@@ -191,6 +191,10 @@ public class FlyingBlade {
                         buffAndDebuffManager.getStun().applyStun(target, 20);
                     }
 
+                    if(target instanceof Player){
+                        buffAndDebuffManager.getGenericShield().removeShields(target);
+                    }
+
                     stealth.stealthBonusCheck(player, target);
                 }
 

@@ -268,6 +268,10 @@ public class ShadowCrows {
                             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                             changeResourceHandler.subtractHealthFromEntity(target, damage, player);
 
+                            if(target instanceof Player){
+                                buffAndDebuffManager.getGenericShield().removeShields(target);
+                            }
+
                         }
 
                         if(count >= 20 * 10){

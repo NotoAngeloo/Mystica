@@ -205,6 +205,10 @@ public class FieryMagma {
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, player);
 
+                    if(target instanceof Player){
+                        buffAndDebuffManager.getGenericShield().removeShields(target);
+                    }
+
                     startBurningTask();
                 }
 

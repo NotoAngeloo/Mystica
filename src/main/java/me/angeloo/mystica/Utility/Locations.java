@@ -4,6 +4,7 @@ import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
@@ -38,39 +39,8 @@ public class Locations {
                 "\n\n" +
                 "Recommended Players: 1");
 
-        new BukkitRunnable(){
-            final Set<Player> affected = new HashSet<>();
-            @Override
-            public void run(){
+        sewer.setCustomName("sewer");
 
-                Set<Player> hitByBox = new HashSet<>();
-
-                BoundingBox hitBox = new BoundingBox(
-                        sewerLoc.getX() - 3,
-                        sewerLoc.getY() - 3,
-                        sewerLoc.getZ() - 3,
-                        sewerLoc.getX() + 3,
-                        sewerLoc.getY() + 3,
-                        sewerLoc.getZ() + 3
-                );
-
-                for (Entity entity : world.getNearbyEntities(hitBox)){
-                    if(entity instanceof Player){
-                        hitByBox.add((Player)entity);
-                    }
-                }
-
-                for(Player thisPlayer : hitByBox){
-                    if(!affected.contains(thisPlayer)){
-                        Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "mysticainteractions sewerenter " + thisPlayer.getName());
-                        affected.add(thisPlayer);
-                    }
-                }
-
-                affected.removeIf(thisPlayer -> !hitByBox.contains(thisPlayer));
-
-            }
-        }.runTaskTimer(main, 0, 20);
 
         Location lindwyrmLoc = new Location(world, 618, 102, -89);
         TextDisplay lindwyrm = world.spawn(lindwyrmLoc, TextDisplay.class);
@@ -81,39 +51,8 @@ public class Locations {
                 "\n\n" +
                 "Recommended Players: 5");
 
-        new BukkitRunnable(){
-            final Set<Player> affected = new HashSet<>();
-            @Override
-            public void run(){
+        lindwyrm.setCustomName("lindwyrm_cave");
 
-                Set<Player> hitByBox = new HashSet<>();
-
-                BoundingBox hitBox = new BoundingBox(
-                        lindwyrmLoc.getX() - 3,
-                        lindwyrmLoc.getY() - 3,
-                        lindwyrmLoc.getZ() - 3,
-                        lindwyrmLoc.getX() + 3,
-                        lindwyrmLoc.getY() + 3,
-                        lindwyrmLoc.getZ() + 3
-                );
-
-                for (Entity entity : world.getNearbyEntities(hitBox)){
-                    if(entity instanceof Player){
-                        hitByBox.add((Player)entity);
-                    }
-                }
-
-                for(Player thisPlayer : hitByBox){
-                    if(!affected.contains(thisPlayer)){
-                        Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "mysticainteractions lindwyrmenter " + thisPlayer.getName());
-                        affected.add(thisPlayer);
-                    }
-                }
-
-                affected.removeIf(thisPlayer -> !hitByBox.contains(thisPlayer));
-
-            }
-        }.runTaskTimer(main, 0, 20);
 
     }
 

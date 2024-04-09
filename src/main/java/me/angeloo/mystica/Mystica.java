@@ -136,7 +136,6 @@ public final class Mystica extends JavaPlugin {
         getCommand("Identify").setExecutor(new Identify());
         getCommand("ManualSave").setExecutor(new ManualSave(this));
         getCommand("DeleteProfile").setExecutor(new DeleteProfile(this));
-        getCommand("ClearStands").setExecutor(new ClearStands());
         getCommand("SetMileStone").setExecutor(new SetMilestone(this));
         getCommand("MysticaInteractions").setExecutor(new MysticaInteractions(this));
         getCommand("PathTool").setExecutor(new PathTool());

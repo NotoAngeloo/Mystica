@@ -105,7 +105,7 @@ public class LightSigil {
         boolean shepard = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("shepard");
 
         purifyingBlast.queueInstantCast(player);
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+
 
         Location spawnStart = player.getLocation().clone();
 
@@ -146,6 +146,17 @@ public class LightSigil {
 
                 sigil.teleport(current);
 
+                double increment = (2 * Math.PI) / 30; // angle between particles
+
+                for (int i = 0; i < 30; i++) {
+                    double angle = i * increment;
+                    double x = current.getX() + (10 * Math.cos(angle));
+                    double z = current.getZ() + (10 * Math.sin(angle));
+                    Location loc = new Location(sigil.getWorld(), x, current.clone().add(0,.5,0).getY(), z);
+
+                    player.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1, 0, 0, 0, 0);
+                }
+
                 if(ran%20==0){
 
                     BoundingBox hitBox = new BoundingBox(
@@ -180,7 +191,7 @@ public class LightSigil {
 
                         }
 
-                        //default
+                        //default shouldnt be player if not in range
                         LivingEntity healedEntity = player;
 
                         double currentMissingHealth = 0;
@@ -197,7 +208,12 @@ public class LightSigil {
                             }
 
                         }
-                        shootHealAtEntity(player, sigil, healedEntity);
+
+                        if(healedEntity.getLocation().distance(current) <= 10){
+                            shootHealAtEntity(player, sigil, healedEntity);
+                        }
+
+
                     }
                     else{
                         for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {

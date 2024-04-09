@@ -262,6 +262,8 @@ public class SpecInventory {
                         ChatColor.of(Color.WHITE) + "damage by 50%.",
                 ChatColor.of(Color.WHITE) + "Landing a crit additionally deals",
                 ChatColor.of(Color.WHITE) + "15% of your Attack.",
+                ChatColor.of(Color.WHITE) + "Increases " + ChatColor.of(mysticColor) + "Purifying Blast " +
+                        ChatColor.of(Color.WHITE) + "damage by 150%.",
                 "",
                 ChatColor.of(levelColor) + "Get Skill",
                 ChatColor.of(mysticColor) + "Arcane Missiles",
@@ -288,12 +290,17 @@ public class SpecInventory {
                 ChatColor.of(mysticColor) + "Light Sigil " +
                         ChatColor.of(Color.WHITE) + "restores allies health",
                 ChatColor.of(Color.WHITE) + "instead",
+                ChatColor.of(Color.WHITE) + "Increases " + ChatColor.of(mysticColor) + "Purifying Blast " +
+                        ChatColor.of(Color.WHITE) + "healing by 50%.",
                 "",
                 ChatColor.of(levelColor) + "Get Skill",
                 ChatColor.of(mysticColor) + "Enlightenment",
                 "",
-                ChatColor.of(Color.WHITE) + "Instantly heal nearby allies",
-                ChatColor.of(Color.WHITE) + "and give them a 10% damage",
+                ChatColor.of(Color.WHITE) + "Your basic attacks and " + ChatColor.of(mysticColor) + "Purifying Blast",
+                ChatColor.of(Color.WHITE) + "Mark your targets with " + ChatColor.of(mysticColor) + "Consolation.",
+                "",
+                ChatColor.of(Color.WHITE) + "Heal all marked targets",
+                ChatColor.of(Color.WHITE) + "and give them a 40% damage",
                 ChatColor.of(Color.WHITE) + "reduction buff for 5 seconds");
     }
 

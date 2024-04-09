@@ -35,6 +35,7 @@ public class MysticBasic {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
 
+    private final Consolation consolation;
     private final EvilSpirit evilSpirit;
 
     private final Map<UUID, BukkitTask> basicRunning = new HashMap<>();
@@ -50,6 +51,7 @@ public class MysticBasic {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
         evilSpirit = mysticAbilities.getEvilSpirit();
+        consolation = mysticAbilities.getConsolation();
     }
 
     public void useBasic(Player player){
@@ -338,6 +340,8 @@ public class MysticBasic {
     private void basicStage(Player player){
         LivingEntity target;
 
+        boolean shepard = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("shepard");
+
         boolean healing = false;
 
         if(targetManager.getPlayerTarget(player) == null){
@@ -485,6 +489,11 @@ public class MysticBasic {
             double healAmount  = damageCalculator.calculateHealing(target, player, healPercent, crit);
 
             changeResourceHandler.addHealthToEntity(target, healAmount, player);
+
+            if(shepard){
+                consolation.apply(player, (Player) target);
+            }
+
 
             Location center = target.getLocation().clone().add(0,1,0);
 

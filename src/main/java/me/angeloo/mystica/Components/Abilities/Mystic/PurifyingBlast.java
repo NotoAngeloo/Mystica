@@ -1,6 +1,8 @@
 package me.angeloo.mystica.Components.Abilities.Mystic;
 
+import me.angeloo.mystica.Components.Abilities.MysticAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
@@ -35,9 +37,10 @@ public class PurifyingBlast {
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
+    private final Consolation consolation;
     private final Map<UUID, Boolean> instantCast = new HashMap<>();
 
-    public PurifyingBlast(Mystica main, AbilityManager manager){
+    public PurifyingBlast(Mystica main, AbilityManager manager, MysticAbilities mysticAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
@@ -48,6 +51,7 @@ public class PurifyingBlast {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        consolation = mysticAbilities.getConsolation();
     }
 
     public void use(Player player){
@@ -136,19 +140,32 @@ public class PurifyingBlast {
 
     private void blastTask(Player player){
 
+        boolean arcane = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("arcane master");
+        boolean shepard = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("shepard");
+
         if(getInstantCast(player)){
-            instantCast.remove(player.getUniqueId());
+            unQueueInstantCast(player);
         }
 
 
-
         double healPercent = getSkillDamage(player);
+
+        if(shepard){
+            healPercent *= 1.5;
+        }
+
+        double skillDamage = getSkillDamage(player);
+
+        if(arcane){
+            skillDamage*=3;
+        }
 
         Location center = player.getLocation().clone();
 
         Set<LivingEntity> hitBySkill = new HashSet<>();
 
-        double finalSkillDamage = getSkillDamage(player);
+        double finalSkillDamage = skillDamage;
+        double finalHealPercent = healPercent;
         new BukkitRunnable(){
             double progress = 0;
             final int maxDistance = 10;
@@ -192,8 +209,11 @@ public class PurifyingBlast {
                             changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
                         }
                         else{
-                            double healAmount  = damageCalculator.calculateHealing(livingEntity, player, healPercent, crit);
+                            double healAmount  = damageCalculator.calculateHealing(livingEntity, player, finalHealPercent, crit);
                             changeResourceHandler.addHealthToEntity(livingEntity, healAmount, player);
+                            if(shepard){
+                                consolation.apply(player, (Player) livingEntity);
+                            }
                         }
 
                         continue;
@@ -233,8 +253,11 @@ public class PurifyingBlast {
 
     public void queueInstantCast(Player player){
         instantCast.put(player.getUniqueId(), true);
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
     }
-    public void unQueueInstantCast(Player player){instantCast.remove(player.getUniqueId());}
+    public void unQueueInstantCast(Player player){
+        instantCast.remove(player.getUniqueId());
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));}
 
     public void resetCooldown(Player player){
         abilityReadyInMap.put(player.getUniqueId(), 0);
@@ -262,6 +285,6 @@ public class PurifyingBlast {
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
 
-        return 45 + ((int)(skillLevel/3));
+        return 15 + ((int)(skillLevel/3));
     }
 }

@@ -286,8 +286,11 @@ public class MysticSkillItem {
                         ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getEnlightenment().getHealPercent(player)) + "% healing",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getMysticAbilities().getEnlightenment().getCost()) + " mana",
                         "",
-                        ChatColor.of(Color.WHITE) + "Instantly heal nearby allies",
-                        ChatColor.of(Color.WHITE) + "and give them a 10% damage",
+                        ChatColor.of(Color.WHITE) + "Your basic attacks and " + ChatColor.of(mysticColor) + "Purifying Blast",
+                        ChatColor.of(Color.WHITE) + "Mark your targets with " + ChatColor.of(mysticColor) + "Consolation.",
+                        "",
+                        ChatColor.of(Color.WHITE) + "Heal all marked targets",
+                        ChatColor.of(Color.WHITE) + "and give them a 40% damage",
                         ChatColor.of(Color.WHITE) + "reduction buff for 5 seconds");
             }
         }

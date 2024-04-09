@@ -15,6 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -31,6 +32,7 @@ public class Enlightenment {
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
+    private final Consolation consolation;
     private final PurifyingBlast purifyingBlast;
 
     public Enlightenment(Mystica main, AbilityManager manager, MysticAbilities mysticAbilities){
@@ -41,6 +43,7 @@ public class Enlightenment {
         changeResourceHandler = main.getChangeResourceHandler();
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
+        consolation = mysticAbilities.getConsolation();
         purifyingBlast = mysticAbilities.getPurifyingBlast();
     }
 
@@ -85,60 +88,68 @@ public class Enlightenment {
     }
 
     private void execute(Player player){
-        //crit heal resets puri blast
 
+        List<Player> targets = consolation.getTargets(player);
+        targets.add(player);
 
+        double increment = (2 * Math.PI) / 16; // angle between particles
 
-        Location center = player.getLocation();
+        for (int i = 0; i < 16; i++) {
+            double angle = i * increment;
+            double x = player.getLocation().getX() + (1 * Math.cos(angle));
+            double z = player.getLocation().getZ() + (1 * Math.sin(angle));
+            Location loc = new Location(player.getLocation().getWorld(), x, (player.getLocation().getY()), z);
 
-        BoundingBox hitBox = new BoundingBox(
-                center.getX() - 10,
-                center.getY() - 10,
-                center.getZ() - 10,
-                center.getX() + 10,
-                center.getY() + 10,
-                center.getZ() + 10
-        );
+            player.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1,0, 0, 0, 0);
+        }
 
-        for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
-
-            if(!(entity instanceof Player)){
-                continue;
-            }
-
-            if(entity instanceof ArmorStand){
-                continue;
-            }
-
-            Player healedPlayer = (Player) entity;
-
-            if (pvpManager.pvpLogic(player, healedPlayer)) {
-                continue;
-            }
+        for (Player target : targets) {
 
             boolean crit = damageCalculator.checkIfCrit(player, 0);
 
-            double healAmount  = damageCalculator.calculateHealing(healedPlayer, player, getHealPercent(player), crit);
+            double healAmount  = damageCalculator.calculateHealing(target, player, getHealPercent(player), crit);
 
             if(crit){
                 purifyingBlast.resetCooldown(player);
             }
 
-            changeResourceHandler.addHealthToEntity(healedPlayer, healAmount, player);
-            buffAndDebuffManager.getDamageReduction().applyDamageReduction(healedPlayer, .9, 20*10);
+            changeResourceHandler.addHealthToEntity(target, healAmount, player);
+            buffAndDebuffManager.getDamageReduction().applyDamageReduction(target, .6, 20*10);
 
-            double increment = (2 * Math.PI) / 16; // angle between particles
+            if(player.getWorld() == target.getWorld()){
+                Location start = player.getLocation();
+                Location end = target.getLocation();
 
-            for (int i = 0; i < 16; i++) {
-                double angle = i * increment;
-                double x = center.getX() + (1 * Math.cos(angle));
-                double z = center.getZ() + (1 * Math.sin(angle));
-                Location loc = new Location(center.getWorld(), x, (center.getY()), z);
+                // Calculate the direction vector between the two locations
+                double distance = start.distance(end);
+                double incrementX = (end.getX() - start.getX()) / distance * 0.5;
+                double incrementY = (end.getY() - start.getY()) / distance * 0.5;
+                double incrementZ = (end.getZ() - start.getZ()) / distance * 0.5;
 
-                healedPlayer.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1,0, 0, 0, 0);
+
+                // Iterate over the points between the start and end locations
+                while (distance > 0) {
+                    // Spawn particle at current location
+
+                    for (int i = 0; i < 16; i++) {
+                        double angle = i * increment;
+                        double x = start.getX() + (1 * Math.cos(angle));
+                        double z = start.getZ() + (1 * Math.sin(angle));
+                        Location loc = new Location(start.getWorld(), x, (start.getY()), z);
+
+                        player.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1,0, 0, 0, 0);
+                    }
+
+
+                    // Move to the next point
+                    start.add(incrementX, incrementY, incrementZ);
+                    distance -= 0.5;
+                }
             }
 
         }
+
+        consolation.removeTargets(player);
 
     }
 

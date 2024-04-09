@@ -11,6 +11,7 @@ public class MysticAbilities {
 
     private final ProfileManager profileManager;
 
+    private final Consolation consolation;
     private final EvilSpirit evilSpirit;
     private final PlagueCurse plagueCurse;
     private final ChaosVoid chaosVoid;
@@ -33,6 +34,7 @@ public class MysticAbilities {
 
     public MysticAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
+        consolation = new Consolation(main);
         evilSpirit = new EvilSpirit(main, manager);
         plagueCurse = new PlagueCurse(main, manager, this);
         chaosVoid = new ChaosVoid(main, manager);
@@ -43,7 +45,7 @@ public class MysticAbilities {
         cursingVoice = new CursingVoice(main, manager);
         healthAbsorb = new HealthAbsorb(main, manager);
         arcaneShield = new ArcaneShield(main, manager);
-        purifyingBlast = new PurifyingBlast(main, manager);
+        purifyingBlast = new PurifyingBlast(main, manager, this);
         forceOfWill = new ForceOfWill(main, manager);
         dreadfall = new Dreadfall(main, manager);
         aurora = new Aurora(main, manager);
@@ -260,4 +262,5 @@ public class MysticAbilities {
     public MysticBasic getMysticBasic(){return mysticBasic;}
     public ArcaneMissiles getArcaneMissiles(){return arcaneMissiles;}
     public Enlightenment getEnlightenment(){return enlightenment;}
+    public Consolation getConsolation(){return consolation;}
 }

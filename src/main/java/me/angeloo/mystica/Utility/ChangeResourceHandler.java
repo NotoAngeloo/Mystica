@@ -56,6 +56,16 @@ public class ChangeResourceHandler {
             return;
         }
 
+        if(entity instanceof Player){
+            Player playerEntity = (Player) entity;
+            if(buffAndDebuffManager.getPassThrough().getIfPassingToPlayer(playerEntity)){
+                subtractHealthFromPlayer(buffAndDebuffManager.getPassThrough().getPassingToPlayer(playerEntity), damage);
+                return;
+            }
+        }
+
+
+
         if(buffAndDebuffManager.getWindWallBuff().getIfWindWallActive(entity)){
 
             if(damager == null){

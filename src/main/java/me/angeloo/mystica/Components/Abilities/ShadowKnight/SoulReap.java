@@ -346,6 +346,8 @@ public class SoulReap {
 
     public void addSoulMark(Player player){
 
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+
         int stacks = getSoulMarks(player);
 
         if(stacks>5){

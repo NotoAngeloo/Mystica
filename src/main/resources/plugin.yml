@@ -103,10 +103,6 @@ commands:
     description: deletes a profile
     usage: /DeleteProfile
     permission: developer
-  ClearStands:
-    description: clears any lingering armorstands
-    usage: /ClearStands
-    permission: developer
   MysticaInteractions:
     description: allows mms to check for mystica data before determining which interaction to start
     usage: /MysticaInteractions <Interaction> <Player>

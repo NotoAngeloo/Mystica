@@ -36,7 +36,7 @@ public class CooldownDisplayer {
             ItemStack abilityItem = allSkillItems.getPlayerSkill(player, skillNumber);
 
             if(cooldown > 0){
-                abilityItem.setAmount(cooldown);
+                abilityItem.setAmount(cooldown+1);
             }
 
             if(!abilityItem.getType().equals(Material.AIR)){
@@ -74,7 +74,7 @@ public class CooldownDisplayer {
         int modelDataAddition = abilityManager.getModelDataAddition(player, abilityNumber);
 
         if(cooldown > 0){
-            abilityItem.setAmount(cooldown);
+            abilityItem.setAmount(cooldown+1);
         }
 
         if(!abilityItem.getType().equals(Material.AIR)){

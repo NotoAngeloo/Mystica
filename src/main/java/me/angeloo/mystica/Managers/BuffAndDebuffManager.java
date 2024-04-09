@@ -34,6 +34,7 @@ public class BuffAndDebuffManager {
     private final ConcoctionDebuff concoctionDebuff;
     private final Pulled pulled;
     private final Blocking blocking;
+    private final PassThrough passThrough;
 
     public BuffAndDebuffManager(Mystica main){
         profileManager = main.getProfileManager();
@@ -62,6 +63,7 @@ public class BuffAndDebuffManager {
         concoctionDebuff = new ConcoctionDebuff(main);
         pulled = new Pulled(main);
         blocking = new Blocking(main);
+        passThrough = new PassThrough();
     }
 
     public Immune getImmune(){return immune;}
@@ -92,6 +94,7 @@ public class BuffAndDebuffManager {
     public ConcoctionDebuff getConcoctionDebuff(){return concoctionDebuff;}
     public Pulled getPulled(){return pulled;}
     public Blocking getBlocking(){return blocking;}
+    public PassThrough getPassThrough(){return passThrough;}
 
     public void removeAllBuffsAndDebuffs(LivingEntity entity){
         flamingSigilBuff.removeAttackBuff(entity);
@@ -123,6 +126,7 @@ public class BuffAndDebuffManager {
             hidden.unhidePlayer(player);
             speedUp.removeSpeedUp(player);
             conjuringForceBuff.removeConjuringForceBuff(player);
+            passThrough.removePassThrough(player);
         }
 
 

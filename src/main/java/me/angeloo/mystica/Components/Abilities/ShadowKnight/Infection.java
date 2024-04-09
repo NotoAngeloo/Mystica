@@ -116,7 +116,6 @@ public class Infection {
 
         abilityReadyInMap.put(player.getUniqueId(), 3);
         new BukkitRunnable(){
-            int count = 0;
             @Override
             public void run(){
 
@@ -131,12 +130,6 @@ public class Infection {
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(player, 1);
-
-                if(count>100){
-                    this.cancel();
-                }
-
-                count++;
             }
         }.runTaskTimer(main, 0,20);
 
@@ -172,6 +165,7 @@ public class Infection {
 
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
+            int count = 0;
             @Override
             public void run(){
 
@@ -207,6 +201,12 @@ public class Infection {
                     cancelTask();
                     startOrResetInfection(player, target);
                 }
+
+                if(count>100){
+                    cancelTask();
+                }
+
+                count++;
             }
 
             private boolean targetStillValid(LivingEntity target){

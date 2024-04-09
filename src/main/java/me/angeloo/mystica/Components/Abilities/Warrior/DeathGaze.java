@@ -390,7 +390,7 @@ public class DeathGaze {
 
     public double getSkillDamage(Player player){
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
-        return 25 + ((int)(skillLevel/10));
+        return 25 + ((int)(skillLevel/3));
     }
 
 }

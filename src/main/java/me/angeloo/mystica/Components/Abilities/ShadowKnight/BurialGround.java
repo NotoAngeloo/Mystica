@@ -182,7 +182,7 @@ public class BurialGround {
         double healAmount = (profileManager.getAnyProfile(player).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player)) * .03;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
-        return healAmount + ((int)(skillLevel/10));
+        return healAmount + ((int)(skillLevel/3));
     }
 
     public double getEnergyRefund(){

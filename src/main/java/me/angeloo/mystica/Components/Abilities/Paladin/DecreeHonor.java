@@ -285,7 +285,7 @@ public class DecreeHonor {
     public double getHealPercent(Player player){
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
-        return 5 +  ((int)(skillLevel/10));
+        return 5 +  ((int)(skillLevel/3));
     }
 
     public double getCost(){

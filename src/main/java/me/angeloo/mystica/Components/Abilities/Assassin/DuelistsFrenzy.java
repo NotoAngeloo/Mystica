@@ -258,7 +258,7 @@ public class DuelistsFrenzy {
 
     public double getSkillDamage(Player player){
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
-        return 150 + ((int)(skillLevel/10));
+        return 150 + ((int)(skillLevel/3));
     }
 
     private void applyFrenzy(Player player){

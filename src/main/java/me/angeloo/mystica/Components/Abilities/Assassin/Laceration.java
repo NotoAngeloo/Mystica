@@ -224,7 +224,7 @@ public class Laceration {
     public double getBleedDamage(Player player){
         double level = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel())
                 + profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
-        return 5 + ((int)(level/10));
+        return 5 + ((int)(level/3));
     }
 
     public double getCost(){

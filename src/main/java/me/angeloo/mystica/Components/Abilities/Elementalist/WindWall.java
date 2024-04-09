@@ -66,7 +66,7 @@ public class WindWall {
 
         int cooldown = 21;
 
-        cooldown = cooldown - ((int)(skillLevel/15));
+        cooldown = cooldown - ((int)(skillLevel/3));
 
         abilityReadyInMap.put(player.getUniqueId(), cooldown);
         new BukkitRunnable() {

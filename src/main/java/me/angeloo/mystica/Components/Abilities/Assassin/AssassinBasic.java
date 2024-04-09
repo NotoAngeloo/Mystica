@@ -219,7 +219,7 @@ public class AssassinBasic {
 
     public double getSkillDamage(Player player){
         double level = profileManager.getAnyProfile(player).getStats().getLevel();
-        return 14 + ((int)(level/10));
+        return 14 + ((int)(level/3));
     }
 
 }

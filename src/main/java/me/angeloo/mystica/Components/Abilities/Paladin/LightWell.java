@@ -346,7 +346,7 @@ public class LightWell {
 
     public double getSkillDamage(Player player){
         double level = profileManager.getAnyProfile(player).getStats().getLevel();
-        return 25 + ((int)(level/10));
+        return 25 + ((int)(level/3));
     }
 
     public double getCost(){

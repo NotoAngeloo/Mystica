@@ -60,7 +60,7 @@ public class WindrushForm {
 
         int cooldown = 15;
 
-        cooldown = cooldown - ((int)(skillLevel/15));
+        cooldown = cooldown - ((int)(skillLevel/3));
 
         execute(player);
         abilityReadyInMap.put(player.getUniqueId(), cooldown);

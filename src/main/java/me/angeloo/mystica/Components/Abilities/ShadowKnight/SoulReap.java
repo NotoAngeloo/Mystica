@@ -378,7 +378,7 @@ public class SoulReap {
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
 
-        return skillDamage + ((int)(skillLevel/10));
+        return skillDamage + ((int)(skillLevel/3));
     }
 
     public double getCost(){

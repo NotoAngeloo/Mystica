@@ -281,7 +281,7 @@ public class OrderShield {
     public double getSkillDamage(Player player){
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
-        return 35 + ((int)(skillLevel/10));
+        return 35 + ((int)(skillLevel/3));
     }
 
     public double getCost(){

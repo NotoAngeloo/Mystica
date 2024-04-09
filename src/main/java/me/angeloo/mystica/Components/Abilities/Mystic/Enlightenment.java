@@ -144,7 +144,7 @@ public class Enlightenment {
 
     public double getHealPercent(Player player){
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
-        return 10 + ((int)(skillLevel/10));
+        return 10 + ((int)(skillLevel/3));
     }
 
     public double getCost(){

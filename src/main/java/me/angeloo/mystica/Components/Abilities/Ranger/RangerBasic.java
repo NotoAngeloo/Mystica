@@ -415,6 +415,6 @@ public class RangerBasic {
             skillDamage = skillDamage * 1.25;
         }
 
-        return skillDamage + ((int)(skillLevel/10));
+        return skillDamage + ((int)(skillLevel/3));
     }
 }

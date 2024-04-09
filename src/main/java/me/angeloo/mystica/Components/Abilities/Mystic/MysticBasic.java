@@ -519,12 +519,12 @@ public class MysticBasic {
     public double getSkillDamage(Player player){
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
 
-       return 5 + ((int)(skillLevel/10));
+       return 5 + ((int)(skillLevel/3));
     }
 
     public double getEvilSpiritDamage(Player player){
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
-        return 40 + ((int)(skillLevel/10));
+        return 40 + ((int)(skillLevel/3));
     }
 
 }

@@ -233,7 +233,7 @@ public class FlyingBlade {
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
 
-        return 25 + ((int)(skillLevel/10));
+        return 25 + ((int)(skillLevel/3));
     }
 
     public int getCooldown(Player player){

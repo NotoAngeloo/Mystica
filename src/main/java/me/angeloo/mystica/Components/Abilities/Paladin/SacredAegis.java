@@ -251,7 +251,7 @@ public class SacredAegis {
     public int getSkillCooldown(Player player){
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
-        return 120 - ((int) skillLevel/15);
+        return 120 - ((int) skillLevel/3);
     }
 
     public int getCooldown(Player player){

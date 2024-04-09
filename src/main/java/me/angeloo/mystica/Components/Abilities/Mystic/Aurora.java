@@ -133,7 +133,7 @@ public class Aurora {
         double healPercent = 10;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
-        healPercent = healPercent +  ((int)(skillLevel/10));
+        healPercent = healPercent +  ((int)(skillLevel/3));
 
         double shieldAmount = (profileManager.getAnyProfile(player).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player) + skillLevel) * .5;
 

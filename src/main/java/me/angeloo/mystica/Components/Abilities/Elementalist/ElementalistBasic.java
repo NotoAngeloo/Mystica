@@ -540,7 +540,7 @@ public class ElementalistBasic {
     public double getSkillDamage(Player player){
 
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
-        return 5 + ((int)(skillLevel/10));
+        return 5 + ((int)(skillLevel/3));
     }
 
 }

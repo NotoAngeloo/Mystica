@@ -232,7 +232,7 @@ public class StarVolley {
 
     public double getSkillDamage(Player player){
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
-        return 60 + ((int)(skillLevel/10));
+        return 60 + ((int)(skillLevel/3));
     }
 
     public double getCost(){

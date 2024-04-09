@@ -199,7 +199,7 @@ public class SpiritualGift {
     public int getDuration(Player player){
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
-        int bonusDuration = (int)(skillLevel/15);
+        int bonusDuration = (int)(skillLevel/3);
         return  (5*20) + (bonusDuration*20);
     }
 

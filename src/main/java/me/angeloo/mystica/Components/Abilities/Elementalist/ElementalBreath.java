@@ -93,7 +93,7 @@ public class ElementalBreath {
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
 
-        int bonus = ((int)(skillLevel/10));
+        int bonus = ((int)(skillLevel/3));
 
         return 15 + bonus;
     }

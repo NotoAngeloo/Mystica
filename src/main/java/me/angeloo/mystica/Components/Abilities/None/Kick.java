@@ -154,7 +154,7 @@ public class Kick {
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
         skillDamage = skillDamage + ((int)(skillLevel/10));
 
-        abilityManager.setSkillRunning(player, true);
+        //abilityManager.setSkillRunning(player, true);
         double finalSkillDamage = skillDamage;
 
         new BukkitRunnable(){
@@ -264,7 +264,7 @@ public class Kick {
 
             private void cancelTask(){
                 this.cancel();
-                abilityManager.setSkillRunning(player, false);
+                //abilityManager.setSkillRunning(player, false);
 
             }
 

@@ -1,8 +1,10 @@
 package me.angeloo.mystica.Components.Abilities.Assassin;
 
 import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
+import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -13,11 +15,13 @@ import java.util.UUID;
 public class Combo {
 
     private final ProfileManager profileManager;
+    private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, Integer> comboPoints = new HashMap<>();
 
-    public Combo(Mystica main){
+    public Combo(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
     public void addComboPoint(Player player){
@@ -38,6 +42,8 @@ public class Combo {
 
         comboPoints.put(player.getUniqueId(), current);
         Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+        cooldownDisplayer.displayCooldown(player, 3);
+        cooldownDisplayer.displayCooldown(player, 4);
     }
 
     public int removeAnAmountOfPoints(Player player, int amount){
@@ -48,7 +54,11 @@ public class Combo {
 
         comboPoints.put(player.getUniqueId(), newAmount);
 
+
+
         Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+        cooldownDisplayer.displayCooldown(player, 3);
+        cooldownDisplayer.displayCooldown(player, 4);
 
         return current;
     }

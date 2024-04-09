@@ -185,6 +185,7 @@ public class IceBolt {
         double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
+            int count = 0;
             @Override
             public void run(){
 
@@ -233,6 +234,11 @@ public class IceBolt {
 
                 }
 
+                if(count>100){
+                    cancelTask();
+                }
+
+                count++;
             }
 
             private boolean targetStillValid(LivingEntity target){

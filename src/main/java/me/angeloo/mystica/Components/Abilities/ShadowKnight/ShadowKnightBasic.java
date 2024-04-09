@@ -243,6 +243,7 @@ public class ShadowKnightBasic {
         }
 
         new BukkitRunnable(){
+            int count = 0;
             double traveled = 0;
             @Override
             public void run(){
@@ -267,14 +268,17 @@ public class ShadowKnightBasic {
                     cancelTask();
                 }
 
-                traveled +=.3;
 
+                if(count>100){
+                    cancelTask();
+                }
+                traveled +=.3;
+                count++;
             }
 
             private void cancelTask(){
                 armorStand.remove();
                 this.cancel();
-
 
             }
 
@@ -394,6 +398,7 @@ public class ShadowKnightBasic {
         }
 
         new BukkitRunnable(){
+            int count = 0;
             double traveled = 0;
             @Override
             public void run(){
@@ -417,6 +422,11 @@ public class ShadowKnightBasic {
                     cancelTask();
                 }
 
+                if(count>100){
+                    cancelTask();
+                }
+
+                count++;
                 traveled +=.3;
 
             }
@@ -544,6 +554,7 @@ public class ShadowKnightBasic {
         }
 
         new BukkitRunnable(){
+            int count = 0;
             double traveled = 0;
             @Override
             public void run(){
@@ -568,6 +579,11 @@ public class ShadowKnightBasic {
                     cancelTask();
                 }
 
+                if(count>100){
+                    cancelTask();
+                }
+
+                count++;
                 traveled +=.3;
 
             }

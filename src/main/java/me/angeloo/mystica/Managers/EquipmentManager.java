@@ -181,6 +181,7 @@ public class EquipmentManager {
                     case "helmet":{
                         selectedMeta.setDisplayName(mysticEquipment.getBaseHelmet().getItemMeta().getDisplayName());
                         selectedMeta.setCustomModelData(3);
+                        selectedMeta.setCustomModelData(3);
                         break;
                     }
                     case "chestplate":{
@@ -378,7 +379,7 @@ public class EquipmentManager {
                         break;
                     }
                 }
-                lore.set(requireLine, assassinEquipment.getBaseWeapon().getItemMeta().getLore().get(6));
+                lore.set(requireLine, warriorEquipment.getBaseWeapon().getItemMeta().getLore().get(6));
                 break;
             }
         }

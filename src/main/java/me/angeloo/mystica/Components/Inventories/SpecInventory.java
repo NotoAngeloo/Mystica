@@ -479,7 +479,7 @@ public class SpecInventory {
     }
 
     private ItemStack getDuelistItem(){
-        return getItem(Material.YELLOW_DYE, 0,
+        return getItem(Material.PINK_DYE, 12,
                 ChatColor.of(assassinColor) + "Duelist",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -504,7 +504,7 @@ public class SpecInventory {
     }
 
     private ItemStack getAlchemistItem(){
-        return getItem(Material.YELLOW_DYE, 0,
+        return getItem(Material.PINK_DYE, 14,
                 ChatColor.of(assassinColor) + "Alchemist",
                 "",
                 ChatColor.of(levelColor) + "Each level",

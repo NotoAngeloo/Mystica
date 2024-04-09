@@ -16,50 +16,44 @@ public class PierceBuff {
 
     private final Mystica main;
 
-    private final Map<UUID, BukkitTask> removeBuffTaskMap = new HashMap<>();
-    private final Map<UUID, Boolean> hasBuff = new HashMap<>();
+    private final Map<UUID, Integer> buffActiveMap = new HashMap<>();
 
     public PierceBuff(Mystica main){
         this.main = main;
     }
 
-    public void applyBuff(LivingEntity entity){
-        hasBuff.put(entity.getUniqueId(), true);
+    public void applyBuff(Player player){
+        buffActiveMap.put(player.getUniqueId(), 11);
 
-        if(removeBuffTaskMap.containsKey(entity.getUniqueId())){
-            removeBuffTaskMap.get(entity.getUniqueId()).cancel();
-        }
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
 
-        if(entity instanceof Player){
-            Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
-        }
-
-        BukkitTask task = new BukkitRunnable(){
-            int count = 0;
+        new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(count >= 10){
+                Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+
+                if(buffActiveMap.get(player.getUniqueId()) <= 0){
                     this.cancel();
-                    removeBuff(entity);
+                    return;
                 }
 
-                count++;
+                int left = buffActiveMap.get(player.getUniqueId()) - 1;
+
+                buffActiveMap.put(player.getUniqueId(), left);
             }
-        }.runTaskTimer(main, 0, 1);
+        }.runTaskTimer(main, 0, 20);
 
-        removeBuffTaskMap.put(entity.getUniqueId(), task);
     }
 
-    //task to remove debuff instead
 
-    public boolean getIfPierceBuff(LivingEntity entity){
-        return hasBuff.getOrDefault(entity.getUniqueId(), false);
+    public int getIfBuffTime(Player player){
+        return buffActiveMap.getOrDefault(player.getUniqueId(), 0);
     }
+
 
     public void removeBuff(LivingEntity entity){
-        hasBuff.remove(entity.getUniqueId());
+        buffActiveMap.remove(entity.getUniqueId());
 
         if(entity instanceof Player){
             Player player = (Player) entity;

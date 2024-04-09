@@ -135,7 +135,7 @@ public class DuelistsFrenzy {
 
         combo.removeAnAmountOfPoints(player, combo.getComboPoints(player));
 
-        abilityManager.setSkillRunning(player, true);
+        //abilityManager.setSkillRunning(player, true);
         double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             boolean up = true;
@@ -245,7 +245,7 @@ public class DuelistsFrenzy {
 
             private void cancelTask(){
                 this.cancel();
-                abilityManager.setSkillRunning(player, false);
+                //abilityManager.setSkillRunning(player, false);
             }
 
         }.runTaskTimer(main, 0, 1);
@@ -290,6 +290,15 @@ public class DuelistsFrenzy {
         }
 
         return cooldown;
+    }
+
+    public int returnWhichItem(Player player){
+
+        if(combo.getComboPoints(player) != 6){
+            return 1;
+        }
+
+        return 0;
     }
 
 }

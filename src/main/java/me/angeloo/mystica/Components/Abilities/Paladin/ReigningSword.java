@@ -150,7 +150,7 @@ public class ReigningSword {
             }
         }.runTaskLater(main, 20*5);
 
-        abilityManager.setSkillRunning(player, true);
+        //abilityManager.setSkillRunning(player, true);
         double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             Vector initialDirection;
@@ -248,7 +248,7 @@ public class ReigningSword {
                 this.cancel();
                 sword.remove();
                 decision.removeDecision(player);
-                abilityManager.setSkillRunning(player, false);
+                //abilityManager.setSkillRunning(player, false);
             }
 
         }.runTaskTimer(main, 0, 1);

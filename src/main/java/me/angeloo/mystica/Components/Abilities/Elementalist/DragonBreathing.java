@@ -169,6 +169,7 @@ public class DragonBreathing {
 
         double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
+            int count = 0;
             final Location end = target.getLocation().add(0, 5, 0);
             final Set<LivingEntity> hitBySkill = new HashSet<>();
             boolean inflamed = false;
@@ -289,6 +290,11 @@ public class DragonBreathing {
                     cancelTask();
                 }
 
+                if(count>=100){
+                    cancelTask();
+                }
+
+                count++;
             }
 
             private void burnTask(LivingEntity entity){
@@ -333,6 +339,7 @@ public class DragonBreathing {
                         }
                     }
                 }.runTaskTimer(main, 0, 20);
+
             }
 
             private void cancelTask() {

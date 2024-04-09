@@ -355,6 +355,7 @@ public class PaladinBasic {
 
         new BukkitRunnable(){
             double traveled = 0;
+            int count = 0;
             @Override
             public void run(){
 
@@ -378,7 +379,12 @@ public class PaladinBasic {
                     cancelTask();
                 }
 
+                if(count>100){
+                    cancelTask();
+                }
+
                 traveled +=.5;
+                count++;
 
             }
 
@@ -508,6 +514,7 @@ public class PaladinBasic {
 
         new BukkitRunnable(){
             double traveled = 0;
+            int count = 0;
             @Override
             public void run(){
 
@@ -531,6 +538,11 @@ public class PaladinBasic {
                     cancelTask();
                 }
 
+                if(count>100){
+                    cancelTask();
+                }
+
+                count++;
                 traveled +=.4;
 
             }
@@ -664,6 +676,7 @@ public class PaladinBasic {
 
         new BukkitRunnable(){
             double traveled = 0;
+            int count = 0;
             @Override
             public void run(){
 
@@ -686,6 +699,11 @@ public class PaladinBasic {
                     cancelTask();
                 }
 
+                if(count>100){
+                    cancelTask();
+                }
+
+                count++;
                 traveled +=.4;
 
             }

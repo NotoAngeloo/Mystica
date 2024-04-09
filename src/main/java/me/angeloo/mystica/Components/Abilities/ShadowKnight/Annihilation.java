@@ -161,7 +161,7 @@ public class Annihilation {
 
 
 
-        abilityManager.setSkillRunning(player, true);
+        //abilityManager.setSkillRunning(player, true);
         double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             int ran = 0;
@@ -232,7 +232,7 @@ public class Annihilation {
             private void cancelTask() {
                 this.cancel();
                 armorStand.remove();
-                abilityManager.setSkillRunning(player, false);
+                //abilityManager.setSkillRunning(player, false);
             }
 
             private void hitTarget(){

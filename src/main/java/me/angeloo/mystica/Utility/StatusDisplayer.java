@@ -515,8 +515,49 @@ public class StatusDisplayer {
                         }
                     }
                 }
+                break;
+            }
+            case "assassin":{
+                int timeLeft = buffAndDebuffManager.getPierceBuff().getIfBuffTime(player);
 
+                if(timeLeft>0){
+                    int icon = iconCalculator.calculate(timeLeft, 10);
 
+                    switch (icon){
+                        case 8:{
+                            statusString.append("\uE04C");
+                            break;
+                        }
+                        case 7:{
+                            statusString.append("\uE04D");
+                            break;
+                        }
+                        case 6:{
+                            statusString.append("\uE04E");
+                            break;
+                        }
+                        case 5:{
+                            statusString.append("\uE04F");
+                            break;
+                        }
+                        case 4:{
+                            statusString.append("\uE050");
+                            break;
+                        }
+                        case 3:{
+                            statusString.append("\uE051");
+                            break;
+                        }
+                        case 2:{
+                            statusString.append("\uE052");
+                            break;
+                        }
+                        case 1:{
+                            statusString.append("\uE053");
+                            break;
+                        }
+                    }
+                }
 
                 break;
             }

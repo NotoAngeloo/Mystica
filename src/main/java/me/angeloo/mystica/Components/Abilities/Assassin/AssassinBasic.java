@@ -99,12 +99,12 @@ public class AssassinBasic {
         Location center = start.clone().add(direction.clone().multiply(3));
 
         BoundingBox hitBox = new BoundingBox(
-                center.getX() - 5,
+                center.getX() - 4,
                 center.getY() - 2,
-                center.getZ() - 5,
-                center.getX() + 5,
+                center.getZ() - 4,
+                center.getX() + 4,
                 center.getY() + 6,
-                center.getZ() + 5
+                center.getZ() + 4
         );
 
         LivingEntity targetToHit = null;

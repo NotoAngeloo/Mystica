@@ -165,6 +165,7 @@ public class OrderShield {
 
         double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
+            int count = 0;
             Vector initialDirection;
             double angle = 0;
             Location targetWasLoc = target.getLocation().clone();
@@ -216,6 +217,11 @@ public class OrderShield {
 
                 angle+=45;
 
+                if(count>100){
+                    cancelTask();
+                }
+
+                count++;
             }
 
             private boolean targetStillValid(LivingEntity target){

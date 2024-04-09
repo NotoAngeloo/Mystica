@@ -159,7 +159,7 @@ public class MeteorCrater {
 
 
 
-        abilityManager.setSkillRunning(player, true);
+        //abilityManager.setSkillRunning(player, true);
         double finalSkillDamage = getSkillDamage(player);
         Vector finalDirection = direction;
         new BukkitRunnable(){
@@ -173,7 +173,7 @@ public class MeteorCrater {
 
                 if(!player.isOnline() || buffAndDebuffManager.getIfInterrupt(player)){
                     cancelTask();
-                    abilityManager.setSkillRunning(player, false);
+                    //abilityManager.setSkillRunning(player, false);
                     return;
                 }
 
@@ -204,7 +204,7 @@ public class MeteorCrater {
 
                     if(distance<=1){
                         land=true;
-                        abilityManager.setSkillRunning(player, false);
+                        //abilityManager.setSkillRunning(player, false);
                     }
                 }
 

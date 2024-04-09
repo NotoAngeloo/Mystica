@@ -58,6 +58,15 @@ public class SpiritualAttack {
 
     public void use(Player player){
 
+        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
+            abilityReadyInMap.put(player.getUniqueId(), 0);
+        }
+
+
+        if(abilityReadyInMap.get(player.getUniqueId()) > 0){
+            return;
+        }
+
         double baseRange = 10;
         double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
         double totalRange = baseRange + extraRange;
@@ -151,9 +160,10 @@ public class SpiritualAttack {
 
 
 
-        abilityManager.setSkillRunning(player, true);
+        //abilityManager.setSkillRunning(player, true);
         double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
+            int count = 0;
             Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
             @Override
             public void run(){
@@ -209,6 +219,12 @@ public class SpiritualAttack {
                     }
                 }
 
+                if(count>100){
+                    cancelTask();
+                }
+
+                count++;
+
             }
 
             private boolean targetStillValid(LivingEntity target){
@@ -231,7 +247,7 @@ public class SpiritualAttack {
             private void cancelTask() {
                 this.cancel();
                 armorStand.remove();
-                abilityManager.setSkillRunning(player, false);
+                //abilityManager.setSkillRunning(player, false);
             }
 
 
@@ -258,7 +274,7 @@ public class SpiritualAttack {
     public double getSkillDamage(Player player){
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
-        return 35 + ((int)(skillLevel/10));
+        return 30 + ((int)(skillLevel/10));
     }
 
 

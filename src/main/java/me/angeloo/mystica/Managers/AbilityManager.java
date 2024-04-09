@@ -21,7 +21,7 @@ public class AbilityManager {
     private final Map<Player, Boolean> castMap = new HashMap<>();
     private final Map<Player, Double> percentCastBar = new HashMap<>();
 
-    private final Map<Player, Boolean> skillRunning = new HashMap<>();
+    //private final Map<Player, Boolean> skillRunning = new HashMap<>();
 
     private final NoneAbilities noneAbilities;
     private final ElementalistAbilities elementalistAbilities;
@@ -64,9 +64,9 @@ public class AbilityManager {
             return;
         }
 
-        if(getIfSkillRunning(player)){
+        /*if(getIfSkillRunning(player)){
             return;
-        }
+        }*/
 
         interruptBasic(player);
 
@@ -116,9 +116,9 @@ public class AbilityManager {
             return;
         }
 
-        if(getIfSkillRunning(player)){
+        /*if(getIfSkillRunning(player)){
             return;
-        }
+        }*/
 
         if(buffAndDebuffManager.getIfCantAct(player)){
             return;
@@ -177,9 +177,9 @@ public class AbilityManager {
             return;
         }
 
-        if(getIfSkillRunning(player)){
+        /*if(getIfSkillRunning(player)){
             return;
-        }
+        }*/
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
@@ -294,7 +294,6 @@ public class AbilityManager {
 
         String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
-        int cooldown;
 
         switch (clazz.toLowerCase()){
             case "elementalist":
@@ -322,11 +321,24 @@ public class AbilityManager {
 
 
                 if(abilityNumber==3){
-                    return assassinAbilities.getWeaknessStrikeModelData(player);
+                    return assassinAbilities.getWeaknessStrike().returnWhichItem(player);
+                }
+
+                if(abilityNumber==4){
+                    return assassinAbilities.getPierce().returnWhichItem(player);
+                }
+
+                if(abilityNumber==8){
+                    return assassinAbilities.getStealth().returnWhichItem(player);
                 }
 
                 if(abilityNumber==-1){
-                    cooldown = assassinAbilities.getUltimateCooldown(player);
+
+                    if(subclass.equalsIgnoreCase("duelist")){
+                        return assassinAbilities.getDuelistsFrenzy().returnWhichItem(player);
+                    }
+
+                    return 0;
                 }
 
 
@@ -376,8 +388,8 @@ public class AbilityManager {
         return percentCastBar.getOrDefault(player, 0.0);
     }
 
-    public boolean getIfSkillRunning(Player player){return skillRunning.getOrDefault(player, false);}
-    public void setSkillRunning(Player player, boolean running){skillRunning.put(player, running);}
+    //public boolean getIfSkillRunning(Player player){return skillRunning.getOrDefault(player, false);}
+    //public void setSkillRunning(Player player, boolean running){skillRunning.put(player, running);}
 
     public void interruptBasic(Player player){
         elementalistAbilities.getElementalistBasic().stopBasicRunning(player);

@@ -241,6 +241,7 @@ public class WarriorBasic {
 
         new BukkitRunnable(){
             double traveled = 0;
+            int count = 0;
             @Override
             public void run(){
 
@@ -262,6 +263,11 @@ public class WarriorBasic {
                     cancelTask();
                 }
 
+                if(count>100){
+                    cancelTask();
+                }
+
+                count++;
                 traveled +=.3;
 
             }
@@ -390,6 +396,7 @@ public class WarriorBasic {
 
         new BukkitRunnable(){
             double traveled = 0;
+            int count = 0;
             @Override
             public void run(){
 
@@ -413,7 +420,12 @@ public class WarriorBasic {
                     cancelTask();
                 }
 
+                if(count>100){
+                    cancelTask();
+                }
+
                 traveled +=.3;
+                count++;
 
             }
 

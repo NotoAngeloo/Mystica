@@ -160,7 +160,7 @@ public class Pierce {
         stand.setLeftArmPose(new EulerAngle(Math.toRadians(0), Math.toRadians(0), Math.toRadians(-0)));
         stand.teleport(start.clone().add(0,.5,0));
 
-        abilityManager.setSkillRunning(player, true);
+        //abilityManager.setSkillRunning(player, true);
 
         double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
@@ -221,7 +221,7 @@ public class Pierce {
 
             private void cancelTask(){
                 this.cancel();
-                abilityManager.setSkillRunning(player, false);
+                //abilityManager.setSkillRunning(player, false);
                 stand.remove();
             }
 
@@ -246,6 +246,15 @@ public class Pierce {
         }
 
         return cooldown;
+    }
+
+    public int returnWhichItem(Player player){
+
+        if(combo.getComboPoints(player) == 0){
+            return 1;
+        }
+
+        return 0;
     }
 
 }

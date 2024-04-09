@@ -110,7 +110,7 @@ public class MagmaSpikes {
 
         double skillDamage = getSkillDamage(player);
 
-        abilityManager.setSkillRunning(player, true);
+        //abilityManager.setSkillRunning(player, true);
         skillDamage = skillDamage / 2;
         double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
@@ -373,7 +373,7 @@ public class MagmaSpikes {
             }
 
             private void cancelTask(){
-                abilityManager.setSkillRunning(player, false);
+                //abilityManager.setSkillRunning(player, false);
                 this.cancel();
                 for(ArmorStand stand : stands){
                     stand.remove();

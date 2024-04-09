@@ -44,7 +44,7 @@ public class AssassinSkillItems {
         switch(number){
 
             case 1:{
-                return getItem(0,
+                return getItem(1,
                         ChatColor.of(assassinColor) + "Assault",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_1_Level_Bonus()),
                         ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getAssault().getSkillDamage(player)) + " power",
@@ -54,7 +54,7 @@ public class AssassinSkillItems {
                         ChatColor.of(Color.WHITE) + "damage and granting 1 combo point");
             }
             case 2:{
-                return getItem(0,
+                return getItem(2,
                         ChatColor.of(assassinColor) + "Laceration",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_2_Level_Bonus()),
                         ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getLaceration().getSkillDamage(player)) + " power",
@@ -66,7 +66,7 @@ public class AssassinSkillItems {
                         ChatColor.of(Color.WHITE) + "and granting 1 combo point");
             }
             case 3:{
-                return getItem(0,
+                return getItem(3,
                         ChatColor.of(assassinColor) + "Weakness Strike",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_3_Level_Bonus()),
                         ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getWeaknessStrike().getSkillDamage(player)) + " power + (15 x combo)",
@@ -78,7 +78,7 @@ public class AssassinSkillItems {
                         ChatColor.of(Color.WHITE) + "increased damage");
             }
             case 4:{
-                return getItem(0,
+                return getItem(5,
                         ChatColor.of(assassinColor) + "Pierce",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_4_Level_Bonus()),
                         ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getPierce().getSkillDamage(player)) + " power",
@@ -90,7 +90,7 @@ public class AssassinSkillItems {
                         ChatColor.of(Color.WHITE) + "defense. Costs 1 combo point");
             }
             case 5:{
-                return getItem(0,
+                return getItem(7,
                         ChatColor.of(assassinColor) + "Dash",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_5_Level_Bonus()),
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getAssassinAbilities().getDash().getCost()) + " mana",
@@ -100,7 +100,7 @@ public class AssassinSkillItems {
                         ChatColor.of(Color.WHITE) + "from stealth");
             }
             case 6:{
-                return getItem(0,
+                return getItem(8,
                         ChatColor.of(assassinColor) + "Blade Tempest",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_6_Level_Bonus()),
                         ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getBladeTempest().getSkillDamage(player)) + " power",
@@ -112,7 +112,7 @@ public class AssassinSkillItems {
                         ChatColor.of(Color.WHITE) + "a combo point if an enemy is hit");
             }
             case 7:{
-                return getItem(0,
+                return getItem(9,
                         ChatColor.of(assassinColor) + "Flying Blade",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_7_Level_Bonus()),
                         ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getFlyingBlade().getSkillDamage(player)) + " power",
@@ -123,7 +123,7 @@ public class AssassinSkillItems {
                         ChatColor.of(Color.WHITE) + "them if it hits");
             }
             case 8:{
-                return getItem(0,
+                return getItem(10,
                         ChatColor.of(assassinColor) + "Stealth",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_8_Level_Bonus()),
                         ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getStealth().getSkillDamage(player)) + " power",
@@ -147,7 +147,7 @@ public class AssassinSkillItems {
 
         switch(subClass.toLowerCase()){
             case "duelist":{
-                return getItem(0,
+                return getItem(12,
                         ChatColor.of(assassinColor) + "Duelist's Frenzy",
                         ChatColor.of(levelColor) + "Level " + level,
                         ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getDuelistsFrenzy().getSkillDamage(player)) + " power",
@@ -161,7 +161,7 @@ public class AssassinSkillItems {
                         ChatColor.of(Color.WHITE) + "Requires 6 Combo Points");
             }
             case "alchemist":{
-                return getItem(0,
+                return getItem(14,
                         ChatColor.of(assassinColor) + "Wicked Concoction",
                         ChatColor.of(levelColor) + "Level " + level,
                         ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getWickedConcoction().getSkillDamage(player)) + " power",

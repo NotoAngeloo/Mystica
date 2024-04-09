@@ -172,7 +172,7 @@ public class DuranceOfTruth {
         //player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, end, 0, 0, 0, 0);
 
 
-        abilityManager.setSkillRunning(player, true);
+        //abilityManager.setSkillRunning(player, true);
         Location finalEnd = end;
         double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
@@ -188,7 +188,7 @@ public class DuranceOfTruth {
             public void run(){
 
                 if(!player.isOnline()){
-                    abilityManager.setSkillRunning(player, false);
+                    //abilityManager.setSkillRunning(player, false);
                     return;
                 }
 
@@ -216,7 +216,7 @@ public class DuranceOfTruth {
                         center = player.getLocation();
                         spawnShields(center);
                         damage();
-                        abilityManager.setSkillRunning(player, false);
+                        //abilityManager.setSkillRunning(player, false);
                     }
                 }
 

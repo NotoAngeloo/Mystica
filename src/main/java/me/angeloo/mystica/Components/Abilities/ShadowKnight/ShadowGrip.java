@@ -160,9 +160,10 @@ public class ShadowGrip {
         assert entityEquipment != null;
         entityEquipment.setHelmet(hand);
 
-        abilityManager.setSkillRunning(player, true);
+        //abilityManager.setSkillRunning(player, true);
         double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
+            int count = 0;
             boolean pulled = false;
             boolean going = true;
             @Override
@@ -266,6 +267,11 @@ public class ShadowGrip {
                     going = false;
                 }
 
+                if(count>100){
+                    cancelTask();
+                }
+
+                count++;
             }
 
             private boolean targetStillValid(LivingEntity target){
@@ -288,7 +294,7 @@ public class ShadowGrip {
             private void cancelTask() {
                 this.cancel();
                 armorStand.remove();
-                abilityManager.setSkillRunning(player, false);
+                //abilityManager.setSkillRunning(player, false);
                 if(pulled){
                     buffAndDebuffManager.getPulled().removePull(target);
                 }

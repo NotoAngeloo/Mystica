@@ -304,6 +304,10 @@ public class TorahSword {
 
                 }
 
+                if(count>100){
+                    cancelTask();
+                }
+
                 count++;
             }
 

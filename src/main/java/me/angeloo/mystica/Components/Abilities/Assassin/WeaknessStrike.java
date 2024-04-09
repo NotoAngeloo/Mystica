@@ -150,7 +150,7 @@ public class WeaknessStrike {
         skillDamage = skillDamage + (15 * combo.removeAnAmountOfPoints(player, combo.getComboPoints(player)));
 
 
-        abilityManager.setSkillRunning(player, true);
+        //abilityManager.setSkillRunning(player, true);
         double finalSkillDamage = skillDamage;
 
         new BukkitRunnable(){
@@ -309,7 +309,7 @@ public class WeaknessStrike {
 
             private void cancelTask(){
                 this.cancel();
-                abilityManager.setSkillRunning(player, false);
+                //abilityManager.setSkillRunning(player, false);
 
                 if(stand!=null){
                     stand.remove();

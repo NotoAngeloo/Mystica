@@ -25,7 +25,7 @@ public class AssassinAbilities {
 
     public AssassinAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
-        combo = new Combo(main);
+        combo = new Combo(main, manager);
         stealth = new Stealth(main, manager);
         duelistsFrenzy = new DuelistsFrenzy(main, manager, this);
         assassinBasic = new AssassinBasic(main, manager, this);
@@ -122,9 +122,7 @@ public class AssassinAbilities {
         return 0;
     }
 
-    public int getWeaknessStrikeModelData(Player player){
-        return weaknessStrike.returnWhichItem(player);
-    }
+
 
     public int getUltimateCooldown(Player player){
         String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();

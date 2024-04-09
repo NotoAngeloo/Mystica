@@ -157,7 +157,7 @@ public class Assault {
         stand.teleport(start.clone().add(0,.5,0));
 
         double skillDamage = getSkillDamage(player);
-        abilityManager.setSkillRunning(player, true);
+        //abilityManager.setSkillRunning(player, true);
         new BukkitRunnable(){
             int angle = 180;
             @Override
@@ -224,7 +224,7 @@ public class Assault {
 
             private void cancelTask(){
                 this.cancel();
-                abilityManager.setSkillRunning(player, false);
+                //abilityManager.setSkillRunning(player, false);
                 stand.remove();
             }
 

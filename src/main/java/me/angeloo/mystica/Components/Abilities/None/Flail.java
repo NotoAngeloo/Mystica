@@ -120,7 +120,7 @@ public class Flail {
         skillDamage = skillDamage + ((int)(skillLevel/10));
 
 
-        abilityManager.setSkillRunning(player, true);
+        //abilityManager.setSkillRunning(player, true);
         double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
             Vector initialDirection;
@@ -209,7 +209,7 @@ public class Flail {
 
             private void cancelTask(){
                 this.cancel();
-                abilityManager.setSkillRunning(player, false);
+                //abilityManager.setSkillRunning(player, false);
             }
 
         }.runTaskTimer(main, 0, 1);

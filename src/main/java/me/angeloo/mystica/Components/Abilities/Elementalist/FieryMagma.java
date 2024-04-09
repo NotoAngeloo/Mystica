@@ -163,6 +163,7 @@ public class FieryMagma {
         double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
+            int count = 0;
             @Override
             public void run(){
 
@@ -207,6 +208,11 @@ public class FieryMagma {
                     startBurningTask();
                 }
 
+                if(count>100){
+                    cancelTask();
+                }
+
+                count++;
             }
 
             private boolean targetStillValid(LivingEntity target){

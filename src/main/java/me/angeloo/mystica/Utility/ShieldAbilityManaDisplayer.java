@@ -137,13 +137,13 @@ public class ShieldAbilityManaDisplayer {
             abilityName = abilityName.replaceAll("§.", "");
 
 
-            return abilityUnicode(abilityName);
+            return abilityUnicode(abilityName, player);
         }
 
         return String.valueOf(cooldown);
     }
 
-    private String abilityUnicode(String abilityName){
+    private String abilityUnicode(String abilityName, Player player){
 
         StringBuilder unicode = new StringBuilder();
 
@@ -179,6 +179,23 @@ public class ShieldAbilityManaDisplayer {
             }
             case "enlightenment":{
                 unicode.append("\uE047");
+                break;
+            }
+            case "duelist's frenzy":{
+
+
+                if(abilityManager.getAssassinAbilities().getDuelistsFrenzy().returnWhichItem(player)==0){
+                    unicode.append("\uE049");
+                }
+                else{
+                    unicode.append("\uE04A");
+                }
+
+
+                break;
+            }
+            case "wicked concoction":{
+                unicode.append("\uE04B");
                 break;
             }
             default:{

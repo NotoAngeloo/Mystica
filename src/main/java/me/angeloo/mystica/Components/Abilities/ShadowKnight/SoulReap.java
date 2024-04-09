@@ -66,6 +66,14 @@ public class SoulReap {
 
     public void use(Player player){
 
+        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
+            abilityReadyInMap.put(player.getUniqueId(), 0);
+        }
+
+
+        if(abilityReadyInMap.get(player.getUniqueId()) > 0){
+            return;
+        }
 
         double baseRange = 8;
 
@@ -175,6 +183,7 @@ public class SoulReap {
             final Location center = target.getLocation().clone();
             int angle = 0;
             double height = 0;
+            int count = 0;
             @Override
             public void run(){
 
@@ -252,8 +261,13 @@ public class SoulReap {
                 double percent = ((double) angle / -1500) * 100;
                 abilityManager.setCastBar(player, percent);
 
+                if(count>100){
+                    cancelTask();
+                }
+
                 height+=.001;
                 angle-=60;
+                count++;
             }
 
             private void slash(){
@@ -360,7 +374,7 @@ public class SoulReap {
     }
 
     public double getSkillDamage(Player player){
-        double skillDamage = 40 + (2*getSoulMarks(player));
+        double skillDamage = 30 + (2*getSoulMarks(player));
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
 

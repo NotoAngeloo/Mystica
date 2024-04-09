@@ -134,7 +134,7 @@ public class DeathGaze {
 
 
 
-        abilityManager.setSkillRunning(player, true);
+        //abilityManager.setSkillRunning(player, true);
         double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             boolean valid = false;
@@ -356,7 +356,7 @@ public class DeathGaze {
             private void cancelTask() {
                 this.cancel();
                 removeArmorStands(armorStands);
-                abilityManager.setSkillRunning(player, false);
+                //abilityManager.setSkillRunning(player, false);
             }
 
             private void removeArmorStands(List<ArmorStand> stands){

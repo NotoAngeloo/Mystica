@@ -95,7 +95,7 @@ public class CorruptHeart {
         Boolean object = false;
         Boolean passive = false;
 
-        float xpYield = .01f;
+        float xpYield = 0f;
 
         Yield yield = new Yield(xpYield, dropItems(level));
         NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(hp, stats, isMovable, immortal, passive, object, yield) {

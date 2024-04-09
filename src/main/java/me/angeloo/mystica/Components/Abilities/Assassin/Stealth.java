@@ -59,6 +59,7 @@ public class Stealth {
         }
 
 
+        cooldownDisplayer.displayCooldown(player, 8);
         combatManager.startCombatTimer(player);
 
         if(!getIfStealthed(player)){
@@ -241,6 +242,15 @@ public class Stealth {
         }
 
         return cooldown;
+    }
+
+    public int returnWhichItem(Player player){
+
+        if(getIfStealthed(player)){
+            return 1;
+        }
+
+        return 0;
     }
 
 }

@@ -116,6 +116,7 @@ public class Infection {
 
         abilityReadyInMap.put(player.getUniqueId(), 3);
         new BukkitRunnable(){
+            int count = 0;
             @Override
             public void run(){
 
@@ -131,6 +132,11 @@ public class Infection {
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(player, 1);
 
+                if(count>100){
+                    this.cancel();
+                }
+
+                count++;
             }
         }.runTaskTimer(main, 0,20);
 
@@ -381,7 +387,7 @@ public class Infection {
     public double getSkillDamage(Player player){
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
-        return 10 + ((int)(skillLevel/10));
+        return 5 + ((int)(skillLevel/10));
     }
 
 }

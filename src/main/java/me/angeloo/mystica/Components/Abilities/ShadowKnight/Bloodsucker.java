@@ -56,6 +56,15 @@ public class Bloodsucker {
 
     public void use(Player player){
 
+        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
+            abilityReadyInMap.put(player.getUniqueId(), 0);
+        }
+
+
+        if(abilityReadyInMap.get(player.getUniqueId()) > 0){
+            return;
+        }
+
         double baseRange = 10;
         double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
         double totalRange = baseRange + extraRange;
@@ -158,6 +167,7 @@ public class Bloodsucker {
         double finalHealAmount = getHealPercent(player);
         double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
+            int count = 0;
             Location targetWasLoc = target.getLocation().clone();
             @Override
             public void run(){
@@ -202,6 +212,12 @@ public class Bloodsucker {
                     changeResourceHandler.addHealthToEntity(player, finalHealAmount, player);
 
                 }
+
+            if(count>100){
+                cancelTask();
+            }
+
+                count++;
             }
 
             private boolean targetStillValid(LivingEntity target){

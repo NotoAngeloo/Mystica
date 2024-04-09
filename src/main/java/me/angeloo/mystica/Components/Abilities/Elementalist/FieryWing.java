@@ -150,7 +150,7 @@ public class FieryWing {
         assert entityEquipment2 != null;
         entityEquipment2.setHelmet(spawnItem);
 
-        abilityManager.setSkillRunning(player, true);
+        //abilityManager.setSkillRunning(player, true);
         double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
             boolean spawned = false;
@@ -166,7 +166,7 @@ public class FieryWing {
 
                 if(ran >= 10 && !spawned){
 
-                    abilityManager.setSkillRunning(player, false);
+                    //abilityManager.setSkillRunning(player, false);
                     spawned = true;
 
                     ArmorStand armorStand = player.getWorld().spawn(player.getLocation().clone().subtract(0,1,0), ArmorStand.class);
@@ -189,6 +189,7 @@ public class FieryWing {
                     Location targetLoc = target.getLocation().clone().subtract(0,1,0);
 
                     new BukkitRunnable(){
+                        int count = 0;
                         Location targetWasLoc = targetLoc.clone();
                         @Override
                         public void run(){
@@ -236,6 +237,11 @@ public class FieryWing {
 
                             }
 
+                            if(count>100){
+                                cancelTask();
+                            }
+
+                            count++;
                         }
 
                         private boolean targetStillValid(LivingEntity target){

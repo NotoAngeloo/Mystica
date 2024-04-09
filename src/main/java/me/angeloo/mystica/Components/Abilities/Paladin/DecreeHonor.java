@@ -159,7 +159,7 @@ public class DecreeHonor {
 
 
 
-        abilityManager.setSkillRunning(player, true);
+        //abilityManager.setSkillRunning(player, true);
         double finalSkillDamage = getSkillDamage(player);
         double finalHealPercent = getHealPercent(player);
         new BukkitRunnable(){
@@ -195,7 +195,7 @@ public class DecreeHonor {
             private void cancelTask(){
                 this.cancel();
                 armorStand.remove();
-                abilityManager.setSkillRunning(player, false);
+                //abilityManager.setSkillRunning(player, false);
 
             }
 

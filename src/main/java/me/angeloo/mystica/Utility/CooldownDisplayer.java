@@ -77,7 +77,7 @@ public class CooldownDisplayer {
             abilityItem.setAmount(cooldown);
         }
 
-        if(cooldown == 1){
+        if(!abilityItem.getType().equals(Material.AIR)){
 
             ItemMeta meta = abilityItem.getItemMeta();
 

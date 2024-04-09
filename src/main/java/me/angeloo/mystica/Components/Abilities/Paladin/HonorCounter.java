@@ -164,6 +164,7 @@ public class HonorCounter {
 
         double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
+            int count = 0;
             @Override
             public void run(){
 
@@ -200,6 +201,12 @@ public class HonorCounter {
                         player.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1,0, 0, 0, 0);
                     }
                 }
+
+                if(count>100){
+                    cancelTask();
+                }
+
+                count++;
 
             }
 

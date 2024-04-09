@@ -214,7 +214,7 @@ public class Stats {
                 attack+=(level*2);
                 health+=(level*15);
                 regen+=(level*1.15);
-                mana_regen=10;
+                mana_regen=8;
                 defence+=(level);
                 magic_defence+=(level);
 

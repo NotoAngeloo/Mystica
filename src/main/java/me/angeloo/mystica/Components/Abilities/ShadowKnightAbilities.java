@@ -102,14 +102,14 @@ public class ShadowKnightAbilities {
         switch (abilityNumber){
             case 1:
                 return infection.getCooldown(player);
-            case 4:
-                return bloodsucker.getCooldown(player);
             case 2:
                 return spiritualAttack.getCooldown(player);
-            case 5:
-                return soulReap.getCooldown(player);
             case 3:
                 return burialGround.getCooldown(player);
+            case 4:
+                return bloodsucker.getCooldown(player);
+            case 5:
+                return soulReap.getCooldown(player);
             case 6:
                 return shadowGrip.getCooldown(player);
             case 7:

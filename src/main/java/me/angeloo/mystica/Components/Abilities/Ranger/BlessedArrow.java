@@ -174,6 +174,7 @@ public class BlessedArrow {
 
         double finalSkillDamage = skillDamage;
         new BukkitRunnable(){
+            int count = 0;
             Location targetWasLoc = target.getLocation().clone();
             @Override
             public void run(){
@@ -234,6 +235,11 @@ public class BlessedArrow {
 
                 }
 
+                if(count>100){
+                    cancelTask();
+                }
+
+                count++;
             }
 
             private boolean targetStillValid(LivingEntity target){

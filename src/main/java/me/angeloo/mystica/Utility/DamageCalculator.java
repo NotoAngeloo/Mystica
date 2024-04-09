@@ -97,7 +97,7 @@ public class DamageCalculator {
                 attack = playerProfile.getTotalAttack() + attackBonus;
                 defence = enemyProfile.getTotalDefense();
 
-                if(buffAndDebuffManager.getPierceBuff().getIfPierceBuff(player)){
+                if(buffAndDebuffManager.getPierceBuff().getIfBuffTime(player)>0){
                     defence = defence * .75;
                 }
 
@@ -123,7 +123,7 @@ public class DamageCalculator {
                 attack = playerProfile.getTotalAttack() + attackBonus;
                 defence = enemyProfile.getStats().getDefense();
 
-                if(buffAndDebuffManager.getPierceBuff().getIfPierceBuff(player)){
+                if(buffAndDebuffManager.getPierceBuff().getIfBuffTime(player)>0){
                     defence = defence * .75;
                 }
 
@@ -180,7 +180,7 @@ public class DamageCalculator {
             attack = enemyProfile.getStats().getAttack() + attackBonus;
             defence = playerProfile.getTotalDefense();
 
-            if(buffAndDebuffManager.getPierceBuff().getIfPierceBuff(entity)){
+            if(buffAndDebuffManager.getPierceBuff().getIfBuffTime(player)>0){
                 defence = defence * .75;
             }
 

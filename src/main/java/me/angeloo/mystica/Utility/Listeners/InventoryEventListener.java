@@ -504,8 +504,8 @@ public class InventoryEventListener implements Listener {
 
         if(skillSlots.contains(slot)){
 
-            if(equipSkills.whichSlotIsTheSkillEquippedIn(slot) != -1){
-                equipSkills.setAnySlot(equipSkills.whichSlotIsTheSkillEquippedIn(slot), 0);
+            if(equipSkills.whichSlotIsTheSkillEquippedIn(slot+1) != -1){
+                equipSkills.setAnySlot(equipSkills.whichSlotIsTheSkillEquippedIn(slot+1), 0);
                 player.openInventory(abilityInventory.openAbilityInventory(player, item, true));
                 return;
             }
@@ -522,6 +522,7 @@ public class InventoryEventListener implements Listener {
         //not 44, its statically ultimate
 
         if(item != null && equipSlots.contains(slot)){
+
 
             int putTheSkillHere = slot - 36;
             equipSkills.setAnySlot(putTheSkillHere, 0);

@@ -174,7 +174,7 @@ public class AnvilDrop {
             return;
         }
 
-        abilityManager.setSkillRunning(player, true);
+        //abilityManager.setSkillRunning(player, true);
         Location finalEnd = end;
         new BukkitRunnable(){
             final double length = start.distance(finalEnd);
@@ -185,7 +185,7 @@ public class AnvilDrop {
 
                 if(!player.isOnline() || profileManager.getAnyProfile(player).getIfDead()){
                     this.cancel();
-                    abilityManager.setSkillRunning(player, false);
+                    //abilityManager.setSkillRunning(player, false);
                     return;
                 }
 
@@ -209,7 +209,7 @@ public class AnvilDrop {
                 if(distance<=1){
                     this.cancel();
                     knockUp(player);
-                    abilityManager.setSkillRunning(player, false);
+                    //abilityManager.setSkillRunning(player, false);
                 }
             }
         }.runTaskTimer(main, 0, 1);

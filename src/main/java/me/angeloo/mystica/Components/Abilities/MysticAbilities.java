@@ -44,7 +44,7 @@ public class MysticAbilities {
         chaosLash = new ChaosLash(main, manager, this);
         cursingVoice = new CursingVoice(main, manager);
         healthAbsorb = new HealthAbsorb(main, manager);
-        arcaneShield = new ArcaneShield(main, manager);
+        arcaneShield = new ArcaneShield(main, manager, this);
         purifyingBlast = new PurifyingBlast(main, manager, this);
         forceOfWill = new ForceOfWill(main, manager);
         dreadfall = new Dreadfall(main, manager);

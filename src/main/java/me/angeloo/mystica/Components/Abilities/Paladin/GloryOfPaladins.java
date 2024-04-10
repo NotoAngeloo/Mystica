@@ -13,6 +13,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
@@ -28,6 +29,8 @@ public class GloryOfPaladins {
     private final DamageCalculator damageCalculator;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
+
+    private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
 
     private final Map<UUID, Integer> buffActiveMap = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -48,7 +51,7 @@ public class GloryOfPaladins {
             abilityReadyInMap.put(player.getUniqueId(), 0);
         }
 
-        if(abilityReadyInMap.get(player.getUniqueId()) > 0){
+        if(getCooldown(player) > 0){
             return;
         }
 
@@ -67,18 +70,22 @@ public class GloryOfPaladins {
 
         execute(player);
 
+        if(cooldownTask.containsKey(player.getUniqueId())){
+            cooldownTask.get(player.getUniqueId()).cancel();
+        }
+
         abilityReadyInMap.put(player.getUniqueId(), 12);
-        new BukkitRunnable(){
+        BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(abilityReadyInMap.get(player.getUniqueId()) <= 0){
+                if(getCooldown(player) <= 0){
                     cooldownDisplayer.displayCooldown(player, 6);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = abilityReadyInMap.get(player.getUniqueId()) - 1;
+                int cooldown = getCooldown(player) - 1;
 
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
@@ -87,6 +94,7 @@ public class GloryOfPaladins {
 
             }
         }.runTaskTimer(main, 0,20);
+        cooldownTask.put(player.getUniqueId(), task);
 
     }
 

@@ -14,6 +14,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
@@ -32,6 +33,7 @@ public class Aurora {
     private final PvpManager pvpManager;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
     public Aurora(Mystica main, AbilityManager manager){
@@ -80,7 +82,7 @@ public class Aurora {
             return;
         }
 
-        if (abilityReadyInMap.get(player.getUniqueId()) > 0) {
+        if (getCooldown(player) > 0) {
             return;
         }
 
@@ -101,18 +103,22 @@ public class Aurora {
 
         execute(player, target);
 
+        if(cooldownTask.containsKey(player.getUniqueId())){
+            cooldownTask.get(player.getUniqueId()).cancel();
+        }
+
         abilityReadyInMap.put(player.getUniqueId(), 35);
-        new BukkitRunnable() {
+        BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
 
-                if (abilityReadyInMap.get(player.getUniqueId()) <= 0) {
+                if (getCooldown(player) <= 0) {
                     cooldownDisplayer.displayCooldown(player, 6);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = abilityReadyInMap.get(player.getUniqueId()) - 1;
+                int cooldown = getCooldown(player) - 1;
 
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
@@ -122,6 +128,7 @@ public class Aurora {
 
             }
         }.runTaskTimer(main, 0, 20);
+        cooldownTask.put(player.getUniqueId(), task);
     }
 
     private void  execute(Player player, LivingEntity target){

@@ -9,6 +9,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
@@ -26,6 +27,7 @@ public class Warp {
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
     public Warp(Mystica main, AbilityManager manager){
@@ -44,7 +46,7 @@ public class Warp {
             abilityReadyInMap.put(player.getUniqueId(), 0);
         }
 
-        if(abilityReadyInMap.get(player.getUniqueId()) > 0){
+        if(getCooldown(player) > 0){
             return;
         }
 
@@ -102,12 +104,16 @@ public class Warp {
         newLoc.setY(newLoc.getY());
         player.teleport(newLoc);
 
+        if(cooldownTask.containsKey(player.getUniqueId())){
+            cooldownTask.get(player.getUniqueId()).cancel();
+        }
+
         abilityReadyInMap.put(player.getUniqueId(), 13);
-        new BukkitRunnable(){
+        BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(abilityReadyInMap.get(player.getUniqueId()) <= 0){
+                if(getCooldown(player) <= 0){
                     if(subclass.equalsIgnoreCase("chaos")){
                         cooldownDisplayer.displayCooldown(player,4);
                     }
@@ -118,7 +124,7 @@ public class Warp {
                     return;
                 }
 
-                int cooldown = abilityReadyInMap.get(player.getUniqueId()) - 1;
+                int cooldown = getCooldown(player) - 1;
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
@@ -133,6 +139,7 @@ public class Warp {
 
             }
         }.runTaskTimer(main, 0,20);
+        cooldownTask.put(player.getUniqueId(), task);
 
     }
 

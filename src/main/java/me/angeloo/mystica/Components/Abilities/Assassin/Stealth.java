@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Assassin;
 
+import me.angeloo.mystica.Components.Abilities.AssassinAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -12,6 +13,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,11 +33,13 @@ public class Stealth {
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Combo combo;
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
     private final Map<UUID, Boolean> stealthed = new HashMap<>();
     private final Map<UUID, Integer> timeInStealth = new HashMap<>();
+    private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
 
-    public Stealth(Mystica main, AbilityManager manager){
+    public Stealth(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         stealthTargetBlacklist = main.getStealthTargetBlacklist();
@@ -46,6 +50,7 @@ public class Stealth {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        combo = assassinAbilities.getCombo();
     }
 
     public void toggle(Player player){
@@ -54,7 +59,7 @@ public class Stealth {
             abilityReadyInMap.put(player.getUniqueId(), 0);
         }
 
-        if(abilityReadyInMap.get(player.getUniqueId()) > 0){
+        if(getCooldown(player) > 0){
             return;
         }
 
@@ -131,7 +136,11 @@ public class Stealth {
 
     private void revealAfterTime(Player player){
 
-        new BukkitRunnable(){
+        if(cooldownTask.containsKey(player.getUniqueId())){
+            cooldownTask.get(player.getUniqueId()).cancel();
+        }
+
+        BukkitTask task = new BukkitRunnable(){
             int count = 0;
             @Override
             public void run(){
@@ -156,6 +165,7 @@ public class Stealth {
                 timeInStealth.put(player.getUniqueId(), count);
             }
         }.runTaskTimer(main, 0, 20);
+        cooldownTask.put(player.getUniqueId(), task);
 
     }
 
@@ -177,13 +187,13 @@ public class Stealth {
             @Override
             public void run(){
 
-                if(abilityReadyInMap.get(player.getUniqueId()) <= 0){
+                if(getCooldown(player) <= 0){
                     cooldownDisplayer.displayCooldown(player, 8);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = abilityReadyInMap.get(player.getUniqueId()) - 1;
+                int cooldown = getCooldown(player) - 1;
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
@@ -198,7 +208,7 @@ public class Stealth {
 
         boolean crit = damageCalculator.checkIfCrit(player, 0);
         double damage = damageCalculator.calculateDamage(player, victim, "Physical", getSkillDamage(player), crit);
-
+        combo.addComboPoint(player);
         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(victim, player));
         changeResourceHandler.subtractHealthFromEntity(victim, damage, player);
     }

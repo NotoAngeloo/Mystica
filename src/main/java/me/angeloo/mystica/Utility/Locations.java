@@ -54,6 +54,22 @@ public class Locations {
         lindwyrm.setCustomName("lindwyrm_cave");
 
 
+        Location teleportLindwyrm = new Location(world, 549, 94, -124);
+        TextDisplay lindwyrmPortal = world.spawn(teleportLindwyrm, TextDisplay.class);
+        lindwyrmPortal.setCustomName("teleport");
+
+        Location teleportOutpost = new Location(world, -107, 72, 376);
+        TextDisplay outpostPortal = world.spawn(teleportOutpost, TextDisplay.class);
+        outpostPortal.setCustomName("teleport");
+
+        Location teleportWindbluff = new Location(world, -124, 70, 110);
+        TextDisplay windbluffPortal = world.spawn(teleportWindbluff, TextDisplay.class);
+        windbluffPortal.setCustomName("teleport");
+
+        Location teleportStonemont = new Location(world, 76, 100, -357);
+        TextDisplay stonemontPortal = world.spawn(teleportStonemont, TextDisplay.class);
+        stonemontPortal.setCustomName("teleport");
+
     }
 
     public Location getNearestLocation(Player player){

@@ -115,6 +115,9 @@ public final class Mystica extends JavaPlugin {
 
         aggroTick = new AggroTick(this);
 
+        locations = new Locations(this);
+        locations.displayDungeonEnters();
+
         getCommand("ToggleGlobalPvp").setExecutor(new ToggleGlobalPvp(this));
         getCommand("SeeRawDamage").setExecutor(new SeeRawDamage(this));
         getCommand("MysticaDamage").setExecutor(new MysticaDamage(this));
@@ -174,8 +177,7 @@ public final class Mystica extends JavaPlugin {
         double size = 1775;
         border.setSize(size);
 
-        locations = new Locations(this);
-        locations.displayDungeonEnters();
+
 
         CreaturesAndCharactersManager creaturesAndCharactersManager = new CreaturesAndCharactersManager(this);
         try {

@@ -21,6 +21,7 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
@@ -39,6 +40,7 @@ public class LightSigil {
     private final PveChecker pveChecker;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
     private final PurifyingBlast purifyingBlast;
@@ -61,7 +63,7 @@ public class LightSigil {
             abilityReadyInMap.put(player.getUniqueId(), 0);
         }
 
-        if (abilityReadyInMap.get(player.getUniqueId()) > 0) {
+        if (getCooldown(player) > 0) {
             return;
         }
 
@@ -76,18 +78,22 @@ public class LightSigil {
 
         execute(player);
 
+        if(cooldownTask.containsKey(player.getUniqueId())){
+            cooldownTask.get(player.getUniqueId()).cancel();
+        }
+
         abilityReadyInMap.put(player.getUniqueId(), 20);
-        new BukkitRunnable() {
+        BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
 
-                if (abilityReadyInMap.get(player.getUniqueId()) <= 0) {
+                if (getCooldown(player) <= 0) {
                     cooldownDisplayer.displayCooldown(player, 8);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = abilityReadyInMap.get(player.getUniqueId()) - 1;
+                int cooldown = getCooldown(player) - 1;
 
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
@@ -96,6 +102,7 @@ public class LightSigil {
 
             }
         }.runTaskTimer(main, 0, 20);
+        cooldownTask.put(player.getUniqueId(), task);
     }
 
     //perhaps made it shoot at enemies too
@@ -191,27 +198,15 @@ public class LightSigil {
 
                         }
 
-                        //default shouldnt be player if not in range
-                        LivingEntity healedEntity = player;
-
-                        double currentMissingHealth = 0;
 
                         for(LivingEntity thisPlayer : hitBySkill){
 
-                            double maxHealth = profileManager.getAnyProfile(thisPlayer).getTotalHealth();
-                            double currentHealth = profileManager.getAnyProfile(thisPlayer).getCurrentHealth();
-                            double missingHealth = maxHealth - currentHealth;
-
-                            if(currentMissingHealth>missingHealth){
-                                currentMissingHealth = missingHealth;
-                                healedEntity = thisPlayer;
+                            if(thisPlayer.getLocation().distance(current) <= 10){
+                                shootHealAtEntity(player, sigil, thisPlayer);
                             }
 
                         }
 
-                        if(healedEntity.getLocation().distance(current) <= 10){
-                            shootHealAtEntity(player, sigil, healedEntity);
-                        }
 
 
                     }

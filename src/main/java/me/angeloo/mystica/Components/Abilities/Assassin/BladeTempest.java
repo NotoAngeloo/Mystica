@@ -19,6 +19,7 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
@@ -38,6 +39,7 @@ public class BladeTempest {
     private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
+    private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
 
     private final Stealth stealth;
     private final Combo combo;
@@ -61,7 +63,7 @@ public class BladeTempest {
             abilityReadyInMap.put(player.getUniqueId(), 0);
         }
 
-        if (abilityReadyInMap.get(player.getUniqueId()) > 0) {
+        if (getCooldown(player) > 0) {
             return;
         }
 
@@ -76,18 +78,22 @@ public class BladeTempest {
 
         execute(player);
 
+        if(cooldownTask.containsKey(player.getUniqueId())){
+            cooldownTask.get(player.getUniqueId()).cancel();
+        }
+
         abilityReadyInMap.put(player.getUniqueId(), 17);
-        new BukkitRunnable() {
+        BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
 
-                if (abilityReadyInMap.get(player.getUniqueId()) <= 0) {
+                if (getCooldown(player) <= 0) {
                     cooldownDisplayer.displayCooldown(player, 6);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = abilityReadyInMap.get(player.getUniqueId()) - 1;
+                int cooldown = getCooldown(player) - 1;
 
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
@@ -96,6 +102,7 @@ public class BladeTempest {
 
             }
         }.runTaskTimer(main, 0, 20);
+        cooldownTask.put(player.getUniqueId(), task);
     }
 
     private void execute(Player player){

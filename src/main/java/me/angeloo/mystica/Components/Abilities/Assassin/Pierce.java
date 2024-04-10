@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
@@ -40,6 +41,7 @@ public class Pierce {
     private final Stealth stealth;
     private final Combo combo;
 
+    private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
     public Pierce(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
@@ -95,7 +97,7 @@ public class Pierce {
         }
 
 
-        if(abilityReadyInMap.get(player.getUniqueId()) > 0){
+        if(getCooldown(player) > 0){
             return;
         }
 
@@ -116,18 +118,22 @@ public class Pierce {
 
         execute(player);
 
+        if(cooldownTask.containsKey(player.getUniqueId())){
+            cooldownTask.get(player.getUniqueId()).cancel();
+        }
+
         abilityReadyInMap.put(player.getUniqueId(), 4);
-        new BukkitRunnable(){
+        BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(abilityReadyInMap.get(player.getUniqueId()) <= 0){
+                if(getCooldown(player) <= 0){
                     cooldownDisplayer.displayCooldown(player, 4);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = abilityReadyInMap.get(player.getUniqueId()) - 1;
+                int cooldown = getCooldown(player) - 1;
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
@@ -135,6 +141,7 @@ public class Pierce {
 
             }
         }.runTaskTimer(main, 0,20);
+        cooldownTask.put(player.getUniqueId(), task);
 
     }
 

@@ -29,6 +29,7 @@ public class ChangeResourceHandler {
 
     private final ProfileManager profileManager;
     private final Map<UUID, Long> lastDamaged = new HashMap<>();
+    private final Map<UUID, Long> lastManaed = new HashMap<>();
 
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final DpsManager dpsManager;
@@ -113,7 +114,6 @@ public class ChangeResourceHandler {
             return;
         }
 
-        double trueHearts = entity.getHealth();
         Stats stats = profileManager.getAnyProfile(entity).getStats();
 
         double actualMaxHealth = stats.getHealth();
@@ -142,8 +142,6 @@ public class ChangeResourceHandler {
 
         entity.setHealth(hearts);
 
-        double newTrueHearts = entity.getHealth();
-
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, false));
 
     }
@@ -167,7 +165,6 @@ public class ChangeResourceHandler {
 
         }
 
-        double trueHearts = player.getHealth();
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
@@ -198,8 +195,6 @@ public class ChangeResourceHandler {
         }
 
         player.setHealth(hearts);
-
-        double newTrueHearts = player.getHealth();
 
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(player, false));
 
@@ -248,9 +243,6 @@ public class ChangeResourceHandler {
         }
         entity.setHealth(hearts);
 
-        double newTrueHearts = entity.getHealth();
-
-        double trueDifference = trueHearts - newTrueHearts;
 
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, true));
     }
@@ -261,7 +253,6 @@ public class ChangeResourceHandler {
             return;
         }
 
-        double trueHearts = player.getHealth();
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
@@ -292,10 +283,6 @@ public class ChangeResourceHandler {
         }
         player.setHealth(hearts);
 
-        double newTrueHearts = player.getHealth();
-
-        double trueDifference = trueHearts - newTrueHearts;
-
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(player, true));
 
     }
@@ -305,6 +292,8 @@ public class ChangeResourceHandler {
         double currentMana = profileManager.getAnyProfile(player).getCurrentMana();
         double newCurrentMana = currentMana - cost;
         profileManager.getAnyProfile(player).setCurrentMana(newCurrentMana);
+
+        lastManaed.put(player.getUniqueId(), (System.currentTimeMillis()/1000));
     }
 
     public void addManaToPlayer(Player player, Double amount){
@@ -458,6 +447,15 @@ public class ChangeResourceHandler {
             player.sendMessage("see all damage dealt toggled true");
         }
 
+    }
+
+    public Long getLastManaed(UUID uuid){
+
+        if(!lastManaed.containsKey(uuid)){
+            lastManaed.put(uuid, (System.currentTimeMillis() / 1000) - 3);
+        }
+
+        return lastManaed.get(uuid);
     }
 
 }

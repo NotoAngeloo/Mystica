@@ -20,6 +20,7 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
@@ -42,6 +43,7 @@ public class DescendingInferno {
     private final FieryWing fieryWing;
     private final ElementalBreath elementalBreath;
 
+    private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
     public DescendingInferno(Mystica main, AbilityManager manager, ElementalistAbilities elementalistAbilities){
@@ -99,7 +101,7 @@ public class DescendingInferno {
             return;
         }
 
-        if(abilityReadyInMap.get(player.getUniqueId()) > 0){
+        if(getCooldown(player) > 0){
             return;
         }
 
@@ -114,12 +116,16 @@ public class DescendingInferno {
 
         execute(player);
 
+        if(cooldownTask.containsKey(player.getUniqueId())){
+            cooldownTask.get(player.getUniqueId()).cancel();
+        }
+
         abilityReadyInMap.put(player.getUniqueId(), 10);
-        new BukkitRunnable(){
+        BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(abilityReadyInMap.get(player.getUniqueId()) <= 0){
+                if(getCooldown(player) <= 0){
                     cooldownDisplayer.displayCooldown(player, 3);
                     this.cancel();
                     return;
@@ -134,6 +140,7 @@ public class DescendingInferno {
 
             }
         }.runTaskTimer(main, 0,20);
+        cooldownTask.put(player.getUniqueId(), task);
 
     }
 

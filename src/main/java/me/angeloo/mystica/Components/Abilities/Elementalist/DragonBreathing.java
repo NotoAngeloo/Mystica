@@ -20,6 +20,7 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
@@ -41,6 +42,7 @@ public class DragonBreathing {
 
     private final FieryWing fieryWing;
 
+    private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
     public DragonBreathing(Mystica main, AbilityManager manager, ElementalistAbilities elementalistAbilities){
@@ -97,7 +99,7 @@ public class DragonBreathing {
             return;
         }
 
-        if(abilityReadyInMap.get(player.getUniqueId()) > 0){
+        if(getCooldown(player) > 0){
             return;
         }
 
@@ -112,18 +114,22 @@ public class DragonBreathing {
 
         execute(player);
 
+        if(cooldownTask.containsKey(player.getUniqueId())){
+            cooldownTask.get(player.getUniqueId()).cancel();
+        }
+
         abilityReadyInMap.put(player.getUniqueId(), 16);
-        new BukkitRunnable(){
+        BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(abilityReadyInMap.get(player.getUniqueId()) <= 0){
+                if(getCooldown(player) <= 0){
                     cooldownDisplayer.displayCooldown(player, 6);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = abilityReadyInMap.get(player.getUniqueId()) - 1;
+                int cooldown = getCooldown(player) - 1;
 
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
@@ -131,6 +137,7 @@ public class DragonBreathing {
                 cooldownDisplayer.displayCooldown(player, 6);
             }
         }.runTaskTimer(main, 0,20);
+        cooldownTask.put(player.getUniqueId(), task);
 
     }
 

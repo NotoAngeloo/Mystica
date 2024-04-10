@@ -27,7 +27,6 @@ public class TheLindwyrm {
 
     public TheLindwyrm(Mystica main){
         profileManager = main.getProfileManager();
-
     }
 
     public void makeProfile(UUID uuid){
@@ -86,10 +85,10 @@ public class TheLindwyrm {
             level = profileManager.getAnyProfile(theClosestPlayersLeader).getPlayerBossLevel().getBossLevel();
         }
 
-        int hp = 10000 + (100 * (level-1));
-        int atk = 50 + (25 * level-1);
-        int def = 40 + (25 * level-1);
-        int mdef = 40 + (25 * level-1);
+        int hp = 10000 + (150 * (level-1));
+        int atk = 50 + (35 * level-1);
+        int def = 40 + (35 * level-1);
+        int mdef = 40 + (35 * level-1);
 
         Stats stats = new Stats(level, atk, hp, 0, 0, 0, def, mdef, 0);
         Boolean isMovable = false;

@@ -19,6 +19,7 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
@@ -38,6 +39,7 @@ public class LightWell {
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
 
+    private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
 
@@ -58,7 +60,7 @@ public class LightWell {
             abilityReadyInMap.put(player.getUniqueId(), 0);
         }
 
-        if (abilityReadyInMap.get(player.getUniqueId()) > 0) {
+        if (getCooldown(player) > 0) {
             return;
         }
 
@@ -72,17 +74,21 @@ public class LightWell {
 
         execute(player);
 
+        if(cooldownTask.containsKey(player.getUniqueId())){
+            cooldownTask.get(player.getUniqueId()).cancel();
+        }
+
         abilityReadyInMap.put(player.getUniqueId(), 30);
-        new BukkitRunnable() {
+        BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
 
-                if (abilityReadyInMap.get(player.getUniqueId()) <= 0) {
+                if (getCooldown(player) <= 0) {
                     this.cancel();
                     return;
                 }
 
-                int cooldown = abilityReadyInMap.get(player.getUniqueId()) - 1;
+                int cooldown = getCooldown(player) - 1;
 
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
@@ -90,6 +96,7 @@ public class LightWell {
 
             }
         }.runTaskTimer(main, 0, 20);
+        cooldownTask.put(player.getUniqueId(), task);
     }
 
     private void execute(Player player){

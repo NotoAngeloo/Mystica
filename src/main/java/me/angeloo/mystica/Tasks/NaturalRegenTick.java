@@ -34,62 +34,67 @@ public class NaturalRegenTick extends BukkitRunnable {
 
             boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
 
-            int maxMana = stats.getMana() + gearStats.getMana();
-            double currentMana = profileManager.getAnyProfile(player).getCurrentMana();
-            double manaRegenRate = stats.getMana_Regen() + gearStats.getMana_Regen();
+            long currentTime = System.currentTimeMillis()/1000;
+            long lastManaed = changeResourceHandler.getLastManaed(player.getUniqueId());
 
-            if(!combatStatus){
-                manaRegenRate = maxMana * .3;
+            if(currentTime - lastManaed >= 3 || profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("shadow knight")){
+                int maxMana = stats.getMana() + gearStats.getMana();
+                double currentMana = profileManager.getAnyProfile(player).getCurrentMana();
+                double manaRegenRate = stats.getMana_Regen() + gearStats.getMana_Regen();
+
+                if(!combatStatus){
+                    manaRegenRate = maxMana * .3;
+                }
+
+                if(currentMana > maxMana){
+                    profileManager.getAnyProfile(player).setCurrentMana(maxMana);
+                }
+
+                if(currentMana < maxMana){
+                    changeResourceHandler.addManaToPlayer(player, manaRegenRate);
+                }
             }
 
-            if(currentMana > maxMana){
-                profileManager.getAnyProfile(player).setCurrentMana(maxMana);
-            }
-
-            if(currentMana < maxMana){
-                changeResourceHandler.addManaToPlayer(player, manaRegenRate);
-            }
 
             player.setFoodLevel(20);
 
-            long currentTime = System.currentTimeMillis()/1000;
+
             long lastDamaged = changeResourceHandler.getLastDamaged(player.getUniqueId());
 
-            if(currentTime - lastDamaged < 3){
-                continue;
-            }
+            if(currentTime - lastDamaged >= 3){
+                AttributeInstance maxHealthAttribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+                assert maxHealthAttribute != null;
 
-            AttributeInstance maxHealthAttribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-            assert maxHealthAttribute != null;
+                if(maxHealthAttribute.getBaseValue() != 20){
+                    maxHealthAttribute.setBaseValue(20);
+                    player.setHealth(20);
+                }
 
-            if(maxHealthAttribute.getBaseValue() != 20){
+
                 maxHealthAttribute.setBaseValue(20);
-                player.setHealth(20);
-            }
 
+                int maxHealth = stats.getHealth() + gearStats.getHealth();
 
-            maxHealthAttribute.setBaseValue(20);
+                double currentHealth = profileManager.getAnyProfile(player).getCurrentHealth();
 
-            int maxHealth = stats.getHealth() + gearStats.getHealth();
+                double regen = (stats.getRegen() + gearStats.getRegen());
 
-            double currentHealth = profileManager.getAnyProfile(player).getCurrentHealth();
+                double healthRegenRate = maxHealth * (regen/100);
 
-            double regen = (stats.getRegen() + gearStats.getRegen());
+                if(!combatStatus){
+                    healthRegenRate = maxHealth * .3;
+                }
 
-            double healthRegenRate = maxHealth * (regen/100);
+                if(currentHealth > maxHealth){
+                    profileManager.getAnyProfile(player).setCurrentHealth(maxHealth);
+                    player.setHealth(20);
+                    currentHealth = maxHealth;
+                }
 
-            if(!combatStatus){
-                healthRegenRate = maxHealth * .3;
-            }
+                if(currentHealth < maxHealth){
+                    changeResourceHandler.addHealthToEntity(player, healthRegenRate, null);
+                }
 
-            if(currentHealth > maxHealth){
-                profileManager.getAnyProfile(player).setCurrentHealth(maxHealth);
-                player.setHealth(20);
-                currentHealth = maxHealth;
-            }
-
-            if(currentHealth < maxHealth){
-                changeResourceHandler.addHealthToEntity(player, healthRegenRate, null);
             }
 
             if(!profileManager.getAnyProfile(player).getIfInCombat() || profileManager.getAnyProfile(player).getIfDead()){

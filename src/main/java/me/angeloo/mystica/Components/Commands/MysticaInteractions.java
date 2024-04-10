@@ -75,14 +75,16 @@ public class MysticaInteractions implements CommandExecutor {
                     Location closest = locations.getNearestLocation(player);
 
                     if (closest.equals(locations.caveOfLindwyrm())) {
-                        profileManager.getAnyProfile(player).getMilestones().setMilestone("visitedloc1", true);
+                        profileManager.getAnyProfile(player).getMilestones().setMilestone("visitedcavelindwyrm", true);
                     } else if (closest.equals(locations.windbluff())) {
-                        profileManager.getAnyProfile(player).getMilestones().setMilestone("visitedloc2", true);
+                        profileManager.getAnyProfile(player).getMilestones().setMilestone("visitedwindbluff", true);
                     } else if (closest.equals(locations.outpost())) {
-                        profileManager.getAnyProfile(player).getMilestones().setMilestone("visitedloc3", true);
+                        profileManager.getAnyProfile(player).getMilestones().setMilestone("visitedoutpost", true);
+                    }
+                    else if(closest.equals(locations.stonemont())){
+                        return true;
                     }
 
-                    server.dispatchCommand(server.getConsoleSender(), "interactions start " + conversation + " " + player.getName());
                     return true;
                 }
                 default:{

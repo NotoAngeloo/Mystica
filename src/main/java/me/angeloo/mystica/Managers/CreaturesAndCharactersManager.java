@@ -24,7 +24,6 @@ public class CreaturesAndCharactersManager {
     private final HansNpc hansNpc;
     private final HoLeeNpc hoLeeNpc;
     private final CaptainNpc captainNpc;
-    private final FastTravelNpc fastTravelNpc;
 
     public CreaturesAndCharactersManager(Mystica main){
         profileManager = main.getProfileManager();
@@ -38,7 +37,6 @@ public class CreaturesAndCharactersManager {
         hansNpc = new HansNpc(main);
         hoLeeNpc = new HoLeeNpc(main);
         captainNpc = new CaptainNpc(main);
-        fastTravelNpc = new FastTravelNpc(main);
     }
 
     public void spawnAllNpcs() throws InvalidMobTypeException {
@@ -47,7 +45,6 @@ public class CreaturesAndCharactersManager {
         hansNpc.spawn();
         hoLeeNpc.spawn();
         captainNpc.spawn();
-        //fastTravelNpc.spawnAll();
     }
 
 

@@ -40,6 +40,22 @@ public class PapiHook extends PlaceholderExpansion {
                 return profileManager.getAnyProfile(player).getPlayerClass();
             }
 
+            if(params.equalsIgnoreCase("tutorial")){
+                return String.valueOf(profileManager.getAnyProfile(player).getMilestones().getMilestone("tutorial"));
+            }
+
+            if(params.equalsIgnoreCase("visitedcavelindwyrm")){
+                return String.valueOf(profileManager.getAnyProfile(player).getMilestones().getMilestone("visitedcavelindwyrm"));
+            }
+
+            if(params.equalsIgnoreCase("visitedwindbluff")){
+                return String.valueOf(profileManager.getAnyProfile(player).getMilestones().getMilestone("visitedwindbluff"));
+            }
+            if(params.equalsIgnoreCase("visitedoutpost")){
+                return String.valueOf(profileManager.getAnyProfile(player).getMilestones().getMilestone("visitedoutpost"));
+            }
+
+
         }
 
         return null;

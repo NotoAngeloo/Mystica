@@ -26,7 +26,7 @@ public class AssassinAbilities {
     public AssassinAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
         combo = new Combo(main, manager);
-        stealth = new Stealth(main, manager);
+        stealth = new Stealth(main, manager, this);
         duelistsFrenzy = new DuelistsFrenzy(main, manager, this);
         assassinBasic = new AssassinBasic(main, manager, this);
         assault = new Assault(main, manager, this);

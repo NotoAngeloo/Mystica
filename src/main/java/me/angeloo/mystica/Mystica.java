@@ -68,6 +68,7 @@ public final class Mystica extends JavaPlugin {
 
     public static Color menuColor = new Color(176, 159, 109);
     public static Color levelColor = new Color(0,102,0);
+    public static Color soulstoneColor = new Color(23, 32, 112);
 
     @Override
     public void onEnable() {
@@ -150,6 +151,7 @@ public final class Mystica extends JavaPlugin {
         getCommand("GiveSoulStone").setExecutor(new GiveSoulStone(this));
         getCommand("FastTravel").setExecutor(new FastTravel(this));
         getCommand("ClassGuide").setExecutor(new ClassGuide(this));
+        getCommand("MysticaQuest").setExecutor(new MysticaQuest(this));
 
         this.getServer().getPluginManager().registerEvents(new InventoryEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new GeneralEventListener(this), this);

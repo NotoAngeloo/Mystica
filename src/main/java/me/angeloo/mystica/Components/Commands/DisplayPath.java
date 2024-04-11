@@ -23,11 +23,36 @@ public class DisplayPath implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
 
-        if(!sender.isOp()){
-            return true;
+
+        if(sender.isOp()){
+            if(args.length==4){
+
+                Player player;
+
+                try{
+                    player = Bukkit.getPlayer(args[0]);
+                }catch (IllegalArgumentException exception){
+                    return true;
+                }
+
+                int x = Integer.parseInt(args[1]);
+                int y = Integer.parseInt(args[2]);
+                int z = Integer.parseInt(args[3]);
+
+                assert player != null;
+                Location destination = new Location(player.getWorld(), x, y, z);
+                pathingManager.calculatePath(player, destination);
+                player.closeInventory();
+
+
+            }
         }
 
-        if(args.length==4){
+        if(args.length==5){
+
+            if(!args[4].equals("please")){
+                return true;
+            }
 
             Player player;
 
@@ -44,9 +69,11 @@ public class DisplayPath implements CommandExecutor {
             assert player != null;
             Location destination = new Location(player.getWorld(), x, y, z);
             pathingManager.calculatePath(player, destination);
+            player.closeInventory();
 
 
         }
+
 
         return true;
     }

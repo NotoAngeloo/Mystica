@@ -113,8 +113,7 @@ commands:
     permission: developer
   DisplayPath:
     description: lets server display a path for the player
-    usage: /PathDisplay <Player> <x> <y> <z>
-    permission: developer
+    usage: /DisplayPath <Player> <x> <y> <z>
   Cosmetic:
     description: lets dev test cosmetics
     usage: /Cosmetic
@@ -130,6 +129,10 @@ commands:
   FastTravel:
     description: lets mms open fast travel ui
     usage: /FastTravel <player>
+    permission: developer
+  MysticaQuest:
+    description: opens quest books
+    usage: /MysticaQuest <player>
     permission: developer
 
 permissions:

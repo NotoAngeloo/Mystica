@@ -51,6 +51,7 @@ public final class Mystica extends JavaPlugin {
     private ChangeResourceHandler changeResourceHandler;
     private DamageHealthBoard damageHealthBoard;
     private Locations locations;
+    private QuestManager questManager;
 
     private BagInventory bagInventory;
 
@@ -118,6 +119,9 @@ public final class Mystica extends JavaPlugin {
 
         locations = new Locations(this);
         locations.displayDungeonEnters();
+
+        questManager = new QuestManager(this);
+
 
         getCommand("ToggleGlobalPvp").setExecutor(new ToggleGlobalPvp(this));
         getCommand("SeeRawDamage").setExecutor(new SeeRawDamage(this));
@@ -310,5 +314,7 @@ public final class Mystica extends JavaPlugin {
     public ProtocolManager getProtocolManager(){
         return protocolManager;
     }
+
+    public QuestManager getQuestManager(){return questManager;}
 
 }

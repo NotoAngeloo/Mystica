@@ -8,45 +8,47 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 
-import static me.angeloo.mystica.Mystica.soulstoneColor;
+public class NewPlayerQuest {
 
-public class LindwyrmQuest {
-
-    public LindwyrmQuest(){
+    public NewPlayerQuest(){
 
     }
 
-    public void openSewerQuest(Player player){
+    public void openNewPlayerQuest(Player player){
 
         ItemStack guide = new ItemStack(Material.WRITTEN_BOOK);
         BookMeta meta = (BookMeta) guide.getItemMeta();
         assert meta != null;
 
         // Set the title and author of the book
-        meta.setTitle("Cave of the Lindwyrm");
+        meta.setTitle("A Helping Hand");
         meta.setAuthor("");
 
-        ComponentBuilder flavorText = new ComponentBuilder(ChatColor.UNDERLINE + "Cave of the Lindwyrm" +
+        ComponentBuilder text = new ComponentBuilder(ChatColor.UNDERLINE + "A Helping Hand" +
                 ChatColor.RESET  +"\n\n" +
-                "A monster who never seems to die lives in the cave east of our town. " +
-                "They may be minding their own business, but we need " + ChatColor.of(soulstoneColor) + "Soul Stones "+ ChatColor.RESET + "to create better equipment."+
-                "\n\n");
+                "Now that you've completed your training, it's time to put it to the test in the real world. And who better to guide you on your first adventure than Captain Moon of the Hunter's Guild?");
+
+        ComponentBuilder text2 = new ComponentBuilder("She's a seasoned veteran, respected by all who know her, and she's always on the lookout for capable recruits like yourself. Seek her out in her office.");
+
+        ComponentBuilder text3 = new ComponentBuilder("Happy Hunting, and may your battles reap great reward!");
+
+
+
 
         //the large blank space is to extend the hitbox of the unicode
         ComponentBuilder builder = new ComponentBuilder(ChatColor.WHITE +"\uE054" + "                                                                                       ")
                 .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mysticaquest " + player.getName() + " accept"));
 
-        flavorText.append(builder.create());
+        text3.append(builder.create());
 
-        meta.spigot().addPage(flavorText.create());
-
-        //this down here works, figure out how to make pages with it
-        /*ComponentBuilder builder = new ComponentBuilder("test").event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/classguide"));
-        meta.spigot().addPage(builder.create());*/
+        meta.spigot().addPage(text.create());
+        meta.spigot().addPage(text2.create());
+        meta.spigot().addPage(text3.create());
 
 
         guide.setItemMeta(meta);
         player.openBook(guide);
 
     }
+
 }

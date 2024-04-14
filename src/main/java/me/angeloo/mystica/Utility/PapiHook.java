@@ -44,17 +44,29 @@ public class PapiHook extends PlaceholderExpansion {
                 return String.valueOf(profileManager.getAnyProfile(player).getMilestones().getMilestone("tutorial"));
             }
 
-            if(params.equalsIgnoreCase("visitedcavelindwyrm")){
-                return String.valueOf(profileManager.getAnyProfile(player).getMilestones().getMilestone("visitedcavelindwyrm"));
+            if(params.equalsIgnoreCase("lindwyrm.visit")){
+                return String.valueOf(profileManager.getAnyProfile(player).getMilestones().getMilestone("lindwyrm.visit"));
             }
 
-            if(params.equalsIgnoreCase("visitedwindbluff")){
-                return String.valueOf(profileManager.getAnyProfile(player).getMilestones().getMilestone("visitedwindbluff"));
-            }
-            if(params.equalsIgnoreCase("visitedoutpost")){
-                return String.valueOf(profileManager.getAnyProfile(player).getMilestones().getMilestone("visitedoutpost"));
+            if(params.equalsIgnoreCase("windbluff.visit")){
+                return String.valueOf(profileManager.getAnyProfile(player).getMilestones().getMilestone("windbluff.visit"));
             }
 
+            if(params.equalsIgnoreCase("tradecamp.visit")){
+                return String.valueOf(profileManager.getAnyProfile(player).getMilestones().getMilestone("tradecamp.visit"));
+            }
+
+            if(params.equalsIgnoreCase("helping_hand.accept")){
+                return String.valueOf(profileManager.getAnyProfile(player).getMilestones().getMilestone("helping_hand.accept"));
+            }
+
+            if(params.equalsIgnoreCase("sewer.accept")){
+                return String.valueOf(profileManager.getAnyProfile(player).getMilestones().getMilestone("sewer.accept"));
+            }
+
+            if(params.equalsIgnoreCase("sewer2.accept")){
+                return String.valueOf(profileManager.getAnyProfile(player).getMilestones().getMilestone("sewer2.accept"));
+            }
 
         }
 

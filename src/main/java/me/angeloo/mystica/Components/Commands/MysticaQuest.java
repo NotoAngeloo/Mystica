@@ -2,6 +2,7 @@ package me.angeloo.mystica.Components.Commands;
 
 import me.angeloo.mystica.Components.Quests.LindwyrmQuest;
 import me.angeloo.mystica.Components.Quests.SewerQuest;
+import me.angeloo.mystica.Managers.QuestManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -12,12 +13,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class MysticaQuest implements CommandExecutor {
 
-    private final SewerQuest sewerQuest;
-    private final LindwyrmQuest lindwyrmQuest;
+    private final QuestManager questManager;
+
 
     public MysticaQuest(Mystica main){
-        sewerQuest = new SewerQuest();
-        lindwyrmQuest = new LindwyrmQuest();
+        questManager = main.getQuestManager();
+
     }
 
     @Override
@@ -26,10 +27,9 @@ public class MysticaQuest implements CommandExecutor {
         Player player;
 
 
+        //uuid, <quest/accept>
+
         if(args.length==2){
-            if(!sender.isOp()){
-                return true;
-            }
 
             try{
                 player = Bukkit.getPlayer(args[0]);
@@ -42,20 +42,21 @@ public class MysticaQuest implements CommandExecutor {
                 return true;
             }
 
-            switch (args[1].toLowerCase()){
-                case "sewer":{
-                    sewerQuest.openSewerQuest(player);
-                    return true;
-                }
-                case "lindwyrm":{
-                    lindwyrmQuest.openSewerQuest(player);
-                    return true;
-                }
-                default:{
-                    Bukkit.getLogger().info("unknown quest");
-                    return true;
+            if(sender instanceof Player){
+                if(player != sender){
+                    if(!sender.isOp()){
+                        return true;
+                    }
                 }
             }
+
+            if (args[1].equalsIgnoreCase("accept")) {
+                questManager.acceptQuest(player);
+                return true;
+            }
+
+            questManager.setQueuedQuest(player, args[1]);
+            return true;
 
         }
 

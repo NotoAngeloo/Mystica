@@ -17,6 +17,7 @@ public class SewerQuest {
 
 
     public SewerQuest(){
+
     }
 
     public void openSewerQuest(Player player){
@@ -29,27 +30,70 @@ public class SewerQuest {
         meta.setTitle("Clean the Sewers");
         meta.setAuthor("");
 
-        ComponentBuilder flavorText = new ComponentBuilder("  " + ChatColor.UNDERLINE + "Cleaning The Sewer" +
+        ComponentBuilder text = new ComponentBuilder(ChatColor.UNDERLINE + "The Archbishop's Request" +
                 ChatColor.RESET  +"\n\n" +
-                "There have been many complaints about some thumping sounds coming from the sewer. " +
-                "The archbishop especially because he cannot focus on resurrecting hunters. ");
+                "I've received word from the Archbishop himself, a rare occurrence indeed. It seems he's in need of someone with your particular skills for a matter of great importance.");
 
-        ComponentBuilder flavorText2 = new ComponentBuilder("In any case, I would like you to investigate." +
-                "\n\n");
+        ComponentBuilder text2 = new ComponentBuilder("The Archbishop's requests are not to be taken lightly. Whatever task he has in mind, it's bound to be significant");
+
+        ComponentBuilder text3 = new ComponentBuilder("Head to the Cathedral and speak with him directly. " +
+                "He'll provide you with the details of the assignment. And remember, if the Archbishop deems it important, it's likely to have far-reaching implications");
+
+
+
 
         //the large blank space is to extend the hitbox of the unicode
         ComponentBuilder builder = new ComponentBuilder(ChatColor.WHITE +"\uE054" + "                                                                                       ")
-                .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/displaypath " + player.getName() + " 57 99 -292 please"));
+                .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mysticaquest " + player.getName() + " accept"));
 
-        flavorText2.append(builder.create());
+        text3.append(builder.create());
 
-        meta.spigot().addPage(flavorText.create());
-        meta.spigot().addPage(flavorText2.create());
+        meta.spigot().addPage(text.create());
+        meta.spigot().addPage(text2.create());
+        meta.spigot().addPage(text3.create());
 
-        //this down here works, figure out how to make pages with it
-        /*ComponentBuilder builder = new ComponentBuilder("test").event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/classguide"));
-        meta.spigot().addPage(builder.create());*/
 
+        guide.setItemMeta(meta);
+        player.openBook(guide);
+
+    }
+
+    public void openSewerQuest2(Player player){
+
+        ItemStack guide = new ItemStack(Material.WRITTEN_BOOK);
+        BookMeta meta = (BookMeta) guide.getItemMeta();
+        assert meta != null;
+
+        // Set the title and author of the book
+        meta.setTitle("Clean the Sewers");
+        meta.setAuthor("");
+
+        ComponentBuilder text = new ComponentBuilder(ChatColor.UNDERLINE + "Heart of Corruption" +
+                ChatColor.RESET  +"\n\n" +
+                "Greetings, hunter. I am grateful for your swift response to our city's plight. There exists a darkness within our midst, a corruption that threatens to consume all that is pure and sacred.");
+
+        ComponentBuilder text2 = new ComponentBuilder("Deep beneath the streets, in the murky depths of the sewers, lies the source of this malevolence: a heart of corruption, pulsating with unholy energy. " +
+                "Its presence troubles me deeply, for I sense a connection, a weight upon my soul that I cannot ignore.");
+
+        ComponentBuilder text3 = new ComponentBuilder("One thing is clear: this darkness must be confronted, lest it spread its taint further into our world.");
+
+        ComponentBuilder text4 = new ComponentBuilder("I call upon you, hunter, to venture into the depths and confront this malevolent force. It is a task of great peril, but one that I trust you are capable of undertaking. ");
+
+        ComponentBuilder text5 = new ComponentBuilder("Subdue this corruption from our city, before it spreads its corruption to those who dwell within its walls.");
+
+
+        //the large blank space is to extend the hitbox of the unicode
+        ComponentBuilder builder = new ComponentBuilder(ChatColor.WHITE +"\uE054" + "                                                                                       ")
+                .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mysticaquest " + player.getName() + " accept"));
+
+        text5.append(builder.create());
+
+
+        meta.spigot().addPage(text.create());
+        meta.spigot().addPage(text2.create());
+        meta.spigot().addPage(text3.create());
+        meta.spigot().addPage(text4.create());
+        meta.spigot().addPage(text5.create());
 
         guide.setItemMeta(meta);
         player.openBook(guide);

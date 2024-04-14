@@ -114,6 +114,7 @@ commands:
   DisplayPath:
     description: lets server display a path for the player
     usage: /DisplayPath <Player> <x> <y> <z>
+    permission: developer
   Cosmetic:
     description: lets dev test cosmetics
     usage: /Cosmetic
@@ -132,8 +133,7 @@ commands:
     permission: developer
   MysticaQuest:
     description: opens quest books
-    usage: /MysticaQuest <player>
-    permission: developer
+    usage: /MysticaQuest <player> <quest/accept>
 
 permissions:
   developer:

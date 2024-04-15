@@ -98,7 +98,7 @@ public class CreaturesAndCharactersManager {
     }
 
     private void makeDefaultNonCombatantProfile(UUID uuid){
-        Stats stats = new Stats(1,1,1,1,10,1,0,0,0);
+        Stats stats = new Stats(1,1,1,1,10,1,0);
         Boolean isMovable = false;
         Boolean immortal = true;
         Boolean object = false;
@@ -182,15 +182,6 @@ public class CreaturesAndCharactersManager {
                 return 0;
             }
 
-            @Override
-            public int getTotalRegen() {
-                return 0;
-            }
-
-            @Override
-            public int getTotalManaRegen() {
-                return 0;
-            }
 
             @Override
             public int getTotalCrit() {
@@ -268,7 +259,7 @@ public class CreaturesAndCharactersManager {
     }
 
     private void makeImmortalObjectProfile(UUID uuid){
-        Stats stats = new Stats(1,1,1,1,10,1,0,0,0);
+        Stats stats = new Stats(1,1,1,1,10,10,0);
         Boolean isMovable = false;
         Boolean immortal = true;
         Boolean object = true;
@@ -351,15 +342,6 @@ public class CreaturesAndCharactersManager {
                 return 0;
             }
 
-            @Override
-            public int getTotalRegen() {
-                return 0;
-            }
-
-            @Override
-            public int getTotalManaRegen() {
-                return 0;
-            }
 
             @Override
             public int getTotalCrit() {

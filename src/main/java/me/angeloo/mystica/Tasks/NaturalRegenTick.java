@@ -40,7 +40,12 @@ public class NaturalRegenTick extends BukkitRunnable {
             if(currentTime - lastManaed >= 3 || profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("shadow knight")){
                 int maxMana = stats.getMana() + gearStats.getMana();
                 double currentMana = profileManager.getAnyProfile(player).getCurrentMana();
-                double manaRegenRate = stats.getMana_Regen() + gearStats.getMana_Regen();
+
+                double manaRegenRate = maxMana * .01;
+
+                if(profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("shadow knight")){
+                    manaRegenRate = maxMana * .08;
+                }
 
                 if(!combatStatus){
                     manaRegenRate = maxMana * .3;
@@ -77,9 +82,7 @@ public class NaturalRegenTick extends BukkitRunnable {
 
                 double currentHealth = profileManager.getAnyProfile(player).getCurrentHealth();
 
-                double regen = (stats.getRegen() + gearStats.getRegen());
-
-                double healthRegenRate = maxHealth * (regen/100);
+                double healthRegenRate = maxHealth * .01;
 
                 if(!combatStatus){
                     healthRegenRate = maxHealth * .3;

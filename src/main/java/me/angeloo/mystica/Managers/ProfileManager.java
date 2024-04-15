@@ -159,7 +159,7 @@ public class ProfileManager {
                     //stats
                     int level = config.getInt(id + ".stats.level");
 
-                    Stats stats = new Stats(level,50,100,100,1,1,50,50, 1);
+                    Stats stats = new Stats(level,50,100,500,50,50, 1);
                     assert playerClass != null;
                     assert playerSubclass != null;
                     stats.setLevelStats(level, playerClass, playerSubclass);
@@ -177,7 +177,7 @@ public class ProfileManager {
                     ItemStack[] equipment = ((List<ItemStack>) config.get(id + ".equipment")).toArray(new ItemStack[6]);
                     PlayerEquipment playerEquipment = new PlayerEquipment(equipment);
 
-                    StatsFromGear gearStats = new StatsFromGear(0, 0, 0, 0, 0, 0, 0, 0);
+                    StatsFromGear gearStats = new StatsFromGear(0, 0, 0,  0, 0, 0);
 
                     int skill1_bonus = config.getInt(id + ".skill_level.skill1_bonus");
                     int skill2_bonus = config.getInt(id + ".skill_level.skill2_bonus");
@@ -315,8 +315,8 @@ public class ProfileManager {
 
     private void createNewPlayerProfile(UUID uuid){
 
-        Stats stats = new Stats(1,50,100,100,1,1,50,50, 1);
-        StatsFromGear gearStats = new StatsFromGear( 0, 0,0,0,0,0,0,0);
+        Stats stats = new Stats(1,50,100,500,50,50, 1);
+        StatsFromGear gearStats = new StatsFromGear( 0, 0,0,0,0,0);
 
         int currentHealth = 20;
         int currentMana = 20;
@@ -446,7 +446,7 @@ public class ProfileManager {
     }
 
     public void createNewDefaultNonPlayerProfile(UUID uuid){
-        Stats stats = new Stats(1,1,1,0,0,0,1,1,0);
+        Stats stats = new Stats(1,1,1,0,1,1,0);
         double currentHealth = 1;
         Yield yield = new Yield(0, null);
         NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(currentHealth, stats, true, false, false, false, yield) {
@@ -519,16 +519,6 @@ public class ProfileManager {
             @Override
             public int getTotalMagicDefense() {
                 return getStats().getMagic_Defense();
-            }
-
-            @Override
-            public int getTotalRegen() {
-                return getStats().getRegen();
-            }
-
-            @Override
-            public int getTotalManaRegen() {
-                return getStats().getMana_Regen();
             }
 
             @Override

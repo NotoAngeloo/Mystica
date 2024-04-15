@@ -37,7 +37,7 @@ public class SewerQuest {
         ComponentBuilder text2 = new ComponentBuilder("The Archbishop's requests are not to be taken lightly. Whatever task he has in mind, it's bound to be significant");
 
         ComponentBuilder text3 = new ComponentBuilder("Head to the Cathedral and speak with him directly. " +
-                "He'll provide you with the details of the assignment. And remember, if the Archbishop deems it important, it's likely to have far-reaching implications");
+                "He'll provide you with the details of the assignment. And remember, if the Archbishop deems it important, it's likely to have far-reaching implications\n");
 
 
 
@@ -79,7 +79,7 @@ public class SewerQuest {
 
         ComponentBuilder text4 = new ComponentBuilder("I call upon you, hunter, to venture into the depths and confront this malevolent force. It is a task of great peril, but one that I trust you are capable of undertaking. ");
 
-        ComponentBuilder text5 = new ComponentBuilder("Subdue this corruption from our city, before it spreads its corruption to those who dwell within its walls.");
+        ComponentBuilder text5 = new ComponentBuilder("Subdue this corruption from our city, before it spreads its corruption to those who dwell within its walls.\n");
 
 
         //the large blank space is to extend the hitbox of the unicode

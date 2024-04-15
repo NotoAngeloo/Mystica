@@ -24,13 +24,11 @@ public class MadDummy {
         int attack = 50;
         int health = 500;
         int mana = 0;
-        int regen = 0;
-        int mana_regen = 0;
         int defense = 50;
         int magic_defense = 50;
         int crit = 0;
 
-        Stats stats = new Stats(level,attack,health,mana,regen,mana_regen,defense,magic_defense,crit);
+        Stats stats = new Stats(level,attack,health,mana,defense,magic_defense,crit);
 
         Boolean isMovable = true;
         Boolean immortal = false;
@@ -114,16 +112,6 @@ public class MadDummy {
             @Override
             public int getTotalMagicDefense() {
                 return magic_defense;
-            }
-
-            @Override
-            public int getTotalRegen() {
-                return regen;
-            }
-
-            @Override
-            public int getTotalManaRegen() {
-                return mana_regen;
             }
 
             @Override

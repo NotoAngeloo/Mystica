@@ -6,20 +6,16 @@ public class Stats {
     private int Attack;
     private int Health;
     private int Mana;
-    private int Regen;
-    private int Mana_Regen;
     private int Defense;
     private int Magic_Defense;
     private int Crit;
 
 
-    public Stats(int level, int attack, int health, int mana, int regen, int mana_regen, int defense, int magic_defense, int crit) {
+    public Stats(int level, int attack, int health, int mana, int defense, int magic_defense, int crit) {
         Level = level;
         Attack = attack;
         Health = health;
         Mana = mana;
-        Regen = regen;
-        Mana_Regen = mana_regen;
         Defense = defense;
         Magic_Defense = magic_defense;
         Crit = crit;
@@ -37,14 +33,6 @@ public class Stats {
 
     public int getMana() {
         return Mana;
-    }
-
-    public int getRegen() {
-        return Regen;
-    }
-
-    public int getMana_Regen() {
-        return Mana_Regen;
     }
 
     public int getDefense() {
@@ -68,9 +56,7 @@ public class Stats {
         //base
         int attack = 50;
         int health = 100;
-        int mana = 200;
-        int regen = 10;
-        int mana_regen = 3;
+        int mana = 500;
         int defence = 50;
         int magic_defence = 50;
         int crit = 1;
@@ -79,9 +65,7 @@ public class Stats {
             case "assassin":{
                 attack+=(level*2);
                 health+=(level*15);
-                regen+=(level*1.15);
                 mana+=(level*100);
-                mana_regen+=(level*1.15);
                 defence+=(level);
                 magic_defence+=(level);
 
@@ -93,7 +77,6 @@ public class Stats {
                     }
                     case "alchemist":{
                         health+=(level*15);
-                        regen+=(level*1.15);
                         break;
                     }
                 }
@@ -105,9 +88,7 @@ public class Stats {
 
                 attack+=(level*2);
                 health+=(level*15);
-                regen+=(level*1.15);
                 mana+=(level*100);
-                mana_regen+=(level*1.15);
                 defence+=(level);
                 magic_defence+=(level);
 
@@ -119,7 +100,6 @@ public class Stats {
                     }
                     case "conjurer":{
                         health+=(level*15);
-                        regen+=(level*1.15);
                         break;
                     }
                 }
@@ -130,9 +110,7 @@ public class Stats {
 
                 attack+=(level*2);
                 health+=(level*15);
-                regen+=(level*1.15);
                 mana+=(level*100);
-                mana_regen+=(level*1.15);
                 defence+=(level);
                 magic_defence+=(level);
 
@@ -145,7 +123,6 @@ public class Stats {
                     }
                     case "shepard":{
                         health+=(level*15);
-                        regen+=(level*1.15);
                         break;
                     }
                 }
@@ -156,9 +133,7 @@ public class Stats {
 
                 attack+=(level*2);
                 health+=(level*15);
-                regen+=(level*1.15);
                 mana+=(level*100);
-                mana_regen+=(level*1.15);
                 defence+=(level);
                 magic_defence+=(level);
 
@@ -170,13 +145,11 @@ public class Stats {
                     }
                     case "divine":{
                         health+=(level*15);
-                        regen+=(level*1.15);
                         break;
                     }
                     case "templar":{
                         attack-=(level);
                         health+=(level*15);
-                        regen+=(level*1.15);
                         defence+=(level);
                         magic_defence+=(level);
                         break;
@@ -188,9 +161,7 @@ public class Stats {
             case "ranger":{
                 attack+=(level*2);
                 health+=(level*15);
-                regen+=(level*1.15);
                 mana+=(level*100);
-                mana_regen+=(level*1.15);
                 defence+=(level);
                 magic_defence+=(level);
 
@@ -202,7 +173,6 @@ public class Stats {
                     }
                     case "animal tamer":{
                         health+=(level*15);
-                        regen+=(level*1.15);
                         break;
                     }
                 }
@@ -213,8 +183,6 @@ public class Stats {
             case "shadow knight":{
                 attack+=(level*2);
                 health+=(level*15);
-                regen+=(level*1.15);
-                mana_regen=8;
                 defence+=(level);
                 magic_defence+=(level);
 
@@ -227,7 +195,6 @@ public class Stats {
                     case "blood":{
                         attack-=(level);
                         health+=(level*15);
-                        regen+=(level*1.15);
                         defence+=(level);
                         magic_defence+=(level);
                         break;
@@ -240,9 +207,7 @@ public class Stats {
 
                 attack+=(level*2);
                 health+=(level*15);
-                regen+=(level*1.15);
                 mana+=(level*100);
-                mana_regen+=(level*1.15);
                 defence+=(level);
                 magic_defence+=(level);
 
@@ -255,7 +220,6 @@ public class Stats {
                     case "gladiator":{
                         attack-=(level);
                         health+=(level*15);
-                        regen+=(level*1.15);
                         defence+=(level);
                         magic_defence+=(level);
                         break;
@@ -267,9 +231,7 @@ public class Stats {
             case "none":{
                 attack+=(level*2);
                 health+=(level*15);
-                regen+=(level*1.15);
                 mana+=(level*100);
-                mana_regen+=(level*1.15);
                 defence+=(level);
                 magic_defence+=(level);
             }
@@ -279,8 +241,6 @@ public class Stats {
         Attack = attack;
         Health = health;
         Mana = mana;
-        Regen = regen;
-        Mana_Regen = mana_regen;
         Defense = defence;
         Magic_Defense = magic_defence;
         Crit = crit;

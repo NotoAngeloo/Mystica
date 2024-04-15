@@ -90,7 +90,7 @@ public class TheLindwyrm {
         int def = 40 + (35 * level-1);
         int mdef = 40 + (35 * level-1);
 
-        Stats stats = new Stats(level, atk, hp, 0, 0, 0, def, mdef, 0);
+        Stats stats = new Stats(level, atk, hp, 0, def, mdef, 0);
         Boolean isMovable = false;
         Boolean immortal = false;
         Boolean object = false;
@@ -176,15 +176,6 @@ public class TheLindwyrm {
                 return getStats().getMagic_Defense();
             }
 
-            @Override
-            public int getTotalRegen() {
-                return getStats().getRegen();
-            }
-
-            @Override
-            public int getTotalManaRegen() {
-                return getStats().getMana_Regen();
-            }
 
             @Override
             public int getTotalCrit() {

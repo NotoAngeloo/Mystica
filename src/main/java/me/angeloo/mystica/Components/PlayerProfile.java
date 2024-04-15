@@ -185,12 +185,6 @@ public abstract class PlayerProfile implements Profile{
     public int getTotalMana(){
         return stats.getMana() + statsFromGear.getMana();
     }
-    public int getTotalRegen(){
-        return stats.getRegen() + statsFromGear.getRegen();
-    }
-    public int getTotalManaRegen(){
-        return stats.getMana_Regen() + statsFromGear.getMana_Regen();
-    }
     public int getTotalDefense(){
         return stats.getDefense() + statsFromGear.getDefense();
     }

@@ -30,7 +30,7 @@ public class NewPlayerQuest {
 
         ComponentBuilder text2 = new ComponentBuilder("She's a seasoned veteran, respected by all who know her, and she's always on the lookout for capable recruits like yourself. Seek her out in her office.");
 
-        ComponentBuilder text3 = new ComponentBuilder("Happy Hunting, and may your battles reap great reward!");
+        ComponentBuilder text3 = new ComponentBuilder("Happy Hunting, and may your battles reap great reward!\n");
 
 
 

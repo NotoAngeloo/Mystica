@@ -70,6 +70,7 @@ public class QuestManager {
                 player.closeInventory();
 
                 profileManager.getAnyProfile(player).getMilestones().setMilestone("helping_hand.accept", true);
+                break;
             }
             case "sewer":{
 

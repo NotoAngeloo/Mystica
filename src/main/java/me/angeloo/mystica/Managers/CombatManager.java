@@ -124,6 +124,10 @@ public class CombatManager {
 
     public void forceCombatEnd(Player player){
 
+        if(!profileManager.getAnyProfile(player).getIfInCombat()){
+            return;
+        }
+
         profileManager.getAnyProfile(player).setIfInCombat(false);
 
         player.getInventory().clear(13);

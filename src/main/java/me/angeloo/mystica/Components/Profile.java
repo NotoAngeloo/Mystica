@@ -29,8 +29,6 @@ public interface Profile {
     int getTotalAttack();
     int getTotalDefense();
     int getTotalMagicDefense();
-    int getTotalRegen();
-    int getTotalManaRegen();
     int getTotalCrit();
 
     String getPlayerClass();

@@ -72,8 +72,6 @@ public class DisplayWeapons {
             lore.add(ChatColor.of(new Color(102, 0, 0)) + "Attack: " + profileManager.getAnyProfile(player).getTotalAttack());
             lore.add(ChatColor.of(new Color(0, 102, 0)) + "Health: " + profileManager.getAnyProfile(player).getTotalHealth());
             lore.add(ChatColor.of(new Color(0, 51, 102)) + "Mana: " + profileManager.getAnyProfile(player).getTotalMana());
-            lore.add(ChatColor.of(new Color(0, 153, 76)) + "Health Regen: " + profileManager.getAnyProfile(player).getTotalRegen());
-            lore.add(ChatColor.of(new Color(153, 0, 153)) + "Mana Regen: " + profileManager.getAnyProfile(player).getTotalManaRegen());
             lore.add(ChatColor.of(new Color(153, 153, 0)) + "Defense: " + profileManager.getAnyProfile(player).getTotalDefense());
             lore.add(ChatColor.of(new Color(0, 102, 102)) + "Magic Defense: " + profileManager.getAnyProfile(player).getTotalMagicDefense());
             lore.add(ChatColor.of(new Color(255, 255, 255)) + "Crit: " + profileManager.getAnyProfile(player).getTotalCrit());

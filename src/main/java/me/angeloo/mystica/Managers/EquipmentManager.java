@@ -647,7 +647,7 @@ public class EquipmentManager {
         newLore.add("");
 
         //get what the base stats are
-        String[] valid = {"attack","health","mana","regen","mana regen","defense","magic defense","crit"};
+        String[] valid = {"attack","health","mana","defense","magic defense","crit"};
         String regex = ".*?((?i:" + String.join("|", valid) + ")\\s*\\+\\s*(\\d+)).*";
         Pattern pattern = Pattern.compile(regex);
         for (String lore : lores){
@@ -729,14 +729,6 @@ public class EquipmentManager {
                             }
                             case "magic_defense":{
                                 newLore.add("Magic Defense + " + statCalculatorOffenseDefense(newLevel, value));
-                                break;
-                            }
-                            case "regen":{
-                                newLore.add("Regen + " + statCalculatorRegen(newLevel, value));
-                                break;
-                            }
-                            case "mana_regen":{
-                                newLore.add("Mana Regen + " + statCalculatorRegen(newLevel, value));
                                 break;
                             }
                         }
@@ -852,8 +844,6 @@ public class EquipmentManager {
         int manaCounter = 0;
         int defenseCounter = 0;
         int magicDefenseCounter = 0;
-        int regenCounter = 0;
-        int manaRegenCounter = 0;
         int skillCounter = 0;
 
         List<String> availableStats = new ArrayList<>();
@@ -863,8 +853,6 @@ public class EquipmentManager {
         availableStats.add("mana");
         availableStats.add("defense");
         availableStats.add("magic defense");
-        availableStats.add("regen");
-        availableStats.add("mana regen");
         availableStats.add("skill");
 
         int randomStatAmount = new Random().nextInt(6);
@@ -913,20 +901,6 @@ public class EquipmentManager {
                     magicDefenseCounter++;
                     if(magicDefenseCounter==2){
                         availableStats.remove("magic defense");
-                    }
-                    break;
-                }
-                case "regen":{
-                    regenCounter++;
-                    if(regenCounter==2){
-                        availableStats.remove("regen");
-                    }
-                    break;
-                }
-                case "mana regen":{
-                    manaRegenCounter++;
-                    if(manaRegenCounter==2){
-                        availableStats.remove("mana regen");
                     }
                     break;
                 }
@@ -998,23 +972,6 @@ public class EquipmentManager {
             newRandomStats.add("Magic Defense + " + statCalculatorOffenseDefense(level, statPercent));
         }
 
-        for(int i=0;i<regenCounter;i++){
-            int statPercent = new Random().nextInt(101);
-
-            NamespacedKey key = new NamespacedKey(Mystica.getPlugin(), "regen_" + i);
-            statRolls.set(key, PersistentDataType.INTEGER, statPercent);
-
-            newRandomStats.add("Regen + " + statCalculatorRegen(level, statPercent));
-        }
-
-        for(int i=0;i<manaRegenCounter;i++){
-            int statPercent = new Random().nextInt(101);
-
-            NamespacedKey key = new NamespacedKey(Mystica.getPlugin(), "mana_regen_" + i);
-            statRolls.set(key, PersistentDataType.INTEGER, statPercent);
-
-            newRandomStats.add("Mana Regen + " + statCalculatorRegen(level, statPercent));
-        }
 
         for(int i=0;i<skillCounter;i++){
             int statAmount = new Random().nextInt(5) + 1;
@@ -1097,24 +1054,6 @@ public class EquipmentManager {
         return rawStat;
     }
 
-    private int statCalculatorRegen(int level, double percent){
-
-        level--;
-
-        double minBase = 1;
-        double maxBase = 3;
-
-        minBase += level;
-        maxBase += 2*level;
-
-        int rawStat;
-
-        double convert = (percent * ((maxBase-minBase) / 100)) + minBase;
-
-        rawStat = (int) convert;
-
-        return rawStat;
-    }
 
     private String getNewBaseStatString(String slot, String stat, int level){
 

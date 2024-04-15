@@ -28,8 +28,6 @@ public class GearReader {
         int attack = 0;
         int health = 0;
         int mana = 0;
-        int regen = 0;
-        int mana_regen = 0;
         int defense = 0;
         int magic_defense = 0;
         int crit = 0;
@@ -102,14 +100,6 @@ public class GearReader {
                         magic_defense+=amount;
                         break;
                     }
-                    case "regen":{
-                        regen+=amount;
-                        break;
-                    }
-                    case "mana regen":{
-                        mana_regen+=amount;
-                        break;
-                    }
                     case "skill 1":{
                         skill_1+=amount;
                         break;
@@ -171,14 +161,6 @@ public class GearReader {
                     }
                     case "mana":{
                         mana+=amount;
-                        break;
-                    }
-                    case "regen":{
-                        regen+=amount;
-                        break;
-                    }
-                    case "mana regen":{
-                        mana_regen+=amount;
                         break;
                     }
                     case "defense":{
@@ -256,14 +238,6 @@ public class GearReader {
                         mana+=amount;
                         break;
                     }
-                    case "regen":{
-                        regen+=amount;
-                        break;
-                    }
-                    case "mana regen":{
-                        mana_regen+=amount;
-                        break;
-                    }
                     case "defense":{
                         defense+=amount;
                         break;
@@ -337,14 +311,6 @@ public class GearReader {
                     }
                     case "mana":{
                         mana+=amount;
-                        break;
-                    }
-                    case "regen":{
-                        regen+=amount;
-                        break;
-                    }
-                    case "mana regen":{
-                        mana_regen+=amount;
                         break;
                     }
                     case "defense":{
@@ -422,14 +388,6 @@ public class GearReader {
                         mana+=amount;
                         break;
                     }
-                    case "regen":{
-                        regen+=amount;
-                        break;
-                    }
-                    case "mana regen":{
-                        mana_regen+=amount;
-                        break;
-                    }
                     case "defense":{
                         defense+=amount;
                         break;
@@ -505,14 +463,6 @@ public class GearReader {
                         mana+=amount;
                         break;
                     }
-                    case "regen":{
-                        regen+=amount;
-                        break;
-                    }
-                    case "mana regen":{
-                        mana_regen+=amount;
-                        break;
-                    }
                     case "defense":{
                         defense+=amount;
                         break;
@@ -563,10 +513,9 @@ public class GearReader {
 
         if(ignoreMana){
             mana = 0;
-            mana_regen = 0;
         }
 
-        profileManager.getAnyProfile(player).getGearStats().setAllGearStats(attack,health,mana,regen,mana_regen,defense,magic_defense,crit);
+        profileManager.getAnyProfile(player).getGearStats().setAllGearStats(attack,health,mana,defense,magic_defense,crit);
         profileManager.getAnyProfile(player).getSkillLevels().setAllSkillLevelBonus(skill_1,skill_2,skill_3,skill_4,skill_5,skill_6,skill_7,skill_8);
 
     }

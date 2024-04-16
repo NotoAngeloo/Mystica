@@ -16,46 +16,53 @@ public class DpsManager {
 
     private final Mystica main;
 
-    private final int dpsTime = 20;
+    private final int dpsTime = 20000;
 
+    private final Map<UUID, Long> lastAdded = new HashMap<>();
+    private final Map<UUID, Double> totalDamage = new HashMap<>();
+    private final Map<UUID, Integer> totalTime = new HashMap<>();
     private final Map<UUID, BukkitTask> savedTask = new HashMap<>();
-    private final Map<UUID, Double> damageSlot = new HashMap<>();
-    private final Map<UUID, LinkedList<Double>> allSaved = new HashMap<>();
+
 
     public DpsManager(Mystica main){
         this.main = main;
     }
 
-    //divine by list length
     public double getRawDps(Player player){
 
-        if(!allSaved.containsKey(player.getUniqueId())){
+        if(!totalDamage.containsKey(player.getUniqueId())){
             return 0;
         }
 
-        return getAllSaved(player) / (double) allSaved.get(player.getUniqueId()).size();
+        return getSaved(player) / getTime(player);
 
     }
 
     public int getRoundedDps(Player player){
-        if(!allSaved.containsKey(player.getUniqueId())){
-            return 0;
-        }
 
-        return (int) Math.round(getAllSaved(player) / (double) allSaved.get(player.getUniqueId()).size());
+        //Bukkit.getLogger().info("Calculation Result of " + getSaved(player) + " / " + getTime(player));
+        //Bukkit.getLogger().info("Result: " + (int) Math.round(getSaved(player)) / getTime(player));
+        return (int) (Math.round(getSaved(player) / getTime(player)));
     }
 
 
 
     public void addToDamageDealt(Player player, double damage){
 
-        double saved = damageSlot.getOrDefault(player.getUniqueId(), 0.0);
-
+        double saved = totalDamage.getOrDefault(player.getUniqueId(), 0.0);
         saved = saved + damage;
-
-        damageSlot.put(player.getUniqueId(), saved);
+        totalDamage.put(player.getUniqueId(), saved);
 
         startTask(player);
+        lastAdded.put(player.getUniqueId(), System.currentTimeMillis());
+    }
+
+    private void addTime(Player player){
+
+        int time = getTime(player);
+        time+=1;
+        totalTime.put(player.getUniqueId(), time);
+
     }
 
     private void startTask(Player player){
@@ -65,21 +72,21 @@ public class DpsManager {
         }
 
         BukkitTask task = new BukkitRunnable(){
-            int ran = 0;
             @Override
             public void run(){
-                addSaved(player, getSaved(player));
-                clearSaved(player);
 
-                if(ran>=dpsTime && getAllSaved(player)==0.0){
+                addTime(player);
+
+                long currentTime = System.currentTimeMillis();
+                long lastAdded = getLastAdded(player);
+
+                if(currentTime - lastAdded >= dpsTime){
                     this.cancel();
-                    removeAllSaved(player);
-                    savedTask.remove(player.getUniqueId());
+                    removeDps(player);
                 }
 
                 Bukkit.getServer().getPluginManager().callEvent(new BoardValueUpdateEvent(player));
 
-                ran++;
             }
         }.runTaskTimer(main, 20, 20);
 
@@ -87,45 +94,12 @@ public class DpsManager {
         savedTask.put(player.getUniqueId(), task);
     }
 
-    public double getAllSaved(Player player){
-
-        if(!allSaved.containsKey(player.getUniqueId())){
-            return 0.0;
-        }
-
-        LinkedList<Double> values = allSaved.get(player.getUniqueId());
-
-        double sum = 0;
-        for(Double value : values){
-            sum+=value;
-        }
-
-        return sum;
-    }
-
-    private void addSaved(Player player, double amount){
-
-        LinkedList<Double> values = allSaved.getOrDefault(player.getUniqueId(), new LinkedList<>());
-
-        values.add(amount);
-
-        if(values.size()>dpsTime){
-            values.removeFirst();
-        }
-
-        allSaved.put(player.getUniqueId(), values);
-    }
-
-    private void clearSaved(Player player){
-        damageSlot.remove(player.getUniqueId());
-    }
-
-    private void removeAllSaved(Player player){
-        allSaved.remove(player.getUniqueId());
+    private int getTime(Player player){
+        return totalTime.getOrDefault(player.getUniqueId(), 1);
     }
 
     private double getSaved(Player player){
-        return damageSlot.getOrDefault(player.getUniqueId(), 0.0);
+        return totalDamage.getOrDefault(player.getUniqueId(), 0.0);
     }
 
     public void removeDps(Player player){
@@ -134,8 +108,17 @@ public class DpsManager {
         }
 
         savedTask.remove(player.getUniqueId());
-        allSaved.remove(player.getUniqueId());
-        damageSlot.remove(player.getUniqueId());
+        totalDamage.remove(player.getUniqueId());
+        totalTime.remove(player.getUniqueId());
+    }
+
+    private long getLastAdded(Player player){
+
+        if(!lastAdded.containsKey(player.getUniqueId())){
+            lastAdded.put(player.getUniqueId(), System.currentTimeMillis());
+        }
+
+        return lastAdded.get(player.getUniqueId());
     }
 
 }

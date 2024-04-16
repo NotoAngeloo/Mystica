@@ -75,18 +75,20 @@ public class SewerQuest {
         ComponentBuilder text2 = new ComponentBuilder("Deep beneath the streets, in the murky depths of the sewers, lies the source of this malevolence: a heart of corruption, pulsating with unholy energy. " +
                 "Its presence troubles me deeply, for I sense a connection, a weight upon my soul that I cannot ignore.");
 
-        ComponentBuilder text3 = new ComponentBuilder("One thing is clear: this darkness must be confronted, lest it spread its taint further into our world.");
+        ComponentBuilder text3 = new ComponentBuilder("It's existence must not be revealed to the general public. Our citizens believe that our barrier prevents this sort of thing from happening.");
 
-        ComponentBuilder text4 = new ComponentBuilder("I call upon you, hunter, to venture into the depths and confront this malevolent force. It is a task of great peril, but one that I trust you are capable of undertaking. ");
+        ComponentBuilder text4 = new ComponentBuilder("One thing is clear: this darkness must be confronted, lest it spread panic within our borders.");
 
-        ComponentBuilder text5 = new ComponentBuilder("Subdue this corruption from our city, before it spreads its corruption to those who dwell within its walls.\n");
+        ComponentBuilder text5 = new ComponentBuilder("I call upon you, hunter, to venture into the depths and confront this malevolent force. It is a task of great peril, but one that I trust you are capable of undertaking. ");
+
+        ComponentBuilder text6 = new ComponentBuilder("Subdue this corruption from our city, before it spreads its corruption to those who dwell within its walls.\n");
 
 
         //the large blank space is to extend the hitbox of the unicode
         ComponentBuilder builder = new ComponentBuilder(ChatColor.WHITE +"\uE054" + "                                                                                       ")
                 .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mysticaquest " + player.getName() + " accept"));
 
-        text5.append(builder.create());
+        text6.append(builder.create());
 
 
         meta.spigot().addPage(text.create());
@@ -94,6 +96,7 @@ public class SewerQuest {
         meta.spigot().addPage(text3.create());
         meta.spigot().addPage(text4.create());
         meta.spigot().addPage(text5.create());
+        meta.spigot().addPage(text6.create());
 
         guide.setItemMeta(meta);
         player.openBook(guide);

@@ -6,6 +6,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
+import me.angeloo.mystica.Utility.ShieldAbilityManaDisplayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -27,6 +28,7 @@ public class Representative {
     private final Mystica main;
 
     private final ProfileManager profileManager;
+    private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
     private final CombatManager combatManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
@@ -42,6 +44,7 @@ public class Representative {
     public Representative(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
+        shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, manager);
         combatManager = manager.getCombatManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
@@ -87,6 +90,7 @@ public class Representative {
                 int cooldown = getCooldown(player) - 1;
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
 
             }
         }.runTaskTimer(main, 0, 20);

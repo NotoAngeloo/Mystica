@@ -16,6 +16,7 @@ import java.util.UUID;
 public class AbilityManager {
 
     private final ProfileManager profileManager;
+    private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
     private final BuffAndDebuffManager buffAndDebuffManager;
 
     private final Map<Player, Boolean> castMap = new HashMap<>();
@@ -51,7 +52,7 @@ public class AbilityManager {
         warriorAbilities = new WarriorAbilities(main, this);
         assassinAbilities = new AssassinAbilities(main, this);
 
-
+        shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, this);
     }
 
     public void useAbility(Player player, int abilityNumber){
@@ -400,5 +401,6 @@ public class AbilityManager {
         shadowKnightAbilities.getShadowKnightBasic().stopBasicRunning(player);
         warriorAbilities.getWarriorBasic().stopBasicRunning(player);
     }
+
 
 }

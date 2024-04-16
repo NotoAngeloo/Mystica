@@ -4,6 +4,7 @@ import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
+import me.angeloo.mystica.Utility.ShieldAbilityManaDisplayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -25,6 +26,7 @@ public class ConjuringForce {
     private final Mystica main;
 
     private final ProfileManager profileManager;
+    private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
     private final CombatManager combatManager;
     private final PvpManager pvpManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
@@ -36,6 +38,7 @@ public class ConjuringForce {
     public ConjuringForce(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
+        shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, manager);
         combatManager = manager.getCombatManager();
         pvpManager = main.getPvpManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
@@ -81,6 +84,7 @@ public class ConjuringForce {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
 
             }
         }.runTaskTimer(main, 0, 20);

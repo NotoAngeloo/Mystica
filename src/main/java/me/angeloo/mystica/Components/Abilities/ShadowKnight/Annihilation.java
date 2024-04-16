@@ -4,10 +4,7 @@ import me.angeloo.mystica.Components.Abilities.ShadowKnightAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.ChangeResourceHandler;
-import me.angeloo.mystica.Utility.CooldownDisplayer;
-import me.angeloo.mystica.Utility.DamageCalculator;
-import me.angeloo.mystica.Utility.PveChecker;
+import me.angeloo.mystica.Utility.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -31,6 +28,7 @@ public class Annihilation {
     private final Mystica main;
 
     private final ProfileManager profileManager;
+    private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
     private final AbilityManager abilityManager;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
@@ -48,6 +46,7 @@ public class Annihilation {
     public Annihilation(Mystica main, AbilityManager manager, ShadowKnightAbilities shadowKnightAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
+        shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, manager);
         abilityManager = manager;
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
@@ -126,8 +125,8 @@ public class Annihilation {
 
                 int cooldown = getCooldown(player) - 1;
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
-
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
 
             }
         }.runTaskTimer(main, 0,20);

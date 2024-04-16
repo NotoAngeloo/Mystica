@@ -1,5 +1,9 @@
 package me.angeloo.mystica.Utility;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.PacketContainer;
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.Profile;
@@ -17,6 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -28,6 +33,7 @@ public class ChangeResourceHandler {
     private final Mystica main;
 
     private final ProfileManager profileManager;
+    private final ProtocolManager protocolManager;
     private final Map<UUID, Long> lastDamaged = new HashMap<>();
     private final Map<UUID, Long> lastManaed = new HashMap<>();
 
@@ -41,6 +47,7 @@ public class ChangeResourceHandler {
 
     public ChangeResourceHandler(Mystica main){
         this.main = main;
+        protocolManager = main.getProtocolManager();
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         dpsManager = main.getDpsManager();
@@ -64,8 +71,6 @@ public class ChangeResourceHandler {
                 return;
             }
         }
-
-
 
         if(buffAndDebuffManager.getWindWallBuff().getIfWindWallActive(entity)){
 
@@ -95,6 +100,8 @@ public class ChangeResourceHandler {
         }
 
         if(damager instanceof Player){
+
+            //displayDamage((Player) damager, entity, damage);
 
             if(seeingRawDamage.getOrDefault(damager.getUniqueId(), false)){
                 damager.sendMessage("you deal " + damage);
@@ -216,7 +223,6 @@ public class ChangeResourceHandler {
             return;
         }
 
-        double trueHearts = entity.getHealth();
 
         Stats stats = profileManager.getAnyProfile(entity).getStats();
         double actualMaxHealth = stats.getHealth();
@@ -318,9 +324,9 @@ public class ChangeResourceHandler {
         float currentXp = player.getExp();
         int currentLevel = player.getLevel();
 
-        //able to change this later
+        // Able to change this later
         int maxServerLevel = 20;
-        if(currentLevel >= maxServerLevel){
+        if (currentLevel >= maxServerLevel) {
             currentLevel = maxServerLevel;
             player.setLevel(currentLevel);
             profileManager.getAnyProfile(player).getStats().setLevel(currentLevel);
@@ -329,9 +335,9 @@ public class ChangeResourceHandler {
 
         currentXp += amount;
 
-        if(currentXp >= 1.0f){
+        while (currentXp >= 1.0f) {
             currentLevel += 1;
-            currentXp = 0.0f;
+            currentXp -= 1.0f;
         }
 
         player.setLevel(currentLevel);
@@ -339,10 +345,11 @@ public class ChangeResourceHandler {
         profileManager.getAnyProfile(player).getStats().setLevel(currentLevel);
     }
 
+
     public Long getLastDamaged(UUID uuid){
 
         if(!lastDamaged.containsKey(uuid)){
-            lastDamaged.put(uuid, (System.currentTimeMillis() / 1000) - 3);
+            lastDamaged.put(uuid, (System.currentTimeMillis() / 1000) - 20);
         }
 
         return lastDamaged.get(uuid);
@@ -452,10 +459,24 @@ public class ChangeResourceHandler {
     public Long getLastManaed(UUID uuid){
 
         if(!lastManaed.containsKey(uuid)){
-            lastManaed.put(uuid, (System.currentTimeMillis() / 1000) - 3);
+            lastManaed.put(uuid, (System.currentTimeMillis() / 1000) - 20);
         }
 
         return lastManaed.get(uuid);
+    }
+
+    public void displayDamage(Player player, LivingEntity target, double amount){
+
+        PacketContainer container = new PacketContainer(PacketType.Play.Server.SPAWN_ENTITY);
+        container.getIntegers().write(1, 100);
+
+        container.getDoubles().write(0, target.getLocation().getX());
+        container.getDoubles().write(1, target.getLocation().getY() + 1);
+        container.getDoubles().write(2, target.getLocation().getZ());
+
+        protocolManager.sendServerPacket(player, container);
+
+
     }
 
 }

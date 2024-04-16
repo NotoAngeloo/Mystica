@@ -4,6 +4,7 @@ import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
+import me.angeloo.mystica.Utility.ShieldAbilityManaDisplayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -21,6 +22,7 @@ public class WildRoar {
 
     private final Mystica main;
     private final ProfileManager profileManager;
+    private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final PvpManager pvpManager;
     private final CombatManager combatManager;
@@ -32,6 +34,7 @@ public class WildRoar {
     public WildRoar(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
+        shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, manager);
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         pvpManager = main.getPvpManager();
         combatManager = manager.getCombatManager();
@@ -75,8 +78,8 @@ public class WildRoar {
 
                 int cooldown = getCooldown(player) - 1;
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
-
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
 
             }
         }.runTaskTimer(main, 0,20);

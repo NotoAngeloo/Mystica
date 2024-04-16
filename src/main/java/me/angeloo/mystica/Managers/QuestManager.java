@@ -69,7 +69,7 @@ public class QuestManager {
                 pathingManager.calculatePath(player, destination);
                 player.closeInventory();
 
-                profileManager.getAnyProfile(player).getMilestones().setMilestone("helping_hand.accept", true);
+                profileManager.getAnyProfile(player).getMilestones().setMilestone("helping_hand_accept", true);
                 break;
             }
             case "sewer":{
@@ -78,7 +78,7 @@ public class QuestManager {
                 pathingManager.calculatePath(player, destination);
                 player.closeInventory();
 
-                profileManager.getAnyProfile(player).getMilestones().setMilestone("sewer.accept", true);
+                profileManager.getAnyProfile(player).getMilestones().setMilestone("sewer_accept", true);
                 break;
             }
             case "sewer2":{
@@ -87,7 +87,7 @@ public class QuestManager {
                 pathingManager.calculatePath(player, destination);
                 player.closeInventory();
 
-                profileManager.getAnyProfile(player).getMilestones().setMilestone("sewer2.accept", true);
+                profileManager.getAnyProfile(player).getMilestones().setMilestone("sewer2_accept", true);
                 break;
             }
             case "lindwyrm":{

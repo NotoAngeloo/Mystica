@@ -3,7 +3,6 @@ package me.angeloo.mystica;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
-import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Commands.*;
 import me.angeloo.mystica.Components.Inventories.BagInventory;
 import me.angeloo.mystica.Managers.*;
@@ -20,13 +19,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.awt.*;
+
 import java.awt.Color;
 import java.util.ArrayList;
 
-public final class Mystica extends JavaPlugin {
+public final class Mystica extends JavaPlugin{
 
     private static Mystica plugin;
+
+    private ProtocolManager protocolManager;
 
     private ProfileManager profileManager;
     private ProfileFileWriter profileFileWriter;
@@ -57,8 +58,6 @@ public final class Mystica extends JavaPlugin {
 
     private FirstClearManager firstClearManager;
 
-    private ProtocolManager protocolManager;
-
     public static Color assassinColor = new java.awt.Color(214, 61, 207);
     public static Color elementalistColor = new Color(153, 204, 255);
     public static Color mysticColor = new Color(155, 120, 197);
@@ -71,14 +70,14 @@ public final class Mystica extends JavaPlugin {
     public static Color levelColor = new Color(0,102,0);
     public static Color soulstoneColor = new Color(23, 32, 112);
 
+
+
     @Override
     public void onEnable() {
 
         plugin = this;
 
-        if(getServer().getPluginManager().getPlugin("ProtocolLib") != null){
-            protocolManager = ProtocolLibrary.getProtocolManager();
-        }
+        protocolManager = ProtocolLibrary.getProtocolManager();
 
         pathingManager = new PathingManager(this);
         pathingManager.createOrLoadFolder();
@@ -87,6 +86,7 @@ public final class Mystica extends JavaPlugin {
 
         profileManager = new ProfileManager(this);
         profileManager.loadProfilesFromConfig();
+
 
         classSetter = new ClassSetter(this);
         classSwapper = new ClassSwapper(this);
@@ -157,7 +157,7 @@ public final class Mystica extends JavaPlugin {
         getCommand("ClassGuide").setExecutor(new ClassGuide(this));
         getCommand("MysticaQuest").setExecutor(new MysticaQuest(this));
 
-        this.getServer().getPluginManager().registerEvents(new InventoryEventListener(this), this);
+        plugin.getServer().getPluginManager().registerEvents(new InventoryEventListener(plugin), plugin);
         this.getServer().getPluginManager().registerEvents(new GeneralEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new MMListeners(this), this);
 
@@ -191,7 +191,9 @@ public final class Mystica extends JavaPlugin {
         } catch (InvalidMobTypeException e) {
             throw new RuntimeException(e);
         }
+
     }
+
 
     @Override
     public void onDisable() {
@@ -230,6 +232,8 @@ public final class Mystica extends JavaPlugin {
     }
 
     public static Mystica getPlugin(){return plugin;}
+
+    public ProtocolManager getProtocolManager(){return protocolManager;}
 
     public ProfileManager getProfileManager(){
         return profileManager;
@@ -273,6 +277,7 @@ public final class Mystica extends JavaPlugin {
         return abilityManager;
     }
 
+
     public DeathManager getDeathManager(){
         return deathManager;
     }
@@ -310,10 +315,6 @@ public final class Mystica extends JavaPlugin {
     public FirstClearManager getFirstClearManager(){return firstClearManager;}
 
     public Locations getLocations(){return locations;}
-
-    public ProtocolManager getProtocolManager(){
-        return protocolManager;
-    }
 
     public QuestManager getQuestManager(){return questManager;}
 

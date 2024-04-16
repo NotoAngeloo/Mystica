@@ -37,7 +37,7 @@ public class NaturalRegenTick extends BukkitRunnable {
             long currentTime = System.currentTimeMillis()/1000;
             long lastManaed = changeResourceHandler.getLastManaed(player.getUniqueId());
 
-            if(currentTime - lastManaed >= 3 || profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("shadow knight")){
+            if(currentTime - lastManaed >= 20 || profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("shadow knight")){
                 int maxMana = stats.getMana() + gearStats.getMana();
                 double currentMana = profileManager.getAnyProfile(player).getCurrentMana();
 
@@ -66,7 +66,7 @@ public class NaturalRegenTick extends BukkitRunnable {
 
             long lastDamaged = changeResourceHandler.getLastDamaged(player.getUniqueId());
 
-            if(currentTime - lastDamaged >= 3){
+            if(currentTime - lastDamaged >= 20){
                 AttributeInstance maxHealthAttribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
                 assert maxHealthAttribute != null;
 

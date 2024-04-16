@@ -4,6 +4,7 @@ import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
+import me.angeloo.mystica.Utility.ShieldAbilityManaDisplayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -17,6 +18,7 @@ public class BloodShield {
     private final Mystica main;
 
     private final ProfileManager profileManager;
+    private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
     private final CombatManager combatManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
@@ -29,6 +31,7 @@ public class BloodShield {
     public BloodShield(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
+        shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, manager);
         combatManager = manager.getCombatManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
@@ -77,6 +80,7 @@ public class BloodShield {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
 
             }
         }.runTaskTimer(main, 0,20);

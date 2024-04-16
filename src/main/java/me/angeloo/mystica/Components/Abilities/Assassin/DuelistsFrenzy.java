@@ -4,10 +4,7 @@ import me.angeloo.mystica.Components.Abilities.AssassinAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.ChangeResourceHandler;
-import me.angeloo.mystica.Utility.CooldownDisplayer;
-import me.angeloo.mystica.Utility.DamageCalculator;
-import me.angeloo.mystica.Utility.PveChecker;
+import me.angeloo.mystica.Utility.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -33,6 +30,7 @@ public class DuelistsFrenzy {
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final AbilityManager abilityManager;
+    private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
 
     private final Stealth stealth;
     private final Combo combo;
@@ -44,6 +42,7 @@ public class DuelistsFrenzy {
     public DuelistsFrenzy(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
         this.main = main;
         abilityManager = manager;
+        shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, manager);
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
@@ -129,6 +128,7 @@ public class DuelistsFrenzy {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
 
             }
         }.runTaskTimer(main, 0,20);

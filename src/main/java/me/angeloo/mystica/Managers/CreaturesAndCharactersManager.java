@@ -24,6 +24,7 @@ public class CreaturesAndCharactersManager {
     private final HansNpc hansNpc;
     private final HoLeeNpc hoLeeNpc;
     private final CaptainNpc captainNpc;
+    private final HoLeeBoss hoLeeBoss;
 
     public CreaturesAndCharactersManager(Mystica main){
         profileManager = main.getProfileManager();
@@ -37,6 +38,7 @@ public class CreaturesAndCharactersManager {
         hansNpc = new HansNpc(main);
         hoLeeNpc = new HoLeeNpc(main);
         captainNpc = new CaptainNpc(main);
+        hoLeeBoss = new HoLeeBoss(main);
     }
 
     public void spawnAllNpcs() throws InvalidMobTypeException {
@@ -54,6 +56,11 @@ public class CreaturesAndCharactersManager {
         switch (name){
             case "Lindwyrm":{
                 theLindwyrm.makeProfile(uuid);
+                profileManager.setBossHome(uuid);
+                break;
+            }
+            case "HoLeeBoss":{
+                hoLeeBoss.makeProfile(uuid);
                 profileManager.setBossHome(uuid);
                 break;
             }

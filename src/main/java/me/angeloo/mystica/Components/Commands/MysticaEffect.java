@@ -107,6 +107,10 @@ public class MysticaEffect implements CommandExecutor {
                     buffAndDebuffManager.getImmune().applyImmune(target, amount);
                     return true;
                 }
+                case "melt":{
+                    buffAndDebuffManager.getArmorMelt().applyArmorMelt(target);
+                    return true;
+                }
             }
 
 

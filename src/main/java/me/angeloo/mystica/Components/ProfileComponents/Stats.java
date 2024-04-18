@@ -185,6 +185,7 @@ public class Stats {
                 health+=(level*15);
                 defence+=(level);
                 magic_defence+=(level);
+                mana = 100;
 
                 switch (subclass.toLowerCase()){
                     case "doom": {

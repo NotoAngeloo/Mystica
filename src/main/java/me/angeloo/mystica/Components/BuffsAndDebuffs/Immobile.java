@@ -103,7 +103,7 @@ public class Immobile {
                 }
 
             }
-        }.runTaskTimer(main, 0, 20);
+        }.runTaskTimer(main, 0, 1);
 
         removeMap.put(entity.getUniqueId(), task);
 

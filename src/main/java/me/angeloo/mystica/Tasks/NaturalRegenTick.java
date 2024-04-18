@@ -8,6 +8,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.ShieldAbilityManaDisplayer;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
@@ -44,7 +45,7 @@ public class NaturalRegenTick extends BukkitRunnable {
                 double manaRegenRate = maxMana * .01;
 
                 if(profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("shadow knight")){
-                    manaRegenRate = maxMana * .08;
+                    manaRegenRate = maxMana * .05;
                 }
 
                 if(!combatStatus){
@@ -65,6 +66,8 @@ public class NaturalRegenTick extends BukkitRunnable {
 
 
             long lastDamaged = changeResourceHandler.getLastDamaged(player.getUniqueId());
+
+            //Bukkit.getLogger().info(String.valueOf(currentTime - lastDamaged));
 
             if(currentTime - lastDamaged >= 20){
                 AttributeInstance maxHealthAttribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
@@ -96,6 +99,7 @@ public class NaturalRegenTick extends BukkitRunnable {
 
                 if(currentHealth < maxHealth){
                     changeResourceHandler.addHealthToEntity(player, healthRegenRate, null);
+                    //Bukkit.getLogger().info(String.valueOf(healthRegenRate));
                 }
 
             }

@@ -35,6 +35,7 @@ public class BuffAndDebuffManager {
     private final Pulled pulled;
     private final Blocking blocking;
     private final PassThrough passThrough;
+    private final ArmorMelt armorMelt;
 
     public BuffAndDebuffManager(Mystica main){
         profileManager = main.getProfileManager();
@@ -64,6 +65,7 @@ public class BuffAndDebuffManager {
         pulled = new Pulled(main);
         blocking = new Blocking(main);
         passThrough = new PassThrough();
+        armorMelt = new ArmorMelt(main);
     }
 
     public Immune getImmune(){return immune;}
@@ -95,15 +97,16 @@ public class BuffAndDebuffManager {
     public Pulled getPulled(){return pulled;}
     public Blocking getBlocking(){return blocking;}
     public PassThrough getPassThrough(){return passThrough;}
+    public ArmorMelt getArmorMelt(){return armorMelt;}
 
     public void removeAllBuffsAndDebuffs(LivingEntity entity){
         flamingSigilBuff.removeAttackBuff(entity);
         flamingSigilBuff.removeHealthBuff(entity);
         burningBlessingBuff.removeHealthBuff(entity);
         immune.removeImmune(entity);
-        immobile.removeImmobile(entity);
         sleep.forceWakeUp(entity);
         stun.removeStun(entity);
+        immobile.removeImmobile(entity);
         genericShield.removeShields(entity);
         windWallBuff.removeWindwall(entity);
         shadowCrowsDebuff.removeCrowsDebuff(entity);
@@ -119,6 +122,8 @@ public class BuffAndDebuffManager {
         concoctionDebuff.removeDebuff(entity);
         pulled.removePull(entity);
         blocking.removeBlocking(entity);
+        armorMelt.removeMelt(entity);
+
 
         if(entity instanceof Player){
             Player player = (Player) entity;

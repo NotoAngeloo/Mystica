@@ -103,6 +103,10 @@ public class DamageCalculator {
 
                 damage = (damage * multiplierForCrit)
                         * ((attack) / (defence));
+
+                if(buffAndDebuffManager.getArmorMelt().getStacks(entity) >= 3){
+                    damage += (profileManager.getAnyProfile(entity).getTotalHealth() * ((buffAndDebuffManager.getArmorMelt().getStacks(entity) * 10) * .01));
+                }
             }
 
             if(type.equalsIgnoreCase("Magical")){
@@ -130,6 +134,9 @@ public class DamageCalculator {
                 damage = (damage * multiplierForCrit)
                         * (attack / defence);
 
+                if(buffAndDebuffManager.getArmorMelt().getStacks(entity) >= 3){
+                    damage += (profileManager.getAnyProfile(entity).getStats().getHealth() * ((buffAndDebuffManager.getArmorMelt().getStacks(entity) * 10) * .01));
+                }
             }
 
             if(type.equalsIgnoreCase("Magical")){
@@ -186,6 +193,10 @@ public class DamageCalculator {
 
             damage = (damage * multiplierForCrit)
                     * (attack / defence);
+
+            if(buffAndDebuffManager.getArmorMelt().getStacks(player) >= 3){
+                damage += (profileManager.getAnyProfile(player).getTotalHealth() * ((buffAndDebuffManager.getArmorMelt().getStacks(player) * 10) * .01));
+            }
 
         }
 

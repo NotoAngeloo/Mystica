@@ -22,6 +22,7 @@ public class DeathManager {
     private final AbilityManager abilityManager;
     private final AggroManager aggroManager;
     private final DpsManager dpsManager;
+    private final BuffAndDebuffManager buffAndDebuffManager;
 
     public DeathManager(Mystica main){
         profileManager = main.getProfileManager();
@@ -29,6 +30,7 @@ public class DeathManager {
         abilityManager = main.getAbilityManager();
         aggroManager = main.getAggroManager();
         dpsManager = main.getDpsManager();
+        buffAndDebuffManager = main.getBuffAndDebuffManager();
     }
 
     public void playerNowDead(Player player){
@@ -60,9 +62,11 @@ public class DeathManager {
         player.setInvisible(true);
         player.setGlowing(true);
         abilityManager.resetAbilityBuffs(player);
+        buffAndDebuffManager.removeAllBuffsAndDebuffs(player);
         //abilityManager.setSkillRunning(player, false);
         abilityManager.interruptBasic(player);
         dpsManager.removeDps(player);
+
         Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
         Bukkit.getServer().getPluginManager().callEvent(new TargetBarShouldUpdateEvent(player));
     }

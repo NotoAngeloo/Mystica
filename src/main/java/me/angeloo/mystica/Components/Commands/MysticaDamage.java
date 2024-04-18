@@ -95,6 +95,15 @@ public class MysticaDamage implements CommandExecutor {
                     changeResourceHandler.subtractHealthFromEntity(player, amount, caster);
                     return true;
                 }
+                case "percent":{
+
+                    double totalHealth = profileManager.getAnyProfile(player).getTotalHealth();
+
+                    double damage = totalHealth * (amount * .01);
+
+                    changeResourceHandler.subtractHealthFromEntity(player, damage, caster);
+                    return true;
+                }
                 case "fury":{
                     int level = profileManager.getAnyProfile(caster).getStats().getLevel();
                     changeResourceHandler.subtractHealthFromEntity(player, amount * level, caster);

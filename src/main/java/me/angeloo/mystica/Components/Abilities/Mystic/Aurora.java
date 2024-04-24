@@ -205,7 +205,7 @@ public class Aurora {
 
                         if(shepard){
                             boolean crit = damageCalculator.checkIfCrit(player, 0);
-                            double healAmount = damageCalculator.calculateHealing(thisPlayer, player, finalHealPercent, crit);
+                            double healAmount = damageCalculator.calculateHealing(player, finalHealPercent, crit);
                             changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, player);
                         }
 

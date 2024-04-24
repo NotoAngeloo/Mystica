@@ -212,7 +212,7 @@ public class WickedConcoction {
                         return;
                     }
 
-                    double healAmount = damageCalculator.calculateHealing(target, player, getHealPercent(), crit);
+                    double healAmount = damageCalculator.calculateHealing(player, getHealPower(), crit);
 
                     changeResourceHandler.addHealthToEntity(target, healAmount, player);
                     buffAndDebuffManager.getDamageReduction().applyDamageReduction(target, .95, 20*15);
@@ -257,7 +257,7 @@ public class WickedConcoction {
         return 20;
     }
 
-    public double getHealPercent(){
+    public double getHealPower(){
         return 10;
     }
 

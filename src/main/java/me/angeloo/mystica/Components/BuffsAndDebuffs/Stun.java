@@ -68,6 +68,7 @@ public class Stun {
 
     public void removeStun(LivingEntity entity){
         stunMap.remove(entity.getUniqueId());
+        immobile.removeImmobile(entity);
         if(entity instanceof Player){
             Player player = (Player) entity;
             Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));

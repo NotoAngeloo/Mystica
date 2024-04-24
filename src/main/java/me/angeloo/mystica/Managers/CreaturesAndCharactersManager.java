@@ -64,6 +64,10 @@ public class CreaturesAndCharactersManager {
                 profileManager.setBossHome(uuid);
                 break;
             }
+            case "HoLeePikeman":{
+                hoLeeBoss.makeSpawnableProfile(uuid);
+                break;
+            }
             case "CorruptHeart":{
                 corruptHeart.makeProfile(uuid);
                 profileManager.setBossHome(uuid);

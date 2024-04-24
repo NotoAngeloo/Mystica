@@ -155,10 +155,10 @@ public class PurifyingBlast {
         }
 
 
-        double healPercent = getSkillDamage(player);
+        double healPower = getSkillDamage(player);
 
         if(shepard){
-            healPercent *= 1.5;
+            healPower *= 1.5;
         }
 
         double skillDamage = getSkillDamage(player);
@@ -172,7 +172,7 @@ public class PurifyingBlast {
         Set<LivingEntity> hitBySkill = new HashSet<>();
 
         double finalSkillDamage = skillDamage;
-        double finalHealPercent = healPercent;
+        double finalHealPower = healPower;
         new BukkitRunnable(){
             double progress = 0;
             final int maxDistance = 10;
@@ -216,7 +216,7 @@ public class PurifyingBlast {
                             changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
                         }
                         else{
-                            double healAmount  = damageCalculator.calculateHealing(livingEntity, player, finalHealPercent, crit);
+                            double healAmount  = damageCalculator.calculateHealing(player, finalHealPower, crit);
                             changeResourceHandler.addHealthToEntity(livingEntity, healAmount, player);
                             if(shepard){
                                 consolation.apply(player, (Player) livingEntity);

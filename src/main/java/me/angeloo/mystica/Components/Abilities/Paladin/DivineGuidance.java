@@ -223,9 +223,9 @@ public class DivineGuidance {
         List<Player> affected = validPlayers.subList(0, Math.min(3, validPlayers.size()));
 
         for(Player thisPlayer : affected){
-            double healPercent = 5;
+            double healPower = 5;
             boolean crit = damageCalculator.checkIfCrit(player, 0);
-            double healAmount = damageCalculator.calculateHealing(thisPlayer, player, healPercent, crit);
+            double healAmount = damageCalculator.calculateHealing(player, healPower, crit);
             changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, player);
 
             Location center = thisPlayer.getLocation().clone().add(0,1,0);

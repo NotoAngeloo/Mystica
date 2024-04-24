@@ -196,7 +196,7 @@ public class MercifulHealing {
 
                 boolean crit = damageCalculator.checkIfCrit(player, 0);
 
-                double healAmount = damageCalculator.calculateHealing(target, player, getHealPercent(player), crit);
+                double healAmount = damageCalculator.calculateHealing(player, getHealPower(player), crit);
 
                 if(justiceMark.markProc(player, target)){
                     markHealInstead(player, healAmount);
@@ -285,7 +285,7 @@ public class MercifulHealing {
         return cooldown;
     }
 
-    public double getHealPercent(Player player){
+    public double getHealPower(Player player){
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
         return  10 + ((int)(skillLevel/3));

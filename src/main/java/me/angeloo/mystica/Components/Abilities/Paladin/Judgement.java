@@ -205,8 +205,8 @@ public class Judgement {
 
                     if(!pvpManager.pvpLogic(player, (Player) target)){
 
-                        double healAmountPercent = 5;
-                        double healAmount = damageCalculator.calculateHealing(target, player, healAmountPercent, crit);
+                        double healPower = 5;
+                        double healAmount = damageCalculator.calculateHealing(player, healPower, crit);
                         changeResourceHandler.addHealthToEntity(target, healAmount, player);
                         return;
                     }

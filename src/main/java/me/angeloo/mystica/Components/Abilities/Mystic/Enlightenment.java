@@ -4,17 +4,13 @@ import me.angeloo.mystica.Components.Abilities.MysticAbilities;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
-import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.ShieldAbilityManaDisplayer;
 import org.bukkit.Location;
 import org.bukkit.Particle;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.BoundingBox;
 
 import java.util.HashMap;
 import java.util.List;
@@ -118,7 +114,7 @@ public class Enlightenment {
 
             boolean crit = damageCalculator.checkIfCrit(player, 0);
 
-            double healAmount  = damageCalculator.calculateHealing(target, player, getHealPercent(player), crit);
+            double healAmount  = damageCalculator.calculateHealing(player, getHealPercent(player), crit);
 
             if(crit){
                 purifyingBlast.resetCooldown(player);

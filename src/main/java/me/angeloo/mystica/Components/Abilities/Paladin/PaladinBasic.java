@@ -107,9 +107,9 @@ public class PaladinBasic {
 
         boolean crit = damageCalculator.checkIfCrit(player, 0);
 
-        double healPercent = 1;
+        double healPower = 1;
 
-        double healAmount = damageCalculator.calculateHealing(target, player, healPercent, crit);
+        double healAmount = damageCalculator.calculateHealing(player, healPower, crit);
 
         if(justiceMark.markProc(player, target)){
             markHealInstead(player, healAmount);

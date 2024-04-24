@@ -571,7 +571,7 @@ public class GeneralEventListener implements Listener {
                 }
                 breakawayCooldown.put(player.getUniqueId(), currentTime);
 
-                player.teleport(player.getWorld().getSpawnLocation());
+                player.teleport(Bukkit.getWorld("world").getSpawnLocation());
                 break;
             }
         }

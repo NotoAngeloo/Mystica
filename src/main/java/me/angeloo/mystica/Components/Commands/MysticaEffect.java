@@ -75,26 +75,41 @@ public class MysticaEffect implements CommandExecutor {
                         return true;
                     }
 
+                    int bossLevel = profileManager.getAnyProfile(caster).getStats().getLevel();
+
+                    int crushThreshold = 100 + (10 * bossLevel-1);
+
                     String subclass = profileManager.getAnyProfile(target).getPlayerSubclass();
 
                     if(subclass.equalsIgnoreCase("gladiator")
                             || subclass.equalsIgnoreCase("templar")
                             || subclass.equalsIgnoreCase("blood")){
-                        return true;
+                        crushThreshold -= 100;
                     }
 
                     if(subclass.equalsIgnoreCase("executioner")){
-                        amount *= .5;
+                        crushThreshold -= 50;
+                    }
+
+                    crushThreshold -= profileManager.getAnyProfile(target).getTotalDefense();
+
+                    if(crushThreshold<=0){
+                        return true;
                     }
 
                     double percent = profileManager.getAnyProfile(target).getTotalHealth() * ((double)amount/100);
 
                     changeResourceHandler.subtractHealthFromEntity(target, percent, caster);
+                    //Bukkit.getLogger().info("crush");
 
                     return true;
                 }
                 case "stun":{
                     buffAndDebuffManager.getStun().applyStun(target, amount);
+                    return true;
+                }
+                case "unstun":{
+                    buffAndDebuffManager.getStun().removeStun(target);
                     return true;
                 }
                 case "immune":{

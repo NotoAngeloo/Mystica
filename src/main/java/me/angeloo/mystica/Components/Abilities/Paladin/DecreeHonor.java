@@ -168,7 +168,7 @@ public class DecreeHonor {
 
         //abilityManager.setSkillRunning(player, true);
         double finalSkillDamage = getSkillDamage(player);
-        double finalHealPercent = getHealPercent(player);
+        double finalHealPower = getHealPower(player);
         new BukkitRunnable(){
             double down = 0;
             @Override
@@ -222,7 +222,7 @@ public class DecreeHonor {
 
                     if(!pvpManager.pvpLogic(player, (Player) target)){
 
-                        double healAmount  = damageCalculator.calculateHealing(target, player, finalHealPercent, crit);
+                        double healAmount  = damageCalculator.calculateHealing(player, finalHealPower, crit);
 
                         if(justiceMark.markProc(player, target)){
                             markHealInstead(player, healAmount);
@@ -289,7 +289,7 @@ public class DecreeHonor {
         return 20 + ((int)(skillLevel/10));
     }
 
-    public double getHealPercent(Player player){
+    public double getHealPower(Player player){
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
         return 5 +  ((int)(skillLevel/3));

@@ -165,7 +165,7 @@ public class AssassinSkillItems {
                         ChatColor.of(assassinColor) + "Wicked Concoction",
                         ChatColor.of(levelColor) + "Level " + level,
                         ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getWickedConcoction().getSkillDamage(player)) + " power",
-                        ChatColor.of(assassinColor) + "heals " + abilityManager.getAssassinAbilities().getWickedConcoction().getHealPercent() + "% health",
+                        ChatColor.of(assassinColor) + String.valueOf(abilityManager.getAssassinAbilities().getWickedConcoction().getHealPower()) + " heal power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getAssassinAbilities().getWickedConcoction().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Throw a potion at your",

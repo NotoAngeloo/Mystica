@@ -484,9 +484,9 @@ public class MysticBasic {
         else{
 
 
-            double healPercent = 1;
+            double healPower = 1;
             boolean crit = damageCalculator.checkIfCrit(player, 0);
-            double healAmount  = damageCalculator.calculateHealing(target, player, healPercent, crit);
+            double healAmount  = damageCalculator.calculateHealing(player, healPower, crit);
 
             changeResourceHandler.addHealthToEntity(target, healAmount, player);
 

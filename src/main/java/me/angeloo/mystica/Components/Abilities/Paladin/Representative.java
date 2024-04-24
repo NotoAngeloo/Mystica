@@ -4,7 +4,6 @@ import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
-import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.ShieldAbilityManaDisplayer;
 import org.bukkit.Location;
@@ -120,7 +119,7 @@ public class Representative {
 
         Location center = player.getLocation().clone();
 
-        double finalHealPercent = getHealPercent(player);
+        double finalHealPower = getHealPower(player);
         new BukkitRunnable(){
             int count = 0;
             boolean aoe = true;
@@ -174,7 +173,7 @@ public class Representative {
                             }
 
                             boolean crit = damageCalculator.checkIfCrit(player, 0);
-                            double healAmount = damageCalculator.calculateHealing(hitPlayer, player, finalHealPercent, crit);
+                            double healAmount = damageCalculator.calculateHealing(player, finalHealPower, crit);
                             changeResourceHandler.addHealthToEntity(hitPlayer, healAmount, player);
 
                         }
@@ -225,7 +224,7 @@ public class Representative {
         return cooldown;
     }
 
-    public double getHealPercent(Player player){
+    public double getHealPower(Player player){
         double level = profileManager.getAnyProfile(player).getStats().getLevel();
         return 25 +  ((int)(level/3));
     }

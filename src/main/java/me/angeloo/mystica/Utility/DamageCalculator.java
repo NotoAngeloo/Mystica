@@ -38,9 +38,11 @@ public class DamageCalculator {
         return random <= (playerProfile.getTotalCrit()) + bonus;
     }
 
-    public double calculateHealing(LivingEntity target, LivingEntity healer, double amount, boolean crit){
+    public double calculateHealing(LivingEntity healer, double amount, boolean crit){
 
-        amount = amount / 100;
+        double attack = profileManager.getAnyProfile(healer).getTotalAttack();
+
+        amount *= (attack * .05);
 
         double multiplierForCrit = 1;
 
@@ -56,12 +58,7 @@ public class DamageCalculator {
             multiplierForHealerBonus = 1.2;
         }
 
-        double totalTargetHealth = profileManager.getAnyProfile(target).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(target);
 
-        amount = totalTargetHealth * amount;
-
-        double attack = profileManager.getAnyProfile(healer).getTotalAttack();
-        amount += attack/20;
 
         amount *= multiplierForCrit;
         amount *= multiplierForHealerBonus;

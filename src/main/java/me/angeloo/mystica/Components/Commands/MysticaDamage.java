@@ -97,6 +97,8 @@ public class MysticaDamage implements CommandExecutor {
                 }
                 case "percent":{
 
+                    //Bukkit.getLogger().info("tets");
+
                     double totalHealth = profileManager.getAnyProfile(player).getTotalHealth();
 
                     double damage = totalHealth * (amount * .01);

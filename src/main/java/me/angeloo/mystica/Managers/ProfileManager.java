@@ -741,7 +741,7 @@ public class ProfileManager {
                         return;
                     }
 
-
+                    boss.teleport(home);
                     MythicBukkit.inst().getAPIHelper().getMythicMobInstance(boss).signalMob(abstractEntity, "reset");
 
                 }

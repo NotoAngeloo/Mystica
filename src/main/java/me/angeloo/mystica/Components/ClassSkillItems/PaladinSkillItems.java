@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static me.angeloo.mystica.Mystica.*;
-import static me.angeloo.mystica.Mystica.mysticColor;
 
 public class PaladinSkillItems {
 
@@ -51,7 +50,7 @@ public class PaladinSkillItems {
                             ChatColor.of(paladinColor) + "Decree of Honor",
                             ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_1_Level_Bonus()),
                             ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getDecreeHonor().getSkillDamage(player)) + " power",
-                            ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getDecreeHonor().getHealPercent(player)) + "% health restored",
+                            ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getDecreeHonor().getHealPower(player)) + " heal power",
                             ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getPaladinAbilities().getDecreeHonor().getCost()) + " mana",
                             "",
                             ChatColor.of(Color.WHITE) + "Damage enemies or",
@@ -65,7 +64,7 @@ public class PaladinSkillItems {
                     return getItem(Material.YELLOW_DYE, 0,
                             ChatColor.of(paladinColor) + "Merciful Healing",
                             ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_2_Level_Bonus()),
-                            ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getMercifulHealing().getHealPercent(player)) + "% health restored",
+                            ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getMercifulHealing().getHealPower(player)) + " heal power",
                             ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getPaladinAbilities().getMercifulHealing().getCost()) + " mana",
                             "",
                             ChatColor.of(Color.WHITE) + "After a cast, heal a",
@@ -102,7 +101,7 @@ public class PaladinSkillItems {
                     return getItem(Material.YELLOW_DYE, 0,
                             ChatColor.of(paladinColor) + "Spiritual Gift",
                             ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_5_Level_Bonus()),
-                            ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getSpiritualGift().getHealPercent(player)) + "% healing",
+                            ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getSpiritualGift().getHealPower(player)) + " heal power",
                             ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getSpiritualGift().getDuration(player)/20) + " duration",
                             ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getPaladinAbilities().getSpiritualGift().getCost()) + " mana",
                             "",
@@ -275,7 +274,7 @@ public class PaladinSkillItems {
                 return getItem(Material.YELLOW_DYE, 0,
                         ChatColor.of(paladinColor) + "Representative",
                         ChatColor.of(levelColor) + "Level " + level,
-                        ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getRepresentative().getHealPercent(player)) + "% healing",
+                        ChatColor.of(paladinColor) + String.valueOf(abilityManager.getPaladinAbilities().getRepresentative().getHealPower(player)) + " heal power",
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getPaladinAbilities().getRepresentative().getCost()) + " mana",
                         "",
                         ChatColor.of(Color.WHITE) + "Instantly heal nearby allies",

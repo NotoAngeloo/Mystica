@@ -2,7 +2,6 @@ package me.angeloo.mystica.Components.Abilities.Mystic;
 
 import me.angeloo.mystica.Components.Abilities.MysticAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
-import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
@@ -375,12 +374,12 @@ public class LightSigil {
         assert entityEquipment != null;
         entityEquipment.setHelmet(bolt);
 
-        double healPercent = 5;
+        double healPower = 5;
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
-        healPercent = healPercent +  ((int)(skillLevel/10));
+        healPower = healPower +  ((int)(skillLevel/10));
 
-        double finalHealPercent = healPercent;
+        double finalHealPower = healPower;
         new BukkitRunnable(){
             Location targetWasLoc = healedEntity.getLocation().clone().subtract(0,1,0);
             @Override
@@ -416,7 +415,7 @@ public class LightSigil {
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
 
-                    double healAmount  = damageCalculator.calculateHealing(healedEntity, player, finalHealPercent, crit);
+                    double healAmount  = damageCalculator.calculateHealing(player, finalHealPower, crit);
 
                     changeResourceHandler.addHealthToEntity(healedEntity, healAmount, player);
 

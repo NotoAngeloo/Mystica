@@ -172,6 +172,11 @@ public class Dummy {
             public Milestones getMilestones() {
                 return null;
             }
+
+            @Override
+            public void getVoidsOnDeath() {
+
+            }
         };
         profileManager.addToNonPlayerProfiles(uuid, nonPlayerProfile);
     }

@@ -245,6 +245,14 @@ public class StatusDisplayer {
                 statusString.append(applyMysticStatus(player));
                 break;
             }
+            case "assassin":{
+                statusString.append(applyAssassinStatus(player));
+                break;
+            }
+            case "warrior":{
+                statusString.append(applyWarriorStatus(player));
+                break;
+            }
         }
 
         return String.valueOf(statusString);
@@ -421,6 +429,32 @@ public class StatusDisplayer {
         return String.valueOf(statusString);
     }
 
+    private String applyAssassinStatus(Player player){
+        StringBuilder statusString = new StringBuilder();
+
+        if(buffAndDebuffManager.getBladeTempestCrit().getTempestCrit(player) !=0 ){
+            statusString.append("\uE056");
+        }
+
+        if(abilityManager.getAssassinAbilities().getStealth().getIfStealthed(player)){
+            statusString.append("\uE057");
+        }
+
+
+        return String.valueOf(statusString);
+    }
+
+    private String applyWarriorStatus(Player player){
+        StringBuilder statusString = new StringBuilder();
+
+        if(buffAndDebuffManager.getBurningBlessingBuff().getIfHealthBuff(player)){
+            statusString.append("\uE05B");
+        }
+
+
+        return String.valueOf(statusString);
+    }
+
     private String getDebuffClassStatus(Player player){
         StringBuilder statusString = new StringBuilder();
 
@@ -570,6 +604,50 @@ public class StatusDisplayer {
 
         StringBuilder statusString = new StringBuilder();
 
+        //melt
+        if(buffAndDebuffManager.getArmorMelt().getStacks(player) >= 3){
+            if(buffAndDebuffManager.getArmorMelt().getTimeLeft(player) > 0){
+                int icon = iconCalculator.calculate(buffAndDebuffManager.getArmorMelt().getTimeLeft(player), 10);
+
+                switch (icon){
+                    case 8:{
+                        statusString.append("\uE05C");
+                        break;
+                    }
+                    case 7:{
+                        statusString.append("\uE05D");
+                        break;
+                    }
+                    case 6:{
+                        statusString.append("\uE05E");
+                        break;
+                    }
+                    case 5:{
+                        statusString.append("\uE05F");
+                        break;
+                    }
+                    case 4:{
+                        statusString.append("\uE060");
+                        break;
+                    }
+                    case 3:{
+                        statusString.append("\uE061");
+                        break;
+                    }
+                    case 2:{
+                        statusString.append("\uE062");
+                        break;
+                    }
+                    case 1:{
+                        statusString.append("\uE063");
+                        break;
+                    }
+                }
+            }
+        }
+
+
+
         //wild roar
         if(buffAndDebuffManager.getWildRoarBuff().getBuffTime(player) > 0){
             int icon = iconCalculator.calculate(buffAndDebuffManager.getWildRoarBuff().getBuffTime(player), 10);
@@ -614,6 +692,10 @@ public class StatusDisplayer {
 
         if(buffAndDebuffManager.getConjuringForceBuff().getIfConjForceBuff(player)){
             statusString.append("\uE005");
+        }
+
+        if(buffAndDebuffManager.getFlamingSigilBuff().getIfAttackBuff(player) || buffAndDebuffManager.getFlamingSigilBuff().getIfHealthBuff(player)){
+            statusString.append("\uE05A");
         }
 
         //speed up

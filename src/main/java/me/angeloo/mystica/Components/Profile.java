@@ -51,12 +51,13 @@ public interface Profile {
 
     Boolean getIsPassive();
     Boolean getIsMovable();
-    void setIsMovable(Boolean which);
+
     Boolean getImmortality();
-    void setImmortality(boolean immortality);
+
     Boolean getIfObject();
     Yield getYield();
 
-
     Milestones getMilestones();
+
+    void getVoidsOnDeath();
 }

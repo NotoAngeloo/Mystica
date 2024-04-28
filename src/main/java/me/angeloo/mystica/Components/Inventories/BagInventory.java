@@ -29,8 +29,6 @@ public class BagInventory {
 
         PlayerBag playerBag = profileManager.getAnyProfile(player).getPlayerBag();
 
-        player.sendMessage("page: " + (index + 1));
-
         Inventory inv = Bukkit.createInventory(player, 9 * 6, player.getName() + "'s Bag");
 
         //scroller

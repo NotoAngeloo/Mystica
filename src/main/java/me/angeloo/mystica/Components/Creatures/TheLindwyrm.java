@@ -246,6 +246,11 @@ public class TheLindwyrm {
             public Milestones getMilestones() {
                 return null;
             }
+
+            @Override
+            public void getVoidsOnDeath() {
+
+            }
         };
         profileManager.addToNonPlayerProfiles(uuid, nonPlayerProfile);
 

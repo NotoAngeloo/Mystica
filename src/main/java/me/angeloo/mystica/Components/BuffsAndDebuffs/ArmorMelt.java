@@ -1,6 +1,8 @@
 package me.angeloo.mystica.Components.BuffsAndDebuffs;
 
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -72,6 +74,11 @@ public class ArmorMelt {
 
                 timeLeft.put(entity.getUniqueId(), time);
 
+                if(entity instanceof Player){
+                    Player player = (Player) entity;
+                    Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+                }
+
                 if(time<= 0){
                     this.cancel();
                     removeMelt(entity);
@@ -97,6 +104,10 @@ public class ArmorMelt {
     public void removeMelt(LivingEntity entity){
         stacks.remove(entity.getUniqueId());
         timeLeft.remove(entity.getUniqueId());
+        if(entity instanceof Player){
+            Player player = (Player) entity;
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+        }
     }
 
 }

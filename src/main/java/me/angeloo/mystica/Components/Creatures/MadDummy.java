@@ -5,7 +5,6 @@ import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
@@ -182,6 +181,11 @@ public class MadDummy {
             @Override
             public Milestones getMilestones() {
                 return null;
+            }
+
+            @Override
+            public void getVoidsOnDeath() {
+
             }
         };
         profileManager.addToNonPlayerProfiles(uuid, nonPlayerProfile);

@@ -51,8 +51,7 @@ public class BurningBlessingBuff {
 
                 if(count >= 7){
                     this.cancel();
-                    hasHealthMap.remove(entity.getUniqueId());
-                    healthAmountMap.remove(entity.getUniqueId());
+                    removeHealthBuff(entity);
                 }
 
                 count++;
@@ -71,6 +70,7 @@ public class BurningBlessingBuff {
     }
 
     public void removeHealthBuff(LivingEntity entity){
+        healthAmountMap.remove(entity.getUniqueId());
         hasHealthMap.remove(entity.getUniqueId());
         if(entity instanceof Player){
             Player player = (Player) entity;

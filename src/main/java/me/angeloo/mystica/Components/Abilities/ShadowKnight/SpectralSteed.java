@@ -8,7 +8,6 @@ import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Managers.CombatManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -247,6 +246,11 @@ public class SpectralSteed {
             @Override
             public Milestones getMilestones() {
                 return null;
+            }
+
+            @Override
+            public void getVoidsOnDeath() {
+
             }
         };
         profileManager.addToNonPlayerProfiles(horse.getUniqueId(), nonPlayerProfile);

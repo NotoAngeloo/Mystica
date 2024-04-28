@@ -9,6 +9,7 @@ import me.angeloo.mystica.CustomEvents.HelpfulHintEvent;
 import me.angeloo.mystica.Managers.EquipmentManager;
 import me.angeloo.mystica.Managers.InventoryIndexingManager;
 import me.angeloo.mystica.Managers.ProfileManager;
+import me.angeloo.mystica.Managers.QuestManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.*;
 import org.bukkit.Bukkit;
@@ -37,8 +38,10 @@ public class InventoryEventListener implements Listener {
     private final EquipmentManager equipmentManager;
     private final ClassSetter classSetter;
     private final ClassSwapper classSwapper;
+    private final QuestManager questManager;
     private final InventoryIndexingManager inventoryIndexingManager;
     private final BagInventory bagInventory;
+    private final QuestInventory questInventory;
     private final BuyInvSlotsInventory buyInvSlotsInventory;
     private final EquipmentInventory equipmentInventory;
     private final AbilityInventory abilityInventory;
@@ -58,10 +61,12 @@ public class InventoryEventListener implements Listener {
         this.main = main;
         profileManager = main.getProfileManager();
         equipmentManager = new EquipmentManager(main);
+        questManager = main.getQuestManager();
         classSetter = main.getClassSetter();
         classSwapper = main.getClassSwapper();
         inventoryIndexingManager = main.getInventoryIndexingManager();
         bagInventory = main.getBagInventory();
+        questInventory = main.getQuestInventory();
         buyInvSlotsInventory = new BuyInvSlotsInventory(main);
         equipmentInventory = new EquipmentInventory(main);
         abilityInventory = new AbilityInventory(main);
@@ -185,6 +190,83 @@ public class InventoryEventListener implements Listener {
                 break;
             }
         }
+    }
+
+    @EventHandler
+    public void questBookClick(InventoryClickEvent event){
+        if(!event.getView().getTitle().equals("Quests")){
+            return;
+        }
+
+        event.setCancelled(true);
+
+        if(event.getClickedInventory() == null){
+            return;
+        }
+
+        Player player = (Player) event.getWhoClicked();
+
+        Inventory inventory = player.getOpenInventory().getTopInventory();
+
+        if(event.getClickedInventory() != inventory){
+            return;
+        }
+
+        ItemStack item = event.getCurrentItem();
+
+        if(item == null){
+            return;
+        }
+
+        int index = inventoryIndexingManager.getBagIndex(player);
+
+        switch (event.getCurrentItem().getItemMeta().getDisplayName().toLowerCase()){
+            /*case "Scroll Up":{
+                if(index == 0){
+                    return;
+                }
+                index--;
+                player.openInventory(bagInventory.openBagInventory(player, index));
+                inventoryIndexingManager.setBagIndex(player, index);
+                break;
+            }
+            case "Scroll Down": {
+                //scroll down, if in range
+                int range = profileManager.getAnyProfile(player).getPlayerBag().getNumUnlocks();
+                if(range <= index){
+                    player.openInventory(buyInvSlotsInventory.openBuyInv(player));
+                    return;
+                }
+
+                index++;
+                player.openInventory(bagInventory.openBagInventory(player, index));
+                inventoryIndexingManager.setBagIndex(player, index);
+                break;
+            }*/
+            case "a helping hand":{
+                questManager.rereadQuest(player, "helping_hand");
+                break;
+            }
+            case "the archbishop's request":{
+                questManager.rereadQuest(player,"sewer");
+                break;
+            }
+            case "heart of corruption":{
+                questManager.rereadQuest(player, "sewer2");
+                break;
+            }
+            case "cave of the lindwyrm":{
+                questManager.rereadQuest(player, "lindwyrm");
+                break;
+            }
+            case "the general's arrival":{
+                questManager.rereadQuest(player, "ho_lee");
+                break;
+            }
+        }
+
+
+
     }
 
     @EventHandler

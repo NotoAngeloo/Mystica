@@ -87,7 +87,6 @@ public class GladiatorHeart {
 
     private void execute(Player player){
 
-        double maxHealth = profileManager.getAnyProfile(player).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(player);
         double shield = getShieldAmount(player);
 
         buffAndDebuffManager.getGenericShield().applyOrAddShield(player, shield);

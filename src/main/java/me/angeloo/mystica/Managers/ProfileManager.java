@@ -243,11 +243,6 @@ public class ProfileManager {
                         }
 
                         @Override
-                        public void setIsMovable(Boolean which) {
-
-                        }
-
-                        @Override
                         public Boolean getImmortality() {
                             return false;
                         }
@@ -263,9 +258,10 @@ public class ProfileManager {
                         }
 
                         @Override
-                        public void setImmortality(boolean immortality) {
+                        public void getVoidsOnDeath() {
 
                         }
+
                     };
 
                     playerProfiles.put(id, profile);
@@ -371,18 +367,8 @@ public class ProfileManager {
             }
 
             @Override
-            public void setIsMovable(Boolean which) {
-
-            }
-
-            @Override
             public Boolean getImmortality() {
                 return false;
-            }
-
-            @Override
-            public void setImmortality(boolean immortality) {
-
             }
 
             @Override
@@ -393,6 +379,11 @@ public class ProfileManager {
             @Override
             public Yield getYield() {
                 return null;
+            }
+
+            @Override
+            public void getVoidsOnDeath() {
+
             }
         };
         playerProfiles.put(uuid, profile);
@@ -595,6 +586,11 @@ public class ProfileManager {
             @Override
             public Milestones getMilestones() {
                 return null;
+            }
+
+            @Override
+            public void getVoidsOnDeath() {
+
             }
 
         };

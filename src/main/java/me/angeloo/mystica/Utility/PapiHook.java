@@ -36,37 +36,15 @@ public class PapiHook extends PlaceholderExpansion {
         if(offlinePlayer != null && offlinePlayer.isOnline()){
             Player player = offlinePlayer.getPlayer();
 
-            if(params.equalsIgnoreCase("class")){
-                return profileManager.getAnyProfile(player).getPlayerClass();
+            switch (params.toLowerCase()){
+                case "class":{
+                    return profileManager.getAnyProfile(player).getPlayerClass();
+                }
+                default:{
+                    return String.valueOf(profileManager.getAnyProfile(player).getMilestones().getMilestone(params));
+                }
             }
 
-            if(params.equalsIgnoreCase("tutorial")){
-                return String.valueOf(profileManager.getAnyProfile(player).getMilestones().getMilestone("tutorial"));
-            }
-
-            if(params.equalsIgnoreCase("lindwyrm_visit")){
-                return String.valueOf(profileManager.getAnyProfile(player).getMilestones().getMilestone("lindwyrm_visit"));
-            }
-
-            if(params.equalsIgnoreCase("windbluff_visit")){
-                return String.valueOf(profileManager.getAnyProfile(player).getMilestones().getMilestone("windbluff_visit"));
-            }
-
-            if(params.equalsIgnoreCase("tradecamp_visit")){
-                return String.valueOf(profileManager.getAnyProfile(player).getMilestones().getMilestone("tradecamp_visit"));
-            }
-
-            if(params.equalsIgnoreCase("helping_hand_accept")){
-                return String.valueOf(profileManager.getAnyProfile(player).getMilestones().getMilestone("helping_hand_accept"));
-            }
-
-            if(params.equalsIgnoreCase("sewer_accept")){
-                return String.valueOf(profileManager.getAnyProfile(player).getMilestones().getMilestone("sewer_accept"));
-            }
-
-            if(params.equalsIgnoreCase("sewer2_accept")){
-                return String.valueOf(profileManager.getAnyProfile(player).getMilestones().getMilestone("sewer2_accept"));
-            }
 
         }
 

@@ -5,6 +5,7 @@ import com.comphenix.protocol.ProtocolManager;
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import me.angeloo.mystica.Components.Commands.*;
 import me.angeloo.mystica.Components.Inventories.BagInventory;
+import me.angeloo.mystica.Components.Inventories.QuestInventory;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Tasks.AggroTick;
 import me.angeloo.mystica.Tasks.NaturalRegenTick;
@@ -55,6 +56,7 @@ public final class Mystica extends JavaPlugin{
     private QuestManager questManager;
 
     private BagInventory bagInventory;
+    private QuestInventory questInventory;
 
     private FirstClearManager firstClearManager;
 
@@ -69,6 +71,8 @@ public final class Mystica extends JavaPlugin{
     public static Color menuColor = new Color(176, 159, 109);
     public static Color levelColor = new Color(0,102,0);
     public static Color soulstoneColor = new Color(23, 32, 112);
+
+    public static Color questColor = new Color(255, 128, 0);
 
 
 
@@ -111,6 +115,7 @@ public final class Mystica extends JavaPlugin{
 
         inventoryIndexingManager = new InventoryIndexingManager();
         bagInventory = new BagInventory(this);
+        questInventory = new QuestInventory(this);
 
         firstClearManager = new FirstClearManager(this);
         firstClearManager.createOrLoadFolder();
@@ -305,6 +310,8 @@ public final class Mystica extends JavaPlugin{
     public BagInventory getBagInventory(){
         return bagInventory;
     }
+
+    public QuestInventory getQuestInventory(){return questInventory;}
 
     public DamageHealthBoard getDamageHealthBoard(){return damageHealthBoard;}
 

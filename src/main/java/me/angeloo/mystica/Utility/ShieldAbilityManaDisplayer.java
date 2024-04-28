@@ -198,6 +198,14 @@ public class ShieldAbilityManaDisplayer {
                 unicode.append("\uE04B");
                 break;
             }
+            case "gladiator heart":{
+                unicode.append("\uE058");
+                break;
+            }
+            case "death gaze":{
+                unicode.append("\uE059");
+                break;
+            }
             default:{
                 unicode.append(abilityName);
                 break;

@@ -5,7 +5,6 @@ import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import me.angeloo.mystica.Components.Items.SoulStone;
-import me.angeloo.mystica.Components.Items.UnidentifiedEquipment;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
@@ -244,6 +243,11 @@ public class CorruptHeart {
             @Override
             public Milestones getMilestones() {
                 return null;
+            }
+
+            @Override
+            public void getVoidsOnDeath() {
+                Bukkit.getLogger().info("Some bullshit happened");
             }
         };
         profileManager.addToNonPlayerProfiles(uuid, nonPlayerProfile);

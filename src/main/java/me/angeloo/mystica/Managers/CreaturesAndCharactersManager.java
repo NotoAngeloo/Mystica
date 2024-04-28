@@ -235,6 +235,11 @@ public class CreaturesAndCharactersManager {
                 return null;
             }
 
+            @Override
+            public void getVoidsOnDeath() {
+
+            }
+
 
             @Override
             public ItemStack[] getSavedInv() {
@@ -407,6 +412,11 @@ public class CreaturesAndCharactersManager {
             @Override
             public Milestones getMilestones() {
                 return null;
+            }
+
+            @Override
+            public void getVoidsOnDeath() {
+
             }
 
 

@@ -4,9 +4,7 @@ import com.alessiodp.parties.api.Parties;
 import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
-import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.MythicBukkit;
-import me.angeloo.mystica.Components.Items.SoulStone;
 import me.angeloo.mystica.Components.Items.UnidentifiedEquipment;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
@@ -248,6 +246,12 @@ public class HoLeeBoss {
             public Milestones getMilestones() {
                 return null;
             }
+
+            @Override
+            public void getVoidsOnDeath() {
+                //TODO: something
+
+            }
         };
         profileManager.addToNonPlayerProfiles(uuid, nonPlayerProfile);
 
@@ -438,6 +442,11 @@ public class HoLeeBoss {
             @Override
             public Milestones getMilestones() {
                 return null;
+            }
+
+            @Override
+            public void getVoidsOnDeath() {
+
             }
         };
         profileManager.addToNonPlayerProfiles(uuid, nonPlayerProfile);

@@ -8,8 +8,8 @@ public abstract class NonPlayerProfile implements Profile{
 
     private double currentHealth;
     private Stats stats;
-    private Boolean isMovable;
-    private Boolean immortality;
+    private final Boolean isMovable;
+    private final Boolean immortality;
     private final Boolean passive;
     private final Boolean object;
     private final Yield yield;
@@ -42,16 +42,12 @@ public abstract class NonPlayerProfile implements Profile{
     public Boolean getIsMovable(){
         return isMovable;
     }
-    @Override
-    public void setIsMovable(Boolean which){
-        this.isMovable = which;
-    }
+
     @Override
     public Boolean getImmortality(){return immortality;}
     @Override
     public Boolean getIfObject(){return object;}
-    @Override
-    public void setImmortality(boolean immortality){this.immortality = immortality;}
+
     @Override
     public Boolean getIsPassive(){return passive;}
     @Override

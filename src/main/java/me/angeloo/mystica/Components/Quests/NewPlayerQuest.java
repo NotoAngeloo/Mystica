@@ -14,7 +14,7 @@ public class NewPlayerQuest {
 
     }
 
-    public void openNewPlayerQuest(Player player){
+    public void openNewPlayerQuest(Player player, boolean reread){
 
         ItemStack guide = new ItemStack(Material.WRITTEN_BOOK);
         BookMeta meta = (BookMeta) guide.getItemMeta();
@@ -33,13 +33,21 @@ public class NewPlayerQuest {
         ComponentBuilder text3 = new ComponentBuilder("Happy Hunting, and may your battles reap great reward!\n");
 
 
+        ComponentBuilder builder;
+        if(!reread){
+            builder = new ComponentBuilder(ChatColor.WHITE + "\uE054" + "                                                                                       ")
+                    .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mysticaquest " + player.getName() + " accept"));
 
+        }
+        else
+        {
+            builder = new ComponentBuilder(ChatColor.WHITE + "\uE055" + "                                                                                       ")
+                    .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mysticaquest " + player.getName() + " navigate"));
 
-        //the large blank space is to extend the hitbox of the unicode
-        ComponentBuilder builder = new ComponentBuilder(ChatColor.WHITE +"\uE054" + "                                                                                       ")
-                .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mysticaquest " + player.getName() + " accept"));
-
+        }
         text3.append(builder.create());
+        //the large blank space is to extend the hitbox of the unicode
+
 
         meta.spigot().addPage(text.create());
         meta.spigot().addPage(text2.create());

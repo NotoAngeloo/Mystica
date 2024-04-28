@@ -41,6 +41,8 @@ public class PierceBuff {
                 int left = buffActiveMap.get(player.getUniqueId()) - 1;
 
                 buffActiveMap.put(player.getUniqueId(), left);
+
+                Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
             }
         }.runTaskTimer(main, 0, 20);
 

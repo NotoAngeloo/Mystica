@@ -1,7 +1,10 @@
 package me.angeloo.mystica.Components.Commands;
 
+import me.angeloo.mystica.Components.Inventories.QuestInventory;
 import me.angeloo.mystica.Components.Quests.LindwyrmQuest;
 import me.angeloo.mystica.Components.Quests.SewerQuest;
+import me.angeloo.mystica.Managers.InventoryIndexingManager;
+import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Managers.QuestManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
@@ -14,11 +17,13 @@ import org.jetbrains.annotations.NotNull;
 public class MysticaQuest implements CommandExecutor {
 
     private final QuestManager questManager;
-
+    private final QuestInventory questInventory;
+    private final InventoryIndexingManager inventoryIndexingManager;
 
     public MysticaQuest(Mystica main){
         questManager = main.getQuestManager();
-
+        questInventory = main.getQuestInventory();
+        inventoryIndexingManager = main.getInventoryIndexingManager();
     }
 
     @Override
@@ -26,6 +31,18 @@ public class MysticaQuest implements CommandExecutor {
 
         Player player;
 
+        if(args.length==0){
+            if(!(sender instanceof Player)){
+                sender.sendMessage("only players");
+                return true;
+            }
+
+            player = (Player) sender;
+
+            player.openInventory(questInventory.openQuestInventory(player, inventoryIndexingManager.getQuestIndex(player)));
+
+            return true;
+        }
 
         //uuid, <quest/accept>
 
@@ -55,8 +72,43 @@ public class MysticaQuest implements CommandExecutor {
                 return true;
             }
 
+            if (args[1].equalsIgnoreCase("navigate")) {
+                questManager.navigateQuest(player);
+                return true;
+            }
+
             questManager.setQueuedQuest(player, args[1]);
             return true;
+
+        }
+
+        if(args.length==3){
+
+            try{
+                player = Bukkit.getPlayer(args[0]);
+            }
+            catch (IllegalArgumentException e){
+                return true;
+            }
+
+            if(player == null){
+                return true;
+            }
+
+            if(!sender.isOp()){
+                return true;
+            }
+
+            if(args[1].equalsIgnoreCase("reward")){
+                questManager.rewardQuest(player,args[2]);
+                return true;
+            }
+
+            if(args[1].equalsIgnoreCase("complete")){
+                questManager.completeQuest(player, args[2]);
+                return true;
+            }
+
 
         }
 

@@ -49,6 +49,8 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
+import static me.angeloo.mystica.Mystica.questColor;
+
 public class GeneralEventListener implements Listener {
 
     private final Mystica main;
@@ -202,8 +204,6 @@ public class GeneralEventListener implements Listener {
         }*/
 
         profileManager.addToPlayerNameMap(player);
-        inventoryIndexingManager.innitBagIndex(player);
-        inventoryIndexingManager.innitClassIndex(player);
         targetManager.setPlayerTarget(player, null);
         buffAndDebuffManager.removeAllBuffsAndDebuffs(player);
         gearReader.setGearStats(player);
@@ -870,6 +870,8 @@ public class GeneralEventListener implements Listener {
 
 
         }
+
+        profileManager.getAnyProfile(entity).getVoidsOnDeath();
 
     }
 
@@ -1775,7 +1777,7 @@ public class GeneralEventListener implements Listener {
 
         switch (whatHint.toLowerCase()){
             case "combatend":{
-                player.sendMessage(ChatColor.of(new java.awt.Color(255, 128, 0)) + "Helpful Hint: " +
+                player.sendMessage(ChatColor.of(questColor) + "Helpful Hint: " +
                         ChatColor.RESET + "Open your inventory to exit combat");
                 return;
             }

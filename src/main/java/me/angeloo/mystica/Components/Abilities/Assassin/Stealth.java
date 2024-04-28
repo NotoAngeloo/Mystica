@@ -2,6 +2,7 @@ package me.angeloo.mystica.Components.Abilities.Assassin;
 
 import me.angeloo.mystica.Components.Abilities.AssassinAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
+import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
@@ -109,6 +110,7 @@ public class Stealth {
                     buffAndDebuffManager.getHidden().hidePlayer(player, true);
                     stealthTargetBlacklist.add(player);
                     stealthed.put(player.getUniqueId(), true);
+                    Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
                     revealAfterTime(player);
 
                     for(Map.Entry<UUID, LivingEntity> entry: targetManager.getTargetMap().entrySet()){
@@ -130,6 +132,7 @@ public class Stealth {
                 count ++;
             }
         }.runTaskTimer(main, 0, 1);
+
 
 
     }
@@ -174,6 +177,7 @@ public class Stealth {
         buffAndDebuffManager.getHidden().unhidePlayer(player);
         stealthTargetBlacklist.remove(player);
         stealthed.put(player.getUniqueId(), false);
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
     }
 
     private void forceReveal(Player player, LivingEntity victim){
@@ -181,6 +185,8 @@ public class Stealth {
         buffAndDebuffManager.getHidden().unhidePlayer(player);
         stealthTargetBlacklist.remove(player);
         stealthed.put(player.getUniqueId(), false);
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+
 
         abilityReadyInMap.put(player.getUniqueId(), 30);
         new BukkitRunnable(){

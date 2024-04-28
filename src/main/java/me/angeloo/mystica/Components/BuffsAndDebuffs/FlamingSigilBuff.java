@@ -55,8 +55,7 @@ public class FlamingSigilBuff {
 
                 if(count >= 7){
                     this.cancel();
-                    hasAttackMap.remove(entity.getUniqueId());
-                    attackAmountMap.remove(entity.getUniqueId());
+                    removeAttackBuff(entity);
                 }
 
                 count++;
@@ -76,6 +75,7 @@ public class FlamingSigilBuff {
 
     public void removeAttackBuff(LivingEntity entity){
         hasAttackMap.remove(entity.getUniqueId());
+        attackAmountMap.remove(entity.getUniqueId());
         if(entity instanceof Player){
             Player player = (Player) entity;
             Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
@@ -109,8 +109,7 @@ public class FlamingSigilBuff {
 
                 if(count >= 7){
                     this.cancel();
-                    hasHealthMap.remove(entity.getUniqueId());
-                    healthAmountMap.remove(entity.getUniqueId());
+                    removeHealthBuff(entity);
                 }
 
                 count++;
@@ -130,6 +129,7 @@ public class FlamingSigilBuff {
 
     public void removeHealthBuff(LivingEntity entity){
         hasHealthMap.remove(entity.getUniqueId());
+        healthAmountMap.remove(entity.getUniqueId());
         if(entity instanceof Player){
             Player player = (Player) entity;
             Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));

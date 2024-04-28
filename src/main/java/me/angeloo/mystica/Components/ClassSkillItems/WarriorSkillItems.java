@@ -44,7 +44,7 @@ public class WarriorSkillItems {
         switch(number){
 
             case 1:{
-                return getItem(Material.ORANGE_DYE, 0,
+                return getItem(Material.ORANGE_DYE, 1,
                         ChatColor.of(warriorColor) + "Lava Quake",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_1_Level_Bonus()),
                         ChatColor.of(warriorColor) + String.valueOf(abilityManager.getWarriorAbilities().getLavaQuake().getSkillDamage(player)) + " power",
@@ -55,7 +55,7 @@ public class WarriorSkillItems {
                         ChatColor.of(Color.WHITE) + "addition, shield yourself");
             }
             case 2:{
-                return getItem(Material.ORANGE_DYE, 0,
+                return getItem(Material.ORANGE_DYE, 2,
                         ChatColor.of(warriorColor) + "Searing Chains",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_2_Level_Bonus()),
                         ChatColor.of(warriorColor) + String.valueOf(abilityManager.getWarriorAbilities().getSearingChains().getSkillDamage(player)) + " power",
@@ -67,7 +67,7 @@ public class WarriorSkillItems {
                         ChatColor.of(Color.WHITE) + "hit are taunted as well as slowed");
             }
             case 3:{
-                return getItem(Material.ORANGE_DYE, 0,
+                return getItem(Material.ORANGE_DYE, 3,
                         ChatColor.of(warriorColor) + "Tempest Rage",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_3_Level_Bonus()),
                         ChatColor.of(warriorColor) + String.valueOf(abilityManager.getWarriorAbilities().getTempestRage().getSkillDamage(player)) + " power",
@@ -77,7 +77,7 @@ public class WarriorSkillItems {
                         ChatColor.of(Color.WHITE) + "damage to nearby enemies");
             }
             case 4:{
-                return getItem(Material.ORANGE_DYE, 0,
+                return getItem(Material.ORANGE_DYE, 4,
                         ChatColor.of(warriorColor) + "Meteor Crater",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_4_Level_Bonus()),
                         ChatColor.of(warriorColor) + String.valueOf(abilityManager.getWarriorAbilities().getMeteorCrater().getSkillDamage(player)) + " power",
@@ -89,7 +89,7 @@ public class WarriorSkillItems {
                         ChatColor.of(Color.WHITE) + "70% of their max Hp");
             }
             case 5:{
-                return getItem(Material.ORANGE_DYE, 0,
+                return getItem(Material.ORANGE_DYE, 5,
                         ChatColor.of(warriorColor) + "Anvil Drop",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_5_Level_Bonus()),
                         ChatColor.of(warriorColor) + String.valueOf(abilityManager.getWarriorAbilities().getAnvilDrop().getSkillDamage(player)) + " power",
@@ -102,7 +102,7 @@ public class WarriorSkillItems {
                         ChatColor.of(Color.WHITE) + "air without leaping");
             }
             case 6:{
-                return getItem(Material.ORANGE_DYE, 0,
+                return getItem(Material.ORANGE_DYE, 6,
                         ChatColor.of(warriorColor) + "Flaming Sigil",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_6_Level_Bonus()),
                         ChatColor.of(warriorColor) + String.valueOf(abilityManager.getWarriorAbilities().getFlamingSigil().getBuffAmount(player)) + " buff amount",
@@ -113,7 +113,7 @@ public class WarriorSkillItems {
                         ChatColor.of(Color.WHITE) + "max Hp as well as Attack");
             }
             case 7:{
-                return getItem(Material.ORANGE_DYE, 0,
+                return getItem(Material.ORANGE_DYE, 7,
                         ChatColor.of(warriorColor) + "Magma Spikes",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_7_Level_Bonus()),
                         ChatColor.of(warriorColor) + String.valueOf(abilityManager.getWarriorAbilities().getMagmaSpikes().getSkillDamage(player)) + " power",
@@ -124,7 +124,7 @@ public class WarriorSkillItems {
                         ChatColor.of(Color.WHITE) + "nearby foes");
             }
             case 8:{
-                return getItem(Material.ORANGE_DYE, 0,
+                return getItem(Material.ORANGE_DYE, 8,
                         ChatColor.of(warriorColor) + "Burning Blessing",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_8_Level_Bonus()),
                         ChatColor.of(warriorColor) + String.valueOf(abilityManager.getWarriorAbilities().getBurningBlessing().getBuffAmount(player)) + " buff amount",
@@ -147,7 +147,7 @@ public class WarriorSkillItems {
 
         switch(subClass.toLowerCase()){
             case "gladiator":{
-                return getItem(Material.ORANGE_DYE, 0,
+                return getItem(Material.ORANGE_DYE, 9,
                         ChatColor.of(warriorColor) + "Gladiator Heart",
                         ChatColor.of(levelColor) + "Level " + level,
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getWarriorAbilities().getGladiatorHeart().getCost()) + " mana",
@@ -158,7 +158,7 @@ public class WarriorSkillItems {
                         ChatColor.of(Color.WHITE) + "increase your damage resistance");
             }
             case "executioner":{
-                return getItem(Material.ORANGE_DYE, 0,
+                return getItem(Material.ORANGE_DYE, 10,
                         ChatColor.of(warriorColor) + "Death Gaze",
                         ChatColor.of(levelColor) + "Level " + level,
                         ChatColor.of(warriorColor) + String.valueOf(abilityManager.getWarriorAbilities().getDeathGaze().getSkillDamage(player)) + " power",
@@ -196,6 +196,7 @@ public class WarriorSkillItems {
         basicLore.add(ChatColor.of(levelColor) + "Level "  + level);
         basicLore.add(ChatColor.of(warriorColor) + String.valueOf(abilityManager.getWarriorAbilities().getWarriorBasic().getSkillDamage(player)) + " power");
 
+        assert basicMeta != null;
         basicMeta.setLore(basicLore);
         basicItem.setItemMeta(basicMeta);
 

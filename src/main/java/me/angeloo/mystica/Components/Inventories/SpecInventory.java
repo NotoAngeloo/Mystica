@@ -437,7 +437,7 @@ public class SpecInventory {
     }
 
     private ItemStack getExecutionerItem(){
-        return getItem(Material.YELLOW_DYE, 0,
+        return getItem(Material.ORANGE_DYE, 10,
                 ChatColor.of(warriorColor) + "Executioner",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -463,7 +463,7 @@ public class SpecInventory {
     }
 
     private ItemStack getGladiatorItem(){
-        return getItem(Material.YELLOW_DYE, 0,
+        return getItem(Material.ORANGE_DYE, 9,
                 ChatColor.of(warriorColor) + "Gladiator",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -497,7 +497,7 @@ public class SpecInventory {
                 ChatColor.of(Color.WHITE) + "Increase your maximum combo",
                 ChatColor.of(Color.WHITE) + "points by 1." ,
                 ChatColor.of(assassinColor) + "Blade Tempest " + ChatColor.of(Color.WHITE) + "increases crit",
-                ChatColor.of(Color.WHITE) + "rate by 10% for 5 seconds.",
+                ChatColor.of(Color.WHITE) + "rate by 10% for 10 seconds.",
                 "",
                 ChatColor.of(levelColor) + "Get Skill",
                 ChatColor.of(assassinColor) + "Duelist's Frenzy",

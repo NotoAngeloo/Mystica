@@ -19,6 +19,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class HoLeeBoss {
@@ -248,10 +249,12 @@ public class HoLeeBoss {
             }
 
             @Override
-            public void getVoidsOnDeath() {
-                //TODO: something
+            public void getVoidsOnDeath(Set<Player> players) {
 
             }
+
+
+
         };
         profileManager.addToNonPlayerProfiles(uuid, nonPlayerProfile);
 
@@ -445,9 +448,11 @@ public class HoLeeBoss {
             }
 
             @Override
-            public void getVoidsOnDeath() {
+            public void getVoidsOnDeath(Set<Player> players) {
 
             }
+
+
         };
         profileManager.addToNonPlayerProfiles(uuid, nonPlayerProfile);
     }

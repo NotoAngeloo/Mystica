@@ -54,6 +54,7 @@ import static me.angeloo.mystica.Mystica.questColor;
 public class GeneralEventListener implements Listener {
 
     private final Mystica main;
+    private final DailyData dailyData;
     private final ProfileManager profileManager;
     private final PathingManager pathingManager;
     private final StealthTargetBlacklist stealthTargetBlacklist;
@@ -65,6 +66,7 @@ public class GeneralEventListener implements Listener {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final AbilityManager abilityManager;
     private final DeathManager deathManager;
+    private final QuestManager questManager;
     private final InventoryIndexingManager inventoryIndexingManager;
     private final EquipmentInventory equipmentInventory;
     private final AbilityInventory abilityInventory;
@@ -92,6 +94,7 @@ public class GeneralEventListener implements Listener {
 
     public GeneralEventListener(Mystica main){
         this.main = main;
+        dailyData = main.getDailyData();
         profileManager = main.getProfileManager();
         pathingManager = main.getPathingManager();
         stealthTargetBlacklist = main.getStealthTargetBlacklist();
@@ -101,6 +104,7 @@ public class GeneralEventListener implements Listener {
         targetManager = main.getTargetManager();
         combatManager = main.getCombatManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
+        questManager = main.getQuestManager();
         abilityManager = main.getAbilityManager();
         deathManager = main.getDeathManager();
         inventoryIndexingManager = main.getInventoryIndexingManager();
@@ -167,6 +171,7 @@ public class GeneralEventListener implements Listener {
             player.setInvisible(false);
             player.setFireTicks(0);
             player.setVisualFire(false);
+            player.setLevel(profileManager.getAnyProfile(player).getStats().getLevel());
 
             ItemStack[] savedInv = profileManager.getAnyProfile(player).getSavedInv();
 
@@ -197,11 +202,8 @@ public class GeneralEventListener implements Listener {
                 profileManager.getAnyProfile(player).removeSavedInv();
             }
 
+            player.sendMessage(dailyData.getLevelAnnouncement());
         }
-
-        /*if(profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("None")){
-            player.openInventory(new ClassSelectInventory().openClassSelect("none"));
-        }*/
 
         profileManager.addToPlayerNameMap(player);
         targetManager.setPlayerTarget(player, null);
@@ -777,6 +779,25 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
+    public void onLevelup(PlayerLevelChangeEvent event){
+        Player player = event.getPlayer();
+
+        int newLevel = event.getNewLevel();
+
+        if (newLevel > dailyData.getMaxLevel()){
+            newLevel = dailyData.getMaxLevel();
+            player.setLevel(newLevel);
+        }
+
+        profileManager.getAnyProfile(player).getStats().setLevel(newLevel);
+
+        player.closeInventory();
+
+        //heal them
+        changeResourceHandler.healPlayerToFull(player);
+    }
+
+    @EventHandler
     public void customDeathEvent(CustomDeathEvent event){
 
         Player player = event.getPlayerWhoKilled();
@@ -871,7 +892,16 @@ public class GeneralEventListener implements Listener {
 
         }
 
-        profileManager.getAnyProfile(entity).getVoidsOnDeath();
+        profileManager.getAnyProfile(entity).getVoidsOnDeath(victors);
+
+    }
+
+    @EventHandler
+    public void completeKillQuest(BossKillQuestCompleteEvent event){
+
+        for(Player player : event.getPlayers()){
+            questManager.completeQuest(player, event.getObjectiveOf());
+        }
 
     }
 

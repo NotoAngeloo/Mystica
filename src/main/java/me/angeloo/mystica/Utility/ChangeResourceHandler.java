@@ -8,6 +8,7 @@ import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.Stats;
+import me.angeloo.mystica.Components.ProfileComponents.StatsFromGear;
 import me.angeloo.mystica.CustomEvents.BoardValueUpdateEvent;
 import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
 import me.angeloo.mystica.Managers.BuffAndDebuffManager;
@@ -32,6 +33,7 @@ public class ChangeResourceHandler {
 
     private final Mystica main;
 
+    private final DailyData dailyData;
     private final ProfileManager profileManager;
     private final ProtocolManager protocolManager;
     private final Map<UUID, Long> lastDamaged = new HashMap<>();
@@ -47,6 +49,7 @@ public class ChangeResourceHandler {
 
     public ChangeResourceHandler(Mystica main){
         this.main = main;
+        dailyData = main.getDailyData();
         protocolManager = main.getProtocolManager();
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
@@ -325,9 +328,9 @@ public class ChangeResourceHandler {
         int currentLevel = player.getLevel();
 
         // Able to change this later
-        int maxServerLevel = 20;
-        if (currentLevel >= maxServerLevel) {
-            currentLevel = maxServerLevel;
+
+        if (currentLevel >= dailyData.getMaxLevel()) {
+            currentLevel = dailyData.getMaxLevel();
             player.setLevel(currentLevel);
             profileManager.getAnyProfile(player).getStats().setLevel(currentLevel);
             return;
@@ -463,6 +466,13 @@ public class ChangeResourceHandler {
         }
 
         return lastManaed.get(uuid);
+    }
+
+    public void healPlayerToFull(Player player){
+
+        double actualMaxHealth = profileManager.getAnyProfile(player).getTotalHealth();
+        profileManager.getAnyProfile(player).setCurrentHealth(actualMaxHealth);
+        player.setHealth(20);
     }
 
     public void displayDamage(Player player, LivingEntity target, double amount){

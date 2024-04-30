@@ -68,45 +68,5 @@ public class ProfileFileWriter {
         }
     }
 
-    /*public YamlConfiguration createOrLoadProfileFile(UUID playerId) {
-        String fileName = playerId.toString() + ".yml"; // Use UUID as file name
 
-        File file = new File(dataFolder, fileName);
-        YamlConfiguration profileConfig = new YamlConfiguration();
-
-        if (!file.exists()) {
-            try {
-                file.getParentFile().mkdirs();
-                file.createNewFile();
-                main.saveResource("default-profile.yml", false); // Adjust the resource path here
-                //Bukkit.getLogger().info("Created a new profile file for " + playerId);
-            } catch (IOException exception) {
-                //Bukkit.getLogger().info("Error creating profile file for " + playerId);
-                exception.printStackTrace();
-            }
-        }
-
-        try {
-            profileConfig.load(file);
-            //Bukkit.getLogger().info("Loaded profile file for " + playerId);
-        } catch (IOException | InvalidConfigurationException exception) {
-            //Bukkit.getLogger().info("Error loading profile file for " + playerId);
-            exception.printStackTrace();
-        }
-
-        return profileConfig;
-    }
-
-    public void saveProfileFile(UUID playerId, YamlConfiguration profileConfig) {
-        String fileName = playerId.toString() + ".yml";
-        File file = new File(dataFolder, fileName);
-
-        try {
-            profileConfig.save(file);
-            Bukkit.getLogger().info("Saved profile file for " + playerId);
-        } catch (IOException exception) {
-            Bukkit.getLogger().info("Error saving profile file for " + playerId);
-            exception.printStackTrace();
-        }
-    }*/
 }

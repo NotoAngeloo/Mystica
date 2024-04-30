@@ -10,6 +10,8 @@
       <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/firstclears/firstclears.yml" />
       <element id="dir-copy" path="$PROJECT_DIR$/src/main/resources/firstclears" />
       <element id="dir-copy" path="$PROJECT_DIR$/src/main/resources/playerdata" />
+      <element id="dir-copy" path="$PROJECT_DIR$/src/main/resources/dailydata" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/dailydata/dailydata.yml" />
     </root>
   </artifact>
 </component>

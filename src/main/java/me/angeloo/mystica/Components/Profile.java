@@ -2,7 +2,11 @@ package me.angeloo.mystica.Components;
 
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
+import java.util.Set;
 
 public interface Profile {
 
@@ -59,5 +63,5 @@ public interface Profile {
 
     Milestones getMilestones();
 
-    void getVoidsOnDeath();
+    void getVoidsOnDeath(Set<Player> players);
 }

@@ -21,10 +21,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class SpectralSteed {
 
@@ -249,9 +246,11 @@ public class SpectralSteed {
             }
 
             @Override
-            public void getVoidsOnDeath() {
+            public void getVoidsOnDeath(Set<Player> players) {
 
             }
+
+
         };
         profileManager.addToNonPlayerProfiles(horse.getUniqueId(), nonPlayerProfile);
 

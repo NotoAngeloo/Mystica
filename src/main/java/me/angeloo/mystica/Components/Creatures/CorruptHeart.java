@@ -8,6 +8,7 @@ import me.angeloo.mystica.Components.Items.SoulStone;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
+import me.angeloo.mystica.CustomEvents.BossKillQuestCompleteEvent;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
@@ -17,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class CorruptHeart {
@@ -246,9 +248,11 @@ public class CorruptHeart {
             }
 
             @Override
-            public void getVoidsOnDeath() {
-                Bukkit.getLogger().info("Some bullshit happened");
+            public void getVoidsOnDeath(Set<Player> players) {
+                Bukkit.getServer().getPluginManager().callEvent(new BossKillQuestCompleteEvent(players, "sewer2"));
             }
+
+
         };
         profileManager.addToNonPlayerProfiles(uuid, nonPlayerProfile);
 

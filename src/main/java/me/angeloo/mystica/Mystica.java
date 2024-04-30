@@ -7,10 +7,7 @@ import me.angeloo.mystica.Components.Commands.*;
 import me.angeloo.mystica.Components.Inventories.BagInventory;
 import me.angeloo.mystica.Components.Inventories.QuestInventory;
 import me.angeloo.mystica.Managers.*;
-import me.angeloo.mystica.Tasks.AggroTick;
-import me.angeloo.mystica.Tasks.NaturalRegenTick;
-import me.angeloo.mystica.Tasks.RezTick;
-import me.angeloo.mystica.Tasks.TargetDistanceTick;
+import me.angeloo.mystica.Tasks.*;
 import me.angeloo.mystica.Utility.*;
 import me.angeloo.mystica.Utility.Listeners.GeneralEventListener;
 import me.angeloo.mystica.Utility.Listeners.InventoryEventListener;
@@ -33,6 +30,7 @@ public final class Mystica extends JavaPlugin{
     private ProfileManager profileManager;
     private ProfileFileWriter profileFileWriter;
 
+    private DailyData dailyData;
     private PathingManager pathingManager;
 
     private ClassSetter classSetter;
@@ -86,11 +84,12 @@ public final class Mystica extends JavaPlugin{
         pathingManager = new PathingManager(this);
         pathingManager.createOrLoadFolder();
 
-        profileFileWriter = new ProfileFileWriter(this);
+        dailyData = new DailyData(this);
+        dailyData.createOrLoadFolder();
 
+        profileFileWriter = new ProfileFileWriter(this);
         profileManager = new ProfileManager(this);
         profileManager.loadProfilesFromConfig();
-
 
         classSetter = new ClassSetter(this);
         classSwapper = new ClassSwapper(this);
@@ -162,7 +161,7 @@ public final class Mystica extends JavaPlugin{
         getCommand("ClassGuide").setExecutor(new ClassGuide(this));
         getCommand("MysticaQuest").setExecutor(new MysticaQuest(this));
 
-        plugin.getServer().getPluginManager().registerEvents(new InventoryEventListener(plugin), plugin);
+        this.getServer().getPluginManager().registerEvents(new InventoryEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new GeneralEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new MMListeners(this), this);
 
@@ -172,6 +171,8 @@ public final class Mystica extends JavaPlugin{
         rezTick.runTaskTimer(this, 0, 20);
         TargetDistanceTick targetDistanceTick = new TargetDistanceTick(this);
         targetDistanceTick.runTaskTimer(this, 0, 20);
+        DailyTick dailyTick = new DailyTick(this);
+        dailyTick.runTaskTimer(this, 0, 1200);
 
         Bukkit.getLogger().info("Mystica Enabled");
 
@@ -233,6 +234,7 @@ public final class Mystica extends JavaPlugin{
 
         profileManager.saveProfilesToConfig();
         pathingManager.saveFolder();
+        dailyData.saveFolder();
         Bukkit.getLogger().info("Mystica Disabled");
     }
 
@@ -324,5 +326,7 @@ public final class Mystica extends JavaPlugin{
     public Locations getLocations(){return locations;}
 
     public QuestManager getQuestManager(){return questManager;}
+
+    public DailyData getDailyData(){return dailyData;}
 
 }

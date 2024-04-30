@@ -6,8 +6,11 @@ import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class CreaturesAndCharactersManager {
@@ -236,7 +239,7 @@ public class CreaturesAndCharactersManager {
             }
 
             @Override
-            public void getVoidsOnDeath() {
+            public void getVoidsOnDeath(Set<Player> players) {
 
             }
 
@@ -415,7 +418,7 @@ public class CreaturesAndCharactersManager {
             }
 
             @Override
-            public void getVoidsOnDeath() {
+            public void getVoidsOnDeath(Set<Player> players) {
 
             }
 

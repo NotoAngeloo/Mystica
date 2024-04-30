@@ -18,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class TheLindwyrm {
@@ -248,9 +249,11 @@ public class TheLindwyrm {
             }
 
             @Override
-            public void getVoidsOnDeath() {
+            public void getVoidsOnDeath(Set<Player> players) {
 
             }
+
+
         };
         profileManager.addToNonPlayerProfiles(uuid, nonPlayerProfile);
 

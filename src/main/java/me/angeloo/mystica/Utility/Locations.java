@@ -38,7 +38,6 @@ public class Locations {
                 "Difficulty: Easy" +
                 "\n\n" +
                 "Recommended Players: 1");
-
         sewer.setCustomName("sewer");
 
 
@@ -52,6 +51,18 @@ public class Locations {
                 "Recommended Players: 5");
 
         lindwyrm.setCustomName("lindwyrm_cave");
+
+        Location hoLeeDungeonLoc = new Location(world, -74, 71, 452.5);
+        TextDisplay hoLeeDungeon = world.spawn(hoLeeDungeonLoc, TextDisplay.class);
+        hoLeeDungeon.setRotation(90, 0);
+        hoLeeDungeon.setText("Test of Might" +
+                "\n\n" +
+                "Difficulty: Hard" +
+                "\n\n" +
+                "Recommended" +
+                "\n\n" +
+                "Players: 10");
+        hoLeeDungeon.setCustomName("ho_lee_dungeon");
 
 
         Location teleportLindwyrm = new Location(world, 549, 94, -124);

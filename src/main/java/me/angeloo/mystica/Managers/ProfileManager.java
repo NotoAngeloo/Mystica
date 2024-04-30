@@ -258,9 +258,10 @@ public class ProfileManager {
                         }
 
                         @Override
-                        public void getVoidsOnDeath() {
+                        public void getVoidsOnDeath(Set<Player> players) {
 
                         }
+
 
                     };
 
@@ -382,9 +383,11 @@ public class ProfileManager {
             }
 
             @Override
-            public void getVoidsOnDeath() {
+            public void getVoidsOnDeath(Set<Player> players) {
 
             }
+
+
         };
         playerProfiles.put(uuid, profile);
 
@@ -589,9 +592,10 @@ public class ProfileManager {
             }
 
             @Override
-            public void getVoidsOnDeath() {
+            public void getVoidsOnDeath(Set<Player> players) {
 
             }
+
 
         };
         addToNonPlayerProfiles(uuid, nonPlayerProfile);

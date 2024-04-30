@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static me.angeloo.mystica.Mystica.levelColor;
 import static me.angeloo.mystica.Mystica.questColor;
 
 public class QuestManager {
@@ -192,7 +193,7 @@ public class QuestManager {
 
         switch (quest.toLowerCase()){
             case "sewer2":{
-                player.sendMessage(net.md_5.bungee.api.ChatColor.of(questColor) + "Objective: " + ChatColor.RESET + "Speak with Archbishop Hasbrudan.");
+                player.sendMessage(net.md_5.bungee.api.ChatColor.of(questColor) + "Objective Complete: " + ChatColor.RESET + "Speak with Archbishop Hasbrudan.");
                 break;
             }
         }
@@ -207,7 +208,10 @@ public class QuestManager {
 
         switch (quest.toLowerCase()){
             case "sewer2":{
-
+                player.sendMessage(net.md_5.bungee.api.ChatColor.of(questColor) + "Quest Complete");
+                player.sendMessage(net.md_5.bungee.api.ChatColor.of(levelColor) + "Rewards: " + ChatColor.RESET + "$20");
+                int bal = profileManager.getAnyProfile(player).getBal().getBal();
+                profileManager.getAnyProfile(player).getBal().setBal(bal + 20);
                 break;
             }
         }

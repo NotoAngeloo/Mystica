@@ -29,7 +29,7 @@ public class DailyTick extends BukkitRunnable {
             dailyData.decreaseDays();
             int daysTilIncrease = dailyData.getDaysTilIncrease();
 
-            if(daysTilIncrease <= 0 ){
+            if(daysTilIncrease < 0 ){
 
                 int oldMax = dailyData.getMaxLevel();
                 dailyData.increaseMaxLevel();

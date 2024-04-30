@@ -266,9 +266,6 @@ public class PurifyingBlast {
         instantCast.remove(player.getUniqueId());
         Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));}
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.put(player.getUniqueId(), 0);
-    }
 
     public boolean getInstantCast(Player player){
         return instantCast.getOrDefault(player.getUniqueId(), false);
@@ -293,5 +290,9 @@ public class PurifyingBlast {
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
 
         return 15 + ((int)(skillLevel/3));
+    }
+
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
     }
 }

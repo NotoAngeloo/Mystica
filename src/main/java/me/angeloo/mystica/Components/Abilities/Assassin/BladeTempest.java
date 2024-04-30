@@ -254,4 +254,9 @@ public class BladeTempest {
         return cooldown;
     }
 
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
+    }
+
+
 }

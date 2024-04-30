@@ -4,7 +4,6 @@ import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
-import me.angeloo.mystica.Utility.DamageCalculator;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
@@ -267,6 +266,10 @@ public class SacredAegis {
         }
 
         return cooldown;
+    }
+
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
     }
 
 }

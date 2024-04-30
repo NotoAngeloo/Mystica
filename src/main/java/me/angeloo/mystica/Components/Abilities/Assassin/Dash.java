@@ -113,4 +113,8 @@ public class Dash {
         return cooldown;
     }
 
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
+    }
+
 }

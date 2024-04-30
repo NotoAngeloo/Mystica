@@ -5,18 +5,15 @@ import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.ShieldAbilityManaDisplayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class AbilityManager {
 
     private final ProfileManager profileManager;
-    private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
     private final BuffAndDebuffManager buffAndDebuffManager;
 
     private final Map<Player, Boolean> castMap = new HashMap<>();
@@ -51,8 +48,6 @@ public class AbilityManager {
         paladinAbilities = new PaladinAbilities(main, this);
         warriorAbilities = new WarriorAbilities(main, this);
         assassinAbilities = new AssassinAbilities(main, this);
-
-        shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, this);
     }
 
     public void useAbility(Player player, int abilityNumber){
@@ -402,5 +397,15 @@ public class AbilityManager {
         warriorAbilities.getWarriorBasic().stopBasicRunning(player);
     }
 
+    public void resetCooldowns(Player player){
+        assassinAbilities.resetCooldowns(player);
+        elementalistAbilities.resetCooldowns(player);
+        mysticAbilities.resetCooldowns(player);
+        noneAbilities.resetCooldowns(player);
+        paladinAbilities.resetCooldowns(player);
+        rangerAbilities.resetCooldowns(player);
+        shadowKnightAbilities.resetCooldowns(player);
+        warriorAbilities.resetCooldowns(player);
+    }
 
 }

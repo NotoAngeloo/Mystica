@@ -383,4 +383,8 @@ public class WildSpirit {
         return 10;
     }
 
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
+    }
+
 }

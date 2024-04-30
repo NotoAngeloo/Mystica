@@ -25,7 +25,6 @@ public class DeathGaze {
     private final Mystica main;
     private final ProfileManager profileManager;
     private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
-    private final AbilityManager abilityManager;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
@@ -41,7 +40,6 @@ public class DeathGaze {
         this.main = main;
         profileManager = main.getProfileManager();
         shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, manager);
-        abilityManager = manager;
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
@@ -397,6 +395,10 @@ public class DeathGaze {
     public double getSkillDamage(Player player){
         double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
         return 25 + ((int)(skillLevel/3));
+    }
+
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
     }
 
 }

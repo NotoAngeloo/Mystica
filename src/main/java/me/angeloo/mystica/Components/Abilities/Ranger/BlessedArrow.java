@@ -304,4 +304,8 @@ public class BlessedArrow {
         return 20 + ((int)(skillLevel/3));
     }
 
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
+    }
+
 }

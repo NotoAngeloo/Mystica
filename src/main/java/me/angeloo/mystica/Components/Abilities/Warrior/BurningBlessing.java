@@ -113,4 +113,9 @@ public class BurningBlessing {
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
         return 5 + ((int)(skillLevel/3));
     }
+
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
+    }
+
 }

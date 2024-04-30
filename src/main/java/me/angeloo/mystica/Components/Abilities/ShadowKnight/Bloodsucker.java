@@ -284,5 +284,8 @@ public class Bloodsucker {
         return healAmount;
     }
 
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
+    }
 
 }

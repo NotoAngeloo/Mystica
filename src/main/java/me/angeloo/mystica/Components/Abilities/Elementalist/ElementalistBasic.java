@@ -111,6 +111,12 @@ public class ElementalistBasic {
             @Override
             public void run(){
 
+                if(buffAndDebuffManager.getIfBasicInterrupt(player)){
+                    this.cancel();
+                    stopBasicRunning(player);
+                    return;
+                }
+
                 double totalRange = getRange(player);
 
                 targetManager.setTargetToNearestValid(player, totalRange);

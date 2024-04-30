@@ -31,7 +31,6 @@ public class DuranceOfTruth {
 
     private final Mystica main;
     private final ProfileManager profileManager;
-    private final AbilityManager abilityManager;
     private final TargetManager targetManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CombatManager combatManager;
@@ -48,7 +47,6 @@ public class DuranceOfTruth {
         this.main = main;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
-        abilityManager = manager;
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
@@ -456,6 +454,10 @@ public class DuranceOfTruth {
         }
 
         return cooldown;
+    }
+
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
     }
 
 }

@@ -410,7 +410,10 @@ public class MagmaSpikes {
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
         return 50 + ((int)(skillLevel/3));
+    }
 
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
     }
 
 }

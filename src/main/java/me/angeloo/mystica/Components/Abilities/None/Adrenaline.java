@@ -139,4 +139,8 @@ public class Adrenaline {
 
     }
 
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
+    }
+
 }

@@ -30,7 +30,6 @@ public class ReigningSword {
 
     private final Mystica main;
     private final ProfileManager profileManager;
-    private final AbilityManager abilityManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CombatManager combatManager;
     private final ChangeResourceHandler changeResourceHandler;
@@ -47,7 +46,6 @@ public class ReigningSword {
     public ReigningSword(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
-        abilityManager = manager;
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
@@ -290,6 +288,10 @@ public class ReigningSword {
         }
 
         return cooldown;
+    }
+
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
     }
 
 }

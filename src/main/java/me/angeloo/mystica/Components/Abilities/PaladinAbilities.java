@@ -1,6 +1,5 @@
 package me.angeloo.mystica.Components.Abilities;
 
-import io.lumine.mythic.bukkit.utils.lib.jooq.impl.QOM;
 import me.angeloo.mystica.Components.Abilities.Paladin.*;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
@@ -224,6 +223,27 @@ public class PaladinAbilities {
         }
 
         return 0;
+    }
+
+    public void resetCooldowns(Player player){
+        covenantSword.resetCooldown(player);
+        decreeHonor.resetCooldown(player);
+        divineGuidance.resetCooldown(player);
+        duranceOfTruth.resetCooldown(player);
+        gloryOfPaladins.resetCooldown(player);
+        honorCounter.resetCooldown(player);
+        judgement.resetCooldown(player);
+        justiceMark.resetCooldown(player);
+        lightWell.resetCooldown(player);
+        mercifulHealing.resetCooldown(player);
+        modestCalling.resetCooldown(player);
+        orderShield.resetCooldown(player);
+        reigningSword.resetCooldown(player);
+        representative.resetCooldown(player);
+        sacredAegis.resetCooldown(player);
+        sanctityShield.resetCooldown(player);
+        spiritualGift.resetCooldown(player);
+        torahSword.resetCooldown(player);
     }
 
     public Representative getRepresentative(){return representative;}

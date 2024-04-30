@@ -295,4 +295,8 @@ public class MercifulHealing {
         return 20;
     }
 
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
+    }
+
 }

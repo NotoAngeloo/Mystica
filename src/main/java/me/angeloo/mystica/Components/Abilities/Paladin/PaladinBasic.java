@@ -89,6 +89,13 @@ public class PaladinBasic {
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
+
+                if(buffAndDebuffManager.getIfBasicInterrupt(player)){
+                    this.cancel();
+                    stopBasicRunning(player);
+                    return;
+                }
+
                 basicStageMap.remove(player.getUniqueId());
             }
         }.runTaskLater(main, 50);

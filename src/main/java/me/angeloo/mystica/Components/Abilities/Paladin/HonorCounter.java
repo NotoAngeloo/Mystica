@@ -1,6 +1,5 @@
 package me.angeloo.mystica.Components.Abilities.Paladin;
 
-import me.angeloo.mystica.Components.Abilities.PaladinAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -249,6 +248,10 @@ public class HonorCounter {
         }
 
         return cooldown;
+    }
+
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
     }
 
 }

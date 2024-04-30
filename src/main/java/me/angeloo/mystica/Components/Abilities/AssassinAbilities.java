@@ -138,6 +138,19 @@ public class AssassinAbilities {
         return 0;
     }
 
+    public void resetCooldowns(Player player){
+        assault.resetCooldown(player);
+        bladeTempest.resetCooldown(player);
+        dash.resetCooldown(player);
+        duelistsFrenzy.resetCooldown(player);
+        flyingBlade.resetCooldown(player);
+        laceration.resetCooldown(player);
+        pierce.resetCooldown(player);
+        stealth.resetCooldown(player);
+        weaknessStrike.resetCooldown(player);
+        wickedConcoction.resetCooldown(player);
+    }
+
     public Stealth getStealth(){return stealth;}
     public Combo getCombo(){return combo;}
     public DuelistsFrenzy getDuelistsFrenzy(){return duelistsFrenzy;}

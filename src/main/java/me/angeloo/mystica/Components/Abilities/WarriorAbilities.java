@@ -134,6 +134,19 @@ public class WarriorAbilities {
         return 0;
     }
 
+    public void resetCooldowns(Player player){
+        anvilDrop.resetCooldown(player);
+        burningBlessing.resetCooldown(player);
+        deathGaze.resetCooldown(player);
+        flamingSigil.resetCooldown(player);
+        gladiatorHeart.resetCooldown(player);
+        lavaQuake.resetCooldown(player);
+        magmaSpikes.resetCooldown(player);
+        meteorCrater.resetCooldown(player);
+        searingChains.resetCooldown(player);
+        tempestRage.resetCooldown(player);
+    }
+
     public SearingChains getSearingChains(){return searingChains;}
     public LavaQuake getLavaQuake(){return lavaQuake;}
     public TempestRage getTempestRage(){return tempestRage;}

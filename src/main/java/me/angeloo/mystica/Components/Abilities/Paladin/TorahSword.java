@@ -266,7 +266,7 @@ public class TorahSword {
                     boolean crit = damageCalculator.checkIfCrit(player, finalCritValue);
 
                     if(crit&&dawn){
-                        judgement.resetCooldown(player);
+                        judgement.resetCooldownDawn(player);
                         decision.applyDecision(player);
                     }
 
@@ -286,7 +286,7 @@ public class TorahSword {
                     boolean crit = damageCalculator.checkIfCrit(player, finalCritValue);
 
                     if(crit&&dawn){
-                        judgement.resetCooldown(player);
+                        judgement.resetCooldownDawn(player);
                         decision.applyDecision(player);
                     }
 
@@ -308,7 +308,7 @@ public class TorahSword {
                     boolean crit = damageCalculator.checkIfCrit(player, finalCritValue);
 
                     if(crit&&dawn){
-                        judgement.resetCooldown(player);
+                        judgement.resetCooldownDawn(player);
                         decision.applyDecision(player);
                     }
 
@@ -359,6 +359,10 @@ public class TorahSword {
         }
 
         return cooldown;
+    }
+
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
     }
 
 }

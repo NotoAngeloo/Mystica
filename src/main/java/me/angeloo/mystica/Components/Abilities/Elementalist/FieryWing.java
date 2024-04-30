@@ -27,7 +27,6 @@ public class FieryWing {
 
     private final Mystica main;
     private final ProfileManager profileManager;
-    private final AbilityManager abilityManager;
     private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
@@ -44,7 +43,6 @@ public class FieryWing {
     public FieryWing(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
-        abilityManager = manager;
         shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, manager);
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
@@ -352,6 +350,8 @@ public class FieryWing {
         return cooldown;
     }
 
-
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
+    }
 
 }

@@ -6,7 +6,6 @@ import me.angeloo.mystica.Managers.CombatManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
-import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.ShieldAbilityManaDisplayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -142,6 +141,10 @@ public class GladiatorHeart {
 
     public double getCost(){
         return 20;
+    }
+
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
     }
 
 }

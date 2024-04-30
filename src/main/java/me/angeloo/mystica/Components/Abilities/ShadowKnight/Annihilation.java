@@ -29,7 +29,6 @@ public class Annihilation {
 
     private final ProfileManager profileManager;
     private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
-    private final AbilityManager abilityManager;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
@@ -47,7 +46,6 @@ public class Annihilation {
         this.main = main;
         profileManager = main.getProfileManager();
         shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, manager);
-        abilityManager = manager;
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
@@ -279,6 +277,10 @@ public class Annihilation {
         }
 
         return cooldown;
+    }
+
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
     }
 
 }

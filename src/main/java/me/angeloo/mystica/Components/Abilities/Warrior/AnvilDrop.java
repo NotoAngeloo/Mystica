@@ -29,7 +29,6 @@ public class AnvilDrop {
 
     private final Mystica main;
     private final ProfileManager profileManager;
-    private final AbilityManager abilityManager;
     private final TargetManager targetManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CombatManager combatManager;
@@ -46,7 +45,6 @@ public class AnvilDrop {
         this.main = main;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
-        abilityManager = manager;
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
@@ -352,6 +350,10 @@ public class AnvilDrop {
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
         return 35 + ((int)(skillLevel/3));
+    }
+
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
     }
 
 }

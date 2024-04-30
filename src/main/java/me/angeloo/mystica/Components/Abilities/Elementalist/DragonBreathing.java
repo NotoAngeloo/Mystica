@@ -378,4 +378,8 @@ public class DragonBreathing {
 
         return cooldown;
     }
+
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
+    }
 }

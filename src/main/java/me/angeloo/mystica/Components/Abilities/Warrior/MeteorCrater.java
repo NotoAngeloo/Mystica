@@ -32,7 +32,6 @@ public class MeteorCrater {
 
     private final Mystica main;
     private final ProfileManager profileManager;
-    private final AbilityManager abilityManager;
     private final TargetManager targetManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CombatManager combatManager;
@@ -49,7 +48,6 @@ public class MeteorCrater {
         this.main = main;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
-        abilityManager = manager;
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
@@ -348,5 +346,9 @@ public class MeteorCrater {
         double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
                 profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
         return 80 + ((int)(skillLevel/3));
+    }
+
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
     }
 }

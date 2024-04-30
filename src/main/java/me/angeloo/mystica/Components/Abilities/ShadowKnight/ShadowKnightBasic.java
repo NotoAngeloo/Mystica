@@ -30,6 +30,7 @@ public class ShadowKnightBasic {
     private final Mystica main;
 
     private final ProfileManager profileManager;
+    private final BuffAndDebuffManager buffAndDebuffManager;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
@@ -44,8 +45,8 @@ public class ShadowKnightBasic {
 
     public ShadowKnightBasic(Mystica main, AbilityManager manager){
         this.main = main;
-
         profileManager = main.getProfileManager();
+        buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
@@ -92,6 +93,12 @@ public class ShadowKnightBasic {
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
+
+                if(buffAndDebuffManager.getIfBasicInterrupt(player)){
+                    this.cancel();
+                    stopBasicRunning(player);
+                    return;
+                }
 
                 tryToRemoveBasicStage(player);
                 switch (basicStageMap.get(player.getUniqueId())) {

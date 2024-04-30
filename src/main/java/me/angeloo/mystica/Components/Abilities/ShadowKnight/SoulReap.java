@@ -394,4 +394,8 @@ public class SoulReap {
         return 30;
     }
 
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
+    }
+
 }

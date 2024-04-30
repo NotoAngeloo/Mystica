@@ -191,5 +191,16 @@ public class BuffAndDebuffManager {
                 || pulled.getIfPulled(entity);
     }
 
+    public boolean getIfBasicInterrupt(LivingEntity entity){
+        return
+                profileManager.getAnyProfile(entity).getIfDead()
+                || getIfCantAct(entity)
+                || knockUp.getIfKnockUp(entity)
+                || pulled.getIfPulled(entity);
+
+
+    }
+
+
 
 }

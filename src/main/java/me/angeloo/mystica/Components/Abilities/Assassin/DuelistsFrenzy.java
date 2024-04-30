@@ -29,7 +29,6 @@ public class DuelistsFrenzy {
     private final DamageCalculator damageCalculator;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
-    private final AbilityManager abilityManager;
     private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
 
     private final Stealth stealth;
@@ -41,7 +40,6 @@ public class DuelistsFrenzy {
 
     public DuelistsFrenzy(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
         this.main = main;
-        abilityManager = manager;
         shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, manager);
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
@@ -306,6 +304,10 @@ public class DuelistsFrenzy {
         }
 
         return 0;
+    }
+
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
     }
 
 }

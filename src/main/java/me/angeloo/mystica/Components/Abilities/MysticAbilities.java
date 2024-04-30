@@ -237,6 +237,26 @@ public class MysticAbilities {
         return 0;
     }
 
+    public void resetCooldowns(Player player){
+        arcaneContract.resetCooldown(player);
+        arcaneMissiles.resetCooldown(player);
+        arcaneShield.resetCooldown(player);
+        aurora.resetCooldown(player);
+        chaosLash.resetCooldown(player);
+        chaosVoid.resetCooldown(player);
+        cursingVoice.resetCooldown(player);
+        dreadfall.resetCooldown(player);
+        enlightenment.resetCooldown(player);
+        forceOfWill.resetCooldown(player);
+        healthAbsorb.resetCooldown(player);
+        lightSigil.resetCooldown(player);
+        plagueCurse.resetCooldown(player);
+        purifyingBlast.resetCooldown(player);
+        shadowOfDarkness.resetCooldown(player);
+        spiritualDescent.resetCooldown(player);
+        warp.resetCooldown(player);
+    }
+
     public int getChaosMysticModelData(Player player){
         return evilSpirit.returnWhichItem(player);
     }

@@ -80,6 +80,7 @@ public class NoneBasic {
         new BukkitRunnable(){
             @Override
             public void run(){
+
                 basicReadyMap.put(player.getUniqueId(), true);
             }
         }.runTaskLater(main, 5);

@@ -22,7 +22,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import javax.swing.*;
 import java.util.*;
 
 public class ShadowOfDarkness {
@@ -264,5 +263,9 @@ public class ShadowOfDarkness {
         }
 
         return cooldown;
+    }
+
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
     }
 }

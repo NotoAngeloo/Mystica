@@ -136,6 +136,19 @@ public class ElementalistAbilities {
         return 0;
     }
 
+    public void resetCooldowns(Player player){
+        conjuringForce.resetCooldown(player);
+        descendingInferno.resetCooldown(player);
+        dragonBreathing.resetCooldown(player);
+        elementalBreath.resetCooldown(player);
+        elemental_matrix.resetCooldown(player);
+        fieryMagma.resetCooldown(player);
+        fieryWing.resetCooldown(player);
+        iceBolt.resetCooldown(player);
+        windrushForm.resetCooldown(player);
+        windWall.resetCooldown(player);
+    }
+
     public FieryWing getFieryWing(){
         return fieryWing;
     }

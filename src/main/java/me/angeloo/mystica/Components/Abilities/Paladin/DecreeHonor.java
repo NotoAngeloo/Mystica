@@ -31,7 +31,6 @@ public class DecreeHonor {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final AbilityManager abilityManager;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
@@ -50,7 +49,6 @@ public class DecreeHonor {
     public DecreeHonor(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
-        abilityManager = manager;
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
@@ -308,6 +306,10 @@ public class DecreeHonor {
         }
 
         return cooldown;
+    }
+
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
     }
 
 }

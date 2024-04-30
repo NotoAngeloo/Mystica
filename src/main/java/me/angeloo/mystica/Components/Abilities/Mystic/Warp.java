@@ -158,5 +158,9 @@ public class Warp {
         return cooldown;
     }
 
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
+    }
+
 
 }

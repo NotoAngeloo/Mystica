@@ -516,4 +516,8 @@ public class SearingChains {
         return 25 + ((int)(skillLevel/3));
     }
 
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
+    }
+
 }

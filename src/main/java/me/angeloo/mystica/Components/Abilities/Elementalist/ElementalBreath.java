@@ -1,6 +1,5 @@
 package me.angeloo.mystica.Components.Abilities.Elementalist;
 
-import me.angeloo.mystica.Components.Abilities.ElementalistAbilities;
 import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.BuffAndDebuffManager;
@@ -210,6 +209,10 @@ public class ElementalBreath {
 
     public double getCost(){
         return 10;
+    }
+
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
     }
 
 }

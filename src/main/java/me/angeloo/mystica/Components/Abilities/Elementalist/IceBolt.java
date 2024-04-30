@@ -295,4 +295,8 @@ public class IceBolt {
         return cooldown;
     }
 
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
+    }
+
 }

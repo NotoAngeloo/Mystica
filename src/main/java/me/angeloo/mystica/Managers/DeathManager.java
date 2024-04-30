@@ -101,6 +101,7 @@ public class DeathManager {
 
         if(!bySkill){
             player.teleport(player.getWorld().getSpawnLocation());
+            abilityManager.resetCooldowns(player);
         }
         else{
             player.teleport(playerWhoCastSkill.getLocation());

@@ -26,7 +26,6 @@ public class PocketSand {
     private final Mystica main;
     private final ProfileManager profileManager;
     private final TargetManager targetManager;
-    private final AbilityManager abilityManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CombatManager combatManager;
     private final ChangeResourceHandler changeResourceHandler;
@@ -43,7 +42,6 @@ public class PocketSand {
         this.main = main;
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
-        abilityManager = manager;
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
@@ -248,6 +246,10 @@ public class PocketSand {
         }
 
         return cooldown;
+    }
+
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
     }
 
 }

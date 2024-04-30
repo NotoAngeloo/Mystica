@@ -137,6 +137,19 @@ public class RangerAbilities {
         return 0;
     }
 
+    public void resetCooldowns(Player player){
+        bitingRain.resetCooldown(player);
+        blessedArrow.resetCooldown(player);
+        rallyingCry.resetCooldown(player);
+        razorWind.resetCooldown(player);
+        relentless.resetCooldown(player);
+        roll.resetCooldown(player);
+        shadowCrows.resetCooldown(player);
+        starVolley.resetCooldown(player);
+        wildRoar.resetCooldown(player);
+        wildSpirit.resetCooldown(player);
+    }
+
     public RallyingCry getRallyingCry() {
         return rallyingCry;
     }

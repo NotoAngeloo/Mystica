@@ -134,6 +134,19 @@ public class ShadowKnightAbilities {
         return 0;
     }
 
+    public void resetCooldowns(Player player){
+        annihilation.resetCooldown(player);
+        bloodShield.resetCooldown(player);
+        bloodsucker.resetCooldown(player);
+        burialGround.resetCooldown(player);
+        infection.resetCooldown(player);
+        shadowGrip.resetCooldown(player);
+        soulcrack.resetCooldown(player);
+        soulReap.resetCooldown(player);
+        spectralSteed.resetCooldown(player);
+        spiritualAttack.resetCooldown(player);
+    }
+
     public Infection getInfection(){return infection;}
     public SoulReap getSoulReap(){return soulReap;}
     public BloodShield getBloodShield(){return bloodShield;}

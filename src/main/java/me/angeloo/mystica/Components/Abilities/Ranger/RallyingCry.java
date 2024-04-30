@@ -181,4 +181,8 @@ public class RallyingCry {
 
     }
 
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
+    }
+
 }

@@ -1,12 +1,9 @@
 package me.angeloo.mystica.Components.Abilities.Warrior;
 
-import me.angeloo.mystica.Components.Abilities.MysticAbilities;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
-import me.angeloo.mystica.Utility.DamageCalculator;
-import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -230,6 +227,11 @@ public class FlamingSigil {
 
     public double getCost(){
         return 10;
+    }
+
+
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
     }
 
 }

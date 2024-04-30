@@ -255,4 +255,8 @@ public class Aurora {
         return cooldown;
     }
 
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
+    }
+
 }

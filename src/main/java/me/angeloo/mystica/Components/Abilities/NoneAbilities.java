@@ -99,6 +99,17 @@ public class NoneAbilities {
         return 0;
     }
 
+    public void resetCooldowns(Player player){
+        adrenaline.resetCooldown(player);
+        bandage.resetCooldown(player);
+        block.resetCooldown(player);
+        dash.resetCooldown(player);
+        flail.resetCooldown(player);
+        kick.resetCooldown(player);
+        noneRoll.resetCooldown(player);
+        pocketSand.resetCooldown(player);
+    }
+
     public Adrenaline getAdrenaline(){return adrenaline;}
 
 }

@@ -243,4 +243,8 @@ public class TempestRage {
         return 60 + ((int)(skillLevel/3));
     }
 
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
+    }
+
 }

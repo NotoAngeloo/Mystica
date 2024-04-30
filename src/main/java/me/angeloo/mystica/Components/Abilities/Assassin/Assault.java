@@ -37,7 +37,6 @@ public class Assault {
     private final DamageCalculator damageCalculator;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
-    private final AbilityManager abilityManager;
     private final CooldownDisplayer cooldownDisplayer;
 
     private final Stealth stealth;
@@ -48,7 +47,6 @@ public class Assault {
 
     public Assault(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
         this.main = main;
-        abilityManager = manager;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
@@ -256,6 +254,10 @@ public class Assault {
         }
 
         return cooldown;
+    }
+
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
     }
 
 

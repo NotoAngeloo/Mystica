@@ -258,7 +258,7 @@ public class Judgement {
         return 1;
     }
 
-    public void resetCooldown(Player player){
+    public void resetCooldownDawn(Player player){
 
         boolean dawn = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("dawn");
 
@@ -290,5 +290,10 @@ public class Judgement {
 
         return cooldown;
     }
+
+    public void resetCooldown(Player player){
+        abilityReadyInMap.remove(player.getUniqueId());
+    }
+
 
 }

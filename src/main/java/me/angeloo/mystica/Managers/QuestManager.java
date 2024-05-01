@@ -189,6 +189,10 @@ public class QuestManager {
             return;
         }
 
+        if(profileManager.getAnyProfile(player).getMilestones().getMilestone(quest + "_complete")){
+            return;
+        }
+
         profileManager.getAnyProfile(player).getMilestones().setMilestone(quest + "_complete", true);
 
         switch (quest.toLowerCase()){
@@ -203,6 +207,10 @@ public class QuestManager {
     public void rewardQuest(Player player, String quest){
 
         if(!profileManager.getAnyProfile(player).getMilestones().getMilestone(quest + "_complete")){
+            return;
+        }
+
+        if(profileManager.getAnyProfile(player).getMilestones().getMilestone(quest + "_reward")){
             return;
         }
 

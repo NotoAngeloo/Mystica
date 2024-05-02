@@ -4,8 +4,10 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import me.angeloo.mystica.Components.Commands.*;
+import me.angeloo.mystica.Components.Inventories.AbilityInventory;
 import me.angeloo.mystica.Components.Inventories.BagInventory;
 import me.angeloo.mystica.Components.Inventories.QuestInventory;
+import me.angeloo.mystica.Components.Inventories.SpecInventory;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Tasks.*;
 import me.angeloo.mystica.Utility.*;
@@ -52,6 +54,9 @@ public final class Mystica extends JavaPlugin{
     private DamageHealthBoard damageHealthBoard;
     private Locations locations;
     private QuestManager questManager;
+
+    private AbilityInventory abilityInventory;
+    private SpecInventory specInventory;
 
     private BagInventory bagInventory;
     private QuestInventory questInventory;
@@ -116,6 +121,8 @@ public final class Mystica extends JavaPlugin{
         bagInventory = new BagInventory(this);
         questInventory = new QuestInventory(this);
 
+
+
         firstClearManager = new FirstClearManager(this);
         firstClearManager.createOrLoadFolder();
 
@@ -160,6 +167,11 @@ public final class Mystica extends JavaPlugin{
         getCommand("FastTravel").setExecutor(new FastTravel(this));
         getCommand("ClassGuide").setExecutor(new ClassGuide(this));
         getCommand("MysticaQuest").setExecutor(new MysticaQuest(this));
+
+        this.getServer().getPluginManager().registerEvents(abilityInventory = new AbilityInventory(this), this);
+
+        specInventory = abilityInventory.getSpecInventory();
+        this.getServer().getPluginManager().registerEvents(specInventory, this);
 
         this.getServer().getPluginManager().registerEvents(new InventoryEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new GeneralEventListener(this), this);
@@ -314,6 +326,9 @@ public final class Mystica extends JavaPlugin{
     }
 
     public QuestInventory getQuestInventory(){return questInventory;}
+
+    public AbilityInventory getAbilityInventory(){return abilityInventory;}
+    public SpecInventory getSpecInventory(){return specInventory;}
 
     public DamageHealthBoard getDamageHealthBoard(){return damageHealthBoard;}
 

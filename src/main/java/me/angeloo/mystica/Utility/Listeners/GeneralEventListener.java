@@ -544,7 +544,8 @@ public class GeneralEventListener implements Listener {
 
         switch (event.getSlot()){
             case 1:{
-                player.openInventory(abilityInventory.openAbilityInventory(player, new ItemStack(Material.AIR), false));
+                //player.openInventory(abilityInventory.openAbilityInventory(player, new ItemStack(Material.AIR), false));
+                player.openInventory(abilityInventory.openAbilityInventory(player, -1));
                 break;
             }
             case 2:{

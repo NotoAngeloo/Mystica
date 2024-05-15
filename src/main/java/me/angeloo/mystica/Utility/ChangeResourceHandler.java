@@ -14,6 +14,7 @@ import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
 import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Managers.DpsManager;
 import me.angeloo.mystica.Managers.ProfileManager;
+import me.angeloo.mystica.Managers.QuestManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
@@ -35,6 +36,7 @@ public class ChangeResourceHandler {
 
     private final DailyData dailyData;
     private final ProfileManager profileManager;
+    private final QuestManager questManager;
     private final ProtocolManager protocolManager;
     private final Map<UUID, Long> lastDamaged = new HashMap<>();
     private final Map<UUID, Long> lastManaed = new HashMap<>();
@@ -49,6 +51,7 @@ public class ChangeResourceHandler {
 
     public ChangeResourceHandler(Mystica main){
         this.main = main;
+        questManager = main.getQuestManager();
         dailyData = main.getDailyData();
         protocolManager = main.getProtocolManager();
         profileManager = main.getProfileManager();
@@ -103,6 +106,11 @@ public class ChangeResourceHandler {
         }
 
         if(damager instanceof Player){
+
+            if(profileManager.getAnyProfile(damager).getMilestones().getMilestone("new_hunter_accept") &&
+            !profileManager.getAnyProfile(damager).getMilestones().getMilestone("new_hunter_complete")){
+                questManager.completeQuest((Player)damager, "new_hunter");
+            }
 
             //displayDamage((Player) damager, entity, damage);
 

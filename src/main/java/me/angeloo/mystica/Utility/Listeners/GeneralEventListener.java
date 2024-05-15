@@ -4,9 +4,7 @@ import com.alessiodp.parties.api.Parties;
 import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
-import com.comphenix.protocol.ProtocolLibrary;
 import io.lumine.mythic.api.adapters.AbstractEntity;
-import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.Inventories.AbilityInventory;
 import me.angeloo.mystica.Components.Inventories.BagInventory;
@@ -210,19 +208,6 @@ public class GeneralEventListener implements Listener {
         buffAndDebuffManager.removeAllBuffsAndDebuffs(player);
         gearReader.setGearStats(player);
 
-
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-
-                if(profileManager.getAnyProfile(player).getMilestones().getMilestone("tutorial")
-                && !profileManager.getAnyProfile(player).getMilestones().getMilestone("firstdungeon")
-                && !player.getWorld().getName().startsWith("tutorial_")){
-                    Bukkit.getServer().getPluginManager().callEvent(new HelpfulHintEvent(player, "npcspeak"));
-                }
-
-            }
-        }.runTaskLater(main, 60);
 
     }
 
@@ -1781,35 +1766,24 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
-    public void LeaveTutorial(PlayerChangedWorldEvent event){
-
-        World world = event.getFrom();
-
-        if(!world.getName().startsWith("tutorial_")){
-            return;
-        }
-
-        Player player = event.getPlayer();
-
-        if(profileManager.getAnyProfile(player).getMilestones().getMilestone("tutorial")){
-            return;
-        }
-
-        classSetter.setClass(player, "none");
-    }
-
-    @EventHandler
     public void onHelpfulHint(HelpfulHintEvent event){
 
         Player player = event.getPlayer();
 
-        String whatHint = event.getWhatHint();;
+        String whatHint = event.getWhatHint();
 
 
         switch (whatHint.toLowerCase()){
             case "combatend":{
                 player.sendMessage(ChatColor.of(questColor) + "Helpful Hint: " +
                         ChatColor.RESET + "Open your inventory to exit combat");
+                return;
+            }
+            case "target":{
+
+                player.sendMessage(ChatColor.of(questColor) + "Helpful Hint: " +
+                        ChatColor.RESET + "Right click to target, and (q) to remove your target");
+
                 return;
             }
         }

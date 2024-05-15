@@ -199,78 +199,81 @@ public class PathingManager {
             calculatedPath.add(blockLocAtCurrent.clone());
         }
 
+        if(pathStart != pathEnd){
+            Set<Location> pathBetweenStartAndEnd = new HashSet<>();
+            Set<Set<Location>> branches = new HashSet<>();
+            Set<Location> extremities = new HashSet<>();
+            Set<Location> checked = new HashSet<>();
+            boolean stopChecking = false;
 
-        Set<Location> pathBetweenStartAndEnd = new HashSet<>();
-        Set<Set<Location>> branches = new HashSet<>();
-        Set<Location> extremities = new HashSet<>();
-        Set<Location> checked = new HashSet<>();
-        boolean stopChecking = false;
+            extremities.add(pathStart);
 
-        extremities.add(pathStart);
+            while (!extremities.isEmpty() && !stopChecking) {
+                Set<Location> nextExtremities = new HashSet<>();
 
-        while (!extremities.isEmpty() && !stopChecking) {
-            Set<Location> nextExtremities = new HashSet<>();
+                for (Location loc : extremities) {
+                    Set<Location> currentBranch = null;
 
-            for (Location loc : extremities) {
-                Set<Location> currentBranch = null;
+                    // Find the current branch containing the loc
+                    for (Set<Location> branch : branches) {
+                        if (branch.contains(loc)) {
+                            currentBranch = branch;
+                            break;
+                        }
+                    }
 
-                // Find the current branch containing the loc
-                for (Set<Location> branch : branches) {
-                    if (branch.contains(loc)) {
-                        currentBranch = branch;
+                    // If no current branch found, create a new one
+                    if (currentBranch == null) {
+                        currentBranch = new HashSet<>();
+                        currentBranch.add(loc);
+                        branches.add(currentBranch);
+                    }
+
+                    checked.add(loc);
+                    Set<Location> neighbors = getNeighbors(player, loc);
+                    neighbors.removeAll(checked);
+                    nextExtremities.addAll(neighbors);
+
+                    if (neighbors.size() >= 2) {
+                        // Create a new branch for each neighbor
+                        for (Location neighbor : neighbors) {
+                            Set<Location> newBranch = new HashSet<>(currentBranch); // Clone the current branch
+                            newBranch.add(neighbor); // Add the neighbor to the branch
+                            branches.add(newBranch); // Add the new branch to the set of branches
+                        }
+                    }
+
+                    if (neighbors.size() == 1) {
+                        // Extend the current branch
+                        currentBranch.addAll(neighbors);
+                    }
+
+                    if(neighbors.isEmpty()){
+                        //figure out better logic for here
+                        //Bukkit.getLogger().info("path interrupted at " + loc);
+                    }
+
+                    if (neighbors.contains(pathEnd)) {
+                        stopChecking = true;
                         break;
                     }
                 }
 
-                // If no current branch found, create a new one
-                if (currentBranch == null) {
-                    currentBranch = new HashSet<>();
-                    currentBranch.add(loc);
-                    branches.add(currentBranch);
-                }
+                extremities = nextExtremities;
+            }
 
-                checked.add(loc);
-                Set<Location> neighbors = getNeighbors(player, loc);
-                neighbors.removeAll(checked);
-                nextExtremities.addAll(neighbors);
-
-                if (neighbors.size() >= 2) {
-                    // Create a new branch for each neighbor
-                    for (Location neighbor : neighbors) {
-                        Set<Location> newBranch = new HashSet<>(currentBranch); // Clone the current branch
-                        newBranch.add(neighbor); // Add the neighbor to the branch
-                        branches.add(newBranch); // Add the new branch to the set of branches
-                    }
-                }
-
-                if (neighbors.size() == 1) {
-                    // Extend the current branch
-                    currentBranch.addAll(neighbors);
-                }
-
-                if(neighbors.isEmpty()){
-                    //figure out better logic for here
-                    //Bukkit.getLogger().info("path interrupted at " + loc);
-                }
-
-                if (neighbors.contains(pathEnd)) {
-                    stopChecking = true;
+// Find the branch that contains both pathStart and pathEnd
+            for (Set<Location> branch : branches) {
+                if (branch.contains(pathStart) && branch.contains(pathEnd)) {
+                    pathBetweenStartAndEnd.addAll(branch);
                     break;
                 }
             }
 
-            extremities = nextExtremities;
+            calculatedPath.addAll(pathBetweenStartAndEnd);
         }
 
-// Find the branch that contains both pathStart and pathEnd
-        for (Set<Location> branch : branches) {
-            if (branch.contains(pathStart) && branch.contains(pathEnd)) {
-                pathBetweenStartAndEnd.addAll(branch);
-                break;
-            }
-        }
 
-        calculatedPath.addAll(pathBetweenStartAndEnd);
         playerPaths.put(player.getUniqueId(), calculatedPath);
         destinations.put(player.getUniqueId(), destination);
         startPathDisplayTask(player);

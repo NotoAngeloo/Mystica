@@ -112,10 +112,6 @@ public class AbilityManager {
             return;
         }
 
-        /*if(getIfSkillRunning(player)){
-            return;
-        }*/
-
         if(buffAndDebuffManager.getIfCantAct(player)){
             return;
         }
@@ -124,7 +120,6 @@ public class AbilityManager {
         Profile playerProfile = profileManager.getAnyProfile(player);
 
         String clazz = playerProfile.getPlayerClass();
-
 
         switch (clazz.toLowerCase()){
             case "elementalist":{

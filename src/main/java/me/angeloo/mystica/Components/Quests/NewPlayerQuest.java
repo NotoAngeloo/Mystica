@@ -21,16 +21,16 @@ public class NewPlayerQuest {
         assert meta != null;
 
         // Set the title and author of the book
-        meta.setTitle("A Helping Hand");
+        meta.setTitle("A New Hunter");
         meta.setAuthor("");
 
-        ComponentBuilder text = new ComponentBuilder(ChatColor.UNDERLINE + "A Helping Hand" +
+
+        ComponentBuilder text = new ComponentBuilder(ChatColor.UNDERLINE + "A New Hunter" +
                 ChatColor.RESET  +"\n\n" +
-                "Now that you've completed your training, it's time to put it to the test in the real world. And who better to guide you on your first adventure than Captain Moon of the Hunter's Guild?");
+                "Welcome, newcomer. Since you have arrived through the portal, you must be a new hunter.\n\n" +
+                "It is my job to teach new hunters the basic.");
 
-        ComponentBuilder text2 = new ComponentBuilder("She's a seasoned veteran, respected by all who know her, and she's always on the lookout for capable recruits like yourself. Seek her out in her office.");
 
-        ComponentBuilder text3 = new ComponentBuilder("Happy Hunting, and may your battles reap great reward!\n");
 
 
         ComponentBuilder builder;
@@ -45,13 +45,80 @@ public class NewPlayerQuest {
                     .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mysticaquest " + player.getName() + " navigate"));
 
         }
-        text3.append(builder.create());
+        text.append(builder.create());
         //the large blank space is to extend the hitbox of the unicode
 
 
         meta.spigot().addPage(text.create());
-        meta.spigot().addPage(text2.create());
-        meta.spigot().addPage(text3.create());
+
+
+
+        guide.setItemMeta(meta);
+        player.openBook(guide);
+
+    }
+
+    public void openNewPlayerQuestComplete(Player player){
+
+        ItemStack guide = new ItemStack(Material.WRITTEN_BOOK);
+        BookMeta meta = (BookMeta) guide.getItemMeta();
+        assert meta != null;
+
+        // Set the title and author of the book
+        meta.setTitle("A New Hunter");
+        meta.setAuthor("");
+
+
+        ComponentBuilder text = new ComponentBuilder("I think you are ready to start your journey.\n\n\n" +
+                "Speak to me again if you want to change you fighting style.");
+
+
+
+        meta.spigot().addPage(text.create());
+
+
+        guide.setItemMeta(meta);
+        player.openBook(guide);
+
+    }
+
+    public void openMissions(Player player, boolean reread){
+
+        ItemStack guide = new ItemStack(Material.WRITTEN_BOOK);
+        BookMeta meta = (BookMeta) guide.getItemMeta();
+        assert meta != null;
+
+        // Set the title and author of the book
+        meta.setTitle("A New Hunter");
+        meta.setAuthor("");
+
+
+        ComponentBuilder text = new ComponentBuilder(ChatColor.UNDERLINE + "A New Hunter" +
+                ChatColor.RESET  +"\n\n" +
+                "You must be itching for some action now.\n\n" +
+                "Go see Captain Moon. She will have something for you to do.");
+
+
+
+
+        ComponentBuilder builder;
+        if(!reread){
+            builder = new ComponentBuilder(ChatColor.WHITE + "\uE054" + "                                                                                       ")
+                    .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mysticaquest " + player.getName() + " accept"));
+
+        }
+        else
+        {
+            builder = new ComponentBuilder(ChatColor.WHITE + "\uE055" + "                                                                                       ")
+                    .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mysticaquest " + player.getName() + " navigate"));
+
+        }
+        text.append(builder.create());
+        //the large blank space is to extend the hitbox of the unicode
+
+
+        meta.spigot().addPage(text.create());
+
 
 
         guide.setItemMeta(meta);

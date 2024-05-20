@@ -39,7 +39,7 @@ public class NoneSkillItems {
         switch(number) {
 
             case 1: {
-                return getItem(Material.WHITE_DYE, 0,
+                return getItem(Material.WHITE_DYE, 1,
                         ChatColor.of(Color.WHITE) + "Kick",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_1_Level_Bonus()),
                         "",
@@ -47,21 +47,21 @@ public class NoneSkillItems {
                         ChatColor.of(Color.WHITE) + "damage than punching them");
             }
             case 4: {
-                return getItem(Material.WHITE_DYE, 0,
+                return getItem(Material.WHITE_DYE, 4,
                         ChatColor.of(Color.WHITE) + "Dash",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_2_Level_Bonus()),
                         "",
                         ChatColor.of(Color.WHITE) + "Increase your movement speed.");
             }
             case 5: {
-                return getItem(Material.WHITE_DYE, 0,
+                return getItem(Material.WHITE_DYE, 5,
                         ChatColor.of(Color.WHITE) + "Roll",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_3_Level_Bonus()),
                         "",
                         ChatColor.of(Color.WHITE) + "Roll in the direction you are looking.");
             }
             case 3: {
-                return getItem(Material.WHITE_DYE, 0,
+                return getItem(Material.WHITE_DYE, 3,
                         ChatColor.of(Color.WHITE) + "Pocket Sand",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_4_Level_Bonus()),
                         "",
@@ -69,7 +69,7 @@ public class NoneSkillItems {
                         ChatColor.of(Color.WHITE) + "blinding them.");
             }
             case 6: {
-                return getItem(Material.WHITE_DYE, 0,
+                return getItem(Material.WHITE_DYE, 6,
                         ChatColor.of(Color.WHITE) + "Bandage",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_5_Level_Bonus()),
                         "",
@@ -77,7 +77,7 @@ public class NoneSkillItems {
                         ChatColor.of(Color.WHITE) + "your health. Can be cast on allies.");
             }
             case 7: {
-                return getItem(Material.WHITE_DYE, 0,
+                return getItem(Material.WHITE_DYE, 7,
                         ChatColor.of(Color.WHITE) + "Block",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_6_Level_Bonus()),
                         "",
@@ -85,7 +85,7 @@ public class NoneSkillItems {
                         ChatColor.of(Color.WHITE) + "an attack");
             }
             case 2: {
-                return getItem(Material.WHITE_DYE, 0,
+                return getItem(Material.WHITE_DYE, 2,
                         ChatColor.of(Color.WHITE) + "Flail",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_7_Level_Bonus()),
                         "",
@@ -93,7 +93,7 @@ public class NoneSkillItems {
                         ChatColor.of(Color.WHITE) + "enemies");
             }
             case 8: {
-                return getItem(Material.WHITE_DYE, 0,
+                return getItem(Material.WHITE_DYE, 8,
                         ChatColor.of(Color.WHITE) + "Adrenaline",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_8_Level_Bonus()),
                         "",

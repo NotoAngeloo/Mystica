@@ -3,6 +3,7 @@ package me.angeloo.mystica;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
+import me.angeloo.mystica.Components.Activities.DemonInvasion;
 import me.angeloo.mystica.Components.Commands.*;
 import me.angeloo.mystica.Components.Inventories.*;
 import me.angeloo.mystica.Managers.*;
@@ -51,10 +52,7 @@ public final class Mystica extends JavaPlugin{
     private DamageHealthBoard damageHealthBoard;
     private Locations locations;
     private QuestManager questManager;
-
-    private AbilityInventory abilityInventory;
-    private SpecInventory specInventory;
-    private EquipmentInventory equipmentInventory;
+    private DailyEventManager dailyEventManager;
 
     private BagInventory bagInventory;
     private QuestInventory questInventory;
@@ -129,6 +127,7 @@ public final class Mystica extends JavaPlugin{
 
         aggroTick = new AggroTick(this);
 
+        dailyEventManager = new DailyEventManager(this);
 
         getCommand("ToggleGlobalPvp").setExecutor(new ToggleGlobalPvp(this));
         getCommand("SeeRawDamage").setExecutor(new SeeRawDamage(this));
@@ -150,6 +149,7 @@ public final class Mystica extends JavaPlugin{
         getCommand("Generate").setExecutor(new Generate(this));
         getCommand("Identify").setExecutor(new Identify());
         getCommand("ManualSave").setExecutor(new ManualSave(this));
+        getCommand("ForcePortals").setExecutor(new ForcePortals(this));
         getCommand("DeleteProfile").setExecutor(new DeleteProfile(this));
         getCommand("SetMileStone").setExecutor(new SetMilestone(this));
         getCommand("MysticaInteractions").setExecutor(new MysticaInteractions(this));
@@ -164,10 +164,11 @@ public final class Mystica extends JavaPlugin{
         getCommand("ClassGuide").setExecutor(new ClassGuide(this));
         getCommand("MysticaQuest").setExecutor(new MysticaQuest(this));
 
+        AbilityInventory abilityInventory;
         this.getServer().getPluginManager().registerEvents(abilityInventory = new AbilityInventory(this), this);
-        this.getServer().getPluginManager().registerEvents(equipmentInventory = new EquipmentInventory(this), this);
+        this.getServer().getPluginManager().registerEvents(new EquipmentInventory(this), this);
 
-        specInventory = abilityInventory.getSpecInventory();
+        SpecInventory specInventory = abilityInventory.getSpecInventory();
         this.getServer().getPluginManager().registerEvents(specInventory, this);
 
         this.getServer().getPluginManager().registerEvents(new InventoryEventListener(this), this);
@@ -324,9 +325,6 @@ public final class Mystica extends JavaPlugin{
 
     public QuestInventory getQuestInventory(){return questInventory;}
 
-    public AbilityInventory getAbilityInventory(){return abilityInventory;}
-    public SpecInventory getSpecInventory(){return specInventory;}
-
     public DamageHealthBoard getDamageHealthBoard(){return damageHealthBoard;}
 
     public ProfileFileWriter getProfileFileWriter(){
@@ -340,5 +338,7 @@ public final class Mystica extends JavaPlugin{
     public QuestManager getQuestManager(){return questManager;}
 
     public DailyData getDailyData(){return dailyData;}
+
+    public DailyEventManager getDailyEventManager(){return dailyEventManager;}
 
 }

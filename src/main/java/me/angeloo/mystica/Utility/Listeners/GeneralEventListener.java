@@ -155,6 +155,10 @@ public class GeneralEventListener implements Listener {
         Player player = event.getPlayer();
         profileManager.getAnyProfile(player);
 
+
+        player.sendMessage(dailyData.getLevelAnnouncement());
+
+
         if(!profileManager.getPlayerNameMap().containsKey(player.getName())){
 
             AttributeInstance maxHealthAttribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
@@ -200,7 +204,6 @@ public class GeneralEventListener implements Listener {
                 profileManager.getAnyProfile(player).removeSavedInv();
             }
 
-            player.sendMessage(dailyData.getLevelAnnouncement());
         }
 
         profileManager.addToPlayerNameMap(player);

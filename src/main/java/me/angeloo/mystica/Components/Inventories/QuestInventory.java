@@ -38,8 +38,12 @@ public class QuestInventory {
         switch (index){
             case 0:{
 
-                if(milestones.getMilestone("helping_hand_accept")){
-                    inv.addItem(getItem(Material.BOOK, "A Helping Hand"));
+                if(milestones.getMilestone("new_hunter_accept")){
+                    inv.addItem(getItem(Material.BOOK, "New Hunter"));
+                }
+
+                if(milestones.getMilestone("missions_accept")){
+                    inv.addItem(getItem(Material.BOOK, "Captain Moon"));
                 }
 
                 if(milestones.getMilestone("sewer_accept")){

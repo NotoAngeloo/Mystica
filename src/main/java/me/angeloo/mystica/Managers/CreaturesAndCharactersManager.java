@@ -77,6 +77,7 @@ public class CreaturesAndCharactersManager {
                 profileManager.setBossHome(uuid);
                 break;
             }
+            case "DemonPortal":
             case "HeartTendril":
             case "LindwyrmRock":{
                 makeImmortalObjectProfile(uuid);

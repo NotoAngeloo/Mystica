@@ -41,7 +41,6 @@ public class InventoryEventListener implements Listener {
     private final QuestManager questManager;
     private final InventoryIndexingManager inventoryIndexingManager;
     private final BagInventory bagInventory;
-    private final QuestInventory questInventory;
     private final BuyInvSlotsInventory buyInvSlotsInventory;
     private final ReforgeInventory reforgeInventory;
     private final UpgradeInventory upgradeInventory;
@@ -63,7 +62,6 @@ public class InventoryEventListener implements Listener {
         classSwapper = main.getClassSwapper();
         inventoryIndexingManager = main.getInventoryIndexingManager();
         bagInventory = main.getBagInventory();
-        questInventory = main.getQuestInventory();
         buyInvSlotsInventory = new BuyInvSlotsInventory(main);
         reforgeInventory = new ReforgeInventory(main);
         upgradeInventory = new UpgradeInventory(main);
@@ -237,8 +235,12 @@ public class InventoryEventListener implements Listener {
                 inventoryIndexingManager.setBagIndex(player, index);
                 break;
             }*/
-            case "a helping hand":{
-                questManager.rereadQuest(player, "helping_hand");
+            case "new hunter":{
+                questManager.rereadQuest(player, "new_hunter");
+                break;
+            }
+            case "captain moon":{
+                questManager.rereadQuest(player, "missions");
                 break;
             }
             case "the archbishop's request":{

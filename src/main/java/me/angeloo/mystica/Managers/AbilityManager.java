@@ -335,6 +335,11 @@ public class AbilityManager {
 
                 return 0;
             }
+            case "none":{
+                if(abilityNumber==8){
+                    return noneAbilities.getAdrenaline().returnWhichItem(player);
+                }
+            }
         }
 
 

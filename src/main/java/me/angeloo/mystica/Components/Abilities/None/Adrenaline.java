@@ -139,6 +139,16 @@ public class Adrenaline {
 
     }
 
+    public int returnWhichItem(Player player) {
+        double healthPercent =  Math.round((profileManager.getAnyProfile(player).getCurrentHealth() / (double) profileManager.getAnyProfile(player).getTotalHealth()) * 100);
+
+        if(healthPercent > 50){
+            return 1;
+        }
+
+        return 0;
+    }
+
     public void resetCooldown(Player player){
         abilityReadyInMap.remove(player.getUniqueId());
     }

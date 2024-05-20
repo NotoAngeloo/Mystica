@@ -95,6 +95,10 @@ commands:
     description: saves profiles manually
     usage: /ManualSave
     permission: developer
+  ForcePortals:
+    description: forces demon portals to spawn
+    usage: /ForcePortals
+    permission: developer
   SavePaths:
     description: saves paths manually
     usage: /SavePaths

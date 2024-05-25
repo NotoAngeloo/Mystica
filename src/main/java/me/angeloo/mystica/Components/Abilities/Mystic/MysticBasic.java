@@ -384,8 +384,7 @@ public class MysticBasic {
 
             if(!(target instanceof Player)){
                 if(!pveChecker.pveLogic(target)){
-                    stopBasicRunning(player);
-                    return;
+                    healing = true;
                 }
             }
         }
@@ -497,7 +496,7 @@ public class MysticBasic {
             changeResourceHandler.addHealthToEntity(target, healAmount, player);
 
             if(shepard){
-                consolation.apply(player, (Player) target);
+                consolation.apply(player, target);
             }
 
 

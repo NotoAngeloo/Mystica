@@ -5,6 +5,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
+import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -30,6 +31,7 @@ public class Aurora {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final DamageCalculator damageCalculator;
+    private final PveChecker pveChecker;
     private final PvpManager pvpManager;
     private final CooldownDisplayer cooldownDisplayer;
 
@@ -44,6 +46,7 @@ public class Aurora {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
         damageCalculator = main.getDamageCalculator();
+        pveChecker = main.getPveChecker();
         pvpManager = main.getPvpManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
@@ -67,7 +70,7 @@ public class Aurora {
                 }
             }
 
-            if(!(target instanceof Player)){
+            if(pveChecker.pveLogic(target)){
                 target = player;
             }
         }
@@ -189,7 +192,7 @@ public class Aurora {
 
                     for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
 
-                        if(!(entity instanceof Player)){
+                        if(!(entity instanceof LivingEntity)){
                             continue;
                         }
 
@@ -197,30 +200,38 @@ public class Aurora {
                             continue;
                         }
 
-                        Player thisPlayer = (Player) entity;
+                        LivingEntity hitEntity = (LivingEntity) entity;
 
-                        if (pvpManager.pvpLogic(player, thisPlayer)) {
-                            continue;
+                        if(entity instanceof Player){
+                            if (pvpManager.pvpLogic(player, (Player) hitEntity)) {
+                                continue;
+                            }
+                        }
+
+                        if(!(entity instanceof Player)){
+                            if(pveChecker.pveLogic(hitEntity)){
+                                continue;
+                            }
                         }
 
                         if(shepard){
                             boolean crit = damageCalculator.checkIfCrit(player, 0);
                             double healAmount = damageCalculator.calculateHealing(player, finalHealPercent, crit);
-                            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, player);
+                            changeResourceHandler.addHealthToEntity(hitEntity, healAmount, player);
                         }
 
-                        if(hitBySkill.contains(thisPlayer)){
+                        if(hitBySkill.contains(hitEntity)){
                             continue;
                         }
 
-                        hitBySkill.add(thisPlayer);
+                        hitBySkill.add(hitEntity);
 
-                        buffAndDebuffManager.getGenericShield().applyOrAddShield(thisPlayer, shieldAmount);
+                        buffAndDebuffManager.getGenericShield().applyOrAddShield(hitEntity, shieldAmount);
 
                         new BukkitRunnable(){
                             @Override
                             public void run(){
-                                buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(thisPlayer, shieldAmount);
+                                buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(hitEntity, shieldAmount);
                             }
                         }.runTaskLater(main, 200);
                     }

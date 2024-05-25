@@ -106,6 +106,13 @@ public class Dummy {
 
             @Override
             public Boolean getIfDead() {
+
+                Entity entity = Bukkit.getEntity(uuid);
+
+                if(entity != null){
+                    return entity.isDead();
+                }
+
                 return null;
             }
 
@@ -239,6 +246,11 @@ public class Dummy {
             @Override
             public EquipSkills getEquipSkills() {
                 return null;
+            }
+
+            @Override
+            public Boolean fakePlayer() {
+                return false;
             }
 
             @Override

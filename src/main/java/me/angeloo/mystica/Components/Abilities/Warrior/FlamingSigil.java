@@ -4,6 +4,7 @@ import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
+import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -30,6 +31,7 @@ public class FlamingSigil {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final PvpManager pvpManager;
+    private final PveChecker pveChecker;
     private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
@@ -42,6 +44,7 @@ public class FlamingSigil {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
         pvpManager = main.getPvpManager();
+        pveChecker = main.getPveChecker();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
@@ -165,13 +168,9 @@ public class FlamingSigil {
                         continue;
                     }
 
-                    if(!(entity instanceof Player)){
-                        continue;
-                    }
+                    LivingEntity thisEntity = (LivingEntity) entity;
 
-                    Player thisPlayer = (Player) entity;
-
-                    if(hitBySkill.contains(thisPlayer)){
+                    if(hitBySkill.contains(thisEntity)){
                         continue;
                     }
 
@@ -183,19 +182,28 @@ public class FlamingSigil {
                     }
 
 
-                    if (pvpManager.pvpLogic(player, (Player) entity)) {
-                        continue;
+                    if(entity instanceof Player){
+                        if (pvpManager.pvpLogic(player, (Player) entity)) {
+                            continue;
+                        }
                     }
 
+                    if(!(entity instanceof Player)){
+                        if(pveChecker.pveLogic(thisEntity)){
+                            continue;
+                        }
+                    }
+
+
                     if(executioner){
-                        buffAndDebuffManager.getFlamingSigilBuff().applyAttackBuff(thisPlayer, finalBuffAmount);
+                        buffAndDebuffManager.getFlamingSigilBuff().applyAttackBuff(thisEntity, finalBuffAmount);
                     }
 
                     if(gladiator){
-                        buffAndDebuffManager.getFlamingSigilBuff().applyHealthBuff(thisPlayer, finalBuffAmount);
+                        buffAndDebuffManager.getFlamingSigilBuff().applyHealthBuff(thisEntity, finalBuffAmount);
                     }
 
-                    hitBySkill.add(thisPlayer);
+                    hitBySkill.add(thisEntity);
 
                 }
 

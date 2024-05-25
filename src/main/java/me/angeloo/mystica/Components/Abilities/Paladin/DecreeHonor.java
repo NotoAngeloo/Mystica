@@ -75,12 +75,6 @@ public class DecreeHonor {
 
         if(target != null){
 
-            if(!(target instanceof Player)){
-                if(!pveChecker.pveLogic(target)){
-                    return;
-                }
-            }
-
             double distance = player.getLocation().distance(target.getLocation());
 
             if(distance > totalRange){
@@ -162,9 +156,6 @@ public class DecreeHonor {
         assert entityEquipment != null;
         entityEquipment.setHelmet(item);
 
-
-
-        //abilityManager.setSkillRunning(player, true);
         double finalSkillDamage = getSkillDamage(player);
         double finalHealPower = getHealPower(player);
         new BukkitRunnable(){
@@ -231,6 +222,20 @@ public class DecreeHonor {
                         return;
                     }
 
+                }
+
+                if(!(target instanceof Player)){
+                    if(!pveChecker.pveLogic(target)){
+                        double healAmount  = damageCalculator.calculateHealing(player, finalHealPower, crit);
+
+                        if(justiceMark.markProc(player, target)){
+                            markHealInstead(player, healAmount);
+                            return;
+                        }
+
+                        changeResourceHandler.addHealthToEntity(target, healAmount, player);
+                        return;
+                    }
                 }
 
                 double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);

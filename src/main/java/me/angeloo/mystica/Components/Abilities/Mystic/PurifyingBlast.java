@@ -219,7 +219,7 @@ public class PurifyingBlast {
                             double healAmount  = damageCalculator.calculateHealing(player, finalHealPower, crit);
                             changeResourceHandler.addHealthToEntity(livingEntity, healAmount, player);
                             if(shepard){
-                                consolation.apply(player, (Player) livingEntity);
+                                consolation.apply(player, livingEntity);
                             }
                         }
 
@@ -229,6 +229,13 @@ public class PurifyingBlast {
                     if(pveChecker.pveLogic(livingEntity)){
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, player));
                         changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                    }
+                    else{
+                        double healAmount  = damageCalculator.calculateHealing(player, finalHealPower, crit);
+                        changeResourceHandler.addHealthToEntity(livingEntity, healAmount, player);
+                        if(shepard){
+                            consolation.apply(player, livingEntity);
+                        }
                     }
 
                 }

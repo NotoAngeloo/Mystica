@@ -26,7 +26,6 @@ public class Bandage {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CombatManager combatManager;
     private final ChangeResourceHandler changeResourceHandler;
-    private final DamageCalculator damageCalculator;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final CooldownDisplayer cooldownDisplayer;
@@ -42,7 +41,6 @@ public class Bandage {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
@@ -60,7 +58,10 @@ public class Bandage {
         if(target != null){
 
             if(!(target instanceof Player)){
-                target = player;
+
+                if(!pveChecker.pveLogic(target)){
+                    target = player;
+                }
             }
 
             double distance = player.getLocation().distance(target.getLocation());
@@ -73,9 +74,12 @@ public class Bandage {
                 target = player;
             }
 
-            if(pvpManager.pvpLogic(player, (Player) target)){
-                target = player;
+            if(target instanceof Player){
+                if(pvpManager.pvpLogic(player, (Player) target)){
+                    target = player;
+                }
             }
+
 
         }
 
@@ -187,8 +191,7 @@ public class Bandage {
                 healPercent = healPercent + ((int)(skillLevel/10));
 
                 double healAmount = profileManager.getAnyProfile(target).getTotalHealth() * (healPercent / 100);
-
-
+                
                 changeResourceHandler.addHealthToEntity(target, healAmount, player);
 
                 Location center = target.getLocation().clone().add(0,1,0);

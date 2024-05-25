@@ -4,6 +4,7 @@ import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
+import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;

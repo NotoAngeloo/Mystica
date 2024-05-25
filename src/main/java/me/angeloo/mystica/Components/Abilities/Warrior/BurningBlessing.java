@@ -20,7 +20,6 @@ public class BurningBlessing {
     private final CombatManager combatManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
-    private final PvpManager pvpManager;
     private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
@@ -32,7 +31,6 @@ public class BurningBlessing {
         combatManager = manager.getCombatManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        pvpManager = main.getPvpManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 

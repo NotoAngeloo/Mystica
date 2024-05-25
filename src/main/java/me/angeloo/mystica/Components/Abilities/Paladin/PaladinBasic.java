@@ -110,7 +110,7 @@ public class PaladinBasic {
         return baseRange + extraRange;
     }
 
-    private void healTarget(Player player, Player target){
+    private void healTarget(Player player, LivingEntity target){
 
         boolean crit = damageCalculator.checkIfCrit(player, 0);
 
@@ -183,6 +183,27 @@ public class PaladinBasic {
                         Player target = (Player) targetManager.getPlayerTarget(player);
 
                         if(!pvpManager.pvpLogic(player, target)){
+
+                            Location playerLocation = player.getLocation();
+                            Location targetLocation = target.getLocation();
+
+                            double distance = playerLocation.distance(targetLocation);
+
+                            if (distance > getRange(player)) {
+                                stopBasicRunning(player);
+                                return;
+                            }
+
+                            healTarget(player, target);
+                            return;
+                        }
+                    }
+
+                    if(!(targetManager.getPlayerTarget(player) instanceof Player)){
+
+                        LivingEntity target = targetManager.getPlayerTarget(player);
+
+                        if(!pveChecker.pveLogic(target)){
 
                             Location playerLocation = player.getLocation();
                             Location targetLocation = target.getLocation();

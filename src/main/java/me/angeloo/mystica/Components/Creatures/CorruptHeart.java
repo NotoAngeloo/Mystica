@@ -108,7 +108,14 @@ public class CorruptHeart {
 
             @Override
             public Boolean getIfDead() {
-                return false;
+
+                Entity entity = Bukkit.getEntity(uuid);
+
+                if(entity != null){
+                    return entity.isDead();
+                }
+
+                return null;
             }
 
             @Override
@@ -240,6 +247,11 @@ public class CorruptHeart {
             @Override
             public EquipSkills getEquipSkills() {
                 return null;
+            }
+
+            @Override
+            public Boolean fakePlayer() {
+                return false;
             }
 
             @Override

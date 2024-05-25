@@ -6,6 +6,8 @@ import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -29,6 +31,8 @@ public class CreaturesAndCharactersManager {
     private final CaptainNpc captainNpc;
     private final HoLeeBoss hoLeeBoss;
 
+    private final SammingSins sammingSins;
+
     public CreaturesAndCharactersManager(Mystica main){
         profileManager = main.getProfileManager();
         theLindwyrm = new TheLindwyrm(main);
@@ -42,6 +46,7 @@ public class CreaturesAndCharactersManager {
         hoLeeNpc = new HoLeeNpc(main);
         captainNpc = new CaptainNpc(main);
         hoLeeBoss = new HoLeeBoss(main);
+        sammingSins = new SammingSins(main);
     }
 
     public void spawnAllNpcs() throws InvalidMobTypeException {
@@ -106,6 +111,10 @@ public class CreaturesAndCharactersManager {
                 makeDefaultNonCombatantProfile(uuid);
                 break;
             }
+            case "SammingSins":{
+                sammingSins.makeProfile(uuid);
+                break;
+            }
             default:{
                 profileManager.createNewDefaultNonPlayerProfile(uuid);
                 break;
@@ -128,6 +137,13 @@ public class CreaturesAndCharactersManager {
 
             @Override
             public Boolean getIfDead() {
+
+                Entity entity = Bukkit.getEntity(uuid);
+
+                if(entity != null){
+                    return entity.isDead();
+                }
+
                 return null;
             }
 
@@ -233,6 +249,11 @@ public class CreaturesAndCharactersManager {
             @Override
             public EquipSkills getEquipSkills() {
                 return null;
+            }
+
+            @Override
+            public Boolean fakePlayer() {
+                return false;
             }
 
             @Override
@@ -294,6 +315,13 @@ public class CreaturesAndCharactersManager {
 
             @Override
             public Boolean getIfDead() {
+
+                Entity entity = Bukkit.getEntity(uuid);
+
+                if(entity != null){
+                    return entity.isDead();
+                }
+
                 return null;
             }
 
@@ -412,6 +440,11 @@ public class CreaturesAndCharactersManager {
             @Override
             public EquipSkills getEquipSkills() {
                 return null;
+            }
+
+            @Override
+            public Boolean fakePlayer() {
+                return false;
             }
 
             @Override

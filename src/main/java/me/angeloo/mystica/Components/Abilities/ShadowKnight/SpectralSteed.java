@@ -241,6 +241,11 @@ public class SpectralSteed {
             }
 
             @Override
+            public Boolean fakePlayer() {
+                return false;
+            }
+
+            @Override
             public Milestones getMilestones() {
                 return null;
             }

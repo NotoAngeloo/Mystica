@@ -5,12 +5,14 @@ import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageCalculator;
+import me.angeloo.mystica.Utility.PveChecker;
 import me.angeloo.mystica.Utility.ShieldAbilityManaDisplayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -33,6 +35,7 @@ public class Representative {
     private final ChangeResourceHandler changeResourceHandler;
     private final DamageCalculator damageCalculator;
     private final PvpManager pvpManager;
+    private final PveChecker pveChecker;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -49,6 +52,7 @@ public class Representative {
         changeResourceHandler = main.getChangeResourceHandler();
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
+        pveChecker = main.getPveChecker();
     }
 
     public void use(Player player){
@@ -158,7 +162,7 @@ public class Representative {
                         for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
 
 
-                            if(!(entity instanceof Player)){
+                            if(!(entity instanceof LivingEntity)){
                                 continue;
                             }
 
@@ -166,15 +170,24 @@ public class Representative {
                                 continue;
                             }
 
-                            Player hitPlayer = (Player) entity;
+                            LivingEntity hitEntity = (LivingEntity) entity;
 
-                            if(pvpManager.pvpLogic(player, hitPlayer)){
-                                continue;
+                            if(entity instanceof Player){
+                                if(pvpManager.pvpLogic(player, (Player)hitEntity)){
+                                    continue;
+                                }
                             }
+
+                            if(!(entity instanceof Player)){
+                                if(pveChecker.pveLogic(hitEntity)){
+                                    continue;
+                                }
+                            }
+
 
                             boolean crit = damageCalculator.checkIfCrit(player, 0);
                             double healAmount = damageCalculator.calculateHealing(player, finalHealPower, crit);
-                            changeResourceHandler.addHealthToEntity(hitPlayer, healAmount, player);
+                            changeResourceHandler.addHealthToEntity(hitEntity, healAmount, player);
 
                         }
                     }

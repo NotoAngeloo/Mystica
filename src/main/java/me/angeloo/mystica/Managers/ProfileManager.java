@@ -2,6 +2,7 @@ package me.angeloo.mystica.Managers;
 
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
+import me.angeloo.mystica.Components.FakePlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.CustomEvents.TargetBarShouldUpdateEvent;
 import me.angeloo.mystica.Mystica;
@@ -40,6 +41,7 @@ public class ProfileManager {
     private final PathingManager pathingManager;
 
     private final Map<UUID, PlayerProfile> playerProfiles = new HashMap<>();
+    private final Map<UUID, FakePlayerProfile> fakePlayerProfileMap = new HashMap<>();
     private final Map<UUID, NonPlayerProfile> nonPlayerProfiles = new HashMap<>();
 
     private final Map<String, Player> playerNameMap = new HashMap<>();
@@ -258,6 +260,11 @@ public class ProfileManager {
                         }
 
                         @Override
+                        public Boolean fakePlayer() {
+                            return false;
+                        }
+
+                        @Override
                         public void getVoidsOnDeath(Set<Player> players) {
 
                         }
@@ -281,7 +288,8 @@ public class ProfileManager {
 
         CreaturesAndCharactersManager creaturesAndCharactersManager = new CreaturesAndCharactersManager(main);
 
-        if(nonPlayerProfiles.get(entity.getUniqueId()) == null){
+        //check if its fake player as well
+        if(nonPlayerProfiles.get(entity.getUniqueId()) == null && fakePlayerProfileMap.get(entity.getUniqueId()) == null){
 
             if(nonPlayerNameMap.containsKey(entity.getUniqueId())){
                 String name = nonPlayerNameMap.get(entity.getUniqueId());
@@ -292,7 +300,12 @@ public class ProfileManager {
                 createNewDefaultNonPlayerProfile(entity.getUniqueId());
             }
 
+        }
 
+
+        if(fakePlayerProfileMap.containsKey(entity.getUniqueId())){
+            //Bukkit.getLogger().info("entity is fake player");
+            return fakePlayerProfileMap.get(entity.getUniqueId());
         }
 
         return nonPlayerProfiles.get(entity.getUniqueId());
@@ -383,6 +396,11 @@ public class ProfileManager {
             }
 
             @Override
+            public Boolean fakePlayer() {
+                return false;
+            }
+
+            @Override
             public void getVoidsOnDeath(Set<Player> players) {
 
             }
@@ -451,6 +469,13 @@ public class ProfileManager {
 
             @Override
             public Boolean getIfDead() {
+
+                Entity entity = Bukkit.getEntity(uuid);
+
+                if(entity != null){
+                    return entity.isDead();
+                }
+
                 return null;
             }
 
@@ -587,6 +612,11 @@ public class ProfileManager {
             }
 
             @Override
+            public Boolean fakePlayer() {
+                return false;
+            }
+
+            @Override
             public Milestones getMilestones() {
                 return null;
             }
@@ -604,6 +634,7 @@ public class ProfileManager {
     public void addToNonPlayerProfiles(UUID uuid, NonPlayerProfile profile){
         nonPlayerProfiles.put(uuid, profile);
     }
+    public void addToFakePlayerProfileMap(UUID uuid, FakePlayerProfile profile){fakePlayerProfileMap.put(uuid, profile);}
 
     public Map<String, Player> getPlayerNameMap(){
         return playerNameMap;

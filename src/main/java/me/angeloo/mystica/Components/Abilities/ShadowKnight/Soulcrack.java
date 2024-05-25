@@ -159,7 +159,7 @@ public class Soulcrack {
                     damageNear();
                 }
 
-                changeResourceHandler.addManaToPlayer(player, finalManaRestoration);
+                changeResourceHandler.addManaToEntity(player, finalManaRestoration);
 
                 double percent = ((double) ran / castTime) * 100;
 

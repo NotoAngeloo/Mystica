@@ -184,7 +184,6 @@ public class DivineGuidance {
         hammer4.teleport(h4spawn);
 
 
-
         BoundingBox hitBox = new BoundingBox(
                 start.getX() - 4,
                 start.getY() - 2,
@@ -194,41 +193,47 @@ public class DivineGuidance {
                 start.getZ() + 4
         );
 
-        List<Player> validPlayers = new ArrayList<>();
+        List<LivingEntity> validEntities = new ArrayList<>();
 
         for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
 
-            if(!(entity instanceof Player)){
+            if(!(entity instanceof LivingEntity)){
                 continue;
             }
 
-            Player hitPlayer = (Player) entity;
-
-            if(pvpManager.pvpLogic(player, hitPlayer)){
+            if(entity instanceof ArmorStand){
                 continue;
             }
 
-            boolean deathStatus = profileManager.getAnyProfile(hitPlayer).getIfDead();
+            LivingEntity hitEntity = (LivingEntity) entity;
+
+            if(entity instanceof Player){
+                if(pvpManager.pvpLogic(player, (Player)hitEntity)){
+                    continue;
+                }
+            }
+
+            boolean deathStatus = profileManager.getAnyProfile(hitEntity).getIfDead();
 
             if(deathStatus){
                 continue;
             }
 
-            validPlayers.add(hitPlayer);
+            validEntities.add(hitEntity);
         }
 
-        validPlayers.sort(Comparator.comparingDouble(p -> profileManager.getAnyProfile(p).getCurrentHealth()
+        validEntities.sort(Comparator.comparingDouble(p -> profileManager.getAnyProfile(p).getCurrentHealth()
                 /(double)profileManager.getAnyProfile(p).getTotalHealth()));
 
-        List<Player> affected = validPlayers.subList(0, Math.min(3, validPlayers.size()));
+        List<LivingEntity> affected = validEntities.subList(0, Math.min(3, validEntities.size()));
 
-        for(Player thisPlayer : affected){
+        for(LivingEntity thisEntity : affected){
             double healPower = 5;
             boolean crit = damageCalculator.checkIfCrit(player, 0);
             double healAmount = damageCalculator.calculateHealing(player, healPower, crit);
-            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, player);
+            changeResourceHandler.addHealthToEntity(thisEntity, healAmount, player);
 
-            Location center = thisPlayer.getLocation().clone().add(0,1,0);
+            Location center = thisEntity.getLocation().clone().add(0,1,0);
 
             double increment = (2 * Math.PI) / 16; // angle between particles
 

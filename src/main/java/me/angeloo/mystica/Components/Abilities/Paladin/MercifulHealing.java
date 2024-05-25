@@ -7,6 +7,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
+import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -28,6 +29,7 @@ public class MercifulHealing {
     private final CombatManager combatManager;
     private final DamageCalculator damageCalculator;
     private final TargetManager targetManager;
+    private final PveChecker pveChecker;
     private final PvpManager pvpManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
@@ -47,6 +49,7 @@ public class MercifulHealing {
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
+        pveChecker = main.getPveChecker();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
         abilityManager = manager;
@@ -66,7 +69,10 @@ public class MercifulHealing {
         if(target != null){
 
             if(!(target instanceof Player)){
-                target = player;
+
+                if(pveChecker.pveLogic(target)){
+                    target = player;
+                }
             }
 
             double distance = player.getLocation().distance(target.getLocation());
@@ -79,8 +85,10 @@ public class MercifulHealing {
                 target = player;
             }
 
-            if(pvpManager.pvpLogic(player, (Player) target)){
-                target = player;
+            if(target instanceof Player){
+                if(pvpManager.pvpLogic(player, (Player) target)){
+                    target = player;
+                }
             }
 
         }

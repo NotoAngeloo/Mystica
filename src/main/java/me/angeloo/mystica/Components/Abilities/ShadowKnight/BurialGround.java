@@ -138,7 +138,7 @@ public class BurialGround {
                 if(playerValid()){
 
                     changeResourceHandler.addHealthToEntity(player, finalHealAmount, player);
-                    changeResourceHandler.addManaToPlayer(player, getEnergyRefund());
+                    changeResourceHandler.addManaToEntity(player, getEnergyRefund());
 
                     if(blood){
                         buffAndDebuffManager.getDamageReduction().applyDamageReduction(player, .8, 0);

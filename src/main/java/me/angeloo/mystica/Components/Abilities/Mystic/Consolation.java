@@ -2,6 +2,7 @@ package me.angeloo.mystica.Components.Abilities.Mystic;
 
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Particle;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -14,15 +15,15 @@ public class Consolation {
 
     private final Map<UUID, BukkitTask> taskMap = new HashMap<>();
 
-    private final Map<Player, List<Player>> affected = new HashMap<>();
+    private final Map<Player, List<LivingEntity>> affected = new HashMap<>();
 
     public Consolation(Mystica main){
         this.main = main;
     }
 
-    public void apply(Player caster, Player target){
+    public void apply(Player caster, LivingEntity target){
 
-        List<Player> targets = getTargets(caster);
+        List<LivingEntity> targets = getTargets(caster);
 
         targets.add(target);
 
@@ -30,7 +31,7 @@ public class Consolation {
         startTask(caster);
     }
 
-    public List<Player> getTargets(Player player){
+    public List<LivingEntity> getTargets(Player player){
         return affected.getOrDefault(player, new ArrayList<>());
     }
 
@@ -50,9 +51,9 @@ public class Consolation {
             @Override
             public void run(){
 
-                List<Player> targets = getTargets(player);
+                List<LivingEntity> targets = getTargets(player);
 
-                for(Player target : targets){
+                for(LivingEntity target : targets){
 
                     if(player.getWorld() == target.getWorld()){
 

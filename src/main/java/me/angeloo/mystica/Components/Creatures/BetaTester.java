@@ -5,6 +5,8 @@ import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -50,7 +52,14 @@ public class BetaTester {
 
             @Override
             public Boolean getIfDead() {
-                return false;
+
+                Entity entity = Bukkit.getEntity(uuid);
+
+                if(entity != null){
+                    return entity.isDead();
+                }
+
+                return null;
             }
 
             @Override
@@ -182,6 +191,11 @@ public class BetaTester {
             @Override
             public EquipSkills getEquipSkills() {
                 return null;
+            }
+
+            @Override
+            public Boolean fakePlayer() {
+                return false;
             }
 
             @Override

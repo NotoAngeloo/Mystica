@@ -1,14 +1,12 @@
 package me.angeloo.mystica.Utility;
 
 import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.Stats;
-import me.angeloo.mystica.Components.ProfileComponents.StatsFromGear;
 import me.angeloo.mystica.CustomEvents.BoardValueUpdateEvent;
 import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
 import me.angeloo.mystica.Managers.BuffAndDebuffManager;
@@ -23,12 +21,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 public class ChangeResourceHandler {
 
@@ -70,12 +66,9 @@ public class ChangeResourceHandler {
             return;
         }
 
-        if(entity instanceof Player){
-            Player playerEntity = (Player) entity;
-            if(buffAndDebuffManager.getPassThrough().getIfPassingToPlayer(playerEntity)){
-                subtractHealthFromPlayer(buffAndDebuffManager.getPassThrough().getPassingToPlayer(playerEntity), damage);
-                return;
-            }
+        if(buffAndDebuffManager.getPassThrough().getIfPassingToPlayer(entity)){
+            subtractHealthFromEntity(buffAndDebuffManager.getPassThrough().getPassingToCaster(entity), damage, damager);
+            return;
         }
 
         if(buffAndDebuffManager.getWindWallBuff().getIfWindWallActive(entity)){
@@ -313,21 +306,21 @@ public class ChangeResourceHandler {
         lastManaed.put(player.getUniqueId(), (System.currentTimeMillis()/1000));
     }
 
-    public void addManaToPlayer(Player player, Double amount){
+    public void addManaToEntity(LivingEntity entity, Double amount){
 
-        Profile playerProfile = profileManager.getAnyProfile(player);
+        Profile profile = profileManager.getAnyProfile(entity);
 
-        double actualMaxMana = playerProfile.getTotalMana();
+        double actualMaxMana = profile.getTotalMana();
 
-        double currentMana = profileManager.getAnyProfile(player).getCurrentMana();
+        double currentMana = profileManager.getAnyProfile(entity).getCurrentMana();
         double newCurrentMana = currentMana + amount;
 
         if(newCurrentMana > actualMaxMana){
             newCurrentMana = actualMaxMana;
         }
 
-        profileManager.getAnyProfile(player).setCurrentMana(newCurrentMana);
-        Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(player, true));
+        profileManager.getAnyProfile(entity).setCurrentMana(newCurrentMana);
+        Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, true));
     }
 
     public void addXpToPlayer(Player player, float amount) {

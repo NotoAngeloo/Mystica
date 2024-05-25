@@ -5,9 +5,11 @@ import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageCalculator;
+import me.angeloo.mystica.Utility.PveChecker;
 import me.angeloo.mystica.Utility.ShieldAbilityManaDisplayer;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -27,7 +29,6 @@ public class Enlightenment {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final DamageCalculator damageCalculator;
-    private final PvpManager pvpManager;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -43,7 +44,6 @@ public class Enlightenment {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
         damageCalculator = main.getDamageCalculator();
-        pvpManager = main.getPvpManager();
         consolation = mysticAbilities.getConsolation();
         purifyingBlast = mysticAbilities.getPurifyingBlast();
     }
@@ -56,7 +56,6 @@ public class Enlightenment {
         if (getCooldown(player) > 0) {
             return;
         }
-
 
         if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
             return;
@@ -96,7 +95,7 @@ public class Enlightenment {
 
     private void execute(Player player){
 
-        List<Player> targets = consolation.getTargets(player);
+        List<LivingEntity> targets = consolation.getTargets(player);
         targets.add(player);
 
         double increment = (2 * Math.PI) / 16; // angle between particles
@@ -110,7 +109,7 @@ public class Enlightenment {
             player.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1,0, 0, 0, 0);
         }
 
-        for (Player target : targets) {
+        for (LivingEntity target : targets) {
 
             boolean crit = damageCalculator.checkIfCrit(player, 0);
 

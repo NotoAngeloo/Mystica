@@ -4,6 +4,7 @@ import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
+import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
@@ -95,7 +96,7 @@ public class SacredAegis {
 
         combatManager.startCombatTimer(player);
 
-        execute(player, (Player)target);
+        execute(player, (Player) target);
 
 
         if(cooldownTask.containsKey(player.getUniqueId())){
@@ -203,10 +204,11 @@ public class SacredAegis {
             @Override
             public void run(){
 
-                if(!target.isOnline()){
+                if (!target.isOnline()) {
                     cancelTask();
                     return;
                 }
+
 
                 if (initialDirection == null) {
                     initialDirection = target.getLocation().getDirection().setY(0).normalize();

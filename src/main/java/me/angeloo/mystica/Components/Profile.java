@@ -61,6 +61,8 @@ public interface Profile {
     Boolean getIfObject();
     Yield getYield();
 
+    Boolean fakePlayer();
+
     Milestones getMilestones();
 
     void getVoidsOnDeath(Set<Player> players);

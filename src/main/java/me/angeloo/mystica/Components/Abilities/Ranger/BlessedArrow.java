@@ -75,12 +75,6 @@ public class BlessedArrow {
 
         if(target != null){
 
-            if(!(target instanceof Player)){
-                if(!pveChecker.pveLogic(target)){
-                    return;
-                }
-            }
-
             double distance = player.getLocation().distance(target.getLocation());
 
             if(distance > totalRange){
@@ -226,6 +220,13 @@ public class BlessedArrow {
                             return;
                         }
                     }
+
+                    if(!(target instanceof Player)){
+                        if(!pveChecker.pveLogic(target)){
+                            restoreManaToAlly(target, mana * skillLevel);
+                            return;
+                        }
+                    }
                     //check pvp logic
 
                     boolean crit = damageCalculator.checkIfCrit(player, 0);
@@ -274,13 +275,11 @@ public class BlessedArrow {
 
     }
 
-    private void restoreManaToAlly(Player playerTarget, double amount){
+    private void restoreManaToAlly(LivingEntity target, double amount){
 
-        playerTarget.getWorld().spawnParticle(Particle.DRIP_WATER, playerTarget.getLocation(), 50, .5, 1, .5, 0);
+        target.getWorld().spawnParticle(Particle.DRIP_WATER, target.getLocation(), 50, .5, 1, .5, 0);
 
-        changeResourceHandler.addManaToPlayer(playerTarget, amount);
-
-        Bukkit.getLogger().info(String.valueOf(amount));
+        changeResourceHandler.addManaToEntity(target, amount);
     }
 
     public int getCooldown(Player player){

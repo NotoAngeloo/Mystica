@@ -184,7 +184,7 @@ public class ElementalMatrix {
         changeResourceHandler.addHealthToEntity(player, maxHp * .05, player);
 
         double maxMp = profileManager.getAnyProfile(player).getTotalMana();
-        changeResourceHandler.addManaToPlayer(player, maxMp * .05);
+        changeResourceHandler.addManaToEntity(player, maxMp * .05);
 
         LivingEntity target = targetManager.getPlayerTarget(player);
 

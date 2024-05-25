@@ -5,6 +5,7 @@ import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
+import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -20,6 +21,7 @@ public class ArcaneShield {
 
     private final ProfileManager profileManager;
     private final TargetManager targetManager;
+    private final PveChecker pveChecker;
     private final PvpManager pvpManager;
     private final CombatManager combatManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
@@ -37,6 +39,7 @@ public class ArcaneShield {
         this.main = main;
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
+        pveChecker = main.getPveChecker();
         pvpManager = main.getPvpManager();
         combatManager = manager.getCombatManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
@@ -65,7 +68,7 @@ public class ArcaneShield {
                 }
             }
 
-            if(!(target instanceof Player)){
+            if(pveChecker.pveLogic(target)){
                 target = player;
             }
         }
@@ -133,12 +136,11 @@ public class ArcaneShield {
         if(shepard){
 
             if(target instanceof Player){
-                if(consolation.getTargets(player).contains((Player) target)){
+                if(consolation.getTargets(player).contains(target)){
                     targetList.addAll(consolation.getTargets(player));
                     consolation.removeTargets(player);
                 }
             }
-
 
 
         }

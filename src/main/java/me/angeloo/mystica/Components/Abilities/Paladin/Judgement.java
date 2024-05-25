@@ -74,12 +74,6 @@ public class Judgement {
 
         if(target != null){
 
-            if(!(target instanceof Player)){
-                if(!pveChecker.pveLogic(target)){
-                    return;
-                }
-            }
-
             double distance = player.getLocation().distance(target.getLocation());
 
             if(distance > totalRange){
@@ -211,6 +205,15 @@ public class Judgement {
                         return;
                     }
 
+                }
+
+                if(!(target instanceof Player)){
+                    if(!pveChecker.pveLogic(target)){
+                        double healPower = 5;
+                        double healAmount = damageCalculator.calculateHealing(player, healPower, crit);
+                        changeResourceHandler.addHealthToEntity(target, healAmount, player);
+                        return;
+                    }
                 }
 
                 double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);

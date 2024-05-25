@@ -62,7 +62,6 @@ public class ForceOfWill {
 
         boolean shepard = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("shepard");
 
-
         if(shepard){
             LivingEntity target = targetManager.getPlayerTarget(player);
 
@@ -90,49 +89,42 @@ public class ForceOfWill {
 
                     combatManager.startCombatTimer(player);
 
-                    passThroughDamage(player, (Player) target);
-                    return;
-                }
-            }
-        }
-
-        targetManager.setTargetToNearestValid(player, totalRange);
-
-        LivingEntity target = targetManager.getPlayerTarget(player);
-
-
-        if(target != null){
-            if(target instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) target)){
+                    passThroughDamage(player, target);
                     return;
                 }
             }
 
             if(!(target instanceof Player)){
                 if(!pveChecker.pveLogic(target)){
+
+                    double distance = player.getLocation().distance(target.getLocation());
+
+                    if(distance > totalRange){
+                        return;
+                    }
+
+
+                    if(getCooldown(player) > 0){
+                        return;
+                    }
+
+
+                    if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
+                        return;
+                    }
+
+                    changeResourceHandler.subTractManaFromPlayer(player, getCost());
+
+                    combatManager.startCombatTimer(player);
+
+                    passThroughDamage(player, target);
                     return;
                 }
             }
 
-            double distance = player.getLocation().distance(target.getLocation());
 
-            if(distance > totalRange){
-                return;
-            }
         }
 
-        if(target == null){
-            return;
-        }
-
-        if(getCooldown(player) > 0){
-            return;
-        }
-
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
-        }
 
         changeResourceHandler.subTractManaFromPlayer(player, getCost());
 
@@ -166,20 +158,20 @@ public class ForceOfWill {
         cooldownTask.put(player.getUniqueId(), task);
     }
 
-    private void passThroughDamage(Player player, Player targetPlayer){
+    private void passThroughDamage(Player player, LivingEntity target){
 
         abilityManager.setCasting(player, true);
         double castTime = 4;
         castTime = castTime - buffAndDebuffManager.getHaste().getHasteLevel(player);
         castTime = castTime * 20;
 
-        double shield = profileManager.getAnyProfile(targetPlayer).getTotalHealth() * .25;
+        double shield = profileManager.getAnyProfile(target).getTotalHealth() * .25;
         buffAndDebuffManager.getGenericShield().applyOrAddShield(player, shield);
-        buffAndDebuffManager.getPassThrough().applyPassThrough(player, targetPlayer);
+        buffAndDebuffManager.getPassThrough().applyPassThrough(player, target);
 
         double finalCastTime = castTime;
         new BukkitRunnable(){
-            Location targetWasLoc = targetPlayer.getLocation().clone();
+            Location targetWasLoc = target.getLocation().clone();
             int count = 0;
             @Override
             public void run(){
@@ -189,12 +181,12 @@ public class ForceOfWill {
                     abilityManager.setCasting(player, false);
                     abilityManager.setCastBar(player, 0);
                     buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(player, shield);
-                    buffAndDebuffManager.getPassThrough().removePassThrough(targetPlayer);
+                    buffAndDebuffManager.getPassThrough().removePassThrough(target);
                     return;
                 }
 
-                if(targetStillValid(targetPlayer)){
-                    Location targetLoc = targetPlayer.getLocation();
+                if(targetStillValid(target)){
+                    Location targetLoc = target.getLocation();
                     targetWasLoc = targetLoc.clone();
                 }
 
@@ -207,7 +199,7 @@ public class ForceOfWill {
                     abilityManager.setCasting(player, false);
                     abilityManager.setCastBar(player, 0);
                     buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(player, shield);
-                    buffAndDebuffManager.getPassThrough().removePassThrough(targetPlayer);
+                    buffAndDebuffManager.getPassThrough().removePassThrough(target);
                     return;
                 }
 
@@ -216,7 +208,7 @@ public class ForceOfWill {
                     abilityManager.setCasting(player, false);
                     abilityManager.setCastBar(player, 0);
                     buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(player, shield);
-                    buffAndDebuffManager.getPassThrough().removePassThrough(targetPlayer);
+                    buffAndDebuffManager.getPassThrough().removePassThrough(target);
                     return;
                 }
 
@@ -241,7 +233,7 @@ public class ForceOfWill {
                     abilityManager.setCasting(player, false);
                     abilityManager.setCastBar(player, 0);
                     buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(player, shield);
-                    buffAndDebuffManager.getPassThrough().removePassThrough(targetPlayer);
+                    buffAndDebuffManager.getPassThrough().removePassThrough(target);
                 }
 
                 count++;

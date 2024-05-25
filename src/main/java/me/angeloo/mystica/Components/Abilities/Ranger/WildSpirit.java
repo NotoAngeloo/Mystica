@@ -330,14 +330,27 @@ public class WildSpirit {
 
                 for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
 
-                    if(!(entity instanceof Player)){
+                    if(!(entity instanceof LivingEntity)){
                         continue;
                     }
 
-                    Player thisPlayer = (Player) entity;
+                    if(entity instanceof ArmorStand){
+                        continue;
+                    }
+
+                    LivingEntity hitEntity = (LivingEntity) entity;
 
                     if(entity != player){
-                        if(pvpManager.pvpLogic(player, thisPlayer)){
+
+                        if(entity instanceof Player){
+                            if(pvpManager.pvpLogic(player, (Player)hitEntity)){
+                                continue;
+                            }
+                        }
+                    }
+
+                    if(!(entity instanceof Player)){
+                        if(pveChecker.pveLogic(hitEntity)){
                             continue;
                         }
                     }
@@ -346,7 +359,7 @@ public class WildSpirit {
                             profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
                     double healAmount = (attack * .1) * skillLevel;
 
-                    changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, player);
+                    changeResourceHandler.addHealthToEntity(hitEntity, healAmount, player);
 
                 }
             }

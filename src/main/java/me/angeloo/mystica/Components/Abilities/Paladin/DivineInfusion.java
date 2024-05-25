@@ -70,12 +70,6 @@ public class DivineInfusion {
 
         if(target != null){
 
-            if(!(target instanceof Player)){
-                if(!pveChecker.pveLogic(target)){
-                    return;
-                }
-            }
-
             double distance = player.getLocation().distance(target.getLocation());
 
             if(distance > totalRange){
@@ -160,9 +154,7 @@ public class DivineInfusion {
         assert entityEquipment != null;
         entityEquipment.setItemInMainHand(item);
 
-
-
-        Set<Player> hitBySkill = new HashSet<>();
+        Set<LivingEntity> hitBySkill = new HashSet<>();
 
         double finalSkillDamage = getSkillDamage(player);
         new BukkitRunnable(){
@@ -203,7 +195,7 @@ public class DivineInfusion {
                             player.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1,0, 0, 0, 0);
                         }
 
-                        Set<Player> hitByThisTick = new HashSet<>();
+                        Set<LivingEntity> hitByThisTick = new HashSet<>();
 
                         BoundingBox hitBox = new BoundingBox(
                                 end.getX() - 4,
@@ -239,28 +231,37 @@ public class DivineInfusion {
                                 else{
                                     hitByThisTick.add(thisPlayer);
                                 }
-                                continue;
                             }
 
-                            if(pveChecker.pveLogic(livingEntity)){
-                                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, player));
-                                changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                            if(!(livingEntity instanceof Player)){
+                                if(pveChecker.pveLogic(livingEntity)){
+                                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, player));
+                                    changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                                }
+                                else{
+                                    hitByThisTick.add(livingEntity);
+                                }
                             }
+
 
                         }
 
-                        for(Player thisPlayer : hitByThisTick){
+                        for(LivingEntity thisEntity : hitByThisTick){
 
-                            if(hitBySkill.contains(thisPlayer)){
+                            if(hitBySkill.contains(thisEntity)){
                                 continue;
                             }
 
-                            hitBySkill.add(thisPlayer);
+                            hitBySkill.add(thisEntity);
 
-                            double amount = (profileManager.getAnyProfile(thisPlayer).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(thisPlayer)) * .05;
-                            buffAndDebuffManager.getSpeedUp().applySpeedUp(thisPlayer, .3f);
-                            buffAndDebuffManager.getGenericShield().applyOrAddShield(thisPlayer,amount);
-                            removeBuffsLater(thisPlayer, amount);
+                            double amount = (profileManager.getAnyProfile(thisEntity).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(thisEntity)) * .05;
+
+                            if(thisEntity instanceof Player){
+                                buffAndDebuffManager.getSpeedUp().applySpeedUp((Player)thisEntity, .3f);
+                            }
+
+                            buffAndDebuffManager.getGenericShield().applyOrAddShield(thisEntity,amount);
+                            removeBuffsLater(thisEntity, amount);
                         }
 
                     }
@@ -274,12 +275,16 @@ public class DivineInfusion {
                 }
             }
 
-            private void removeBuffsLater(Player thisPlayer, double shield){
+            private void removeBuffsLater(LivingEntity thisEntity, double shield){
                 new BukkitRunnable(){
                     @Override
                     public void run(){
-                        buffAndDebuffManager.getSpeedUp().removeSpeedUp(thisPlayer);
-                        buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(thisPlayer, shield);
+
+                        if(thisEntity instanceof Player){
+                            buffAndDebuffManager.getSpeedUp().removeSpeedUp((Player)thisEntity);
+                        }
+
+                        buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(thisEntity, shield);
                     }
                 }.runTaskLater(main, 20*3);
             }

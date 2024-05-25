@@ -5,6 +5,8 @@ import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -47,6 +49,13 @@ public class MadDummy {
 
             @Override
             public Boolean getIfDead() {
+
+                Entity entity = Bukkit.getEntity(uuid);
+
+                if(entity != null){
+                    return entity.isDead();
+                }
+
                 return null;
             }
 
@@ -179,6 +188,11 @@ public class MadDummy {
             @Override
             public EquipSkills getEquipSkills() {
                 return null;
+            }
+
+            @Override
+            public Boolean fakePlayer() {
+                return false;
             }
 
             @Override

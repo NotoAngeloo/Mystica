@@ -8,6 +8,7 @@ import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
+import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -29,6 +30,7 @@ public class ArcaneContract {
     private final ProfileManager profileManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
+    private final PveChecker pveChecker;
     private final CombatManager combatManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
@@ -42,6 +44,7 @@ public class ArcaneContract {
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
+        pveChecker = main.getPveChecker();
         combatManager = manager.getCombatManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
@@ -70,7 +73,7 @@ public class ArcaneContract {
             return;
         }
 
-        if(!(target instanceof Player)){
+        if(pveChecker.pveLogic(target)){
             return;
         }
 

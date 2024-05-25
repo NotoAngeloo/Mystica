@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.BuffsAndDebuffs;
 
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -7,26 +8,26 @@ import java.util.Map;
 
 public class PassThrough {
 
-    private final Map<Player, Player> passingToThisPlayer = new HashMap<>();
+    private final Map<LivingEntity, LivingEntity> passingToThisCaster = new HashMap<>();
 
     public PassThrough(){
 
     }
 
-    public void applyPassThrough(Player player, Player targetPlayer){
-        passingToThisPlayer.put(targetPlayer, player);
+    public void applyPassThrough(LivingEntity caster, LivingEntity target){
+        passingToThisCaster.put(target, caster);
     }
 
-    public void removePassThrough(Player player){
-        passingToThisPlayer.remove(player);
+    public void removePassThrough(LivingEntity livingEntity){
+        passingToThisCaster.remove(livingEntity);
     }
 
-    public Player getPassingToPlayer(Player player){
-        return passingToThisPlayer.get(player);
+    public LivingEntity getPassingToCaster(LivingEntity target){
+        return passingToThisCaster.get(target);
     }
 
-    public boolean getIfPassingToPlayer(Player player){
-        return passingToThisPlayer.containsKey(player);
+    public boolean getIfPassingToPlayer(LivingEntity target){
+        return passingToThisCaster.containsKey(target);
     }
 
 }

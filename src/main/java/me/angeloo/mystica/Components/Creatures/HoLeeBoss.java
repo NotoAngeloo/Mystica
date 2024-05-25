@@ -244,6 +244,11 @@ public class HoLeeBoss {
             }
 
             @Override
+            public Boolean fakePlayer() {
+                return false;
+            }
+
+            @Override
             public Milestones getMilestones() {
                 return null;
             }
@@ -308,7 +313,14 @@ public class HoLeeBoss {
 
             @Override
             public Boolean getIfDead() {
-                return false;
+
+                Entity entity = Bukkit.getEntity(uuid);
+
+                if(entity != null){
+                    return entity.isDead();
+                }
+
+                return null;
             }
 
             @Override
@@ -440,6 +452,11 @@ public class HoLeeBoss {
             @Override
             public EquipSkills getEquipSkills() {
                 return null;
+            }
+
+            @Override
+            public Boolean fakePlayer() {
+                return false;
             }
 
             @Override

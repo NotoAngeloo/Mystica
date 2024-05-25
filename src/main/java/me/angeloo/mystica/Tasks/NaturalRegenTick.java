@@ -8,7 +8,6 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.ShieldAbilityManaDisplayer;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
@@ -57,7 +56,7 @@ public class NaturalRegenTick extends BukkitRunnable {
                 }
 
                 if(currentMana < maxMana){
-                    changeResourceHandler.addManaToPlayer(player, manaRegenRate);
+                    changeResourceHandler.addManaToEntity(player, manaRegenRate);
                 }
             }
 

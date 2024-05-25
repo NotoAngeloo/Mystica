@@ -112,7 +112,6 @@ public class LightSigil {
 
         purifyingBlast.queueInstantCast(player);
 
-
         Location spawnStart = player.getLocation().clone();
 
         ArmorStand sigil = player.getWorld().spawn(spawnStart, ArmorStand.class);
@@ -179,7 +178,7 @@ public class LightSigil {
                     if(shepard){
                         for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
 
-                            if(!(entity instanceof Player)){
+                            if(!(entity instanceof LivingEntity)){
                                 continue;
                             }
 
@@ -187,21 +186,29 @@ public class LightSigil {
                                 continue;
                             }
 
-                            Player thisPlayer = (Player) entity;
+                            LivingEntity hitEntity = (LivingEntity) entity;
 
-                            if (pvpManager.pvpLogic(player, thisPlayer)) {
-                                continue;
+                            if(hitEntity instanceof Player){
+                                if (pvpManager.pvpLogic(player, (Player) hitEntity)) {
+                                    continue;
+                                }
                             }
 
-                            hitBySkill.add(thisPlayer);
+                            if(!(entity instanceof Player)){
+                                if(pveChecker.pveLogic(hitEntity)){
+                                    continue;
+                                }
+                            }
+
+                            hitBySkill.add(hitEntity);
 
                         }
 
 
-                        for(LivingEntity thisPlayer : hitBySkill){
+                        for(LivingEntity hitEntity : hitBySkill){
 
-                            if(thisPlayer.getLocation().distance(current) <= 10){
-                                shootHealAtEntity(player, sigil, thisPlayer);
+                            if(hitEntity.getLocation().distance(current) <= 10){
+                                shootHealAtEntity(player, sigil, hitEntity);
                             }
 
                         }

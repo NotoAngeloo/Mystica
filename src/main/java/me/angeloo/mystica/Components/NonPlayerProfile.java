@@ -54,4 +54,5 @@ public abstract class NonPlayerProfile implements Profile{
     public Yield getYield(){return yield;}
 
     public abstract Bal getBal();
+
 }

@@ -5,6 +5,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageCalculator;
+import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -25,6 +26,7 @@ public class SpiritualGift {
     private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
+    private final PveChecker pveChecker;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
@@ -39,6 +41,7 @@ public class SpiritualGift {
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
+        pveChecker = main.getPveChecker();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
@@ -50,13 +53,17 @@ public class SpiritualGift {
             abilityReadyInMap.put(player.getUniqueId(), 0);
         }
 
-
         LivingEntity target = targetManager.getPlayerTarget(player);
 
         if(target != null){
 
             if(!(target instanceof Player)){
-                target = player;
+
+                if(pveChecker.pveLogic(target)){
+                    target = player;
+                }
+
+
             }
 
             double distance = player.getLocation().distance(target.getLocation());
@@ -69,8 +76,10 @@ public class SpiritualGift {
                 target = player;
             }
 
-            if(pvpManager.pvpLogic(player, (Player) target)){
-                target = player;
+            if(target instanceof Player){
+                if(pvpManager.pvpLogic(player, (Player) target)){
+                    target = player;
+                }
             }
 
         }
@@ -127,8 +136,6 @@ public class SpiritualGift {
     }
 
     private void execute(Player player, LivingEntity target){
-
-
 
         //every 15 levels is a +1
 

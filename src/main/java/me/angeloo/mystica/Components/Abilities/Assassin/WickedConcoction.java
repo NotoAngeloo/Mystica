@@ -69,12 +69,6 @@ public class WickedConcoction {
 
         if(target != null){
 
-            if(!(target instanceof Player)){
-                if(!pveChecker.pveLogic(target)){
-                    return;
-                }
-            }
-
             double distance = player.getLocation().distance(target.getLocation());
 
             if(distance > totalRange){
@@ -163,6 +157,9 @@ public class WickedConcoction {
             }
         }
 
+        if(!pveChecker.pveLogic(target)){
+            heal = true;
+        }
 
         boolean finalHeal = heal;
         double finalSkillDamage = getSkillDamage(player);

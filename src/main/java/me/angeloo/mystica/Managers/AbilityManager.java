@@ -6,6 +6,7 @@ import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -397,15 +398,16 @@ public class AbilityManager {
         warriorAbilities.getWarriorBasic().stopBasicRunning(player);
     }
 
-    public void resetCooldowns(Player player){
-        assassinAbilities.resetCooldowns(player);
-        elementalistAbilities.resetCooldowns(player);
-        mysticAbilities.resetCooldowns(player);
-        noneAbilities.resetCooldowns(player);
-        paladinAbilities.resetCooldowns(player);
-        rangerAbilities.resetCooldowns(player);
-        shadowKnightAbilities.resetCooldowns(player);
-        warriorAbilities.resetCooldowns(player);
+    //change to entity later
+    public void resetCooldowns(Player entity){
+        assassinAbilities.resetCooldowns(entity);
+        elementalistAbilities.resetCooldowns(entity);
+        mysticAbilities.resetCooldowns(entity);
+        noneAbilities.resetCooldowns(entity);
+        paladinAbilities.resetCooldowns(entity);
+        rangerAbilities.resetCooldowns(entity);
+        shadowKnightAbilities.resetCooldowns(entity);
+        warriorAbilities.resetCooldowns(entity);
     }
 
 }

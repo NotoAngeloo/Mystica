@@ -81,6 +81,7 @@ public class Immobile {
 
     public void removeImmobile(LivingEntity entity){
 
+
         if(removeMap.containsKey(entity.getUniqueId())){
             removeMap.get(entity.getUniqueId()).cancel();
         }
@@ -92,7 +93,11 @@ public class Immobile {
                 if(!stun.getIfStun(entity) && !sleep.getIfSleep(entity)){
                     immobileMap.remove(entity.getUniqueId());
                     if(!(entity instanceof Player)){
-                        entity.setAI(true);
+
+                        if(!profileManager.getAnyProfile(entity).getIfDead()){
+                            entity.setAI(true);
+                        }
+
                     }
 
                     if(entity instanceof Player){

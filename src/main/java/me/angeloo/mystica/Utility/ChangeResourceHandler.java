@@ -21,10 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class ChangeResourceHandler {
 
@@ -98,6 +95,11 @@ public class ChangeResourceHandler {
             return;
         }
 
+        if(profileManager.getAnyProfile(entity).fakePlayer()){
+            subtractHealthFromFakePlayer(entity, damage);
+            return;
+        }
+
         if(damager instanceof Player){
 
             if(profileManager.getAnyProfile(damager).getMilestones().getMilestone("new_hunter_accept") &&
@@ -111,7 +113,7 @@ public class ChangeResourceHandler {
                 damager.sendMessage("you deal " + damage);
             }
 
-            dpsManager.addToDamageDealt((Player) damager, damage);
+            dpsManager.addToDamageDealt(damager, damage);
         }
 
         if(profileManager.getAnyProfile(entity).getImmortality()){
@@ -157,7 +159,46 @@ public class ChangeResourceHandler {
 
     }
 
-    private void subtractHealthFromPlayer(Player player, Double damage) {
+    private void subtractHealthFromFakePlayer(LivingEntity entity, double damage){
+
+        if(profileManager.getAnyProfile(entity).getIfDead()){
+            return;
+        }
+
+        if(profileManager.getAnyProfile(entity).getPlayerSubclass().equalsIgnoreCase("divine")){
+            addToSlot(entity, damage);
+            startTask(entity);
+        }
+
+        //this changes bar
+        double actualCurrentHealth = profileManager.getAnyProfile(entity).getCurrentHealth();
+
+        if(damage > actualCurrentHealth){
+            damage = actualCurrentHealth;
+        }
+
+        double newCurrentHealth = actualCurrentHealth - damage;
+        profileManager.getAnyProfile(entity).setCurrentHealth(newCurrentHealth);
+
+        Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, false));
+
+        lastDamaged.put(entity.getUniqueId(), (System.currentTimeMillis()/1000));
+
+        if(newCurrentHealth <= 0){
+            //fake kill entity
+            buffAndDebuffManager.removeAllBuffsAndDebuffs(entity);
+            profileManager.getAnyProfile(entity).setIfDead(true);
+            profileManager.getAnyProfile(entity).setCurrentHealth(profileManager.getAnyProfile(entity).getTotalHealth());
+            dpsManager.removeDps(entity);
+            entity.setAI(false);
+            if(MythicBukkit.inst().getAPIHelper().isMythicMob(entity.getUniqueId())){
+                AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).getEntity();
+                MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).signalMob(abstractEntity, "die");
+            }
+        }
+    }
+
+    private void subtractHealthFromPlayer(Player player, double damage) {
 
         if(profileManager.getAnyProfile(player).getIfDead()){
             return;
@@ -359,9 +400,9 @@ public class ChangeResourceHandler {
         return lastDamaged.get(uuid);
     }
 
-    private void startTask(Player player){
+    private void startTask(LivingEntity entity){
 
-        if(savedTask.containsKey(player.getUniqueId())){
+        if(savedTask.containsKey(entity.getUniqueId())){
             return;
         }
 
@@ -369,13 +410,13 @@ public class ChangeResourceHandler {
             int ran = 0;
             @Override
             public void run(){
-                addSaved(player, getSaved(player));
-                clearSaved(player);
+                addSaved(entity, getSaved(entity));
+                clearSaved(entity);
 
-                if(ran>=3 && getAllSaved(player)==0.0){
+                if(ran>=3 && getAllSaved(entity)==0.0){
                     this.cancel();
-                    removeAllSaved(player);
-                    savedTask.remove(player.getUniqueId());
+                    removeAllSaved(entity);
+                    savedTask.remove(entity.getUniqueId());
                 }
 
                 if(ran<3){
@@ -385,16 +426,16 @@ public class ChangeResourceHandler {
         }.runTaskTimer(main, 20, 20);
 
 
-        savedTask.put(player.getUniqueId(), task);
+        savedTask.put(entity.getUniqueId(), task);
     }
 
-    public double getAllSaved(Player player){
+    public double getAllSaved(LivingEntity entity){
 
-        if(!allSaved.containsKey(player.getUniqueId())){
+        if(!allSaved.containsKey(entity.getUniqueId())){
             return 0.0;
         }
 
-        LinkedList<Double> values = allSaved.get(player.getUniqueId());
+        LinkedList<Double> values = allSaved.get(entity.getUniqueId());
 
         double sum = 0;
         for(Double value : values){
@@ -407,18 +448,18 @@ public class ChangeResourceHandler {
         return sum;
     }
 
-    private void addToSlot(Player player, double damage){
+    private void addToSlot(LivingEntity entity, double damage){
 
-        double saved = damageSlot.getOrDefault(player.getUniqueId(), 0.0);
+        double saved = damageSlot.getOrDefault(entity.getUniqueId(), 0.0);
 
         saved = saved + damage;
 
-        damageSlot.put(player.getUniqueId(), saved);
+        damageSlot.put(entity.getUniqueId(), saved);
     }
 
-    private void addSaved(Player player, double amount){
+    private void addSaved(LivingEntity entity, double amount){
 
-        LinkedList<Double> values = allSaved.getOrDefault(player.getUniqueId(), new LinkedList<>());
+        LinkedList<Double> values = allSaved.getOrDefault(entity.getUniqueId(), new LinkedList<>());
 
         values.add(amount);
 
@@ -426,19 +467,19 @@ public class ChangeResourceHandler {
             values.removeFirst();
         }
 
-        allSaved.put(player.getUniqueId(), values);
+        allSaved.put(entity.getUniqueId(), values);
     }
 
-    private void clearSaved(Player player){
-        damageSlot.remove(player.getUniqueId());
+    private void clearSaved(LivingEntity entity){
+        damageSlot.remove(entity.getUniqueId());
     }
 
-    private void removeAllSaved(Player player){
-        allSaved.remove(player.getUniqueId());
+    private void removeAllSaved(LivingEntity entity){
+        allSaved.remove(entity.getUniqueId());
     }
 
-    private double getSaved(Player player){
-        return damageSlot.getOrDefault(player.getUniqueId(), 0.0);
+    private double getSaved(LivingEntity entity){
+        return damageSlot.getOrDefault(entity.getUniqueId(), 0.0);
     }
 
     public void toggleSeeingRawDamage(Player player){

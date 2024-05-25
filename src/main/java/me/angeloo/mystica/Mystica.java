@@ -100,8 +100,9 @@ public final class Mystica extends JavaPlugin{
         classSetter = new ClassSetter(this);
         classSwapper = new ClassSwapper(this);
 
-        pveChecker = new PveChecker(this);
         pvpManager = new PvpManager(this);
+        pveChecker = new PveChecker(this);
+
         stealthTargetBlacklist = new StealthTargetBlacklist();
         aggroManager = new AggroManager();
         buffAndDebuffManager = new BuffAndDebuffManager(this);

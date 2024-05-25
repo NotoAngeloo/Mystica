@@ -77,9 +77,12 @@ public class ArcaneContract {
             return;
         }
 
-        if(pvpManager.pvpLogic(player, (Player) target)){
-            return;
+        if(target instanceof Player){
+            if(pvpManager.pvpLogic(player, (Player) target)){
+                return;
+            }
         }
+
 
         if(!profileManager.getAnyProfile(target).getIfDead()){
             return;
@@ -118,12 +121,11 @@ public class ArcaneContract {
 
         combatManager.startCombatTimer(player);
 
-        execute(player, (Player) target);
-
+        execute(player, target);
 
     }
 
-    private void execute(Player player, Player target){
+    private void execute(Player player, LivingEntity target){
 
         deathManager.playerNowLive(target, true, player);
 

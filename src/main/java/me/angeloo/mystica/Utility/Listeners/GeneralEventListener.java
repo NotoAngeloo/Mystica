@@ -1135,6 +1135,7 @@ public class GeneralEventListener implements Listener {
         event.setCancelled(true);
     }
 
+
     @EventHandler
     public void whenHealthChanged(HealthChangeEvent event){
         LivingEntity defender = event.getEntity();
@@ -1152,21 +1153,24 @@ public class GeneralEventListener implements Listener {
 
         if(!(defender instanceof Player)){
 
-            immortal = profileManager.getAnyProfile(defender).getImmortality();
+            if(!profileManager.getAnyProfile(defender).fakePlayer()){
+                immortal = profileManager.getAnyProfile(defender).getImmortality();
 
-            if(defender.isDead()){
-                return;
+                if(defender.isDead()){
+                    return;
+                }
+
+                if(profileManager.getAnyProfile(defender).getIfObject()){
+                    return;
+                }
+
+                if(profileManager.getIfResetProcessing(defender)){
+                    return;
+                }
+
+                aggroTick.startAggroTaskFor(defender);
             }
 
-            if(profileManager.getAnyProfile(defender).getIfObject()){
-                return;
-            }
-
-            if(profileManager.getIfResetProcessing(defender)){
-                return;
-            }
-
-            aggroTick.startAggroTaskFor(defender);
         }
 
         if(defender instanceof Player){
@@ -1229,10 +1233,13 @@ public class GeneralEventListener implements Listener {
 
         }
 
-
-        if(!defender.hasAI()){
-            defender.setAI(true);
+        if(!profileManager.getAnyProfile(defender).fakePlayer()){
+            if(!defender.hasAI()){
+                defender.setAI(true);
+            }
         }
+
+
 
         if(MythicBukkit.inst().getAPIHelper().isMythicMob(defender.getUniqueId())){
             AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(defender).getEntity();

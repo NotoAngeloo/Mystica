@@ -2,6 +2,7 @@ package me.angeloo.mystica.Managers;
 
 import com.alessiodp.parties.api.Parties;
 import com.alessiodp.parties.api.interfaces.PartiesAPI;
+import me.angeloo.mystica.CustomEvents.TargetBarShouldUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import org.bukkit.Bukkit;
@@ -64,7 +65,12 @@ public class PvpManager {
         inPvp.put(player, false);
     }
 
+    public boolean globalPvp(){
+        return globalPvp;
+    }
+
     public void toggleGlobalPvp(){
+
 
         if(globalPvp){
             globalPvp = false;

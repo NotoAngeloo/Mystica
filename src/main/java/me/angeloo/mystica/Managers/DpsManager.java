@@ -3,6 +3,7 @@ package me.angeloo.mystica.Managers;
 import me.angeloo.mystica.CustomEvents.BoardValueUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -28,46 +29,46 @@ public class DpsManager {
         this.main = main;
     }
 
-    public double getRawDps(Player player){
+    public double getRawDps(LivingEntity entity){
 
-        if(!totalDamage.containsKey(player.getUniqueId())){
+        if(!totalDamage.containsKey(entity.getUniqueId())){
             return 0;
         }
 
-        return getSaved(player) / getTime(player);
+        return getSaved(entity) / getTime(entity);
 
     }
 
-    public int getRoundedDps(Player player){
+    public int getRoundedDps(LivingEntity entity){
 
         //Bukkit.getLogger().info("Calculation Result of " + getSaved(player) + " / " + getTime(player));
         //Bukkit.getLogger().info("Result: " + (int) Math.round(getSaved(player)) / getTime(player));
-        return (int) (Math.round(getSaved(player) / getTime(player)));
+        return (int) (Math.round(getSaved(entity) / getTime(entity)));
     }
 
 
 
-    public void addToDamageDealt(Player player, double damage){
+    public void addToDamageDealt(LivingEntity entity, double damage){
 
-        double saved = totalDamage.getOrDefault(player.getUniqueId(), 0.0);
+        double saved = totalDamage.getOrDefault(entity.getUniqueId(), 0.0);
         saved = saved + damage;
-        totalDamage.put(player.getUniqueId(), saved);
+        totalDamage.put(entity.getUniqueId(), saved);
 
-        startTask(player);
-        lastAdded.put(player.getUniqueId(), System.currentTimeMillis());
+        startTask(entity);
+        lastAdded.put(entity.getUniqueId(), System.currentTimeMillis());
     }
 
-    private void addTime(Player player){
+    private void addTime(LivingEntity entity){
 
-        int time = getTime(player);
+        int time = getTime(entity);
         time+=1;
-        totalTime.put(player.getUniqueId(), time);
+        totalTime.put(entity.getUniqueId(), time);
 
     }
 
-    private void startTask(Player player){
+    private void startTask(LivingEntity entity){
 
-        if(savedTask.containsKey(player.getUniqueId())){
+        if(savedTask.containsKey(entity.getUniqueId())){
             return;
         }
 
@@ -75,50 +76,54 @@ public class DpsManager {
             @Override
             public void run(){
 
-                addTime(player);
+                addTime(entity);
 
                 long currentTime = System.currentTimeMillis();
-                long lastAdded = getLastAdded(player);
+                long lastAdded = getLastAdded(entity);
 
                 if(currentTime - lastAdded >= dpsTime){
                     this.cancel();
-                    removeDps(player);
+                    removeDps(entity);
                 }
 
-                Bukkit.getServer().getPluginManager().callEvent(new BoardValueUpdateEvent(player));
+                if(entity instanceof Player){
+                    Bukkit.getServer().getPluginManager().callEvent(new BoardValueUpdateEvent((Player)entity));
+                }
+
+
 
             }
         }.runTaskTimer(main, 20, 20);
 
 
-        savedTask.put(player.getUniqueId(), task);
+        savedTask.put(entity.getUniqueId(), task);
     }
 
-    private int getTime(Player player){
-        return totalTime.getOrDefault(player.getUniqueId(), 1);
+    private int getTime(LivingEntity entity){
+        return totalTime.getOrDefault(entity.getUniqueId(), 1);
     }
 
-    private double getSaved(Player player){
-        return totalDamage.getOrDefault(player.getUniqueId(), 0.0);
+    private double getSaved(LivingEntity entity){
+        return totalDamage.getOrDefault(entity.getUniqueId(), 0.0);
     }
 
-    public void removeDps(Player player){
-        if(savedTask.containsKey(player.getUniqueId())){
-            savedTask.get(player.getUniqueId()).cancel();
+    public void removeDps(LivingEntity entity){
+        if(savedTask.containsKey(entity.getUniqueId())){
+            savedTask.get(entity.getUniqueId()).cancel();
         }
 
-        savedTask.remove(player.getUniqueId());
-        totalDamage.remove(player.getUniqueId());
-        totalTime.remove(player.getUniqueId());
+        savedTask.remove(entity.getUniqueId());
+        totalDamage.remove(entity.getUniqueId());
+        totalTime.remove(entity.getUniqueId());
     }
 
-    private long getLastAdded(Player player){
+    private long getLastAdded(LivingEntity entity){
 
-        if(!lastAdded.containsKey(player.getUniqueId())){
-            lastAdded.put(player.getUniqueId(), System.currentTimeMillis());
+        if(!lastAdded.containsKey(entity.getUniqueId())){
+            lastAdded.put(entity.getUniqueId(), System.currentTimeMillis());
         }
 
-        return lastAdded.get(player.getUniqueId());
+        return lastAdded.get(entity.getUniqueId());
     }
 
 }

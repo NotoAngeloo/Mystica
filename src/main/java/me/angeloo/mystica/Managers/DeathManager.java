@@ -9,6 +9,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -63,7 +64,6 @@ public class DeathManager {
         player.setGlowing(true);
         abilityManager.resetAbilityBuffs(player);
         buffAndDebuffManager.removeAllBuffsAndDebuffs(player);
-        //abilityManager.setSkillRunning(player, false);
         abilityManager.interruptBasic(player);
         dpsManager.removeDps(player);
 
@@ -71,51 +71,67 @@ public class DeathManager {
         Bukkit.getServer().getPluginManager().callEvent(new TargetBarShouldUpdateEvent(player));
     }
 
-    public void playerNowLive(Player player, Boolean bySkill, Player playerWhoCastSkill){
+    public void playerNowLive(LivingEntity target, Boolean bySkill, LivingEntity entityWhoCastSkill){
 
-        profileManager.getAnyProfile(player).setIfDead(false);
-        player.setGlowing(false);
-        player.setInvisible(false);
-        player.setFireTicks(0);
-        player.setVisualFire(false);
+        profileManager.getAnyProfile(target).setIfDead(false);
+        target.setGlowing(false);
+        target.setInvisible(false);
+        target.setFireTicks(0);
+        target.setVisualFire(false);
         //more effects?
 
-        player.getInventory().clear();
 
-        profileManager.getAnyProfile(player).setIfInCombat(false);
+        if(target instanceof Player){
+            ((Player)target).getInventory().clear();
+        }
 
-        ItemStack[] savedInv = profileManager.getAnyProfile(player).getSavedInv();
+        profileManager.getAnyProfile(target).setIfInCombat(false);
 
-        boolean allNull = true;
-        for(ItemStack item : savedInv){
-            if(item != null){
-                allNull = false;
-                break;
+        if(target instanceof Player){
+            ItemStack[] savedInv = profileManager.getAnyProfile(target).getSavedInv();
+            boolean allNull = true;
+            for(ItemStack item : savedInv){
+                if(item != null){
+                    allNull = false;
+                    break;
+                }
+            }
+            if(!allNull){
+                ((Player)target).getInventory().setContents(savedInv);
+                profileManager.getAnyProfile(target).removeSavedInv();
             }
         }
 
-        if(!allNull){
-            player.getInventory().setContents(savedInv);
-            profileManager.getAnyProfile(player).removeSavedInv();
-        }
 
         if(!bySkill){
-            player.teleport(player.getWorld().getSpawnLocation());
-            abilityManager.resetCooldowns(player);
+            //TODO: res all nearby fake players, if not by skill
+            target.teleport(target.getWorld().getSpawnLocation());
+            if(target instanceof Player){
+                abilityManager.resetCooldowns((Player) target);
+            }
+
         }
         else{
-            player.teleport(playerWhoCastSkill.getLocation());
-            double halfHealth = ((double) profileManager.getAnyProfile(player).getTotalHealth() / 2);
+            target.teleport(entityWhoCastSkill.getLocation());
+            double halfHealth = ((double) profileManager.getAnyProfile(target).getTotalHealth() / 2);
 
-            changeResourceHandler.subtractHealthFromEntity(player, halfHealth, playerWhoCastSkill);
+            changeResourceHandler.subtractHealthFromEntity(target, halfHealth, entityWhoCastSkill);
+        }
+
+        if(!(target instanceof Player)){
+            target.setAI(true);
         }
 
 
-        Scoreboard scoreboard = player.getScoreboard();
-        scoreboard.clearSlot(DisplaySlot.SIDEBAR);
-        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(""));
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
-        Bukkit.getServer().getPluginManager().callEvent(new TargetBarShouldUpdateEvent(player));
+        if(target instanceof Player){
+            Scoreboard scoreboard = ((Player)target).getScoreboard();
+            scoreboard.clearSlot(DisplaySlot.SIDEBAR);
+            ((Player)target).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(""));
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(((Player)target)));
+            Bukkit.getServer().getPluginManager().callEvent(new TargetBarShouldUpdateEvent(target));
+        }
+
+
     }
 
 }

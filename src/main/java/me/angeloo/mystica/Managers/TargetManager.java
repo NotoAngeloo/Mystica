@@ -254,6 +254,16 @@ public class TargetManager {
             }
         }
 
+        if(!(entity instanceof Player)){
+            if(profileManager.getAnyProfile(entity).fakePlayer()){
+                boolean deathStatus = profileManager.getAnyProfile(entity).getIfDead();
+
+                if (deathStatus){
+                    bossBar.setProgress(0);
+                }
+            }
+        }
+
         bossBar.addPlayer(player);
         bossBar.setVisible(true);
 

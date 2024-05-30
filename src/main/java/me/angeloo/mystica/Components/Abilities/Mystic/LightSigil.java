@@ -57,64 +57,59 @@ public class LightSigil {
         purifyingBlast = mysticAbilities.getPurifyingBlast();
     }
 
-    public void use(Player player){
-        if (!abilityReadyInMap.containsKey(player.getUniqueId())) {
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void use(LivingEntity caster){
+        if (!abilityReadyInMap.containsKey(caster.getUniqueId())) {
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        if (getCooldown(player) > 0) {
+        if(!usable(caster)){
             return;
         }
 
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 20);
+        abilityReadyInMap.put(caster.getUniqueId(), 20);
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
 
-                if (getCooldown(player) <= 0) {
-                    cooldownDisplayer.displayCooldown(player, 8);
+                if (getCooldown(caster) <= 0) {
+                    cooldownDisplayer.displayCooldown(caster, 8);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
+                int cooldown = getCooldown(caster) - 1;
 
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 8);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 8);
 
             }
         }.runTaskTimer(main, 0, 20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
     }
 
     //perhaps made it shoot at enemies too
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        boolean shepard = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("shepard");
+        boolean shepard = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("shepard");
 
-        purifyingBlast.queueInstantCast(player);
+        purifyingBlast.queueInstantCast(caster);
 
-        Location spawnStart = player.getLocation().clone();
+        Location spawnStart = caster.getLocation().clone();
 
-        ArmorStand sigil = player.getWorld().spawn(spawnStart, ArmorStand.class);
+        ArmorStand sigil = caster.getWorld().spawn(spawnStart, ArmorStand.class);
         sigil.setInvisible(true);
         sigil.setGravity(false);
         sigil.setCollidable(false);
@@ -159,7 +154,7 @@ public class LightSigil {
                     double z = current.getZ() + (10 * Math.sin(angle));
                     Location loc = new Location(sigil.getWorld(), x, current.clone().add(0,.5,0).getY(), z);
 
-                    player.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1, 0, 0, 0, 0);
+                    caster.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1, 0, 0, 0, 0);
                 }
 
                 if(ran%20==0){
@@ -176,7 +171,7 @@ public class LightSigil {
                     Set<LivingEntity> hitBySkill = new HashSet<>();
 
                     if(shepard){
-                        for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+                        for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
                             if(!(entity instanceof LivingEntity)){
                                 continue;
@@ -189,7 +184,7 @@ public class LightSigil {
                             LivingEntity hitEntity = (LivingEntity) entity;
 
                             if(hitEntity instanceof Player){
-                                if (pvpManager.pvpLogic(player, (Player) hitEntity)) {
+                                if (pvpManager.pvpLogic(caster, (Player) hitEntity)) {
                                     continue;
                                 }
                             }
@@ -208,7 +203,7 @@ public class LightSigil {
                         for(LivingEntity hitEntity : hitBySkill){
 
                             if(hitEntity.getLocation().distance(current) <= 10){
-                                shootHealAtEntity(player, sigil, hitEntity);
+                                shootHealAtEntity(caster, sigil, hitEntity);
                             }
 
                         }
@@ -217,7 +212,7 @@ public class LightSigil {
 
                     }
                     else{
-                        for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+                        for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
                             if(!(entity instanceof LivingEntity)){
                                 continue;
@@ -230,7 +225,7 @@ public class LightSigil {
                             LivingEntity thisEntity = (LivingEntity) entity;
 
                             if(entity instanceof  Player){
-                                if(!pvpManager.pvpLogic(player, (Player) thisEntity)) {
+                                if(!pvpManager.pvpLogic(caster, (Player) thisEntity)) {
                                     continue;
                                 }
                             }
@@ -242,7 +237,7 @@ public class LightSigil {
                             hitBySkill.add(thisEntity);
 
                             for(LivingEntity livingEntity : hitBySkill){
-                                shootDamageAtEntity(player, sigil, livingEntity);
+                                shootDamageAtEntity(caster, sigil, livingEntity);
                             }
 
                         }
@@ -266,11 +261,11 @@ public class LightSigil {
 
     }
 
-    private void shootDamageAtEntity(Player player, ArmorStand sigil, LivingEntity damagedEntity){
+    private void shootDamageAtEntity(LivingEntity caster, ArmorStand sigil, LivingEntity damagedEntity){
 
         Location start = sigil.getLocation();
         start.subtract(0, 1, 0);
-        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = caster.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -290,7 +285,7 @@ public class LightSigil {
         entityEquipment.setHelmet(bolt);
 
 
-        double finalSkillDamage = getSkillDamage(player);
+        double finalSkillDamage = getSkillDamage(caster);
         new BukkitRunnable(){
             Location targetWasLoc = damagedEntity.getLocation().clone().subtract(0,1,0);
             @Override
@@ -324,10 +319,10 @@ public class LightSigil {
 
                     cancelTask();
 
-                    boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, damagedEntity, "Magical", finalSkillDamage, crit);
-                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(damagedEntity, player));
-                    changeResourceHandler.subtractHealthFromEntity(damagedEntity, damage, player);
+                    boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                    double damage = damageCalculator.calculateDamage(caster, damagedEntity, "Magical", finalSkillDamage, crit);
+                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(damagedEntity, caster));
+                    changeResourceHandler.subtractHealthFromEntity(damagedEntity, damage, caster);
 
                 }
 
@@ -358,11 +353,11 @@ public class LightSigil {
 
     }
 
-    private void shootHealAtEntity(Player player, ArmorStand sigil, LivingEntity healedEntity){
+    private void shootHealAtEntity(LivingEntity caster, ArmorStand sigil, LivingEntity healedEntity){
 
         Location start = sigil.getLocation();
         start.subtract(0, 1, 0);
-        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = caster.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -382,8 +377,8 @@ public class LightSigil {
         entityEquipment.setHelmet(bolt);
 
         double healPower = 5;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_8_Level_Bonus();
         healPower = healPower +  ((int)(skillLevel/10));
 
         double finalHealPower = healPower;
@@ -420,11 +415,11 @@ public class LightSigil {
 
                     cancelTask();
 
-                    boolean crit = damageCalculator.checkIfCrit(player, 0);
+                    boolean crit = damageCalculator.checkIfCrit(caster, 0);
 
-                    double healAmount  = damageCalculator.calculateHealing(player, finalHealPower, crit);
+                    double healAmount  = damageCalculator.calculateHealing(caster, finalHealPower, crit);
 
-                    changeResourceHandler.addHealthToEntity(healedEntity, healAmount, player);
+                    changeResourceHandler.addHealthToEntity(healedEntity, healAmount, caster);
 
                     Location center = healedEntity.getLocation().clone().add(0,1,0);
 
@@ -468,9 +463,9 @@ public class LightSigil {
 
     }
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_8_Level_Bonus();
         return 14 +  ((int)(skillLevel/3));
     }
 
@@ -478,8 +473,8 @@ public class LightSigil {
         return 5;
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -488,8 +483,20 @@ public class LightSigil {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster){
+        if (getCooldown(caster) > 0) {
+            return false;
+        }
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

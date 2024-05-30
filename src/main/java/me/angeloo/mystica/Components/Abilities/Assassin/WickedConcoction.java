@@ -55,82 +55,69 @@ public class WickedConcoction {
         stealth = assassinAbilities.getStealth();
     }
 
-    public void use(Player player){
+    private final double range = 15;
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void use(LivingEntity caster){
+
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        double baseRange = 15;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
-        double totalRange = baseRange + extraRange;
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        if(!usable(caster, target)){
+            return;
+        }
 
-        if(target != null){
-
-            double distance = player.getLocation().distance(target.getLocation());
-
-            if(distance > totalRange){
-                return;
+        if(target instanceof Player){
+            if(profileManager.getAnyProfile(target).getIfDead()){
+                target = caster;
             }
-
-            if(target instanceof Player){
-                if(profileManager.getAnyProfile(target).getIfDead()){
-                    target = player;
-                }
-            }
-
         }
 
         if(target == null){
-            target = player;
+            target = caster;
         }
 
-        if(getCooldown(player) > 0){
-            return;
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+
+        combatManager.startCombatTimer(caster);
+
+        execute(caster, target);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player, target);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 20);
+        abilityReadyInMap.put(caster.getUniqueId(), 20);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
+                if(getCooldown(caster) <= 0){
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+
+                if(caster instanceof Player){
+                    shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo((Player) caster);
+                }
+
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player, LivingEntity target){
+    private void execute(LivingEntity caster, LivingEntity target){
 
-        Location start = player.getLocation();
+        Location start = caster.getLocation();
 
         ItemStack item = new ItemStack(Material.SLIME_BALL);
         ItemMeta meta = item.getItemMeta();
@@ -138,7 +125,7 @@ public class WickedConcoction {
         meta.setCustomModelData(3);
         item.setItemMeta(meta);
 
-        ArmorStand stand = player.getWorld().spawn(start.clone().subtract(0,10,0), ArmorStand.class);
+        ArmorStand stand = caster.getWorld().spawn(start.clone().subtract(0,10,0), ArmorStand.class);
         stand.setInvisible(true);
         stand.setGravity(false);
         stand.setCollidable(false);
@@ -152,7 +139,7 @@ public class WickedConcoction {
         boolean heal = false;
 
         if(target instanceof Player){
-            if(!pvpManager.pvpLogic(player, (Player) target)){
+            if(!pvpManager.pvpLogic(caster, (Player) target)){
                 heal = true;
             }
         }
@@ -162,7 +149,7 @@ public class WickedConcoction {
         }
 
         boolean finalHeal = heal;
-        double finalSkillDamage = getSkillDamage(player);
+        double finalSkillDamage = getSkillDamage(caster);
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
             @Override
@@ -196,22 +183,22 @@ public class WickedConcoction {
 
                     cancelTask();
 
-                    boolean crit = damageCalculator.checkIfCrit(player, 0);
+                    boolean crit = damageCalculator.checkIfCrit(caster, 0);
 
                     if(!finalHeal){
 
-                        double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
+                        double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
 
-                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                        changeResourceHandler.subtractHealthFromEntity(target, damage, player);
-                        stealth.stealthBonusCheck(player, target);
+                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                        changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+                        stealth.stealthBonusCheck(caster, target);
                         buffAndDebuffManager.getConcoctionDebuff().applyDebuff(target);
                         return;
                     }
 
-                    double healAmount = damageCalculator.calculateHealing(player, getHealPower(), crit);
+                    double healAmount = damageCalculator.calculateHealing(caster, getHealPower(), crit);
 
-                    changeResourceHandler.addHealthToEntity(target, healAmount, player);
+                    changeResourceHandler.addHealthToEntity(target, healAmount, caster);
                     buffAndDebuffManager.getDamageReduction().applyDamageReduction(target, .95, 20*15);
                     //and damage reduction
 
@@ -245,8 +232,8 @@ public class WickedConcoction {
 
     }
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getStats().getLevel();
         return 50 + ((int)(skillLevel/3));
     }
 
@@ -258,9 +245,9 @@ public class WickedConcoction {
         return 10;
     }
 
-    public int getCooldown(Player player){
+    public int getCooldown(LivingEntity caster){
 
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -269,8 +256,31 @@ public class WickedConcoction {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster, LivingEntity target){
+        if(target != null){
+
+            double distance = caster.getLocation().distance(target.getLocation());
+
+            if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+                return false;
+            }
+
+        }
+
+
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+        return true;
     }
 
 }

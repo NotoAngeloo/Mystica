@@ -2,6 +2,7 @@ package me.angeloo.mystica.Components.BuffsAndDebuffs;
 
 import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -9,41 +10,49 @@ import java.util.Map;
 
 public class ConjuringForceBuff {
 
-    private final Map<Player, Boolean> hasConjForceBuffMap = new HashMap<>();
-    private final Map<Player, Double> extraDamageMap = new HashMap<>();
+    private final Map<LivingEntity, Boolean> hasConjForceBuffMap = new HashMap<>();
+    private final Map<LivingEntity, Double> extraDamageMap = new HashMap<>();
 
     public ConjuringForceBuff(){
     }
 
-    public void applyConjuringForceBuff(Player player, double extraDamageAmount){
-        hasConjForceBuffMap.put(player, true);
+    public void applyConjuringForceBuff(LivingEntity entity, double extraDamageAmount){
+        hasConjForceBuffMap.put(entity, true);
 
-        double currentExtraDamage = getExtraDamageAmount(player);
+        double currentExtraDamage = getExtraDamageAmount(entity);
 
         if(extraDamageAmount > currentExtraDamage){
-            extraDamageMap.put(player, extraDamageAmount);
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+            extraDamageMap.put(entity, extraDamageAmount);
+
+            if(entity instanceof Player){
+                Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) entity));
+            }
+
         }
 
     }
 
-    public void removeConjuringForceBuff(Player player){
-        hasConjForceBuffMap.remove(player);
-        extraDamageMap.remove(player);
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+    public void removeConjuringForceBuff(LivingEntity entity){
+        hasConjForceBuffMap.remove(entity);
+        extraDamageMap.remove(entity);
+
+        if(entity instanceof Player){
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) entity));
+        }
+
     }
 
-    public boolean getIfConjForceBuff(Player player){
-        return hasConjForceBuffMap.getOrDefault(player, false);
+    public boolean getIfConjForceBuff(LivingEntity entity){
+        return hasConjForceBuffMap.getOrDefault(entity, false);
     }
 
-    public double getExtraDamageAmount(Player player){
-        return extraDamageMap.getOrDefault(player, 0.0);
+    public double getExtraDamageAmount(LivingEntity entity){
+        return extraDamageMap.getOrDefault(entity, 0.0);
     }
 
-    public double getRangeModifier(Player player){
+    public double getRangeModifier(LivingEntity entity){
 
-        if(getIfConjForceBuff(player)){
+        if(getIfConjForceBuff(entity)){
             return 10;
         }
 

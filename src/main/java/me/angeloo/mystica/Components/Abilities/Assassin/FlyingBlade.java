@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.Abilities.Assassin;
 
 import me.angeloo.mystica.Components.Abilities.AssassinAbilities;
+import me.angeloo.mystica.Components.ClassEquipment.AssassinEquipment;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -28,6 +29,7 @@ public class FlyingBlade {
     private final Mystica main;
 
     private final ProfileManager profileManager;
+    private final AssassinEquipment assassinEquipment;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
@@ -45,6 +47,7 @@ public class FlyingBlade {
     public FlyingBlade(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
+        assassinEquipment = new AssassinEquipment();
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
@@ -56,105 +59,79 @@ public class FlyingBlade {
         stealth = assassinAbilities.getStealth();
     }
 
-    public void use(Player player){
+    private final double range = 15;
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void use(LivingEntity caster){
+
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        double baseRange = 15;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
-        double totalRange = baseRange + extraRange;
+        targetManager.setTargetToNearestValid(caster, range + buffAndDebuffManager.getTotalRangeModifier(caster));
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        targetManager.setTargetToNearestValid(player, totalRange);
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
 
-        if(target != null){
-            if(target instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) target)){
-                    return;
-                }
-            }
-
-            if(!(target instanceof Player)){
-                if(!pveChecker.pveLogic(target)){
-                    return;
-                }
-            }
-
-            double distance = player.getLocation().distance(target.getLocation());
-
-            if(distance > totalRange){
-                return;
-            }
-        }
-
-        if(target == null){
+        if(!usable(caster, target)){
             return;
         }
 
-        if(getCooldown(player) > 0){
-            return;
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+
+        if(caster instanceof Player){
+            combatManager.startCombatTimer((Player) caster);
         }
 
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 15);
+        abilityReadyInMap.put(caster.getUniqueId(), 15);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 7);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 7);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 7);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 7);
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        Location start = player.getLocation();
 
-        ArmorStand armorStand = player.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
+        Location start = caster.getLocation();
+
+        ArmorStand armorStand = caster.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
         armorStand.setInvulnerable(true);
         armorStand.setMarker(true);
         EntityEquipment entityEquipment = armorStand.getEquipment();
-        ItemStack weapon = profileManager.getAnyProfile(player).getPlayerEquipment().getWeapon();
+        ItemStack weapon = assassinEquipment.getBaseWeapon();
         assert entityEquipment != null;
         entityEquipment.setHelmet(weapon);
         armorStand.teleport(start);
 
 
-        double finalSkillDamage = getSkillDamage(player);
+        double finalSkillDamage = getSkillDamage(caster);
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
             @Override
@@ -188,11 +165,11 @@ public class FlyingBlade {
 
                     cancelTask();
 
-                    boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
+                    boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                    double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
 
-                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
 
                     if(profileManager.getAnyProfile(target).getIsMovable()){
                         buffAndDebuffManager.getStun().applyStun(target, 20);
@@ -202,7 +179,7 @@ public class FlyingBlade {
                         buffAndDebuffManager.getGenericShield().removeShields(target);
                     }
 
-                    stealth.stealthBonusCheck(player, target);
+                    stealth.stealthBonusCheck(caster, target);
                 }
 
             }
@@ -235,16 +212,16 @@ public class FlyingBlade {
         return 10;
     }
 
-    public double getSkillDamage(Player player){
+    public double getSkillDamage(LivingEntity caster){
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_7_Level_Bonus();
 
         return 25 + ((int)(skillLevel/3));
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -253,8 +230,47 @@ public class FlyingBlade {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public boolean usable(LivingEntity caster, LivingEntity target){
+
+
+        if(target != null){
+            if(target instanceof Player){
+                if(!pvpManager.pvpLogic(caster, (Player) target)){
+                    return false;
+                }
+            }
+
+            if(!(target instanceof Player)){
+                if(!pveChecker.pveLogic(target)){
+                    return false;
+                }
+            }
+
+            double distance = caster.getLocation().distance(target.getLocation());
+
+            if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+                return false;
+            }
+        }
+
+        if(target == null){
+            return false;
+        }
+
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
+    }
+
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
     }
 
 }

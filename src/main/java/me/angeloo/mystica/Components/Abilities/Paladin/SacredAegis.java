@@ -4,7 +4,6 @@ import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
-import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
@@ -48,90 +47,71 @@ public class SacredAegis {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    public void use(Player player){
+    public void use(LivingEntity caster){
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        if(target != null){
-
-            if(!(target instanceof Player)){
-                target = player;
-            }
-
-            double distance = player.getLocation().distance(target.getLocation());
-
-            if(distance > getRange(player)){
-                return;
-            }
-
-            if (profileManager.getAnyProfile(target).getIfDead()) {
-                target = player;
-            }
-
-            if(pvpManager.pvpLogic(player, (Player) target)){
-                target = player;
-            }
-
+        if(!usable(caster, target)){
+            return;
         }
 
         if(target == null){
-            target = player;
+            target = caster;
         }
 
-        if(getCooldown(player) > 0){
-            return;
+        if (profileManager.getAnyProfile(target).getIfDead()) {
+            target = caster;
         }
 
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
+        if(pvpManager.pvpLogic(caster, (Player) target)){
+            target = caster;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        combatManager.startCombatTimer(player);
+        combatManager.startCombatTimer(caster);
 
-        execute(player, (Player) target);
+        execute(caster, target);
 
 
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        abilityReadyInMap.put(player.getUniqueId(), getSkillCooldown(player));
+        abilityReadyInMap.put(caster.getUniqueId(), getSkillCooldown(caster));
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 6);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 6);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 6);
+                int cooldown = getCooldown(caster) - 1;
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 6);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
 
-    private double getRange(Player player){
+    private double getRange(LivingEntity caster){
         double baseRange = 12;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
+        double extraRange = buffAndDebuffManager.getTotalRangeModifier(caster);
         return baseRange + extraRange;
     }
 
-    private void execute(Player player, Player target){
+    private void execute(LivingEntity caster, LivingEntity target){
 
         Location start = target.getLocation().clone();
         Vector direction = target.getLocation().getDirection().setY(0).normalize();
@@ -144,7 +124,7 @@ public class SacredAegis {
         item.setItemMeta(meta);
 
         Location s1Spawn = start.clone().add(direction.clone().multiply(1)).setDirection(direction);
-        ArmorStand shield = player.getWorld().spawn(s1Spawn.clone().subtract(0,5,0), ArmorStand.class);
+        ArmorStand shield = caster.getWorld().spawn(s1Spawn.clone().subtract(0,5,0), ArmorStand.class);
         shield.setInvisible(true);
         shield.setGravity(false);
         shield.setCollidable(false);
@@ -157,7 +137,7 @@ public class SacredAegis {
         shield.teleport(s1Spawn);
 
         Location s2spawn = start.clone().subtract(direction.clone().multiply(1)).setDirection(direction.clone().multiply(-1));
-        ArmorStand shield2 = player.getWorld().spawn(s2spawn.clone().subtract(0,5,0), ArmorStand.class);
+        ArmorStand shield2 = caster.getWorld().spawn(s2spawn.clone().subtract(0,5,0), ArmorStand.class);
         shield2.setInvisible(true);
         shield2.setGravity(false);
         shield2.setCollidable(false);
@@ -170,7 +150,7 @@ public class SacredAegis {
         shield2.teleport(s2spawn);
 
         Location s3spawn = start.clone().add(crossProduct.clone().multiply(1)).setDirection(crossProduct);
-        ArmorStand shield3 = player.getWorld().spawn(s3spawn.clone().subtract(0,5,0), ArmorStand.class);
+        ArmorStand shield3 = caster.getWorld().spawn(s3spawn.clone().subtract(0,5,0), ArmorStand.class);
         shield3.setInvisible(true);
         shield3.setGravity(false);
         shield3.setCollidable(false);
@@ -183,7 +163,7 @@ public class SacredAegis {
         shield3.teleport(s3spawn);
 
         Location shield4spawn = start.clone().subtract(crossProduct.clone().multiply(1)).setDirection(crossProduct.clone().multiply(-1));
-        ArmorStand shield4 = player.getWorld().spawn(shield4spawn.clone().subtract(0,5,0), ArmorStand.class);
+        ArmorStand shield4 = caster.getWorld().spawn(shield4spawn.clone().subtract(0,5,0), ArmorStand.class);
         shield4.setInvisible(true);
         shield4.setGravity(false);
         shield4.setCollidable(false);
@@ -204,9 +184,11 @@ public class SacredAegis {
             @Override
             public void run(){
 
-                if (!target.isOnline()) {
-                    cancelTask();
-                    return;
+                if(target instanceof Player){
+                    if(!((Player)target).isOnline()){
+                        cancelTask();
+                        return;
+                    }
                 }
 
 
@@ -253,15 +235,15 @@ public class SacredAegis {
         return 20;
     }
 
-    public int getSkillCooldown(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
+    public int getSkillCooldown(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_6_Level_Bonus();
         return 120 - ((int) skillLevel/3);
     }
 
-    public int getCooldown(Player player){
+    public int getCooldown(LivingEntity caster){
 
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -270,8 +252,36 @@ public class SacredAegis {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster, LivingEntity target){
+        if(target != null){
+
+            if(!(target instanceof Player)){
+                target = caster;
+            }
+
+            double distance = caster.getLocation().distance(target.getLocation());
+
+            if(distance > getRange(caster)){
+                return false;
+            }
+
+        }
+
+
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

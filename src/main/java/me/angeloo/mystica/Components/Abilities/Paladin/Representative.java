@@ -55,58 +55,61 @@ public class Representative {
         pveChecker = main.getPveChecker();
     }
 
-    public void use(Player player){
+    public void use(LivingEntity caster){
 
-        if (!abilityReadyInMap.containsKey(player.getUniqueId())) {
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+        if (!abilityReadyInMap.containsKey(caster.getUniqueId())) {
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        if (getCooldown(player) > 0) {
+        if(!usable(caster)){
             return;
         }
 
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 30);
+        abilityReadyInMap.put(caster.getUniqueId(), 30);
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
 
-                if (getCooldown(player) <= 0) {
+                if (getCooldown(caster) <= 0) {
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
+                int cooldown = getCooldown(caster) - 1;
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+
+                if(caster instanceof Player){
+                    shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo((Player) caster);
+                }
+
 
             }
         }.runTaskTimer(main, 0, 20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        if(!player.isOnline()){
-            return;
+        if(caster instanceof Player){
+            if(!((Player)caster).isOnline()){
+                return;
+            }
         }
 
-        if(profileManager.getAnyProfile(player).getIfDead()){
+
+
+        if(profileManager.getAnyProfile(caster).getIfDead()){
             return;
         }
 
@@ -115,15 +118,20 @@ public class Representative {
         assert meta != null;
         meta.setCustomModelData(13);
         wings.setItemMeta(meta);
-        player.getInventory().setHelmet(wings);
 
-        double level = profileManager.getAnyProfile(player).getStats().getLevel();
-        applyBuff(player, level);
-        buffAndDebuffManager.getHaste().applyHaste(player, 3, 10*20);
+        if(caster instanceof Player){
+            ((Player)caster).getInventory().setHelmet(wings);
+        }
 
-        Location center = player.getLocation().clone();
 
-        double finalHealPower = getHealPower(player);
+
+        double level = profileManager.getAnyProfile(caster).getStats().getLevel();
+        applyBuff(caster, level);
+        buffAndDebuffManager.getHaste().applyHaste(caster, 3, 10*20);
+
+        Location center = caster.getLocation().clone();
+
+        double finalHealPower = getHealPower(caster);
         new BukkitRunnable(){
             int count = 0;
             boolean aoe = true;
@@ -141,8 +149,8 @@ public class Representative {
                         double angle = i * increment;
                         double x = center.getX() + (radius * Math.cos(angle));
                         double z = center.getZ() + (radius * Math.sin(angle));
-                        Location loc = new Location(player.getWorld(), x, center.getY(), z);
-                        player.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1, 0, 0, 0, 0);
+                        Location loc = new Location(caster.getWorld(), x, center.getY(), z);
+                        caster.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1, 0, 0, 0, 0);
                     }
 
 
@@ -159,7 +167,7 @@ public class Representative {
                                 center.getZ() + progress
                         );
 
-                        for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+                        for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
 
                             if(!(entity instanceof LivingEntity)){
@@ -173,7 +181,7 @@ public class Representative {
                             LivingEntity hitEntity = (LivingEntity) entity;
 
                             if(entity instanceof Player){
-                                if(pvpManager.pvpLogic(player, (Player)hitEntity)){
+                                if(pvpManager.pvpLogic(caster, (Player)hitEntity)){
                                     continue;
                                 }
                             }
@@ -185,9 +193,9 @@ public class Representative {
                             }
 
 
-                            boolean crit = damageCalculator.checkIfCrit(player, 0);
-                            double healAmount = damageCalculator.calculateHealing(player, finalHealPower, crit);
-                            changeResourceHandler.addHealthToEntity(hitEntity, healAmount, player);
+                            boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                            double healAmount = damageCalculator.calculateHealing(caster, finalHealPower, crit);
+                            changeResourceHandler.addHealthToEntity(hitEntity, healAmount, caster);
 
                         }
                     }
@@ -195,7 +203,7 @@ public class Representative {
 
                 if(count>=10*20){
                     this.cancel();
-                    removeBuff(player);
+                    removeBuff(caster);
                 }
 
                 count++;
@@ -206,29 +214,33 @@ public class Representative {
         }.runTaskTimer(main, 0, 1);
     }
 
-    private void applyBuff(Player player, double amount){
-        repBuff.put(player.getUniqueId(), amount);
+    private void applyBuff(LivingEntity caster, double amount){
+        repBuff.put(caster.getUniqueId(), amount);
     }
 
-    private void removeBuff(Player player){
-        repBuff.remove(player.getUniqueId());
+    private void removeBuff(LivingEntity caster){
+        repBuff.remove(caster.getUniqueId());
 
-        boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
+        boolean combatStatus = profileManager.getAnyProfile(caster).getIfInCombat();
 
         if(!combatStatus){
             return;
         }
 
-        PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
-        player.getInventory().setHelmet(playerEquipment.getHelmet());
+        if(caster instanceof Player){
+            PlayerEquipment playerEquipment = profileManager.getAnyProfile((Player)caster).getPlayerEquipment();
+            ((Player)caster).getInventory().setHelmet(playerEquipment.getHelmet());
+        }
+
+
     }
 
-    public double getAdditionalBonusFromBuff(Player player){
-        return repBuff.getOrDefault(player.getUniqueId(), 0.0);
+    public double getAdditionalBonusFromBuff(LivingEntity caster){
+        return repBuff.getOrDefault(caster.getUniqueId(), 0.0);
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -237,8 +249,8 @@ public class Representative {
         return cooldown;
     }
 
-    public double getHealPower(Player player){
-        double level = profileManager.getAnyProfile(player).getStats().getLevel();
+    public double getHealPower(LivingEntity caster){
+        double level = profileManager.getAnyProfile(caster).getStats().getLevel();
         return 25 +  ((int)(level/3));
     }
 
@@ -246,8 +258,21 @@ public class Representative {
         return 20;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster){
+        if (getCooldown(caster) > 0) {
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

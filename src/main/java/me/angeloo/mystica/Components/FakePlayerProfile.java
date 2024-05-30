@@ -1,6 +1,5 @@
 package me.angeloo.mystica.Components;
 
-import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import org.bukkit.entity.Player;
@@ -55,8 +54,6 @@ public class FakePlayerProfile implements Profile {
     public Boolean getIfDead(){return ifDead;}
     @Override
     public Boolean getIfInCombat(){return ifInCombat;}
-
-    //TODO: here is where you set fake death
 
     @Override
     public void setIfDead(Boolean ifDead) {
@@ -183,7 +180,7 @@ public class FakePlayerProfile implements Profile {
 
     @Override
     public Skill_Level getSkillLevels() {
-        return null;
+        return new Skill_Level(0,0,0,0,0,0,0,0);
     }
 
     @Override

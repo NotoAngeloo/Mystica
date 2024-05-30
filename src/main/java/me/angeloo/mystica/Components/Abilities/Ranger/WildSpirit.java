@@ -61,63 +61,54 @@ public class WildSpirit {
         starVolley = rangerAbilities.getStarVolley();
     }
 
-    public void sendSignal(Player player){
+    public void sendSignal(LivingEntity caster){
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        if(getCooldown(player) > 0){
+        if(!usable(caster)){
             return;
         }
 
-        if(wildSpiritMap.containsKey(player.getUniqueId())){
-            return;
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+
+        combatManager.startCombatTimer(caster);
+
+        spawn(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        spawn(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 10);
+        abilityReadyInMap.put(caster.getUniqueId(), 10);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 7);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 7);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 7);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 7);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void spawn(Player player){
+    private void spawn(LivingEntity caster){
 
-        Location start = player.getLocation();
+        Location start = caster.getLocation();
         start.subtract(0, 1.7, 0);
-        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = caster.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -134,24 +125,24 @@ public class WildSpirit {
         assert entityEquipment != null;
         entityEquipment.setHelmet(wolf);
 
-        wildSpiritMap.put(player.getUniqueId(), armorStand);
+        wildSpiritMap.put(caster.getUniqueId(), armorStand);
 
-        wolfAiTask(player);
+        wolfAiTask(caster);
 
     }
 
-    private void wolfAiTask(Player player){
+    private void wolfAiTask(LivingEntity caster){
 
-        boolean scout = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("scout");
+        boolean scout = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("scout");
 
-        double attack = profileManager.getAnyProfile(player).getTotalAttack();
+        double attack = profileManager.getAnyProfile(caster).getTotalAttack();
 
 
-        boolean tamer = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("animal tamer");
+        boolean tamer = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("animal tamer");
 
-        ArmorStand wolf = wildSpiritMap.get(player.getUniqueId());
+        ArmorStand wolf = wildSpiritMap.get(caster.getUniqueId());
 
-        double finalSkillDamage = getSkillDamage(player);
+        double finalSkillDamage = getSkillDamage(caster);
         new BukkitRunnable(){
             int wolfAttackReadyIn = 0;
             LivingEntity wolfTarget = null;
@@ -159,17 +150,17 @@ public class WildSpirit {
             @Override
             public void run(){
 
-                if(profileManager.getAnyProfile(player).getIfDead()){
+                if(profileManager.getAnyProfile(caster).getIfDead()){
                     despawn();
                     return;
                 }
 
-                LivingEntity target = targetManager.getPlayerTarget(player);
+                LivingEntity target = targetManager.getPlayerTarget(caster);
 
                 if(target != null){
 
                     if(target instanceof Player){
-                        if(pvpManager.pvpLogic(player, (Player) target)){
+                        if(pvpManager.pvpLogic(caster, (Player) target)){
                             wolfTarget = target;
                         }
                     }
@@ -183,7 +174,7 @@ public class WildSpirit {
 
                 if(wolfTarget != null){
 
-                    if(wolfTarget instanceof Player && wolfTarget != player){
+                    if(wolfTarget instanceof Player && wolfTarget != caster){
                         boolean deathStatus = profileManager.getAnyProfile(wolfTarget).getIfDead();
 
                         if(deathStatus){
@@ -200,16 +191,16 @@ public class WildSpirit {
                 }
 
                 if(wolfTarget == null){
-                    wolfTarget = player;
+                    wolfTarget = caster;
                 }
 
-                if(wolf.getWorld() != player.getWorld()
+                if(wolf.getWorld() != caster.getWorld()
                 || wolf.getWorld() != wolfTarget.getWorld()){
                     despawn();
                     return;
                 }
 
-                if(wolfTarget == player){
+                if(wolfTarget == caster){
                     goToOwner();
                 }
                 else{
@@ -271,23 +262,23 @@ public class WildSpirit {
 
                 wolfAttackReadyIn = 3;
 
-                boolean crit = damageCalculator.checkIfCrit(player, 0);
+                boolean crit = damageCalculator.checkIfCrit(caster, 0);
 
                 if(scout && crit){
-                    starVolley.decreaseCooldown(player);
-                    buffAndDebuffManager.getHaste().applyHaste(player, 1, 2*20);
+                    starVolley.decreaseCooldown(caster);
+                    buffAndDebuffManager.getHaste().applyHaste(caster, 1, 2*20);
                 }
 
-                double damage = damageCalculator.calculateDamage(player, wolfTarget, "Physical", finalSkillDamage, crit);
+                double damage = damageCalculator.calculateDamage(caster, wolfTarget, "Physical", finalSkillDamage, crit);
 
-                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(wolfTarget, player));
-                changeResourceHandler.subtractHealthFromEntity(wolfTarget, damage, player);
+                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(wolfTarget, caster));
+                changeResourceHandler.subtractHealthFromEntity(wolfTarget, damage, caster);
             }
 
             private void goToOwner(){
 
                 Location current = wolf.getLocation();
-                Location ownerLoc = player.getLocation().clone().subtract(0,1.7,0);
+                Location ownerLoc = caster.getLocation().clone().subtract(0,1.7,0);
                 Vector direction = ownerLoc.toVector().subtract(current.toVector());
 
                 double distance = current.distance(ownerLoc);
@@ -328,7 +319,7 @@ public class WildSpirit {
                         wolf.getLocation().getZ() + 5
                 );
 
-                for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+                for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
                     if(!(entity instanceof LivingEntity)){
                         continue;
@@ -340,10 +331,10 @@ public class WildSpirit {
 
                     LivingEntity hitEntity = (LivingEntity) entity;
 
-                    if(entity != player){
+                    if(entity != caster){
 
                         if(entity instanceof Player){
-                            if(pvpManager.pvpLogic(player, (Player)hitEntity)){
+                            if(pvpManager.pvpLogic(caster, (Player)hitEntity)){
                                 continue;
                             }
                         }
@@ -355,11 +346,11 @@ public class WildSpirit {
                         }
                     }
 
-                    double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                            profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
+                    double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                            profileManager.getAnyProfile(caster).getSkillLevels().getSkill_7_Level_Bonus();
                     double healAmount = (attack * .1) * skillLevel;
 
-                    changeResourceHandler.addHealthToEntity(hitEntity, healAmount, player);
+                    changeResourceHandler.addHealthToEntity(hitEntity, healAmount, caster);
 
                 }
             }
@@ -367,7 +358,7 @@ public class WildSpirit {
             private void despawn(){
 
                 wolf.remove();
-                wildSpiritMap.remove(player.getUniqueId());
+                wildSpiritMap.remove(caster.getUniqueId());
                 this.cancel();
 
             }
@@ -376,8 +367,8 @@ public class WildSpirit {
 
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -386,9 +377,9 @@ public class WildSpirit {
         return cooldown;
     }
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_7_Level_Bonus();
         return 10 + ((int)(skillLevel/3));
     }
 
@@ -396,8 +387,25 @@ public class WildSpirit {
         return 10;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster){
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+        if(wildSpiritMap.containsKey(caster.getUniqueId())){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return false;
     }
 
 }

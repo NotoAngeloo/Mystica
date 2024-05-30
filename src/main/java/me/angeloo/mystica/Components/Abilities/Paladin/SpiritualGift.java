@@ -47,102 +47,78 @@ public class SpiritualGift {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    public void use(Player player){
+    public void use(LivingEntity caster){
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        if(target != null){
-
-            if(!(target instanceof Player)){
-
-                if(pveChecker.pveLogic(target)){
-                    target = player;
-                }
-
-
-            }
-
-            double distance = player.getLocation().distance(target.getLocation());
-
-            if(distance > getRange(player)){
-                return;
-            }
-
-            if (profileManager.getAnyProfile(target).getIfDead()) {
-                target = player;
-            }
-
-            if(target instanceof Player){
-                if(pvpManager.pvpLogic(player, (Player) target)){
-                    target = player;
-                }
-            }
-
+        if(!usable(caster, target)){
+            return;
         }
 
         if(target == null){
-            target = player;
+            target = caster;
         }
 
-        if(getCooldown(player) > 0){
-            return;
+        if (profileManager.getAnyProfile(target).getIfDead()) {
+            target = caster;
         }
 
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
+        if(target instanceof Player){
+            if(pvpManager.pvpLogic(caster, (Player) target)){
+                target = caster;
+            }
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        combatManager.startCombatTimer(player);
+        combatManager.startCombatTimer(caster);
 
-        execute(player, target);
+        execute(caster, target);
 
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        abilityReadyInMap.put(player.getUniqueId(), 20);
+        abilityReadyInMap.put(caster.getUniqueId(), 20);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 5);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 5);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 5);
+                int cooldown = getCooldown(caster) - 1;
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 5);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
 
-    private double getRange(Player player){
+    private double getRange(LivingEntity caster){
         double baseRange = 12;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
+        double extraRange = buffAndDebuffManager.getTotalRangeModifier(caster);
         return baseRange + extraRange;
     }
 
-    private void execute(Player player, LivingEntity target){
+    private void execute(LivingEntity caster, LivingEntity target){
 
         //every 15 levels is a +1
 
 
-        buffAndDebuffManager.getHaste().applyHaste(target, 3, getDuration(player));
+        buffAndDebuffManager.getHaste().applyHaste(target, 3, getDuration(caster));
 
-        double finalHealPower = getHealPower(player);
+        double finalHealPower = getHealPower(caster);
         new BukkitRunnable(){
             int count = 0;
             @Override
@@ -166,7 +142,7 @@ public class SpiritualGift {
                     target.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1,0, 0, 0, 0);
                 }
 
-                if(count>=getDuration(player)){
+                if(count>=getDuration(caster)){
                     this.cancel();
                     healTarget(target);
                 }
@@ -190,10 +166,10 @@ public class SpiritualGift {
                     return;
                 }
 
-                boolean crit = damageCalculator.checkIfCrit(player, 0);
-                double healAmount = damageCalculator.calculateHealing(player, finalHealPower, crit);
+                boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                double healAmount = damageCalculator.calculateHealing(caster, finalHealPower, crit);
 
-                changeResourceHandler.addHealthToEntity(target, healAmount, player);
+                changeResourceHandler.addHealthToEntity(target, healAmount, caster);
             }
 
         }.runTaskTimer(main, 0, 1);
@@ -204,22 +180,22 @@ public class SpiritualGift {
         return 10;
     }
 
-    public double getHealPower(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
+    public double getHealPower(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_5_Level_Bonus();
         return 5 +  ((int)(skillLevel/10));
     }
 
-    public int getDuration(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
+    public int getDuration(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_5_Level_Bonus();
         int bonusDuration = (int)(skillLevel/3);
         return  (5*20) + (bonusDuration*20);
     }
 
-    public int getCooldown(Player player){
+    public int getCooldown(LivingEntity caster){
 
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -228,8 +204,39 @@ public class SpiritualGift {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster, LivingEntity target){
+        if(target != null){
+
+            if(!(target instanceof Player)){
+
+                if(pveChecker.pveLogic(target)){
+                    target = caster;
+                }
+
+            }
+
+            double distance = caster.getLocation().distance(target.getLocation());
+
+            if(distance > getRange(caster)){
+                return false;
+            }
+        }
+
+
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 

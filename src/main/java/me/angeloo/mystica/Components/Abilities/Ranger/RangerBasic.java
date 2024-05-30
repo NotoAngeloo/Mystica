@@ -59,29 +59,29 @@ public class RangerBasic {
         changeResourceHandler = main.getChangeResourceHandler();
     }
 
-    public void useBasic(Player player){
+    public void useBasic(LivingEntity caster){
 
-        if(!basicStageMap.containsKey(player.getUniqueId())){
-            basicStageMap.put(player.getUniqueId(), 1);
+        if(!basicStageMap.containsKey(caster.getUniqueId())){
+            basicStageMap.put(caster.getUniqueId(), 1);
         }
 
-        if(getIfBasicRunning(player)){
+        if(getIfBasicRunning(caster)){
             return;
         }
 
 
-        double totalRange = getRange(player);
+        double totalRange = getRange(caster);
 
-        targetManager.setTargetToNearestValid(player, totalRange);
+        targetManager.setTargetToNearestValid(caster, totalRange);
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
         if(target == null){
             return;
         }
 
         if (target instanceof Player) {
-            if (!pvpManager.pvpLogic(player, (Player) target)) {
+            if (!pvpManager.pvpLogic(caster, (Player) target)) {
                 return;
             }
         }
@@ -92,126 +92,126 @@ public class RangerBasic {
             }
         }
 
-        double distance = player.getLocation().distance(target.getLocation());
+        double distance = caster.getLocation().distance(target.getLocation());
 
         if(distance > totalRange){
             return;
         }
 
-        executeBasic(player);
+        executeBasic(caster);
 
     }
 
-    private double getRange(Player player){
+    private double getRange(LivingEntity caster){
         double baseRange = 20;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
+        double extraRange = buffAndDebuffManager.getTotalRangeModifier(caster);
         return  baseRange + extraRange;
     }
 
-    private void executeBasic(Player player){
+    private void executeBasic(LivingEntity caster){
 
 
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(buffAndDebuffManager.getIfBasicInterrupt(player)){
+                if(buffAndDebuffManager.getIfBasicInterrupt(caster)){
                     this.cancel();
-                    stopBasicRunning(player);
+                    stopBasicRunning(caster);
                     return;
                 }
 
-                double totalRange = getRange(player);
+                double totalRange = getRange(caster);
 
-                targetManager.setTargetToNearestValid(player, totalRange);
+                targetManager.setTargetToNearestValid(caster, totalRange);
 
-                LivingEntity target = targetManager.getPlayerTarget(player);
+                LivingEntity target = targetManager.getPlayerTarget(caster);
 
                 if(target == null){
-                    stopBasicRunning(player);
+                    stopBasicRunning(caster);
                     return;
                 }
 
                 if (target instanceof Player) {
-                    if (!pvpManager.pvpLogic(player, (Player) target)) {
-                        stopBasicRunning(player);
+                    if (!pvpManager.pvpLogic(caster, (Player) target)) {
+                        stopBasicRunning(caster);
                         return;
                     }
                 }
 
                 if(!(target instanceof Player)){
                     if(!pveChecker.pveLogic(target)){
-                        stopBasicRunning(player);
+                        stopBasicRunning(caster);
                         return;
                     }
                 }
 
-                double distance = player.getLocation().distance(target.getLocation());
+                double distance = caster.getLocation().distance(target.getLocation());
 
                 if(distance > totalRange){
-                    stopBasicRunning(player);
+                    stopBasicRunning(caster);
                     return;
                 }
 
 
-                tryToRemoveBasicStage(player);
-                switch (basicStageMap.get(player.getUniqueId())){
+                tryToRemoveBasicStage(caster);
+                switch (basicStageMap.get(caster.getUniqueId())){
                     case 1:{
-                        basicStage1(player, 2);
+                        basicStage1(caster, 2);
                         break;
                     }
                     case 2:{
-                        basicStage1(player, 3);
+                        basicStage1(caster, 3);
                         break;
                     }
                     case 3:{
-                        basicStage2(player);
+                        basicStage2(caster);
                         break;
                     }
                     case 4:{
-                        basicStage3(player);
+                        basicStage3(caster);
                         break;
                     }
                 }
 
-                combatManager.startCombatTimer(player);
+                combatManager.startCombatTimer(caster);
             }
         }.runTaskTimer(main, 0, 10);
-        basicRunning.put(player.getUniqueId(), task);
+        basicRunning.put(caster.getUniqueId(), task);
 
 
     }
 
-    private void tryToRemoveBasicStage(Player player){
+    private void tryToRemoveBasicStage(LivingEntity caster){
 
-        if(removeBasicStageTaskMap.containsKey(player.getUniqueId())){
-            removeBasicStageTaskMap.get(player.getUniqueId()).cancel();
+        if(removeBasicStageTaskMap.containsKey(caster.getUniqueId())){
+            removeBasicStageTaskMap.get(caster.getUniqueId()).cancel();
         }
 
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
-                basicStageMap.remove(player.getUniqueId());
+                basicStageMap.remove(caster.getUniqueId());
             }
         }.runTaskLater(main, 50);
 
-        removeBasicStageTaskMap.put(player.getUniqueId(), task);
+        removeBasicStageTaskMap.put(caster.getUniqueId(), task);
 
     }
 
-    private void basicStage3(Player player){
-        basicStageMap.put(player.getUniqueId(), 1);
+    private void basicStage3(LivingEntity caster){
+        basicStageMap.put(caster.getUniqueId(), 1);
     }
 
-    private void basicStage1(Player player, int newStage){
+    private void basicStage1(LivingEntity caster, int newStage){
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        basicStageMap.put(player.getUniqueId(), newStage);
+        basicStageMap.put(caster.getUniqueId(), newStage);
 
-        Location start = player.getLocation();
+        Location start = caster.getLocation();
         start.subtract(0, 1, 0);
-        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = caster.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -229,7 +229,7 @@ public class RangerBasic {
         entityEquipment.setHelmet(arrow);
 
 
-        double finalSkillDamage = getSkillDamage(player);
+        double finalSkillDamage = getSkillDamage(caster);
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
             @Override
@@ -263,11 +263,11 @@ public class RangerBasic {
 
                     cancelTask();
 
-                    boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
+                    boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                    double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
 
-                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
 
                 }
 
@@ -298,16 +298,16 @@ public class RangerBasic {
 
     }
 
-    private void basicStage2(Player player){
+    private void basicStage2(LivingEntity caster){
 
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        basicStageMap.put(player.getUniqueId(), 4);
+        basicStageMap.put(caster.getUniqueId(), 4);
 
-        Location start = player.getLocation();
+        Location start = caster.getLocation();
         start.subtract(0, 1, 0);
-        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = caster.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -326,7 +326,7 @@ public class RangerBasic {
 
 
 
-        double finalSkillDamage = getSkillDamage(player);
+        double finalSkillDamage = getSkillDamage(caster);
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
             @Override
@@ -360,15 +360,15 @@ public class RangerBasic {
 
                     cancelTask();
 
-                    boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
+                    boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                    double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
 
-                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
 
-                    if(rallyingCry.getIfBuffTime(player) > 0){
+                    if(rallyingCry.getIfBuffTime(caster) > 0){
                         if(profileManager.getAnyProfile(target).getIsMovable()){
-                            Vector awayDirection = target.getLocation().toVector().subtract(player.getLocation().toVector()).normalize();
+                            Vector awayDirection = target.getLocation().toVector().subtract(caster.getLocation().toVector()).normalize();
                             Vector velocity = awayDirection.multiply(.75).add(new Vector(0, .5, 0));
                             target.setVelocity(velocity);
                             buffAndDebuffManager.getKnockUp().applyKnockUp(target);
@@ -403,21 +403,21 @@ public class RangerBasic {
 
     }
 
-    private boolean getIfBasicRunning(Player player){
-        return basicRunning.containsKey(player.getUniqueId());
+    private boolean getIfBasicRunning(LivingEntity caster){
+        return basicRunning.containsKey(caster.getUniqueId());
     }
 
-    public void stopBasicRunning(Player player){
-        if(basicRunning.containsKey(player.getUniqueId())){
-            basicRunning.get(player.getUniqueId()).cancel();
-            basicRunning.remove(player.getUniqueId());
+    public void stopBasicRunning(LivingEntity caster){
+        if(basicRunning.containsKey(caster.getUniqueId())){
+            basicRunning.get(caster.getUniqueId()).cancel();
+            basicRunning.remove(caster.getUniqueId());
         }
     }
 
-    public double getSkillDamage(Player player){
+    public double getSkillDamage(LivingEntity caster){
         double skillDamage = 10;
-        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
-        if(rallyingCry.getIfBuffTime(player) > 0){
+        double skillLevel = profileManager.getAnyProfile(caster).getStats().getLevel();
+        if(rallyingCry.getIfBuffTime(caster) > 0){
             skillDamage = skillDamage * 1.25;
         }
 

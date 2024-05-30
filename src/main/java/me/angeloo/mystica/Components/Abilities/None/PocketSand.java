@@ -52,102 +52,78 @@ public class PocketSand {
         adrenaline = noneAbilities.getAdrenaline();
     }
 
-    public void use(Player player){
+    private final double range = 8;
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    private final double cost = 10;
+
+    public void use(LivingEntity caster){
+
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
 
-        if(getCooldown(player) > 0){
+        if(getCooldown(caster) > 0){
             return;
         }
 
-        double baseRange = 8;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
-        double totalRange = baseRange + extraRange;
 
-        targetManager.setTargetToNearestValid(player, totalRange);
+        targetManager.setTargetToNearestValid(caster, range + buffAndDebuffManager.getTotalRangeModifier(caster));
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-
-        if(target != null){
-            if(target instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) target)){
-                    return;
-                }
-            }
-
-            if(!(target instanceof Player)){
-                if(!pveChecker.pveLogic(target)){
-                    return;
-                }
-            }
-
-            double distance = player.getLocation().distance(target.getLocation());
-
-            if(distance > totalRange){
-                return;
-            }
-        }
-
-        if(target == null){
+        if(!usable(caster, target)){
             return;
         }
 
-        double cost = 10;
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
-            return;
+
+        changeResourceHandler.subTractManaFromEntity(caster, cost);
+
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 20);
+        abilityReadyInMap.put(caster.getUniqueId(), 20);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 3);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 3);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 3);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 3);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
-        Location start = player.getLocation().clone().add(0,1,0);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
+        Location start = caster.getLocation().clone().add(0,1,0);
 
 
         double skillDamage = 5;
 
-        if(adrenaline.getIfBuffTime(player)>0){
+        if(adrenaline.getIfBuffTime(caster)>0){
             skillDamage = 15;
         }
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_3_Level_Bonus();
 
         skillDamage = skillDamage + ((int)(skillLevel/10));
         double finalSkillDamage = skillDamage;
@@ -175,12 +151,12 @@ public class PocketSand {
                 }
 
                 //spawn particles at current
-                player.getWorld().spawnParticle(Particle.FALLING_DUST, current, 1, 0, 0, 0, 0, Material.SAND.createBlockData());
+                caster.getWorld().spawnParticle(Particle.FALLING_DUST, current, 1, 0, 0, 0, 0, Material.SAND.createBlockData());
 
                 if (distance <= 1) {
                     this.cancel();
 
-                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
+                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
 
                     double increment = (2 * Math.PI) / 16; // angle between particles
 
@@ -190,7 +166,7 @@ public class PocketSand {
                         double y = current.clone().getY();
                         double z = current.getZ() + (1 * Math.sin(angle));
                         Location loc = new Location(start.getWorld(), x, y, z);
-                        player.getWorld().spawnParticle(Particle.FALLING_DUST, loc, 1, 0, 0, 0, 0, Material.SAND.createBlockData());
+                        caster.getWorld().spawnParticle(Particle.FALLING_DUST, loc, 1, 0, 0, 0, 0, Material.SAND.createBlockData());
                     }
 
 
@@ -201,11 +177,11 @@ public class PocketSand {
                         target.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1));
                     }
 
-                    boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = (damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit));
+                    boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                    double damage = (damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit));
 
 
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
 
                 }
             }
@@ -237,9 +213,9 @@ public class PocketSand {
 
     }
 
-    public int getCooldown(Player player){
+    public int getCooldown(LivingEntity caster){
 
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -248,8 +224,41 @@ public class PocketSand {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster, LivingEntity target){
+        if(target != null){
+            if(target instanceof Player){
+                if(!pvpManager.pvpLogic(caster, (Player) target)){
+                    return false;
+                }
+            }
+
+            if(!(target instanceof Player)){
+                if(!pveChecker.pveLogic(target)){
+                    return false;
+                }
+            }
+
+            double distance = caster.getLocation().distance(target.getLocation());
+
+            if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+                return false;
+            }
+        }
+
+        if(target == null){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<cost){
+            return false;
+        }
+
+        return true;
     }
 
 }

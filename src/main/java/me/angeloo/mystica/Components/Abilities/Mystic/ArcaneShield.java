@@ -48,105 +48,81 @@ public class ArcaneShield {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    public void use(Player player){
+    private final double range = 20;
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void use(LivingEntity caster){
+
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        double baseRange = 20;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
-        double totalRange = baseRange + extraRange;
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
 
-        if(target != null){
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-            if(target instanceof Player){
-                if(pvpManager.pvpLogic(player, (Player) target)){
-                    target = player;
-                }
-            }
-
-            if(pveChecker.pveLogic(target)){
-                target = player;
-            }
+        if(!usable(caster, target)){
+            return;
         }
 
         if(target == null){
-            target = player;
+            target = caster;
         }
 
-        double distance = player.getLocation().distance(target.getLocation());
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        if(distance > totalRange){
-            return;
+        combatManager.startCombatTimer(caster);
+
+        execute(caster, target);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        if(getCooldown(player) > 0){
-            return;
-        }
-
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player, target);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 10);
+        abilityReadyInMap.put(caster.getUniqueId(), 10);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 1);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 1);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 1);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 1);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player, LivingEntity target){
+    private void execute(LivingEntity caster, LivingEntity target){
 
         Set<LivingEntity> targetList = new HashSet<>();
         targetList.add(target);
 
 
-        boolean shepard = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("shepard");
+        boolean shepard = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("shepard");
 
         if(shepard){
 
             if(target instanceof Player){
-                if(consolation.getTargets(player).contains(target)){
-                    targetList.addAll(consolation.getTargets(player));
-                    consolation.removeTargets(player);
+                if(consolation.getTargets(caster).contains(target)){
+                    targetList.addAll(consolation.getTargets(caster));
+                    consolation.removeTargets(caster);
                 }
             }
 
 
         }
 
-        int skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
+        int skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_1_Level_Bonus();
 
 
         for(LivingEntity thisTarget : targetList){
@@ -159,7 +135,7 @@ public class ArcaneShield {
             }
 
             double fivePercent = (profileManager.getAnyProfile(thisTarget).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(thisTarget)) / 20;
-            double shieldAmount = fivePercent + (((double) profileManager.getAnyProfile(player).getTotalAttack() / 3) + skillLevel);
+            double shieldAmount = fivePercent + (((double) profileManager.getAnyProfile(caster).getTotalAttack() / 3) + skillLevel);
 
             buffAndDebuffManager.getGenericShield().applyOrAddShield(thisTarget, shieldAmount);
 
@@ -193,7 +169,7 @@ public class ArcaneShield {
                             return;
                         }
 
-                        changeResourceHandler.addHealthToEntity(thisTarget, thirtyPercent, player);
+                        changeResourceHandler.addHealthToEntity(thisTarget, thirtyPercent, caster);
 
                         Location center = thisTarget.getLocation().clone().add(0,1,0);
 
@@ -223,14 +199,12 @@ public class ArcaneShield {
 
         //TODO task for shield particles
 
-
-
     }
 
     public double getCost(){return 5;}
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -239,8 +213,44 @@ public class ArcaneShield {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster, LivingEntity target){
+        if(target != null){
+
+            if(target instanceof Player){
+                if(pvpManager.pvpLogic(caster, (Player) target)){
+                    target = caster;
+                }
+            }
+
+            if(pveChecker.pveLogic(target)){
+                target = caster;
+            }
+        }
+
+        if(target == null){
+            target = caster;
+        }
+
+        double distance = caster.getLocation().distance(target.getLocation());
+
+        if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+            return false;
+        }
+
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

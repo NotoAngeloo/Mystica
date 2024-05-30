@@ -9,16 +9,16 @@ public class CustomDeathEvent extends Event {
 
     public static final HandlerList handlers = new HandlerList();
 
-    private final Player playerWhoKilled;
+    private final LivingEntity playerWhoKilled;
 
     private final LivingEntity entityWhoDied;
 
-    public CustomDeathEvent(Player playerWhoKilled, LivingEntity entityWhoDied){
+    public CustomDeathEvent(LivingEntity playerWhoKilled, LivingEntity entityWhoDied){
         this.playerWhoKilled = playerWhoKilled;
         this.entityWhoDied = entityWhoDied;
     }
 
-    public Player getPlayerWhoKilled(){
+    public LivingEntity getPlayerWhoKilled(){
         return playerWhoKilled;
     }
 

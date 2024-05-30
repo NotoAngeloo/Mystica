@@ -6,6 +6,7 @@ import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Material;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -26,7 +27,7 @@ public class CooldownDisplayer {
 
         EquipSkills equipSkills = profileManager.getAnyProfile(player).getEquipSkills();
 
-        for(int i=0; i<=7; i++){
+         for(int i=0; i<=7; i++){
 
             int skillNumber = equipSkills.getAnySlot()[i];
 
@@ -56,7 +57,13 @@ public class CooldownDisplayer {
 
     }
 
-    public void displayCooldown(Player player, int abilityNumber){
+    public void displayCooldown(LivingEntity caster, int abilityNumber){
+
+        if(!(caster instanceof Player)){
+            return;
+        }
+
+        Player player = (Player) caster;
 
         boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
         boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();

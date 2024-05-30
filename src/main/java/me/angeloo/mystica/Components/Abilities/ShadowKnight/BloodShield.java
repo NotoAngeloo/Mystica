@@ -4,6 +4,7 @@ import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.ShieldAbilityManaDisplayer;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -36,124 +37,124 @@ public class BloodShield {
         changeResourceHandler = main.getChangeResourceHandler();
     }
 
-    public void use(Player player){
+    public void use(LivingEntity caster){
 
-        if(shieldTimeActive(player)){
+        if(shieldTimeActive(caster)){
             return;
         }
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        if(getCooldown(player) > 0){
+        if(!usable(caster)){
             return;
         }
 
 
-        if(profileManager.getAnyProfile(player).getCurrentMana() < getCost()){
-            return;
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 50);
+        abilityReadyInMap.put(caster.getUniqueId(), 50);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
+                if(getCooldown(caster) <= 0){
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+
+                if(caster instanceof Player){
+                    shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo((Player) caster);
+                }
+
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        double maxHealth = profileManager.getAnyProfile(player).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(player);
-        double currentHealth = profileManager.getAnyProfile(player).getCurrentHealth();
+        double maxHealth = profileManager.getAnyProfile(caster).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(caster);
+        double currentHealth = profileManager.getAnyProfile(caster).getCurrentHealth();
         double missing = maxHealth-currentHealth;
 
-        changeResourceHandler.addHealthToEntity(player, missing * .5, player);
+        changeResourceHandler.addHealthToEntity(caster, missing * .5, caster);
 
-        double shield = profileManager.getAnyProfile(player).getCurrentHealth();
-        buffAndDebuffManager.getGenericShield().applyOrAddShield(player, shield);
+        double shield = profileManager.getAnyProfile(caster).getCurrentHealth();
+        buffAndDebuffManager.getGenericShield().applyOrAddShield(caster, shield);
 
-        shieldTime.put(player.getUniqueId(), 10);
+        shieldTime.put(caster.getUniqueId(), 10);
 
         new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(buffAndDebuffManager.getGenericShield().getCurrentShieldAmount(player)==0){
-                    removeShieldTime(player);
+                if(buffAndDebuffManager.getGenericShield().getCurrentShieldAmount(caster)==0){
+                    removeShieldTime(caster);
                     this.cancel();
                     return;
                 }
 
-                if(!shieldTimeActive(player)){
-                    removeShieldTime(player);
+                if(!shieldTimeActive(caster)){
+                    removeShieldTime(caster);
                     this.cancel();
-                    buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(player, shield);
+                    buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(caster, shield);
                     return;
                 }
 
-                int duration = shieldTime.get(player.getUniqueId());
+                int duration = shieldTime.get(caster.getUniqueId());
 
                 duration--;
 
-                shieldTime.put(player.getUniqueId(), duration);
+                shieldTime.put(caster.getUniqueId(), duration);
 
             }
         }.runTaskTimer(main, 0, 20);
     }
 
-    public void removeShieldTime(Player player){
-        shieldTime.remove(player.getUniqueId());
+    public void removeShieldTime(LivingEntity caster){
+        shieldTime.remove(caster.getUniqueId());
     }
 
-    public boolean shieldTimeActive(Player player){
-        return shieldTime.getOrDefault(player.getUniqueId(), 0) > 0;
+    public boolean shieldTimeActive(LivingEntity caster){
+        return shieldTime.getOrDefault(caster.getUniqueId(), 0) > 0;
     }
 
-    public void increaseDuration(Player player){
+    public void increaseDuration(LivingEntity caster){
 
-        if(!shieldTime.containsKey(player.getUniqueId())){
+        if(!shieldTime.containsKey(caster.getUniqueId())){
             return;
         }
 
-        int duration = shieldTime.get(player.getUniqueId());
+        int duration = shieldTime.get(caster.getUniqueId());
 
         duration += 3;
 
-        shieldTime.put(player.getUniqueId(), duration);
+        shieldTime.put(caster.getUniqueId(), duration);
     }
 
     public double getCost(){
         return 50;
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -162,8 +163,21 @@ public class BloodShield {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster){
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana() < getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

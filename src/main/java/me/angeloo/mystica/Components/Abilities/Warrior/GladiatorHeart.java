@@ -7,6 +7,7 @@ import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.ShieldAbilityManaDisplayer;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -37,76 +38,86 @@ public class GladiatorHeart {
         changeResourceHandler = main.getChangeResourceHandler();
     }
 
-    public void use(Player player){
+    public void use(LivingEntity caster){
 
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        if(getCooldown(player) > 0){
+        if(!usable(caster)){
             return;
         }
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 12);
+        abilityReadyInMap.put(caster.getUniqueId(), 12);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
+                if(getCooldown(caster) <= 0){
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+
+                if(caster instanceof Player){
+                    shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo((Player) caster);
+                }
+
+
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        double shield = getShieldAmount(player);
+        double shield = getShieldAmount(caster);
 
-        buffAndDebuffManager.getGenericShield().applyOrAddShield(player, shield);
+        buffAndDebuffManager.getGenericShield().applyOrAddShield(caster, shield);
         //.8 is 20% damage reduction
-        buffAndDebuffManager.getDamageReduction().applyDamageReduction(player, .8, 0);
+        buffAndDebuffManager.getDamageReduction().applyDamageReduction(caster, .8, 0);
 
         new BukkitRunnable(){
             int count = 0;
             @Override
             public void run(){
 
-                if(buffAndDebuffManager.getGenericShield().getCurrentShieldAmount(player)==0){
-                    buffAndDebuffManager.getDamageReduction().removeReduction(player);
+                if(buffAndDebuffManager.getGenericShield().getCurrentShieldAmount(caster)==0){
+                    buffAndDebuffManager.getDamageReduction().removeReduction(caster);
                     this.cancel();
                     return;
                 }
 
-                if(!player.isOnline() || profileManager.getAnyProfile(player).getIfDead()){
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        this.cancel();
+                        buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(caster, shield);
+                        buffAndDebuffManager.getDamageReduction().removeReduction(caster);
+                        return;
+                    }
+                }
+
+                if(profileManager.getAnyProfile(caster).getIfDead()){
                     this.cancel();
-                    buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(player, shield);
-                    buffAndDebuffManager.getDamageReduction().removeReduction(player);
+                    buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(caster, shield);
+                    buffAndDebuffManager.getDamageReduction().removeReduction(caster);
                     return;
                 }
 
@@ -114,8 +125,8 @@ public class GladiatorHeart {
 
                 if(count>=5){
                     this.cancel();
-                    buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(player, shield);
-                    buffAndDebuffManager.getDamageReduction().removeReduction(player);
+                    buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(caster, shield);
+                    buffAndDebuffManager.getDamageReduction().removeReduction(caster);
                 }
                 count++;
             }
@@ -123,14 +134,14 @@ public class GladiatorHeart {
 
     }
 
-    public double getShieldAmount(Player player){
-        double maxHealth = profileManager.getAnyProfile(player).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(player);
-        double level = profileManager.getAnyProfile(player).getStats().getLevel();
+    public double getShieldAmount(LivingEntity caster){
+        double maxHealth = profileManager.getAnyProfile(caster).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(caster);
+        double level = profileManager.getAnyProfile(caster).getStats().getLevel();
         return  (level + 10 / maxHealth) * 100;
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -143,8 +154,20 @@ public class GladiatorHeart {
         return 20;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster){
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

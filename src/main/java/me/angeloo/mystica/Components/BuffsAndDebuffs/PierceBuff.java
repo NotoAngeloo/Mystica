@@ -22,35 +22,44 @@ public class PierceBuff {
         this.main = main;
     }
 
-    public void applyBuff(Player player){
-        buffActiveMap.put(player.getUniqueId(), 11);
+    public void applyBuff(LivingEntity entity){
+        buffActiveMap.put(entity.getUniqueId(), 11);
 
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+        if(entity instanceof Player){
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) entity));
+        }
+
 
         new BukkitRunnable(){
             @Override
             public void run(){
 
-                Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+                if(entity instanceof Player){
+                    Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) entity));
+                }
 
-                if(buffActiveMap.get(player.getUniqueId()) <= 0){
+
+                if(buffActiveMap.get(entity.getUniqueId()) <= 0){
                     this.cancel();
                     return;
                 }
 
-                int left = buffActiveMap.get(player.getUniqueId()) - 1;
+                int left = buffActiveMap.get(entity.getUniqueId()) - 1;
 
-                buffActiveMap.put(player.getUniqueId(), left);
+                buffActiveMap.put(entity.getUniqueId(), left);
 
-                Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+                if(entity instanceof Player){
+                    Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) entity));
+                }
+
             }
         }.runTaskTimer(main, 0, 20);
 
     }
 
 
-    public int getIfBuffTime(Player player){
-        return buffActiveMap.getOrDefault(player.getUniqueId(), 0);
+    public int getIfBuffTime(LivingEntity entity){
+        return buffActiveMap.getOrDefault(entity.getUniqueId(), 0);
     }
 
 

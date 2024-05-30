@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
@@ -44,59 +45,53 @@ public class BurialGround {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    public void use(Player player){
+    public void use(LivingEntity caster){
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        if(getCooldown(player) > 0){
+        if(!usable(caster)){
             return;
         }
 
-        Block block = player.getLocation().subtract(0,1,0).getBlock();
+        combatManager.startCombatTimer(caster);
 
-        if(block.getType() == Material.AIR){
-            return;
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 12);
+        abilityReadyInMap.put(caster.getUniqueId(), 12);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 3);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 3);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 3);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 3);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        boolean blood = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("blood");
+        boolean blood = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("blood");
 
-        Location start = player.getLocation();
-        ArmorStand armorStand = player.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
+        Location start = caster.getLocation();
+        ArmorStand armorStand = caster.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -118,30 +113,32 @@ public class BurialGround {
         armorStand.teleport(start);
 
 
-        double finalHealAmount = getHealPercent(player);
+        double finalHealAmount = getHealPercent(caster);
         new BukkitRunnable(){
             int ran = 0;
             @Override
             public void run(){
 
-                if(!player.isOnline()){
-                    this.cancel();
-                    armorStand.remove();
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        this.cancel();
+                        armorStand.remove();
 
-                    if(blood){
-                        buffAndDebuffManager.getDamageReduction().removeReduction(player);
+                        if(blood){
+                            buffAndDebuffManager.getDamageReduction().removeReduction(caster);
+                        }
+
+                        return;
                     }
-
-                    return;
                 }
 
                 if(playerValid()){
 
-                    changeResourceHandler.addHealthToEntity(player, finalHealAmount, player);
-                    changeResourceHandler.addManaToEntity(player, getEnergyRefund());
+                    changeResourceHandler.addHealthToEntity(caster, finalHealAmount, caster);
+                    changeResourceHandler.addManaToEntity(caster, getEnergyRefund());
 
                     if(blood){
-                        buffAndDebuffManager.getDamageReduction().applyDamageReduction(player, .8, 0);
+                        buffAndDebuffManager.getDamageReduction().applyDamageReduction(caster, .8, 0);
                     }
                 }
 
@@ -152,9 +149,9 @@ public class BurialGround {
                     double x = armorStand.getLocation().getX() + (3 * Math.cos(angle));
                     double z = armorStand.getLocation().getZ() + (3 * Math.sin(angle));
                     double y = armorStand.getLocation().getY();
-                    Location loc = new Location(player.getWorld(), x, y, z);
+                    Location loc = new Location(caster.getWorld(), x, y, z);
 
-                    player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, loc, 1,0, 0, 0, 0);
+                    caster.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, loc, 1,0, 0, 0, 0);
                 }
 
                 if(ran>=7){
@@ -162,7 +159,7 @@ public class BurialGround {
                     armorStand.remove();
 
                     if(blood){
-                        buffAndDebuffManager.getDamageReduction().removeReduction(player);
+                        buffAndDebuffManager.getDamageReduction().removeReduction(caster);
                     }
 
                 }
@@ -172,23 +169,23 @@ public class BurialGround {
 
             private boolean playerValid(){
 
-                double distance = player.getLocation().distance(armorStand.getLocation());
+                double distance = caster.getLocation().distance(armorStand.getLocation());
 
                 if(distance>5){
                     return false;
                 }
 
-                return !profileManager.getAnyProfile(player).getIfDead();
+                return !profileManager.getAnyProfile(caster).getIfDead();
             }
 
         }.runTaskTimer(main, 0, 20);
 
     }
 
-    public double getHealPercent(Player player){
-        double healAmount = (profileManager.getAnyProfile(player).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player)) * .03;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
+    public double getHealPercent(LivingEntity caster){
+        double healAmount = (profileManager.getAnyProfile(caster).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(caster)) * .03;
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_3_Level_Bonus();
         return healAmount + ((int)(skillLevel/3));
     }
 
@@ -196,8 +193,8 @@ public class BurialGround {
         return 10;
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -206,8 +203,22 @@ public class BurialGround {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster){
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+        Block block = caster.getLocation().subtract(0,1,0).getBlock();
+
+        if(block.getType() == Material.AIR){
+            return false;
+        }
+
+        return true;
     }
 
 

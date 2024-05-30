@@ -54,41 +54,41 @@ public class MysticBasic {
         consolation = mysticAbilities.getConsolation();
     }
 
-    public void useBasic(Player player){
+    public void useBasic(LivingEntity caster){
 
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        String subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
-        if(getIfBasicRunning(player)){
+        if(getIfBasicRunning(caster)){
             return;
         }
 
         if(subclass.equalsIgnoreCase("chaos")){
-            executeBasicChaos(player);
+            executeBasicChaos(caster);
             return;
         }
 
-        executeBasic(player);
+        executeBasic(caster);
 
     }
 
-    private double getRange(Player player){
+    private double getRange(LivingEntity caster){
         double baseRange = 20;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
+        double extraRange = buffAndDebuffManager.getTotalRangeModifier(caster);
         return baseRange + extraRange;
     }
 
-    private void executeBasicChaos(Player player){
+    private void executeBasicChaos(LivingEntity caster){
 
-        targetManager.setTargetToNearestValid(player, getRange(player));
+        targetManager.setTargetToNearestValid(caster, getRange(caster));
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
         if(target == null){
             return;
         }
 
         if (target instanceof Player) {
-            if (!pvpManager.pvpLogic(player, (Player) target)) {
+            if (!pvpManager.pvpLogic(caster, (Player) target)) {
                 return;
             }
         }
@@ -99,9 +99,9 @@ public class MysticBasic {
             }
         }
 
-        double distance = player.getLocation().distance(target.getLocation());
+        double distance = caster.getLocation().distance(target.getLocation());
 
-        if(distance > getRange(player)){
+        if(distance > getRange(caster)){
             return;
         }
 
@@ -109,62 +109,62 @@ public class MysticBasic {
             @Override
             public void run(){
 
-                if(buffAndDebuffManager.getIfBasicInterrupt(player)){
+                if(buffAndDebuffManager.getIfBasicInterrupt(caster)){
                     this.cancel();
-                    stopBasicRunning(player);
+                    stopBasicRunning(caster);
                     return;
                 }
 
-                double totalRange = getRange(player);
+                double totalRange = getRange(caster);
 
-                targetManager.setTargetToNearestValid(player, totalRange);
+                targetManager.setTargetToNearestValid(caster, totalRange);
 
-                LivingEntity target = targetManager.getPlayerTarget(player);
+                LivingEntity target = targetManager.getPlayerTarget(caster);
 
                 if(target == null){
-                    stopBasicRunning(player);
+                    stopBasicRunning(caster);
                     return;
                 }
 
                 if (target instanceof Player) {
-                    if (!pvpManager.pvpLogic(player, (Player) target)) {
-                        stopBasicRunning(player);
+                    if (!pvpManager.pvpLogic(caster, (Player) target)) {
+                        stopBasicRunning(caster);
                         return;
                     }
                 }
 
                 if(!(target instanceof Player)){
                     if(!pveChecker.pveLogic(target)){
-                        stopBasicRunning(player);
+                        stopBasicRunning(caster);
                         return;
                     }
                 }
 
-                double distance = player.getLocation().distance(target.getLocation());
+                double distance = caster.getLocation().distance(target.getLocation());
 
                 if(distance > totalRange){
-                    stopBasicRunning(player);
+                    stopBasicRunning(caster);
                     return;
                 }
 
-                basicStageChaos(player);
-                combatManager.startCombatTimer(player);
+                basicStageChaos(caster);
+                combatManager.startCombatTimer(caster);
             }
         }.runTaskTimer(main, 0, 15);
-        basicRunning.put(player.getUniqueId(), task);
+        basicRunning.put(caster.getUniqueId(), task);
 
 
     }
 
-    private void basicStageChaos(Player player){
+    private void basicStageChaos(LivingEntity caster){
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        boolean evilSpirit = this.evilSpirit.getIfEvilSpirit(player);
+        boolean evilSpirit = this.evilSpirit.getIfEvilSpirit(caster);
 
-        Location start = player.getLocation();
+        Location start = caster.getLocation();
         start.subtract(0, 1, 0);
-        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = caster.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -190,7 +190,7 @@ public class MysticBasic {
         entityEquipment.setHelmet(bolt);
 
 
-        double finalSkillDamage = getSkillDamage(player);
+        double finalSkillDamage = getSkillDamage(caster);
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
             @Override
@@ -217,7 +217,7 @@ public class MysticBasic {
                 armorStand.teleport(current);
 
                 if(evilSpirit){
-                    player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, current, 1, 0, 0, 0, 0);
+                    caster.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, current, 1, 0, 0, 0, 0);
                 }
 
                 if (distance <= 1) {
@@ -230,11 +230,11 @@ public class MysticBasic {
                         return;
                     }
 
-                    boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
+                    boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                    double damage = damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage, crit);
 
-                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
 
                 }
 
@@ -261,12 +261,12 @@ public class MysticBasic {
                     double z = targetWasLoc.getZ() + (4 * Math.sin(angle));
                     Location loc = new Location(targetWasLoc.getWorld(), x, targetWasLoc.clone().add(0,1,0).getY(), z);
 
-                    player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, loc, 1, 0, 0, 0, 0);
+                    caster.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, loc, 1, 0, 0, 0, 0);
                 }
 
-                for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+                for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
-                    if(entity == player){
+                    if(entity == caster){
                         continue;
                     }
 
@@ -286,20 +286,20 @@ public class MysticBasic {
 
                     hitBySkill.add(livingEntity);
 
-                    boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = (damageCalculator.calculateDamage(player, livingEntity, "Magical", getSkillDamage(player), crit));
+                    boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                    double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Magical", getSkillDamage(caster), crit));
 
                     //pvp logic
                     if(entity instanceof Player){
-                        if(pvpManager.pvpLogic(player, (Player) entity)){
-                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                        if(pvpManager.pvpLogic(caster, (Player) entity)){
+                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
                         }
                         continue;
                     }
 
                     if(pveChecker.pveLogic(livingEntity)){
-                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, player));
-                        changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
+                        changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
                     }
 
                 }
@@ -329,52 +329,52 @@ public class MysticBasic {
         }.runTaskTimer(main, 0, 1);
     }
 
-    private void executeBasic(Player player){
+    private void executeBasic(LivingEntity caster){
 
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
-                basicStage(player);
-                combatManager.startCombatTimer(player);
+                basicStage(caster);
+                combatManager.startCombatTimer(caster);
             }
         }.runTaskTimer(main, 0, 15);
-        basicRunning.put(player.getUniqueId(), task);
+        basicRunning.put(caster.getUniqueId(), task);
 
 
     }
 
-    private void basicStage(Player player){
+    private void basicStage(LivingEntity caster){
         LivingEntity target;
 
-        boolean shepard = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("shepard");
+        boolean shepard = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("shepard");
 
         boolean healing = false;
 
-        if(targetManager.getPlayerTarget(player) == null){
-            target = player;
+        if(targetManager.getPlayerTarget(caster) == null){
+            target = caster;
             healing = true;
         }
         else{
-            target = targetManager.getPlayerTarget(player);
+            target = targetManager.getPlayerTarget(caster);
         }
 
-        if(target != player){
+        if(target != caster){
             if(target.isDead()){
-                targetManager.setPlayerTarget(player, null);
-                stopBasicRunning(player);
+                targetManager.setPlayerTarget(caster, null);
+                stopBasicRunning(caster);
                 return;
             }
 
             if(target instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) target)){
+                if(!pvpManager.pvpLogic(caster, (Player) target)){
                     healing = true;
                 }
                 else{
                     boolean targetDeathStatus = profileManager.getAnyProfile(target).getIfDead();
 
                     if(targetDeathStatus){
-                        targetManager.setPlayerTarget(player, null);
-                        stopBasicRunning(player);
+                        targetManager.setPlayerTarget(caster, null);
+                        stopBasicRunning(caster);
                         return;
                     }
                 }
@@ -389,21 +389,21 @@ public class MysticBasic {
             }
         }
 
-        Location playerLocation = player.getLocation();
+        Location playerLocation = caster.getLocation();
         Location targetLocation = target.getLocation();
 
         double distance = playerLocation.distance(targetLocation);
 
-        if (distance > getRange(player)) {
-            stopBasicRunning(player);
+        if (distance > getRange(caster)) {
+            stopBasicRunning(caster);
             return;
         }
 
 
         if(!healing){
-            Location start = player.getLocation();
+            Location start = caster.getLocation();
             start.subtract(0, 1, 0);
-            ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
+            ArmorStand armorStand = caster.getWorld().spawn(start, ArmorStand.class);
             armorStand.setInvisible(true);
             armorStand.setGravity(false);
             armorStand.setCollidable(false);
@@ -423,7 +423,7 @@ public class MysticBasic {
             entityEquipment.setHelmet(bolt);
 
 
-            double finalSkillDamage = getSkillDamage(player);
+            double finalSkillDamage = getSkillDamage(caster);
             new BukkitRunnable(){
                 Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
                 @Override
@@ -453,11 +453,11 @@ public class MysticBasic {
 
                         cancelTask();
 
-                        boolean crit = damageCalculator.checkIfCrit(player, 0);
-                        double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
+                        boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                        double damage = damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage, crit);
 
-                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                        changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                        changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
 
                     }
 
@@ -490,13 +490,13 @@ public class MysticBasic {
 
 
             double healPower = 1;
-            boolean crit = damageCalculator.checkIfCrit(player, 0);
-            double healAmount  = damageCalculator.calculateHealing(player, healPower, crit);
+            boolean crit = damageCalculator.checkIfCrit(caster, 0);
+            double healAmount  = damageCalculator.calculateHealing(caster, healPower, crit);
 
-            changeResourceHandler.addHealthToEntity(target, healAmount, player);
+            changeResourceHandler.addHealthToEntity(target, healAmount, caster);
 
             if(shepard){
-                consolation.apply(player, target);
+                consolation.apply(caster, target);
             }
 
 
@@ -518,26 +518,26 @@ public class MysticBasic {
         }
     }
 
-    private boolean getIfBasicRunning(Player player){
-        return basicRunning.containsKey(player.getUniqueId());
+    private boolean getIfBasicRunning(LivingEntity caster){
+        return basicRunning.containsKey(caster.getUniqueId());
     }
 
-    public void stopBasicRunning(Player player){
-        if(basicRunning.containsKey(player.getUniqueId())){
-            basicRunning.get(player.getUniqueId()).cancel();
-            basicRunning.remove(player.getUniqueId());
+    public void stopBasicRunning(LivingEntity caster){
+        if(basicRunning.containsKey(caster.getUniqueId())){
+            basicRunning.get(caster.getUniqueId()).cancel();
+            basicRunning.remove(caster.getUniqueId());
         }
     }
 
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getStats().getLevel();
 
        return 5 + ((int)(skillLevel/3));
     }
 
-    public double getEvilSpiritDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+    public double getEvilSpiritDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getStats().getLevel();
         return 40 + ((int)(skillLevel/3));
     }
 

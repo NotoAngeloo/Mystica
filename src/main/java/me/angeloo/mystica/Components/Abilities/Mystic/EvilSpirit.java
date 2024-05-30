@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -43,44 +44,34 @@ public class EvilSpirit {
         changeResourceHandler = main.getChangeResourceHandler();
     }
 
-    public void use(Player player){
+    public void use(LivingEntity caster){
 
-        if(getChaosShards(player)<6){
-            return;
-        }
-
-        Block block = player.getLocation().subtract(0,1,0).getBlock();
-
-        if(block.getType() == Material.AIR){
+        if(!usable(caster)){
             return;
         }
 
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
-        }
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-        execute(player);
+        combatManager.startCombatTimer(caster);
+        execute(caster);
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
         //hide player and display animation. when over, put hat on head
         int castTime = 25;
 
-        buffAndDebuffManager.getImmobile().applyImmobile(player, castTime);
+        buffAndDebuffManager.getImmobile().applyImmobile(caster, castTime);
 
-        Location spawnStart = player.getLocation().clone();
+        Location spawnStart = caster.getLocation().clone();
         spawnStart.subtract(0, 1, 0);
 
-        Location current = player.getLocation().clone();
+        Location current = caster.getLocation().clone();
 
-        abilityManager.setCasting(player, true);
+        abilityManager.setCasting(caster, true);
 
-        buffAndDebuffManager.getHidden().hidePlayer(player, false);
+        buffAndDebuffManager.getHidden().hidePlayer(caster, false);
 
         new BukkitRunnable(){
             final Location loc = current.clone();
@@ -112,8 +103,8 @@ public class EvilSpirit {
                 Location particleLoc = new Location(loc.getWorld(), x, loc.getY() + height, z);
                 Location particleLoc2 = new Location(loc.getWorld(), x2, loc.getY() + height, z2);
 
-                player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, particleLoc, 1, 0, 0, 0, 0);
-                player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, particleLoc2, 1, 0, 0, 0, 0);
+                caster.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, particleLoc, 1, 0, 0, 0, 0);
+                caster.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, particleLoc2, 1, 0, 0, 0, 0);
 
 
                 height += .1;
@@ -122,13 +113,20 @@ public class EvilSpirit {
 
                 double percent = ((double) ran / castTime) * 100;
 
-                abilityManager.setCastBar(player, percent);
+                if(caster instanceof Player){
+                    abilityManager.setCastBar((Player) caster, percent);
+                }
+
 
                 if(ran >= castTime){
                     this.cancel();
-                    abilityManager.setCasting(player, false);
-                    abilityManager.setCastBar(player, 0);
-                    evilSpiritTime(player);
+                    abilityManager.setCasting(caster, false);
+
+                    if(caster instanceof Player){
+                        abilityManager.setCastBar((Player) caster, 0);
+                    }
+
+                    evilSpiritTime(caster);
                 }
 
                 angle += 5;
@@ -142,18 +140,22 @@ public class EvilSpirit {
 
     }
 
-    private void evilSpiritTime(Player player){
+    private void evilSpiritTime(LivingEntity caster){
 
-        if(!player.isOnline()){
+        if(caster instanceof Player){
+            if(!((Player)caster).isOnline()){
+                return;
+            }
+        }
+
+
+
+        if(profileManager.getAnyProfile(caster).getIfDead()){
             return;
         }
 
-        if(profileManager.getAnyProfile(player).getIfDead()){
-            return;
-        }
-
-        isEvilSpirit.put(player.getUniqueId(), true);
-        removeShards(player);
+        isEvilSpirit.put(caster.getUniqueId(), true);
+        removeShards(caster);
 
         ItemStack spirit = new ItemStack(Material.SPECTRAL_ARROW);
         ItemMeta meta2 = spirit.getItemMeta();
@@ -161,7 +163,10 @@ public class EvilSpirit {
         meta2.setCustomModelData(5);
         spirit.setItemMeta(meta2);
 
-        player.getInventory().setItemInOffHand(spirit);
+        if(caster instanceof Player){
+            ((Player)caster).getInventory().setItemInOffHand(spirit);
+        }
+
 
         new BukkitRunnable(){
             int count = 0;
@@ -171,8 +176,8 @@ public class EvilSpirit {
 
                 if(count >= 30){
                     this.cancel();
-                    isEvilSpirit.put(player.getUniqueId(), false);
-                    buffAndDebuffManager.getHidden().unhidePlayer(player);
+                    isEvilSpirit.put(caster.getUniqueId(), false);
+                    buffAndDebuffManager.getHidden().unhidePlayer(caster);
                 }
 
                 count++;
@@ -181,21 +186,21 @@ public class EvilSpirit {
 
     }
 
-    public boolean getIfEvilSpirit(Player player){
-        return isEvilSpirit.getOrDefault(player.getUniqueId(), false);
+    public boolean getIfEvilSpirit(LivingEntity caster){
+        return isEvilSpirit.getOrDefault(caster.getUniqueId(), false);
     }
 
-    public int getChaosShards(Player player){
-        return chaosShards.getOrDefault(player.getUniqueId(), 0);
+    public int getChaosShards(LivingEntity caster){
+        return chaosShards.getOrDefault(caster.getUniqueId(), 0);
     }
 
-    public void addChaosShard(Player player, int added){
+    public void addChaosShard(LivingEntity caster, int added){
 
-        if(!chaosShards.containsKey(player.getUniqueId())){
-            chaosShards.put(player.getUniqueId(), 0);
+        if(!chaosShards.containsKey(caster.getUniqueId())){
+            chaosShards.put(caster.getUniqueId(), 0);
         }
 
-        int current = chaosShards.get(player.getUniqueId());
+        int current = chaosShards.get(caster.getUniqueId());
 
         current = current + added;
 
@@ -203,14 +208,20 @@ public class EvilSpirit {
             current = 6;
         }
 
-        chaosShards.put(player.getUniqueId(), current);
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
-        shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
+        chaosShards.put(caster.getUniqueId(), current);
+        if(caster instanceof Player){
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+            shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo((Player) caster);
+        }
+
     }
 
-    public void removeShards(Player player){
-        chaosShards.put(player.getUniqueId(), 0);
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+    public void removeShards(LivingEntity caster){
+        chaosShards.put(caster.getUniqueId(), 0);
+        if(caster instanceof Player){
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+        }
+
     }
 
     public int returnWhichItem(Player player){
@@ -226,6 +237,23 @@ public class EvilSpirit {
         return 40;
     }
 
+    public boolean usable(LivingEntity caster){
+        if(getChaosShards(caster)<6){
+            return false;
+        }
 
+        Block block = caster.getLocation().subtract(0,1,0).getBlock();
+
+        if(block.getType() == Material.AIR){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
+    }
 
 }

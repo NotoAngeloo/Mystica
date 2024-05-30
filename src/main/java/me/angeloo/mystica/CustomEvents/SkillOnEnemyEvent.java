@@ -10,18 +10,18 @@ public class SkillOnEnemyEvent extends Event {
     public static final HandlerList handlers = new HandlerList();
 
     private final LivingEntity entity;
-    private final Player player;
+    private final LivingEntity caster;
 
-    public SkillOnEnemyEvent(LivingEntity entity, Player player){
+    public SkillOnEnemyEvent(LivingEntity entity, LivingEntity caster){
         this.entity = entity;
-        this.player = player;
+        this.caster = caster;
     }
 
     public LivingEntity getEntity() {
         return entity;
     }
 
-    public Player getPlayer(){return player;}
+    public LivingEntity getCaster(){return caster;}
 
 
     public HandlerList getHandlers() {

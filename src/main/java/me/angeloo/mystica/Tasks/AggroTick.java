@@ -52,36 +52,36 @@ public class AggroTick {
                 assert targetedEntity != null;
                 Bukkit.getLogger().info(targetedEntity.getName());*/
 
-                List<Player> originalAttackerList = aggroManager.getAttackerList(entity);
+                List<LivingEntity> originalAttackerList = aggroManager.getAttackerList(entity);
 
-                List<Player> attackers = new ArrayList<>();
+                List<LivingEntity> attackers = new ArrayList<>();
 
-                for(Player player : originalAttackerList){
-                    boolean blacklist = aggroManager.getIfOnBlackList(player);
-                    boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
+                for(LivingEntity attacker : originalAttackerList){
+                    boolean blacklist = aggroManager.getIfOnBlackList(attacker);
+                    boolean deathStatus = profileManager.getAnyProfile(attacker).getIfDead();
 
                     if(!blacklist && !deathStatus){
-                        attackers.add(player);
+                        attackers.add(attacker);
                     }
                 }
 
                 if(aggroManager.getHighPriorityTarget(entity) == null){
 
-                    Player highestDpsPlayer = null;
+                    LivingEntity highestDpsPlayer = null;
                     double highestDps = 0;
 
                     if(!attackers.isEmpty()){
 
                         //Bukkit.getLogger().info(String.valueOf(attackers));
 
-                        for(Player player : attackers){
+                        for(LivingEntity attacker : attackers){
 
 
-                            double dps = dpsManager.getRawDps(player);
+                            double dps = dpsManager.getRawDps(attacker);
                             //Bukkit.getLogger().info(String.valueOf(dps));
                             if(dps > highestDps){
                                 highestDps = dps;
-                                highestDpsPlayer = player;
+                                highestDpsPlayer = attacker;
 
                             }
                         }
@@ -100,7 +100,7 @@ public class AggroTick {
                     aggroManager.removeHighPriorityTarget(entity.getUniqueId());
                 }
 
-                Player highPriorityTarget = aggroManager.getHighPriorityTarget(entity);
+                LivingEntity highPriorityTarget = aggroManager.getHighPriorityTarget(entity);
 
                 if(highPriorityTarget != null){
                     ((Creature) entity).setTarget(highPriorityTarget);

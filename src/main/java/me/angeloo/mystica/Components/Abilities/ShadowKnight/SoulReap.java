@@ -66,104 +66,73 @@ public class SoulReap {
         infection = shadowKnightAbilities.getInfection();
     }
 
-    public void use(Player player){
+    private final double range = 8;
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void use(LivingEntity caster){
+
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
+        targetManager.setTargetToNearestValid(caster, range);
 
-        if(getCooldown(player) > 0){
+        LivingEntity target = targetManager.getPlayerTarget(caster);
+
+        if(!usable(caster, target)){
             return;
         }
 
-        double baseRange = 8;
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        targetManager.setTargetToNearestValid(player, baseRange);
+        combatManager.startCombatTimer(caster);
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        execute(caster);
 
-        if(target != null){
-            if(target instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) target)){
-                    return;
-                }
-            }
-
-            if(!(target instanceof Player)){
-                if(!pveChecker.pveLogic(target)){
-                    return;
-                }
-            }
-
-            double distance = player.getLocation().distance(target.getLocation());
-
-            if(distance > baseRange){
-                return;
-            }
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        if(target == null){
-            return;
-        }
-
-
-
-        if(profileManager.getAnyProfile(player).getCurrentMana() < getCost()){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 10);
+        abilityReadyInMap.put(caster.getUniqueId(), 10);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
+                if(getCooldown(caster) <= 0){
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 5);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 5);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        boolean doom = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("doom");
+        boolean doom = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("doom");
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        Location start = player.getLocation().clone();
+        Location start = caster.getLocation().clone();
 
         Location end = target.getLocation().clone();
         Vector initDir = end.toVector().subtract(start.toVector());
 
-        player.teleport(start.clone().setDirection(initDir));
-        buffAndDebuffManager.getImmobile().applyImmobile(player,0);
+        caster.teleport(start.clone().setDirection(initDir));
+        buffAndDebuffManager.getImmobile().applyImmobile(caster,0);
 
         Vector crossProduct = initDir.clone().crossProduct(new Vector(0,1,0)).normalize();
 
         Location spawnLoc = start.clone().subtract(crossProduct.multiply(1));
         spawnLoc.subtract(0,5,0);
 
-        ArmorStand armorStand = player.getWorld().spawn(spawnLoc, ArmorStand.class);
+        ArmorStand armorStand = caster.getWorld().spawn(spawnLoc, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -184,7 +153,7 @@ public class SoulReap {
         assert entityEquipment != null;
         entityEquipment.setItemInOffHand(item);
 
-        abilityManager.setCasting(player, true);
+        abilityManager.setCasting(caster, true);
         new BukkitRunnable(){
             final Location hitBoxCenter = target.getLocation().clone();
             final Location center = target.getLocation().clone();
@@ -194,17 +163,19 @@ public class SoulReap {
             @Override
             public void run(){
 
-                if(!player.isOnline()){
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        cancelTask();
+                        return;
+                    }
+                }
+
+                if(buffAndDebuffManager.getIfInterrupt(caster)){
                     cancelTask();
                     return;
                 }
 
-                if(buffAndDebuffManager.getIfInterrupt(player)){
-                    cancelTask();
-                    return;
-                }
-
-                Location start = player.getLocation().clone();
+                Location start = caster.getLocation().clone();
                 Location end = target.getLocation().clone();
                 Vector initDir = end.toVector().subtract(start.toVector());
                 Vector crossProduct = initDir.clone().crossProduct(new Vector(0,1,0)).normalize();
@@ -220,7 +191,7 @@ public class SoulReap {
                     double z = center.getZ() + (2 * Math.sin(angle));
                     Location ploc = new Location(target.getWorld(), x, (center.add(0,height,0).getY()), z);
 
-                    player.getWorld().spawnParticle(Particle.SPELL_WITCH, ploc, 1,0, 0, 0, 0);
+                    caster.getWorld().spawnParticle(Particle.SPELL_WITCH, ploc, 1,0, 0, 0, 0);
                 }
 
                 if(angle>=-900){
@@ -242,7 +213,7 @@ public class SoulReap {
                     }
 
                     //damage
-                    double skillDamage = getSkillDamage(player);
+                    double skillDamage = getSkillDamage(caster);
 
                     double targetHealthPercent = profileManager.getAnyProfile(target).getCurrentHealth() / (profileManager.getAnyProfile(target).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(target));
 
@@ -250,23 +221,23 @@ public class SoulReap {
                         skillDamage = skillDamage * .3;
                     }
 
-                    boolean crit = damageCalculator.checkIfCrit(player, 0);
+                    boolean crit = damageCalculator.checkIfCrit(caster, 0);
 
                     double extra = 0;
 
-                    if(doom && infection.getIfEnhanced(player)){
-                        extra = infection.soulReapToRemove(player);
+                    if(doom && infection.getIfEnhanced(caster)){
+                        extra = infection.soulReapToRemove(caster);
                     }
 
-                    double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage, crit);
+                    double damage = damageCalculator.calculateDamage(caster, target, "Physical", skillDamage, crit);
                     damage = damage + extra;
-                    removeSoulMarks(player);
-                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+                    removeSoulMarks(caster);
+                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
                 }
 
                 double percent = ((double) angle / -1500) * 100;
-                abilityManager.setCastBar(player, percent);
+                abilityManager.setCastBar(caster, percent);
 
                 if(count>100){
                     cancelTask();
@@ -279,16 +250,16 @@ public class SoulReap {
 
             private void slash(){
 
-                Location start2 = player.getLocation().clone().subtract(0,1,0);
+                Location start2 = caster.getLocation().clone().subtract(0,1,0);
 
-                Vector direction2 = player.getLocation().getDirection().setY(0).normalize();
+                Vector direction2 = caster.getLocation().getDirection().setY(0).normalize();
                 direction2.rotateAroundY(-45);
                 start2.setDirection(direction2);
 
                 Vector crossProduct = direction2.clone().crossProduct(new Vector(0,1,0)).normalize();
                 start2.subtract(crossProduct.multiply(2));
 
-                ArmorStand armorStand2 = player.getWorld().spawn(start2, ArmorStand.class);
+                ArmorStand armorStand2 = caster.getWorld().spawn(start2, ArmorStand.class);
                 armorStand2.setInvisible(true);
                 armorStand2.setGravity(false);
                 armorStand2.setCollidable(false);
@@ -333,29 +304,31 @@ public class SoulReap {
             private void cancelTask() {
                 this.cancel();
                 armorStand.remove();
-                abilityManager.setCasting(player, false);
-                abilityManager.setCastBar(player, 0);
-                buffAndDebuffManager.getImmobile().removeImmobile(player);
+                abilityManager.setCasting(caster, false);
+                abilityManager.setCastBar(caster, 0);
+                buffAndDebuffManager.getImmobile().removeImmobile(caster);
             }
 
         }.runTaskTimer(main, 0, 1);
 
     }
 
-    public int getSoulMarks(Player player){
+    public int getSoulMarks(LivingEntity caster){
 
-        if(!soulMarks.containsKey(player.getUniqueId())){
-            soulMarks.put(player.getUniqueId(), 0);
+        if(!soulMarks.containsKey(caster.getUniqueId())){
+            soulMarks.put(caster.getUniqueId(), 0);
         }
 
-        return soulMarks.get(player.getUniqueId());
+        return soulMarks.get(caster.getUniqueId());
     }
 
-    public void addSoulMark(Player player){
+    public void addSoulMark(LivingEntity caster){
 
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+        if(caster instanceof Player){
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+        }
 
-        int stacks = getSoulMarks(player);
+        int stacks = getSoulMarks(caster);
 
         if(stacks>5){
             return;
@@ -363,17 +336,21 @@ public class SoulReap {
 
         stacks ++;
 
-        soulMarks.put(player.getUniqueId(), stacks);
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+        soulMarks.put(caster.getUniqueId(), stacks);
+        if(caster instanceof Player){
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+        }
     }
 
-    public void removeSoulMarks(Player player){
-        soulMarks.put(player.getUniqueId(), 0);
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+    public void removeSoulMarks(LivingEntity caster){
+        soulMarks.put(caster.getUniqueId(), 0);
+        if(caster instanceof Player){
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+        }
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -382,10 +359,10 @@ public class SoulReap {
         return cooldown;
     }
 
-    public double getSkillDamage(Player player){
-        double skillDamage = 30 + (2*getSoulMarks(player));
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
+    public double getSkillDamage(LivingEntity caster){
+        double skillDamage = 30 + (2*getSoulMarks(caster));
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_5_Level_Bonus();
 
         return skillDamage + ((int)(skillLevel/3));
     }
@@ -394,8 +371,45 @@ public class SoulReap {
         return 30;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster, LivingEntity target){
+        if(target != null){
+            if(target instanceof Player){
+                if(!pvpManager.pvpLogic(caster, (Player) target)){
+                    return false;
+                }
+            }
+
+            if(!(target instanceof Player)){
+                if(!pveChecker.pveLogic(target)){
+                    return false;
+                }
+            }
+
+            double distance = caster.getLocation().distance(target.getLocation());
+
+            if(distance > range){
+                return false;
+            }
+        }
+
+        if(target == null){
+            return false;
+        }
+
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana() < getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

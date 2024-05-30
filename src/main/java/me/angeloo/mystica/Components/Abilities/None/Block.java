@@ -4,10 +4,6 @@ import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
-import me.angeloo.mystica.Utility.DamageCalculator;
-import me.angeloo.mystica.Utility.PveChecker;
-import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -22,13 +18,9 @@ public class Block {
     private final Mystica main;
     private final ProfileManager profileManager;
     private final AbilityManager abilityManager;
-    private final TargetManager targetManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CombatManager combatManager;
     private final ChangeResourceHandler changeResourceHandler;
-    private final DamageCalculator damageCalculator;
-    private final PvpManager pvpManager;
-    private final PveChecker pveChecker;
     private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
@@ -38,73 +30,71 @@ public class Block {
         this.main = main;
         this.abilityManager = manager;
         profileManager = main.getProfileManager();
-        targetManager = main.getTargetManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        damageCalculator = main.getDamageCalculator();
-        pvpManager = main.getPvpManager();
-        pveChecker = main.getPveChecker();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    public void use(Player player){
+    private final double cost = 20;
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void use(LivingEntity caster){
+
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
 
-        if(getCooldown(player) > 0){
+        if(getCooldown(caster) > 0){
             return;
         }
 
-        double cost = 20;
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<cost){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
+        changeResourceHandler.subTractManaFromEntity(caster, cost);
 
-        combatManager.startCombatTimer(player);
+        combatManager.startCombatTimer(caster);
 
-        execute(player);
+        execute(caster);
 
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        abilityReadyInMap.put(player.getUniqueId(), 16);
+        abilityReadyInMap.put(caster.getUniqueId(), 16);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 7);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 7);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 7);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 7);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        abilityManager.setCasting(player, true);
+        abilityManager.setCasting(caster, true);
         int castTime = 40;
 
-        buffAndDebuffManager.getBlocking().applyBlocking(player, castTime);
-        player.setWalkSpeed(.03f);
+        buffAndDebuffManager.getBlocking().applyBlocking(caster, castTime);
+        if(caster instanceof Player){
+            ((Player)caster).setWalkSpeed(.03f);
+        }
 
         new BukkitRunnable(){
 
@@ -112,23 +102,37 @@ public class Block {
             @Override
             public void run(){
 
-                if(!player.isOnline() || buffAndDebuffManager.getIfInterrupt(player)){
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        this.cancel();
+                        abilityManager.setCasting(caster, false);
+                        ((Player) caster).setWalkSpeed(.2f);
+                        buffAndDebuffManager.getBlocking().removeBlocking(caster);
+                        return;
+                    }
+                }
+
+                if(buffAndDebuffManager.getIfInterrupt(caster)){
                     this.cancel();
-                    abilityManager.setCasting(player, false);
-                    player.setWalkSpeed(.2f);
-                    buffAndDebuffManager.getBlocking().removeBlocking(player);
+                    abilityManager.setCasting(caster, false);
+                    if(caster instanceof Player){
+                        ((Player)caster).setWalkSpeed(.2f);
+                    }
+                    buffAndDebuffManager.getBlocking().removeBlocking(caster);
                     return;
                 }
 
 
                 double percent = ((double) ran / castTime) * 100;
-                abilityManager.setCastBar(player, percent);
+                abilityManager.setCastBar(caster, percent);
 
                 if(ran >= castTime){
                     this.cancel();
-                    abilityManager.setCasting(player, false);
-                    player.setWalkSpeed(.2f);
-                    buffAndDebuffManager.getBlocking().removeBlocking(player);
+                    abilityManager.setCasting(caster, false);
+                    if(caster instanceof Player){
+                        ((Player)caster).setWalkSpeed(.2f);
+                    }
+                    buffAndDebuffManager.getBlocking().removeBlocking(caster);
                 }
 
 
@@ -140,9 +144,9 @@ public class Block {
 
     }
 
-    public int getCooldown(Player player){
+    public int getCooldown(LivingEntity caster){
 
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -151,8 +155,8 @@ public class Block {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
     }
 
 }

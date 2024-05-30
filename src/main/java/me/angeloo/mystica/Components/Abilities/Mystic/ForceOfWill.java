@@ -52,44 +52,30 @@ public class ForceOfWill {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    public void use(Player player){
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void use(LivingEntity caster){
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        double totalRange = getRange(player);
 
-
-        boolean shepard = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("shepard");
+        boolean shepard = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("shepard");
 
         if(shepard){
-            LivingEntity target = targetManager.getPlayerTarget(player);
+            LivingEntity target = targetManager.getPlayerTarget(caster);
 
             if(target instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) target)){
+                if(!pvpManager.pvpLogic(caster, (Player) target)){
                     //do something else
 
-                    double distance = player.getLocation().distance(target.getLocation());
-
-                    if(distance > totalRange){
+                    if(!usable(caster, target)){
                         return;
                     }
 
+                    combatManager.startCombatTimer(caster);
 
-                    if(getCooldown(player) > 0){
-                        return;
-                    }
+                    changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-
-                    if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-                        return;
-                    }
-
-                    changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-                    combatManager.startCombatTimer(player);
-
-                    passThroughDamage(player, target);
+                    passThroughDamage(caster, target);
                     return;
                 }
             }
@@ -97,27 +83,15 @@ public class ForceOfWill {
             if(!(target instanceof Player)){
                 if(!pveChecker.pveLogic(target)){
 
-                    double distance = player.getLocation().distance(target.getLocation());
-
-                    if(distance > totalRange){
+                    if(!usable(caster, target)){
                         return;
                     }
 
+                    changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-                    if(getCooldown(player) > 0){
-                        return;
-                    }
+                    combatManager.startCombatTimer(caster);
 
-
-                    if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-                        return;
-                    }
-
-                    changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-                    combatManager.startCombatTimer(player);
-
-                    passThroughDamage(player, target);
+                    passThroughDamage(caster, target);
                     return;
                 }
             }
@@ -125,49 +99,56 @@ public class ForceOfWill {
 
         }
 
+        targetManager.setTargetToNearestValid(caster, getRange(caster));
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
+        if(!usable(caster, target)){
+            return;
         }
 
-        abilityReadyInMap.put(player.getUniqueId(), 15);
+
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
+        }
+
+        abilityReadyInMap.put(caster.getUniqueId(), 15);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 3);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 3);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 3);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 3);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
     }
 
-    private void passThroughDamage(Player player, LivingEntity target){
+    private void passThroughDamage(LivingEntity caster, LivingEntity target){
 
-        abilityManager.setCasting(player, true);
+        abilityManager.setCasting(caster, true);
         double castTime = 4;
-        castTime = castTime - buffAndDebuffManager.getHaste().getHasteLevel(player);
+        castTime = castTime - buffAndDebuffManager.getHaste().getHasteLevel(caster);
         castTime = castTime * 20;
 
         double shield = profileManager.getAnyProfile(target).getTotalHealth() * .25;
-        buffAndDebuffManager.getGenericShield().applyOrAddShield(player, shield);
-        buffAndDebuffManager.getPassThrough().applyPassThrough(player, target);
+        buffAndDebuffManager.getGenericShield().applyOrAddShield(caster, shield);
+        buffAndDebuffManager.getPassThrough().applyPassThrough(caster, target);
 
         double finalCastTime = castTime;
         new BukkitRunnable(){
@@ -176,11 +157,25 @@ public class ForceOfWill {
             @Override
             public void run(){
 
-                if(!player.isOnline() || buffAndDebuffManager.getIfInterrupt(player)){
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        this.cancel();
+                        abilityManager.setCasting(caster, false);
+                        abilityManager.setCastBar((Player) caster, 0);
+                        buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(caster, shield);
+                        buffAndDebuffManager.getPassThrough().removePassThrough(target);
+                        return;
+                    }
+                }
+
+                if(buffAndDebuffManager.getIfInterrupt(caster)){
                     this.cancel();
-                    abilityManager.setCasting(player, false);
-                    abilityManager.setCastBar(player, 0);
-                    buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(player, shield);
+                    abilityManager.setCasting(caster, false);
+                    if(caster instanceof Player){
+                        abilityManager.setCastBar((Player) caster, 0);
+                    }
+
+                    buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(caster, shield);
                     buffAndDebuffManager.getPassThrough().removePassThrough(target);
                     return;
                 }
@@ -190,29 +185,37 @@ public class ForceOfWill {
                     targetWasLoc = targetLoc.clone();
                 }
 
-                Location start = player.getLocation().clone();
+                Location start = caster.getLocation().clone();
 
                 double distanceToTarget = start.distance(targetWasLoc);
 
-                if(distanceToTarget>getRange(player)){
+                if(distanceToTarget>getRange(caster)){
                     this.cancel();
-                    abilityManager.setCasting(player, false);
-                    abilityManager.setCastBar(player, 0);
-                    buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(player, shield);
+                    abilityManager.setCasting(caster, false);
+                    if(caster instanceof Player){
+                        abilityManager.setCastBar((Player) caster, 0);
+                    }
+
+                    buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(caster, shield);
                     buffAndDebuffManager.getPassThrough().removePassThrough(target);
                     return;
                 }
 
                 if (!sameWorld(start, targetWasLoc)) {
                     this.cancel();
-                    abilityManager.setCasting(player, false);
-                    abilityManager.setCastBar(player, 0);
-                    buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(player, shield);
+                    abilityManager.setCasting(caster, false);
+
+                    if(caster instanceof Player){
+                        abilityManager.setCastBar((Player) caster, 0);
+                    }
+
+
+                    buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(caster, shield);
                     buffAndDebuffManager.getPassThrough().removePassThrough(target);
                     return;
                 }
 
-                Location current = player.getLocation().clone().add(0,.5,0);
+                Location current = caster.getLocation().clone().add(0,.5,0);
 
                 for(double i = 0; i<distanceToTarget;i+=.75){
 
@@ -220,19 +223,28 @@ public class ForceOfWill {
                     double distanceThisTick = Math.min(distanceToTarget, .75);
                     current.add(direction.normalize().multiply(distanceThisTick));
 
-                    player.getWorld().spawnParticle(Particle.WAX_OFF, current, 1, 0, 0, 0, 0);
+                    caster.getWorld().spawnParticle(Particle.WAX_OFF, current, 1, 0, 0, 0, 0);
 
                 }
 
                 double percent = ((double) count / finalCastTime) * 100;
 
-                abilityManager.setCastBar(player, percent);
+                if(caster instanceof Player){
+                    abilityManager.setCastBar((Player) caster, percent);
+                }
+
+
 
                 if(count >= finalCastTime){
                     this.cancel();
-                    abilityManager.setCasting(player, false);
-                    abilityManager.setCastBar(player, 0);
-                    buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(player, shield);
+                    abilityManager.setCasting(caster, false);
+
+                    if(caster instanceof Player){
+                        abilityManager.setCastBar((Player) caster, 0);
+                    }
+
+
+                    buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(caster, shield);
                     buffAndDebuffManager.getPassThrough().removePassThrough(target);
                 }
 
@@ -260,18 +272,18 @@ public class ForceOfWill {
 
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        boolean arcane = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("arcane master");
+        boolean arcane = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("arcane master");
 
-        abilityManager.setCasting(player, true);
+        abilityManager.setCasting(caster, true);
         double castTime = 4;
-        castTime = castTime - buffAndDebuffManager.getHaste().getHasteLevel(player);
+        castTime = castTime - buffAndDebuffManager.getHaste().getHasteLevel(caster);
         castTime = castTime * 20;
 
-        double skillDamage = getSkillDamage(player)/castTime;
+        double skillDamage = getSkillDamage(caster)/castTime;
 
         double finalCastTime = castTime;
         new BukkitRunnable(){
@@ -280,10 +292,23 @@ public class ForceOfWill {
             @Override
             public void run(){
 
-                if(!player.isOnline() || buffAndDebuffManager.getIfInterrupt(player)){
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        this.cancel();
+                        abilityManager.setCasting(caster, false);
+                        abilityManager.setCastBar((Player) caster, 0);
+                        return;
+                    }
+                }
+
+                if(buffAndDebuffManager.getIfInterrupt(caster)){
                     this.cancel();
-                    abilityManager.setCasting(player, false);
-                    abilityManager.setCastBar(player, 0);
+                    abilityManager.setCasting(caster, false);
+
+                    if(caster instanceof Player){
+                        abilityManager.setCastBar(caster, 0);
+                    }
+
                     return;
                 }
 
@@ -292,25 +317,25 @@ public class ForceOfWill {
                     targetWasLoc = targetLoc.clone();
                 }
 
-                Location start = player.getLocation().clone();
+                Location start = caster.getLocation().clone();
 
                 double distanceToTarget = start.distance(targetWasLoc);
 
-                if(distanceToTarget>getRange(player)){
+                if(distanceToTarget>getRange(caster)){
                     this.cancel();
-                    abilityManager.setCasting(player, false);
-                    abilityManager.setCastBar(player, 0);
+                    abilityManager.setCasting(caster, false);
+                    abilityManager.setCastBar(caster, 0);
                     return;
                 }
 
                 if (!sameWorld(start, targetWasLoc)) {
                     this.cancel();
-                    abilityManager.setCasting(player, false);
-                    abilityManager.setCastBar(player, 0);
+                    abilityManager.setCasting(caster, false);
+                    abilityManager.setCastBar(caster, 0);
                     return;
                 }
 
-                Location current = player.getLocation().clone().add(0,.5,0);
+                Location current = caster.getLocation().clone().add(0,.5,0);
 
                 for(double i = 0; i<distanceToTarget;i+=.75){
 
@@ -318,33 +343,33 @@ public class ForceOfWill {
                     double distanceThisTick = Math.min(distanceToTarget, .75);
                     current.add(direction.normalize().multiply(distanceThisTick));
 
-                    player.getWorld().spawnParticle(Particle.SPELL_WITCH, current, 1, 0, 0, 0, 0);
+                    caster.getWorld().spawnParticle(Particle.SPELL_WITCH, current, 1, 0, 0, 0, 0);
 
                 }
 
                 double percent = ((double) count / finalCastTime) * 100;
 
-                abilityManager.setCastBar(player, percent);
+                abilityManager.setCastBar(caster, percent);
 
                 if(count >= finalCastTime){
                     this.cancel();
-                    abilityManager.setCasting(player, false);
-                    abilityManager.setCastBar(player, 0);
+                    abilityManager.setCasting(caster, false);
+                    abilityManager.setCastBar(caster, 0);
                 }
 
-                boolean crit = damageCalculator.checkIfCrit(player, 0);
-                double damage = damageCalculator.calculateDamage(player, target, "Magical", skillDamage, crit);
-                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
+                boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                double damage = damageCalculator.calculateDamage(caster, target, "Magical", skillDamage, crit);
+                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
 
                 if(target instanceof Player){
                     buffAndDebuffManager.getGenericShield().removeShields(target);
                 }
 
-                changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+                changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
 
                 if(arcane && crit){
-                    double fifteenPercent = (double) profileManager.getAnyProfile(player).getTotalAttack() * .15;
-                    changeResourceHandler.subtractHealthFromEntity(target, fifteenPercent, player);
+                    double fifteenPercent = (double) profileManager.getAnyProfile(caster).getTotalAttack() * .15;
+                    changeResourceHandler.subtractHealthFromEntity(target, fifteenPercent, caster);
                 }
 
 
@@ -373,9 +398,9 @@ public class ForceOfWill {
 
     }
 
-    private double getRange(Player player){
+    private double getRange(LivingEntity caster){
         double baseRange = 20;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
+        double extraRange = buffAndDebuffManager.getTotalRangeModifier(caster);
         return baseRange + extraRange;
     }
 
@@ -383,15 +408,15 @@ public class ForceOfWill {
         return 5;
     }
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_3_Level_Bonus();
         return 35 + ((int)(skillLevel/3));
     }
 
-    public int getCooldown(Player player){
+    public int getCooldown(LivingEntity caster){
 
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -400,7 +425,27 @@ public class ForceOfWill {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster, LivingEntity target){
+        double distance = caster.getLocation().distance(target.getLocation());
+
+        if(distance > getRange(caster)){
+            return false;
+        }
+
+
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 }

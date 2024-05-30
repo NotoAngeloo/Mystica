@@ -3,12 +3,12 @@ package me.angeloo.mystica.Components.Abilities.Ranger;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
-import me.angeloo.mystica.Utility.PveChecker;
 import me.angeloo.mystica.Utility.ShieldAbilityManaDisplayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
@@ -41,94 +41,99 @@ public class WildRoar {
         changeResourceHandler = main.getChangeResourceHandler();
     }
 
-    public void use(Player player){
+    public void use(LivingEntity caster){
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        if(getCooldown(player) > 0){
+        if(!usable(caster)){
             return;
         }
 
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 30);
+        abilityReadyInMap.put(caster.getUniqueId(), 30);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
+                if(getCooldown(caster) <= 0){
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+
+                if(caster instanceof Player){
+                    shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo((Player) caster);
+                }
+
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        Location start = player.getLocation();
+        Location start = caster.getLocation();
 
-        World world = player.getWorld();
-        List<Player> allPlayersInWorld = world.getPlayers();
+        World world = caster.getWorld();
+        List<LivingEntity> allLivingEntitiesInWorld = world.getLivingEntities();
 
-        List<Player> allValidPlayers = new ArrayList<>();
+        List<LivingEntity> allValidEntities = new ArrayList<>();
 
-        for(Player thisPlayer : allPlayersInWorld){
+        for(LivingEntity thisEntity : allLivingEntitiesInWorld){
 
-            boolean deathStatus = profileManager.getAnyProfile(thisPlayer).getIfDead();
+            if(profileManager.getAnyProfile(thisEntity).fakePlayer() || thisEntity instanceof Player){
+                boolean deathStatus = profileManager.getAnyProfile(thisEntity).getIfDead();
 
-            if(deathStatus){
-                continue;
+                if(deathStatus){
+                    continue;
+                }
+
+                if(thisEntity instanceof Player){
+                    if(pvpManager.pvpLogic(caster, (Player) thisEntity)){
+                        continue;
+                    }
+                }
+
+
+                boolean hasBuffAlready = buffAndDebuffManager.getWildRoarBuff().getBuffTime(thisEntity) > 0;
+
+                if(hasBuffAlready){
+                    continue;
+                }
+
+                allValidEntities.add(thisEntity);
             }
 
-            if(pvpManager.pvpLogic(player, thisPlayer)){
-                continue;
-            }
-
-            boolean hasBuffAlready = buffAndDebuffManager.getWildRoarBuff().getBuffTime(thisPlayer) > 0;
-
-            if(hasBuffAlready){
-                continue;
-            }
-
-            allValidPlayers.add(thisPlayer);
 
         }
 
 
-        allValidPlayers.sort(Comparator.comparingDouble(p -> p.getLocation().distance(start)));
-        List<Player> affected = allValidPlayers.subList(0, Math.min(5, allValidPlayers.size()));
+        allValidEntities.sort(Comparator.comparingDouble(p -> p.getLocation().distance(start)));
+        List<LivingEntity> affected = allValidEntities.subList(0, Math.min(5, allValidEntities.size()));
 
 
 
-        for(Player thisPlayer : affected){
+        for(LivingEntity thisEntity : affected){
 
-            buffAndDebuffManager.getWildRoarBuff().applyBuff(thisPlayer, getBuffAmount(player));
+            buffAndDebuffManager.getWildRoarBuff().applyBuff(thisEntity, getBuffAmount(caster));
 
-            ArmorStand armorStand = player.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
+            ArmorStand armorStand = caster.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
             armorStand.setInvisible(true);
             armorStand.setGravity(false);
             armorStand.setCollidable(false);
@@ -152,7 +157,7 @@ public class WildRoar {
                 @Override
                 public void run(){
 
-                    armorStand.teleport(thisPlayer.getLocation());
+                    armorStand.teleport(thisEntity.getLocation());
 
                     if(count >= 40){
                         cancelTask();
@@ -171,17 +176,17 @@ public class WildRoar {
 
     }
 
-    public double getBuffAmount(Player player){
-        return profileManager.getAnyProfile(player).getStats().getLevel() * 1.25;
+    public double getBuffAmount(LivingEntity caster){
+        return profileManager.getAnyProfile(caster).getStats().getLevel() * 1.25;
     }
 
     public double getCost(){
         return 20;
     }
 
-    public int getCooldown(Player player){
+    public int getCooldown(LivingEntity caster){
 
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -190,8 +195,20 @@ public class WildRoar {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
     }
 
+    public boolean usable(LivingEntity caster){
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
+    }
 }

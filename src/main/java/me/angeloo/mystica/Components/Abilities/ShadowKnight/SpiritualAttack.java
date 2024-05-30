@@ -56,96 +56,64 @@ public class SpiritualAttack {
         soulReap = abilities.getSoulReap();
     }
 
-    public void use(Player player){
+    private final double range = 10;
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void use(LivingEntity caster){
+
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
+        targetManager.setTargetToNearestValid(caster, range + buffAndDebuffManager.getTotalRangeModifier(caster));
 
-        if(getCooldown(player) > 0){
+        LivingEntity target = targetManager.getPlayerTarget(caster);
+
+        if(!usable(caster, target)){
             return;
         }
 
-        double baseRange = 10;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
-        double totalRange = baseRange + extraRange;
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        targetManager.setTargetToNearestValid(player, totalRange);
+        combatManager.startCombatTimer(caster);
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        execute(caster);
 
-        if(target != null){
-            if(target instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) target)){
-                    return;
-                }
-            }
-
-            if(!(target instanceof Player)){
-                if(!pveChecker.pveLogic(target)){
-                    return;
-                }
-            }
-
-            double distance = player.getLocation().distance(target.getLocation());
-
-            if(distance > totalRange){
-                return;
-            }
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        if(target == null){
-            return;
-        }
-
-
-        if(profileManager.getAnyProfile(player).getCurrentMana() < getCost()){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 3);
+        abilityReadyInMap.put(caster.getUniqueId(), 3);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
+                if(getCooldown(caster) <= 0){
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 2);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 2);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        boolean doom = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("doom");
+        boolean doom = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("doom");
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
         Location spawnLoc = target.getLocation().clone().add(0,12,0);
-        spawnLoc.setDirection(player.getLocation().getDirection());
+        spawnLoc.setDirection(caster.getLocation().getDirection());
 
-        ArmorStand armorStand = player.getWorld().spawn(spawnLoc, ArmorStand.class);
+        ArmorStand armorStand = caster.getWorld().spawn(spawnLoc, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -166,7 +134,7 @@ public class SpiritualAttack {
 
 
         //abilityManager.setSkillRunning(player, true);
-        double finalSkillDamage = getSkillDamage(player);
+        double finalSkillDamage = getSkillDamage(caster);
         new BukkitRunnable(){
             int count = 0;
             Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
@@ -206,21 +174,21 @@ public class SpiritualAttack {
                     double z = current.getZ() + (2 * Math.sin(angle));
                     Location loc = new Location(target.getWorld(), x, (current.add(0,2,0).getY()), z);
 
-                    player.getWorld().spawnParticle(Particle.SPELL_WITCH, loc, 1,0, 0, 0, 0);
+                    caster.getWorld().spawnParticle(Particle.SPELL_WITCH, loc, 1,0, 0, 0, 0);
                 }
 
                 if (distance <= 1) {
 
                     cancelTask();
 
-                    boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
+                    boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                    double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
 
-                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
 
                     if(doom){
-                        soulReap.addSoulMark(player);
+                        soulReap.addSoulMark(caster);
                     }
                 }
 
@@ -262,8 +230,8 @@ public class SpiritualAttack {
 
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -276,14 +244,51 @@ public class SpiritualAttack {
         return 30;
     }
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_2_Level_Bonus();
         return 30 + ((int)(skillLevel/3));
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster, LivingEntity target){
+        if(target != null){
+            if(target instanceof Player){
+                if(!pvpManager.pvpLogic(caster, (Player) target)){
+                    return false;
+                }
+            }
+
+            if(!(target instanceof Player)){
+                if(!pveChecker.pveLogic(target)){
+                    return false;
+                }
+            }
+
+            double distance = caster.getLocation().distance(target.getLocation());
+
+            if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+                return false;
+            }
+        }
+
+        if(target == null){
+            return false;
+        }
+
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana() < getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

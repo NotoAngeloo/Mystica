@@ -61,85 +61,83 @@ public class DecreeHonor {
         mercifulHealing = paladinAbilities.getMercifulHealing();
     }
 
-    public void use(Player player){
+    private final double range = 10;
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void use(LivingEntity caster){
+
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        double baseRange = 10;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
-        double totalRange = baseRange + extraRange;
-
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
         if(target != null){
 
-            double distance = player.getLocation().distance(target.getLocation());
+            double distance = caster.getLocation().distance(target.getLocation());
 
-            if(distance > totalRange){
+            if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
                 return;
             }
 
             if(target instanceof Player){
                 if(profileManager.getAnyProfile(target).getIfDead()){
-                    target = player;
+                    target = caster;
                 }
             }
 
         }
 
         if(target == null){
-            target = player;
+            target = caster;
         }
 
-        if(getCooldown(player) > 0){
+        if(getCooldown(caster) > 0){
             return;
         }
 
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        combatManager.startCombatTimer(player);
+        combatManager.startCombatTimer(caster);
 
-        execute(player, target);
+        execute(caster, target);
 
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();;
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();;
         }
 
-        abilityReadyInMap.put(player.getUniqueId(), 5);
+        abilityReadyInMap.put(caster.getUniqueId(), 5);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 1);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 1);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 1);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 1);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player, LivingEntity target){
+    private void execute(LivingEntity caster, LivingEntity target){
 
         Location start = target.getLocation();
 
-        ArmorStand armorStand = player.getWorld().spawn(start.clone(), ArmorStand.class);
+        ArmorStand armorStand = caster.getWorld().spawn(start.clone(), ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -156,16 +154,18 @@ public class DecreeHonor {
         assert entityEquipment != null;
         entityEquipment.setHelmet(item);
 
-        double finalSkillDamage = getSkillDamage(player);
-        double finalHealPower = getHealPower(player);
+        double finalSkillDamage = getSkillDamage(caster);
+        double finalHealPower = getHealPower(caster);
         new BukkitRunnable(){
             double down = 0;
             @Override
             public void run(){
 
-                if(!player.isOnline()){
-                    cancelTask();
-                    return;
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        cancelTask();
+                        return;
+                    }
                 }
 
                 double increment = (2 * Math.PI) / 16; // angle between particles
@@ -177,7 +177,7 @@ public class DecreeHonor {
                     double z = start.getZ() + (1 * Math.sin(angle));
                     Location loc = new Location(start.getWorld(), x, y, z);
 
-                    player.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1,0, 0, 0, 0);
+                    caster.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1,0, 0, 0, 0);
                 }
 
                 if(down>=4){
@@ -201,24 +201,24 @@ public class DecreeHonor {
                     return;
                 }
 
-                boolean crit = damageCalculator.checkIfCrit(player, 0);
+                boolean crit = damageCalculator.checkIfCrit(caster, 0);
 
                 if(crit){
-                    mercifulHealing.queueMoveCast(player);
+                    mercifulHealing.queueMoveCast(caster);
                 }
 
                 if(target instanceof Player){
 
-                    if(!pvpManager.pvpLogic(player, (Player) target)){
+                    if(!pvpManager.pvpLogic(caster, (Player) target)){
 
-                        double healAmount  = damageCalculator.calculateHealing(player, finalHealPower, crit);
+                        double healAmount  = damageCalculator.calculateHealing(caster, finalHealPower, crit);
 
-                        if(justiceMark.markProc(player, target)){
-                            markHealInstead(player, healAmount);
+                        if(justiceMark.markProc(caster, target)){
+                            markHealInstead(caster, healAmount);
                             return;
                         }
 
-                        changeResourceHandler.addHealthToEntity(target, healAmount, player);
+                        changeResourceHandler.addHealthToEntity(target, healAmount, caster);
                         return;
                     }
 
@@ -226,22 +226,22 @@ public class DecreeHonor {
 
                 if(!(target instanceof Player)){
                     if(!pveChecker.pveLogic(target)){
-                        double healAmount  = damageCalculator.calculateHealing(player, finalHealPower, crit);
+                        double healAmount  = damageCalculator.calculateHealing(caster, finalHealPower, crit);
 
-                        if(justiceMark.markProc(player, target)){
-                            markHealInstead(player, healAmount);
+                        if(justiceMark.markProc(caster, target)){
+                            markHealInstead(caster, healAmount);
                             return;
                         }
 
-                        changeResourceHandler.addHealthToEntity(target, healAmount, player);
+                        changeResourceHandler.addHealthToEntity(target, healAmount, caster);
                         return;
                     }
                 }
 
-                double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
+                double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
 
-                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
 
             }
 
@@ -263,12 +263,12 @@ public class DecreeHonor {
         }.runTaskTimer(main, 0, 1);
     }
 
-    private void markHealInstead(Player player, double healAmount){
+    private void markHealInstead(LivingEntity caster, double healAmount){
 
-        List<LivingEntity> affected = justiceMark.getMarkedTargets(player);
+        List<LivingEntity> affected = justiceMark.getMarkedTargets(caster);
 
         for(LivingEntity thisPlayer : affected){
-            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, player);
+            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, caster);
 
             Location center = thisPlayer.getLocation().clone().add(0,1,0);
 
@@ -286,15 +286,15 @@ public class DecreeHonor {
 
     }
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_1_Level_Bonus();
         return 20 + ((int)(skillLevel/10));
     }
 
-    public double getHealPower(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
+    public double getHealPower(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_1_Level_Bonus();
         return 5 +  ((int)(skillLevel/3));
     }
 
@@ -302,9 +302,9 @@ public class DecreeHonor {
         return 5;
     }
 
-    public int getCooldown(Player player){
+    public int getCooldown(LivingEntity caster){
 
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -313,8 +313,8 @@ public class DecreeHonor {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
     }
 
 }

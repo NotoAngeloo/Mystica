@@ -3,6 +3,7 @@ package me.angeloo.mystica.Components.Abilities;
 import me.angeloo.mystica.Components.Abilities.None.*;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class NoneAbilities {
@@ -29,40 +30,40 @@ public class NoneAbilities {
         block = new Block(main, manager);
     }
 
-    public void useNoneAbility(Player player, int abilityNumber){
+    public void useNoneAbility(LivingEntity caster, int abilityNumber){
 
         switch (abilityNumber){
             case 1:{
-                kick.use(player);
+                kick.use(caster);
                 return;
             }
             case 2:{
-                flail.use(player);
+                flail.use(caster);
                 return;
             }
             case 3:{
-                pocketSand.use(player);
+                pocketSand.use(caster);
                 return;
             }
             case 4:{
-                dash.use(player);
+                dash.use(caster);
                 return;
             }
             case 5:{
-                noneRoll.use(player);
+                noneRoll.use(caster);
                 return;
             }
 
             case 6:{
-                bandage.use(player);
+                bandage.use(caster);
                 return;
             }
             case 7:{
-                block.use(player);
+                block.use(caster);
                 return;
             }
             case 8:{
-                adrenaline.use(player);
+                adrenaline.use(caster);
                 return;
             }
         }
@@ -70,44 +71,44 @@ public class NoneAbilities {
 
 
 
-    public void useNoneBasic(Player player){
-        noneBasic.useBasic(player);
+    public void useNoneBasic(LivingEntity caster){
+        noneBasic.useBasic(caster);
     }
 
-    public int getAbilityCooldown(Player player, int abilityNumber){
+    public int getAbilityCooldown(LivingEntity caster, int abilityNumber){
 
         switch (abilityNumber){
             case 1:
-                return kick.getCooldown(player);
+                return kick.getCooldown(caster);
             case 2:
-                return flail.getCooldown(player);
+                return flail.getCooldown(caster);
             case 3:
-                return pocketSand.getCooldown(player);
+                return pocketSand.getCooldown(caster);
             case 4:
-                return dash.getCooldown(player);
+                return dash.getCooldown(caster);
             case 5:
-                return noneRoll.getCooldown(player);
+                return noneRoll.getCooldown(caster);
             case 6:
-                return bandage.getCooldown(player);
+                return bandage.getCooldown(caster);
             case 7:
-                return block.getCooldown(player);
+                return block.getCooldown(caster);
             case 8:
-                return adrenaline.getCooldown(player);
+                return adrenaline.getCooldown(caster);
 
         }
 
         return 0;
     }
 
-    public void resetCooldowns(Player player){
-        adrenaline.resetCooldown(player);
-        bandage.resetCooldown(player);
-        block.resetCooldown(player);
-        dash.resetCooldown(player);
-        flail.resetCooldown(player);
-        kick.resetCooldown(player);
-        noneRoll.resetCooldown(player);
-        pocketSand.resetCooldown(player);
+    public void resetCooldowns(LivingEntity caster){
+        adrenaline.resetCooldown(caster);
+        bandage.resetCooldown(caster);
+        block.resetCooldown(caster);
+        dash.resetCooldown(caster);
+        flail.resetCooldown(caster);
+        kick.resetCooldown(caster);
+        noneRoll.resetCooldown(caster);
+        pocketSand.resetCooldown(caster);
     }
 
     public Adrenaline getAdrenaline(){return adrenaline;}

@@ -1,12 +1,12 @@
 package me.angeloo.mystica.Components.Abilities.Elementalist;
 
-import me.angeloo.mystica.Components.Abilities.ElementalistAbilities;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -38,82 +38,81 @@ public class WindrushForm {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    public void use(Player player){
+    public void use(LivingEntity caster){
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        if(getCooldown(player) > 0){
+        if(!usable(caster)){
             return;
         }
 
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
-        }
+        combatManager.startCombatTimer(caster);
 
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_4_Level_Bonus();
 
         int cooldown = 15;
 
         cooldown = cooldown - ((int)(skillLevel/3));
 
-        execute(player);
+        execute(caster);
 
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        abilityReadyInMap.put(player.getUniqueId(), cooldown);
+        abilityReadyInMap.put(caster.getUniqueId(), cooldown);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player,4);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster,4);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player,4);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster,4);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        Location start = player.getLocation();
+        Location start = caster.getLocation();
         Vector direction = start.getDirection().normalize();
 
         double forwardPower = 5;
         double jumpPower = .2;
         Vector dashVector = direction.multiply(forwardPower).setY(jumpPower);
-        player.setVelocity(dashVector);
+        caster.setVelocity(dashVector);
 
         new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(!player.isOnline()){
-                    this.cancel();
-                    return;
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        this.cancel();
+                        return;
+                    }
                 }
 
-                player.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, player.getLocation(), 1);
 
-                Vector playerVel = player.getVelocity();
+
+                caster.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, caster.getLocation(), 1);
+
+                Vector playerVel = caster.getVelocity();
                 double speed = playerVel.length();
 
                 if(speed < .5){
@@ -128,8 +127,8 @@ public class WindrushForm {
         return 5;
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -138,8 +137,21 @@ public class WindrushForm {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster){
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

@@ -55,103 +55,74 @@ public class HealthAbsorb {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    public void use(Player player){
+    public void use(LivingEntity caster){
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        double totalRange = getRange(player);
+        double totalRange = getRange(caster);
 
-        targetManager.setTargetToNearestValid(player, totalRange);
+        targetManager.setTargetToNearestValid(caster, totalRange);
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        if(target != null){
-            if(target instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) target)){
-                    return;
-                }
-            }
-
-            if(!(target instanceof Player)){
-                if(!pveChecker.pveLogic(target)){
-                    return;
-                }
-            }
-
-            double distance = player.getLocation().distance(target.getLocation());
-
-            if(distance > totalRange){
-                return;
-            }
-        }
-
-        if(target == null){
+        if(!usable(caster, target)){
             return;
         }
 
-        if(getCooldown(player) > 0){
-            return;
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();;
         }
 
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();;
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 20);
+        abilityReadyInMap.put(caster.getUniqueId(), 20);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 8);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 8);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 8);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 8);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private double getRange(Player player){
+    private double getRange(LivingEntity caster){
         double baseRange = 20;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
+        double extraRange = buffAndDebuffManager.getTotalRangeModifier(caster);
         return baseRange + extraRange;
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
         double castTime = 5;
-        castTime = castTime - buffAndDebuffManager.getHaste().getHasteLevel(player);
+        castTime = castTime - buffAndDebuffManager.getHaste().getHasteLevel(caster);
         castTime = castTime * 20;
 
-        double skillDamage = getSkillDamage(player);
+        double skillDamage = getSkillDamage(caster);
 
         skillDamage = skillDamage / castTime;
 
-        abilityManager.setCasting(player, true);
+        abilityManager.setCasting(caster, true);
 
         double finalSkillDamage = skillDamage;
         double finalCastTime = castTime;
@@ -172,14 +143,21 @@ public class HealthAbsorb {
                     return;
                 }
 
-                if(!player.isOnline() || buffAndDebuffManager.getIfInterrupt(player)){
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        cancelTask();
+                        return;
+                    }
+                }
+
+                if(buffAndDebuffManager.getIfInterrupt(caster)){
                     cancelTask();
                     return;
                 }
 
-                Location playerLoc = player.getLocation().clone();
+                Location playerLoc = caster.getLocation().clone();
 
-                if(profileManager.getAnyProfile(player).getIfDead()){
+                if(profileManager.getAnyProfile(caster).getIfDead()){
                     cancelTask();
                     return;
                 }
@@ -188,7 +166,7 @@ public class HealthAbsorb {
 
                 double distanceToTarget = playerLoc.distance(targetLoc);
 
-                if(distanceToTarget>getRange(player)){
+                if(distanceToTarget>getRange(caster)){
                     cancelTask();
                     return;
                 }
@@ -211,8 +189,8 @@ public class HealthAbsorb {
                 Location particleLoc = new Location(playerLoc.getWorld(), x, playerLoc.getY() + height, z);
                 Location particleLoc2 = new Location(playerLoc.getWorld(), x2, playerLoc.getY() + height, z2);
 
-                player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, particleLoc, 1, 0, 0, 0, 0);
-                player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, particleLoc2, 1, 0, 0, 0, 0);
+                caster.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, particleLoc, 1, 0, 0, 0, 0);
+                caster.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, particleLoc2, 1, 0, 0, 0, 0);
 
 
                 if(up){
@@ -233,7 +211,7 @@ public class HealthAbsorb {
                 }
 
 
-                ArmorStand armorStand = player.getWorld().spawn(targetLoc, ArmorStand.class);
+                ArmorStand armorStand = caster.getWorld().spawn(targetLoc, ArmorStand.class);
                 armorStand.setInvisible(true);
                 armorStand.setGravity(false);
                 armorStand.setCollidable(false);
@@ -257,9 +235,11 @@ public class HealthAbsorb {
                     @Override
                     public void run(){
 
-                        if(!player.isOnline()){
-                            this.cancel();
-                            return;
+                        if(caster instanceof Player){
+                            if(!((Player)caster).isOnline()){
+                                cancelTask();
+                                return;
+                            }
                         }
 
                         if(targetInvalid(target)){
@@ -267,7 +247,7 @@ public class HealthAbsorb {
                             return;
                         }
 
-                        Location playerLoc = player.getLocation().clone().subtract(0,1,0);
+                        Location playerLoc = caster.getLocation().clone().subtract(0,1,0);
 
                         Vector direction = playerLoc.toVector().subtract(current.toVector());
                         double distance = current.distance(playerLoc);
@@ -286,12 +266,12 @@ public class HealthAbsorb {
                 }.runTaskTimer(main, 0, 1);
 
                 if(ran%20==0){
-                    boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
+                    boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                    double damage = damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage, crit);
 
-                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, player);
-                    changeResourceHandler.addHealthToEntity(player, damage, player);
+                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+                    changeResourceHandler.addHealthToEntity(caster, damage, caster);
 
                     if(target instanceof Player){
                         buffAndDebuffManager.getGenericShield().removeShields(target);
@@ -300,7 +280,7 @@ public class HealthAbsorb {
 
                 double percent = ((double) ran /(20*5)) * 100;
 
-                abilityManager.setCastBar(player, percent);
+                abilityManager.setCastBar(caster, percent);
 
                 ran++;
 
@@ -325,8 +305,8 @@ public class HealthAbsorb {
             private void cancelTask() {
                 this.cancel();
                 removeArmorStands(armorStands);
-                abilityManager.setCasting(player, false);
-                abilityManager.setCastBar(player, 0);
+                abilityManager.setCasting(caster, false);
+                abilityManager.setCastBar(caster, 0);
             }
 
 
@@ -345,9 +325,9 @@ public class HealthAbsorb {
 
     }
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_8_Level_Bonus();
         return 25 + ((int)(skillLevel/3));
     }
 
@@ -355,9 +335,9 @@ public class HealthAbsorb {
         return 5;
     }
 
-    public int getCooldown(Player player){
+    public int getCooldown(LivingEntity caster){
 
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -366,8 +346,45 @@ public class HealthAbsorb {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster, LivingEntity target){
+        if(target != null){
+            if(target instanceof Player){
+                if(!pvpManager.pvpLogic(caster, (Player) target)){
+                    return false;
+                }
+            }
+
+            if(!(target instanceof Player)){
+                if(!pveChecker.pveLogic(target)){
+                    return false;
+                }
+            }
+
+            double distance = caster.getLocation().distance(target.getLocation());
+
+            if(distance > getRange(caster)){
+                return false;
+            }
+        }
+
+        if(target == null){
+            return false;
+        }
+
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

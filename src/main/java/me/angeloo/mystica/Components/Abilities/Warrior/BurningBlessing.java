@@ -4,7 +4,7 @@ import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -34,68 +34,63 @@ public class BurningBlessing {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    public void use(Player player){
-        if (!abilityReadyInMap.containsKey(player.getUniqueId())) {
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void use(LivingEntity caster){
+        if (!abilityReadyInMap.containsKey(caster.getUniqueId())) {
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        if (getCooldown(player) > 0) {
+        if(!usable(caster)){
             return;
         }
 
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 16);
+        abilityReadyInMap.put(caster.getUniqueId(), 16);
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
 
-                if (getCooldown(player) <= 0) {
-                    cooldownDisplayer.displayCooldown(player, 8);
+                if (getCooldown(caster) <= 0) {
+                    cooldownDisplayer.displayCooldown(caster, 8);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
+                int cooldown = getCooldown(caster) - 1;
 
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 8);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 8);
 
             }
         }.runTaskTimer(main, 0, 20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
 
-        buffAndDebuffManager.getBurningBlessingBuff().applyHealthBuff(player, getBuffAmount(player));
+        buffAndDebuffManager.getBurningBlessingBuff().applyHealthBuff(caster, getBuffAmount(caster));
 
-        double maxHealth = profileManager.getAnyProfile(player).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player);
+        double maxHealth = profileManager.getAnyProfile(caster).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(caster);
         double fourth = maxHealth * .25;
-        changeResourceHandler.addHealthToEntity(player, fourth, player);
+        changeResourceHandler.addHealthToEntity(caster, fourth, caster);
 
         //TODO: add icon above head when i have it
 
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -106,14 +101,27 @@ public class BurningBlessing {
 
     public double getCost(){return 10;}
 
-    public double getBuffAmount(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
+    public double getBuffAmount(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_8_Level_Bonus();
         return 5 + ((int)(skillLevel/3));
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster){
+        if (getCooldown(caster) > 0) {
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.Abilities.Assassin;
 
 import me.angeloo.mystica.Components.Abilities.AssassinAbilities;
+import me.angeloo.mystica.Components.ClassEquipment.AssassinEquipment;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -27,6 +28,7 @@ import java.util.UUID;
 public class Pierce {
 
     private final Mystica main;
+    private final AssassinEquipment assassinEquipment;
     private final ProfileManager profileManager;
     private final TargetManager targetManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
@@ -45,6 +47,7 @@ public class Pierce {
 
     public Pierce(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
         this.main = main;
+        assassinEquipment = new AssassinEquipment();
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
@@ -58,100 +61,71 @@ public class Pierce {
         stealth = assassinAbilities.getStealth();
     }
 
-    public void use(Player player){
+    private final double range = 4;
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void use(LivingEntity caster){
+
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        double baseRange = 4;
 
-        targetManager.setTargetToNearestValid(player, baseRange);
+        targetManager.setTargetToNearestValid(caster, range);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
 
-        if(target != null){
-            if(target instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) target)){
-                    return;
-                }
-            }
-
-            if(!(target instanceof Player)){
-                if(!pveChecker.pveLogic(target)){
-                    return;
-                }
-            }
-
-            double distance = player.getLocation().distance(target.getLocation());
-
-            if(distance > baseRange){
-                return;
-            }
-        }
-
-        if(target == null){
+        if(!usable(caster, target)){
             return;
         }
 
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        if(getCooldown(player) > 0){
-            return;
+        combo.removeAnAmountOfPoints(caster, 1);
+
+        if(caster instanceof Player){
+            combatManager.startCombatTimer((Player) caster);
         }
 
-        if(combo.getComboPoints(player) == 0){
-            return;
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combo.removeAnAmountOfPoints(player, 1);
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 4);
+        abilityReadyInMap.put(caster.getUniqueId(), 4);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 4);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 4);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 4);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 4);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
-        Location start = player.getLocation().clone();
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        ItemStack weapon = profileManager.getAnyProfile(player).getPlayerEquipment().getWeapon();
-        ItemStack offhand = profileManager.getAnyProfile(player).getPlayerEquipment().getOffhand();
+        Location start = caster.getLocation().clone();
 
-        ArmorStand stand = player.getWorld().spawn(start.clone().subtract(0,10,0), ArmorStand.class);
+        ItemStack weapon = assassinEquipment.getBaseWeapon();
+        ItemStack offhand = assassinEquipment.getBaseOffhand();
+
+        ArmorStand stand = caster.getWorld().spawn(start.clone().subtract(0,10,0), ArmorStand.class);
         stand.setInvisible(true);
         stand.setGravity(false);
         stand.setCollidable(false);
@@ -167,14 +141,21 @@ public class Pierce {
 
         //abilityManager.setSkillRunning(player, true);
 
-        double finalSkillDamage = getSkillDamage(player);
+        double finalSkillDamage = getSkillDamage(caster);
         new BukkitRunnable(){
             int rAngle = 0;
             int lAngle = 0;
             @Override
             public void run(){
 
-                if(!player.isOnline() || buffAndDebuffManager.getIfInterrupt(player)){
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        cancelTask();
+                        return;
+                    }
+                }
+
+                if(buffAndDebuffManager.getIfInterrupt(caster)){
                     cancelTask();
                     return;
                 }
@@ -184,7 +165,7 @@ public class Pierce {
                     return;
                 }
 
-                Location current = player.getLocation();
+                Location current = caster.getLocation();
                 Location targetLoc = target.getLocation().clone();
                 Vector direction = targetLoc.toVector().subtract(current.toVector());
                 direction.setY(0);
@@ -198,13 +179,13 @@ public class Pierce {
                 if(lAngle>=180){
                     cancelTask();
 
-                    boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
+                    boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                    double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
 
-                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, player);
-                    stealth.stealthBonusCheck(player, target);
-                    buffAndDebuffManager.getPierceBuff().applyBuff(player);
+                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+                    stealth.stealthBonusCheck(caster, target);
+                    buffAndDebuffManager.getPierceBuff().applyBuff(caster);
                 }
 
                 rAngle-=15;
@@ -233,9 +214,9 @@ public class Pierce {
         }.runTaskTimer(main, 0, 1);
     }
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_4_Level_Bonus();
         return 40 + ((int)(skillLevel/3));
     }
 
@@ -243,8 +224,8 @@ public class Pierce {
         return 5;
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -262,8 +243,50 @@ public class Pierce {
         return 0;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster, LivingEntity target){
+        if(target != null){
+            if(target instanceof Player){
+                if(!pvpManager.pvpLogic(caster, (Player) target)){
+                    return false;
+                }
+            }
+
+            if(!(target instanceof Player)){
+                if(!pveChecker.pveLogic(target)){
+                    return false;
+                }
+            }
+
+            double distance = caster.getLocation().distance(target.getLocation());
+
+            if(distance > range){
+                return false;
+            }
+        }
+
+        if(target == null){
+            return false;
+        }
+
+
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+        if(combo.getComboPoints(caster) == 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

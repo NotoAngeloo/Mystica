@@ -22,6 +22,7 @@ import java.util.*;
 
 public class TargetManager {
 
+    private final FakePlayerTargetManager fakePlayerTargetManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final StealthTargetBlacklist stealthTargetBlacklist;
     private final PvpManager pvpManager;
@@ -32,6 +33,7 @@ public class TargetManager {
     private final ProfileManager profileManager;
 
     public TargetManager(Mystica main){
+        fakePlayerTargetManager = main.getFakePlayerTargetManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         stealthTargetBlacklist = main.getStealthTargetBlacklist();
         pveChecker = main.getPveChecker();
@@ -40,8 +42,13 @@ public class TargetManager {
     }
 
 
-    public LivingEntity getPlayerTarget(Player player){
-        return playerTarget.get(player.getUniqueId());
+    public LivingEntity getPlayerTarget(LivingEntity caster){
+
+        if(!(caster instanceof Player)){
+            return fakePlayerTargetManager.getTarget(caster);
+        }
+
+        return playerTarget.get(caster.getUniqueId());
     }
 
     public void updateTargetBar(Player player){
@@ -56,11 +63,18 @@ public class TargetManager {
 
     }
 
-    public void setPlayerTarget(Player player, LivingEntity entity){
+    public void setPlayerTarget(LivingEntity caster, LivingEntity entity){
 
         if(entity instanceof ArmorStand){
             return;
         }
+
+        if(!(caster instanceof Player)){
+            fakePlayerTargetManager.setFakePlayerTarget(caster, entity);
+            return;
+        }
+
+        Player player = (Player) caster;
 
         playerTarget.put(player.getUniqueId(), entity);
         if(playerTargetBar.containsKey(player.getUniqueId())){
@@ -74,11 +88,27 @@ public class TargetManager {
             if(entity.isDead()){
                 removeAllBars(player);
             }
+
+            if(!profileManager.getCompanions(player).isEmpty()){
+                for(LivingEntity companion : profileManager.getCompanions(player)){
+                    //Bukkit.getLogger().info("suggesting");
+                    fakePlayerTargetManager.suggestTarget(companion, entity);
+                }
+            }
         }
+
 
     }
 
-    public void setTargetToNearestValid(Player player, double radius){
+    public void setTargetToNearestValid(LivingEntity caster, double radius){
+
+
+        if(!(caster instanceof Player)){
+            fakePlayerTargetManager.setTargetToNearestValid(caster, radius);
+            return;
+        }
+
+        Player player = (Player) caster;
 
         LivingEntity target = getPlayerTarget(player);
 

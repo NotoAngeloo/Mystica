@@ -46,6 +46,8 @@ public class DescendingInferno {
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
+    private final double range = 20;
+
     public DescendingInferno(Mystica main, AbilityManager manager, ElementalistAbilities elementalistAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
@@ -63,95 +65,62 @@ public class DescendingInferno {
 
     }
 
-    public void use(Player player){
+    public void use(LivingEntity caster){
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        double baseRange = 20;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
-        double totalRange = baseRange + extraRange;
+        targetManager.setTargetToNearestValid(caster, range + buffAndDebuffManager.getTotalRangeModifier(caster));
 
-        targetManager.setTargetToNearestValid(player, totalRange);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
-
-        if(target != null){
-            if(target instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) target)){
-                    return;
-                }
-            }
-
-            if(!(target instanceof Player)){
-                if(!pveChecker.pveLogic(target)){
-                    return;
-                }
-            }
-
-            double distance = player.getLocation().distance(target.getLocation());
-
-            if(distance > totalRange){
-                return;
-            }
-        }
-
-        if(target == null){
+        if(!usable(caster, target)){
             return;
         }
 
-        if(getCooldown(player) > 0){
-            return;
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 10);
+        abilityReadyInMap.put(caster.getUniqueId(), 10);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 3);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 3);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = abilityReadyInMap.get(player.getUniqueId()) - 1;
+                int cooldown = abilityReadyInMap.get(caster.getUniqueId()) - 1;
 
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 3);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 3);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    //now if elemental breath, explode as well
-    private void execute(Player player){
 
-        boolean conjurer = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("conjurer");
+    private void execute(LivingEntity caster){
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        boolean conjurer = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("conjurer");
 
-        Location start = player.getLocation();
+        LivingEntity target = targetManager.getPlayerTarget(caster);
+
+        Location start = caster.getLocation();
         start.subtract(0, 1, 0);
 
         ItemStack fireballItem = new ItemStack(Material.DRAGON_BREATH);
@@ -160,7 +129,7 @@ public class DescendingInferno {
         meta.setCustomModelData(1);
         fireballItem.setItemMeta(meta);
 
-        ArmorStand armorStandLeft = player.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStandLeft = caster.getWorld().spawn(start, ArmorStand.class);
         armorStandLeft.setInvisible(true);
         armorStandLeft.setGravity(false);
         armorStandLeft.setCollidable(false);
@@ -172,7 +141,7 @@ public class DescendingInferno {
         assert entityEquipmentLeft != null;
         entityEquipmentLeft.setHelmet(fireballItem);
 
-        ArmorStand armorStandRight = player.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStandRight = caster.getWorld().spawn(start, ArmorStand.class);
         armorStandRight.setInvisible(true);
         armorStandRight.setGravity(false);
         armorStandRight.setCollidable(false);
@@ -184,7 +153,7 @@ public class DescendingInferno {
         assert entityEquipmentRight != null;
         entityEquipmentRight.setHelmet(fireballItem);
 
-        ArmorStand armorStandMiddle = player.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStandMiddle = caster.getWorld().spawn(start, ArmorStand.class);
         armorStandMiddle.setInvisible(true);
         armorStandMiddle.setGravity(false);
         armorStandMiddle.setCollidable(false);
@@ -196,12 +165,12 @@ public class DescendingInferno {
         assert entityEquipmentMiddle != null;
         entityEquipmentMiddle.setHelmet(fireballItem);
 
-        double skillDamage = getSkillDamage(player);
+        double skillDamage = getSkillDamage(caster);
 
         if(conjurer){
 
-            double maxMana = profileManager.getAnyProfile(player).getTotalMana();
-            double currentMana = profileManager.getAnyProfile(player).getCurrentMana();
+            double maxMana = profileManager.getAnyProfile(caster).getTotalMana();
+            double currentMana = profileManager.getAnyProfile(caster).getCurrentMana();
 
             double percent = maxMana/currentMana;
 
@@ -247,21 +216,21 @@ public class DescendingInferno {
                     }
 
                     armorStandLeft.teleport(currentLeft);
-                    player.getWorld().spawnParticle(Particle.FLAME, currentLeft.clone().add(0,1,0), 1, 0, 0, 0, 0);
+                    caster.getWorld().spawnParticle(Particle.FLAME, currentLeft.clone().add(0,1,0), 1, 0, 0, 0, 0);
 
                     if (distanceLeft <= 1) {
                         armorStandLeft.remove();
                         leftActive = false;
                         needToInflame = true;
 
-                        boolean crit = damageCalculator.checkIfCrit(player, 0);
-                        double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
+                        boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                        double damage = damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage, crit);
 
-                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                        changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                        changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
 
-                        if(elementalBreath.getIfBuffTime(player) > 0){
-                            explodeFireball(player);
+                        if(elementalBreath.getIfBuffTime(caster) > 0){
+                            explodeFireball(caster);
                         }
                     }
                 }
@@ -283,21 +252,21 @@ public class DescendingInferno {
                     }
 
                     armorStandRight.teleport(currentRight);
-                    player.getWorld().spawnParticle(Particle.FLAME, currentRight.clone().add(0,1,0), 1, 0, 0, 0, 0);
+                    caster.getWorld().spawnParticle(Particle.FLAME, currentRight.clone().add(0,1,0), 1, 0, 0, 0, 0);
 
                     if (distanceRight <= 1) {
                         armorStandRight.remove();
                         rightActive = false;
                         needToInflame = true;
 
-                        boolean crit = damageCalculator.checkIfCrit(player, 0);
-                        double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
+                        boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                        double damage = damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage, crit);
 
-                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                        changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                        changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
 
-                        if(elementalBreath.getIfBuffTime(player) > 0){
-                            explodeFireball(player);
+                        if(elementalBreath.getIfBuffTime(caster) > 0){
+                            explodeFireball(caster);
                         }
                     }
                 }
@@ -313,21 +282,21 @@ public class DescendingInferno {
                     }
 
                     armorStandMiddle.teleport(currentMiddle);
-                    player.getWorld().spawnParticle(Particle.FLAME, currentMiddle.clone().add(0,1,0), 1, 0, 0, 0, 0);
+                    caster.getWorld().spawnParticle(Particle.FLAME, currentMiddle.clone().add(0,1,0), 1, 0, 0, 0, 0);
 
                     if (distance <= 1) {
                         armorStandMiddle.remove();
                         middleActive = false;
                         needToInflame = true;
 
-                        boolean crit = damageCalculator.checkIfCrit(player, 0);
-                        double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
+                        boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                        double damage = damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage, crit);
 
-                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                        changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                        changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
 
-                        if(elementalBreath.getIfBuffTime(player) > 0){
-                            explodeFireball(player);
+                        if(elementalBreath.getIfBuffTime(caster) > 0){
+                            explodeFireball(caster);
                         }
                     }
                 }
@@ -336,7 +305,7 @@ public class DescendingInferno {
 
                     inflamedAlready = true;
 
-                    fieryWing.addInflame(player);
+                    fieryWing.addInflame(caster);
                 }
 
                 //check if all 3 are gone before canceling
@@ -364,7 +333,7 @@ public class DescendingInferno {
                 return !target.isDead();
             }
 
-            private void explodeFireball(Player player){
+            private void explodeFireball(LivingEntity caster){
 
                 Set<LivingEntity> hitBySkill = new HashSet<>();
 
@@ -388,9 +357,9 @@ public class DescendingInferno {
                     target.getWorld().spawnParticle(Particle.FLAME, loc, 1, 0, 0, 0, 0);
                 }
 
-                for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+                for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
-                    if(entity == player){
+                    if(entity == caster){
                         continue;
                     }
 
@@ -410,20 +379,20 @@ public class DescendingInferno {
 
                     hitBySkill.add(livingEntity);
 
-                    boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = (damageCalculator.calculateDamage(player, livingEntity, "Magical", finalSkillDamage, crit));
+                    boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                    double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Magical", finalSkillDamage, crit));
 
                     //pvp logic
                     if(entity instanceof Player){
-                        if(pvpManager.pvpLogic(player, (Player) entity)){
-                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                        if(pvpManager.pvpLogic(caster, (Player) entity)){
+                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
                         }
                         continue;
                     }
 
                     if(pveChecker.pveLogic(livingEntity)){
-                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, player));
-                        changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
+                        changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
                     }
 
                 }
@@ -434,9 +403,9 @@ public class DescendingInferno {
 
     }
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_3_Level_Bonus();
 
         return 20 + ((int)(skillLevel/3));
     }
@@ -445,8 +414,8 @@ public class DescendingInferno {
         return 5;
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -455,7 +424,46 @@ public class DescendingInferno {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
     }
+
+    public boolean usable(LivingEntity caster, LivingEntity target){
+        if(target != null){
+            if(target instanceof Player){
+                if(!pvpManager.pvpLogic(caster, (Player) target)){
+                    return false;
+                }
+            }
+
+            if(!(target instanceof Player)){
+                if(!pveChecker.pveLogic(target)){
+                    return false;
+                }
+            }
+
+            double distance = caster.getLocation().distance(target.getLocation());
+
+            if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+                return false;
+            }
+        }
+
+        if(target == null){
+            return false;
+        }
+
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
+    }
+
+
 }

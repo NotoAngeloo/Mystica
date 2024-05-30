@@ -9,10 +9,7 @@ import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.Stats;
 import me.angeloo.mystica.CustomEvents.BoardValueUpdateEvent;
 import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
-import me.angeloo.mystica.Managers.BuffAndDebuffManager;
-import me.angeloo.mystica.Managers.DpsManager;
-import me.angeloo.mystica.Managers.ProfileManager;
-import me.angeloo.mystica.Managers.QuestManager;
+import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
@@ -27,6 +24,7 @@ public class ChangeResourceHandler {
 
     private final Mystica main;
 
+    private final FakePlayerAiManager fakePlayerAiManager;
     private final DailyData dailyData;
     private final ProfileManager profileManager;
     private final QuestManager questManager;
@@ -44,6 +42,7 @@ public class ChangeResourceHandler {
 
     public ChangeResourceHandler(Mystica main){
         this.main = main;
+        fakePlayerAiManager = main.getFakePlayerAiManager();
         questManager = main.getQuestManager();
         dailyData = main.getDailyData();
         protocolManager = main.getProtocolManager();
@@ -114,6 +113,13 @@ public class ChangeResourceHandler {
             }
 
             dpsManager.addToDamageDealt(damager, damage);
+
+            //here
+            if(!profileManager.getCompanions((Player) damager).isEmpty()){
+                for(LivingEntity companion : profileManager.getCompanions((Player) damager)){
+                    fakePlayerAiManager.signalAttack(companion);
+                }
+            }
         }
 
         if(profileManager.getAnyProfile(entity).getImmortality()){
@@ -338,13 +344,13 @@ public class ChangeResourceHandler {
 
     }
 
-    public void subTractManaFromPlayer(Player player, Double cost){
+    public void subTractManaFromEntity(LivingEntity caster, Double cost){
 
-        double currentMana = profileManager.getAnyProfile(player).getCurrentMana();
+        double currentMana = profileManager.getAnyProfile(caster).getCurrentMana();
         double newCurrentMana = currentMana - cost;
-        profileManager.getAnyProfile(player).setCurrentMana(newCurrentMana);
+        profileManager.getAnyProfile(caster).setCurrentMana(newCurrentMana);
 
-        lastManaed.put(player.getUniqueId(), (System.currentTimeMillis()/1000));
+        lastManaed.put(caster.getUniqueId(), (System.currentTimeMillis()/1000));
     }
 
     public void addManaToEntity(LivingEntity entity, Double amount){

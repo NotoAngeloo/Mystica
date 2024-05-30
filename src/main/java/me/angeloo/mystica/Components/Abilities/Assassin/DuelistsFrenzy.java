@@ -53,95 +53,66 @@ public class DuelistsFrenzy {
         stealth = assassinAbilities.getStealth();
     }
 
-    public void use(Player player){
+    private final double range = 7;
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void use(LivingEntity caster){
+
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        double baseRange = 7;
 
-        targetManager.setTargetToNearestValid(player, baseRange);
+        targetManager.setTargetToNearestValid(caster, range);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
-
-        if(target != null){
-            if(target instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) target)){
-                    return;
-                }
-            }
-
-            if(!(target instanceof Player)){
-                if(!pveChecker.pveLogic(target)){
-                    return;
-                }
-            }
-
-            double distance = player.getLocation().distance(target.getLocation());
-
-            if(distance > baseRange){
-                return;
-            }
-        }
-
-        if(target == null){
+        if(!usable(caster, target)){
             return;
         }
 
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        if(getCooldown(player) > 0){
-            return;
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        if(combo.getComboPoints(player) < 6){
-            return;
-        }
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 30);
+        abilityReadyInMap.put(caster.getUniqueId(), 30);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
+                if(getCooldown(caster) <= 0){
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                if(caster instanceof Player){
+                    shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo((Player) caster);
+                }
+
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);;
 
-        combo.removeAnAmountOfPoints(player, combo.getComboPoints(player));
+
+        combo.removeAnAmountOfPoints(caster, combo.getComboPoints(caster));
 
         //abilityManager.setSkillRunning(player, true);
-        double finalSkillDamage = getSkillDamage(player);
+        double finalSkillDamage = getSkillDamage(caster);
         new BukkitRunnable(){
             boolean up = true;
             Vector initialDirection;
@@ -151,7 +122,14 @@ public class DuelistsFrenzy {
             @Override
             public void run(){
 
-                if(!player.isOnline() || buffAndDebuffManager.getIfInterrupt(player)){
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        cancelTask();
+                        return;
+                    }
+                }
+
+                if(buffAndDebuffManager.getIfInterrupt(caster)){
                     cancelTask();
                     return;
                 }
@@ -179,8 +157,8 @@ public class DuelistsFrenzy {
                     Location current = new Location(center.getWorld(), x, center.getY() + height, z);
                     Vector dirToTarget = center.toVector().subtract(current.toVector());
                     current.setDirection(dirToTarget);
-                    player.teleport(current);
-                    player.getWorld().spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, current, 1, 0, 0, 0, 0);
+                    caster.teleport(current);
+                    caster.getWorld().spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, current, 1, 0, 0, 0, 0);
 
                     if(height<5){
                         height+=.2;
@@ -194,7 +172,7 @@ public class DuelistsFrenzy {
                 }
                 else{
 
-                    Location current = player.getLocation().clone();
+                    Location current = caster.getLocation().clone();
 
                     double distance = current.distance(center);
                     double distanceThisTick = Math.min(distance, .5);
@@ -206,7 +184,7 @@ public class DuelistsFrenzy {
 
                     center.setDirection(downDir);
 
-                    player.teleport(current);
+                    caster.teleport(current);
 
                     if(distance<=1){
 
@@ -218,17 +196,17 @@ public class DuelistsFrenzy {
                             double y = current.getY() + 1;
                             double z = current.getZ() + (2 * Math.sin(angle));
                             Location loc = new Location(current.getWorld(), x, y, z);
-                            player.getWorld().spawnParticle(Particle.CRIT_MAGIC, loc, 1,0, 0, 0, 0);
+                            caster.getWorld().spawnParticle(Particle.CRIT_MAGIC, loc, 1,0, 0, 0, 0);
                         }
 
                         //also damage
-                        boolean crit = damageCalculator.checkIfCrit(player, 0);
-                        double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
+                        boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                        double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
 
-                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                        changeResourceHandler.subtractHealthFromEntity(target, damage, player);
-                        stealth.stealthBonusCheck(player, target);
-                        applyFrenzy(player);
+                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                        changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+                        stealth.stealthBonusCheck(caster, target);
+                        applyFrenzy(caster);
                         cancelTask();
                     }
                 }
@@ -261,34 +239,34 @@ public class DuelistsFrenzy {
         return 20;
     }
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getStats().getLevel();
         return 150 + ((int)(skillLevel/3));
     }
 
-    private void applyFrenzy(Player player){
+    private void applyFrenzy(LivingEntity caster){
 
-        frenzy.put(player.getUniqueId(), true);
+        frenzy.put(caster.getUniqueId(), true);
 
         new BukkitRunnable(){
             @Override
             public void run(){
-                removeFrenzy(player);
+                removeFrenzy(caster);
             }
         }.runTaskLater(main, 20*15);
 
     }
 
-    public void removeFrenzy(Player player){
-        frenzy.remove(player.getUniqueId());
+    public void removeFrenzy(LivingEntity caster){
+        frenzy.remove(caster.getUniqueId());
     }
 
-    public boolean getFrenzy(Player player){
-        return frenzy.getOrDefault(player.getUniqueId(),false);
+    public boolean getFrenzy(LivingEntity caster){
+        return frenzy.getOrDefault(caster.getUniqueId(),false);
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -306,8 +284,50 @@ public class DuelistsFrenzy {
         return 0;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster, LivingEntity target){
+
+        if(target != null){
+            if(target instanceof Player){
+                if(!pvpManager.pvpLogic(caster, (Player) target)){
+                    return false;
+                }
+            }
+
+            if(!(target instanceof Player)){
+                if(!pveChecker.pveLogic(target)){
+                    return false;
+                }
+            }
+
+            double distance = caster.getLocation().distance(target.getLocation());
+
+            if(distance > range){
+                return false;
+            }
+        }
+
+        if(target == null){
+            return false;
+        }
+
+
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+        if(combo.getComboPoints(caster) < 6){
+            return false;
+        }
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

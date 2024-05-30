@@ -56,79 +56,68 @@ public class DuranceOfTruth {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    public void use(Player player){
+    public void use(LivingEntity caster){
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-
-        if(getCooldown(player) > 0){
-            return;
-        }
-
-        Block block = player.getLocation().subtract(0,1,0).getBlock();
-
-        if(block.getType() == Material.AIR){
+        if(!usable(caster)){
             return;
         }
 
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 20);
+        abilityReadyInMap.put(caster.getUniqueId(), 20);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 7);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 7);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 7);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 7);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
         double baseRange = 15;
 
-        targetManager.setTargetToNearestValid(player, baseRange);
+        targetManager.setTargetToNearestValid(caster, baseRange);
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
         boolean targeted = false;
 
-        Vector direction = player.getLocation().getDirection().setY(0).normalize();
+        Vector direction = caster.getLocation().getDirection().setY(0).normalize();
 
         if(target != null){
 
             if(target instanceof Player){
-                if(pvpManager.pvpLogic(player, (Player) target)){
+                if(pvpManager.pvpLogic(caster, (Player) target)){
 
-                    double distance = player.getLocation().distance(target.getLocation());
+                    double distance = caster.getLocation().distance(target.getLocation());
 
                     if(distance < baseRange){
                         targeted = true;
@@ -140,7 +129,7 @@ public class DuranceOfTruth {
             if(!(target instanceof Player)){
                 if(pveChecker.pveLogic(target)){
 
-                    double distance = player.getLocation().distance(target.getLocation());
+                    double distance = caster.getLocation().distance(target.getLocation());
 
                     if(distance < baseRange){
                         targeted = true;
@@ -153,10 +142,10 @@ public class DuranceOfTruth {
         }
 
         if(targeted){
-            direction = target.getLocation().toVector().subtract(player.getLocation().toVector()).setY(0).normalize();
+            direction = target.getLocation().toVector().subtract(caster.getLocation().toVector()).setY(0).normalize();
         }
 
-        Location start = player.getLocation().clone();
+        Location start = caster.getLocation().clone();
         //Location end = start.clone().add(direction.multiply(baseRange));
         Location end = start.clone();
 
@@ -179,7 +168,7 @@ public class DuranceOfTruth {
 
         //abilityManager.setSkillRunning(player, true);
         Location finalEnd = end;
-        double finalSkillDamage = getSkillDamage(player);
+        double finalSkillDamage = getSkillDamage(caster);
         new BukkitRunnable(){
             final Set<LivingEntity> affected = new HashSet<>();
             final List<ArmorStand> allStands = new ArrayList<>();
@@ -192,13 +181,15 @@ public class DuranceOfTruth {
             @Override
             public void run(){
 
-                if(!player.isOnline()){
-                    //abilityManager.setSkillRunning(player, false);
-                    return;
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        return;
+                    }
                 }
 
+
                 if(going){
-                    Location current = player.getLocation();
+                    Location current = caster.getLocation();
                     double distance = current.distance(finalEnd);
                     double distanceThisTick = Math.min(distance, 1);
 
@@ -214,11 +205,11 @@ public class DuranceOfTruth {
                         current.add(0,distanceThisTick,0);
                     }
 
-                    player.teleport(current);
+                    caster.teleport(current);
 
                     if(distance<=1){
                         going = false;
-                        center = player.getLocation();
+                        center = caster.getLocation();
                         spawnShields(center);
                         damage();
                         //abilityManager.setSkillRunning(player, false);
@@ -235,7 +226,7 @@ public class DuranceOfTruth {
                         double y = center.getY() + 1;
                         double z = center.getZ() + (4 * Math.sin(angle));
                         Location loc = new Location(center.getWorld(), x, y, z);
-                        player.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1,0, 0, 0, 0);
+                        caster.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1,0, 0, 0, 0);
                     }
 
                     Set<LivingEntity> hitByThisTick = new HashSet<>();
@@ -249,15 +240,15 @@ public class DuranceOfTruth {
                             center.getZ() + 4
                     );
 
-                    for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+                    for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
-                        if(entity == player){
+                        if(entity == caster){
 
                             if(count%20==0){
-                                double fivePercent = (profileManager.getAnyProfile(player).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player)) * .05;
-                                changeResourceHandler.addHealthToEntity(player, fivePercent, player);
+                                double fivePercent = (profileManager.getAnyProfile(caster).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(caster)) * .05;
+                                changeResourceHandler.addHealthToEntity(caster, fivePercent, caster);
 
-                                buffAndDebuffManager.getDamageReduction().applyDamageReduction(player, 0.95, 20);
+                                buffAndDebuffManager.getDamageReduction().applyDamageReduction(caster, 0.95, 20);
                             }
 
                             continue;
@@ -275,7 +266,7 @@ public class DuranceOfTruth {
 
                         //pvp logic
                         if(entity instanceof Player){
-                            if(pvpManager.pvpLogic(player, (Player) entity)){
+                            if(pvpManager.pvpLogic(caster, (Player) entity)){
                                 hitByThisTick.add(livingEntity);
                                 affected.add(livingEntity);
                             }
@@ -316,9 +307,9 @@ public class DuranceOfTruth {
                         center.getZ() + 4
                 );
 
-                for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+                for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
-                    if(entity == player){
+                    if(entity == caster){
                         continue;
                     }
 
@@ -332,20 +323,20 @@ public class DuranceOfTruth {
 
                     LivingEntity livingEntity = (LivingEntity) entity;
 
-                    boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", finalSkillDamage, crit));
+                    boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                    double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Physical", finalSkillDamage, crit));
 
                     //pvp logic
                     if(entity instanceof Player){
-                        if(pvpManager.pvpLogic(player, (Player) entity)){
-                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                        if(pvpManager.pvpLogic(caster, (Player) entity)){
+                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
                         }
                         continue;
                     }
 
                     if(pveChecker.pveLogic(livingEntity)){
-                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, player));
-                        changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
+                        changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
                     }
 
                 }
@@ -360,12 +351,12 @@ public class DuranceOfTruth {
                 meta.setCustomModelData(7);
                 item.setItemMeta(meta);
 
-                Vector direction = player.getLocation().getDirection().setY(0).normalize();
+                Vector direction = caster.getLocation().getDirection().setY(0).normalize();
                 Vector crossProduct = direction.clone().crossProduct(new Vector(0,1,0)).normalize();
 
 
                 Location s1spawn = center.clone().add(direction.clone().multiply(4)).setDirection(direction.clone());
-                ArmorStand shield = player.getWorld().spawn(s1spawn.clone().subtract(0,5,0), ArmorStand.class);
+                ArmorStand shield = caster.getWorld().spawn(s1spawn.clone().subtract(0,5,0), ArmorStand.class);
                 shield.setInvisible(true);
                 shield.setGravity(false);
                 shield.setCollidable(false);
@@ -379,7 +370,7 @@ public class DuranceOfTruth {
                 shield.teleport(s1spawn);
 
                 Location s2spawn = center.clone().subtract(direction.clone().multiply(4)).setDirection(direction.clone().multiply(-1));
-                ArmorStand shield2 = player.getWorld().spawn(s2spawn.clone().subtract(0,5,0), ArmorStand.class);
+                ArmorStand shield2 = caster.getWorld().spawn(s2spawn.clone().subtract(0,5,0), ArmorStand.class);
                 shield2.setInvisible(true);
                 shield2.setGravity(false);
                 shield2.setCollidable(false);
@@ -393,7 +384,7 @@ public class DuranceOfTruth {
                 shield2.teleport(s2spawn);
 
                 Location s3spawn = center.clone().add(crossProduct.clone().multiply(4)).setDirection(crossProduct.clone());
-                ArmorStand shield3 = player.getWorld().spawn(s3spawn.clone().subtract(0,5,0), ArmorStand.class);
+                ArmorStand shield3 = caster.getWorld().spawn(s3spawn.clone().subtract(0,5,0), ArmorStand.class);
                 shield3.setInvisible(true);
                 shield3.setGravity(false);
                 shield3.setCollidable(false);
@@ -407,7 +398,7 @@ public class DuranceOfTruth {
 
                 Location s4spawn = center.clone().subtract(crossProduct.clone().multiply(4)).setDirection(crossProduct.clone().multiply(-1));
 
-                ArmorStand shield4 = player.getWorld().spawn(s4spawn.clone().subtract(0,5,0), ArmorStand.class);
+                ArmorStand shield4 = caster.getWorld().spawn(s4spawn.clone().subtract(0,5,0), ArmorStand.class);
                 shield4.setInvisible(true);
                 shield4.setGravity(false);
                 shield4.setCollidable(false);
@@ -436,9 +427,9 @@ public class DuranceOfTruth {
 
     }
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_7_Level_Bonus();
         return 25 + ((int)(skillLevel/3));
     }
 
@@ -446,8 +437,8 @@ public class DuranceOfTruth {
         return 10;
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -456,8 +447,27 @@ public class DuranceOfTruth {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster){
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+        Block block = caster.getLocation().subtract(0,1,0).getBlock();
+
+        if(block.getType() == Material.AIR){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

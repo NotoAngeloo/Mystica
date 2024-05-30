@@ -56,85 +56,96 @@ public class PurifyingBlast {
         consolation = mysticAbilities.getConsolation();
     }
 
-    public void use(Player player){
-        if (!abilityReadyInMap.containsKey(player.getUniqueId())) {
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void use(LivingEntity caster){
+        if (!abilityReadyInMap.containsKey(caster.getUniqueId())) {
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        if (getCooldown(player) > 0) {
+        if (getCooldown(caster) > 0) {
             return;
         }
 
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        combatManager.startCombatTimer(player);
+        combatManager.startCombatTimer(caster);
 
-        execute(player);
+        execute(caster);
 
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        abilityReadyInMap.put(player.getUniqueId(), 12);
+        abilityReadyInMap.put(caster.getUniqueId(), 12);
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
 
-                if (getCooldown(player) <= 0) {
-                    cooldownDisplayer.displayCooldown(player, 2);
+                if (getCooldown(caster) <= 0) {
+                    cooldownDisplayer.displayCooldown(caster, 2);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
+                int cooldown = getCooldown(caster) - 1;
 
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 2);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 2);
 
             }
         }.runTaskTimer(main, 0, 20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
         int castTime = 20;
 
-        if(getInstantCast(player)){
-            blastTask(player);
+        if(getInstantCast(caster)){
+            blastTask(caster);
             return;
         }
 
-        buffAndDebuffManager.getImmobile().applyImmobile(player, castTime);
+        buffAndDebuffManager.getImmobile().applyImmobile(caster, castTime);
 
-        abilityManager.setCasting(player, true);
+        abilityManager.setCasting(caster, true);
 
         new BukkitRunnable(){
             int count = 0;
             @Override
             public void run(){
 
-                if(!player.isOnline() || buffAndDebuffManager.getIfInterrupt(player)){
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        this.cancel();
+                        abilityManager.setCasting(caster, false);
+                        return;
+                    }
+                }
+
+                if(buffAndDebuffManager.getIfInterrupt(caster)){
                     this.cancel();
-                    abilityManager.setCasting(player, false);
+                    abilityManager.setCasting(caster, false);
                     return;
                 }
 
                 double percent = ((double) count / castTime) * 100;
 
-                abilityManager.setCastBar(player, percent);
+                if(caster instanceof Player){
+                    abilityManager.setCastBar((Player) caster, percent);
+                }
+
 
                 if(count >= castTime){
                     this.cancel();
-                    abilityManager.setCasting(player, false);
-                    blastTask(player);
+                    abilityManager.setCasting(caster, false);
+                    blastTask(caster);
                 }
 
                 count++;
@@ -145,29 +156,29 @@ public class PurifyingBlast {
 
     }
 
-    private void blastTask(Player player){
+    private void blastTask(LivingEntity caster){
 
-        boolean arcane = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("arcane master");
-        boolean shepard = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("shepard");
+        boolean arcane = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("arcane master");
+        boolean shepard = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("shepard");
 
-        if(getInstantCast(player)){
-            unQueueInstantCast(player);
+        if(getInstantCast(caster)){
+            unQueueInstantCast(caster);
         }
 
 
-        double healPower = getSkillDamage(player);
+        double healPower = getSkillDamage(caster);
 
         if(shepard){
             healPower *= 1.5;
         }
 
-        double skillDamage = getSkillDamage(player);
+        double skillDamage = getSkillDamage(caster);
 
         if(arcane){
             skillDamage*=3;
         }
 
-        Location center = player.getLocation().clone();
+        Location center = caster.getLocation().clone();
 
         Set<LivingEntity> hitBySkill = new HashSet<>();
 
@@ -188,7 +199,7 @@ public class PurifyingBlast {
                         center.getZ() + progress
                 );
 
-                for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+                for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
 
                     if(!(entity instanceof LivingEntity)){
@@ -207,19 +218,19 @@ public class PurifyingBlast {
 
                     hitBySkill.add(livingEntity);
 
-                    boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = (damageCalculator.calculateDamage(player, livingEntity, "Magical", finalSkillDamage, crit));
+                    boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                    double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Magical", finalSkillDamage, crit));
 
                     //pvp logic
                     if(entity instanceof Player){
-                        if(pvpManager.pvpLogic(player, (Player) entity)){
-                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                        if(pvpManager.pvpLogic(caster, (Player) entity)){
+                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
                         }
                         else{
-                            double healAmount  = damageCalculator.calculateHealing(player, finalHealPower, crit);
-                            changeResourceHandler.addHealthToEntity(livingEntity, healAmount, player);
+                            double healAmount  = damageCalculator.calculateHealing(caster, finalHealPower, crit);
+                            changeResourceHandler.addHealthToEntity(livingEntity, healAmount, caster);
                             if(shepard){
-                                consolation.apply(player, livingEntity);
+                                consolation.apply(caster, livingEntity);
                             }
                         }
 
@@ -227,14 +238,14 @@ public class PurifyingBlast {
                     }
 
                     if(pveChecker.pveLogic(livingEntity)){
-                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, player));
-                        changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
+                        changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
                     }
                     else{
-                        double healAmount  = damageCalculator.calculateHealing(player, finalHealPower, crit);
-                        changeResourceHandler.addHealthToEntity(livingEntity, healAmount, player);
+                        double healAmount  = damageCalculator.calculateHealing(caster, finalHealPower, crit);
+                        changeResourceHandler.addHealthToEntity(livingEntity, healAmount, caster);
                         if(shepard){
-                            consolation.apply(player, livingEntity);
+                            consolation.apply(caster, livingEntity);
                         }
                     }
 
@@ -249,8 +260,8 @@ public class PurifyingBlast {
                     double angle = i * increment;
                     double x = center.getX() + (radius * Math.cos(angle));
                     double z = center.getZ() + (radius * Math.sin(angle));
-                    Location loc = new Location(player.getWorld(), x, center.getY(), z);
-                    player.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1, 0, 0, 0, 0);
+                    Location loc = new Location(caster.getWorld(), x, center.getY(), z);
+                    caster.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1, 0, 0, 0, 0);
                 }
 
 
@@ -265,21 +276,32 @@ public class PurifyingBlast {
         }.runTaskTimer(main, 0, 1);
     }
 
-    public void queueInstantCast(Player player){
-        instantCast.put(player.getUniqueId(), true);
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+    public void queueInstantCast(LivingEntity caster){
+        instantCast.put(caster.getUniqueId(), true);
+
+        if(caster instanceof Player){
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+        }
+
+
     }
-    public void unQueueInstantCast(Player player){
-        instantCast.remove(player.getUniqueId());
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));}
+    public void unQueueInstantCast(LivingEntity caster){
+        instantCast.remove(caster.getUniqueId());
 
+        if(caster instanceof Player){
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
 
-    public boolean getInstantCast(Player player){
-        return instantCast.getOrDefault(player.getUniqueId(), false);
+        }
+
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+
+    public boolean getInstantCast(LivingEntity caster){
+        return instantCast.getOrDefault(caster.getUniqueId(), false);
+    }
+
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -292,14 +314,14 @@ public class PurifyingBlast {
         return 10;
     }
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_2_Level_Bonus();
 
         return 15 + ((int)(skillLevel/3));
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
     }
 }

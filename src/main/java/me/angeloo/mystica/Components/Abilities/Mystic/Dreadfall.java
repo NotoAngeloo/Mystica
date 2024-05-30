@@ -55,95 +55,65 @@ public class Dreadfall {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    public void use(Player player){
+    private final double range = 20;
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void use(LivingEntity caster){
+
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        double baseRange = 20;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
-        double totalRange = baseRange + extraRange;
+        targetManager.setTargetToNearestValid(caster, range+ buffAndDebuffManager.getTotalRangeModifier(caster));
 
-        targetManager.setTargetToNearestValid(player, totalRange);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
-
-        if(target != null){
-            if(target instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) target)){
-                    return;
-                }
-            }
-
-            if(!(target instanceof Player)){
-                if(!pveChecker.pveLogic(target)){
-                    return;
-                }
-            }
-
-            double distance = player.getLocation().distance(target.getLocation());
-
-            if(distance > totalRange){
-                return;
-            }
-        }
-
-        if(target == null){
-            return;
-        }
-
-        if(getCooldown(player) > 0){
+        if(!usable(caster, target)){
             return;
         }
 
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 10);
+        abilityReadyInMap.put(caster.getUniqueId(), 10);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 4);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 4);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 4);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 4);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        boolean arcane = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("arcane master");
+        boolean arcane = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("arcane master");
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
         Location spawnLoc = target.getLocation().clone().add(0,10,0);
 
-        ArmorStand armorStand = player.getWorld().spawn(spawnLoc, ArmorStand.class);
+        ArmorStand armorStand = caster.getWorld().spawn(spawnLoc, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -162,7 +132,7 @@ public class Dreadfall {
 
 
 
-        double finalSkillDamage = getSkillDamage(player);
+        double finalSkillDamage = getSkillDamage(caster);
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
             int count = 0;
@@ -214,12 +184,12 @@ public class Dreadfall {
                         double z = target.getLocation().getZ() + (4 * Math.sin(angle));
                         Location loc = new Location(target.getWorld(), x, (target.getLocation().getY()), z);
 
-                        player.getWorld().spawnParticle(Particle.SPELL_WITCH, loc, 1,0, 0, 0, 0);
+                        caster.getWorld().spawnParticle(Particle.SPELL_WITCH, loc, 1,0, 0, 0, 0);
                     }
 
-                    for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+                    for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
-                        if(entity == player){
+                        if(entity == caster){
                             continue;
                         }
 
@@ -239,13 +209,13 @@ public class Dreadfall {
 
                         hitBySkill.add(livingEntity);
 
-                        boolean crit = damageCalculator.checkIfCrit(player, 0);
-                        double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
+                        boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                        double damage = damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage, crit);
 
                         //pvp logic
                         if(entity instanceof Player){
-                            if(pvpManager.pvpLogic(player, (Player) entity)){
-                                changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                            if(pvpManager.pvpLogic(caster, (Player) entity)){
+                                changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
 
                                 if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
                                     Vector velocity = (new Vector(0, .5, 0));
@@ -254,8 +224,8 @@ public class Dreadfall {
                                 }
 
                                 if(arcane && crit){
-                                    double fifteenPercent = (double) profileManager.getAnyProfile(player).getTotalAttack() * .15;
-                                    changeResourceHandler.subtractHealthFromEntity(target, fifteenPercent, player);
+                                    double fifteenPercent = (double) profileManager.getAnyProfile(caster).getTotalAttack() * .15;
+                                    changeResourceHandler.subtractHealthFromEntity(target, fifteenPercent, caster);
                                 }
 
                             }
@@ -263,8 +233,8 @@ public class Dreadfall {
                         }
 
                         if(pveChecker.pveLogic(livingEntity)){
-                            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, player));
-                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
+                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
 
                             if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
                                 Vector velocity = (new Vector(0, .5, 0));
@@ -273,8 +243,8 @@ public class Dreadfall {
                             }
 
                             if(arcane && crit){
-                                double fifteenPercent = (double) profileManager.getAnyProfile(player).getTotalAttack() * .15;
-                                changeResourceHandler.subtractHealthFromEntity(target, fifteenPercent, player);
+                                double fifteenPercent = (double) profileManager.getAnyProfile(caster).getTotalAttack() * .15;
+                                changeResourceHandler.subtractHealthFromEntity(target, fifteenPercent, caster);
                             }
 
                         }
@@ -319,9 +289,9 @@ public class Dreadfall {
 
     }
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_4_Level_Bonus();
 
         return 50 + ((int)(skillLevel/3));
     }
@@ -330,9 +300,9 @@ public class Dreadfall {
         return 10;
     }
 
-    public int getCooldown(Player player){
+    public int getCooldown(LivingEntity caster){
 
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -341,8 +311,45 @@ public class Dreadfall {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster, LivingEntity target){
+        if(target != null){
+            if(target instanceof Player){
+                if(!pvpManager.pvpLogic(caster, (Player) target)){
+                    return false;
+                }
+            }
+
+            if(!(target instanceof Player)){
+                if(!pveChecker.pveLogic(target)){
+                    return false;
+                }
+            }
+
+            double distance = caster.getLocation().distance(target.getLocation());
+
+            if(distance > range+ buffAndDebuffManager.getTotalRangeModifier(caster)){
+                return false;
+            }
+        }
+
+        if(target == null){
+            return false;
+        }
+
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

@@ -51,101 +51,69 @@ public class Aurora {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    public void use(Player player){
-        if (!abilityReadyInMap.containsKey(player.getUniqueId())) {
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    private final double range = 20;
+
+    public void use(LivingEntity caster){
+        if (!abilityReadyInMap.containsKey(caster.getUniqueId())) {
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        double baseRange = 20;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
-        double totalRange = baseRange + extraRange;
-
-        if(target != null){
-
-            if(target instanceof Player){
-                if(pvpManager.pvpLogic(player, (Player) target)){
-                    target = player;
-                }
-            }
-
-            if(pveChecker.pveLogic(target)){
-                target = player;
-            }
+        if(!usable(caster, target)){
+            return;
         }
 
         if(target == null){
-            target = player;
+            target = caster;
         }
 
-        double distance = player.getLocation().distance(target.getLocation());
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        if(distance > totalRange){
-            return;
+        combatManager.startCombatTimer(caster);
+
+        execute(caster, target);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        if (getCooldown(player) > 0) {
-            return;
-        }
-
-        Block block = player.getLocation().subtract(0,1,0).getBlock();
-
-        if(block.getType() == Material.AIR){
-            return;
-        }
-
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player, target);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 35);
+        abilityReadyInMap.put(caster.getUniqueId(), 35);
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
 
-                if (getCooldown(player) <= 0) {
-                    cooldownDisplayer.displayCooldown(player, 6);
+                if (getCooldown(caster) <= 0) {
+                    cooldownDisplayer.displayCooldown(caster, 6);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
+                int cooldown = getCooldown(caster) - 1;
 
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
 
-                cooldownDisplayer.displayCooldown(player, 6);
+                cooldownDisplayer.displayCooldown(caster, 6);
 
             }
         }.runTaskTimer(main, 0, 20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
     }
 
-    private void  execute(Player player, LivingEntity target){
+    private void  execute(LivingEntity caster, LivingEntity target){
 
-        boolean shepard = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("shepard");
+        boolean shepard = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("shepard");
 
         Location center = target.getLocation().clone();
 
         double healPercent = 10;
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_6_Level_Bonus();
         healPercent = healPercent +  ((int)(skillLevel/3));
 
-        double shieldAmount = (profileManager.getAnyProfile(player).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player) + skillLevel) * .5;
+        double shieldAmount = (profileManager.getAnyProfile(caster).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(caster) + skillLevel) * .5;
 
         double finalHealPercent = healPercent;
         new BukkitRunnable(){
@@ -190,7 +158,7 @@ public class Aurora {
                             center.getZ() + 8
                     );
 
-                    for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+                    for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
                         if(!(entity instanceof LivingEntity)){
                             continue;
@@ -203,7 +171,7 @@ public class Aurora {
                         LivingEntity hitEntity = (LivingEntity) entity;
 
                         if(entity instanceof Player){
-                            if (pvpManager.pvpLogic(player, (Player) hitEntity)) {
+                            if (pvpManager.pvpLogic(caster, (Player) hitEntity)) {
                                 continue;
                             }
                         }
@@ -215,9 +183,9 @@ public class Aurora {
                         }
 
                         if(shepard){
-                            boolean crit = damageCalculator.checkIfCrit(player, 0);
-                            double healAmount = damageCalculator.calculateHealing(player, finalHealPercent, crit);
-                            changeResourceHandler.addHealthToEntity(hitEntity, healAmount, player);
+                            boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                            double healAmount = damageCalculator.calculateHealing(caster, finalHealPercent, crit);
+                            changeResourceHandler.addHealthToEntity(hitEntity, healAmount, caster);
                         }
 
                         if(hitBySkill.contains(hitEntity)){
@@ -256,8 +224,8 @@ public class Aurora {
         return 40;
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -266,8 +234,50 @@ public class Aurora {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster, LivingEntity target){
+        if(target != null){
+
+            if(target instanceof Player){
+                if(pvpManager.pvpLogic(caster, (Player) target)){
+                    target = caster;
+                }
+            }
+
+            if(pveChecker.pveLogic(target)){
+                target = caster;
+            }
+        }
+
+        if(target == null){
+            target = caster;
+        }
+
+        double distance = caster.getLocation().distance(target.getLocation());
+
+        if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+            return false;
+        }
+
+        if (getCooldown(caster) > 0) {
+            return false;
+        }
+
+        Block block = caster.getLocation().subtract(0,1,0).getBlock();
+
+        if(block.getType() == Material.AIR){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

@@ -65,65 +65,65 @@ public class PaladinBasic {
         justiceMark = paladinAbilities.getJusticeMark();
     }
 
-    public void useBasic(Player player){
+    public void useBasic(LivingEntity caster){
 
-        if(!basicStageMap.containsKey(player.getUniqueId())){
-            basicStageMap.put(player.getUniqueId(), 1);
+        if(!basicStageMap.containsKey(caster.getUniqueId())){
+            basicStageMap.put(caster.getUniqueId(), 1);
         }
 
-        if(getIfBasicRunning(player)){
+        if(getIfBasicRunning(caster)){
             return;
         }
 
 
-        executeBasic(player);
+        executeBasic(caster);
 
     }
 
-    private void tryToRemoveBasicStage(Player player){
+    private void tryToRemoveBasicStage(LivingEntity caster){
 
-        if(removeBasicStageTaskMap.containsKey(player.getUniqueId())){
-            removeBasicStageTaskMap.get(player.getUniqueId()).cancel();
+        if(removeBasicStageTaskMap.containsKey(caster.getUniqueId())){
+            removeBasicStageTaskMap.get(caster.getUniqueId()).cancel();
         }
 
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(buffAndDebuffManager.getIfBasicInterrupt(player)){
+                if(buffAndDebuffManager.getIfBasicInterrupt(caster)){
                     this.cancel();
-                    stopBasicRunning(player);
+                    stopBasicRunning(caster);
                     return;
                 }
 
-                basicStageMap.remove(player.getUniqueId());
+                basicStageMap.remove(caster.getUniqueId());
             }
         }.runTaskLater(main, 50);
 
-        removeBasicStageTaskMap.put(player.getUniqueId(), task);
+        removeBasicStageTaskMap.put(caster.getUniqueId(), task);
 
     }
 
-    private double getRange(Player player){
+    private double getRange(LivingEntity caster){
         double baseRange = 10;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
+        double extraRange = buffAndDebuffManager.getTotalRangeModifier(caster);
         return baseRange + extraRange;
     }
 
-    private void healTarget(Player player, LivingEntity target){
+    private void healTarget(LivingEntity caster, LivingEntity target){
 
-        boolean crit = damageCalculator.checkIfCrit(player, 0);
+        boolean crit = damageCalculator.checkIfCrit(caster, 0);
 
         double healPower = 1;
 
-        double healAmount = damageCalculator.calculateHealing(player, healPower, crit);
+        double healAmount = damageCalculator.calculateHealing(caster, healPower, crit);
 
-        if(justiceMark.markProc(player, target)){
-            markHealInstead(player, healAmount);
+        if(justiceMark.markProc(caster, target)){
+            markHealInstead(caster, healAmount);
             return;
         }
 
-        changeResourceHandler.addHealthToEntity(target, healAmount, player);
+        changeResourceHandler.addHealthToEntity(target, healAmount, caster);
 
         Location center = target.getLocation().clone().add(0,1,0);
 
@@ -140,12 +140,12 @@ public class PaladinBasic {
 
     }
 
-    private void markHealInstead(Player player, double healAmount){
+    private void markHealInstead(LivingEntity caster, double healAmount){
 
-        List<LivingEntity> affected = justiceMark.getMarkedTargets(player);
+        List<LivingEntity> affected = justiceMark.getMarkedTargets(caster);
 
         for(LivingEntity thisPlayer : affected){
-            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, player);
+            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, caster);
 
             Location center = thisPlayer.getLocation().clone().add(0,1,0);
 
@@ -164,9 +164,9 @@ public class PaladinBasic {
 
     }
 
-    private void executeBasic(Player player){
+    private void executeBasic(LivingEntity caster){
 
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        String subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
         BukkitTask task = new BukkitRunnable(){
             @Override
@@ -174,48 +174,48 @@ public class PaladinBasic {
 
                 if(subclass.equalsIgnoreCase("divine")){
 
-                    if(targetManager.getPlayerTarget(player) == null){
-                        healTarget(player, player);
+                    if(targetManager.getPlayerTarget(caster) == null){
+                        healTarget(caster, caster);
                         return;
                     }
 
-                    if(targetManager.getPlayerTarget(player) instanceof Player){
-                        Player target = (Player) targetManager.getPlayerTarget(player);
+                    if(targetManager.getPlayerTarget(caster) instanceof Player){
+                        Player target = (Player) targetManager.getPlayerTarget(caster);
 
-                        if(!pvpManager.pvpLogic(player, target)){
+                        if(!pvpManager.pvpLogic(caster, target)){
 
-                            Location playerLocation = player.getLocation();
+                            Location playerLocation = caster.getLocation();
                             Location targetLocation = target.getLocation();
 
                             double distance = playerLocation.distance(targetLocation);
 
-                            if (distance > getRange(player)) {
-                                stopBasicRunning(player);
+                            if (distance > getRange(caster)) {
+                                stopBasicRunning(caster);
                                 return;
                             }
 
-                            healTarget(player, target);
+                            healTarget(caster, target);
                             return;
                         }
                     }
 
-                    if(!(targetManager.getPlayerTarget(player) instanceof Player)){
+                    if(!(targetManager.getPlayerTarget(caster) instanceof Player)){
 
-                        LivingEntity target = targetManager.getPlayerTarget(player);
+                        LivingEntity target = targetManager.getPlayerTarget(caster);
 
                         if(!pveChecker.pveLogic(target)){
 
-                            Location playerLocation = player.getLocation();
+                            Location playerLocation = caster.getLocation();
                             Location targetLocation = target.getLocation();
 
                             double distance = playerLocation.distance(targetLocation);
 
-                            if (distance > getRange(player)) {
-                                stopBasicRunning(player);
+                            if (distance > getRange(caster)) {
+                                stopBasicRunning(caster);
                                 return;
                             }
 
-                            healTarget(player, target);
+                            healTarget(caster, target);
                             return;
                         }
                     }
@@ -224,26 +224,26 @@ public class PaladinBasic {
 
                 //check heal instead here
 
-                tryToRemoveBasicStage(player);
-                switch (basicStageMap.get(player.getUniqueId())){
+                tryToRemoveBasicStage(caster);
+                switch (basicStageMap.get(caster.getUniqueId())){
                     case 1:{
-                        basicStage1(player);
+                        basicStage1(caster);
                         break;
                     }
                     case 2:{
-                        basicStage2(player);
+                        basicStage2(caster);
                         break;
                     }
                     case 3:{
-                        basicStage3(player);
+                        basicStage3(caster);
                         break;
                     }
                     case 4:{
-                        basicStage4(player);
+                        basicStage4(caster);
                         break;
                     }
                     case 5:{
-                        basicStage5(player);
+                        basicStage5(caster);
                         break;
 
                     }
@@ -251,32 +251,32 @@ public class PaladinBasic {
 
                 }
 
-                combatManager.startCombatTimer(player);
+                combatManager.startCombatTimer(caster);
             }
         }.runTaskTimer(main, 0, 15);
-        basicRunning.put(player.getUniqueId(), task);
+        basicRunning.put(caster.getUniqueId(), task);
 
 
 
     }
 
-    private void basicStage5(Player player){
-        basicStageMap.put(player.getUniqueId(), 1);
+    private void basicStage5(LivingEntity caster){
+        basicStageMap.put(caster.getUniqueId(), 1);
     }
 
-    private void basicStage1(Player player){
+    private void basicStage1(LivingEntity caster){
 
-        basicStageMap.put(player.getUniqueId(), 2);
+        basicStageMap.put(caster.getUniqueId(), 2);
 
-        Location start = player.getLocation().clone().subtract(0,3,0);
+        Location start = caster.getLocation().clone().subtract(0,3,0);
 
-        Vector direction = player.getLocation().getDirection().setY(0).normalize();
+        Vector direction = caster.getLocation().getDirection().setY(0).normalize();
         start.add(direction.multiply(3));
         start.add(0,6,0);
         direction.rotateAroundY(45);
         start.setDirection(direction);
 
-        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = caster.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -294,7 +294,7 @@ public class PaladinBasic {
         entityEquipment.setHelmet(basicItem);
 
 
-        Location loc = player.getLocation().clone().add(direction.multiply(1.25));
+        Location loc = caster.getLocation().clone().add(direction.multiply(1.25));
 
         //player.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1, 0, 0, 0, 0);
 
@@ -308,15 +308,15 @@ public class PaladinBasic {
         );
 
         LivingEntity targetToHit = null;
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
         LivingEntity firstHit = null;
 
         boolean targetHit = false;
 
 
-        for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+        for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
-            if(entity == player){
+            if(entity == caster){
                 continue;
             }
 
@@ -329,7 +329,7 @@ public class PaladinBasic {
             }
 
             if(entity instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) entity)){
+                if(!pvpManager.pvpLogic(caster, (Player) entity)){
                     continue;
                 }
             }
@@ -365,20 +365,20 @@ public class PaladinBasic {
         }
 
         if(targetToHit != null){
-            targetManager.setPlayerTarget(player, targetToHit);
+            targetManager.setPlayerTarget(caster, targetToHit);
 
-            boolean crit = damageCalculator.checkIfCrit(player, 0);
-            double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", getSkillDamage(player)
-                    + representative.getAdditionalBonusFromBuff(player), crit);
+            boolean crit = damageCalculator.checkIfCrit(caster, 0);
+            double damage = damageCalculator.calculateDamage(caster, targetToHit, "Physical", getSkillDamage(caster)
+                    + representative.getAdditionalBonusFromBuff(caster), crit);
 
-            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, player));
-            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, player);
+            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
+            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster);
 
-            gloryOfPaladins.procGlory(player, targetToHit);
+            gloryOfPaladins.procGlory(caster, targetToHit);
 
         }
         else{
-            stopBasicRunning(player);
+            stopBasicRunning(caster);
         }
 
         new BukkitRunnable(){
@@ -387,13 +387,15 @@ public class PaladinBasic {
             @Override
             public void run(){
 
-                if(!player.isOnline()){
-                    cancelTask();
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        cancelTask();
+                    }
                 }
 
-                Vector direction = player.getLocation().getDirection().setY(0).normalize();
+                Vector direction = caster.getLocation().getDirection().setY(0).normalize();
 
-                Location current = player.getLocation().clone();
+                Location current = caster.getLocation().clone();
                 current.add(direction.multiply(3));
                 current.add(0,2,0);
                 current.subtract(0,traveled,0);
@@ -401,7 +403,7 @@ public class PaladinBasic {
                 current.setDirection(direction);
                 armorStand.teleport(current);
 
-                player.getWorld().spawnParticle(Particle.WAX_OFF, current.clone().add(0,1,0), 1, 0, 0, 0, 0);
+                caster.getWorld().spawnParticle(Particle.WAX_OFF, current.clone().add(0,1,0), 1, 0, 0, 0, 0);
 
                 if(traveled>=3){
                     cancelTask();
@@ -426,18 +428,18 @@ public class PaladinBasic {
         }.runTaskTimer(main, 0, 1);
     }
 
-    private void basicStage2(Player player){
+    private void basicStage2(LivingEntity caster){
 
-        basicStageMap.put(player.getUniqueId(), 3);
+        basicStageMap.put(caster.getUniqueId(), 3);
 
-        Location start = player.getLocation().clone().subtract(0,3,0);
+        Location start = caster.getLocation().clone().subtract(0,3,0);
 
-        Vector direction = player.getLocation().getDirection().setY(0).normalize();
+        Vector direction = caster.getLocation().getDirection().setY(0).normalize();
         Vector crossProduct = direction.clone().crossProduct(new Vector(0,1,0)).normalize();
         start.add(direction.multiply(4));
         start.subtract(crossProduct.multiply(3));
 
-        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = caster.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -454,7 +456,7 @@ public class PaladinBasic {
         assert entityEquipment != null;
         entityEquipment.setHelmet(basicItem);
 
-        Location loc = player.getLocation().clone().add(direction.multiply(1.25));
+        Location loc = caster.getLocation().clone().add(direction.multiply(1.25));
 
         BoundingBox hitBox = new BoundingBox(
                 loc.getX() - 3,
@@ -466,16 +468,16 @@ public class PaladinBasic {
         );
 
         LivingEntity targetToHit = null;
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
         LivingEntity firstHit = null;
 
         boolean targetHit = false;
 
 
 
-        for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+        for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
-            if(entity == player){
+            if(entity == caster){
                 continue;
             }
 
@@ -488,7 +490,7 @@ public class PaladinBasic {
             }
 
             if(entity instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) entity)){
+                if(!pvpManager.pvpLogic(caster, (Player) entity)){
                     continue;
                 }
             }
@@ -523,21 +525,21 @@ public class PaladinBasic {
         }
 
         if(targetToHit != null){
-            targetManager.setPlayerTarget(player, targetToHit);
+            targetManager.setPlayerTarget(caster, targetToHit);
 
 
-            boolean crit = damageCalculator.checkIfCrit(player, 0);
-            double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", getSkillDamage(player)
-                    + representative.getAdditionalBonusFromBuff(player), crit);
+            boolean crit = damageCalculator.checkIfCrit(caster, 0);
+            double damage = damageCalculator.calculateDamage(caster, targetToHit, "Physical", getSkillDamage(caster)
+                    + representative.getAdditionalBonusFromBuff(caster), crit);
 
-            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, player));
-            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, player);
+            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
+            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster);
 
-            gloryOfPaladins.procGlory(player, targetToHit);
+            gloryOfPaladins.procGlory(caster, targetToHit);
 
         }
         else{
-            stopBasicRunning(player);
+            stopBasicRunning(caster);
         }
 
         new BukkitRunnable(){
@@ -546,21 +548,23 @@ public class PaladinBasic {
             @Override
             public void run(){
 
-                if(!player.isOnline()){
-                    cancelTask();
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        cancelTask();
+                    }
                 }
 
-                Vector direction = player.getLocation().getDirection().setY(0).normalize();
+                Vector direction = caster.getLocation().getDirection().setY(0).normalize();
                 Vector crossProduct = direction.clone().crossProduct(new Vector(0,1,0)).normalize();
 
-                Location current = player.getLocation().clone();
+                Location current = caster.getLocation().clone();
                 current.add(direction.multiply(4));
                 current.subtract(crossProduct.multiply(3));
                 current.add(crossProduct.multiply(traveled));
 
                 armorStand.teleport(current);
 
-                player.getWorld().spawnParticle(Particle.WAX_OFF, current.clone().add(0,1,0), 1, 0, 0, 0, 0);
+                caster.getWorld().spawnParticle(Particle.WAX_OFF, current.clone().add(0,1,0), 1, 0, 0, 0, 0);
 
                 if(traveled>=2){
                     cancelTask();
@@ -586,18 +590,18 @@ public class PaladinBasic {
 
     }
 
-    private void basicStage3(Player player){
+    private void basicStage3(LivingEntity caster){
 
-        basicStageMap.put(player.getUniqueId(), 4);
+        basicStageMap.put(caster.getUniqueId(), 4);
 
-        Location start = player.getLocation().clone().subtract(0,3,0);
+        Location start = caster.getLocation().clone().subtract(0,3,0);
 
-        Vector direction = player.getLocation().getDirection().setY(0).normalize();
+        Vector direction = caster.getLocation().getDirection().setY(0).normalize();
         start.add(direction.multiply(3));
         direction.rotateAroundY(-45);
         start.setDirection(direction);
 
-        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = caster.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -615,7 +619,7 @@ public class PaladinBasic {
         entityEquipment.setHelmet(basicItem);
 
 
-        Location loc = player.getLocation().clone().add(direction.multiply(1.25));
+        Location loc = caster.getLocation().clone().add(direction.multiply(1.25));
 
         //player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, loc, 1, 0, 0, 0, 0);
 
@@ -629,15 +633,15 @@ public class PaladinBasic {
         );
 
         LivingEntity targetToHit = null;
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
         LivingEntity firstHit = null;
 
         boolean targetHit = false;
 
 
-        for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+        for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
-            if(entity == player){
+            if(entity == caster){
                 continue;
             }
 
@@ -650,7 +654,7 @@ public class PaladinBasic {
             }
 
             if(entity instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) entity)){
+                if(!pvpManager.pvpLogic(caster, (Player) entity)){
                     continue;
                 }
             }
@@ -685,21 +689,21 @@ public class PaladinBasic {
         }
 
         if(targetToHit != null){
-            targetManager.setPlayerTarget(player, targetToHit);
+            targetManager.setPlayerTarget(caster, targetToHit);
 
 
-            boolean crit = damageCalculator.checkIfCrit(player, 0);
-            double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", getSkillDamage(player)
-                    + representative.getAdditionalBonusFromBuff(player), crit);
+            boolean crit = damageCalculator.checkIfCrit(caster, 0);
+            double damage = damageCalculator.calculateDamage(caster, targetToHit, "Physical", getSkillDamage(caster)
+                    + representative.getAdditionalBonusFromBuff(caster), crit);
 
-            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, player));
-            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, player);
+            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
+            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster);
 
-            gloryOfPaladins.procGlory(player, targetToHit);
+            gloryOfPaladins.procGlory(caster, targetToHit);
 
         }
         else{
-            stopBasicRunning(player);
+            stopBasicRunning(caster);
         }
 
         new BukkitRunnable(){
@@ -708,20 +712,22 @@ public class PaladinBasic {
             @Override
             public void run(){
 
-                if(!player.isOnline()){
-                    cancelTask();
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        cancelTask();
+                    }
                 }
 
-                Vector direction = player.getLocation().getDirection().setY(0).normalize();
+                Vector direction = caster.getLocation().getDirection().setY(0).normalize();
 
-                Location current = player.getLocation().clone();
+                Location current = caster.getLocation().clone();
                 current.add(direction.multiply(3));
                 current.add(0,traveled,0);
                 direction.rotateAroundY(-45);
                 current.setDirection(direction);
                 armorStand.teleport(current);
 
-                player.getWorld().spawnParticle(Particle.WAX_OFF, current.clone().add(0,1,0), 1, 0, 0, 0, 0);
+                caster.getWorld().spawnParticle(Particle.WAX_OFF, current.clone().add(0,1,0), 1, 0, 0, 0, 0);
 
                 if(traveled>=2){
                     cancelTask();
@@ -746,18 +752,18 @@ public class PaladinBasic {
 
     }
 
-    private void basicStage4(Player player){
+    private void basicStage4(LivingEntity caster){
 
-        basicStageMap.put(player.getUniqueId(), 5);
+        basicStageMap.put(caster.getUniqueId(), 5);
 
-        Location start = player.getLocation().clone().subtract(0,3,0);
+        Location start = caster.getLocation().clone().subtract(0,3,0);
 
-        Vector direction = player.getLocation().getDirection().setY(0).normalize();
+        Vector direction = caster.getLocation().getDirection().setY(0).normalize();
         Vector crossProduct = direction.clone().crossProduct(new Vector(0,1,0)).normalize();
         start.add(direction.multiply(4));
         start.add(crossProduct.multiply(3));
 
-        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = caster.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -775,7 +781,7 @@ public class PaladinBasic {
         entityEquipment.setHelmet(basicItem);
 
 
-        Location loc = player.getLocation().clone().add(direction.multiply(1.25));
+        Location loc = caster.getLocation().clone().add(direction.multiply(1.25));
 
 
         BoundingBox hitBox = new BoundingBox(
@@ -788,15 +794,15 @@ public class PaladinBasic {
         );
 
         LivingEntity targetToHit = null;
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
         LivingEntity firstHit = null;
 
         boolean targetHit = false;
 
 
-        for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+        for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
-            if(entity == player){
+            if(entity == caster){
                 continue;
             }
 
@@ -809,7 +815,7 @@ public class PaladinBasic {
             }
 
             if(entity instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) entity)){
+                if(!pvpManager.pvpLogic(caster, (Player) entity)){
                     continue;
                 }
             }
@@ -844,20 +850,20 @@ public class PaladinBasic {
         }
 
         if(targetToHit != null){
-            targetManager.setPlayerTarget(player, targetToHit);
+            targetManager.setPlayerTarget(caster, targetToHit);
 
 
-            boolean crit = damageCalculator.checkIfCrit(player, 0);
-            double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", getSkillDamage(player)
-                    + representative.getAdditionalBonusFromBuff(player), crit);
+            boolean crit = damageCalculator.checkIfCrit(caster, 0);
+            double damage = damageCalculator.calculateDamage(caster, targetToHit, "Physical", getSkillDamage(caster)
+                    + representative.getAdditionalBonusFromBuff(caster), crit);
 
-            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, player));
-            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, player);
+            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
+            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster);
 
-            gloryOfPaladins.procGlory(player, targetToHit);
+            gloryOfPaladins.procGlory(caster, targetToHit);
         }
         else{
-            stopBasicRunning(player);
+            stopBasicRunning(caster);
         }
 
         new BukkitRunnable(){
@@ -865,21 +871,23 @@ public class PaladinBasic {
             @Override
             public void run(){
 
-                if(!player.isOnline()){
-                    cancelTask();
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        cancelTask();
+                    }
                 }
 
-                Vector direction = player.getLocation().getDirection().setY(0).normalize();
+                Vector direction = caster.getLocation().getDirection().setY(0).normalize();
                 Vector crossProduct = direction.clone().crossProduct(new Vector(0,1,0)).normalize();
 
-                Location current = player.getLocation().clone();
+                Location current = caster.getLocation().clone();
                 current.add(direction.multiply(4));
                 current.add(crossProduct.multiply(3));
                 current.subtract(crossProduct.multiply(traveled));
 
                 armorStand.teleport(current);
 
-                player.getWorld().spawnParticle(Particle.WAX_OFF, current.clone().add(0,1,0), 1, 0, 0, 0, 0);
+                caster.getWorld().spawnParticle(Particle.WAX_OFF, current.clone().add(0,1,0), 1, 0, 0, 0, 0);
 
                 if(traveled>=2){
                     cancelTask();
@@ -900,19 +908,19 @@ public class PaladinBasic {
 
     }
 
-    private boolean getIfBasicRunning(Player player){
-        return basicRunning.containsKey(player.getUniqueId());
+    private boolean getIfBasicRunning(LivingEntity caster){
+        return basicRunning.containsKey(caster.getUniqueId());
     }
 
-    public void stopBasicRunning(Player player){
-        if(basicRunning.containsKey(player.getUniqueId())){
-            basicRunning.get(player.getUniqueId()).cancel();
-            basicRunning.remove(player.getUniqueId());
+    public void stopBasicRunning(LivingEntity caster){
+        if(basicRunning.containsKey(caster.getUniqueId())){
+            basicRunning.get(caster.getUniqueId()).cancel();
+            basicRunning.remove(caster.getUniqueId());
         }
     }
 
-    public double getSkillDamage(Player player){
-        double level = profileManager.getAnyProfile(player).getStats().getLevel();
+    public double getSkillDamage(LivingEntity caster){
+        double level = profileManager.getAnyProfile(caster).getStats().getLevel();
         return 10 + ((int)(level/3));
     }
 

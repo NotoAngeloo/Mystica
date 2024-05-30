@@ -1,6 +1,5 @@
 package me.angeloo.mystica.Components.Abilities.Mystic;
 
-import me.angeloo.mystica.Components.Abilities.MysticAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -8,7 +7,6 @@ import me.angeloo.mystica.Utility.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -53,94 +51,68 @@ public class ArcaneMissiles {
         changeResourceHandler = main.getChangeResourceHandler();
     }
 
-    public void use(Player player){
+    public void use(LivingEntity caster){
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        double totalRange = getRange(player);
+        double totalRange = getRange(caster);
 
-        targetManager.setTargetToNearestValid(player, totalRange);
+        targetManager.setTargetToNearestValid(caster, totalRange);
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        if(target != null){
-            if(target instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) target)){
-                    return;
-                }
-            }
-
-            if(!(target instanceof Player)){
-                if(!pveChecker.pveLogic(target)){
-                    return;
-                }
-            }
-
-            double distance = player.getLocation().distance(target.getLocation());
-
-            if(distance > totalRange){
-                return;
-            }
-        }
-
-        if(target == null){
+        if(!usable(caster, target)){
             return;
         }
 
-        if(getCooldown(player) > 0){
-            return;
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 15);
+        abilityReadyInMap.put(caster.getUniqueId(), 15);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
+                if(getCooldown(caster) <= 0){
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                if(caster instanceof Player){
+                    shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo((Player) caster);
+                }
+
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private double getRange(Player player){
+    private double getRange(LivingEntity caster){
         double baseRange = 20;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
+        double extraRange = buffAndDebuffManager.getTotalRangeModifier(caster);
         return baseRange + extraRange;
     }
 
-    private void execute(Player player){
-        LivingEntity target = targetManager.getPlayerTarget(player);
+    private void execute(LivingEntity caster){
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        double skillDamage = getSkillDamage(player);
+        double skillDamage = getSkillDamage(caster);
 
         double ticks = 10;
-        ticks = ticks - buffAndDebuffManager.getHaste().getHasteLevel(player);
+        ticks = ticks - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
         skillDamage = skillDamage / ticks;
 
@@ -154,7 +126,14 @@ public class ArcaneMissiles {
             @Override
             public void run(){
 
-                if(!player.isOnline() || buffAndDebuffManager.getIfInterrupt(player)){
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        cancelTask();
+                        return;
+                    }
+                }
+
+                if(buffAndDebuffManager.getIfInterrupt(caster)){
                     cancelTask();
                     return;
                 }
@@ -165,23 +144,23 @@ public class ArcaneMissiles {
                     targetWasLoc = targetLoc.clone();
                 }
 
-                Location start = player.getLocation();
+                Location start = caster.getLocation();
                 start.subtract(0, 1, 0);
 
                 double distanceToTarget = start.distance(targetWasLoc);
 
-                if(distanceToTarget>getRange(player)){
+                if(distanceToTarget>getRange(caster)){
                     cancelTask();
                     return;
                 }
 
-                Vector direction = player.getLocation().getDirection().normalize();
+                Vector direction = caster.getLocation().getDirection().normalize();
                 Location spawn1Loc = start.clone();
                 spawn1Loc.subtract(direction.clone().crossProduct(new Vector(0,1,0).normalize().multiply(.5)));
                 Location spawn2Loc = start.clone();
                 spawn2Loc.add(direction.clone().crossProduct(new Vector(0,1,0).normalize().multiply(.5)));
 
-                ArmorStand armorStand = player.getWorld().spawn(spawn1Loc, ArmorStand.class);
+                ArmorStand armorStand = caster.getWorld().spawn(spawn1Loc, ArmorStand.class);
                 armorStand.setInvisible(true);
                 armorStand.setGravity(false);
                 armorStand.setCollidable(false);
@@ -200,7 +179,7 @@ public class ArcaneMissiles {
 
                 allStands.add(armorStand);
 
-                ArmorStand armorStand2 = player.getWorld().spawn(spawn2Loc, ArmorStand.class);
+                ArmorStand armorStand2 = caster.getWorld().spawn(spawn2Loc, ArmorStand.class);
                 armorStand2.setInvisible(true);
                 armorStand2.setGravity(false);
                 armorStand2.setCollidable(false);
@@ -241,11 +220,11 @@ public class ArcaneMissiles {
                         if (distance <= 1) {
                             cancelTask();
 
-                            boolean crit = damageCalculator.checkIfCrit(player, 0);
-                            double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
+                            boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                            double damage = damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage, crit);
 
-                            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                            changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+                            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                            changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
 
                         }
 
@@ -303,11 +282,11 @@ public class ArcaneMissiles {
                         if (distance <= 1) {
                             cancelTask();
 
-                            boolean crit = damageCalculator.checkIfCrit(player, 0);
-                            double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
+                            boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                            double damage = damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage, crit);
 
-                            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                            changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+                            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                            changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
 
                         }
 
@@ -361,8 +340,12 @@ public class ArcaneMissiles {
             private void cancelTask(){
                 this.cancel();
                 removeStands();
-                abilityManager.setCasting(player, false);
-                abilityManager.setCastBar(player, 0);
+                abilityManager.setCasting(caster, false);
+
+                if(caster instanceof Player){
+                    abilityManager.setCastBar((Player) caster, 0);
+                }
+
             }
 
             private void removeStands(){
@@ -380,14 +363,14 @@ public class ArcaneMissiles {
         return 20;
     }
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getStats().getLevel();
         return 70 + ((int)(skillLevel/3));
     }
 
-    public int getCooldown(Player player){
+    public int getCooldown(LivingEntity caster){
 
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -396,8 +379,45 @@ public class ArcaneMissiles {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster, LivingEntity target){
+        if(target != null){
+            if(target instanceof Player){
+                if(!pvpManager.pvpLogic(caster, (Player) target)){
+                    return false;
+                }
+            }
+
+            if(!(target instanceof Player)){
+                if(!pveChecker.pveLogic(target)){
+                    return false;
+                }
+            }
+
+            double distance = caster.getLocation().distance(target.getLocation());
+
+            if(distance > getRange(caster)){
+                return false;
+            }
+        }
+
+        if(target == null){
+            return false;
+        }
+
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

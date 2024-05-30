@@ -48,69 +48,58 @@ public class FlamingSigil {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    public void use(Player player){
-        if (!abilityReadyInMap.containsKey(player.getUniqueId())) {
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void use(LivingEntity caster){
+        if (!abilityReadyInMap.containsKey(caster.getUniqueId())) {
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        if (getCooldown(player) > 0) {
+        if(!usable(caster)){
             return;
         }
 
-        Block block = player.getLocation().subtract(0,1,0).getBlock();
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        if(block.getType() == Material.AIR){
-            return;
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 10);
+        abilityReadyInMap.put(caster.getUniqueId(), 10);
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
 
-                if (getCooldown(player) <= 0) {
-                    cooldownDisplayer.displayCooldown(player, 6);
+                if (getCooldown(caster) <= 0) {
+                    cooldownDisplayer.displayCooldown(caster, 6);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
+                int cooldown = getCooldown(caster) - 1;
 
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 6);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 6);
 
             }
         }.runTaskTimer(main, 0, 20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        boolean executioner = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("executioner");
-        boolean gladiator = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("gladiator");
+        boolean executioner = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("executioner");
+        boolean gladiator = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("gladiator");
 
 
 
-        Location spawnStart = player.getLocation().clone();
+        Location spawnStart = caster.getLocation().clone();
 
-        ArmorStand sigil = player.getWorld().spawn(spawnStart.clone().subtract(0,5,0), ArmorStand.class);
+        ArmorStand sigil = caster.getWorld().spawn(spawnStart.clone().subtract(0,5,0), ArmorStand.class);
         sigil.setInvisible(true);
         sigil.setGravity(false);
         sigil.setCollidable(false);
@@ -131,7 +120,7 @@ public class FlamingSigil {
         Location center = sigil.getLocation();
 
         Set<LivingEntity> hitBySkill = new HashSet<>();
-        double finalBuffAmount = getBuffAmount(player);
+        double finalBuffAmount = getBuffAmount(caster);
         new BukkitRunnable(){
             int ran = 0;
             @Override
@@ -145,7 +134,7 @@ public class FlamingSigil {
                     double y = center.getY() + 1;
                     double z = center.getZ() + (4 * Math.sin(angle));
                     Location loc = new Location(center.getWorld(), x, y, z);
-                    player.getWorld().spawnParticle(Particle.CRIT, loc, 1,0, 0, 0, 0);
+                    caster.getWorld().spawnParticle(Particle.CRIT, loc, 1,0, 0, 0, 0);
                 }
 
                 BoundingBox hitBox = new BoundingBox(
@@ -157,7 +146,7 @@ public class FlamingSigil {
                         center.getZ() + 4
                 );
 
-                for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+                for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
 
                     if(!(entity instanceof LivingEntity)){
@@ -174,16 +163,16 @@ public class FlamingSigil {
                         continue;
                     }
 
-                    if(entity == player){
-                        buffAndDebuffManager.getFlamingSigilBuff().applyAttackBuff(player, finalBuffAmount);
-                        buffAndDebuffManager.getFlamingSigilBuff().applyHealthBuff(player, finalBuffAmount);
-                        hitBySkill.add(player);
+                    if(entity == caster){
+                        buffAndDebuffManager.getFlamingSigilBuff().applyAttackBuff(caster, finalBuffAmount);
+                        buffAndDebuffManager.getFlamingSigilBuff().applyHealthBuff(caster, finalBuffAmount);
+                        hitBySkill.add(caster);
                         continue;
                     }
 
 
                     if(entity instanceof Player){
-                        if (pvpManager.pvpLogic(player, (Player) entity)) {
+                        if (pvpManager.pvpLogic(caster, (Player) entity)) {
                             continue;
                         }
                     }
@@ -217,14 +206,14 @@ public class FlamingSigil {
         }.runTaskTimer(main, 0, 1);
     }
 
-    public double getBuffAmount(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
+    public double getBuffAmount(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_6_Level_Bonus();
         return 5 + ((int)(skillLevel/3));
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -238,8 +227,27 @@ public class FlamingSigil {
     }
 
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster){
+        if (getCooldown(caster) > 0) {
+            return false;
+        }
+
+        Block block = caster.getLocation().subtract(0,1,0).getBlock();
+
+        if(block.getType() == Material.AIR){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

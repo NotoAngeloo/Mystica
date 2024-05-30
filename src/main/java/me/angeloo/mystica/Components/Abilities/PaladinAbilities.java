@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.Abilities.Paladin.*;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class PaladinAbilities {
@@ -62,42 +63,42 @@ public class PaladinAbilities {
 
     }
 
-    public void usePaladinAbility(Player player, int abilityNumber){
+    public void usePaladinAbility(LivingEntity caster, int abilityNumber){
 
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        String subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
         if(subclass.equalsIgnoreCase("divine")){
             switch (abilityNumber){
                 case 1:{
-                    decreeHonor.use(player);
+                    decreeHonor.use(caster);
                     return;
                 }
                 case 2:{
-                    mercifulHealing.use(player);
+                    mercifulHealing.use(caster);
                     return;
                 }
                 case 3:{
-                    honorCounter.use(player);
+                    honorCounter.use(caster);
                     return;
                 }
                 case 4:{
-                    divineInfusion.use(player);
+                    divineInfusion.use(caster);
                     return;
                 }
                 case 5:{
-                    spiritualGift.use(player);
+                    spiritualGift.use(caster);
                     return;
                 }
                 case 6:{
-                    sacredAegis.use(player);
+                    sacredAegis.use(caster);
                     return;
                 }
                 case 7:{
-                    modestCalling.use(player);
+                    modestCalling.use(caster);
                     return;
                 }
                 case 8:{
-                    justiceMark.use(player);
+                    justiceMark.use(caster);
                     return;
                 }
             }
@@ -105,62 +106,62 @@ public class PaladinAbilities {
 
         switch (abilityNumber){
             case 1:{
-                torahSword.use(player);
+                torahSword.use(caster);
                 return;
             }
             case 2:{
-                divineGuidance.use(player);
+                divineGuidance.use(caster);
                 return;
             }
             case 3:{
-                reigningSword.use(player);
+                reigningSword.use(caster);
                 return;
             }
             case 4:{
-                covenantSword.use(player);
+                covenantSword.use(caster);
                 return;
             }
             case 5:{
-                orderShield.use(player);
+                orderShield.use(caster);
                 return;
             }
             case 6:{
-                gloryOfPaladins.use(player);
+                gloryOfPaladins.use(caster);
                 return;
             }
             case 7:{
-                duranceOfTruth.use(player);
+                duranceOfTruth.use(caster);
                 return;
             }
             case 8:{
-                judgement.use(player);
+                judgement.use(caster);
                 return;
             }
         }
     }
 
-    public void usePaladinUltimate(Player player){
+    public void usePaladinUltimate(LivingEntity caster){
 
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        String subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
         switch (subclass.toLowerCase()){
             case "templar":{
-                sanctityShield.use(player);
+                sanctityShield.use(caster);
                 return;
             }
             case "divine":{
-                representative.use(player);
+                representative.use(caster);
                 return;
             }
             case "dawn":{
-                lightWell.use(player);
+                lightWell.use(caster);
                 return;
             }
         }
     }
 
-    public void usePaladinBasic(Player player){
-        paladinBasic.useBasic(player);
+    public void usePaladinBasic(LivingEntity caster){
+        paladinBasic.useBasic(caster);
     }
 
     public int getAbilityCooldown(Player player, int abilityNumber){
@@ -225,25 +226,25 @@ public class PaladinAbilities {
         return 0;
     }
 
-    public void resetCooldowns(Player player){
-        covenantSword.resetCooldown(player);
-        decreeHonor.resetCooldown(player);
-        divineGuidance.resetCooldown(player);
-        duranceOfTruth.resetCooldown(player);
-        gloryOfPaladins.resetCooldown(player);
-        honorCounter.resetCooldown(player);
-        judgement.resetCooldown(player);
-        justiceMark.resetCooldown(player);
-        lightWell.resetCooldown(player);
-        mercifulHealing.resetCooldown(player);
-        modestCalling.resetCooldown(player);
-        orderShield.resetCooldown(player);
-        reigningSword.resetCooldown(player);
-        representative.resetCooldown(player);
-        sacredAegis.resetCooldown(player);
-        sanctityShield.resetCooldown(player);
-        spiritualGift.resetCooldown(player);
-        torahSword.resetCooldown(player);
+    public void resetCooldowns(LivingEntity caster){
+        covenantSword.resetCooldown(caster);
+        decreeHonor.resetCooldown(caster);
+        divineGuidance.resetCooldown(caster);
+        duranceOfTruth.resetCooldown(caster);
+        gloryOfPaladins.resetCooldown(caster);
+        honorCounter.resetCooldown(caster);
+        judgement.resetCooldown(caster);
+        justiceMark.resetCooldown(caster);
+        lightWell.resetCooldown(caster);
+        mercifulHealing.resetCooldown(caster);
+        modestCalling.resetCooldown(caster);
+        orderShield.resetCooldown(caster);
+        reigningSword.resetCooldown(caster);
+        representative.resetCooldown(caster);
+        sacredAegis.resetCooldown(caster);
+        sanctityShield.resetCooldown(caster);
+        spiritualGift.resetCooldown(caster);
+        torahSword.resetCooldown(caster);
     }
 
     public Representative getRepresentative(){return representative;}

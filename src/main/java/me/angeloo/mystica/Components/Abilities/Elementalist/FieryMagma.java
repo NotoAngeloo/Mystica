@@ -60,97 +60,66 @@ public class FieryMagma {
 
     }
 
-    public void use(Player player){
+    private final double range = 20;
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void use(LivingEntity caster){
+
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        double baseRange = 20;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
-        double totalRange = baseRange + extraRange;
+        targetManager.setTargetToNearestValid(caster, range + buffAndDebuffManager.getTotalRangeModifier(caster));
 
-        targetManager.setTargetToNearestValid(player, totalRange);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
-
-        if(target != null){
-            if(target instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) target)){
-                    return;
-                }
-            }
-
-            if(!(target instanceof Player)){
-                if(!pveChecker.pveLogic(target)){
-                    return;
-                }
-            }
-
-            double distance = player.getLocation().distance(target.getLocation());
-
-            if(distance > totalRange){
-                return;
-            }
-        }
-
-        if(target == null){
+        if(!usable(caster, target)){
             return;
         }
 
-        if(getCooldown(player) > 0){
-            return;
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 10);
+        abilityReadyInMap.put(caster.getUniqueId(), 10);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 2);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 2);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 2);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 2);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
         Location end = target.getLocation();
-        Location playerLoc = player.getLocation();
+        Location playerLoc = caster.getLocation();
         Vector spawnDirection = end.toVector().subtract(playerLoc.toVector());
         Location spawnLoc = target.getLocation().clone().add(spawnDirection.clone().normalize().multiply(10));
         spawnLoc.add(0,10,0);
 
-        ArmorStand armorStand = player.getWorld().spawn(spawnLoc, ArmorStand.class);
+        ArmorStand armorStand = caster.getWorld().spawn(spawnLoc, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -167,7 +136,7 @@ public class FieryMagma {
         assert entityEquipment != null;
         entityEquipment.setHelmet(meteorItem);
 
-        double finalSkillDamage = getSkillDamage(player);
+        double finalSkillDamage = getSkillDamage(caster);
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
             int count = 0;
@@ -201,16 +170,16 @@ public class FieryMagma {
 
                 if (distance <= 1) {
 
-                    fieryWing.addInflame(player);
+                    fieryWing.addInflame(caster);
 
 
                     cancelTask();
 
-                    boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
+                    boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                    double damage = damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage, crit);
 
-                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
 
                     if(target instanceof Player){
                         buffAndDebuffManager.getGenericShield().removeShields(target);
@@ -279,11 +248,11 @@ public class FieryMagma {
                             }
                         }
 
-                        boolean crit = damageCalculator.checkIfCrit(player, 0);
-                        double tickDamage = damageCalculator.calculateDamage(player, target, "Magical", burn, crit);
+                        boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                        double tickDamage = damageCalculator.calculateDamage(caster, target, "Magical", burn, crit);
 
-                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                        changeResourceHandler.subtractHealthFromEntity(target, tickDamage, player);
+                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                        changeResourceHandler.subtractHealthFromEntity(target, tickDamage, caster);
 
                         ticks ++;
 
@@ -313,9 +282,9 @@ public class FieryMagma {
                                 target.getWorld().spawnParticle(Particle.FLAME, loc, 1,0, 0, 0, 0);
                             }
 
-                            for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+                            for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
-                                if(entity == player){
+                                if(entity == caster){
                                     continue;
                                 }
 
@@ -335,20 +304,20 @@ public class FieryMagma {
 
                                 hitBySkill.add(livingEntity);
 
-                                boolean crit2 = damageCalculator.checkIfCrit(player, 0);
-                                double damage = (damageCalculator.calculateDamage(player, livingEntity, "Magical", finalSkillDamage, crit2));
+                                boolean crit2 = damageCalculator.checkIfCrit(caster, 0);
+                                double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Magical", finalSkillDamage, crit2));
 
                                 //pvp logic
                                 if(entity instanceof Player){
-                                    if(pvpManager.pvpLogic(player, (Player) entity)){
-                                        changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                                    if(pvpManager.pvpLogic(caster, (Player) entity)){
+                                        changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
                                     }
                                     continue;
                                 }
 
                                 if(pveChecker.pveLogic(livingEntity)){
-                                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, player));
-                                    changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
+                                    changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
                                 }
 
                             }
@@ -364,9 +333,9 @@ public class FieryMagma {
 
     }
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_2_Level_Bonus();
 
         return 20 + ((int)(skillLevel/3));
     }
@@ -375,9 +344,9 @@ public class FieryMagma {
         return 5;
     }
 
-    public int getCooldown(Player player){
+    public int getCooldown(LivingEntity caster){
 
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -386,7 +355,44 @@ public class FieryMagma {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster, LivingEntity target){
+        if(target != null){
+            if(target instanceof Player){
+                if(!pvpManager.pvpLogic(caster, (Player) target)){
+                    return false;
+                }
+            }
+
+            if(!(target instanceof Player)){
+                if(!pveChecker.pveLogic(target)){
+                    return false;
+                }
+            }
+
+            double distance = caster.getLocation().distance(target.getLocation());
+
+            if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+                return false;
+            }
+        }
+
+        if(target == null){
+            return false;
+        }
+
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 }

@@ -7,6 +7,7 @@ import me.angeloo.mystica.Utility.ShieldAbilityManaDisplayer;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -39,60 +40,59 @@ public class ConjuringForce {
         changeResourceHandler = main.getChangeResourceHandler();
     }
 
-    public void use(Player player){
-        if (!abilityReadyInMap.containsKey(player.getUniqueId())) {
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void use(LivingEntity caster){
+        if (!abilityReadyInMap.containsKey(caster.getUniqueId())) {
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        if (getCooldown(player) > 0) {
+        if(!usable(caster)){
             return;
         }
 
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 26);
+        abilityReadyInMap.put(caster.getUniqueId(), 26);
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
 
-                if (getCooldown(player) <= 0) {
+                if (getCooldown(caster) <= 0) {
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
+                int cooldown = getCooldown(caster) - 1;
 
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+
+                if(caster instanceof Player){
+                    shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo((Player) caster);
+                }
+
 
             }
         }.runTaskTimer(main, 0, 20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        Location start = player.getLocation().clone();
+        Location start = caster.getLocation().clone();
 
 
         new BukkitRunnable(){
             int ran = 0;
-            final Set<Player> affected = new HashSet<>();
+            final Set<LivingEntity> affected = new HashSet<>();
 
             final Location loc = start.clone();
             double height = 0;
@@ -103,7 +103,7 @@ public class ConjuringForce {
             @Override
             public void run(){
 
-                Set<Player> hitBySkill = new HashSet<>();
+                Set<LivingEntity> hitBySkill = new HashSet<>();
 
                 if(initialDirection == null) {
                     initialDirection = loc.getDirection().setY(0).normalize();
@@ -124,8 +124,8 @@ public class ConjuringForce {
                 Location particleLoc = new Location(loc.getWorld(), x, loc.getY() + height, z);
                 Location particleLoc2 = new Location(loc.getWorld(), x2, loc.getY() + height, z2);
 
-                player.getWorld().spawnParticle(Particle.FLAME, particleLoc, 1, 0, 0, 0, 0);
-                player.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, particleLoc2, 1, 0, 0, 0, 0);
+                caster.getWorld().spawnParticle(Particle.FLAME, particleLoc, 1, 0, 0, 0, 0);
+                caster.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, particleLoc2, 1, 0, 0, 0, 0);
 
                 if(up){
                     height += .1;
@@ -152,7 +152,7 @@ public class ConjuringForce {
                     double y3 = start.getY() + 1;
                     double z3 = start.getZ() + (4 * Math.sin(angle));
                     Location loc = new Location(start.getWorld(), x3, y3, z3);
-                    player.getWorld().spawnParticle(Particle.SPELL_WITCH, loc, 1,0, 0, 0, 0);
+                    caster.getWorld().spawnParticle(Particle.SPELL_WITCH, loc, 1,0, 0, 0, 0);
                 }
 
 
@@ -166,31 +166,34 @@ public class ConjuringForce {
                 );
 
 
-                for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+                for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
 
-                    if(!(entity instanceof Player)){
+                    if(!(entity instanceof LivingEntity)){
                         continue;
                     }
 
-                    Player thisPlayer = (Player) entity;
+                    LivingEntity thisEntity = (LivingEntity) entity;
 
-                    if(pvpManager.pvpLogic(player, thisPlayer)){
-                        continue;
+                    if(thisEntity instanceof Player){
+                        if(pvpManager.pvpLogic(caster, (Player) thisEntity)){
+                            continue;
+                        }
                     }
 
-                    hitBySkill.add(player);
-                    affected.add(player);
+
+                    hitBySkill.add(caster);
+                    affected.add(caster);
                 }
 
-                for(Player thisPlayer : affected){
-                    if(!hitBySkill.contains(thisPlayer)){
-                        affected.remove(thisPlayer);
-                        buffAndDebuffManager.getConjuringForceBuff().removeConjuringForceBuff(thisPlayer);
+                for(LivingEntity thisEntity : affected){
+                    if(!hitBySkill.contains(thisEntity)){
+                        affected.remove(thisEntity);
+                        buffAndDebuffManager.getConjuringForceBuff().removeConjuringForceBuff(thisEntity);
                         continue;
                     }
 
-                    buffAndDebuffManager.getConjuringForceBuff().applyConjuringForceBuff(thisPlayer, getBuffAmount(player));
+                    buffAndDebuffManager.getConjuringForceBuff().applyConjuringForceBuff(thisEntity, getBuffAmount(caster));
 
 
                 }
@@ -206,8 +209,8 @@ public class ConjuringForce {
             private void cancelTask(){
                 this.cancel();
 
-                for(Player thisPlayer : affected){
-                    buffAndDebuffManager.getConjuringForceBuff().removeConjuringForceBuff(thisPlayer);
+                for(LivingEntity thisEntity : affected){
+                    buffAndDebuffManager.getConjuringForceBuff().removeConjuringForceBuff(thisEntity);
                 }
 
             }
@@ -219,13 +222,13 @@ public class ConjuringForce {
         return 20;
     }
 
-    public double getBuffAmount(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+    public double getBuffAmount(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getStats().getLevel();
         return 5 + skillLevel;
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -234,8 +237,21 @@ public class ConjuringForce {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public boolean usable(LivingEntity caster){
+        if (getCooldown(caster) > 0) {
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
+    }
+
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
     }
 
 }

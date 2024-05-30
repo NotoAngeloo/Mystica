@@ -10,6 +10,7 @@ import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import java.util.UUID;
 
@@ -88,11 +89,13 @@ public class SammingSins {
 
         stats.setLevelStats(level, "Paladin", "Templar");
 
-        //TODO: way to make dead fake players
-
         FakePlayerProfile fakePlayerProfile = new FakePlayerProfile(false, false, stats.getHealth(), stats.getMana(), stats, "Paladin", "Templar");
 
         profileManager.addToFakePlayerProfileMap(uuid, fakePlayerProfile);
+
+        if(theClosestPlayersLeader != null){
+            profileManager.addCompanion(closestPlayer, (LivingEntity) entity);
+        }
 
     }
 

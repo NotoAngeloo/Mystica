@@ -4,7 +4,6 @@ import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
-import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -46,96 +45,67 @@ public class Bandage {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    public void use(Player player){
+    private final double cost = 20;
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void use(LivingEntity caster){
+
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        if(target != null){
-
-            if(!(target instanceof Player)){
-
-                if(!pveChecker.pveLogic(target)){
-                    target = player;
-                }
-            }
-
-            double distance = player.getLocation().distance(target.getLocation());
-
-            if(distance > 8){
-                return;
-            }
-
-            if (profileManager.getAnyProfile(target).getIfDead()) {
-                target = player;
-            }
-
-            if(target instanceof Player){
-                if(pvpManager.pvpLogic(player, (Player) target)){
-                    target = player;
-                }
-            }
-
-
+        if(!usable(caster, target)){
+            return;
         }
 
         if(target == null){
-            target = player;
+            target = caster;
         }
 
-        if(getCooldown(player) > 0){
-            return;
+        changeResourceHandler.subTractManaFromEntity(caster, cost);
+
+        combatManager.startCombatTimer(caster);
+
+        execute(caster, target);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        double cost = 20;
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
-
-        combatManager.startCombatTimer(player);
-
-        execute(player, target);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 16);
+        abilityReadyInMap.put(caster.getUniqueId(), 16);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 6);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 6);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 6);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 6);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player, LivingEntity target){
+    private void execute(LivingEntity caster, LivingEntity target){
 
-        abilityManager.setCasting(player, true);
+        abilityManager.setCasting(caster, true);
         int castTime = 40;
 
-        player.setWalkSpeed(.03f);
+        if(caster instanceof Player){
+            ((Player)caster).setWalkSpeed(.03f);
+        }
+
 
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
@@ -143,10 +113,21 @@ public class Bandage {
             @Override
             public void run(){
 
-                if(!player.isOnline() || buffAndDebuffManager.getIfInterrupt(player)){
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        abilityManager.setCasting(caster, false);
+                        ((Player)caster).setWalkSpeed(.2f);
+                    }
+                }
+
+                if(buffAndDebuffManager.getIfInterrupt(caster)){
                     this.cancel();
-                    abilityManager.setCasting(player, false);
-                    player.setWalkSpeed(.2f);
+                    abilityManager.setCasting(caster, false);
+
+                    if(caster instanceof Player){
+                        ((Player)caster).setWalkSpeed(.2f);
+                    }
+
                     return;
                 }
 
@@ -156,12 +137,15 @@ public class Bandage {
                     targetWasLoc = targetLoc.clone();
                 }
 
-                double distanceToTarget = player.getLocation().distance(targetWasLoc);
+                double distanceToTarget = caster.getLocation().distance(targetWasLoc);
 
                 if(distanceToTarget>8){
                     this.cancel();
-                    abilityManager.setCasting(player, false);
-                    player.setWalkSpeed(.2f);
+                    abilityManager.setCasting(caster, false);
+
+                    if(caster instanceof Player){
+                        ((Player)caster).setWalkSpeed(.2f);
+                    }
                     return;
                 }
 
@@ -171,12 +155,15 @@ public class Bandage {
 
 
                 double percent = ((double) ran / castTime) * 100;
-                abilityManager.setCastBar(player, percent);
+                abilityManager.setCastBar(caster, percent);
 
                 if(ran >= castTime){
                     this.cancel();
-                    abilityManager.setCasting(player, false);
-                    player.setWalkSpeed(.2f);
+                    abilityManager.setCasting(caster, false);
+
+                    if(caster instanceof Player){
+                        ((Player)caster).setWalkSpeed(.2f);
+                    }
                 }
 
 
@@ -185,14 +172,14 @@ public class Bandage {
 
             private void healTarget(LivingEntity target){
 
-                double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                        profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
+                double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                        profileManager.getAnyProfile(caster).getSkillLevels().getSkill_6_Level_Bonus();
                 double healPercent = 1;
                 healPercent = healPercent + ((int)(skillLevel/10));
 
                 double healAmount = profileManager.getAnyProfile(target).getTotalHealth() * (healPercent / 100);
                 
-                changeResourceHandler.addHealthToEntity(target, healAmount, player);
+                changeResourceHandler.addHealthToEntity(target, healAmount, caster);
 
                 Location center = target.getLocation().clone().add(0,1,0);
 
@@ -226,9 +213,9 @@ public class Bandage {
 
     }
 
-    public int getCooldown(Player player){
+    public int getCooldown(LivingEntity caster){
 
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -237,8 +224,52 @@ public class Bandage {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster, LivingEntity target){
+        if(target != null){
+
+            if(!(target instanceof Player)){
+
+                if(!pveChecker.pveLogic(target)){
+                    target = caster;
+                }
+            }
+
+            double distance = caster.getLocation().distance(target.getLocation());
+
+            if(distance > 8){
+                return false;
+            }
+
+            if (profileManager.getAnyProfile(target).getIfDead()) {
+                target = caster;
+            }
+
+            if(target instanceof Player){
+                if(pvpManager.pvpLogic(caster, (Player) target)){
+                    target = caster;
+                }
+            }
+
+
+        }
+
+        if(target == null){
+            target = caster;
+        }
+
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<cost){
+            return false;
+        }
+
+        return true;
     }
 
 }

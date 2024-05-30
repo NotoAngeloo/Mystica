@@ -5,6 +5,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
 import org.bukkit.Location;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -36,87 +37,95 @@ public class Roll {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    public void use(Player player){
+    public void use(LivingEntity caster){
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        if(getCooldown(player) > 0){
+        if(!usable(caster)){
             return;
         }
 
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 13);
+        abilityReadyInMap.put(caster.getUniqueId(), 13);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 8);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 8);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 8);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 8);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        Location start = player.getLocation();
+        Location start = caster.getLocation();
 
 
         Vector direction = start.getDirection().normalize();
 
-        double shieldAmount = (profileManager.getAnyProfile(player).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player)) / 4;
+        double shieldAmount = (profileManager.getAnyProfile(caster).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(caster)) / 4;
 
+        if(caster instanceof Player){
+            if(((Player)caster).isSneaking()){
+                direction.multiply(-1);
+                shieldAmount*=2;
+            }
+        }
 
-        if(player.isSneaking()){
+        if(profileManager.getAnyProfile(caster).fakePlayer()){
             direction.multiply(-1);
             shieldAmount*=2;
         }
 
 
-        buffAndDebuffManager.getGenericShield().applyOrAddShield(player, shieldAmount);
+        buffAndDebuffManager.getGenericShield().applyOrAddShield(caster, shieldAmount);
 
         double forwardPower = 3;
         double jumpPower = .2;
         Vector dashVector = direction.multiply(forwardPower).setY(jumpPower);
-        player.setVelocity(dashVector);
+        caster.setVelocity(dashVector);
 
         //also give a shield and increase move speed
-        buffAndDebuffManager.getSpeedUp().applySpeedUp(player, .3f);
+        if(caster instanceof Player){
+            buffAndDebuffManager.getSpeedUp().applySpeedUp((Player) caster, .3f);
+        }
+
 
 
         double finalShieldAmount = shieldAmount;
         new BukkitRunnable(){
             @Override
             public void run(){
-                buffAndDebuffManager.getSpeedUp().removeSpeedUp(player);
-                buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(player, finalShieldAmount);
+                if(caster instanceof Player){
+                    buffAndDebuffManager.getSpeedUp().removeSpeedUp((Player) caster);
+                }
+
+                buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(caster, finalShieldAmount);
             }
         }.runTaskLater(main, 100);
 
@@ -126,8 +135,8 @@ public class Roll {
         return 5;
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -136,8 +145,21 @@ public class Roll {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster){
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

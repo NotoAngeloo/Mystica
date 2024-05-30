@@ -13,6 +13,7 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Server;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -45,7 +46,13 @@ public class CombatManager {
     }
 
 
-    public void startCombatTimer(Player player){
+    public void startCombatTimer(LivingEntity caster){
+
+        if(!(caster instanceof Player)){
+            return;
+        }
+
+        Player player = (Player) caster;
 
         boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
 

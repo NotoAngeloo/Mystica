@@ -6,6 +6,7 @@ import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -24,13 +25,13 @@ public class Combo {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    public void addComboPoint(Player player){
+    public void addComboPoint(LivingEntity caster){
 
-        int current = getComboPoints(player);
+        int current = getComboPoints(caster);
 
         int max = 5;
 
-        if(profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("duelist")){
+        if(profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("duelist")){
             max = 6;
         }
 
@@ -40,31 +41,38 @@ public class Combo {
 
         current++;
 
-        comboPoints.put(player.getUniqueId(), current);
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
-        cooldownDisplayer.displayCooldown(player, 3);
-        cooldownDisplayer.displayCooldown(player, 4);
+        comboPoints.put(caster.getUniqueId(), current);
+
+        if(caster instanceof Player){
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+        }
+
+        cooldownDisplayer.displayCooldown(caster, 3);
+        cooldownDisplayer.displayCooldown(caster, 4);
     }
 
-    public int removeAnAmountOfPoints(Player player, int amount){
+    public int removeAnAmountOfPoints(LivingEntity caster, int amount){
 
-        int current = getComboPoints(player);
+        int current = getComboPoints(caster);
 
         int newAmount = current - amount;
 
-        comboPoints.put(player.getUniqueId(), newAmount);
+        comboPoints.put(caster.getUniqueId(), newAmount);
 
 
+        if(caster instanceof Player){
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+        }
 
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
-        cooldownDisplayer.displayCooldown(player, 3);
-        cooldownDisplayer.displayCooldown(player, 4);
+
+        cooldownDisplayer.displayCooldown(caster, 3);
+        cooldownDisplayer.displayCooldown(caster, 4);
 
         return current;
     }
 
-    public int getComboPoints(Player player){
-        return comboPoints.getOrDefault(player.getUniqueId(), 0);
+    public int getComboPoints(LivingEntity caster){
+        return comboPoints.getOrDefault(caster.getUniqueId(), 0);
     }
 
 

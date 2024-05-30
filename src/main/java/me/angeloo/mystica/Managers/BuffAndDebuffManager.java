@@ -147,17 +147,17 @@ public class BuffAndDebuffManager {
                 * damageReduction.getReduction(defender);
     }
 
-    public double getTotalDamageAddition(Player player, LivingEntity entity){
+    public double getTotalDamageAddition(LivingEntity damager, LivingEntity entity){
 
-        return 0 + conjuringForceBuff.getExtraDamageAmount(player)
-                - modest.getMultiplier(player)
+        return 0 + conjuringForceBuff.getExtraDamageAmount(damager)
+                - modest.getMultiplier(damager)
                 + modest.getMultiplier(entity);
 
     }
 
-    public double getTotalRangeModifier(Player player) {
+    public double getTotalRangeModifier(LivingEntity entity) {
 
-        return 0 + conjuringForceBuff.getRangeModifier(player);
+        return 0 + conjuringForceBuff.getRangeModifier(entity);
     }
 
     public int getCritBuffAmount(LivingEntity entity){

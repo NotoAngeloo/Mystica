@@ -58,62 +58,57 @@ public class BladeTempest {
         combo = assassinAbilities.getCombo();
     }
 
-    public void use(Player player){
-        if (!abilityReadyInMap.containsKey(player.getUniqueId())) {
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void use(LivingEntity caster){
+        if (!abilityReadyInMap.containsKey(caster.getUniqueId())) {
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        if (getCooldown(player) > 0) {
+        if(!usable(caster)){
             return;
         }
 
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 17);
+        abilityReadyInMap.put(caster.getUniqueId(), 17);
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
 
-                if (getCooldown(player) <= 0) {
-                    cooldownDisplayer.displayCooldown(player, 6);
+                if (getCooldown(caster) <= 0) {
+                    cooldownDisplayer.displayCooldown(caster, 6);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
+                int cooldown = getCooldown(caster) - 1;
 
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 6);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 6);
 
             }
         }.runTaskTimer(main, 0, 20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        boolean duelist = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("duelist");
+        boolean duelist = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("duelist");
 
         if(duelist){
-            buffAndDebuffManager.getBladeTempestCrit().applyBonus(player);
+            buffAndDebuffManager.getBladeTempestCrit().applyBonus(caster);
         }
 
-        Location start = player.getLocation().clone();
+        Location start = caster.getLocation().clone();
 
         Vector direction = start.getDirection().setY(0).normalize();
 
@@ -126,12 +121,12 @@ public class BladeTempest {
 
         final boolean[] trigger = {false};
         Set<LivingEntity> hitBySkill = new HashSet<>();
-        double finalSkillDamage = getSkillDamage(player);
+        double finalSkillDamage = getSkillDamage(caster);
         for(int i = 0;i<6;i++){
 
             direction.rotateAroundY(Math.toRadians(60));
 
-            ArmorStand stand = player.getWorld().spawn(start.clone().subtract(0,10,0), ArmorStand.class);
+            ArmorStand stand = caster.getWorld().spawn(start.clone().subtract(0,10,0), ArmorStand.class);
             stand.setInvisible(true);
             stand.setGravity(false);
             stand.setCollidable(false);
@@ -165,9 +160,9 @@ public class BladeTempest {
                             current.getZ() + 2
                     );
 
-                    for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+                    for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
-                        if(entity == player){
+                        if(entity == caster){
                             continue;
                         }
 
@@ -187,19 +182,19 @@ public class BladeTempest {
 
                         hitBySkill.add(livingEntity);
 
-                        boolean crit = damageCalculator.checkIfCrit(player, 0);
+                        boolean crit = damageCalculator.checkIfCrit(caster, 0);
 
-                        double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", finalSkillDamage, crit));
+                        double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Physical", finalSkillDamage, crit));
 
                         //pvp logic
                         if(entity instanceof Player){
-                            if(pvpManager.pvpLogic(player, (Player) entity)){
-                                changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
-                                stealth.stealthBonusCheck(player, livingEntity);
+                            if(pvpManager.pvpLogic(caster, (Player) entity)){
+                                changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                                stealth.stealthBonusCheck(caster, livingEntity);
                                 hit = true;
                                 if(!trigger[0]){
                                     trigger[0] = true;
-                                    combo.addComboPoint(player);
+                                    combo.addComboPoint(caster);
                                 }
 
                                 break;
@@ -208,14 +203,14 @@ public class BladeTempest {
                         }
 
                         if(pveChecker.pveLogic(livingEntity)){
-                            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, player));
-                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
-                            stealth.stealthBonusCheck(player, livingEntity);
+                            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
+                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                            stealth.stealthBonusCheck(caster, livingEntity);
                             hit = true;
 
                             if(!trigger[0]){
                                 trigger[0] = true;
-                                combo.addComboPoint(player);
+                                combo.addComboPoint(caster);
                             }
 
                             break;
@@ -234,9 +229,9 @@ public class BladeTempest {
 
     }
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_6_Level_Bonus();
         return 30 + ((int)(skillLevel/3));
     }
 
@@ -244,8 +239,8 @@ public class BladeTempest {
         return 10;
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -254,8 +249,21 @@ public class BladeTempest {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster){
+        if (getCooldown(caster) > 0) {
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 

@@ -56,79 +56,68 @@ public class SearingChains {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    public void use(Player player){
+    public void use(LivingEntity caster){
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
 
-        if(getCooldown(player) > 0){
+        if(!usable(caster)){
             return;
         }
 
-        Block block = player.getLocation().subtract(0,1,0).getBlock();
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        if(block.getType() == Material.AIR){
-            return;
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 12);
+        abilityReadyInMap.put(caster.getUniqueId(), 12);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 2);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 2);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 2);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 2);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
         double baseRange = 8;
 
-        targetManager.setTargetToNearestValid(player, baseRange);
+        targetManager.setTargetToNearestValid(caster, baseRange);
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
         boolean targeted = false;
 
-        Vector direction = player.getLocation().getDirection().setY(0).normalize();
+        Vector direction = caster.getLocation().getDirection().setY(0).normalize();
 
         if(target != null){
 
             if(target instanceof Player){
-                if(pvpManager.pvpLogic(player, (Player) target)){
+                if(pvpManager.pvpLogic(caster, (Player) target)){
 
-                    double distance = player.getLocation().distance(target.getLocation());
+                    double distance = caster.getLocation().distance(target.getLocation());
 
                     if(distance < baseRange){
                         targeted = true;
@@ -140,7 +129,7 @@ public class SearingChains {
             if(!(target instanceof Player)){
                 if(pveChecker.pveLogic(target)){
 
-                    double distance = player.getLocation().distance(target.getLocation());
+                    double distance = caster.getLocation().distance(target.getLocation());
 
                     if(distance < baseRange){
                         targeted = true;
@@ -153,10 +142,10 @@ public class SearingChains {
         }
 
         if(targeted){
-            direction = target.getLocation().toVector().subtract(player.getLocation().toVector()).setY(0).normalize();
+            direction = target.getLocation().toVector().subtract(caster.getLocation().toVector()).setY(0).normalize();
         }
 
-        Location start = player.getLocation().clone().add(direction.multiply(1));
+        Location start = caster.getLocation().clone().add(direction.multiply(1));
         start.setDirection(direction);
 
         Location end = start.clone().add(direction.multiply(8));
@@ -165,7 +154,7 @@ public class SearingChains {
 
         Vector finalDirection = direction;
         Vector crossSection = finalDirection.clone().crossProduct(new Vector(0,1,0)).normalize();
-        double finalSkillDamage = getSkillDamage(player);
+        double finalSkillDamage = getSkillDamage(caster);
         Set<LivingEntity> hitBySkill = new HashSet<>();
         Set<LivingEntity> validCCTargets = new HashSet<>();
         new BukkitRunnable(){
@@ -211,7 +200,7 @@ public class SearingChains {
                         }
                         currentRight.setDirection(directionRight);
 
-                        ArmorStand armorStand = player.getWorld().spawn(current.clone().subtract(0,5,0), ArmorStand.class);
+                        ArmorStand armorStand = caster.getWorld().spawn(current.clone().subtract(0,5,0), ArmorStand.class);
                         all.add(armorStand);
                         armorStand.setInvisible(true);
                         armorStand.setGravity(false);
@@ -224,7 +213,7 @@ public class SearingChains {
                         middle.add(armorStand);
                         armorStand.teleport(current);
 
-                        ArmorStand armorStand2 = player.getWorld().spawn(currentLeft.clone().subtract(0,5,0), ArmorStand.class);
+                        ArmorStand armorStand2 = caster.getWorld().spawn(currentLeft.clone().subtract(0,5,0), ArmorStand.class);
                         all.add(armorStand2);
                         armorStand2.setInvisible(true);
                         armorStand2.setGravity(false);
@@ -237,7 +226,7 @@ public class SearingChains {
                         left.add(armorStand2);
                         armorStand2.teleport(currentLeft);
 
-                        ArmorStand armorStand3 = player.getWorld().spawn(currentRight.clone().subtract(0,5,0), ArmorStand.class);
+                        ArmorStand armorStand3 = caster.getWorld().spawn(currentRight.clone().subtract(0,5,0), ArmorStand.class);
                         all.add(armorStand3);
                         armorStand3.setInvisible(true);
                         armorStand3.setGravity(false);
@@ -291,7 +280,7 @@ public class SearingChains {
                         double midY = (start.getY() + end.getY()) / 2;
                         double midZ = (start.getZ() + end.getZ()) / 2;
 
-                        Location center = new Location(player.getWorld(), midX,midY,midZ);
+                        Location center = new Location(caster.getWorld(), midX,midY,midZ);
                         //player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, center, 1,0,0,0,0);
 
                         BoundingBox hitBox = new BoundingBox(
@@ -304,9 +293,9 @@ public class SearingChains {
                         );
 
 
-                        for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+                        for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
-                            if(entity == player){
+                            if(entity == caster){
                                 continue;
                             }
 
@@ -326,25 +315,25 @@ public class SearingChains {
 
                             hitBySkill.add(livingEntity);
 
-                            aggroManager.setAsHighPriorityTarget(livingEntity, player);
+                            aggroManager.setAsHighPriorityTarget(livingEntity, caster);
 
-                            boolean crit = damageCalculator.checkIfCrit(player, 0);
-                            double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", finalSkillDamage, crit));
+                            boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                            double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Physical", finalSkillDamage, crit));
 
                             //pvp logic
                             if(entity instanceof Player){
-                                if(pvpManager.pvpLogic(player, (Player) entity)){
-                                    changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                                if(pvpManager.pvpLogic(caster, (Player) entity)){
+                                    changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
                                     validCCTargets.add(livingEntity);
                                     buffAndDebuffManager.getPulled().applyPull(livingEntity);
-                                    targetManager.setPlayerTarget((Player) entity, player);
+                                    targetManager.setPlayerTarget((Player) entity, caster);
                                 }
                                 continue;
                             }
 
                             if(pveChecker.pveLogic(livingEntity)){
-                                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, player));
-                                changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
+                                changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
                                 if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
                                     validCCTargets.add(livingEntity);
                                     buffAndDebuffManager.getPulled().applyPull(livingEntity);
@@ -481,23 +470,23 @@ public class SearingChains {
 
     }
 
-    public void tryToDecreaseCooldown(Player player){
+    public void tryToDecreaseCooldown(LivingEntity caster){
 
-        if(!profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("gladiator")){
+        if(!profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("gladiator")){
             return;
         }
 
-        int current = getCooldown(player);
+        int current = getCooldown(caster);
         current-=2;
         if(current<0){
             current=0;
         }
 
-        abilityReadyInMap.put(player.getUniqueId(), current);
+        abilityReadyInMap.put(caster.getUniqueId(), current);
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -510,14 +499,33 @@ public class SearingChains {
         return 10;
     }
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_2_Level_Bonus();
         return 25 + ((int)(skillLevel/3));
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster){
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+        Block block = caster.getLocation().subtract(0,1,0).getBlock();
+
+        if(block.getType() == Material.AIR){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

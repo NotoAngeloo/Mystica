@@ -59,102 +59,75 @@ public class RazorWind {
         starVolley = rangerAbilities.getStarVolley();
     }
 
-    public void use(Player player){
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void use(LivingEntity caster){
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        double totalRange = getRange(player);
+        targetManager.setTargetToNearestValid(caster, getRange(caster));
 
-        targetManager.setTargetToNearestValid(player, totalRange);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
-
-        if(target != null){
-            if(target instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) target)){
-                    return;
-                }
-            }
-
-            if(!(target instanceof Player)){
-                if(!pveChecker.pveLogic(target)){
-                    return;
-                }
-            }
-
-            double distance = player.getLocation().distance(target.getLocation());
-
-            if(distance > totalRange){
-                return;
-            }
-        }
-
-        if(target == null){
+        if(!usable(caster, target)){
             return;
         }
 
-        if(getCooldown(player) > 0){
-            return;
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 16);
+        abilityReadyInMap.put(caster.getUniqueId(), 16);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 4);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 4);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 4);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 4);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
     }
 
-    private double getRange(Player player){
+    private double getRange(LivingEntity caster){
         double baseRange = 20;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
+        double extraRange = buffAndDebuffManager.getTotalRangeModifier(caster);
         return baseRange + extraRange;
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        boolean scout = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("scout");
+        boolean scout = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("scout");
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        double skillDamage = getSkillDamage(player);
+        double skillDamage = getSkillDamage(caster);
 
         double castTime = 20;
 
-        castTime = castTime - buffAndDebuffManager.getHaste().getHasteLevel(player);
+        castTime = castTime - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-        abilityManager.setCasting(player, true);
-        player.setWalkSpeed(.06f);
+        abilityManager.setCasting(caster, true);
+
+        if(caster instanceof Player){
+            ((Player)caster).setWalkSpeed(.06f);
+        }
+
 
         double finalCastTime = castTime;
         new BukkitRunnable(){
@@ -163,10 +136,23 @@ public class RazorWind {
             @Override
             public void run(){
 
-                if(!player.isOnline() || buffAndDebuffManager.getIfInterrupt(player)){
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        this.cancel();
+                        abilityManager.setCasting(caster, false);
+                        ((Player)caster).setWalkSpeed(.2f);
+                        return;
+                    }
+                }
+
+                if(!buffAndDebuffManager.getIfInterrupt(caster)){
                     this.cancel();
-                    abilityManager.setCasting(player, false);
-                    player.setWalkSpeed(.2f);
+                    abilityManager.setCasting(caster, false);
+
+                    if(caster instanceof Player){
+                        ((Player)caster).setWalkSpeed(.2f);
+                    }
+
                     return;
                 }
 
@@ -176,23 +162,27 @@ public class RazorWind {
                     targetWasLoc = targetLoc.clone();
                 }
 
-                double distanceToTarget = player.getLocation().distance(targetWasLoc);
+                double distanceToTarget = caster.getLocation().distance(targetWasLoc);
 
-                if(distanceToTarget>getRange(player)){
+                if(distanceToTarget>getRange(caster)){
                     this.cancel();
-                    abilityManager.setCasting(player, false);
-                    player.setWalkSpeed(.2f);
+                    abilityManager.setCasting(caster, false);
+                    if(caster instanceof Player){
+                        ((Player)caster).setWalkSpeed(.2f);
+                    }
                     return;
                 }
 
                 double percent = ((double) count / finalCastTime) * 100;
 
-                abilityManager.setCastBar(player, percent);
+                abilityManager.setCastBar(caster, percent);
 
                 if(count >= finalCastTime){
                     this.cancel();
-                    abilityManager.setCasting(player, false);
-                    player.setWalkSpeed(.2f);
+                    abilityManager.setCasting(caster, false);
+                    if(caster instanceof Player){
+                        ((Player)caster).setWalkSpeed(.2f);
+                    }
                     startLaunchTask();
                 }
 
@@ -214,10 +204,10 @@ public class RazorWind {
 
             private void startLaunchTask(){
 
-                Location start = player.getLocation();
+                Location start = caster.getLocation();
 
                 start.subtract(0, 1, 0);
-                ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
+                ArmorStand armorStand = caster.getWorld().spawn(start, ArmorStand.class);
                 armorStand.setInvisible(true);
                 armorStand.setGravity(false);
                 armorStand.setCollidable(false);
@@ -237,7 +227,7 @@ public class RazorWind {
                 new BukkitRunnable(){
                     boolean toFrom = false;
                     Location newTargetWasLoc = targetWasLoc.clone();
-                    Location playerWasLoc = player.getLocation().clone();
+                    Location playerWasLoc = caster.getLocation().clone();
                     Vector initialDirection;
                     int angle = 0;
                     @Override
@@ -249,8 +239,8 @@ public class RazorWind {
                             newTargetWasLoc = targetLoc.clone();
                         }
 
-                        if(targetStillValid(player)){
-                            Location playerLoc = player.getLocation();
+                        if(targetStillValid(caster)){
+                            Location playerLoc = caster.getLocation();
                             playerLoc = playerLoc.subtract(0,1,0);
                             playerWasLoc = playerLoc.clone();
                         }
@@ -302,17 +292,17 @@ public class RazorWind {
 
                                 toFrom = true;
 
-                                boolean crit = damageCalculator.checkIfCrit(player, subclassCritBonus(player));
+                                boolean crit = damageCalculator.checkIfCrit(caster, subclassCritBonus(caster));
 
                                 if(scout && crit){
-                                    starVolley.decreaseCooldown(player);
-                                    buffAndDebuffManager.getHaste().applyHaste(player, 1, 2*20);
+                                    starVolley.decreaseCooldown(caster);
+                                    buffAndDebuffManager.getHaste().applyHaste(caster, 1, 2*20);
                                 }
 
-                                double damage = damageCalculator.calculateDamage(player, target, "Physical", skillDamage, crit);
+                                double damage = damageCalculator.calculateDamage(caster, target, "Physical", skillDamage, crit);
 
-                                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                                changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+                                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                                changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
 
                             }
                         }
@@ -340,8 +330,8 @@ public class RazorWind {
 
     }
 
-    private int subclassCritBonus(Player player){
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+    private int subclassCritBonus(LivingEntity caster){
+        String subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
         if(subclass.equalsIgnoreCase("scout")){
             return 15;
@@ -350,8 +340,8 @@ public class RazorWind {
         return 0;
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -360,9 +350,9 @@ public class RazorWind {
         return cooldown;
     }
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_4_Level_Bonus();
         return 40 + ((int)(skillLevel/3));
     }
 
@@ -370,8 +360,45 @@ public class RazorWind {
         return 20;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster, LivingEntity target){
+        if(target != null){
+            if(target instanceof Player){
+                if(!pvpManager.pvpLogic(caster, (Player) target)){
+                    return false;
+                }
+            }
+
+            if(!(target instanceof Player)){
+                if(!pveChecker.pveLogic(target)){
+                    return false;
+                }
+            }
+
+            double distance = caster.getLocation().distance(target.getLocation());
+
+            if(distance > getRange(caster)){
+                return false;
+            }
+        }
+
+        if(target == null){
+            return false;
+        }
+
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

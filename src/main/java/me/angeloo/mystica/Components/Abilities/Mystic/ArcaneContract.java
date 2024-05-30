@@ -15,7 +15,6 @@ import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
@@ -52,24 +51,23 @@ public class ArcaneContract {
         deathManager = new DeathManager(main);
     }
 
-    public void use(Player player){
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    private final double range = 10;
+
+    public void use(LivingEntity caster){
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        double baseRange = 10;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
-        double totalRange = baseRange + extraRange;
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
         if(target == null){
             return;
         }
 
-        double distance = player.getLocation().distance(target.getLocation());
+        double distance = caster.getLocation().distance(target.getLocation());
 
-        if(distance>totalRange){
+        if(distance>range + buffAndDebuffManager.getTotalRangeModifier(caster)){
             return;
         }
 
@@ -78,7 +76,7 @@ public class ArcaneContract {
         }
 
         if(target instanceof Player){
-            if(pvpManager.pvpLogic(player, (Player) target)){
+            if(pvpManager.pvpLogic(caster, (Player) target)){
                 return;
             }
         }
@@ -88,20 +86,33 @@ public class ArcaneContract {
             return;
         }
 
-        if(getCooldown(player) > 0){
+        if(getCooldown(caster) > 0){
             return;
         }
 
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
         PartiesAPI api = Parties.getApi();
+        PartyPlayer partyPlayer;
 
-        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
+        if(caster instanceof Player){
+            partyPlayer = api.getPartyPlayer(caster.getUniqueId());
+        }
+        else{
+            partyPlayer = api.getPartyPlayer(profileManager.getCompanionsPlayer(caster).getUniqueId());
+
+            if(!profileManager.getCompanions(profileManager.getCompanionsPlayer(caster)).isEmpty()){
+                for(LivingEntity companion : profileManager.getCompanions(profileManager.getCompanionsPlayer(caster))){
+                    putOnCooldown(companion.getUniqueId());
+                }
+            }
+
+        }
 
         assert partyPlayer != null;
         if(partyPlayer.isInParty()){
@@ -116,18 +127,21 @@ public class ArcaneContract {
             }
         }
 
-        putOnCooldown(player.getUniqueId());
+
+
+
+        putOnCooldown(caster.getUniqueId());
         //also for rest of team
 
-        combatManager.startCombatTimer(player);
+        combatManager.startCombatTimer(caster);
 
-        execute(player, target);
+        execute(caster, target);
 
     }
 
-    private void execute(Player player, LivingEntity target){
+    private void execute(LivingEntity caster, LivingEntity target){
 
-        deathManager.playerNowLive(target, true, player);
+        deathManager.playerNowLive(target, true, caster);
 
         new BukkitRunnable(){
             double height = 0;
@@ -196,8 +210,8 @@ public class ArcaneContract {
         return 20;
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -206,8 +220,8 @@ public class ArcaneContract {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
     }
 
 }

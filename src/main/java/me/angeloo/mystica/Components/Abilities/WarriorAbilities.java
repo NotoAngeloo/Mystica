@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.Abilities.Warrior.*;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class WarriorAbilities {
@@ -38,62 +39,62 @@ public class WarriorAbilities {
         deathGaze = new DeathGaze(main, manager);
     }
 
-    public void useWarriorAbility(Player player, int abilityNumber){
+    public void useWarriorAbility(LivingEntity caster, int abilityNumber){
 
         switch (abilityNumber){
             case 1:{
-                lavaQuake.use(player);
+                lavaQuake.use(caster);
                 return;
             }
             case 2:{
-                searingChains.use(player);
+                searingChains.use(caster);
                 return;
             }
             case 3:{
-                tempestRage.use(player);
+                tempestRage.use(caster);
                 return;
             }
             case 4:{
-                meteorCrater.use(player);
+                meteorCrater.use(caster);
                 return;
             }
             case 5:{
-                anvilDrop.use(player);
+                anvilDrop.use(caster);
                 return;
             }
             case 6:{
-                flamingSigil.use(player);
+                flamingSigil.use(caster);
                 return;
             }
             case 7:{
-                magmaSpikes.use(player);
+                magmaSpikes.use(caster);
                 return;
             }
             case 8:{
-                burningBlessing.use(player);
+                burningBlessing.use(caster);
                 return;
             }
         }
     }
 
-    public void useWarriorUltimate(Player player){
+    public void useWarriorUltimate(LivingEntity caster){
 
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        String subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
         switch (subclass.toLowerCase()){
             case "gladiator":{
-                gladiatorHeart.use(player);
+                gladiatorHeart.use(caster);
                 return;
             }
             case "executioner":{
-                deathGaze.use(player);
+                deathGaze.use(caster);
                 return;
             }
         }
     }
 
-    public void useWarriorBasic(Player player){
-        warriorBasic.useBasic(player);
+    public void useWarriorBasic(LivingEntity caster){
+        warriorBasic.useBasic(caster);
     }
 
     public int getAbilityCooldown(Player player, int abilityNumber){
@@ -134,17 +135,17 @@ public class WarriorAbilities {
         return 0;
     }
 
-    public void resetCooldowns(Player player){
-        anvilDrop.resetCooldown(player);
-        burningBlessing.resetCooldown(player);
-        deathGaze.resetCooldown(player);
-        flamingSigil.resetCooldown(player);
-        gladiatorHeart.resetCooldown(player);
-        lavaQuake.resetCooldown(player);
-        magmaSpikes.resetCooldown(player);
-        meteorCrater.resetCooldown(player);
-        searingChains.resetCooldown(player);
-        tempestRage.resetCooldown(player);
+    public void resetCooldowns(LivingEntity caster){
+        anvilDrop.resetCooldown(caster);
+        burningBlessing.resetCooldown(caster);
+        deathGaze.resetCooldown(caster);
+        flamingSigil.resetCooldown(caster);
+        gladiatorHeart.resetCooldown(caster);
+        lavaQuake.resetCooldown(caster);
+        magmaSpikes.resetCooldown(caster);
+        meteorCrater.resetCooldown(caster);
+        searingChains.resetCooldown(caster);
+        tempestRage.resetCooldown(caster);
     }
 
     public SearingChains getSearingChains(){return searingChains;}

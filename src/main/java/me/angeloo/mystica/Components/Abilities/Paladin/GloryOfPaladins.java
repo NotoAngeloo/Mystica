@@ -45,76 +45,67 @@ public class GloryOfPaladins {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    public void use(Player player){
+    public void use(LivingEntity caster){
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        if(getCooldown(player) > 0){
+        if(!usable(caster)){
             return;
         }
 
-        if(getIfBuffTime(player) > 0){
-            return;
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 12);
+        abilityReadyInMap.put(caster.getUniqueId(), 12);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 6);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 6);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
+                int cooldown = getCooldown(caster) - 1;
 
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 6);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 6);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
         //increase max hp as well
 
-        buffActiveMap.put(player.getUniqueId(), 8);
+        buffActiveMap.put(caster.getUniqueId(), 8);
         new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(buffActiveMap.get(player.getUniqueId()) <= 0){
+                if(buffActiveMap.get(caster.getUniqueId()) <= 0){
                     this.cancel();
                     return;
                 }
 
-                int cooldown = buffActiveMap.get(player.getUniqueId()) - 1;
+                int cooldown = buffActiveMap.get(caster.getUniqueId()) - 1;
 
-                buffActiveMap.put(player.getUniqueId(), cooldown);
+                buffActiveMap.put(caster.getUniqueId(), cooldown);
 
             }
         }.runTaskTimer(main, 0,20);
@@ -128,18 +119,21 @@ public class GloryOfPaladins {
             @Override
             public void run(){
 
-                if(getIfBuffTime(player) <= 0){
+                if(getIfBuffTime(caster) <= 0){
                     this.cancel();
                     return;
                 }
 
-                if(!player.isOnline()){
-                    this.cancel();
-                    return;
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        this.cancel();
+                        return;
+                    }
                 }
 
 
-                Location loc = player.getLocation();
+
+                Location loc = caster.getLocation();
 
                 if(initialDirection == null) {
                     initialDirection = loc.getDirection().setY(0).normalize();
@@ -160,8 +154,8 @@ public class GloryOfPaladins {
                 Location particleLoc = new Location(loc.getWorld(), x, loc.getY() + height, z);
                 Location particleLoc2 = new Location(loc.getWorld(), x2, loc.getY() + height, z2);
 
-                player.getWorld().spawnParticle(Particle.WAX_OFF, particleLoc, 1, 0, 0, 0, 0);
-                player.getWorld().spawnParticle(Particle.WAX_OFF, particleLoc2, 1, 0, 0, 0, 0);
+                caster.getWorld().spawnParticle(Particle.WAX_OFF, particleLoc, 1, 0, 0, 0, 0);
+                caster.getWorld().spawnParticle(Particle.WAX_OFF, particleLoc2, 1, 0, 0, 0, 0);
 
                 if(up){
                     height += .1;
@@ -185,23 +179,23 @@ public class GloryOfPaladins {
 
     }
 
-    public void procGlory(Player player, LivingEntity livingEntity){
+    public void procGlory(LivingEntity caster, LivingEntity livingEntity){
 
-        if(getIfBuffTime(player) <= 0){
+        if(getIfBuffTime(caster) <= 0){
             return;
         }
 
 
-        boolean crit = damageCalculator.checkIfCrit(player, 0);
-        double damage = damageCalculator.calculateDamage(player, livingEntity, "Physical", getSkillDamage(player), crit);
+        boolean crit = damageCalculator.checkIfCrit(caster, 0);
+        double damage = damageCalculator.calculateDamage(caster, livingEntity, "Physical", getSkillDamage(caster), crit);
 
-        changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+        changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
 
-        double healAmount = (profileManager.getAnyProfile(player).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(player)) * .05;
+        double healAmount = (profileManager.getAnyProfile(caster).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(caster)) * .05;
         //chance to restore
         int random = (int) (Math.random() * 100) + 1;
         if(random >= 25){
-            changeResourceHandler.addHealthToEntity(player, healAmount, player);
+            changeResourceHandler.addHealthToEntity(caster, healAmount, caster);
         }
     }
 
@@ -209,18 +203,18 @@ public class GloryOfPaladins {
         return 10;
     }
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_6_Level_Bonus();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_6_Level_Bonus();
         return 20 + ((int)(skillLevel/3));
     }
 
-    public int getIfBuffTime(Player player){
-        return buffActiveMap.getOrDefault(player.getUniqueId(), 0);
+    public int getIfBuffTime(LivingEntity caster){
+        return buffActiveMap.getOrDefault(caster.getUniqueId(), 0);
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -229,8 +223,25 @@ public class GloryOfPaladins {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster){
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+        if(getIfBuffTime(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

@@ -15,13 +15,13 @@ public class Consolation {
 
     private final Map<UUID, BukkitTask> taskMap = new HashMap<>();
 
-    private final Map<Player, List<LivingEntity>> affected = new HashMap<>();
+    private final Map<LivingEntity, List<LivingEntity>> affected = new HashMap<>();
 
     public Consolation(Mystica main){
         this.main = main;
     }
 
-    public void apply(Player caster, LivingEntity target){
+    public void apply(LivingEntity caster, LivingEntity target){
 
         List<LivingEntity> targets = getTargets(caster);
 
@@ -31,34 +31,39 @@ public class Consolation {
         startTask(caster);
     }
 
-    public List<LivingEntity> getTargets(Player player){
-        return affected.getOrDefault(player, new ArrayList<>());
+    public List<LivingEntity> getTargets(LivingEntity caster){
+        return affected.getOrDefault(caster, new ArrayList<>());
     }
 
-    public void removeTargets(Player player){
-        affected.remove(player);
-        taskMap.get(player.getUniqueId()).cancel();
-        taskMap.remove(player.getUniqueId());
+    public void removeTargets(LivingEntity caster){
+        affected.remove(caster);
+        taskMap.get(caster.getUniqueId()).cancel();
+        taskMap.remove(caster.getUniqueId());
     }
 
-    private void startTask(Player player){
+    private void startTask(LivingEntity caster){
 
-        if(taskMap.containsKey(player.getUniqueId())){
-            taskMap.get(player.getUniqueId()).cancel();
+        if(taskMap.containsKey(caster.getUniqueId())){
+            taskMap.get(caster.getUniqueId()).cancel();
         }
 
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                List<LivingEntity> targets = getTargets(player);
+                List<LivingEntity> targets = getTargets(caster);
 
                 for(LivingEntity target : targets){
 
-                    if(player.getWorld() == target.getWorld()){
+                    if(caster.getWorld() == target.getWorld()){
 
                         for(double i=2; i<5;i+=.3){
-                            player.spawnParticle(Particle.WAX_OFF, target.getLocation().add(0,i,0), 1,0, 0, 0, 0);
+
+                            if(caster instanceof Player){
+                                ((Player)caster).spawnParticle(Particle.WAX_OFF, target.getLocation().add(0,i,0), 1,0, 0, 0, 0);
+                            }
+
+
                         }
 
                     }
@@ -70,7 +75,7 @@ public class Consolation {
             }
         }.runTaskTimer(main, 0, 20);
 
-        taskMap.put(player.getUniqueId(), task);
+        taskMap.put(caster.getUniqueId(), task);
     }
 
 }

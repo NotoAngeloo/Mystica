@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -41,73 +42,62 @@ public class ChaosVoid {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    public void use(Player player){
-        if (!abilityReadyInMap.containsKey(player.getUniqueId())) {
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void use(LivingEntity caster){
+        if (!abilityReadyInMap.containsKey(caster.getUniqueId())) {
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        if (getCooldown(player) > 0) {
+        if(!usable(caster)){
             return;
         }
 
-        Block block = player.getLocation().subtract(0,1,0).getBlock();
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        if(block.getType() == Material.AIR){
-            return;
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 120);
+        abilityReadyInMap.put(caster.getUniqueId(), 120);
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
 
-                if (getCooldown(player) <= 0) {
-                    cooldownDisplayer.displayCooldown(player, 1);
+                if (getCooldown(caster) <= 0) {
+                    cooldownDisplayer.displayCooldown(caster, 1);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
+                int cooldown = getCooldown(caster) - 1;
 
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 1);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 1);
 
             }
         }.runTaskTimer(main, 0, 20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
         int castTime = 7 * 20;
 
-        buffAndDebuffManager.getImmobile().applyImmobile(player, castTime);
+        buffAndDebuffManager.getImmobile().applyImmobile(caster, castTime);
 
-        Location start = player.getLocation().clone();
+        Location start = caster.getLocation().clone();
 
-        abilityManager.setCasting(player, true);
-        buffAndDebuffManager.getImmune().applyImmune(player, castTime);
+        abilityManager.setCasting(caster, true);
+        buffAndDebuffManager.getImmune().applyImmune(caster, castTime);
 
-        double healAmount = (profileManager.getAnyProfile(player).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player)) / 10;
+        double healAmount = (profileManager.getAnyProfile(caster).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(caster)) / 10;
 
-        buffAndDebuffManager.getHidden().hidePlayer(player, false);
+        buffAndDebuffManager.getHidden().hidePlayer(caster, false);
         new BukkitRunnable(){
             final Location loc = start.clone();
             Vector initialDirection;
@@ -137,8 +127,8 @@ public class ChaosVoid {
                 Location particleLoc = new Location(loc.getWorld(), x, loc.getY() + height, z);
                 Location particleLoc2 = new Location(loc.getWorld(), x2, loc.getY() + height, z2);
 
-                player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, particleLoc, 1, 0, 0, 0, 0);
-                player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, particleLoc2, 1, 0, 0, 0, 0);
+                caster.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, particleLoc, 1, 0, 0, 0, 0);
+                caster.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, particleLoc2, 1, 0, 0, 0, 0);
 
 
                 if(up){
@@ -159,8 +149,8 @@ public class ChaosVoid {
                 }
 
                 if(ran%20 == 0){
-                    changeResourceHandler.addHealthToEntity(player, healAmount, player);
-                    Location center = player.getLocation().clone().add(0,1,0);
+                    changeResourceHandler.addHealthToEntity(caster, healAmount, caster);
+                    Location center = caster.getLocation().clone().add(0,1,0);
 
                     double increment = (2 * Math.PI) / 16; // angle between particles
 
@@ -170,19 +160,28 @@ public class ChaosVoid {
                         double k = center.getZ() + (1 * Math.sin(angle));
                         Location loc = new Location(center.getWorld(), j, (center.getY()), k);
 
-                        player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, loc, 1, 0, 0, 0, 0);
+                        caster.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, loc, 1, 0, 0, 0, 0);
                     }
                 }
 
                 double percent = ((double) ran / castTime) * 100;
 
-                abilityManager.setCastBar(player, percent);
+                if(caster instanceof Player){
+                    abilityManager.setCastBar((Player) caster, percent);
+                }
+
+
 
                 if(ran >= castTime){
                     this.cancel();
-                    abilityManager.setCasting(player, false);
-                    abilityManager.setCastBar(player, 0);
-                    buffAndDebuffManager.getHidden().unhidePlayer(player);
+                    abilityManager.setCasting(caster, false);
+
+                    if(caster instanceof Player){
+                        abilityManager.setCastBar((Player) caster, 0);
+                    }
+
+
+                    buffAndDebuffManager.getHidden().unhidePlayer(caster);
                 }
 
                 angle += 5;
@@ -200,8 +199,8 @@ public class ChaosVoid {
         return 20;
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -210,8 +209,27 @@ public class ChaosVoid {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster){
+        if (getCooldown(caster) > 0) {
+            return false;
+        }
+
+        Block block = caster.getLocation().subtract(0,1,0).getBlock();
+
+        if(block.getType() == Material.AIR){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

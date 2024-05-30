@@ -14,6 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.SkeletonHorse;
 import org.bukkit.inventory.ItemStack;
@@ -42,61 +43,55 @@ public class SpectralSteed {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    public void use(Player player){
+    public void use(LivingEntity caster){
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        if(getCooldown(player) > 0){
+        if(!usable(caster)){
             return;
         }
 
-        Block block = player.getLocation().subtract(0,1,0).getBlock();
+        combatManager.startCombatTimer(caster);
 
-        if(block.getType() == Material.AIR){
-            return;
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 20);
+        abilityReadyInMap.put(caster.getUniqueId(), 20);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 7);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 7);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 7);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 7);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        Location spawnLoc = player.getLocation();
+        Location spawnLoc = caster.getLocation();
         World world = spawnLoc.getWorld();
         assert world != null;
         SkeletonHorse horse = (SkeletonHorse) world.spawnEntity(spawnLoc, EntityType.SKELETON_HORSE);
 
-        Stats stats = new Stats(profileManager.getAnyProfile(player).getStats().getLevel(), 1,  1, 1, 1, 1, 1);
+        Stats stats = new Stats(profileManager.getAnyProfile(caster).getStats().getLevel(), 1,  1, 1, 1, 1, 1);
         Yield yield = new Yield(0, new ArrayList<>());
 
         NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(1,stats,false,true, true, true, yield) {
@@ -262,13 +257,13 @@ public class SpectralSteed {
         horse.setTamed(true);
         horse.setAdult();
 
-        horse.addPassenger(player);
+        horse.addPassenger(caster);
 
-        moveHorseInDirectionThePlayerLooks(player, horse);
+        moveHorseInDirectionThePlayerLooks(caster, horse);
 
     }
 
-    public void moveHorseInDirectionThePlayerLooks(Player player, SkeletonHorse horse){
+    public void moveHorseInDirectionThePlayerLooks(LivingEntity caster, SkeletonHorse horse){
 
         new BukkitRunnable(){
 
@@ -279,14 +274,16 @@ public class SpectralSteed {
 
                 count += 1;
 
-                if(!player.isOnline()){
-                    horse.remove();
-                    this.cancel();
-                    return;
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        horse.remove();
+                        this.cancel();
+                        return;
+                    }
                 }
 
-                boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
-                boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
+                boolean deathStatus = profileManager.getAnyProfile(caster).getIfDead();
+                boolean combatStatus = profileManager.getAnyProfile(caster).getIfInCombat();
 
                 if(deathStatus || !combatStatus){
                     horse.remove();
@@ -294,7 +291,7 @@ public class SpectralSteed {
                     return;
                 }
 
-                if(buffAndDebuffManager.getIfInterrupt(player)){
+                if(buffAndDebuffManager.getIfInterrupt(caster)){
                     horse.remove();
                     this.cancel();
                     return;
@@ -306,7 +303,7 @@ public class SpectralSteed {
                     return;
                 }
 
-                if(!player.isInsideVehicle()){
+                if(!caster.isInsideVehicle()){
                     horse.remove();
                     this.cancel();
                     return;
@@ -314,7 +311,7 @@ public class SpectralSteed {
 
                 //check if player dismounted horse as well
 
-                Location current = player.getEyeLocation();
+                Location current = caster.getEyeLocation();
                 Vector direction = current.getDirection().normalize();
 
                 Vector runVector = direction.multiply(1).setY(0);
@@ -329,8 +326,8 @@ public class SpectralSteed {
     }
 
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -339,8 +336,21 @@ public class SpectralSteed {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster){
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+        Block block = caster.getLocation().subtract(0,1,0).getBlock();
+
+        if(block.getType() == Material.AIR){
+            return false;
+        }
+        return true;
     }
 
 

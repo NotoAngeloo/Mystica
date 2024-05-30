@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.Abilities.Assassin.*;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class AssassinAbilities {
@@ -39,62 +40,62 @@ public class AssassinAbilities {
         wickedConcoction = new WickedConcoction(main, manager, this);
     }
 
-    public void useAssassinAbility(Player player, int abilityNumber){
+    public void useAssassinAbility(LivingEntity caster, int abilityNumber){
 
         switch (abilityNumber){
             case 1:{
-                assault.use(player);
+                assault.use(caster);
                 return;
             }
             case 2:{
-                laceration.use(player);
+                laceration.use(caster);
                 return;
             }
             case 3:{
-                weaknessStrike.use(player);
+                weaknessStrike.use(caster);
                 return;
             }
             case 4:{
-                pierce.use(player);
+                pierce.use(caster);
                 return;
             }
             case 5:{
-                dash.use(player);
+                dash.use(caster);
                 return;
             }
             case 6:{
-                bladeTempest.use(player);
+                bladeTempest.use(caster);
                 return;
             }
             case 7:{
-                flyingBlade.use(player);
+                flyingBlade.use(caster);
                 return;
             }
             case 8:{
-                stealth.toggle(player);
+                stealth.toggle(caster);
                 return;
             }
         }
     }
 
-    public void useAssassinUltimate(Player player){
+    public void useAssassinUltimate(LivingEntity caster){
 
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        String subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
         switch (subclass.toLowerCase()){
             case "duelist":{
-                duelistsFrenzy.use(player);
+                duelistsFrenzy.use(caster);
                 return;
             }
             case "alchemist":{
-                wickedConcoction.use(player);
+                wickedConcoction.use(caster);
                 return;
             }
         }
     }
 
-    public void useAssassinBasic(Player player){
-        assassinBasic.useBasic(player);
+    public void useAssassinBasic(LivingEntity caster){
+        assassinBasic.useBasic(caster);
     }
 
     public int getAbilityCooldown(Player player, int abilityNumber){
@@ -138,17 +139,17 @@ public class AssassinAbilities {
         return 0;
     }
 
-    public void resetCooldowns(Player player){
-        assault.resetCooldown(player);
-        bladeTempest.resetCooldown(player);
-        dash.resetCooldown(player);
-        duelistsFrenzy.resetCooldown(player);
-        flyingBlade.resetCooldown(player);
-        laceration.resetCooldown(player);
-        pierce.resetCooldown(player);
-        stealth.resetCooldown(player);
-        weaknessStrike.resetCooldown(player);
-        wickedConcoction.resetCooldown(player);
+    public void resetCooldowns(LivingEntity caster){
+        assault.resetCooldown(caster);
+        bladeTempest.resetCooldown(caster);
+        dash.resetCooldown(caster);
+        duelistsFrenzy.resetCooldown(caster);
+        flyingBlade.resetCooldown(caster);
+        laceration.resetCooldown(caster);
+        pierce.resetCooldown(caster);
+        stealth.resetCooldown(caster);
+        weaknessStrike.resetCooldown(caster);
+        wickedConcoction.resetCooldown(caster);
     }
 
     public Stealth getStealth(){return stealth;}

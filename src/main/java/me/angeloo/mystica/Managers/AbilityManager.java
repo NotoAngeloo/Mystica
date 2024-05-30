@@ -17,8 +17,8 @@ public class AbilityManager {
     private final ProfileManager profileManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
 
-    private final Map<Player, Boolean> castMap = new HashMap<>();
-    private final Map<Player, Double> percentCastBar = new HashMap<>();
+    private final Map<LivingEntity, Boolean> castMap = new HashMap<>();
+    private final Map<LivingEntity, Double> percentCastBar = new HashMap<>();
 
     //private final Map<Player, Boolean> skillRunning = new HashMap<>();
 
@@ -51,159 +51,153 @@ public class AbilityManager {
         assassinAbilities = new AssassinAbilities(main, this);
     }
 
-    public void useAbility(Player player, int abilityNumber){
+    public void useAbility(LivingEntity caster, int abilityNumber){
 
-        if(buffAndDebuffManager.getIfInterrupt(player)){
+        if(buffAndDebuffManager.getIfInterrupt(caster)){
             return;
         }
 
-        if(getIfCasting(player)){
+        if(getIfCasting(caster)){
             return;
         }
 
-        /*if(getIfSkillRunning(player)){
-            return;
-        }*/
 
-        interruptBasic(player);
+        interruptBasic(caster);
 
-        Profile playerProfile = profileManager.getAnyProfile(player);
+        Profile playerProfile = profileManager.getAnyProfile(caster);
 
         String clazz = playerProfile.getPlayerClass();
 
         switch (clazz.toLowerCase()){
             case "elementalist":{
-                elementalistAbilities.useElementalistAbility(player, abilityNumber);
+                elementalistAbilities.useElementalistAbility(caster, abilityNumber);
                 return;
             }
             case "ranger":{
-                rangerAbilities.useRangerAbility(player, abilityNumber);
+                rangerAbilities.useRangerAbility(caster, abilityNumber);
                 return;
             }
             case "mystic":{
-                mysticAbilities.useMysticAbility(player, abilityNumber);
+                mysticAbilities.useMysticAbility(caster, abilityNumber);
                 return;
             }
             case "shadow knight":{
-                shadowKnightAbilities.useShadowKnightAbility(player, abilityNumber);
+                shadowKnightAbilities.useShadowKnightAbility(caster, abilityNumber);
                 return;
             }
             case "paladin":{
-                paladinAbilities.usePaladinAbility(player, abilityNumber);
+                paladinAbilities.usePaladinAbility(caster, abilityNumber);
                 return;
             }
             case "warrior":{
-                warriorAbilities.useWarriorAbility(player, abilityNumber);
+                warriorAbilities.useWarriorAbility(caster, abilityNumber);
                 return;
             }
             case "assassin":{
-                assassinAbilities.useAssassinAbility(player, abilityNumber);
+                assassinAbilities.useAssassinAbility(caster, abilityNumber);
                 return;
             }
             case "none":{
-                noneAbilities.useNoneAbility(player, abilityNumber);
+                noneAbilities.useNoneAbility(caster, abilityNumber);
                 return;
             }
         }
     }
 
-    public void useBasic(Player player){
+    public void useBasic(LivingEntity caster){
 
-        if(getIfCasting(player)){
+        if(getIfCasting(caster)){
             return;
         }
 
-        if(buffAndDebuffManager.getIfCantAct(player)){
+        if(buffAndDebuffManager.getIfCantAct(caster)){
             return;
         }
 
 
-        Profile playerProfile = profileManager.getAnyProfile(player);
+        Profile playerProfile = profileManager.getAnyProfile(caster);
 
         String clazz = playerProfile.getPlayerClass();
 
         switch (clazz.toLowerCase()){
             case "elementalist":{
-                elementalistAbilities.useElementalistBasic(player);
+                elementalistAbilities.useElementalistBasic(caster);
                 return;
             }
             case "ranger":{
-                rangerAbilities.useRangerBasic(player);
+                rangerAbilities.useRangerBasic(caster);
                 return;
             }
             case "mystic":{
-                mysticAbilities.useMysticBasic(player);
+                mysticAbilities.useMysticBasic(caster);
                 return;
             }
             case "shadow knight":{
-                shadowKnightAbilities.useShadowKnightBasic(player);
+                shadowKnightAbilities.useShadowKnightBasic(caster);
                 return;
             }
             case "paladin":{
-                paladinAbilities.usePaladinBasic(player);
+                paladinAbilities.usePaladinBasic(caster);
                 return;
             }
             case "warrior":{
-                warriorAbilities.useWarriorBasic(player);
+                warriorAbilities.useWarriorBasic(caster);
                 return;
             }
             case "assassin":{
-                assassinAbilities.useAssassinBasic(player);
+                assassinAbilities.useAssassinBasic(caster);
                 return;
             }
             case "none":{
-                noneAbilities.useNoneBasic(player);
+                noneAbilities.useNoneBasic(caster);
                 return;
             }
         }
     }
 
-    public void useUltimate(Player player){
+    public void useUltimate(LivingEntity caster){
 
-        if(buffAndDebuffManager.getIfInterrupt(player)){
+        if(buffAndDebuffManager.getIfInterrupt(caster)){
             return;
         }
 
 
-        if(getIfCasting(player)){
+        if(getIfCasting(caster)){
             return;
         }
 
-        /*if(getIfSkillRunning(player)){
-            return;
-        }*/
 
-        Profile playerProfile = profileManager.getAnyProfile(player);
+        Profile playerProfile = profileManager.getAnyProfile(caster);
 
         String clazz = playerProfile.getPlayerClass();
 
         switch (clazz.toLowerCase()){
             case "elementalist":{
-                elementalistAbilities.useElementalistUltimate(player);
+                elementalistAbilities.useElementalistUltimate(caster);
                 return;
             }
             case "ranger":{
-                rangerAbilities.useRangerUltimate(player);
+                rangerAbilities.useRangerUltimate(caster);
                 return;
             }
             case "mystic":{
-                mysticAbilities.useMysticUltimate(player);
+                mysticAbilities.useMysticUltimate(caster);
                 return;
             }
             case "shadow knight":{
-                shadowKnightAbilities.useShadowKnightUltimate(player);
+                shadowKnightAbilities.useShadowKnightUltimate(caster);
                 return;
             }
             case "paladin":{
-                paladinAbilities.usePaladinUltimate(player);
+                paladinAbilities.usePaladinUltimate(caster);
                 return;
             }
             case "warrior":{
-                warriorAbilities.useWarriorUltimate(player);
+                warriorAbilities.useWarriorUltimate(caster);
                 return;
             }
             case "assassin":{
-                assassinAbilities.useAssassinUltimate(player);
+                assassinAbilities.useAssassinUltimate(caster);
                 return;
             }
         }
@@ -360,26 +354,34 @@ public class AbilityManager {
     public WarriorAbilities getWarriorAbilities(){return warriorAbilities;}
     public AssassinAbilities getAssassinAbilities(){return assassinAbilities;}
 
-    public void resetAbilityBuffs(Player player){
-        mysticAbilities.getEvilSpirit().removeShards(player);
-        mysticAbilities.getPurifyingBlast().unQueueInstantCast(player);
-        elementalistAbilities.getFieryWing().removeInflame(player);
-        shadowKnightAbilities.getInfection().removeEnhancement(player);
-        shadowKnightAbilities.getSoulReap().removeSoulMarks(player);
-        paladinAbilities.getDecision().removeDecision(player);
-        assassinAbilities.getCombo().removeAnAmountOfPoints(player, assassinAbilities.getCombo().getComboPoints(player));
+    public void resetAbilityBuffs(LivingEntity caster){
+        mysticAbilities.getEvilSpirit().removeShards(caster);
+        mysticAbilities.getPurifyingBlast().unQueueInstantCast(caster);
+        elementalistAbilities.getFieryWing().removeInflame(caster);
+        shadowKnightAbilities.getInfection().removeEnhancement(caster);
+        shadowKnightAbilities.getSoulReap().removeSoulMarks(caster);
+        paladinAbilities.getDecision().removeDecision(caster);
+        assassinAbilities.getCombo().removeAnAmountOfPoints(caster, assassinAbilities.getCombo().getComboPoints(caster));
     }
 
-    public boolean getIfCasting(Player player){
-        return castMap.getOrDefault(player, false);
+    public boolean getIfCasting(LivingEntity caster){
+        return castMap.getOrDefault(caster, false);
     }
-    public void setCasting(Player player, boolean casting){
-        castMap.put(player, casting);
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+    public void setCasting(LivingEntity caster, boolean casting){
+        castMap.put(caster, casting);
+        if(caster instanceof Player){
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+        }
+
     }
-    public void setCastBar(Player player, double percent){
-        percentCastBar.put(player, percent);
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+    public void setCastBar(LivingEntity caster, double percent){
+
+        if(!(caster instanceof Player)){
+            return;
+        }
+
+        percentCastBar.put(caster, percent);
+        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
     }
     public double getCastPercent(Player player){
         return percentCastBar.getOrDefault(player, 0.0);
@@ -388,26 +390,26 @@ public class AbilityManager {
     //public boolean getIfSkillRunning(Player player){return skillRunning.getOrDefault(player, false);}
     //public void setSkillRunning(Player player, boolean running){skillRunning.put(player, running);}
 
-    public void interruptBasic(Player player){
-        elementalistAbilities.getElementalistBasic().stopBasicRunning(player);
-        rangerAbilities.getRangerBasic().stopBasicRunning(player);
-        mysticAbilities.getMysticBasic().stopBasicRunning(player);
-        assassinAbilities.getAssassinBasic().stopBasicRunning(player);
-        paladinAbilities.getPaladinBasic().stopBasicRunning(player);
-        shadowKnightAbilities.getShadowKnightBasic().stopBasicRunning(player);
-        warriorAbilities.getWarriorBasic().stopBasicRunning(player);
+    public void interruptBasic(LivingEntity caster){
+        elementalistAbilities.getElementalistBasic().stopBasicRunning(caster);
+        rangerAbilities.getRangerBasic().stopBasicRunning(caster);
+        mysticAbilities.getMysticBasic().stopBasicRunning(caster);
+        assassinAbilities.getAssassinBasic().stopBasicRunning(caster);
+        paladinAbilities.getPaladinBasic().stopBasicRunning(caster);
+        shadowKnightAbilities.getShadowKnightBasic().stopBasicRunning(caster);
+        warriorAbilities.getWarriorBasic().stopBasicRunning(caster);
     }
 
     //change to entity later
-    public void resetCooldowns(Player entity){
-        assassinAbilities.resetCooldowns(entity);
-        elementalistAbilities.resetCooldowns(entity);
-        mysticAbilities.resetCooldowns(entity);
-        noneAbilities.resetCooldowns(entity);
-        paladinAbilities.resetCooldowns(entity);
-        rangerAbilities.resetCooldowns(entity);
-        shadowKnightAbilities.resetCooldowns(entity);
-        warriorAbilities.resetCooldowns(entity);
+    public void resetCooldowns(LivingEntity caster){
+        assassinAbilities.resetCooldowns(caster);
+        elementalistAbilities.resetCooldowns(caster);
+        mysticAbilities.resetCooldowns(caster);
+        noneAbilities.resetCooldowns(caster);
+        paladinAbilities.resetCooldowns(caster);
+        rangerAbilities.resetCooldowns(caster);
+        shadowKnightAbilities.resetCooldowns(caster);
+        warriorAbilities.resetCooldowns(caster);
     }
 
 }

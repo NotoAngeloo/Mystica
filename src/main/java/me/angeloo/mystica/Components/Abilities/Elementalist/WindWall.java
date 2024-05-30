@@ -7,6 +7,7 @@ import me.angeloo.mystica.Utility.CooldownDisplayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
@@ -42,64 +43,59 @@ public class WindWall {
 
     }
 
-    public void use(Player player) {
+    public void use(LivingEntity caster) {
 
-        if (!abilityReadyInMap.containsKey(player.getUniqueId())) {
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+        if (!abilityReadyInMap.containsKey(caster.getUniqueId())) {
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        if (getCooldown(player) > 0) {
+        if(!usable(caster)){
             return;
         }
 
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
-        }
+        combatManager.startCombatTimer(caster);
 
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
+        execute(caster);
 
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_5_Level_Bonus();
 
         int cooldown = 21;
 
         cooldown = cooldown - ((int)(skillLevel/3));
 
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        abilityReadyInMap.put(player.getUniqueId(), cooldown);
+        abilityReadyInMap.put(caster.getUniqueId(), cooldown);
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
 
-                if (getCooldown(player) <= 0) {
-                    cooldownDisplayer.displayCooldown(player, 5);
+                if (getCooldown(caster) <= 0) {
+                    cooldownDisplayer.displayCooldown(caster, 5);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 5);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 5);
             }
         }.runTaskTimer(main, 0, 20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        Location start = player.getLocation();
+        Location start = caster.getLocation();
 
-        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = caster.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -116,7 +112,7 @@ public class WindWall {
         assert entityEquipment != null;
         entityEquipment.setHelmet(matrixItem);
 
-        buffAndDebuffManager.getWindWallBuff().createAWindWall(player);
+        buffAndDebuffManager.getWindWallBuff().createAWindWall(caster);
 
         new BukkitRunnable(){
             int timeRan = 0;
@@ -125,23 +121,25 @@ public class WindWall {
             @Override
             public void run(){
 
-                if(!player.isOnline()){
-                    cancelTask();
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        cancelTask();
+                    }
                 }
 
-                if(!buffAndDebuffManager.getWindWallBuff().getIfWindWallActive(player)){
+                if(!buffAndDebuffManager.getWindWallBuff().getIfWindWallActive(caster)){
                     cancelTask();
                 }
 
                 if (initialDirection == null) {
-                    initialDirection = player.getLocation().getDirection().setY(0).normalize();
+                    initialDirection = caster.getLocation().getDirection().setY(0).normalize();
                 }
 
                 Vector direction = initialDirection.clone();
                 double radians = Math.toRadians(angle);
                 direction.rotateAroundY(radians);
 
-                Location playerLoc = player.getLocation().clone();
+                Location playerLoc = caster.getLocation().clone();
                 playerLoc.setDirection(direction);
 
                 armorStand.teleport(playerLoc);
@@ -161,7 +159,7 @@ public class WindWall {
             private void cancelTask() {
                 this.cancel();
                 armorStand.remove();
-                buffAndDebuffManager.getWindWallBuff().removeWindwall(player);
+                buffAndDebuffManager.getWindWallBuff().removeWindwall(caster);
             }
 
         }.runTaskTimer(main, 0, 1);
@@ -172,8 +170,8 @@ public class WindWall {
         return 5;
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -182,8 +180,21 @@ public class WindWall {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster){
+        if (getCooldown(caster) > 0) {
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

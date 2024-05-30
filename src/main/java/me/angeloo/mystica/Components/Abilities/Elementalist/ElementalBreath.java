@@ -11,6 +11,7 @@ import me.angeloo.mystica.Utility.CooldownDisplayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -42,85 +43,82 @@ public class ElementalBreath {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    public void use(Player player){
+    public void use(LivingEntity caster){
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        if(getCooldown(player) > 0){
+        if(!usable(caster)){
             return;
         }
 
-        if(getIfBuffTime(player) > 0){
-            return;
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 120);
+        abilityReadyInMap.put(caster.getUniqueId(), 120);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 7);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 7);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
+                int cooldown = getCooldown(caster) - 1;
 
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 7);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 7);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    public int getDuration(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
+    public int getDuration(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_7_Level_Bonus();
 
         int bonus = ((int)(skillLevel/3));
 
         return 15 + bonus;
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        buffActiveMap.put(player.getUniqueId(), getDuration(player));
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+        buffActiveMap.put(caster.getUniqueId(), getDuration(caster));
+        if(caster instanceof Player){
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+        }
+
         new BukkitRunnable(){
             @Override
             public void run(){
 
-                Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
-                if(buffActiveMap.get(player.getUniqueId()) <= 0){
+                if(caster instanceof Player){
+                    Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+                }
+
+                if(buffActiveMap.get(caster.getUniqueId()) <= 0){
                     this.cancel();
                     return;
                 }
 
-                int cooldown = buffActiveMap.get(player.getUniqueId()) - 1;
+                int cooldown = buffActiveMap.get(caster.getUniqueId()) - 1;
 
-                buffActiveMap.put(player.getUniqueId(), cooldown);
+                buffActiveMap.put(caster.getUniqueId(), cooldown);
             }
         }.runTaskTimer(main, 0,20);
 
@@ -133,18 +131,20 @@ public class ElementalBreath {
             @Override
             public void run(){
 
-                if(getIfBuffTime(player) <= 0){
+                if(getIfBuffTime(caster) <= 0){
                     this.cancel();
                     return;
                 }
 
-                if(!player.isOnline()){
-                    this.cancel();
-                    return;
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        this.cancel();
+                        return;
+                    }
                 }
 
 
-                Location loc = player.getLocation();
+                Location loc = caster.getLocation();
 
                 if(initialDirection == null) {
                     initialDirection = loc.getDirection().setY(0).normalize();
@@ -165,8 +165,8 @@ public class ElementalBreath {
                 Location particleLoc = new Location(loc.getWorld(), x, loc.getY() + height, z);
                 Location particleLoc2 = new Location(loc.getWorld(), x2, loc.getY() + height, z2);
 
-                player.getWorld().spawnParticle(Particle.FLAME, particleLoc, 1, 0, 0, 0, 0);
-                player.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, particleLoc2, 1, 0, 0, 0, 0);
+                caster.getWorld().spawnParticle(Particle.FLAME, particleLoc, 1, 0, 0, 0, 0);
+                caster.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, particleLoc2, 1, 0, 0, 0, 0);
 
                 if(up){
                     height += .1;
@@ -191,13 +191,13 @@ public class ElementalBreath {
 
     }
 
-    public int getIfBuffTime(Player player){
-        return buffActiveMap.getOrDefault(player.getUniqueId(), 0);
+    public int getIfBuffTime(LivingEntity caster){
+        return buffActiveMap.getOrDefault(caster.getUniqueId(), 0);
     }
 
-    public int getCooldown(Player player){
+    public int getCooldown(LivingEntity caster){
 
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -211,8 +211,25 @@ public class ElementalBreath {
         return 10;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster){
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+        if(getIfBuffTime(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

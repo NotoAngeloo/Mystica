@@ -64,43 +64,49 @@ public class AssassinBasic {
         duelistsFrenzy = assassinAbilities.getDuelistsFrenzy();
     }
 
-    public void useBasic(Player player){
+    public void useBasic(LivingEntity caster){
 
-        if(getIfBasicRunning(player)){
+        if(getIfBasicRunning(caster)){
             return;
         }
 
-        combatManager.startCombatTimer(player);
-        executeBasic(player);
+        combatManager.startCombatTimer(caster);
+
+        executeBasic(caster);
 
     }
 
-    private void executeBasic(Player player){
+    private void executeBasic(LivingEntity caster){
 
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(buffAndDebuffManager.getIfBasicInterrupt(player)){
+                if(buffAndDebuffManager.getIfBasicInterrupt(caster)){
                     this.cancel();
-                    stopBasicRunning(player);
+                    stopBasicRunning(caster);
                     return;
                 }
 
-                basicStage(player);
-                combatManager.startCombatTimer(player);
+                basicStage(caster);
+
+                if(caster instanceof Player){
+                    combatManager.startCombatTimer((Player) caster);
+                }
+
+
             }
         }.runTaskTimer(main, 0, 8);
-        basicRunning.put(player.getUniqueId(), task);
+        basicRunning.put(caster.getUniqueId(), task);
 
 
 
 
     }
 
-    private void basicStage(Player player){
-        Location start = player.getLocation().clone();
-        Vector direction = player.getLocation().getDirection().setY(0).normalize();
+    private void basicStage(LivingEntity caster){
+        Location start = caster.getLocation().clone();
+        Vector direction = caster.getLocation().getDirection().setY(0).normalize();
         Location center = start.clone().add(direction.clone().multiply(3));
 
         BoundingBox hitBox = new BoundingBox(
@@ -113,14 +119,16 @@ public class AssassinBasic {
         );
 
         LivingEntity targetToHit = null;
-        LivingEntity target = targetManager.getPlayerTarget(player);
+
+        LivingEntity target = targetManager.getPlayerTarget(caster);
+
         LivingEntity firstHit = null;
 
         boolean targetHit = false;
 
-        for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+        for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
-            if(entity == player){
+            if(entity == caster){
                 continue;
             }
 
@@ -133,7 +141,7 @@ public class AssassinBasic {
             }
 
             if(entity instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) entity)){
+                if(!pvpManager.pvpLogic(caster, (Player) entity)){
                     continue;
                 }
             }
@@ -169,13 +177,15 @@ public class AssassinBasic {
 
 
         if(targetToHit != null){
-            targetManager.setPlayerTarget(player, targetToHit);
 
-            Location playerLoc = player.getLocation().clone();
+            targetManager.setPlayerTarget(caster, targetToHit);
+
+
+            Location casterLoc = caster.getLocation().clone();
             Location targetLoc = targetToHit.getLocation();
-            Vector targetDir = targetLoc.toVector().subtract(playerLoc.toVector());
+            Vector targetDir = targetLoc.toVector().subtract(casterLoc.toVector());
 
-            if(playerLoc!=targetLoc){
+            if(casterLoc!=targetLoc){
                 Location warpLoc = targetLoc.add(targetDir.clone().normalize().multiply(-1.5));
                 warpLoc.setDirection(targetDir);
 
@@ -183,27 +193,30 @@ public class AssassinBasic {
                     warpLoc.add(0,.1,0);
                 }
 
-                if(player.isSneaking()){
-                    player.teleport(warpLoc);
+                if(caster instanceof Player){
+                    if(((Player)caster).isSneaking()){
+                        caster.teleport(warpLoc);
+                    }
                 }
 
 
+
             }
 
 
-            boolean crit = damageCalculator.checkIfCrit(player, 0);
-            double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", getSkillDamage(player), crit);
+            boolean crit = damageCalculator.checkIfCrit(caster, 0);
+            double damage = damageCalculator.calculateDamage(caster, targetToHit, "Physical", getSkillDamage(caster), crit);
 
-            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, player));
-            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, player);
+            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
+            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster);
 
-            stealth.stealthBonusCheck(player, targetToHit);
-            if(duelistsFrenzy.getFrenzy(player)){
-                combo.addComboPoint(player);
+            stealth.stealthBonusCheck(caster, targetToHit);
+            if(duelistsFrenzy.getFrenzy(caster)){
+                combo.addComboPoint(caster);
             }
         }
         else{
-            stopBasicRunning(player);
+            stopBasicRunning(caster);
         }
     }
 
@@ -211,19 +224,19 @@ public class AssassinBasic {
         return evenOdd.getOrDefault(player.getUniqueId(), false);
     }
 
-    private boolean getIfBasicRunning(Player player){
-        return basicRunning.containsKey(player.getUniqueId());
+    private boolean getIfBasicRunning(LivingEntity caster){
+        return basicRunning.containsKey(caster.getUniqueId());
     }
 
-    public void stopBasicRunning(Player player){
-        if(basicRunning.containsKey(player.getUniqueId())){
-            basicRunning.get(player.getUniqueId()).cancel();
-            basicRunning.remove(player.getUniqueId());
+    public void stopBasicRunning(LivingEntity caster){
+        if(basicRunning.containsKey(caster.getUniqueId())){
+            basicRunning.get(caster.getUniqueId()).cancel();
+            basicRunning.remove(caster.getUniqueId());
         }
     }
 
-    public double getSkillDamage(Player player){
-        double level = profileManager.getAnyProfile(player).getStats().getLevel();
+    public double getSkillDamage(LivingEntity caster){
+        double level = profileManager.getAnyProfile(caster).getStats().getLevel();
         return 14 + ((int)(level/3));
     }
 

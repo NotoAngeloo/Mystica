@@ -5,6 +5,7 @@ import me.angeloo.mystica.Components.ClassSkillItems.RangerSkillItems;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -41,84 +42,85 @@ public class RangerAbilities {
         rangerBasic = new RangerBasic(main, manager, this);
     }
 
-    public void useRangerAbility(Player player, int abilityNumber){
+    public void useRangerAbility(LivingEntity caster, int abilityNumber){
 
         switch (abilityNumber){
             case 1:{
-                bitingRain.use(player);
+                bitingRain.use(caster);
                 return;
             }
             case 2:{
-                shadowCrows.use(player);
+                shadowCrows.use(caster);
                 return;
             }
             case 3:{
-                relentless.use(player);
+                relentless.use(caster);
                 return;
             }
             case 4:{
-                razorWind.use(player);
+                razorWind.use(caster);
                 return;
             }
             case 5:{
-                blessedArrow.use(player);
+                blessedArrow.use(caster);
                 return;
             }
             case 6:{
-                rallyingCry.use(player);
+                rallyingCry.use(caster);
                 return;
             }
             case 7:{
-                wildSpirit.sendSignal(player);
+                wildSpirit.sendSignal(caster);
                 return;
             }
             case 8:{
-                roll.use(player);
+                roll.use(caster);
                 return;
             }
         }
     }
 
-    public void useRangerUltimate(Player player){
+    public void useRangerUltimate(LivingEntity caster
+    ){
 
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        String subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
         switch (subclass.toLowerCase()){
             case "animal tamer":{
-                wildRoar.use(player);
+                wildRoar.use(caster);
                 return;
             }
             case "scout":{
-                starVolley.use(player);
+                starVolley.use(caster);
                 return;
             }
         }
     }
 
-    public void useRangerBasic(Player player){
+    public void useRangerBasic(LivingEntity caster){
 
-        rangerBasic.useBasic(player);
+        rangerBasic.useBasic(caster);
     }
 
-    public int getAbilityCooldown(Player player, int abilityNumber){
+    public int getAbilityCooldown(LivingEntity caster, int abilityNumber){
 
         switch (abilityNumber){
             case 1:
-                return bitingRain.getCooldown(player);
+                return bitingRain.getCooldown(caster);
             case 2:
-                return shadowCrows.getCooldown(player);
+                return shadowCrows.getCooldown(caster);
             case 3:
-                return relentless.getCooldown(player);
+                return relentless.getCooldown(caster);
             case 4:
-                return razorWind.getCooldown(player);
+                return razorWind.getCooldown(caster);
             case 5:
-                return blessedArrow.getCooldown(player);
+                return blessedArrow.getCooldown(caster);
             case 6:
-                return rallyingCry.getCooldown(player);
+                return rallyingCry.getCooldown(caster);
             case 7:
-                return wildSpirit.getCooldown(player);
+                return wildSpirit.getCooldown(caster);
             case 8:
-                return roll.getCooldown(player);
+                return roll.getCooldown(caster);
         }
 
         return 0;
@@ -137,17 +139,17 @@ public class RangerAbilities {
         return 0;
     }
 
-    public void resetCooldowns(Player player){
-        bitingRain.resetCooldown(player);
-        blessedArrow.resetCooldown(player);
-        rallyingCry.resetCooldown(player);
-        razorWind.resetCooldown(player);
-        relentless.resetCooldown(player);
-        roll.resetCooldown(player);
-        shadowCrows.resetCooldown(player);
-        starVolley.resetCooldown(player);
-        wildRoar.resetCooldown(player);
-        wildSpirit.resetCooldown(player);
+    public void resetCooldowns(LivingEntity caster){
+        bitingRain.resetCooldown(caster);
+        blessedArrow.resetCooldown(caster);
+        rallyingCry.resetCooldown(caster);
+        razorWind.resetCooldown(caster);
+        relentless.resetCooldown(caster);
+        roll.resetCooldown(caster);
+        shadowCrows.resetCooldown(caster);
+        starVolley.resetCooldown(caster);
+        wildRoar.resetCooldown(caster);
+        wildSpirit.resetCooldown(caster);
     }
 
     public RallyingCry getRallyingCry() {

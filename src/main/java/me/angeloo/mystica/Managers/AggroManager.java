@@ -7,54 +7,54 @@ import java.util.*;
 
 public class AggroManager {
 
-    private final Map<UUID, List<Player>> creatureListOfAttackers = new HashMap<>();
-    private final Map<UUID, Player> lastPlayerWhoHit = new HashMap<>();
-    private final Map<UUID, Player> creatureHighPriorityTarget = new HashMap<>();
+    private final Map<UUID, List<LivingEntity>> creatureListOfAttackers = new HashMap<>();
+    private final Map<UUID, LivingEntity> lastPlayerWhoHit = new HashMap<>();
+    private final Map<UUID, LivingEntity> creatureHighPriorityTarget = new HashMap<>();
     private final Map<UUID, Long> lastSetAsPriority = new HashMap<>();
-    private final Map<Player, Boolean> blacklist = new HashMap<>();
+    private final Map<LivingEntity, Boolean> blacklist = new HashMap<>();
     //private final TargetManager targetManager;
 
     public AggroManager(){
     }
 
-    public void addAttacker(LivingEntity entity, Player player){
+    public void addAttacker(LivingEntity entity, LivingEntity attacker){
 
         if(!creatureListOfAttackers.containsKey(entity.getUniqueId())){
             creatureListOfAttackers.put(entity.getUniqueId(), new ArrayList<>());
         }
 
-        lastPlayerWhoHit.put(entity.getUniqueId(), player);
+        lastPlayerWhoHit.put(entity.getUniqueId(), attacker);
 
-        List<Player> attackers = creatureListOfAttackers.get(entity.getUniqueId());
+        List<LivingEntity> attackers = creatureListOfAttackers.get(entity.getUniqueId());
 
-        if(attackers.contains(player)){
+        if(attackers.contains(attacker)){
             return;
         }
 
-        attackers.add(player);
+        attackers.add(attacker);
         creatureListOfAttackers.put(entity.getUniqueId(), attackers);
 
     }
 
-    public void removeFromAllAttackerLists(Player player){
-        for(Map.Entry<UUID, List<Player>> entry : creatureListOfAttackers.entrySet()){
+    public void removeFromAllAttackerLists(LivingEntity caster){
+        for(Map.Entry<UUID, List<LivingEntity>> entry : creatureListOfAttackers.entrySet()){
             UUID entityUUID = entry.getKey();
-            List<Player> entityListOfAttackers = entry.getValue();
-            entityListOfAttackers.remove(player);
+            List<LivingEntity> entityListOfAttackers = entry.getValue();
+            entityListOfAttackers.remove(caster);
             creatureListOfAttackers.put(entityUUID, entityListOfAttackers);
         }
 
-        for(Map.Entry<UUID, Player> entry : creatureHighPriorityTarget.entrySet()){
+        for(Map.Entry<UUID, LivingEntity> entry : creatureHighPriorityTarget.entrySet()){
             UUID entityUUID = entry.getKey();
-            Player highPriorityPlayer = entry.getValue();
+            LivingEntity highPriorityPlayer = entry.getValue();
 
-            if(player == highPriorityPlayer){
+            if(caster == highPriorityPlayer){
                 removeHighPriorityTarget(entityUUID);
             }
         }
     }
 
-    public List<Player> getAttackerList(LivingEntity entity){
+    public List<LivingEntity> getAttackerList(LivingEntity entity){
 
         if(!creatureListOfAttackers.containsKey(entity.getUniqueId())){
             creatureListOfAttackers.put(entity.getUniqueId(), new ArrayList<>());
@@ -70,17 +70,17 @@ public class AggroManager {
         lastPlayerWhoHit.remove(entity.getUniqueId());
     }
 
-    public Player getLastPlayer(LivingEntity entity){
+    public LivingEntity getLastPlayer(LivingEntity entity){
         return lastPlayerWhoHit.getOrDefault(entity.getUniqueId(), null);
     }
 
-    public void setAsHighPriorityTarget(LivingEntity entity, Player player){
-        creatureHighPriorityTarget.put(entity.getUniqueId(), player);
+    public void setAsHighPriorityTarget(LivingEntity entity, LivingEntity attacker){
+        creatureHighPriorityTarget.put(entity.getUniqueId(), attacker);
         Long currentTime = System.currentTimeMillis() / 1000;
         setLastSetAsPriority(entity, currentTime);
     }
 
-    public Player getHighPriorityTarget(LivingEntity entity){
+    public LivingEntity getHighPriorityTarget(LivingEntity entity){
         if(!creatureHighPriorityTarget.containsKey(entity.getUniqueId())){
             creatureHighPriorityTarget.put(entity.getUniqueId(), null);
         }
@@ -104,17 +104,17 @@ public class AggroManager {
         return lastSetAsPriority.get(entity.getUniqueId());
     }
 
-    public void addToBlackList(Player player){
-        blacklist.put(player, true);
+    public void addToBlackList(LivingEntity attacker){
+        blacklist.put(attacker, true);
     }
 
-    public void removeFromBlackList(Player player){
-        blacklist.remove(player);
+    public void removeFromBlackList(LivingEntity attacker){
+        blacklist.remove(attacker);
     }
 
-    public boolean getIfOnBlackList(Player player){
-        if(blacklist.containsKey(player)){
-            return blacklist.get(player);
+    public boolean getIfOnBlackList(LivingEntity attacker){
+        if(blacklist.containsKey(attacker)){
+            return blacklist.get(attacker);
         }
 
         return false;

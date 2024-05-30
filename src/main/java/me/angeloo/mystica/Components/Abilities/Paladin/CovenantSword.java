@@ -63,75 +63,69 @@ public class CovenantSword {
         decision = paladinAbilities.getDecision();
     }
 
-    public void use(Player player){
+    private final double range = 8;
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void use(LivingEntity caster){
+
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-
-        if(getCooldown(player) > 0){
+        if(!usable(caster)){
             return;
         }
 
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 20);
+        abilityReadyInMap.put(caster.getUniqueId(), 20);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 4);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 4);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 4);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 4);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        double baseRange = 8;
+        targetManager.setTargetToNearestValid(caster, range);
 
-        targetManager.setTargetToNearestValid(player, baseRange);
-
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
         boolean targeted = false;
 
-        Vector direction = player.getLocation().getDirection().setY(0).normalize();
+        Vector direction = caster.getLocation().getDirection().setY(0).normalize();
 
         if(target != null){
 
             if(target instanceof Player){
-                if(pvpManager.pvpLogic(player, (Player) target)){
+                if(pvpManager.pvpLogic(caster, (Player) target)){
 
-                    double distance = player.getLocation().distance(target.getLocation());
+                    double distance = caster.getLocation().distance(target.getLocation());
 
-                    if(distance < baseRange){
+                    if(distance < range){
                         targeted = true;
                     }
 
@@ -141,9 +135,9 @@ public class CovenantSword {
             if(!(target instanceof Player)){
                 if(pveChecker.pveLogic(target)){
 
-                    double distance = player.getLocation().distance(target.getLocation());
+                    double distance = caster.getLocation().distance(target.getLocation());
 
-                    if(distance < baseRange){
+                    if(distance < range){
                         targeted = true;
                     }
 
@@ -154,14 +148,14 @@ public class CovenantSword {
         }
 
         if(targeted){
-            direction = target.getLocation().toVector().subtract(player.getLocation().toVector()).setY(0).normalize();
+            direction = target.getLocation().toVector().subtract(caster.getLocation().toVector()).setY(0).normalize();
         }
 
 
-        Location start = player.getLocation().clone().add(direction.multiply(1));
+        Location start = caster.getLocation().clone().add(direction.multiply(1));
         start.setDirection(direction);
 
-        ArmorStand sword = player.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
+        ArmorStand sword = caster.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
         sword.setInvisible(true);
         sword.setGravity(false);
         sword.setCollidable(false);
@@ -184,10 +178,10 @@ public class CovenantSword {
 
 
 
-        abilityManager.setCasting(player, true);
+        abilityManager.setCasting(caster, true);
 
         boolean finalTargeted = targeted;
-        double finalSkillDamage = getSkillDamage(player);
+        double finalSkillDamage = getSkillDamage(caster);
         new BukkitRunnable(){
             boolean stage1 = false;
             Vector initialDirection;
@@ -196,27 +190,29 @@ public class CovenantSword {
             @Override
             public void run(){
 
-                if(!player.isOnline()){
-                    cancelTask();
-                    return;
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        cancelTask();
+                        return;
+                    }
                 }
 
                 if (initialDirection == null) {
-                    initialDirection = player.getLocation().getDirection().setY(0).normalize();
+                    initialDirection = caster.getLocation().getDirection().setY(0).normalize();
                 }
 
-                Location center = player.getLocation();
+                Location center = caster.getLocation();
 
                 Vector direction = initialDirection.clone();
                 double radians = Math.toRadians(angle);
                 direction.rotateAroundY(radians);
 
-                Vector dir = player.getLocation().getDirection().setY(0).normalize();;
+                Vector dir = caster.getLocation().getDirection().setY(0).normalize();;
 
                 if(stage1){
 
                     if(finalTargeted && targetStillValid(target)){
-                        dir = target.getLocation().toVector().subtract(player.getLocation().toVector()).setY(0).normalize();
+                        dir = target.getLocation().toVector().subtract(caster.getLocation().toVector()).setY(0).normalize();
                     }
 
                     direction = dir.multiply(-1);
@@ -256,7 +252,7 @@ public class CovenantSword {
                             double z = cLoc.getZ() + (j * Math.sin(angle));
                             Location ploc = new Location(cLoc.getWorld(), x, (cLoc.getY()), z);
 
-                            player.getWorld().spawnParticle(Particle.LAVA, ploc, 1,0, 0, 0, 0);
+                            caster.getWorld().spawnParticle(Particle.LAVA, ploc, 1,0, 0, 0, 0);
                         }
                     }
 
@@ -271,9 +267,9 @@ public class CovenantSword {
                             cLoc.getZ() + 5
                     );
 
-                    for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+                    for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
-                        if(entity == player){
+                        if(entity == caster){
                             continue;
                         }
 
@@ -287,22 +283,22 @@ public class CovenantSword {
 
                         LivingEntity livingEntity = (LivingEntity) entity;
 
-                        boolean crit = damageCalculator.checkIfCrit(player, 0);
+                        boolean crit = damageCalculator.checkIfCrit(caster, 0);
 
-                        double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", finalSkillDamage, crit));
-                        damage = damage * decisionMultiplier(player);
+                        double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Physical", finalSkillDamage, crit));
+                        damage = damage * decisionMultiplier(caster);
 
                         //pvp logic
                         if(entity instanceof Player){
-                            if(pvpManager.pvpLogic(player, (Player) entity)){
-                                changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                            if(pvpManager.pvpLogic(caster, (Player) entity)){
+                                changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
                             }
                             continue;
                         }
 
                         if(pveChecker.pveLogic(livingEntity)){
-                            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, player));
-                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
+                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
                         }
 
                     }
@@ -312,7 +308,7 @@ public class CovenantSword {
 
                 double percent = ((Math.abs(angle) + (Math.abs(ea1))) / 195) * 100;
 
-                abilityManager.setCastBar(player, percent);
+                abilityManager.setCastBar(caster, percent);
 
             }
 
@@ -332,14 +328,14 @@ public class CovenantSword {
                     return false;
                 }
 
-                return target.getLocation().getWorld() == player.getWorld();
+                return target.getLocation().getWorld() == caster.getWorld();
             }
 
             private void ignite(Location center){
 
                 double skillDamage = 5;
-                double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                        profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
+                double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                        profileManager.getAnyProfile(caster).getSkillLevels().getSkill_4_Level_Bonus();
 
                 new BukkitRunnable(){
                     int count = 0;
@@ -354,7 +350,7 @@ public class CovenantSword {
                                 double z = center.getZ() + (j * Math.sin(angle));
                                 Location ploc = new Location(center.getWorld(), x, (center.getY()), z);
 
-                                player.getWorld().spawnParticle(Particle.LAVA, ploc, 1,0, 0, 0, 0);
+                                caster.getWorld().spawnParticle(Particle.LAVA, ploc, 1,0, 0, 0, 0);
                             }
                         }
 
@@ -367,9 +363,9 @@ public class CovenantSword {
                                 center.getZ() + 5
                         );
 
-                        for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+                        for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
-                            if(entity == player){
+                            if(entity == caster){
                                 continue;
                             }
 
@@ -383,21 +379,21 @@ public class CovenantSword {
 
                             LivingEntity livingEntity = (LivingEntity) entity;
 
-                            boolean crit = damageCalculator.checkIfCrit(player, 0);
+                            boolean crit = damageCalculator.checkIfCrit(caster, 0);
 
-                            double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", skillDamage * skillLevel, crit));
+                            double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Physical", skillDamage * skillLevel, crit));
 
                             //pvp logic
                             if(entity instanceof Player){
-                                if(pvpManager.pvpLogic(player, (Player) entity)){
-                                    changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                                if(pvpManager.pvpLogic(caster, (Player) entity)){
+                                    changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
                                 }
                                 continue;
                             }
 
                             if(pveChecker.pveLogic(livingEntity)){
-                                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, player));
-                                changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
+                                changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
                             }
 
                         }
@@ -415,26 +411,26 @@ public class CovenantSword {
             private void cancelTask(){
                 this.cancel();
                 sword.remove();
-                abilityManager.setCasting(player, false);
-                decision.removeDecision(player);
+                abilityManager.setCasting(caster, false);
+                decision.removeDecision(caster);
             }
 
         }.runTaskTimer(main, 0, 1);
 
     }
 
-    private double decisionMultiplier(Player player){
+    private double decisionMultiplier(LivingEntity caster){
 
-        if(decision.getDecision(player)){
+        if(decision.getDecision(caster)){
             return 1.8;
         }
 
         return 1;
     }
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_4_Level_Bonus();
         return 40 + ((int)(skillLevel/3));
     }
 
@@ -442,8 +438,8 @@ public class CovenantSword {
         return 20;
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -452,8 +448,21 @@ public class CovenantSword {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster){
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

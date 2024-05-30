@@ -7,6 +7,7 @@ import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DisplayWeapons;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class Hidden {
@@ -21,55 +22,70 @@ public class Hidden {
         aggroManager = main.getAggroManager();
     }
 
-    public void hidePlayer(Player player, boolean blacklist){
+    public void hidePlayer(LivingEntity caster, boolean blacklist){
 
-        player.setInvisible(true);
-        player.getInventory().setItemInMainHand(null);
-        player.getInventory().setItemInOffHand(null);
-        player.getInventory().setHelmet(null);
-        player.getInventory().setChestplate(null);
-        player.getInventory().setLeggings(null);
-        player.getInventory().setBoots(null);
+        caster.setInvisible(true);
 
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+        if(caster instanceof Player){
+            ((Player)caster).getInventory().setItemInMainHand(null);
+            ((Player)caster).getInventory().setItemInOffHand(null);
+            ((Player)caster).getInventory().setHelmet(null);
+            ((Player)caster).getInventory().setChestplate(null);
+            ((Player)caster).getInventory().setLeggings(null);
+            ((Player)caster).getInventory().setBoots(null);
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+        }
+
 
         if(blacklist){
 
-            aggroManager.removeHighPriorityTarget(player.getUniqueId());
-            aggroManager.addToBlackList(player);
-            aggroManager.removeFromAllAttackerLists(player);
+            aggroManager.removeHighPriorityTarget(caster.getUniqueId());
+            aggroManager.addToBlackList(caster);
+            aggroManager.removeFromAllAttackerLists(caster);
         }
 
 
     }
 
-    public void unhidePlayer(Player player){
+    public void unhidePlayer(LivingEntity caster){
 
-        boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
-        boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
+        boolean combatStatus = true;
 
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+        if(caster instanceof Player){
+            combatStatus = profileManager.getAnyProfile(caster).getIfInCombat();
+        }
+
+        boolean deathStatus = profileManager.getAnyProfile(caster).getIfDead();
+
+        if(caster instanceof Player){
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+        }
+
 
         if(!deathStatus){
-            player.setInvisible(false);
+            caster.setInvisible(false);
 
             if(!combatStatus){
                 return;
             }
 
-            PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
+            if(caster instanceof Player){
+                PlayerEquipment playerEquipment = profileManager.getAnyProfile(caster).getPlayerEquipment();
 
-            if(playerEquipment.getWeapon() != null){
-                player.getInventory().setItemInMainHand(playerEquipment.getWeapon());
+                if(playerEquipment.getWeapon() != null){
+                    ((Player)caster).getInventory().setItemInMainHand(playerEquipment.getWeapon());
+                }
+
+                if (playerEquipment.getOffhand() != null){
+                    ((Player)caster).getInventory().setItemInOffHand(playerEquipment.getOffhand());
+                }
+
+                DisplayWeapons displayWeapons  = new DisplayWeapons(main);
+                displayWeapons.displayArmor((Player) caster);
             }
 
-            if (playerEquipment.getOffhand() != null){
-                player.getInventory().setItemInOffHand(playerEquipment.getOffhand());
-            }
 
-            DisplayWeapons displayWeapons  = new DisplayWeapons(main);
-            displayWeapons.displayArmor(player);
-            aggroManager.removeFromBlackList(player);
+            aggroManager.removeFromBlackList(caster);
         }
 
     }

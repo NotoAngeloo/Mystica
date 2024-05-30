@@ -56,87 +56,63 @@ public class Annihilation {
         infection = shadowKnightAbilities.getInfection();
     }
 
-    public void use(Player player){
+    private final double range = 8;
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void use(LivingEntity caster){
+
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        double baseRange = 8;
 
-        targetManager.setTargetToNearestValid(player, baseRange);
+        targetManager.setTargetToNearestValid(caster, range);
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        if(target != null){
-            if(target instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) target)){
-                    return;
-                }
-            }
-
-            if(!(target instanceof Player)){
-                if(!pveChecker.pveLogic(target)){
-                    return;
-                }
-            }
-
-            double distance = player.getLocation().distance(target.getLocation());
-
-            if(distance > baseRange){
-                return;
-            }
-        }
-
-        if(target == null){
+        if(!usable(caster, target)){
             return;
         }
 
-        if(getCooldown(player) > 0){
-            return;
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-
-        if(profileManager.getAnyProfile(player).getCurrentMana() < getCost()){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 3);
+        abilityReadyInMap.put(caster.getUniqueId(), 3);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
+                if(getCooldown(caster) <= 0){
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+
+                if(caster instanceof  Player){
+                    shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo((Player) caster);
+                }
+
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        Location start = player.getLocation().clone();
+        Location start = caster.getLocation().clone();
         Location end = target.getLocation().clone();
         Vector initDir = end.toVector().subtract(start.toVector());
         Vector direction = initDir.clone();
@@ -145,7 +121,7 @@ public class Annihilation {
         Location spawnLoc = start.clone().subtract(0,3,0);
         spawnLoc.setDirection(direction);
 
-        ArmorStand armorStand = player.getWorld().spawn(spawnLoc, ArmorStand.class);
+        ArmorStand armorStand = caster.getWorld().spawn(spawnLoc, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -166,7 +142,7 @@ public class Annihilation {
 
 
         //abilityManager.setSkillRunning(player, true);
-        double finalSkillDamage = getSkillDamage(player);
+        double finalSkillDamage = getSkillDamage(caster);
         new BukkitRunnable(){
             int ran = 0;
             int height = 0;
@@ -176,17 +152,19 @@ public class Annihilation {
             @Override
             public void run(){
 
-                if(!player.isOnline()){
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        cancelTask();
+                        return;
+                    }
+                }
+
+                if(profileManager.getAnyProfile(caster).getIfDead()){
                     cancelTask();
                     return;
                 }
 
-                if(profileManager.getAnyProfile(player).getIfDead()){
-                    cancelTask();
-                    return;
-                }
-
-                Location start = player.getLocation().clone();
+                Location start = caster.getLocation().clone();
                 Location loc = start.clone().subtract(0,3,0);
 
                 if(ran < 5){
@@ -212,7 +190,7 @@ public class Annihilation {
                 }
 
                 if(pLoc != null){
-                    player.getWorld().spawnParticle(Particle.SPELL_WITCH, pLoc, 1, 0, 0, 0, 0);
+                    caster.getWorld().spawnParticle(Particle.SPELL_WITCH, pLoc, 1, 0, 0, 0, 0);
                     if(angle>40){
                         pLoc.subtract(pDir.multiply(1));
                     }
@@ -221,7 +199,7 @@ public class Annihilation {
                 if(ran >= 20){
                     cancelTask();
 
-                    double distance = player.getLocation().distance(target.getLocation());
+                    double distance = caster.getLocation().distance(target.getLocation());
 
                     if(distance<8){
                         hitTarget();
@@ -245,14 +223,14 @@ public class Annihilation {
                     return;
                 }
 
-                boolean crit = damageCalculator.checkIfCrit(player, 0);
-                double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
-                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+                boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
+                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
 
                 //Bukkit.getLogger().info(String.valueOf(infection.getIfThisPlayerInfectThisEntity(player, target)));
-                if(infection.getIfThisPlayerInfectThisEntity(player, target)){
-                    infection.infectionEnhancement(player, target);
+                if(infection.getIfThisPlayerInfectThisEntity(caster, target)){
+                    infection.infectionEnhancement(caster, target);
                 }
             }
 
@@ -260,8 +238,8 @@ public class Annihilation {
 
     }
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getStats().getLevel();
         return 45 + ((int)(skillLevel/3));
     }
 
@@ -269,8 +247,8 @@ public class Annihilation {
         return 30;
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -279,8 +257,45 @@ public class Annihilation {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster, LivingEntity target){
+        if(target != null){
+            if(target instanceof Player){
+                if(!pvpManager.pvpLogic(caster, (Player) target)){
+                    return false;
+                }
+            }
+
+            if(!(target instanceof Player)){
+                if(!pveChecker.pveLogic(target)){
+                    return false;
+                }
+            }
+
+            double distance = caster.getLocation().distance(target.getLocation());
+
+            if(distance > range){
+                return false;
+            }
+        }
+
+        if(target == null){
+            return false;
+        }
+
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana() < getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

@@ -56,92 +56,64 @@ public class Laceration {
         stealth = assassinAbilities.getStealth();
     }
 
-    public void use(Player player){
+    private final double range = 4;
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void use(LivingEntity caster){
+
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        double baseRange = 4;
 
-        targetManager.setTargetToNearestValid(player, baseRange);
+        targetManager.setTargetToNearestValid(caster, range);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
 
-        if(target != null){
-            if(target instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) target)){
-                    return;
-                }
-            }
-
-            if(!(target instanceof Player)){
-                if(!pveChecker.pveLogic(target)){
-                    return;
-                }
-            }
-
-            double distance = player.getLocation().distance(target.getLocation());
-
-            if(distance > baseRange){
-                return;
-            }
-        }
-
-        if(target == null){
+        if(!usable(caster, target)){
             return;
         }
 
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        if(getCooldown(player) > 0){
-            return;
+        combatManager.startCombatTimer(caster);
+
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 8);
+        abilityReadyInMap.put(caster.getUniqueId(), 8);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 2);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 2);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 2);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 2);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        boolean alchemist = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("alchemist");
+        boolean alchemist = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("alchemist");
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        Location playerLoc = player.getLocation().clone();
+        Location playerLoc = caster.getLocation().clone();
         Location targetLoc = target.getLocation();
         Vector targetDir = targetLoc.toVector().subtract(playerLoc.toVector());
 
@@ -153,30 +125,33 @@ public class Laceration {
                 warpLoc.add(0,.1,0);
             }
 
-            if(player.isSneaking()){
-                player.teleport(warpLoc);
+            if(caster instanceof Player){
+                if(((Player)caster).isSneaking()){
+                    caster.teleport(warpLoc);
+                }
             }
+
 
 
         }
 
 
-        player.getWorld().spawnParticle(Particle.REDSTONE, targetLoc, 50, .5, 1, .5, 1, new Particle.DustOptions(Color.RED, 1.0f));
+        caster.getWorld().spawnParticle(Particle.REDSTONE, targetLoc, 50, .5, 1, .5, 1, new Particle.DustOptions(Color.RED, 1.0f));
 
-        double bleedDamage = getBleedDamage(player);
+        double bleedDamage = getBleedDamage(caster);
 
         if(alchemist){
-            int comboPoints = combo.removeAnAmountOfPoints(player, combo.getComboPoints(player));
+            int comboPoints = combo.removeAnAmountOfPoints(caster, combo.getComboPoints(caster));
             bleedDamage = bleedDamage + comboPoints;
         }
 
 
-        boolean crit = damageCalculator.checkIfCrit(player, 0);
-        double damage = damageCalculator.calculateDamage(player, target, "Physical", getSkillDamage(player), crit);
-        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-        changeResourceHandler.subtractHealthFromEntity(target, damage, player);
-        stealth.stealthBonusCheck(player, target);
-        combo.addComboPoint(player);
+        boolean crit = damageCalculator.checkIfCrit(caster, 0);
+        double damage = damageCalculator.calculateDamage(caster, target, "Physical", getSkillDamage(caster), crit);
+        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+        changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+        stealth.stealthBonusCheck(caster, target);
+        combo.addComboPoint(caster);
 
         double finalBleedDamage = bleedDamage;
         new BukkitRunnable(){
@@ -206,11 +181,11 @@ public class Laceration {
                     }
                 }
 
-                boolean crit = damageCalculator.checkIfCrit(player, 0);
-                double tickDamage = damageCalculator.calculateDamage(player, target, "Physical", finalBleedDamage, crit);
+                boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                double tickDamage = damageCalculator.calculateDamage(caster, target, "Physical", finalBleedDamage, crit);
 
-                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                changeResourceHandler.subtractHealthFromEntity(target, tickDamage, player);
+                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                changeResourceHandler.subtractHealthFromEntity(target, tickDamage, caster);
 
                 ticks ++;
 
@@ -222,15 +197,15 @@ public class Laceration {
         }.runTaskTimer(main, 20, 20);
     }
 
-    public double getSkillDamage(Player player){
-        double level = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel())
-                + profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
+    public double getSkillDamage(LivingEntity caster){
+        double level = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel())
+                + profileManager.getAnyProfile(caster).getSkillLevels().getSkill_2_Level_Bonus();
         return 17 + ((int)(level/10));
     }
 
-    public double getBleedDamage(Player player){
-        double level = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel())
-                + profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
+    public double getBleedDamage(LivingEntity caster){
+        double level = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel())
+                + profileManager.getAnyProfile(caster).getSkillLevels().getSkill_2_Level_Bonus();
         return 5 + ((int)(level/3));
     }
 
@@ -238,8 +213,8 @@ public class Laceration {
         return 10;
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -248,7 +223,45 @@ public class Laceration {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster, LivingEntity target){
+        if(target != null){
+            if(target instanceof Player){
+                if(!pvpManager.pvpLogic(caster, (Player) target)){
+                    return false;
+                }
+            }
+
+            if(!(target instanceof Player)){
+                if(!pveChecker.pveLogic(target)){
+                    return false;
+                }
+            }
+
+            double distance = caster.getLocation().distance(target.getLocation());
+
+            if(distance > range){
+                return false;
+            }
+        }
+
+        if(target == null){
+            return false;
+        }
+
+
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 }

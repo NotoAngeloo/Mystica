@@ -41,7 +41,6 @@ public class ElementalistBasic {
 
     private final Map<UUID, BukkitTask> removeBasicStageTaskMap = new HashMap<>();
 
-
     public ElementalistBasic(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
@@ -54,156 +53,137 @@ public class ElementalistBasic {
         changeResourceHandler = main.getChangeResourceHandler();
     }
 
-    public void use(Player player){
+    public void use(LivingEntity caster){
 
 
-        if(!basicStageMap.containsKey(player.getUniqueId())){
-            basicStageMap.put(player.getUniqueId(), 1);
+        if(!basicStageMap.containsKey(caster.getUniqueId())){
+            basicStageMap.put(caster.getUniqueId(), 1);
         }
 
-        if(getIfBasicRunning(player)){
+        if(getIfBasicRunning(caster)){
             return;
         }
 
 
-        double totalRange = getRange(player);
+        double totalRange = getRange(caster);
 
-        targetManager.setTargetToNearestValid(player, totalRange);
+        targetManager.setTargetToNearestValid(caster, totalRange);
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        if(target == null){
-            return;
-        }
-
-        if (target instanceof Player) {
-            if (!pvpManager.pvpLogic(player, (Player) target)) {
-                return;
-            }
-        }
-
-        if(!(target instanceof Player)){
-            if(!pveChecker.pveLogic(target)){
-                return;
-            }
-        }
-
-        double distance = player.getLocation().distance(target.getLocation());
-
-        if(distance > totalRange){
+        if(!usable(caster, target)){
             return;
         }
 
 
-        executeBasic(player);
+        executeBasic(caster);
 
     }
 
-    private double getRange(Player player){
-        double baseRange = 20;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
-        return  baseRange + extraRange;
+    private double getRange(LivingEntity caster){
+        double range = 20;
+        return  range + buffAndDebuffManager.getTotalRangeModifier(caster);
     }
 
-    private void executeBasic(Player player){
+    private void executeBasic(LivingEntity caster){
 
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(buffAndDebuffManager.getIfBasicInterrupt(player)){
+                if(buffAndDebuffManager.getIfBasicInterrupt(caster)){
                     this.cancel();
-                    stopBasicRunning(player);
+                    stopBasicRunning(caster);
                     return;
                 }
 
-                double totalRange = getRange(player);
+                double totalRange = getRange(caster);
 
-                targetManager.setTargetToNearestValid(player, totalRange);
+                targetManager.setTargetToNearestValid(caster, totalRange);
 
-                LivingEntity target = targetManager.getPlayerTarget(player);
+                LivingEntity target = targetManager.getPlayerTarget(caster);
 
                 if(target == null){
-                    stopBasicRunning(player);
+                    stopBasicRunning(caster);
                     return;
                 }
 
                 if (target instanceof Player) {
-                    if (!pvpManager.pvpLogic(player, (Player) target)) {
-                        stopBasicRunning(player);
+                    if (!pvpManager.pvpLogic(caster, (Player) target)) {
+                        stopBasicRunning(caster);
                         return;
                     }
                 }
 
                 if(!(target instanceof Player)){
                     if(!pveChecker.pveLogic(target)){
-                        stopBasicRunning(player);
+                        stopBasicRunning(caster);
                         return;
                     }
                 }
 
-                double distance = player.getLocation().distance(target.getLocation());
+                double distance = caster.getLocation().distance(target.getLocation());
 
                 if(distance > totalRange){
-                    stopBasicRunning(player);
+                    stopBasicRunning(caster);
                     return;
                 }
 
 
-                tryToRemoveBasicStage(player);
-                switch (basicStageMap.get(player.getUniqueId())){
+                tryToRemoveBasicStage(caster);
+                switch (basicStageMap.get(caster.getUniqueId())){
                     case 1:{
-                        basicStage1(player);
+                        basicStage1(caster);
                         break;
                     }
                     case 2:{
-                        basicStage2(player);
+                        basicStage2(caster);
                         break;
                     }
                     case 3:{
-                        basicStage3(player);
+                        basicStage3(caster);
                         break;
                     }
                     case 4:{
-                        basicStage4(player);
+                        basicStage4(caster);
                         break;
                     }
                 }
 
-                combatManager.startCombatTimer(player);
+                combatManager.startCombatTimer(caster);
             }
         }.runTaskTimer(main, 0, 10);
-        basicRunning.put(player.getUniqueId(), task);
+        basicRunning.put(caster.getUniqueId(), task);
 
 
     }
 
-    private void tryToRemoveBasicStage(Player player){
+    private void tryToRemoveBasicStage(LivingEntity caster){
 
-        if(removeBasicStageTaskMap.containsKey(player.getUniqueId())){
-            removeBasicStageTaskMap.get(player.getUniqueId()).cancel();
+        if(removeBasicStageTaskMap.containsKey(caster.getUniqueId())){
+            removeBasicStageTaskMap.get(caster.getUniqueId()).cancel();
         }
 
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
-                basicStageMap.remove(player.getUniqueId());
+                basicStageMap.remove(caster.getUniqueId());
             }
         }.runTaskLater(main, 50);
 
-        removeBasicStageTaskMap.put(player.getUniqueId(), task);
+        removeBasicStageTaskMap.put(caster.getUniqueId(), task);
 
     }
 
-    private void basicStage1(Player player){
+    private void basicStage1(LivingEntity caster){
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        basicStageMap.put(player.getUniqueId(), 2);
+        basicStageMap.put(caster.getUniqueId(), 2);
 
-        Location start = player.getLocation();
+        Location start = caster.getLocation();
         start.subtract(0, 1, 0);
-        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = caster.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -221,7 +201,7 @@ public class ElementalistBasic {
         entityEquipment.setHelmet(fireballItem);
 
 
-        double finalSkillDamage = getSkillDamage(player);
+        double finalSkillDamage = getSkillDamage(caster);
         new BukkitRunnable() {
             final double initialDistance = armorStand.getLocation().distance(target.getLocation());
             final double halfDistance = initialDistance/2;
@@ -260,11 +240,11 @@ public class ElementalistBasic {
                 if (distance <= 1) {
                     cancelTask();
 
-                    boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
+                    boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                    double damage = damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage, crit);
 
-                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
 
                 }
 
@@ -295,15 +275,15 @@ public class ElementalistBasic {
 
     }
 
-    private void basicStage2(Player player){
+    private void basicStage2(LivingEntity caster){
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        basicStageMap.put(player.getUniqueId(), 3);
+        basicStageMap.put(caster.getUniqueId(), 3);
 
-        Location start = player.getLocation();
+        Location start = caster.getLocation();
         start.subtract(0, 1, 0);
-        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = caster.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -321,7 +301,7 @@ public class ElementalistBasic {
         entityEquipment.setHelmet(iceBallItem);
 
 
-        double finalSkillDamage = getSkillDamage(player);
+        double finalSkillDamage = getSkillDamage(caster);
         new BukkitRunnable() {
             final double initialDistance = armorStand.getLocation().distance(target.getLocation());
             final double halfDistance = initialDistance/2;
@@ -362,11 +342,11 @@ public class ElementalistBasic {
                 if (distance <= 1) {
                     cancelTask();
 
-                    boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
+                    boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                    double damage = damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage, crit);
 
-                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
 
                 }
 
@@ -396,18 +376,18 @@ public class ElementalistBasic {
 
     }
 
-    private void basicStage4(Player player){
-        basicStageMap.put(player.getUniqueId(), 1);
+    private void basicStage4(LivingEntity caster){
+        basicStageMap.put(caster.getUniqueId(), 1);
     }
 
-    private void basicStage3(Player player){
+    private void basicStage3(LivingEntity caster){
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        basicStageMap.put(player.getUniqueId(), 4);
+        basicStageMap.put(caster.getUniqueId(), 4);
 
 
-        double finalSkillDamage = getSkillDamage(player);
+        double finalSkillDamage = getSkillDamage(caster);
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
             final List<ArmorStand> armorStands = new ArrayList<>();
@@ -420,7 +400,7 @@ public class ElementalistBasic {
                     targetWasLoc = targetLoc.clone();
                 }
 
-                Location playerLoc = player.getLocation().clone().subtract(0,1,0);
+                Location playerLoc = caster.getLocation().clone().subtract(0,1,0);
 
                 if(!sameWorld(playerLoc, targetWasLoc)){
                     cancelTask();
@@ -443,7 +423,7 @@ public class ElementalistBasic {
                         }
 
 
-                        ArmorStand armorStand = player.getWorld().spawn(current, ArmorStand.class);
+                        ArmorStand armorStand = caster.getWorld().spawn(current, ArmorStand.class);
                         armorStand.setInvisible(true);
                         armorStand.setGravity(false);
                         armorStand.setCollidable(false);
@@ -487,11 +467,11 @@ public class ElementalistBasic {
                     cancelTask();
 
 
-                    boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
+                    boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                    double damage = damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage, crit);
 
-                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
 
                 }
             }
@@ -532,21 +512,47 @@ public class ElementalistBasic {
 
     }
 
-    private boolean getIfBasicRunning(Player player){
-        return basicRunning.containsKey(player.getUniqueId());
+    private boolean getIfBasicRunning(LivingEntity caster){
+        return basicRunning.containsKey(caster.getUniqueId());
     }
 
-    public void stopBasicRunning(Player player){
-        if(basicRunning.containsKey(player.getUniqueId())){
-            basicRunning.get(player.getUniqueId()).cancel();
-            basicRunning.remove(player.getUniqueId());
+    public void stopBasicRunning(LivingEntity caster){
+        if(basicRunning.containsKey(caster.getUniqueId())){
+            basicRunning.get(caster.getUniqueId()).cancel();
+            basicRunning.remove(caster.getUniqueId());
         }
     }
 
-    public double getSkillDamage(Player player){
+    public double getSkillDamage(LivingEntity caster){
 
-        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+        double skillLevel = profileManager.getAnyProfile(caster).getStats().getLevel();
         return 5 + ((int)(skillLevel/3));
+    }
+
+    public boolean usable(LivingEntity caster, LivingEntity target){
+        if(target == null){
+            return false;
+        }
+
+        if (target instanceof Player) {
+            if (!pvpManager.pvpLogic(caster, (Player) target)) {
+                return false;
+            }
+        }
+
+        if(!(target instanceof Player)){
+            if(!pveChecker.pveLogic(target)){
+                return false;
+            }
+        }
+
+        double distance = caster.getLocation().distance(target.getLocation());
+
+        if(distance > getRange(caster)){
+            return false;
+        }
+
+        return true;
     }
 
 }

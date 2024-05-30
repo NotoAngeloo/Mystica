@@ -9,7 +9,6 @@ import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -56,97 +55,97 @@ public class WarriorBasic {
         changeResourceHandler = main.getChangeResourceHandler();
     }
 
-    public void useBasic(Player player){
+    public void useBasic(LivingEntity caster){
 
-        if(!basicStageMap.containsKey(player.getUniqueId())){
-            basicStageMap.put(player.getUniqueId(), 1);
+        if(!basicStageMap.containsKey(caster.getUniqueId())){
+            basicStageMap.put(caster.getUniqueId(), 1);
         }
 
-        if(getIfBasicRunning(player)){
+        if(getIfBasicRunning(caster)){
             return;
         }
 
-        executeBasic(player);
+        executeBasic(caster);
 
     }
 
-    private void tryToRemoveBasicStage(Player player){
+    private void tryToRemoveBasicStage(LivingEntity caster){
 
-        if(removeBasicStageTaskMap.containsKey(player.getUniqueId())){
-            removeBasicStageTaskMap.get(player.getUniqueId()).cancel();
+        if(removeBasicStageTaskMap.containsKey(caster.getUniqueId())){
+            removeBasicStageTaskMap.get(caster.getUniqueId()).cancel();
         }
 
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
-                basicStageMap.remove(player.getUniqueId());
+                basicStageMap.remove(caster.getUniqueId());
             }
         }.runTaskLater(main, 50);
 
-        removeBasicStageTaskMap.put(player.getUniqueId(), task);
+        removeBasicStageTaskMap.put(caster.getUniqueId(), task);
 
     }
 
-    private void executeBasic(Player player){
+    private void executeBasic(LivingEntity caster){
 
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(buffAndDebuffManager.getIfBasicInterrupt(player)){
+                if(buffAndDebuffManager.getIfBasicInterrupt(caster)){
                     this.cancel();
-                    stopBasicRunning(player);
+                    stopBasicRunning(caster);
                     return;
                 }
 
-                tryToRemoveBasicStage(player);
-                switch (basicStageMap.get(player.getUniqueId())) {
+                tryToRemoveBasicStage(caster);
+                switch (basicStageMap.get(caster.getUniqueId())) {
                     case 1: {
-                        basicStage1(player, 2);
+                        basicStage1(caster, 2);
                         break;
                     }
                     case 2: {
-                        basicStage2(player, 3);
+                        basicStage2(caster, 3);
                         break;
                     }
                     case 3: {
-                        basicStage1(player, 4);
+                        basicStage1(caster, 4);
                         break;
                     }
                     case 4: {
-                        basicStage2(player, 5);
+                        basicStage2(caster, 5);
                         break;
                     }
                     case 5: {
-                        basicStage4(player);
+                        basicStage4(caster);
                         break;
                     }
                 }
-                combatManager.startCombatTimer(player);
+                combatManager.startCombatTimer(caster);
             }
         }.runTaskTimer(main, 0, 10);
-        basicRunning.put(player.getUniqueId(), task);
+        basicRunning.put(caster.getUniqueId(), task);
 
 
-        combatManager.startCombatTimer(player);
+        combatManager.startCombatTimer(caster);
     }
 
-    private void basicStage4(Player player){
-        basicStageMap.put(player.getUniqueId(), 1);
+    private void basicStage4(LivingEntity caster){
+        basicStageMap.put(caster.getUniqueId(), 1);
     }
 
-    private void basicStage1(Player player, int newStage){
+    private void basicStage1(LivingEntity caster, int newStage){
 
-        basicStageMap.put(player.getUniqueId(), newStage);
+        basicStageMap.put(caster.getUniqueId(), newStage);
 
-        Location start = player.getLocation().clone().subtract(0,3,0);
+        Location start = caster.getLocation().clone().subtract(0,3,0);
 
-        Vector direction = player.getLocation().getDirection().setY(0).normalize();
+        Vector direction = caster.getLocation().getDirection().setY(0).normalize();
         Vector crossProduct = direction.clone().crossProduct(new Vector(0,1,0)).normalize();
         start.add(direction.multiply(4));
         start.add(crossProduct.multiply(3));
 
-        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = caster.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -164,7 +163,7 @@ public class WarriorBasic {
         entityEquipment.setHelmet(basicItem);
 
 
-        Location loc = player.getLocation().clone().add(direction.multiply(1.25));
+        Location loc = caster.getLocation().clone().add(direction.multiply(1.25));
 
 
         BoundingBox hitBox = new BoundingBox(
@@ -177,15 +176,15 @@ public class WarriorBasic {
         );
 
         LivingEntity targetToHit = null;
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
         LivingEntity firstHit = null;
 
         boolean targetHit = false;
 
 
-        for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+        for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
-            if(entity == player){
+            if(entity == caster){
                 continue;
             }
 
@@ -198,7 +197,7 @@ public class WarriorBasic {
             }
 
             if(entity instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) entity)){
+                if(!pvpManager.pvpLogic(caster, (Player) entity)){
                     continue;
                 }
             }
@@ -233,17 +232,17 @@ public class WarriorBasic {
         }
 
         if(targetToHit != null){
-            targetManager.setPlayerTarget(player, targetToHit);
+            targetManager.setPlayerTarget(caster, targetToHit);
 
-            boolean crit = damageCalculator.checkIfCrit(player, 0);
-            double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", getSkillDamage(player), crit);
+            boolean crit = damageCalculator.checkIfCrit(caster, 0);
+            double damage = damageCalculator.calculateDamage(caster, targetToHit, "Physical", getSkillDamage(caster), crit);
 
-            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, player));
-            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, player);
+            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
+            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster);
 
         }
         else{
-            stopBasicRunning(player);
+            stopBasicRunning(caster);
         }
 
         new BukkitRunnable(){
@@ -252,14 +251,16 @@ public class WarriorBasic {
             @Override
             public void run(){
 
-                if(!player.isOnline()){
-                    cancelTask();
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        cancelTask();
+                    }
                 }
 
-                Vector direction = player.getLocation().getDirection().setY(0).normalize();
+                Vector direction = caster.getLocation().getDirection().setY(0).normalize();
                 Vector crossProduct = direction.clone().crossProduct(new Vector(0,1,0)).normalize();
 
-                Location current = player.getLocation().clone();
+                Location current = caster.getLocation().clone();
                 current.add(direction.multiply(4));
                 current.add(crossProduct.multiply(3));
                 current.subtract(crossProduct.multiply(traveled));
@@ -290,18 +291,18 @@ public class WarriorBasic {
 
     }
 
-    private void basicStage2(Player player, int newStage){
+    private void basicStage2(LivingEntity caster, int newStage){
 
-        basicStageMap.put(player.getUniqueId(), newStage);
+        basicStageMap.put(caster.getUniqueId(), newStage);
 
-        Location start = player.getLocation().clone().subtract(0,3,0);
+        Location start = caster.getLocation().clone().subtract(0,3,0);
 
-        Vector direction = player.getLocation().getDirection().setY(0).normalize();
+        Vector direction = caster.getLocation().getDirection().setY(0).normalize();
         Vector crossProduct = direction.clone().crossProduct(new Vector(0,1,0)).normalize();
         start.add(direction.multiply(4));
         start.subtract(crossProduct.multiply(3));
 
-        ArmorStand armorStand = player.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand armorStand = caster.getWorld().spawn(start, ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -319,7 +320,7 @@ public class WarriorBasic {
         entityEquipment.setHelmet(basicItem);
 
 
-        Location loc = player.getLocation().clone().add(direction.multiply(1.25));
+        Location loc = caster.getLocation().clone().add(direction.multiply(1.25));
 
 
         BoundingBox hitBox = new BoundingBox(
@@ -332,16 +333,16 @@ public class WarriorBasic {
         );
 
         LivingEntity targetToHit = null;
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
         LivingEntity firstHit = null;
 
         boolean targetHit = false;
 
 
 
-        for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+        for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
-            if(entity == player){
+            if(entity == caster){
                 continue;
             }
 
@@ -354,7 +355,7 @@ public class WarriorBasic {
             }
 
             if(entity instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) entity)){
+                if(!pvpManager.pvpLogic(caster, (Player) entity)){
                     continue;
                 }
             }
@@ -389,16 +390,16 @@ public class WarriorBasic {
         }
 
         if(targetToHit != null){
-            targetManager.setPlayerTarget(player, targetToHit);
+            targetManager.setPlayerTarget(caster, targetToHit);
 
-            boolean crit = damageCalculator.checkIfCrit(player, 0);
-            double damage = damageCalculator.calculateDamage(player, targetToHit, "Physical", getSkillDamage(player), crit);
+            boolean crit = damageCalculator.checkIfCrit(caster, 0);
+            double damage = damageCalculator.calculateDamage(caster, targetToHit, "Physical", getSkillDamage(caster), crit);
 
-            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, player));
-            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, player);
+            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
+            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster);
         }
         else{
-            stopBasicRunning(player);
+            stopBasicRunning(caster);
         }
 
         new BukkitRunnable(){
@@ -407,14 +408,16 @@ public class WarriorBasic {
             @Override
             public void run(){
 
-                if(!player.isOnline()){
-                    cancelTask();
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        cancelTask();
+                    }
                 }
 
-                Vector direction = player.getLocation().getDirection().setY(0).normalize();
+                Vector direction = caster.getLocation().getDirection().setY(0).normalize();
                 Vector crossProduct = direction.clone().crossProduct(new Vector(0,1,0)).normalize();
 
-                Location current = player.getLocation().clone();
+                Location current = caster.getLocation().clone();
                 current.add(direction.multiply(4));
                 current.subtract(crossProduct.multiply(3));
                 current.add(crossProduct.multiply(traveled));
@@ -447,19 +450,19 @@ public class WarriorBasic {
 
     }
 
-    private boolean getIfBasicRunning(Player player){
-        return basicRunning.containsKey(player.getUniqueId());
+    private boolean getIfBasicRunning(LivingEntity caster){
+        return basicRunning.containsKey(caster.getUniqueId());
     }
 
-    public void stopBasicRunning(Player player){
-        if(basicRunning.containsKey(player.getUniqueId())){
-            basicRunning.get(player.getUniqueId()).cancel();
-            basicRunning.remove(player.getUniqueId());
+    public void stopBasicRunning(LivingEntity caster){
+        if(basicRunning.containsKey(caster.getUniqueId())){
+            basicRunning.get(caster.getUniqueId()).cancel();
+            basicRunning.remove(caster.getUniqueId());
         }
     }
 
-    public double getSkillDamage(Player player){
-        double level = profileManager.getAnyProfile(player).getStats().getLevel();
+    public double getSkillDamage(LivingEntity caster){
+        double level = profileManager.getAnyProfile(caster).getStats().getLevel();
         return 14 + ((int)(level/3));
     }
 

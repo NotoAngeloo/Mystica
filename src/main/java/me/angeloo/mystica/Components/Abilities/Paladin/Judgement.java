@@ -31,6 +31,7 @@ public class Judgement {
 
     private final ProfileManager profileManager;
     private final CombatManager combatManager;
+    private final FakePlayerTargetManager fakePlayerTargetManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
@@ -49,6 +50,7 @@ public class Judgement {
         this.main = main;
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
+        fakePlayerTargetManager = main.getFakePlayerTargetManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
@@ -60,87 +62,66 @@ public class Judgement {
         decision = paladinAbilities.getDecision();
     }
 
-    public void use(Player player){
+    public void use(LivingEntity caster){
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        double baseRange = 15;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
-        double totalRange = baseRange + extraRange;
-
-        LivingEntity target = targetManager.getPlayerTarget(player);
-
-        if(target != null){
-
-            double distance = player.getLocation().distance(target.getLocation());
-
-            if(distance > totalRange){
-                return;
-            }
-
-            if(target instanceof Player){
-                if(profileManager.getAnyProfile(target).getIfDead()){
-                    target = player;
-                }
-            }
-
+        if(!usable(caster)){
+            return;
         }
+
+        LivingEntity target = targetManager.getPlayerTarget(caster);
+
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+
+        combatManager.startCombatTimer(caster);
 
         if(target == null){
-            target = player;
+            target = caster;
         }
 
-        if(getCooldown(player) > 0){
-            return;
+        if(profileManager.getAnyProfile(target).getIfDead()){
+            target = caster;
         }
 
+        execute(caster, target);
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player, target);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 15);
+        abilityReadyInMap.put(caster.getUniqueId(), 15);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 8);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 8);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 8);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 8);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player, LivingEntity target){
+    private void execute(LivingEntity caster, LivingEntity target){
 
-        boolean templar = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("templar");
+        boolean templar = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("templar");
 
         Location start = target.getLocation();
 
-        ArmorStand armorStand = player.getWorld().spawn(start.clone(), ArmorStand.class);
+        ArmorStand armorStand = caster.getWorld().spawn(start.clone(), ArmorStand.class);
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCollidable(false);
@@ -159,7 +140,7 @@ public class Judgement {
 
 
 
-        double finalSkillDamage = getSkillDamage(player);
+        double finalSkillDamage = getSkillDamage(caster);
         new BukkitRunnable(){
             double down = 0;
             @Override
@@ -175,7 +156,7 @@ public class Judgement {
                     double z = start.getZ() + (1 * Math.sin(angle));
                     Location loc = new Location(start.getWorld(), x, y, z);
 
-                    player.getWorld().spawnParticle(Particle.FLAME, loc, 1,0, 0, 0, 0);
+                    caster.getWorld().spawnParticle(Particle.FLAME, loc, 1,0, 0, 0, 0);
                 }
 
                 if(down>=7){
@@ -193,15 +174,15 @@ public class Judgement {
                     return;
                 }
 
-                boolean crit = damageCalculator.checkIfCrit(player, 0);
+                boolean crit = damageCalculator.checkIfCrit(caster, 0);
 
                 if(target instanceof Player){
 
-                    if(!pvpManager.pvpLogic(player, (Player) target)){
+                    if(!pvpManager.pvpLogic(caster, (Player) target)){
 
                         double healPower = 5;
-                        double healAmount = damageCalculator.calculateHealing(player, healPower, crit);
-                        changeResourceHandler.addHealthToEntity(target, healAmount, player);
+                        double healAmount = damageCalculator.calculateHealing(caster, healPower, crit);
+                        changeResourceHandler.addHealthToEntity(target, healAmount, caster);
                         return;
                     }
 
@@ -210,28 +191,29 @@ public class Judgement {
                 if(!(target instanceof Player)){
                     if(!pveChecker.pveLogic(target)){
                         double healPower = 5;
-                        double healAmount = damageCalculator.calculateHealing(player, healPower, crit);
-                        changeResourceHandler.addHealthToEntity(target, healAmount, player);
+                        double healAmount = damageCalculator.calculateHealing(caster, healPower, crit);
+                        changeResourceHandler.addHealthToEntity(target, healAmount, caster);
                         return;
                     }
                 }
 
-                double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
-                damage = damage * decisionMultiplier(player);
+                double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
+                damage = damage * decisionMultiplier(caster);
 
-                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+
+                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
 
                 if(templar){
-                    aggroManager.setAsHighPriorityTarget(target, player);
+                    aggroManager.setAsHighPriorityTarget(target, caster);
 
                     if(target instanceof Player){
-                        targetManager.setPlayerTarget((Player) target, player);
+                        targetManager.setPlayerTarget((Player) target, caster);
                         return;
                     }
                 }
 
-                decision.removeDecision(player);
+                decision.removeDecision(caster);
             }
 
             private boolean checkValid(LivingEntity target){
@@ -252,30 +234,30 @@ public class Judgement {
         }.runTaskTimer(main, 0, 1);
     }
 
-    private double decisionMultiplier(Player player){
+    private double decisionMultiplier(LivingEntity caster){
 
-        if(decision.getDecision(player)){
+        if(decision.getDecision(caster)){
             return 1.8;
         }
 
         return 1;
     }
 
-    public void resetCooldownDawn(Player player){
+    public void resetCooldownDawn(LivingEntity caster){
 
-        boolean dawn = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("dawn");
+        boolean dawn = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("dawn");
 
         if(!dawn){
             return;
         }
 
-        abilityReadyInMap.put(player.getUniqueId(), 0);
+        abilityReadyInMap.put(caster.getUniqueId(), 0);
 
     }
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_5_Level_Bonus();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_5_Level_Bonus();
         return 30 + ((int)(skillLevel/3));
     }
 
@@ -283,9 +265,9 @@ public class Judgement {
         return 10;
     }
 
-    public int getCooldown(Player player){
+    public int getCooldown(LivingEntity entity){
 
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+        int cooldown = abilityReadyInMap.getOrDefault(entity.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -294,9 +276,46 @@ public class Judgement {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
     }
 
+    public boolean usable(LivingEntity caster){
+        double baseRange = 15;
+        double extraRange = buffAndDebuffManager.getTotalRangeModifier(caster);
+        double totalRange = baseRange + extraRange;
+
+        LivingEntity target;
+
+        if(caster instanceof Player){
+            target = targetManager.getPlayerTarget((Player) caster);
+        }
+        else{
+            target = fakePlayerTargetManager.getTarget(caster);
+        }
+
+
+        if(target != null){
+
+            double distance = caster.getLocation().distance(target.getLocation());
+
+            if(distance > totalRange){
+                return false;
+            }
+
+
+        }
+
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
+    }
 
 }

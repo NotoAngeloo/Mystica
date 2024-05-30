@@ -7,7 +7,6 @@ import me.angeloo.mystica.Utility.CooldownDisplayer;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
@@ -40,51 +39,51 @@ public class Warp {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    public void use(Player player){
+    public void use(LivingEntity caster){
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        if(getCooldown(player) > 0){
+        if(getCooldown(caster) > 0){
             return;
         }
 
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        combatManager.startCombatTimer(player);
+        combatManager.startCombatTimer(caster);
 
-        double maxDistance = 8 + buffAndDebuffManager.getTotalRangeModifier(player);
+        double maxDistance = 8 + buffAndDebuffManager.getTotalRangeModifier(caster);
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_4_Level_Bonus();
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_4_Level_Bonus();
 
         maxDistance = maxDistance + ((int)(skillLevel/3));
 
-        Location playerLoc = player.getEyeLocation();
+        Location playerLoc = caster.getEyeLocation();
         Location newLoc = playerLoc.clone();
 
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        String subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
         if(subclass.equalsIgnoreCase("chaos")){
-            player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, playerLoc, 50, .5, 1, .5, 0);
+            caster.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, playerLoc, 50, .5, 1, .5, 0);
         }
         else{
-            player.getWorld().spawnParticle(Particle.FALLING_OBSIDIAN_TEAR, playerLoc, 50, .5, 1, .5, 0);
+            caster.getWorld().spawnParticle(Particle.FALLING_OBSIDIAN_TEAR, playerLoc, 50, .5, 1, .5, 0);
         }
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
         if(target != null){
-            double distance = player.getLocation().distance(target.getLocation());
+            double distance = caster.getLocation().distance(target.getLocation());
 
             if(distance <= maxDistance){
-                player.teleport(target);
+                caster.teleport(target);
                 return;
             }
         }
@@ -102,44 +101,44 @@ public class Warp {
         }
 
         newLoc.setY(newLoc.getY());
-        player.teleport(newLoc);
+        caster.teleport(newLoc);
 
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        abilityReadyInMap.put(player.getUniqueId(), 13);
+        abilityReadyInMap.put(caster.getUniqueId(), 13);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
+                if(getCooldown(caster) <= 0){
                     if(subclass.equalsIgnoreCase("chaos")){
-                        cooldownDisplayer.displayCooldown(player,4);
+                        cooldownDisplayer.displayCooldown(caster,4);
                     }
                     else{
-                        cooldownDisplayer.displayCooldown(player,5);
+                        cooldownDisplayer.displayCooldown(caster,5);
                     }
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
 
                 if(subclass.equalsIgnoreCase("chaos")){
-                    cooldownDisplayer.displayCooldown(player,4);
+                    cooldownDisplayer.displayCooldown(caster,4);
                 }
                 else{
-                    cooldownDisplayer.displayCooldown(player,5);
+                    cooldownDisplayer.displayCooldown(caster,5);
                 }
 
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
@@ -147,9 +146,9 @@ public class Warp {
         return 5;
     }
 
-    public int getCooldown(Player player){
+    public int getCooldown(LivingEntity caster){
 
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -158,8 +157,8 @@ public class Warp {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
     }
 
 

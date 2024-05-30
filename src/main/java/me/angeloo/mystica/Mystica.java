@@ -3,7 +3,6 @@ package me.angeloo.mystica;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
-import me.angeloo.mystica.Components.Activities.DemonInvasion;
 import me.angeloo.mystica.Components.Commands.*;
 import me.angeloo.mystica.Components.Inventories.*;
 import me.angeloo.mystica.Managers.*;
@@ -36,7 +35,9 @@ public final class Mystica extends JavaPlugin{
     private ClassSetter classSetter;
     private ClassSwapper classSwapper;
     private StealthTargetBlacklist stealthTargetBlacklist;
+    private FakePlayerTargetManager fakePlayerTargetManager;
     private TargetManager targetManager;
+    private FakePlayerAiManager fakePlayerAiManager;
     private AggroTick aggroTick;
     private AggroManager aggroManager;
     private DpsManager dpsManager;
@@ -106,7 +107,11 @@ public final class Mystica extends JavaPlugin{
         stealthTargetBlacklist = new StealthTargetBlacklist();
         aggroManager = new AggroManager();
         buffAndDebuffManager = new BuffAndDebuffManager(this);
+
+        fakePlayerTargetManager = new FakePlayerTargetManager(this);
         targetManager = new TargetManager(this);
+
+        fakePlayerAiManager = new FakePlayerAiManager(this);
 
         dpsManager = new DpsManager(this);
         changeResourceHandler = new ChangeResourceHandler(this);
@@ -164,6 +169,7 @@ public final class Mystica extends JavaPlugin{
         getCommand("FastTravel").setExecutor(new FastTravel(this));
         getCommand("ClassGuide").setExecutor(new ClassGuide(this));
         getCommand("MysticaQuest").setExecutor(new MysticaQuest(this));
+        getCommand("SpawnCompanions").setExecutor(new SpawnCompanions(this));
 
         AbilityInventory abilityInventory;
         this.getServer().getPluginManager().registerEvents(abilityInventory = new AbilityInventory(this), this);
@@ -267,9 +273,13 @@ public final class Mystica extends JavaPlugin{
 
     public StealthTargetBlacklist getStealthTargetBlacklist(){return stealthTargetBlacklist;}
 
+    public FakePlayerTargetManager getFakePlayerTargetManager(){return fakePlayerTargetManager;}
+
     public TargetManager getTargetManager(){
         return targetManager;
     }
+
+    public FakePlayerAiManager getFakePlayerAiManager(){return fakePlayerAiManager;}
 
     public DpsManager getDpsManager() {
         return dpsManager;
@@ -294,7 +304,6 @@ public final class Mystica extends JavaPlugin{
     public AbilityManager getAbilityManager(){
         return abilityManager;
     }
-
 
     public DeathManager getDeathManager(){
         return deathManager;

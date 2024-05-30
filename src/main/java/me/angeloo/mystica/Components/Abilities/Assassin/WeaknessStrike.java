@@ -61,98 +61,65 @@ public class WeaknessStrike {
         stealth = assassinAbilities.getStealth();
     }
 
-    public void use(Player player){
+    private final double range = 7;
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void use(LivingEntity caster){
+
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        double baseRange = 7;
+        targetManager.setTargetToNearestValid(caster, range);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        targetManager.setTargetToNearestValid(player, baseRange);
-
-        LivingEntity target = targetManager.getPlayerTarget(player);
-
-        if(target != null){
-            if(target instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) target)){
-                    return;
-                }
-            }
-
-            if(!(target instanceof Player)){
-                if(!pveChecker.pveLogic(target)){
-                    return;
-                }
-            }
-
-            double distance = player.getLocation().distance(target.getLocation());
-
-            if(distance > baseRange){
-                return;
-            }
-        }
-
-        if(target == null){
+        if(!usable(caster, target)){
             return;
         }
 
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        if(getCooldown(player) > 0){
-            return;
+        combatManager.startCombatTimer(caster);
+
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        if(combo.getComboPoints(player) == 0){
-            return;
-        }
-
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 4);
+        abilityReadyInMap.put(caster.getUniqueId(), 4);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 3);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 3);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 3);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 3);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
-        Location start = player.getLocation().clone();
+        LivingEntity target = targetManager.getPlayerTarget(caster);
+
+        Location start = caster.getLocation().clone();
         Location up = start.clone().add(0,3,0);
 
-        double skillDamage = getSkillDamage(player);
+        double skillDamage = getSkillDamage(caster);
 
-        skillDamage = skillDamage + (15 * combo.removeAnAmountOfPoints(player, combo.getComboPoints(player)));
+        skillDamage = skillDamage + (15 * combo.removeAnAmountOfPoints(caster, combo.getComboPoints(caster)));
 
 
         //abilityManager.setSkillRunning(player, true);
@@ -168,7 +135,14 @@ public class WeaknessStrike {
             @Override
             public void run(){
 
-                if(!player.isOnline() || buffAndDebuffManager.getIfInterrupt(player)){
+                if(caster instanceof Player){
+                    if(!((Player) caster).isOnline()){
+                        cancelTask();
+                        return;
+                    }
+                }
+
+                if(buffAndDebuffManager.getIfInterrupt(caster)){
                     cancelTask();
                     return;
                 }
@@ -178,7 +152,7 @@ public class WeaknessStrike {
                     return;
                 }
 
-                Location current = player.getLocation();
+                Location current = caster.getLocation();
                 Location targetLoc = target.getLocation().clone();
                 Vector direction = targetLoc.toVector().subtract(current.toVector());
                 direction.setY(0);
@@ -204,16 +178,16 @@ public class WeaknessStrike {
                             double y = current.getY() + 1;
                             double z = current.getZ() + (2 * Math.sin(angle));
                             Location loc = new Location(current.getWorld(), x, y, z);
-                            player.getWorld().spawnParticle(Particle.CRIT_MAGIC, loc, 1,0, 0, 0, 0);
+                            caster.getWorld().spawnParticle(Particle.CRIT_MAGIC, loc, 1,0, 0, 0, 0);
                         }
 
                         //also damage
-                        boolean crit = damageCalculator.checkIfCrit(player, 0);
-                        double damage = damageCalculator.calculateDamage(player, target, "Physical", finalSkillDamage, crit);
+                        boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                        double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
 
-                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                        changeResourceHandler.subtractHealthFromEntity(target, damage, player);
-                        stealth.stealthBonusCheck(player, target);
+                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                        changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+                        stealth.stealthBonusCheck(caster, target);
 
                         cancelTask();
                     }
@@ -244,7 +218,7 @@ public class WeaknessStrike {
 
                             Location s1Loc = current2.clone().add(crossProduct.clone().multiply(1.25));
 
-                            stand = player.getWorld().spawn(s1Loc.clone().subtract(0,10,0), ArmorStand.class);
+                            stand = caster.getWorld().spawn(s1Loc.clone().subtract(0,10,0), ArmorStand.class);
                             stand.setInvisible(true);
                             stand.setGravity(false);
                             stand.setCollidable(false);
@@ -258,7 +232,7 @@ public class WeaknessStrike {
 
                             Location s2Loc = current2.clone().subtract(crossProduct.clone().multiply(1.25));
 
-                            stand2 = player.getWorld().spawn(s2Loc.clone().subtract(0,10,0), ArmorStand.class);
+                            stand2 = caster.getWorld().spawn(s2Loc.clone().subtract(0,10,0), ArmorStand.class);
                             stand2.setInvisible(true);
                             stand2.setGravity(false);
                             stand2.setCollidable(false);
@@ -279,7 +253,7 @@ public class WeaknessStrike {
 
                 current.setDirection(direction);
 
-                player.teleport(current);
+                caster.teleport(current);
 
                 current2 = current.clone();
 
@@ -329,10 +303,10 @@ public class WeaknessStrike {
 
     }
 
-    public double getSkillDamage(Player player){
+    public double getSkillDamage(LivingEntity caster){
 
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_3_Level_Bonus();
         return 30 + ((int)(skillLevel/3));
     }
 
@@ -340,8 +314,8 @@ public class WeaknessStrike {
         return 20;
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -359,8 +333,50 @@ public class WeaknessStrike {
         return 0;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster, LivingEntity target){
+        if(target != null){
+            if(target instanceof Player){
+                if(!pvpManager.pvpLogic(caster, (Player) target)){
+                    return false;
+                }
+            }
+
+            if(!(target instanceof Player)){
+                if(!pveChecker.pveLogic(target)){
+                    return false;
+                }
+            }
+
+            double distance = caster.getLocation().distance(target.getLocation());
+
+            if(distance > range){
+                return false;
+            }
+        }
+
+        if(target == null){
+            return false;
+        }
+
+
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+        if(combo.getComboPoints(caster) == 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

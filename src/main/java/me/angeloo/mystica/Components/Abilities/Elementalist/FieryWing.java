@@ -53,92 +53,65 @@ public class FieryWing {
         changeResourceHandler = main.getChangeResourceHandler();
     }
 
-    public void use(Player player){
+    private final double range = 20;
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void use(LivingEntity caster){
+
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        double baseRange = 20;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
-        double totalRange = baseRange + extraRange;
+        targetManager.setTargetToNearestValid(caster, range + buffAndDebuffManager.getTotalRangeModifier(caster));
 
-        targetManager.setTargetToNearestValid(player, totalRange);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
-
-        if(target != null){
-            if(target instanceof Player){
-                if(!pvpManager.pvpLogic(player, (Player) target)){
-                    return;
-                }
-            }
-
-            if(!(target instanceof Player)){
-                if(!pveChecker.pveLogic(target)){
-                    return;
-                }
-            }
-
-            double distance = player.getLocation().distance(target.getLocation());
-
-            if(distance > totalRange){
-                return;
-            }
-        }
-
-        if(target == null){
+        if(!usable(caster, target)){
             return;
         }
 
-        if(getCooldown(player) > 0){
-            return;
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 30);
+        abilityReadyInMap.put(caster.getUniqueId(), 30);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
+                if(getCooldown(caster) <= 0){
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                if(caster instanceof Player){
+                    shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo((Player) caster);
+                }
+
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        Location start = player.getLocation();
+        Location start = caster.getLocation();
         start.subtract(0, 1, 0);
 
 
-        ArmorStand spawnTexture = player.getWorld().spawn(start, ArmorStand.class);
+        ArmorStand spawnTexture = caster.getWorld().spawn(start, ArmorStand.class);
         spawnTexture.setInvisible(true);
         spawnTexture.setGravity(false);
         spawnTexture.setCollidable(false);
@@ -156,25 +129,20 @@ public class FieryWing {
         entityEquipment2.setHelmet(spawnItem);
 
         //abilityManager.setSkillRunning(player, true);
-        double finalSkillDamage = getSkillDamage(player);
+        double finalSkillDamage = getSkillDamage(caster);
         new BukkitRunnable(){
             boolean spawned = false;
             int ran = 0;
             public void run(){
 
-                if(player.isOnline()){
-                    spawnTexture.teleport(player.getLocation().clone().subtract(0,1,0));
-                }
-                else{
-                    cancelTask();
-                }
+                spawnTexture.teleport(caster.getLocation().clone().subtract(0,1,0));
 
                 if(ran >= 10 && !spawned){
 
                     //abilityManager.setSkillRunning(player, false);
                     spawned = true;
 
-                    ArmorStand armorStand = player.getWorld().spawn(player.getLocation().clone().subtract(0,1,0), ArmorStand.class);
+                    ArmorStand armorStand = caster.getWorld().spawn(caster.getLocation().clone().subtract(0,1,0), ArmorStand.class);
                     armorStand.setInvisible(true);
                     armorStand.setGravity(false);
                     armorStand.setCollidable(false);
@@ -225,19 +193,19 @@ public class FieryWing {
                             armorStand.teleport(current);
 
 
-                            player.getWorld().spawnParticle(Particle.FLAME, current.clone().add(0,1,0), 1, 0, 0, 0, 0);
+                            caster.getWorld().spawnParticle(Particle.FLAME, current.clone().add(0,1,0), 1, 0, 0, 0, 0);
 
                             if (distance <= 1) {
 
-                                addInflame(player);
+                                addInflame(caster);
 
                                 cancelTask();
 
-                                boolean crit = damageCalculator.checkIfCrit(player, 0);
-                                double damage = damageCalculator.calculateDamage(player, target, "Magical", finalSkillDamage, crit);
+                                boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                                double damage = damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage, crit);
 
-                                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
-                                changeResourceHandler.subtractHealthFromEntity(target, damage, player);
+                                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                                changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
 
 
                             }
@@ -292,56 +260,62 @@ public class FieryWing {
 
     }
 
-    public int getInflame(Player player){
+    public int getInflame(LivingEntity caster){
 
-        if(!inflameMap.containsKey(player.getUniqueId())){
-            inflameMap.put(player.getUniqueId(), 0);
+        if(!inflameMap.containsKey(caster.getUniqueId())){
+            inflameMap.put(caster.getUniqueId(), 0);
         }
 
-        return inflameMap.get(player.getUniqueId());
+        return inflameMap.get(caster.getUniqueId());
     }
 
-    public void addInflame(Player player){
+    public void addInflame(LivingEntity caster){
 
-        boolean pyromancer = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("pyromancer");
+        boolean pyromancer = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("pyromancer");
 
         if(!pyromancer){
             return;
         }
 
-        int stacks = getInflame(player);
+        int stacks = getInflame(caster);
 
         stacks ++;
 
         if(stacks >=4){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
-            removeInflame(player);
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
+            removeInflame(caster);
             return;
         }
 
-        inflameMap.put(player.getUniqueId(), stacks);
+        inflameMap.put(caster.getUniqueId(), stacks);
 
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+        if(caster instanceof Player){
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+        }
+
     }
 
 
-    public void removeInflame(Player player){
-        inflameMap.put(player.getUniqueId(), 0);
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+    public void removeInflame(LivingEntity caster){
+        inflameMap.put(caster.getUniqueId(), 0);
+
+        if(caster instanceof Player){
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+        }
     }
 
     public double getCost() {
         return 20;
     }
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getStats().getLevel();
         return 60 + ((int)(skillLevel/3));
     }
 
-    public int getCooldown(Player player){
+    public int getCooldown(LivingEntity caster){
 
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -350,8 +324,43 @@ public class FieryWing {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster, LivingEntity target){
+        if(target != null){
+            if(target instanceof Player){
+                if(!pvpManager.pvpLogic(caster, (Player) target)){
+                    return false;
+                }
+            }
+
+            if(!(target instanceof Player)){
+                if(!pveChecker.pveLogic(target)){
+                    return false;
+                }
+            }
+
+            double distance = caster.getLocation().distance(target.getLocation());
+
+            if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+                return false;
+            }
+        }
+
+        if(target == null){
+            return false;
+        }
+
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+        return true;
     }
 
 }

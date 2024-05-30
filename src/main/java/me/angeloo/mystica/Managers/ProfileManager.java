@@ -44,6 +44,8 @@ public class ProfileManager {
     private final Map<UUID, FakePlayerProfile> fakePlayerProfileMap = new HashMap<>();
     private final Map<UUID, NonPlayerProfile> nonPlayerProfiles = new HashMap<>();
 
+    private final Map<Player, List<LivingEntity>> companionMap = new HashMap<>();
+
     private final Map<String, Player> playerNameMap = new HashMap<>();
     private final Map<UUID, String> nonPlayerNameMap = new HashMap<>();
     private final Map<UUID, Location> bossHomes = new HashMap<>();
@@ -797,6 +799,36 @@ public class ProfileManager {
 
     public boolean getIfResetProcessing(LivingEntity entity){
         return resetProcessing.getOrDefault(entity.getUniqueId(), false);
+    }
+
+    public void addCompanion(Player player, LivingEntity companion){
+        List<LivingEntity> currentCompanions = getCompanions(player);
+        currentCompanions.add(companion);
+        //Bukkit.getLogger().info(companion.getName() + " added to companions");
+        companionMap.put(player, currentCompanions);
+    }
+
+    public List<LivingEntity> getCompanions(Player player){
+        return companionMap.getOrDefault(player, new ArrayList<>());
+    }
+
+    public Player getCompanionsPlayer(LivingEntity companion){
+        for(Map.Entry<Player, List<LivingEntity>> entry : companionMap.entrySet()){
+            Player player = entry.getKey();
+            List<LivingEntity> companions = entry.getValue();
+            if(companions.contains(companion)){
+                return player;
+            }
+        }
+
+        return null;
+    }
+
+    public void removeCompanions(Player player){
+        for(LivingEntity companion : companionMap.get(player)){
+            companion.remove();
+        }
+        companionMap.remove(player);
     }
 
 }

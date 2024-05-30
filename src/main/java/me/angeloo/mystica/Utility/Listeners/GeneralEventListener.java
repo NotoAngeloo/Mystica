@@ -4,6 +4,7 @@ import com.alessiodp.parties.api.Parties;
 import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
+import com.comphenix.protocol.ProtocolLib;
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.Inventories.AbilityInventory;
@@ -757,13 +758,13 @@ public class GeneralEventListener implements Listener {
             return;
         }
 
-        Player lastPlayer = aggroManager.getLastPlayer(entity);
+        LivingEntity lastCaster = aggroManager.getLastPlayer(entity);
 
-        if(lastPlayer == null){
+        if(lastCaster == null){
             return;
         }
 
-        Bukkit.getServer().getPluginManager().callEvent(new CustomDeathEvent(lastPlayer, entity));
+        Bukkit.getServer().getPluginManager().callEvent(new CustomDeathEvent(lastCaster, entity));
 
     }
 
@@ -789,7 +790,7 @@ public class GeneralEventListener implements Listener {
     @EventHandler
     public void customDeathEvent(CustomDeathEvent event){
 
-        Player player = event.getPlayerWhoKilled();
+        LivingEntity caster = event.getPlayerWhoKilled();
 
         LivingEntity entity = event.getEntityWhoDied();
 
@@ -800,34 +801,41 @@ public class GeneralEventListener implements Listener {
 
         Set<Player> victors = new HashSet<>();
 
-        PartiesAPI api = Parties.getApi();
-        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
-        assert partyPlayer != null;
-        if(partyPlayer.isInParty()){
+        if(caster instanceof Player){
+            Player player = (Player) caster;
+            PartiesAPI api = Parties.getApi();
+            PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
+            assert partyPlayer != null;
+            if(partyPlayer.isInParty()){
 
-            Party party = api.getParty(partyPlayer.getPartyId());
+                Party party = api.getParty(partyPlayer.getPartyId());
 
-            assert party != null;
-            Set<UUID> partyMemberList = party.getMembers();
+                assert party != null;
+                Set<UUID> partyMemberList = party.getMembers();
 
-            //List<Player> partyList = new ArrayList<>();
+                //List<Player> partyList = new ArrayList<>();
 
-            for(UUID partyMemberId : partyMemberList){
-                Player partyMember = Bukkit.getPlayer(partyMemberId);
+                for(UUID partyMemberId : partyMemberList){
+                    Player partyMember = Bukkit.getPlayer(partyMemberId);
 
-                if(partyMember==null){
-                    continue;
+                    if(partyMember==null){
+                        continue;
+                    }
+
+                    changeResourceHandler.addXpToPlayer(partyMember, (xpYield / partyMemberList.size()));
+                    bagInventory.addItemsToPlayerBagByPickup(partyMember, itemDrops);
+                    victors.add(partyMember);
                 }
 
-                changeResourceHandler.addXpToPlayer(partyMember, (xpYield / partyMemberList.size()));
-                bagInventory.addItemsToPlayerBagByPickup(partyMember, itemDrops);
-                victors.add(partyMember);
             }
-
+            else {
+                changeResourceHandler.addXpToPlayer(player, xpYield);
+                bagInventory.addItemsToPlayerBagByPickup(player, itemDrops);
+                victors.add(player);
+            }
         }
-        else {
-            changeResourceHandler.addXpToPlayer(player, xpYield);
-            bagInventory.addItemsToPlayerBagByPickup(player, itemDrops);
+        else{
+            Player player = profileManager.getCompanionsPlayer(caster);
             victors.add(player);
         }
 
@@ -1465,62 +1473,74 @@ public class GeneralEventListener implements Listener {
             return;
         }
 
-        Player player = event.getPlayer();
+        LivingEntity caster = event.getCaster();
 
-        aggroManager.addAttacker(entity, player);
+        aggroManager.addAttacker(entity, caster);
 
-        World playerWorld = player.getWorld();
+        World playerWorld = caster.getWorld();
 
         PartiesAPI api = Parties.getApi();
 
-        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
+        if(caster instanceof Player){
 
-        assert partyPlayer != null;
-        if(partyPlayer.isInParty()){
+            Player player = (Player) caster;
 
-            Party party = api.getParty(partyPlayer.getPartyId());
+            PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
 
-            assert party != null;
-            Set<UUID> partyMemberList = party.getMembers();
+            assert partyPlayer != null;
+            if(partyPlayer.isInParty()){
 
-            for(UUID partyMemberId : partyMemberList){
+                Party party = api.getParty(partyPlayer.getPartyId());
 
-                Player partyMember = Bukkit.getPlayer(partyMemberId);
+                assert party != null;
+                Set<UUID> partyMemberList = party.getMembers();
 
-                if(partyMember == null){
-                    continue;
+                for(UUID partyMemberId : partyMemberList){
+
+                    Player partyMember = Bukkit.getPlayer(partyMemberId);
+
+                    if(partyMember == null){
+                        continue;
+                    }
+
+                    if(!partyMember.isOnline()){
+                        continue;
+                    }
+
+                    if(partyMember == player){
+                        continue;
+                    }
+
+                    boolean deathStatus = profileManager.getAnyProfile(partyMember).getIfDead();
+
+                    if(deathStatus){
+                        continue;
+                    }
+
+                    World memberWorld = partyMember.getWorld();
+
+                    if(playerWorld != memberWorld){
+                        continue;
+                    }
+
+                    double distance = player.getLocation().distance(partyMember.getLocation());
+
+                    if(distance > 20){
+                        continue;
+                    }
+
+                    aggroManager.addAttacker(entity, partyMember);
+
                 }
+            }
 
-                if(!partyMember.isOnline()){
-                    continue;
+            if(!profileManager.getCompanions(player).isEmpty()){
+                for(LivingEntity companion : profileManager.getCompanions(player)){
+                    aggroManager.addAttacker(entity, companion);
                 }
-
-                if(partyMember == player){
-                    continue;
-                }
-
-                boolean deathStatus = profileManager.getAnyProfile(partyMember).getIfDead();
-
-                if(deathStatus){
-                    continue;
-                }
-
-                World memberWorld = partyMember.getWorld();
-
-                if(playerWorld != memberWorld){
-                    continue;
-                }
-
-                double distance = player.getLocation().distance(partyMember.getLocation());
-
-                if(distance > 20){
-                    continue;
-                }
-
-                aggroManager.addAttacker(entity, partyMember);
-
             }
         }
+
     }
 
     @EventHandler

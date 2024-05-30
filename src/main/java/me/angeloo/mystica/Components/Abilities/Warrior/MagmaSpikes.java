@@ -55,67 +55,56 @@ public class MagmaSpikes {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    public void use(Player player){
+    public void use(LivingEntity caster){
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        if(getCooldown(player) > 0){
+        if(!usable(caster)){
             return;
         }
 
-        Block block = player.getLocation().subtract(0,1,0).getBlock();
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        if(block.getType() == Material.AIR){
-            return;
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 20);
+        abilityReadyInMap.put(caster.getUniqueId(), 20);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 7);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 7);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 7);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 7);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        Location start = player.getLocation();
+        Location start = caster.getLocation();
         Location up = start.clone().add(0,4,0);
 
 
-        double skillDamage = getSkillDamage(player);
+        double skillDamage = getSkillDamage(caster);
 
         //abilityManager.setSkillRunning(player, true);
         skillDamage = skillDamage / 2;
@@ -128,12 +117,19 @@ public class MagmaSpikes {
             @Override
             public void run(){
 
-                if(!player.isOnline() || buffAndDebuffManager.getIfInterrupt(player)){
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        cancelTask();
+                        return;
+                    }
+                }
+
+                if(buffAndDebuffManager.getIfInterrupt(caster)){
                     cancelTask();
                     return;
                 }
 
-                Location current = player.getLocation();
+                Location current = caster.getLocation();
 
                 if(going){
                     double distance = current.distance(up);
@@ -166,7 +162,7 @@ public class MagmaSpikes {
                         }
                         if(count==1){
                             spawnLargeStands(start);
-                            abilityManager.setCasting(player, false);
+                            abilityManager.setCasting(caster, false);
                         }
 
                         double increment = (2 * Math.PI) / 16; // angle between particles
@@ -177,7 +173,7 @@ public class MagmaSpikes {
                             double y = start.getY() + 1;
                             double z = start.getZ() + (5 * Math.sin(angle));
                             Location loc = new Location(start.getWorld(), x, y, z);
-                            player.getWorld().spawnParticle(Particle.LAVA, loc, 1,0, 0, 0, 0);
+                            caster.getWorld().spawnParticle(Particle.LAVA, loc, 1,0, 0, 0, 0);
                         }
 
                         BoundingBox hitBox = new BoundingBox(
@@ -189,9 +185,9 @@ public class MagmaSpikes {
                                 start.getZ() + 5
                         );
 
-                        for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+                        for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
-                            if(entity == player){
+                            if(entity == caster){
                                 continue;
                             }
 
@@ -205,14 +201,14 @@ public class MagmaSpikes {
 
                             LivingEntity livingEntity = (LivingEntity) entity;
 
-                            boolean crit = damageCalculator.checkIfCrit(player, 0);
+                            boolean crit = damageCalculator.checkIfCrit(caster, 0);
 
-                            double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", finalSkillDamage, crit));
+                            double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Physical", finalSkillDamage, crit));
 
                             //pvp logic
                             if(entity instanceof Player){
-                                if(pvpManager.pvpLogic(player, (Player) entity)){
-                                    changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                                if(pvpManager.pvpLogic(caster, (Player) entity)){
+                                    changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
 
                                     if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
                                         Vector velocity = (new Vector(0, .75, 0));
@@ -224,8 +220,8 @@ public class MagmaSpikes {
                             }
 
                             if(pveChecker.pveLogic(livingEntity)){
-                                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, player));
-                                changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
+                                changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
 
                                 if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
                                     Vector velocity = (new Vector(0, .75, 0));
@@ -241,7 +237,7 @@ public class MagmaSpikes {
                 }
 
                 if(count<2){
-                    player.teleport(current);
+                    caster.teleport(current);
                 }
 
 
@@ -263,7 +259,7 @@ public class MagmaSpikes {
                 Vector crossProduct = direction.clone().crossProduct(new Vector(0,1,0)).normalize();
 
                 Location s1spawn = center.clone().add(direction.clone().multiply(2)).setDirection(direction.clone());
-                ArmorStand stand = player.getWorld().spawn(s1spawn.clone().subtract(0,5,0), ArmorStand.class);
+                ArmorStand stand = caster.getWorld().spawn(s1spawn.clone().subtract(0,5,0), ArmorStand.class);
                 stand.setInvisible(true);
                 stand.setGravity(false);
                 stand.setCollidable(false);
@@ -276,7 +272,7 @@ public class MagmaSpikes {
                 stands.add(stand);
 
                 Location s2spawn = center.clone().subtract(direction.clone().multiply(2)).setDirection(direction.clone().multiply(-1));
-                ArmorStand stand2 = player.getWorld().spawn(s2spawn.clone().subtract(0,5,0), ArmorStand.class);
+                ArmorStand stand2 = caster.getWorld().spawn(s2spawn.clone().subtract(0,5,0), ArmorStand.class);
                 stand2.setInvisible(true);
                 stand2.setGravity(false);
                 stand2.setCollidable(false);
@@ -289,7 +285,7 @@ public class MagmaSpikes {
                 stands.add(stand2);
 
                 Location s3spawn = center.clone().add(crossProduct.clone().multiply(2)).setDirection(crossProduct.clone());
-                ArmorStand stand3 = player.getWorld().spawn(s3spawn.clone().subtract(0,5,0), ArmorStand.class);
+                ArmorStand stand3 = caster.getWorld().spawn(s3spawn.clone().subtract(0,5,0), ArmorStand.class);
                 stand3.setInvisible(true);
                 stand3.setGravity(false);
                 stand3.setCollidable(false);
@@ -302,7 +298,7 @@ public class MagmaSpikes {
                 stands.add(stand3);
 
                 Location s4spawn = center.clone().subtract(crossProduct.clone().multiply(2)).setDirection(crossProduct.clone().multiply(-1));
-                ArmorStand stand4 = player.getWorld().spawn(s4spawn.clone().subtract(0,5,0), ArmorStand.class);
+                ArmorStand stand4 = caster.getWorld().spawn(s4spawn.clone().subtract(0,5,0), ArmorStand.class);
                 stand4.setInvisible(true);
                 stand4.setGravity(false);
                 stand4.setCollidable(false);
@@ -327,7 +323,7 @@ public class MagmaSpikes {
                 Vector crossProduct = direction.clone().crossProduct(new Vector(0,1,0)).normalize();
 
                 Location s1spawn = center.clone().add(direction.clone().multiply(4)).setDirection(direction.clone());
-                ArmorStand stand = player.getWorld().spawn(s1spawn.clone().subtract(0,5,0), ArmorStand.class);
+                ArmorStand stand = caster.getWorld().spawn(s1spawn.clone().subtract(0,5,0), ArmorStand.class);
                 stand.setInvisible(true);
                 stand.setGravity(false);
                 stand.setCollidable(false);
@@ -340,7 +336,7 @@ public class MagmaSpikes {
                 stands.add(stand);
 
                 Location s2spawn = center.clone().subtract(direction.clone().multiply(4)).setDirection(direction.clone().multiply(-1));
-                ArmorStand stand2 = player.getWorld().spawn(s2spawn.clone().subtract(0,5,0), ArmorStand.class);
+                ArmorStand stand2 = caster.getWorld().spawn(s2spawn.clone().subtract(0,5,0), ArmorStand.class);
                 stand2.setInvisible(true);
                 stand2.setGravity(false);
                 stand2.setCollidable(false);
@@ -353,7 +349,7 @@ public class MagmaSpikes {
                 stands.add(stand2);
 
                 Location s3spawn = center.clone().add(crossProduct.clone().multiply(4)).setDirection(crossProduct.clone());
-                ArmorStand stand3 = player.getWorld().spawn(s3spawn.clone().subtract(0,5,0), ArmorStand.class);
+                ArmorStand stand3 = caster.getWorld().spawn(s3spawn.clone().subtract(0,5,0), ArmorStand.class);
                 stand3.setInvisible(true);
                 stand3.setGravity(false);
                 stand3.setCollidable(false);
@@ -366,7 +362,7 @@ public class MagmaSpikes {
                 stands.add(stand3);
 
                 Location s4spawn = center.clone().subtract(crossProduct.clone().multiply(4)).setDirection(crossProduct.clone().multiply(-1));
-                ArmorStand stand4 = player.getWorld().spawn(s4spawn.clone().subtract(0,5,0), ArmorStand.class);
+                ArmorStand stand4 = caster.getWorld().spawn(s4spawn.clone().subtract(0,5,0), ArmorStand.class);
                 stand4.setInvisible(true);
                 stand4.setGravity(false);
                 stand4.setCollidable(false);
@@ -392,8 +388,8 @@ public class MagmaSpikes {
 
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -406,14 +402,33 @@ public class MagmaSpikes {
         return 10;
     }
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_7_Level_Bonus();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_7_Level_Bonus();
         return 50 + ((int)(skillLevel/3));
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster){
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+        Block block = caster.getLocation().subtract(0,1,0).getBlock();
+
+        if(block.getType() == Material.AIR){
+            return false ;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

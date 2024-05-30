@@ -53,57 +53,58 @@ public class LightWell {
         pveChecker = main.getPveChecker();
     }
 
-    public void use(Player player){
+    public void use(LivingEntity caster){
 
-        if (!abilityReadyInMap.containsKey(player.getUniqueId())) {
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+        if (!abilityReadyInMap.containsKey(caster.getUniqueId())) {
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        if (getCooldown(player) > 0) {
+        if(!usable(caster)){
             return;
         }
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 30);
+        abilityReadyInMap.put(caster.getUniqueId(), 30);
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
 
-                if (getCooldown(player) <= 0) {
+                if (getCooldown(caster) <= 0) {
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
+                int cooldown = getCooldown(caster) - 1;
 
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+
+                if(caster instanceof Player){
+                    shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo((Player) caster);
+                }
+
+
 
             }
         }.runTaskTimer(main, 0, 20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        Location spawnStart = player.getLocation().clone();
+        Location spawnStart = caster.getLocation().clone();
 
-        ArmorStand well = player.getWorld().spawn(spawnStart, ArmorStand.class);
+        ArmorStand well = caster.getWorld().spawn(spawnStart, ArmorStand.class);
         well.setInvisible(true);
         well.setGravity(false);
         well.setCollidable(false);
@@ -123,7 +124,7 @@ public class LightWell {
 
 
         Location current = well.getLocation();
-        double finalSkillDamage = getSkillDamage(player);
+        double finalSkillDamage = getSkillDamage(caster);
         new BukkitRunnable(){
             Vector initialDirection;
             int angle = 0;
@@ -167,7 +168,7 @@ public class LightWell {
                         double y = current.getY() + 1;
                         double z = current.getZ() + (5 * Math.sin(angle));
                         Location loc = new Location(current.getWorld(), x, y, z);
-                        player.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1,0, 0, 0, 0);
+                        caster.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1,0, 0, 0, 0);
                     }
 
                     BoundingBox hitBox = new BoundingBox(
@@ -179,9 +180,9 @@ public class LightWell {
                             current.getZ() + 5
                     );
 
-                    for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+                    for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
-                        if(entity == player){
+                        if(entity == caster){
                             continue;
                         }
 
@@ -196,20 +197,20 @@ public class LightWell {
                         LivingEntity livingEntity = (LivingEntity) entity;
 
 
-                        boolean crit = damageCalculator.checkIfCrit(player, 0);
-                        double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", finalSkillDamage, crit));
+                        boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                        double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Physical", finalSkillDamage, crit));
 
                         //pvp logic
                         if(entity instanceof Player){
-                            if(pvpManager.pvpLogic(player, (Player) entity)){
-                                changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                            if(pvpManager.pvpLogic(caster, (Player) entity)){
+                                changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
                             }
                             continue;
                         }
 
                         if(pveChecker.pveLogic(livingEntity)){
-                            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, player));
-                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
+                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
                         }
 
                     }
@@ -226,7 +227,7 @@ public class LightWell {
 
             private void spawnOrb(Location end){
 
-                ArmorStand orb = player.getWorld().spawn(current, ArmorStand.class);
+                ArmorStand orb = caster.getWorld().spawn(current, ArmorStand.class);
                 orb.setInvisible(true);
                 orb.setGravity(false);
                 orb.setCollidable(false);
@@ -268,7 +269,7 @@ public class LightWell {
 
                         orb.teleport(orbCurrent);
 
-                        player.getWorld().spawnParticle(Particle.WAX_OFF,orbCurrent,1,0,0,0);
+                        caster.getWorld().spawnParticle(Particle.WAX_OFF,orbCurrent,1,0,0,0);
 
                         if(distance<=1){
                             this.cancel();
@@ -296,7 +297,7 @@ public class LightWell {
                                 double y = orb.getLocation().getY() + 2;
                                 double z = orb.getLocation().getZ() + (1 * Math.sin(angle));
                                 Location loc = new Location(current.getWorld(), x, y, z);
-                                player.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1,0, 0, 0, 0);
+                                caster.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1,0, 0, 0, 0);
                             }
                         }
 
@@ -309,7 +310,7 @@ public class LightWell {
                                 orb.getLocation().getZ() + 2
                         );
 
-                        for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+                        for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
                             if(!(entity instanceof Player)){
                                 continue;
@@ -317,7 +318,7 @@ public class LightWell {
 
                             Player thisPlayer = (Player) entity;
 
-                            if(pvpManager.pvpLogic(player, thisPlayer)){
+                            if(pvpManager.pvpLogic(caster, thisPlayer)){
                                 continue;
                             }
 
@@ -351,8 +352,8 @@ public class LightWell {
 
     }
 
-    public double getSkillDamage(Player player){
-        double level = profileManager.getAnyProfile(player).getStats().getLevel();
+    public double getSkillDamage(LivingEntity caster){
+        double level = profileManager.getAnyProfile(caster).getStats().getLevel();
         return 25 + ((int)(level/3));
     }
 
@@ -360,8 +361,8 @@ public class LightWell {
         return 20;
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -370,8 +371,20 @@ public class LightWell {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster){
+        if (getCooldown(caster) > 0) {
+            return false;
+        }
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

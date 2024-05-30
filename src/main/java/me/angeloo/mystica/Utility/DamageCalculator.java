@@ -23,16 +23,16 @@ public class DamageCalculator {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
     }
 
-    public boolean checkIfCrit(Player player, int bonus){
+    public boolean checkIfCrit(LivingEntity caster, int bonus){
 
-        Profile playerProfile = profileManager.getAnyProfile(player);
+        Profile playerProfile = profileManager.getAnyProfile(caster);
 
         int random = (int) (Math.random() * 100) + 1;
 
-        bonus = bonus + buffAndDebuffManager.getCritBuffAmount(player);
+        bonus = bonus + buffAndDebuffManager.getCritBuffAmount(caster);
 
         if(random <= (playerProfile.getTotalCrit()) + bonus){
-            buffAndDebuffManager.getWellCrit().removeBonus(player);
+            buffAndDebuffManager.getWellCrit().removeBonus(caster);
         }
 
         return random <= (playerProfile.getTotalCrit()) + bonus;
@@ -66,13 +66,13 @@ public class DamageCalculator {
         return amount;
     }
 
-    public double calculateDamage(Player player, LivingEntity entity, String type, double damage, boolean crit){
+    public double calculateDamage(LivingEntity damager, LivingEntity entity, String type, double damage, boolean crit){
 
         if(buffAndDebuffManager.getImmune().getImmune(entity)){
             return 0.0;
         }
 
-        Profile playerProfile = profileManager.getAnyProfile(player);
+        Profile playerProfile = profileManager.getAnyProfile(damager);
         Profile enemyProfile = profileManager.getAnyProfile(entity);
 
         double multiplierForCrit = 1;
@@ -85,7 +85,7 @@ public class DamageCalculator {
         double attack;
         double defence;
 
-        double attackBonus = buffAndDebuffManager.getAttackBuffAmount(player);
+        double attackBonus = buffAndDebuffManager.getAttackBuffAmount(damager);
 
         if(entity instanceof Player){
 
@@ -94,7 +94,7 @@ public class DamageCalculator {
                 attack = playerProfile.getTotalAttack() + attackBonus;
                 defence = enemyProfile.getTotalDefense();
 
-                if(buffAndDebuffManager.getPierceBuff().getIfBuffTime(player)>0){
+                if(buffAndDebuffManager.getPierceBuff().getIfBuffTime(damager)>0){
                     defence = defence * .75;
                 }
 
@@ -124,7 +124,7 @@ public class DamageCalculator {
                 attack = playerProfile.getTotalAttack() + attackBonus;
                 defence = enemyProfile.getStats().getDefense();
 
-                if(buffAndDebuffManager.getPierceBuff().getIfBuffTime(player)>0){
+                if(buffAndDebuffManager.getPierceBuff().getIfBuffTime(damager)>0){
                     defence = defence * .75;
                 }
 
@@ -146,8 +146,8 @@ public class DamageCalculator {
             }
         }
 
-        damage = damage * buffAndDebuffManager.getTotalDamageMultipliers(player, entity);
-        damage = damage + buffAndDebuffManager.getTotalDamageAddition(player, entity);
+        damage = damage * buffAndDebuffManager.getTotalDamageMultipliers(damager, entity);
+        damage = damage + buffAndDebuffManager.getTotalDamageAddition(damager, entity);
 
         if(buffAndDebuffManager.getBlocking().getIfBlocking(entity)){
             damage*=.5;

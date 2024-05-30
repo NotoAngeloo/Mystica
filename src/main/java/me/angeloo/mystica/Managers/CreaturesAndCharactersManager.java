@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Managers;
 
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
+import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.Creatures.*;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
@@ -8,6 +9,7 @@ import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -58,7 +60,20 @@ public class CreaturesAndCharactersManager {
         captainNpc.spawn();
     }
 
+    public void spawnCompanions(Player player) {
 
+        Entity tank;
+
+        try{
+            tank = MythicBukkit.inst().getAPIHelper().spawnMythicMob("SammingSins", player.getLocation());
+        }catch (InvalidMobTypeException e) {
+            return;
+        }
+
+
+        profileManager.getAnyProfile((LivingEntity) tank);
+
+    }
 
     public void makeNpcProfile(String name, UUID uuid){
 

@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.Abilities.Elementalist.*;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class ElementalistAbilities {
@@ -36,64 +37,64 @@ public class ElementalistAbilities {
         elementalistBasic = new ElementalistBasic(main, manager);
     }
 
-    public void useElementalistAbility(Player player, int abilityNumber){
+    public void useElementalistAbility(LivingEntity caster, int abilityNumber){
 
         switch (abilityNumber){
             case 1:
-                iceBolt.use(player);
+                iceBolt.use(caster);
                 return;
             case 2:{
-                fieryMagma.use(player);
+                fieryMagma.use(caster);
                 return;
             }
             case 3:{
-                descendingInferno.use(player);
+                descendingInferno.use(caster);
                 return;
             }
             case 4:{
-                windrushForm.use(player);
+                windrushForm.use(caster);
                 return;
             }
             case 5:{
-                windWall.use(player);
+                windWall.use(caster);
                 return;
             }
             case 6:{
-                dragonBreathing.use(player);
+                dragonBreathing.use(caster);
                 return;
             }
             case 7:
-                elementalBreath.use(player);
+                elementalBreath.use(caster);
                 return;
             case 8:
-                elemental_matrix.use(player);
+                elemental_matrix.use(caster);
                 return;
         }
 
     }
 
-    public void useElementalistUltimate(Player player){
+    public void useElementalistUltimate(LivingEntity caster){
 
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        String subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
         switch (subclass.toLowerCase()){
             case "pyromancer":{
-                fieryWing.use(player);
+                fieryWing.use(caster);
                 return;
             }
             case "conjurer":{
-                conjuringForce.use(player);
+                conjuringForce.use(caster);
                 return;
             }
         }
 
     }
 
-    public void useElementalistBasic(Player player){
+    public void useElementalistBasic(LivingEntity caster){
 
 
 
-        elementalistBasic.use(player);
+        elementalistBasic.use(caster);
     }
 
     public int getAbilityCooldown(Player player, int abilityNumber){
@@ -136,17 +137,17 @@ public class ElementalistAbilities {
         return 0;
     }
 
-    public void resetCooldowns(Player player){
-        conjuringForce.resetCooldown(player);
-        descendingInferno.resetCooldown(player);
-        dragonBreathing.resetCooldown(player);
-        elementalBreath.resetCooldown(player);
-        elemental_matrix.resetCooldown(player);
-        fieryMagma.resetCooldown(player);
-        fieryWing.resetCooldown(player);
-        iceBolt.resetCooldown(player);
-        windrushForm.resetCooldown(player);
-        windWall.resetCooldown(player);
+    public void resetCooldowns(LivingEntity caster){
+        conjuringForce.resetCooldown(caster);
+        descendingInferno.resetCooldown(caster);
+        dragonBreathing.resetCooldown(caster);
+        elementalBreath.resetCooldown(caster);
+        elemental_matrix.resetCooldown(caster);
+        fieryMagma.resetCooldown(caster);
+        fieryWing.resetCooldown(caster);
+        iceBolt.resetCooldown(caster);
+        windrushForm.resetCooldown(caster);
+        windWall.resetCooldown(caster);
     }
 
     public FieryWing getFieryWing(){

@@ -6,6 +6,7 @@ import me.angeloo.mystica.Components.Abilities.ShadowKnight.*;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class ShadowKnightAbilities {
@@ -39,62 +40,62 @@ public class ShadowKnightAbilities {
         soulcrack = new Soulcrack(main, manager);
     }
 
-    public void useShadowKnightAbility(Player player, int abilityNumber){
+    public void useShadowKnightAbility(LivingEntity caster, int abilityNumber){
 
         switch (abilityNumber){
             case 1:{
-                infection.use(player);
+                infection.use(caster);
                 return;
             }
             case 2:{
-                spiritualAttack.use(player);
+                spiritualAttack.use(caster);
                 return;
             }
             case 3:{
-                burialGround.use(player);
+                burialGround.use(caster);
                 return;
             }
             case 4:{
-                bloodsucker.use(player);
+                bloodsucker.use(caster);
                 return;
             }
             case 5:{
-                soulReap.use(player);
+                soulReap.use(caster);
                 return;
             }
             case 6:{
-                shadowGrip.use(player);
+                shadowGrip.use(caster);
                 return;
             }
             case 7:{
-                spectralSteed.use(player);
+                spectralSteed.use(caster);
                 return;
             }
             case 8:{
-                soulcrack.use(player);
+                soulcrack.use(caster);
                 return;
             }
         }
     }
 
-    public void useShadowKnightUltimate(Player player){
+    public void useShadowKnightUltimate(LivingEntity caster){
 
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        String subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
         switch (subclass.toLowerCase()){
             case "blood":{
-                bloodShield.use(player);
+                bloodShield.use(caster);
                 return;
             }
             case "doom":{
-                annihilation.use(player);
+                annihilation.use(caster);
                 return;
             }
         }
     }
 
-    public void useShadowKnightBasic(Player player){
-        shadowKnightBasic.useBasic(player);
+    public void useShadowKnightBasic(LivingEntity caster){
+        shadowKnightBasic.useBasic(caster);
     }
 
     public int getAbilityCooldown(Player player, int abilityNumber){
@@ -134,17 +135,17 @@ public class ShadowKnightAbilities {
         return 0;
     }
 
-    public void resetCooldowns(Player player){
-        annihilation.resetCooldown(player);
-        bloodShield.resetCooldown(player);
-        bloodsucker.resetCooldown(player);
-        burialGround.resetCooldown(player);
-        infection.resetCooldown(player);
-        shadowGrip.resetCooldown(player);
-        soulcrack.resetCooldown(player);
-        soulReap.resetCooldown(player);
-        spectralSteed.resetCooldown(player);
-        spiritualAttack.resetCooldown(player);
+    public void resetCooldowns(LivingEntity caster){
+        annihilation.resetCooldown(caster);
+        bloodShield.resetCooldown(caster);
+        bloodsucker.resetCooldown(caster);
+        burialGround.resetCooldown(caster);
+        infection.resetCooldown(caster);
+        shadowGrip.resetCooldown(caster);
+        soulcrack.resetCooldown(caster);
+        soulReap.resetCooldown(caster);
+        spectralSteed.resetCooldown(caster);
+        spiritualAttack.resetCooldown(caster);
     }
 
     public Infection getInfection(){return infection;}

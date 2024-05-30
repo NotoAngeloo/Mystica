@@ -138,6 +138,10 @@ commands:
   MysticaQuest:
     description: opens quest books
     usage: /MysticaQuest <player> <quest/accept>
+  SpawnCompanions:
+    description: spawns companions for a player
+    usage: /SpawnCompanions <player>
+    permission: developer
 
 permissions:
   developer:

@@ -47,83 +47,48 @@ public class CursingVoice {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    public void use(Player player){
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    private final double range = 15;
+
+    public void use(LivingEntity caster){
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())) {
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        double baseRange = 15;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
-        double totalRange = baseRange + extraRange;
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
 
-        if(target == null){
-            return;
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+
+        combatManager.startCombatTimer(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();;
         }
 
-        double distance = player.getLocation().distance(target.getLocation());
-        if(distance > totalRange){
-            return;
-        }
-
-        if(target instanceof Player){
-            if(!pvpManager.pvpLogic(player, (Player) target)){
-                return;
-            }
-        }
-        else{
-            if(!pveChecker.pveLogic(target)){
-                return;
-            }
-
-            if(!profileManager.getAnyProfile(target).getIsMovable()){
-                return;
-            }
-        }
-
-
-        if(getCooldown(player) > 0){
-            return;
-        }
-
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();;
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 45);
+        abilityReadyInMap.put(caster.getUniqueId(), 45);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 7);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 7);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 7);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 7);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
 
         new BukkitRunnable(){
-            final Location current = player.getLocation().clone().add(0,1,0);
+            final Location current = caster.getLocation().clone().add(0,1,0);
             Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
             @Override
             public void run(){
@@ -143,14 +108,14 @@ public class CursingVoice {
                 double distanceThisTick = Math.min(distance, 3);
                 current.add(direction.normalize().multiply(distanceThisTick));
 
-                player.getWorld().spawnParticle(Particle.SONIC_BOOM, current, 1, 0, 0, 0, 0);
+                caster.getWorld().spawnParticle(Particle.SONIC_BOOM, current, 1, 0, 0, 0, 0);
 
                 if (distance <= 1) {
                     cancelTask();
 
                     buffAndDebuffManager.getSleep().applySleep(target, 20 * 10);
 
-                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, player));
+                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                 }
 
             }
@@ -184,9 +149,9 @@ public class CursingVoice {
         return 10;
     }
 
-    public int getCooldown(Player player){
+    public int getCooldown(LivingEntity caster){
 
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -195,8 +160,47 @@ public class CursingVoice {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster, LivingEntity target){
+
+        if(target == null){
+            return false;
+        }
+
+        double distance = caster.getLocation().distance(target.getLocation());
+        if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+            return false;
+        }
+
+        if(target instanceof Player){
+            if(!pvpManager.pvpLogic(caster, (Player) target)){
+                return false;
+            }
+        }
+        else{
+            if(!pveChecker.pveLogic(target)){
+                return false;
+            }
+
+            if(!profileManager.getAnyProfile(target).getIsMovable()){
+                return false;
+            }
+        }
+
+
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

@@ -56,65 +56,59 @@ public class ReigningSword {
         decision = paladinAbilities.getDecision();
     }
 
-    public void use(Player player){
+    public void use(LivingEntity caster){
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-
-        if(getCooldown(player) > 0){
+        if(!usable(caster)){
             return;
         }
 
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 10);
+        abilityReadyInMap.put(caster.getUniqueId(), 10);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 3);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 3);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 3);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 3);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        boolean templar = profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("templar");
+        boolean templar = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("templar");
 
-        Vector direction = player.getLocation().getDirection().setY(0).normalize();
+        Vector direction = caster.getLocation().getDirection().setY(0).normalize();
 
-        Location start = player.getLocation().clone().add(direction.multiply(1));
+        Location start = caster.getLocation().clone().add(direction.multiply(1));
         start.setDirection(direction);
 
-        ArmorStand sword = player.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
+        ArmorStand sword = caster.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
         sword.setInvisible(true);
         sword.setGravity(false);
         sword.setCollidable(false);
@@ -139,40 +133,42 @@ public class ReigningSword {
 
 
 
-        double shield = (profileManager.getAnyProfile(player).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(player)) * 0.1;
+        double shield = (profileManager.getAnyProfile(caster).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(caster)) * 0.1;
 
         if(templar){
             shield = shield * 1.2;
         }
 
-        buffAndDebuffManager.getGenericShield().applyOrAddShield(player, shield);
+        buffAndDebuffManager.getGenericShield().applyOrAddShield(caster, shield);
 
         double finalShield = shield;
         new BukkitRunnable(){
             @Override
             public void run(){
-                buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(player, finalShield);
+                buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(caster, finalShield);
             }
         }.runTaskLater(main, 20*5);
 
         //abilityManager.setSkillRunning(player, true);
-        double finalSkillDamage = getSkillDamage(player);
+        double finalSkillDamage = getSkillDamage(caster);
         new BukkitRunnable(){
             Vector initialDirection;
             double angle = 0;
             @Override
             public void run(){
 
-                if(!player.isOnline()){
-                    cancelTask();
-                    return;
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        cancelTask();
+                        return;
+                    }
                 }
 
                 if (initialDirection == null) {
-                    initialDirection = player.getLocation().getDirection().setY(0).normalize();
+                    initialDirection = caster.getLocation().getDirection().setY(0).normalize();
                 }
 
-                Location center = player.getLocation();
+                Location center = caster.getLocation();
 
                 Vector direction = initialDirection.clone();
                 double radians = Math.toRadians(angle);
@@ -182,7 +178,7 @@ public class ReigningSword {
                 sword.teleport(loc);
 
                 if(angle <= 360){
-                    player.teleport(player.getLocation().setDirection(direction));
+                    caster.teleport(caster.getLocation().setDirection(direction));
                 }
 
                 BoundingBox hitBox = new BoundingBox(
@@ -194,9 +190,9 @@ public class ReigningSword {
                         center.getZ() + 5
                 );
 
-                for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+                for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
-                    if(entity == player){
+                    if(entity == caster){
                         continue;
                     }
 
@@ -222,22 +218,22 @@ public class ReigningSword {
                         bonus = 2.2;
                     }
 
-                    boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", finalSkillDamage
-                            * bonus * decisionMultiplier(player), crit));
+                    boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                    double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Physical", finalSkillDamage
+                            * bonus * decisionMultiplier(caster), crit));
 
 
                     //pvp logic
                     if(entity instanceof Player){
-                        if(pvpManager.pvpLogic(player, (Player) entity)){
-                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                        if(pvpManager.pvpLogic(caster, (Player) entity)){
+                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
                         }
                         continue;
                     }
 
                     if(pveChecker.pveLogic(livingEntity)){
-                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, player));
-                        changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
+                        changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
                     }
 
                 }
@@ -252,7 +248,7 @@ public class ReigningSword {
             private void cancelTask(){
                 this.cancel();
                 sword.remove();
-                decision.removeDecision(player);
+                decision.removeDecision(caster);
                 //abilityManager.setSkillRunning(player, false);
             }
 
@@ -260,9 +256,9 @@ public class ReigningSword {
 
     }
 
-    private double decisionMultiplier(Player player){
+    private double decisionMultiplier(LivingEntity caster){
 
-        if(decision.getDecision(player)){
+        if(decision.getDecision(caster)){
             return 1.8;
         }
 
@@ -273,15 +269,15 @@ public class ReigningSword {
         return 10;
     }
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_3_Level_Bonus();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_3_Level_Bonus();
 
         return 25 + ((int)(skillLevel/3));
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -290,8 +286,20 @@ public class ReigningSword {
         return cooldown;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster){
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

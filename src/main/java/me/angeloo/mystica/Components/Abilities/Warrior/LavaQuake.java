@@ -50,73 +50,67 @@ public class LavaQuake {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    public void use(Player player){
+    public void use(LivingEntity caster){
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-
-        if(getCooldown(player) > 0){
+        if(!usable(caster)){
             return;
         }
 
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 10);
+        abilityReadyInMap.put(caster.getUniqueId(), 10);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 1);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 1);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 1);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 1);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
         double baseRange = 8;
 
-        targetManager.setTargetToNearestValid(player, baseRange);
+        targetManager.setTargetToNearestValid(caster, baseRange);
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
         boolean targeted = false;
 
-        Vector direction = player.getLocation().getDirection().setY(0).normalize();
+        Vector direction = caster.getLocation().getDirection().setY(0).normalize();
 
         if(target != null){
 
             if(target instanceof Player){
-                if(pvpManager.pvpLogic(player, (Player) target)){
+                if(pvpManager.pvpLogic(caster, (Player) target)){
 
-                    double distance = player.getLocation().distance(target.getLocation());
+                    double distance = caster.getLocation().distance(target.getLocation());
 
                     if(distance < baseRange){
                         targeted = true;
@@ -128,7 +122,7 @@ public class LavaQuake {
             if(!(target instanceof Player)){
                 if(pveChecker.pveLogic(target)){
 
-                    double distance = player.getLocation().distance(target.getLocation());
+                    double distance = caster.getLocation().distance(target.getLocation());
 
                     if(distance < baseRange){
                         targeted = true;
@@ -141,27 +135,27 @@ public class LavaQuake {
         }
 
         if(targeted){
-            direction = target.getLocation().toVector().subtract(player.getLocation().toVector()).setY(0).normalize();
+            direction = target.getLocation().toVector().subtract(caster.getLocation().toVector()).setY(0).normalize();
         }
 
 
-        Location current = player.getLocation().clone().add(direction.multiply(1));
+        Location current = caster.getLocation().clone().add(direction.multiply(1));
         current.setDirection(direction);
 
         Location end = current.clone().add(direction.multiply(8));
 
 
 
-        double maxHealth = profileManager.getAnyProfile(player).getTotalHealth();
+        double maxHealth = profileManager.getAnyProfile(caster).getTotalHealth();
         double shield = maxHealth * .1;
 
-        buffAndDebuffManager.getGenericShield().applyOrAddShield(player, shield);
+        buffAndDebuffManager.getGenericShield().applyOrAddShield(caster, shield);
 
         Set<LivingEntity> hitBySkill = new HashSet<>();
 
         Vector finalDirection = direction;
         Vector crossSection = finalDirection.clone().crossProduct(new Vector(0,1,0)).normalize();
-        double finalSkillDamage = getSkillDamage(player);
+        double finalSkillDamage = getSkillDamage(caster);
         new BukkitRunnable(){
             double offset = .1;
             @Override
@@ -176,9 +170,9 @@ public class LavaQuake {
                         current.getZ() + 3
                 );
 
-                for (Entity entity : player.getWorld().getNearbyEntities(hitBox)) {
+                for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
-                    if(entity == player){
+                    if(entity == caster){
                         continue;
                     }
 
@@ -198,28 +192,28 @@ public class LavaQuake {
 
                     hitBySkill.add(livingEntity);
 
-                    boolean crit = damageCalculator.checkIfCrit(player, 0);
-                    double damage = (damageCalculator.calculateDamage(player, livingEntity, "Physical", finalSkillDamage, crit));
+                    boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                    double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Physical", finalSkillDamage, crit));
 
                     //pvp logic
                     if(entity instanceof Player){
-                        if(pvpManager.pvpLogic(player, (Player) entity)){
-                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                        if(pvpManager.pvpLogic(caster, (Player) entity)){
+                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
                             buffAndDebuffManager.getGenericShield().removeShields(livingEntity);
                         }
                         continue;
                     }
 
                     if(pveChecker.pveLogic(livingEntity)){
-                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, player));
-                        changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, player);
+                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
+                        changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
                     }
 
                 }
 
-                player.getWorld().spawnParticle(Particle.LAVA, current, 3);
-                player.getWorld().spawnParticle(Particle.LAVA, current.clone().add(crossSection.clone().multiply(offset)), 1);
-                player.getWorld().spawnParticle(Particle.LAVA, current.clone().subtract(crossSection.clone().multiply(offset)), 1);
+                caster.getWorld().spawnParticle(Particle.LAVA, current, 3);
+                caster.getWorld().spawnParticle(Particle.LAVA, current.clone().add(crossSection.clone().multiply(offset)), 1);
+                caster.getWorld().spawnParticle(Particle.LAVA, current.clone().subtract(crossSection.clone().multiply(offset)), 1);
 
                 double distance = current.distance(end);
                 double distanceThisTick = Math.min(distance, .75);
@@ -234,7 +228,7 @@ public class LavaQuake {
                     new BukkitRunnable(){
                         @Override
                         public void run(){
-                            buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(player, shield);
+                            buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(caster, shield);
                         }
                     }.runTaskLater(main, 20*5);
 
@@ -246,8 +240,8 @@ public class LavaQuake {
         }.runTaskTimer(main, 0, 2);
     }
 
-    public int getCooldown(Player player){
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+    public int getCooldown(LivingEntity caster){
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -260,14 +254,27 @@ public class LavaQuake {
         return 5;
     }
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_1_Level_Bonus();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_1_Level_Bonus();
         return 25 + ((int)(skillLevel/3));
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster){
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

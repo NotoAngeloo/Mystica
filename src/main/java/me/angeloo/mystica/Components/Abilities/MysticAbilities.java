@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.Abilities.Mystic.*;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 
@@ -56,47 +57,47 @@ public class MysticAbilities {
         mysticBasic = new MysticBasic(main, manager, this);
     }
 
-    public void useMysticAbility(Player player, int abilityNumber){
+    public void useMysticAbility(LivingEntity caster, int abilityNumber){
 
-        if(evilSpirit.getIfEvilSpirit(player)){
+        if(evilSpirit.getIfEvilSpirit(caster)){
             return;
         }
 
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        String subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
         if(subclass.equalsIgnoreCase("chaos")){
 
             switch (abilityNumber){
                 case 1:{
-                    chaosVoid.use(player);
+                    chaosVoid.use(caster);
                     return;
                 }
                 case 2:{
-                    plagueCurse.use(player);
+                    plagueCurse.use(caster);
                     return;
                 }
                 case 3:{
-                    shadowOfDarkness.use(player);
+                    shadowOfDarkness.use(caster);
                     return;
                 }
                 case 4:{
-                    warp.use(player);
+                    warp.use(caster);
                     return;
                 }
                 case 5:{
-                    spiritualDescent.use(player);
+                    spiritualDescent.use(caster);
                     return;
                 }
                 case 6:{
-                    chaosLash.use(player);
+                    chaosLash.use(caster);
                     return;
                 }
                 case 7:{
-                    cursingVoice.use(player);
+                    cursingVoice.use(caster);
                     return;
                 }
                 case 8:{
-                    healthAbsorb.use(player);
+                    healthAbsorb.use(caster);
                     return;
                 }
             }
@@ -105,68 +106,68 @@ public class MysticAbilities {
 
         switch (abilityNumber){
             case 1:{
-                arcaneShield.use(player);
+                arcaneShield.use(caster);
                 return;
             }
             case 2:{
-                purifyingBlast.use(player);
+                purifyingBlast.use(caster);
                 return;
             }
             case 3:{
-                forceOfWill.use(player);
+                forceOfWill.use(caster);
                 return;
             }
             case 4:{
-                dreadfall.use(player);
+                dreadfall.use(caster);
                 return;
             }
             case 5:{
-                warp.use(player);
+                warp.use(caster);
                 return;
             }
             case 6:{
-                aurora.use(player);
+                aurora.use(caster);
                 return;
             }
             case 7:{
-                arcaneContract.use(player);
+                arcaneContract.use(caster);
                 return;
             }
             case 8:{
-                lightSigil.use(player);
+                lightSigil.use(caster);
                 return;
             }
         }
 
     }
 
-    public void useMysticUltimate(Player player){
+    public void useMysticUltimate(LivingEntity caster){
 
-        if(evilSpirit.getIfEvilSpirit(player)){
+        if(evilSpirit.getIfEvilSpirit(caster)){
             return;
         }
 
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        String subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
         switch (subclass.toLowerCase()){
             case "chaos":{
-                evilSpirit.use(player);
+                evilSpirit.use(caster);
                 return;
             }
             case "arcane master":{
-                arcaneMissiles.use(player);
+                arcaneMissiles.use(caster);
                 return;
             }
             case "shepard":{
-                enlightenment.use(player);
+                enlightenment.use(caster);
                 return;
             }
         }
     }
 
-    public void useMysticBasic(Player player){
+    public void useMysticBasic(LivingEntity caster){
 
-        mysticBasic.useBasic(player);
+        mysticBasic.useBasic(caster);
     }
 
     public int getAbilityCooldown(Player player, int abilityNumber){
@@ -237,24 +238,24 @@ public class MysticAbilities {
         return 0;
     }
 
-    public void resetCooldowns(Player player){
-        arcaneContract.resetCooldown(player);
-        arcaneMissiles.resetCooldown(player);
-        arcaneShield.resetCooldown(player);
-        aurora.resetCooldown(player);
-        chaosLash.resetCooldown(player);
-        chaosVoid.resetCooldown(player);
-        cursingVoice.resetCooldown(player);
-        dreadfall.resetCooldown(player);
-        enlightenment.resetCooldown(player);
-        forceOfWill.resetCooldown(player);
-        healthAbsorb.resetCooldown(player);
-        lightSigil.resetCooldown(player);
-        plagueCurse.resetCooldown(player);
-        purifyingBlast.resetCooldown(player);
-        shadowOfDarkness.resetCooldown(player);
-        spiritualDescent.resetCooldown(player);
-        warp.resetCooldown(player);
+    public void resetCooldowns(LivingEntity caster){
+        arcaneContract.resetCooldown(caster);
+        arcaneMissiles.resetCooldown(caster);
+        arcaneShield.resetCooldown(caster);
+        aurora.resetCooldown(caster);
+        chaosLash.resetCooldown(caster);
+        chaosVoid.resetCooldown(caster);
+        cursingVoice.resetCooldown(caster);
+        dreadfall.resetCooldown(caster);
+        enlightenment.resetCooldown(caster);
+        forceOfWill.resetCooldown(caster);
+        healthAbsorb.resetCooldown(caster);
+        lightSigil.resetCooldown(caster);
+        plagueCurse.resetCooldown(caster);
+        purifyingBlast.resetCooldown(caster);
+        shadowOfDarkness.resetCooldown(caster);
+        spiritualDescent.resetCooldown(caster);
+        warp.resetCooldown(caster);
     }
 
     public int getChaosMysticModelData(Player player){

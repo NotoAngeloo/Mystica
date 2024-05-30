@@ -57,104 +57,72 @@ public class MercifulHealing {
         justiceMark = paladinAbilities.getJusticeMark();
     }
 
-    public void use(Player player){
+    public void use(LivingEntity caster){
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
 
-        LivingEntity target = targetManager.getPlayerTarget(player);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        if(target != null){
-
-            if(!(target instanceof Player)){
-
-                if(pveChecker.pveLogic(target)){
-                    target = player;
-                }
-            }
-
-            double distance = player.getLocation().distance(target.getLocation());
-
-            if(distance > getRange(player)){
-                return;
-            }
-
-            if (profileManager.getAnyProfile(target).getIfDead()) {
-                target = player;
-            }
-
-            if(target instanceof Player){
-                if(pvpManager.pvpLogic(player, (Player) target)){
-                    target = player;
-                }
-            }
-
+        if(!usable(caster, target)){
+            return;
         }
 
         if(target == null){
-            target = player;
+            target = caster;
         }
 
-        if(getCooldown(player) > 0){
-            return;
+        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+
+        combatManager.startCombatTimer(caster);
+
+        execute(caster, target);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromPlayer(player, getCost());
-
-        combatManager.startCombatTimer(player);
-
-        execute(player, target);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 7);
+        abilityReadyInMap.put(caster.getUniqueId(), 7);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 2);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 2);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 2);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 2);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private double getRange(Player player){
+    private double getRange(LivingEntity caster){
         double baseRange = 10;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(player);
+        double extraRange = buffAndDebuffManager.getTotalRangeModifier(caster);
         return baseRange + extraRange;
     }
 
-    private void execute(Player player, LivingEntity target){
+    private void execute(LivingEntity caster, LivingEntity target){
 
-        abilityManager.setCasting(player, true);
+        abilityManager.setCasting(caster, true);
         int castTime = 20;
 
-        if(getMoveCast(player)){
-            unQueueMoveCast(player);
+        if(getMoveCast(caster)){
+            unQueueMoveCast(caster);
         }
         else{
-            buffAndDebuffManager.getImmobile().applyImmobile(player, castTime);
+            buffAndDebuffManager.getImmobile().applyImmobile(caster, castTime);
         }
 
         new BukkitRunnable(){
@@ -163,10 +131,18 @@ public class MercifulHealing {
             @Override
             public void run(){
 
-                if(!player.isOnline() || buffAndDebuffManager.getIfInterrupt(player)){
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        this.cancel();
+                        abilityManager.setCasting(caster, false);
+                        buffAndDebuffManager.getImmobile().removeImmobile(caster);
+                    }
+                }
+
+                if(buffAndDebuffManager.getIfInterrupt(caster)){
                     this.cancel();
-                    abilityManager.setCasting(player, false);
-                    buffAndDebuffManager.getImmobile().removeImmobile(player);
+                    abilityManager.setCasting(caster, false);
+                    buffAndDebuffManager.getImmobile().removeImmobile(caster);
                     return;
                 }
 
@@ -176,23 +152,23 @@ public class MercifulHealing {
                     targetWasLoc = targetLoc.clone();
                 }
 
-                double distanceToTarget = player.getLocation().distance(targetWasLoc);
+                double distanceToTarget = caster.getLocation().distance(targetWasLoc);
 
-                if(distanceToTarget>getRange(player)){
+                if(distanceToTarget>getRange(caster)){
                     this.cancel();
-                    abilityManager.setCasting(player, false);
-                    buffAndDebuffManager.getImmobile().removeImmobile(player);
+                    abilityManager.setCasting(caster, false);
+                    buffAndDebuffManager.getImmobile().removeImmobile(caster);
                     return;
                 }
 
                 double percent = ((double) ran / castTime) * 100;
-                abilityManager.setCastBar(player, percent);
+                abilityManager.setCastBar(caster, percent);
 
                 if(ran >= castTime){
                     this.cancel();
-                    abilityManager.setCasting(player, false);
+                    abilityManager.setCasting(caster, false);
                     healTarget(target);
-                    buffAndDebuffManager.getImmobile().removeImmobile(player);
+                    buffAndDebuffManager.getImmobile().removeImmobile(caster);
                 }
 
                 ran++;
@@ -202,18 +178,18 @@ public class MercifulHealing {
 
 
 
-                boolean crit = damageCalculator.checkIfCrit(player, 0);
+                boolean crit = damageCalculator.checkIfCrit(caster, 0);
 
-                double healAmount = damageCalculator.calculateHealing(player, getHealPower(player), crit);
+                double healAmount = damageCalculator.calculateHealing(caster, getHealPower(caster), crit);
 
-                if(justiceMark.markProc(player, target)){
-                    markHealInstead(player, healAmount);
-                    unQueueMoveCast(player);
+                if(justiceMark.markProc(caster, target)){
+                    markHealInstead(caster, healAmount);
+                    unQueueMoveCast(caster);
                     return;
                 }
 
-                changeResourceHandler.addHealthToEntity(target, healAmount, player);
-                unQueueMoveCast(player);
+                changeResourceHandler.addHealthToEntity(target, healAmount, caster);
+                unQueueMoveCast(caster);
 
                 Location center = target.getLocation().clone().add(0,1,0);
 
@@ -247,12 +223,12 @@ public class MercifulHealing {
 
     }
 
-    private void markHealInstead(Player player, double healAmount){
+    private void markHealInstead(LivingEntity caster, double healAmount){
 
-        List<LivingEntity> affected = justiceMark.getMarkedTargets(player);
+        List<LivingEntity> affected = justiceMark.getMarkedTargets(caster);
 
         for(LivingEntity thisPlayer : affected){
-            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, player);
+            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, caster);
 
             Location center = thisPlayer.getLocation().clone().add(0,1,0);
 
@@ -270,21 +246,27 @@ public class MercifulHealing {
 
     }
 
-    public void queueMoveCast(Player player){
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
-        moveCast.put(player.getUniqueId(), true);
+    public void queueMoveCast(LivingEntity caster){
+
+        if(caster instanceof Player){
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+        }
+
+        moveCast.put(caster.getUniqueId(), true);
     }
-    public void unQueueMoveCast(Player player){
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
-        moveCast.remove(player.getUniqueId());
+    public void unQueueMoveCast(LivingEntity caster){
+        if(caster instanceof Player){
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+        }
+        moveCast.remove(caster.getUniqueId());
     }
-    private boolean getMoveCast(Player player){
-        return moveCast.getOrDefault(player.getUniqueId(), false);
+    private boolean getMoveCast(LivingEntity caster){
+        return moveCast.getOrDefault(caster.getUniqueId(), false);
     }
 
-    public int getCooldown(Player player){
+    public int getCooldown(LivingEntity caster){
 
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -293,9 +275,9 @@ public class MercifulHealing {
         return cooldown;
     }
 
-    public double getHealPower(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_2_Level_Bonus();
+    public double getHealPower(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_2_Level_Bonus();
         return  10 + ((int)(skillLevel/3));
     }
 
@@ -303,8 +285,50 @@ public class MercifulHealing {
         return 20;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster, LivingEntity target){
+        if(target != null){
+
+            if(!(target instanceof Player)){
+
+                if(pveChecker.pveLogic(target)){
+                    target = caster;
+                }
+            }
+
+            double distance = caster.getLocation().distance(target.getLocation());
+
+            if(distance > getRange(caster)){
+                return false;
+            }
+
+            if (profileManager.getAnyProfile(target).getIfDead()) {
+                target = caster;
+            }
+
+            if(target instanceof Player){
+                if(pvpManager.pvpLogic(caster, (Player) target)){
+                    target = caster;
+                }
+            }
+
+        }
+
+
+
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 
 }

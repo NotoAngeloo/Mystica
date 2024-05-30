@@ -9,6 +9,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -39,82 +40,72 @@ public class Adrenaline {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    public void use(Player player){
+    private final double cost = 10;
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+    public void use(LivingEntity caster){
+
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        if(getCooldown(player) > 0){
+        if(!usable(caster)){
             return;
         }
 
-        if(getIfBuffTime(player) > 0){
-            return;
+
+        changeResourceHandler.subTractManaFromEntity(caster, cost);
+
+        combatManager.startCombatTimer(caster);
+
+        execute(caster);
+
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        double cost = 10;
-
-        if(profileManager.getAnyProfile(player).getCurrentMana()<cost){
-            return;
-        }
-
-        double healthPercent =  Math.round((profileManager.getAnyProfile(player).getCurrentHealth() / (double) profileManager.getAnyProfile(player).getTotalHealth()) * 100);
-
-        if(healthPercent > 50){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromPlayer(player, cost);
-
-        combatManager.startCombatTimer(player);
-
-        execute(player);
-
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
-        }
-
-        abilityReadyInMap.put(player.getUniqueId(), 25);
+        abilityReadyInMap.put(caster.getUniqueId(), 25);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 8);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 8);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 8);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 8);
 
             }
         }.runTaskTimer(main, 0,20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    private void execute(Player player){
+    private void execute(LivingEntity caster){
 
-        buffActiveMap.put(player.getUniqueId(), 11);
+        buffActiveMap.put(caster.getUniqueId(), 11);
         new BukkitRunnable(){
             @Override
             public void run(){
 
-                Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+                if (caster instanceof Player) {
+                    Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+                }
 
-                if(buffActiveMap.get(player.getUniqueId()) <= 0){
+
+                if(buffActiveMap.get(caster.getUniqueId()) <= 0){
                     this.cancel();
                     return;
                 }
 
-                int left = buffActiveMap.get(player.getUniqueId()) - 1;
+                int left = buffActiveMap.get(caster.getUniqueId()) - 1;
 
-                buffActiveMap.put(player.getUniqueId(), left);
+                buffActiveMap.put(caster.getUniqueId(), left);
 
             }
         }.runTaskTimer(main, 0,20);
@@ -123,13 +114,13 @@ public class Adrenaline {
 
     }
 
-    public int getIfBuffTime(Player player){
-        return buffActiveMap.getOrDefault(player.getUniqueId(), 0);
+    public int getIfBuffTime(LivingEntity caster){
+        return buffActiveMap.getOrDefault(caster.getUniqueId(), 0);
     }
 
-    public int getCooldown(Player player){
+    public int getCooldown(LivingEntity caster){
 
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -149,8 +140,32 @@ public class Adrenaline {
         return 0;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster){
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+        if(getIfBuffTime(caster) > 0){
+            return false;
+        }
+
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<cost){
+            return false;
+        }
+
+        double healthPercent =  Math.round((profileManager.getAnyProfile(caster).getCurrentHealth() / (double) profileManager.getAnyProfile(caster).getTotalHealth()) * 100);
+
+        if(healthPercent > 50){
+            return false;
+        }
+
+        return true;
     }
 
 }

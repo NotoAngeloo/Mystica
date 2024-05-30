@@ -6,6 +6,7 @@ import me.angeloo.mystica.CustomEvents.TargetBarShouldUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -13,16 +14,17 @@ import java.util.Map;
 
 public class PvpManager {
 
-    private final Map<Player, Boolean> inPvp;
+    private final Map<LivingEntity, Boolean> inPvp = new HashMap<>();
 
-    private boolean globalPvp;
+    private boolean globalPvp = false;
+
+    private final ProfileManager profileManager;
 
     public PvpManager(Mystica main){
-        inPvp = new HashMap<>();
-        globalPvp = false;
+        profileManager = main.getProfileManager();
     }
 
-    private boolean inPvp(Player player){
+    private boolean inPvp(LivingEntity player){
 
         if(globalPvp){
             inPvp.put(player, true);
@@ -38,7 +40,11 @@ public class PvpManager {
         return inPvp.get(player);
     }
 
-    public boolean pvpLogic(Player player, Player otherPlayer){
+    public boolean pvpLogic(LivingEntity player, Player otherPlayer){
+
+        if(profileManager.getAnyProfile(player).fakePlayer()){
+            player = profileManager.getCompanionsPlayer(player);
+        }
 
         if(player == otherPlayer){
             return false;

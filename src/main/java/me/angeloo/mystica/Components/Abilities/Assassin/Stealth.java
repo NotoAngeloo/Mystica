@@ -54,74 +54,86 @@ public class Stealth {
         combo = assassinAbilities.getCombo();
     }
 
-    public void toggle(Player player){
+    public void toggle(LivingEntity caster){
 
-        if(!abilityReadyInMap.containsKey(player.getUniqueId())){
-            abilityReadyInMap.put(player.getUniqueId(), 0);
+        if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
+            abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        if(getCooldown(player) > 0){
+        if(getCooldown(caster) > 0){
             return;
         }
 
 
-        cooldownDisplayer.displayCooldown(player, 8);
-        combatManager.startCombatTimer(player);
+        cooldownDisplayer.displayCooldown(caster, 8);
 
-        if(!getIfStealthed(player)){
+        if(caster instanceof Player){
+            combatManager.startCombatTimer((Player) caster);
+        }
 
 
-            if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
+
+        if(!getIfStealthed(caster)){
+
+
+            if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
                 return;
             }
 
-            changeResourceHandler.subTractManaFromPlayer(player, getCost());
+            changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
-            vanish(player);
+            vanish(caster);
             return;
         }
 
-        reveal(player);
+        reveal(caster);
     }
 
-    private void vanish(Player player){
+    private void vanish(LivingEntity caster){
 
         new BukkitRunnable(){
             int count = 0;
             @Override
             public void run(){
 
-                if(!player.isOnline()){
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        this.cancel();
+                        return;
+                    }
+                }
+
+
+
+                boolean deathStatus = profileManager.getAnyProfile(caster).getIfDead();
+
+                if(deathStatus || buffAndDebuffManager.getIfInterrupt(caster)){
                     this.cancel();
                     return;
                 }
 
-                boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
-
-                if(deathStatus || buffAndDebuffManager.getIfInterrupt(player)){
-                    this.cancel();
-                    return;
-                }
-
-                Location particleLocation = player.getLocation().add(0, 1, 0);
-                player.getWorld().spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, particleLocation, 10, 0.3, 0.5, 0.3, 0.05);
+                Location particleLocation = caster.getLocation().add(0, 1, 0);
+                caster.getWorld().spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, particleLocation, 10, 0.3, 0.5, 0.3, 0.05);
 
                 if(count >= 5){
-                    buffAndDebuffManager.getHidden().hidePlayer(player, true);
-                    stealthTargetBlacklist.add(player);
-                    stealthed.put(player.getUniqueId(), true);
-                    Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
-                    revealAfterTime(player);
+                    buffAndDebuffManager.getHidden().hidePlayer(caster, true);
+                    stealthTargetBlacklist.add(caster);
+                    stealthed.put(caster.getUniqueId(), true);
+                    if (caster instanceof Player) {
+                        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+                    }
+
+                    revealAfterTime(caster);
 
                     for(Map.Entry<UUID, LivingEntity> entry: targetManager.getTargetMap().entrySet()){
                         UUID playerID = entry.getKey();
                         Player thisPlayer = Bukkit.getPlayer(playerID);
                         Entity target = entry.getValue();
 
-                        if(target != null && target.equals(player)){
+                        if(target != null && target.equals(caster)){
                             assert thisPlayer != null;
 
-                            if(pvpManager.pvpLogic(player, thisPlayer)){
+                            if(pvpManager.pvpLogic(caster, thisPlayer)){
                                 targetManager.removeAllBars(thisPlayer);
                             }
 
@@ -137,10 +149,10 @@ public class Stealth {
 
     }
 
-    private void revealAfterTime(Player player){
+    private void revealAfterTime(LivingEntity caster){
 
-        if(cooldownTask.containsKey(player.getUniqueId())){
-            cooldownTask.get(player.getUniqueId()).cancel();
+        if(cooldownTask.containsKey(caster.getUniqueId())){
+            cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
         BukkitTask task = new BukkitRunnable(){
@@ -148,62 +160,66 @@ public class Stealth {
             @Override
             public void run(){
 
-                cooldownDisplayer.displayCooldown(player, 8);
+                cooldownDisplayer.displayCooldown(caster, 8);
 
-                if(!getIfStealthed(player)){
+                if(!getIfStealthed(caster)){
                     this.cancel();
-                    timeInStealth.remove(player.getUniqueId());
+                    timeInStealth.remove(caster.getUniqueId());
                     return;
                 }
 
                 if(count>=10){
                     this.cancel();
-                    forceReveal(player, null);
-                    timeInStealth.remove(player.getUniqueId());
+                    forceReveal(caster, null);
+                    timeInStealth.remove(caster.getUniqueId());
                     return;
                 }
 
                 count++;
 
-                timeInStealth.put(player.getUniqueId(), count);
+                timeInStealth.put(caster.getUniqueId(), count);
             }
         }.runTaskTimer(main, 0, 20);
-        cooldownTask.put(player.getUniqueId(), task);
+        cooldownTask.put(caster.getUniqueId(), task);
 
     }
 
-    public void reveal(Player player){
+    public void reveal(LivingEntity caster){
 
-        buffAndDebuffManager.getHidden().unhidePlayer(player);
-        stealthTargetBlacklist.remove(player);
-        stealthed.put(player.getUniqueId(), false);
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+        buffAndDebuffManager.getHidden().unhidePlayer(caster);
+        stealthTargetBlacklist.remove(caster);
+        stealthed.put(caster.getUniqueId(), false);
+        if(caster instanceof Player){
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+        }
+
     }
 
-    private void forceReveal(Player player, LivingEntity victim){
+    private void forceReveal(LivingEntity caster, LivingEntity victim){
 
-        buffAndDebuffManager.getHidden().unhidePlayer(player);
-        stealthTargetBlacklist.remove(player);
-        stealthed.put(player.getUniqueId(), false);
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+        buffAndDebuffManager.getHidden().unhidePlayer(caster);
+        stealthTargetBlacklist.remove(caster);
+        stealthed.put(caster.getUniqueId(), false);
+        if(caster instanceof Player){
+            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+        }
 
-
-        abilityReadyInMap.put(player.getUniqueId(), 30);
+        abilityReadyInMap.put(caster.getUniqueId(), 30);
         new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(player) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 8);
+                if(getCooldown(caster) <= 0){
+                    cooldownDisplayer.displayCooldown(caster, 8);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                int cooldown = getCooldown(caster) - 1;
+                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
-                abilityReadyInMap.put(player.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(player, 8);
+                abilityReadyInMap.put(caster.getUniqueId(), cooldown);
+                cooldownDisplayer.displayCooldown(caster, 8);
             }
         }.runTaskTimer(main, 0,20);
 
@@ -212,20 +228,20 @@ public class Stealth {
         }
 
 
-        boolean crit = damageCalculator.checkIfCrit(player, 0);
-        double damage = damageCalculator.calculateDamage(player, victim, "Physical", getSkillDamage(player), crit);
-        combo.addComboPoint(player);
-        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(victim, player));
-        changeResourceHandler.subtractHealthFromEntity(victim, damage, player);
+        boolean crit = damageCalculator.checkIfCrit(caster, 0);
+        double damage = damageCalculator.calculateDamage(caster, victim, "Physical", getSkillDamage(caster), crit);
+        combo.addComboPoint(caster);
+        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(victim, caster));
+        changeResourceHandler.subtractHealthFromEntity(victim, damage, caster);
     }
 
-    public void stealthBonusCheck(Player player, LivingEntity entity){
+    public void stealthBonusCheck(LivingEntity caster, LivingEntity entity){
 
-        if(!getIfStealthed(player)){
+        if(!getIfStealthed(caster)){
             return;
         }
 
-        forceReveal(player, entity);
+        forceReveal(caster, entity);
 
     }
 
@@ -233,25 +249,25 @@ public class Stealth {
         return 10;
     }
 
-    public double getSkillDamage(Player player){
-        double skillLevel = profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) +
-                profileManager.getAnyProfile(player).getSkillLevels().getSkill_8_Level_Bonus();
+    public double getSkillDamage(LivingEntity caster){
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_8_Level_Bonus();
         return 50 + ((int)(skillLevel/3));
     }
 
-    public boolean getIfStealthed(Player player){
-        return stealthed.getOrDefault(player.getUniqueId(), false);
+    public boolean getIfStealthed(LivingEntity caster){
+        return stealthed.getOrDefault(caster.getUniqueId(), false);
     }
 
-    public int getCooldown(Player player){
+    public int getCooldown(LivingEntity caster){
 
-        if(getIfStealthed(player)){
-            int time = timeInStealth.getOrDefault(player.getUniqueId(), 0);
+        if(getIfStealthed(caster)){
+            int time = timeInStealth.getOrDefault(caster.getUniqueId(), 0);
             return 10 - time;
         }
 
 
-        int cooldown = abilityReadyInMap.getOrDefault(player.getUniqueId(), 0);
+        int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
             cooldown = 0;
@@ -269,8 +285,9 @@ public class Stealth {
         return 0;
     }
 
-    public void resetCooldown(Player player){
-        abilityReadyInMap.remove(player.getUniqueId());
+    public void resetCooldown(LivingEntity caster){
+        abilityReadyInMap.remove(caster.getUniqueId());
     }
+
 
 }

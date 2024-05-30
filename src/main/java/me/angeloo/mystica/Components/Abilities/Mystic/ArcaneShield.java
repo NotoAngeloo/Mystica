@@ -57,7 +57,6 @@ public class ArcaneShield {
         }
 
 
-
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
         if(!usable(caster, target)){
@@ -65,6 +64,16 @@ public class ArcaneShield {
         }
 
         if(target == null){
+            target = caster;
+        }
+
+        if(target instanceof Player){
+            if(pvpManager.pvpLogic(caster, (Player) target)){
+                target = caster;
+            }
+        }
+
+        if(pveChecker.pveLogic(target)){
             target = caster;
         }
 

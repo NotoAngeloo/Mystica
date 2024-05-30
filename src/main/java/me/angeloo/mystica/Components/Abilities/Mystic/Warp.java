@@ -45,12 +45,7 @@ public class Warp {
             abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        if(getCooldown(caster) > 0){
-            return;
-        }
-
-
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+        if(!usable(caster)){
             return;
         }
 
@@ -161,5 +156,17 @@ public class Warp {
         abilityReadyInMap.remove(caster.getUniqueId());
     }
 
+    public boolean usable(LivingEntity caster){
+        if(getCooldown(caster) > 0){
+            return false;
+        }
+
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
+    }
 
 }

@@ -405,7 +405,7 @@ public class WildSpirit {
             return false;
         }
 
-        return false;
+        return true;
     }
 
 }

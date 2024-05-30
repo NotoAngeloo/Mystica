@@ -145,7 +145,7 @@ public class RazorWind {
                     }
                 }
 
-                if(!buffAndDebuffManager.getIfInterrupt(caster)){
+                if(buffAndDebuffManager.getIfInterrupt(caster)){
                     this.cancel();
                     abilityManager.setCasting(caster, false);
 

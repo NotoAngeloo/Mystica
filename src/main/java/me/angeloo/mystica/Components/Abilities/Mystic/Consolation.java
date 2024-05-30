@@ -37,8 +37,13 @@ public class Consolation {
 
     public void removeTargets(LivingEntity caster){
         affected.remove(caster);
-        taskMap.get(caster.getUniqueId()).cancel();
-        taskMap.remove(caster.getUniqueId());
+
+        if(taskMap.containsKey(caster.getUniqueId())){
+            taskMap.get(caster.getUniqueId()).cancel();
+            taskMap.remove(caster.getUniqueId());
+        }
+
+
     }
 
     private void startTask(LivingEntity caster){

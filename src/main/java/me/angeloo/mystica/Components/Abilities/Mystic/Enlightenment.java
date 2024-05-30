@@ -57,7 +57,6 @@ public class Enlightenment {
             return;
         }
 
-
         changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
         combatManager.startCombatTimer(caster);

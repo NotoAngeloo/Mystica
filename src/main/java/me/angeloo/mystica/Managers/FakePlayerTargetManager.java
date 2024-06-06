@@ -4,10 +4,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.PveChecker;
 import me.angeloo.mystica.Utility.StealthTargetBlacklist;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.util.BoundingBox;
 
 import java.util.HashMap;
@@ -32,6 +29,8 @@ public class FakePlayerTargetManager {
 
     public void suggestTarget(LivingEntity entity, LivingEntity target){
         //first check the class
+
+        //maybe make this subclass in the future, easy enough to change
         switch (profileManager.getAnyProfile(entity).getPlayerClass().toLowerCase()){
             case "elementalist":
             case "warrior":
@@ -39,6 +38,7 @@ public class FakePlayerTargetManager {
 
                 if(pveChecker.pveLogic(target) && !profileManager.getAnyProfile(target).getImmortality()){
                     targetMap.put(entity.getUniqueId(), target);
+                    ((Creature) entity).setTarget(target);
                 }
 
                 break;
@@ -59,6 +59,7 @@ public class FakePlayerTargetManager {
 
                 if(pveChecker.pveLogic(target) && !profileManager.getAnyProfile(target).getIfObject()){
                     targetMap.put(entity.getUniqueId(), target);
+                    ((Creature) entity).setTarget(target);
                     //Bukkit.getLogger().info(entity.getName() +" agreed with your suggestion");
                 }
 

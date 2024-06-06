@@ -1,16 +1,11 @@
 package me.angeloo.mystica.Utility;
 
 import me.angeloo.mystica.Managers.BuffAndDebuffManager;
-import me.angeloo.mystica.Managers.DpsManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Components.Profile;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 public class DamageCalculator {
 
@@ -157,13 +152,13 @@ public class DamageCalculator {
     }
 
 
-    public double calculateGettingDamaged(Player player, LivingEntity entity, String type, double damage){
+    public double calculateGettingDamaged(LivingEntity hitEntity, LivingEntity entity, String type, double damage){
 
-        if(buffAndDebuffManager.getImmune().getImmune(player)){
+        if(buffAndDebuffManager.getImmune().getImmune(hitEntity)){
             return 0.0;
         }
 
-        Profile playerProfile = profileManager.getAnyProfile(player);
+        Profile playerProfile = profileManager.getAnyProfile(hitEntity);
         Profile enemyProfile = profileManager.getAnyProfile(entity);
 
         double attack;
@@ -184,15 +179,15 @@ public class DamageCalculator {
             attack = enemyProfile.getStats().getAttack() + attackBonus;
             defence = playerProfile.getTotalDefense();
 
-            if(buffAndDebuffManager.getPierceBuff().getIfBuffTime(player)>0){
+            if(buffAndDebuffManager.getPierceBuff().getIfBuffTime(hitEntity)>0){
                 defence = defence * .75;
             }
 
             damage = (damage * multiplierForCrit)
                     * (attack / defence);
 
-            if(buffAndDebuffManager.getArmorMelt().getStacks(player) >= 3){
-                damage += (profileManager.getAnyProfile(player).getTotalHealth() * ((buffAndDebuffManager.getArmorMelt().getStacks(player) * 10) * .01));
+            if(buffAndDebuffManager.getArmorMelt().getStacks(hitEntity) >= 3){
+                damage += (profileManager.getAnyProfile(hitEntity).getTotalHealth() * ((buffAndDebuffManager.getArmorMelt().getStacks(hitEntity) * 10) * .01));
             }
 
         }
@@ -206,9 +201,9 @@ public class DamageCalculator {
                     * (attack / defence);
         }
 
-        damage = damage * buffAndDebuffManager.getTotalDamageMultipliers(entity, player);
+        damage = damage * buffAndDebuffManager.getTotalDamageMultipliers(entity, hitEntity);
 
-        if(buffAndDebuffManager.getBlocking().getIfBlocking(player)){
+        if(buffAndDebuffManager.getBlocking().getIfBlocking(hitEntity)){
             damage*=.5;
         }
 

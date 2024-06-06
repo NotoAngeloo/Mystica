@@ -7,6 +7,7 @@ import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.Stats;
+import me.angeloo.mystica.CustomEvents.AiSignalEvent;
 import me.angeloo.mystica.CustomEvents.BoardValueUpdateEvent;
 import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
 import me.angeloo.mystica.Managers.*;
@@ -24,8 +25,8 @@ public class ChangeResourceHandler {
 
     private final Mystica main;
 
-    private final FakePlayerAiManager fakePlayerAiManager;
     private final DailyData dailyData;
+    private final AggroManager aggroManager;
     private final ProfileManager profileManager;
     private final QuestManager questManager;
     private final ProtocolManager protocolManager;
@@ -42,7 +43,7 @@ public class ChangeResourceHandler {
 
     public ChangeResourceHandler(Mystica main){
         this.main = main;
-        fakePlayerAiManager = main.getFakePlayerAiManager();
+        aggroManager = main.getAggroManager();
         questManager = main.getQuestManager();
         dailyData = main.getDailyData();
         protocolManager = main.getProtocolManager();
@@ -117,7 +118,7 @@ public class ChangeResourceHandler {
             //here
             if(!profileManager.getCompanions((Player) damager).isEmpty()){
                 for(LivingEntity companion : profileManager.getCompanions((Player) damager)){
-                    fakePlayerAiManager.signalAttack(companion);
+                    Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent(companion, "attack"));
                 }
             }
         }
@@ -196,10 +197,12 @@ public class ChangeResourceHandler {
             profileManager.getAnyProfile(entity).setIfDead(true);
             profileManager.getAnyProfile(entity).setCurrentHealth(profileManager.getAnyProfile(entity).getTotalHealth());
             dpsManager.removeDps(entity);
+            aggroManager.removeFromAllAttackerLists(entity);
             entity.setAI(false);
             if(MythicBukkit.inst().getAPIHelper().isMythicMob(entity.getUniqueId())){
                 AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).getEntity();
                 MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).signalMob(abstractEntity, "die");
+                Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent(entity, "stop"));
             }
         }
     }

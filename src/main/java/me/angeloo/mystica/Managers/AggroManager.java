@@ -31,6 +31,7 @@ public class AggroManager {
             return;
         }
 
+
         attackers.add(attacker);
         creatureListOfAttackers.put(entity.getUniqueId(), attackers);
 

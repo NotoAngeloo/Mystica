@@ -6,18 +6,22 @@ import me.angeloo.mystica.Components.Creatures.*;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
+import me.angeloo.mystica.CustomEvents.AiSignalEvent;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 public class CreaturesAndCharactersManager {
+
+    private final Mystica main;
 
     private final ProfileManager profileManager;
 
@@ -36,6 +40,7 @@ public class CreaturesAndCharactersManager {
     private final SammingSins sammingSins;
 
     public CreaturesAndCharactersManager(Mystica main){
+        this.main = main;
         profileManager = main.getProfileManager();
         theLindwyrm = new TheLindwyrm(main);
         corruptHeart = new CorruptHeart(main);
@@ -70,8 +75,13 @@ public class CreaturesAndCharactersManager {
             return;
         }
 
+        if(tank instanceof LivingEntity){
+            profileManager.getAnyProfile((LivingEntity) tank);
+            Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent((LivingEntity) tank, "follow"));
+        }
 
-        profileManager.getAnyProfile((LivingEntity) tank);
+
+
 
     }
 

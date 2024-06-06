@@ -65,6 +65,8 @@ public class AggroTick {
                     }
                 }
 
+                //Bukkit.getLogger().info("attackers " + attackers);
+
                 if(aggroManager.getHighPriorityTarget(entity) == null){
 
                     LivingEntity highestDpsPlayer = null;
@@ -107,8 +109,8 @@ public class AggroTick {
                     //Bukkit.getLogger().info("setting target to priority player " + highPriorityTarget.getName());
                 }
 
-                if(((Creature) entity).getTarget() instanceof Player){
-                    Player targetedPlayer = (Player) ((Creature) entity).getTarget();
+                if(((Creature) entity).getTarget() != null){
+                    LivingEntity targetedPlayer = ((Creature)entity).getTarget();
 
                     boolean deathStatus = profileManager.getAnyProfile(targetedPlayer).getIfDead();
 
@@ -137,6 +139,8 @@ public class AggroTick {
                     else{
 
                         if(profileManager.resetBoss(entity.getUniqueId())){
+
+                            //Bukkit.getLogger().info("should reset");
 
                             this.cancel();
 

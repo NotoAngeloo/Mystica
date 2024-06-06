@@ -288,7 +288,7 @@ public class Judgement {
         LivingEntity target;
 
         if(caster instanceof Player){
-            target = targetManager.getPlayerTarget((Player) caster);
+            target = targetManager.getPlayerTarget(caster);
         }
         else{
             target = fakePlayerTargetManager.getTarget(caster);

@@ -55,15 +55,13 @@ public class MysticaEffect implements CommandExecutor {
                     return true;
                 }
 
-                Player player = (Player) target;
-
-                boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
-
-                if(deathStatus){
-                    return true;
-                }
             }
 
+            boolean deathStatus = profileManager.getAnyProfile(target).getIfDead();
+
+            if(deathStatus){
+                return true;
+            }
 
             String type = args[2];
             int amount = Integer.parseInt(args[3]);

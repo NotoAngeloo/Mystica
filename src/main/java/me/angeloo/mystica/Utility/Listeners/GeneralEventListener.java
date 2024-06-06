@@ -53,6 +53,7 @@ import static me.angeloo.mystica.Mystica.questColor;
 public class GeneralEventListener implements Listener {
 
     private final Mystica main;
+    private final FakePlayerAiManager fakePlayerAiManager;
     private final DailyData dailyData;
     private final ProfileManager profileManager;
     private final PathingManager pathingManager;
@@ -96,6 +97,7 @@ public class GeneralEventListener implements Listener {
         dailyData = main.getDailyData();
         profileManager = main.getProfileManager();
         pathingManager = main.getPathingManager();
+        fakePlayerAiManager = main.getFakePlayerAiManager();
         stealthTargetBlacklist = main.getStealthTargetBlacklist();
         aggroTick = main.getAggroTick();
         aggroManager = main.getAggroManager();
@@ -1023,6 +1025,14 @@ public class GeneralEventListener implements Listener {
             }
         }
 
+        if(!profileManager.getCompanions(player).isEmpty()){
+            for(LivingEntity companion : profileManager.getCompanions(player)){
+                if(!profileManager.getAnyProfile(companion).getIfDead()){
+                    return;
+                }
+            }
+        }
+
         deathManager.playerNowLive(player, false, null);
         displayWeapons.displayWeapons(player);
 
@@ -1465,9 +1475,7 @@ public class GeneralEventListener implements Listener {
     @EventHandler
     public void playerCastSkillOnEnemy(SkillOnEnemyEvent event){
 
-
         LivingEntity entity = event.getEntity();
-
 
         if(entity instanceof Player){
             return;
@@ -1606,13 +1614,22 @@ public class GeneralEventListener implements Listener {
                     continue;
                 }
 
-                if(entity instanceof Player){
+                if(!(entity instanceof LivingEntity)){
+                    continue;
+                }
 
-                    if(pvpManager.pvpLogic(player, (Player) entity)){
-                        if(stealthTargetBlacklist.get((Player) entity)){
-                            continue;
+                LivingEntity livingEntity = (LivingEntity) entity;
+
+                if(entity instanceof Player || profileManager.getAnyProfile(livingEntity).fakePlayer() ){
+
+                    if(entity instanceof Player){
+                        if(pvpManager.pvpLogic(player, (Player) entity)){
+                            if(stealthTargetBlacklist.get((Player) entity)){
+                                continue;
+                            }
                         }
                     }
+
 
 
                     double distanceSquared = entity.getLocation().distanceSquared(player.getLocation());
@@ -1622,7 +1639,7 @@ public class GeneralEventListener implements Listener {
                     }
                 }
 
-                if(entity instanceof LivingEntity && !(entity instanceof Player)){
+                if(!(entity instanceof Player)){
 
                     boolean object = profileManager.getAnyProfile(player).getIfObject();
 
@@ -1676,39 +1693,47 @@ public class GeneralEventListener implements Listener {
                         continue;
                     }
 
-                    if(entity instanceof Player){
+                    LivingEntity livingEntity = (LivingEntity) entity;
 
-                        if(pvpManager.pvpLogic(player, (Player) entity)){
-                            if(stealthTargetBlacklist.get((Player) entity)){
-                                continue;
+                    if(entity instanceof Player || profileManager.getAnyProfile(livingEntity).fakePlayer()){
+
+                        if(entity instanceof Player){
+                            if(pvpManager.pvpLogic(player, (Player) entity)){
+                                if(stealthTargetBlacklist.get((Player) entity)){
+                                    continue;
+                                }
+                            }
+                            double distanceSquared = entity.getLocation().distanceSquared(player.getLocation());
+
+                            Player entityPlayer = (Player) entity;
+
+                            if(pvpManager.pvpLogic(player, entityPlayer)){
+
+                                if(distanceSquared < closestDistanceSquaredMob){
+                                    theClosestMob = entityPlayer;
+                                    closestDistanceSquaredMob = distanceSquared;
+                                }
+                            }
+
+                            if(distanceSquared < closestDistanceSquaredPlayer){
+                                theClosestPlayer = entityPlayer;
+                                closestDistanceSquaredPlayer = distanceSquared;
                             }
                         }
 
-                        double distanceSquared = entity.getLocation().distanceSquared(player.getLocation());
 
-                        Player entityPlayer = (Player) entity;
 
-                        if(pvpManager.pvpLogic(player, entityPlayer)){
-
-                            if(distanceSquared < closestDistanceSquaredMob){
-                                theClosestMob = entityPlayer;
-                                closestDistanceSquaredMob = distanceSquared;
-                            }
-                        }
-
-                        if(distanceSquared < closestDistanceSquaredPlayer){
-                            theClosestPlayer = entityPlayer;
-                            closestDistanceSquaredPlayer = distanceSquared;
-                        }
                     }
 
                     if(!(entity instanceof Player)){
 
-                        LivingEntity livingEntity = (LivingEntity) entity;
-
                         boolean object = profileManager.getAnyProfile(livingEntity).getIfObject();
 
                         if(object){
+                            continue;
+                        }
+
+                        if(profileManager.getAnyProfile((LivingEntity) entity).fakePlayer()){
                             continue;
                         }
 
@@ -1817,6 +1842,21 @@ public class GeneralEventListener implements Listener {
                 return;
             }
         }
+
+    }
+
+    @EventHandler
+    public void companionSignalEvent(AiSignalEvent event){
+
+        LivingEntity companion = event.getCompanion();
+        String signal = event.getSignal();
+
+        if(signal.equalsIgnoreCase("stop")){
+            fakePlayerAiManager.stopAiTask(companion);
+            return;
+        }
+
+        fakePlayerAiManager.signal(companion, signal);
 
     }
 

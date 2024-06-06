@@ -155,7 +155,7 @@ public class RangerBasic {
 
 
                 tryToRemoveBasicStage(caster);
-                switch (basicStageMap.get(caster.getUniqueId())){
+                switch (getStage(caster)){
                     case 1:{
                         basicStage1(caster, 2);
                         break;
@@ -422,5 +422,9 @@ public class RangerBasic {
         }
 
         return skillDamage + ((int)(skillLevel/3));
+    }
+
+    private int getStage(LivingEntity caster){
+        return basicStageMap.getOrDefault(caster.getUniqueId(), 1);
     }
 }

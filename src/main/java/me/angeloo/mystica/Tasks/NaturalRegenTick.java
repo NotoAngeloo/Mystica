@@ -10,6 +10,7 @@ import me.angeloo.mystica.Utility.ShieldAbilityManaDisplayer;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -29,12 +30,67 @@ public class NaturalRegenTick extends BukkitRunnable {
     public void run() {
         for(Player player: Bukkit.getOnlinePlayers()){
 
+            boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
+            long currentTime = System.currentTimeMillis()/1000;
+
+            if(!profileManager.getCompanions(player).isEmpty()){
+                for(LivingEntity companion : profileManager.getCompanions(player)){
+                    Stats stats = profileManager.getAnyProfile(companion).getStats();
+                    long lastManaed = changeResourceHandler.getLastManaed(companion.getUniqueId());
+                    if(currentTime - lastManaed >= 20 || profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("shadow knight")){
+                        int maxMana = stats.getMana();
+                        double currentMana = profileManager.getAnyProfile(player).getCurrentMana();
+
+                        double manaRegenRate = maxMana * .01;
+
+                        if(profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("shadow knight")){
+                            manaRegenRate = maxMana * .05;
+                        }
+
+                        if(!combatStatus){
+                            manaRegenRate = maxMana * .3;
+                        }
+
+                        if(currentMana > maxMana){
+                            profileManager.getAnyProfile(player).setCurrentMana(maxMana);
+                        }
+
+                        if(currentMana < maxMana){
+                            changeResourceHandler.addManaToEntity(player, manaRegenRate);
+                        }
+                    }
+
+                    long lastDamaged = changeResourceHandler.getLastDamaged(player.getUniqueId());
+
+                    //Bukkit.getLogger().info(String.valueOf(currentTime - lastDamaged));
+
+                    if(currentTime - lastDamaged >= 20){
+                        int maxHealth = stats.getHealth();
+                        double currentHealth = profileManager.getAnyProfile(companion).getCurrentHealth();
+
+                        double healthRegenRate = maxHealth * .01;
+
+                        if(!combatStatus){
+                            healthRegenRate = maxHealth * .3;
+                        }
+
+                        if(currentHealth > maxHealth){
+                            profileManager.getAnyProfile(companion).setCurrentHealth(maxHealth);
+                            currentHealth = maxHealth;
+                        }
+
+                        if(currentHealth < maxHealth){
+                            changeResourceHandler.addHealthToEntity(companion, healthRegenRate, null);
+                            //Bukkit.getLogger().info(String.valueOf(healthRegenRate));
+                        }
+
+                    }
+                }
+            }
+
             Stats stats = profileManager.getAnyProfile(player).getStats();
             StatsFromGear gearStats = profileManager.getAnyProfile(player).getGearStats();
 
-            boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
-
-            long currentTime = System.currentTimeMillis()/1000;
             long lastManaed = changeResourceHandler.getLastManaed(player.getUniqueId());
 
             if(currentTime - lastManaed >= 20 || profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("shadow knight")){
@@ -110,5 +166,6 @@ public class NaturalRegenTick extends BukkitRunnable {
             shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(player);
 
         }
+
     }
 }

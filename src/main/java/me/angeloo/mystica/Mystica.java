@@ -111,8 +111,6 @@ public final class Mystica extends JavaPlugin{
         fakePlayerTargetManager = new FakePlayerTargetManager(this);
         targetManager = new TargetManager(this);
 
-        fakePlayerAiManager = new FakePlayerAiManager(this);
-
         dpsManager = new DpsManager(this);
         changeResourceHandler = new ChangeResourceHandler(this);
 
@@ -123,6 +121,8 @@ public final class Mystica extends JavaPlugin{
         abilityManager = new AbilityManager(this);
         combatManager = abilityManager.getCombatManager();
         deathManager = new DeathManager(this);
+
+        fakePlayerAiManager = new FakePlayerAiManager(this);
 
         inventoryIndexingManager = new InventoryIndexingManager();
         bagInventory = new BagInventory(this);
@@ -140,8 +140,6 @@ public final class Mystica extends JavaPlugin{
         getCommand("MysticaDamage").setExecutor(new MysticaDamage(this));
         getCommand("MysticaEffect").setExecutor(new MysticaEffect(this));
         getCommand("StartFuryTimer").setExecutor(new StartFuryTimer(this));
-        getCommand("SkillTargetValidCheck").setExecutor(new SkillTargetValidCheck(this));
-        getCommand("SkillHitValidCheck").setExecutor(new SkillHitValidCheck(this));
         getCommand("Bag").setExecutor(new Bag(this));
         getCommand("Equipment").setExecutor(new Equipment(this));
         getCommand("Trash").setExecutor(new Trash());
@@ -170,6 +168,8 @@ public final class Mystica extends JavaPlugin{
         getCommand("ClassGuide").setExecutor(new ClassGuide(this));
         getCommand("MysticaQuest").setExecutor(new MysticaQuest(this));
         getCommand("SpawnCompanions").setExecutor(new SpawnCompanions(this));
+        getCommand("HitValidCheck").setExecutor(new HitValidCheck(this));
+        getCommand("SetCaution").setExecutor(new SetCaution(this));
 
         AbilityInventory abilityInventory;
         this.getServer().getPluginManager().registerEvents(abilityInventory = new AbilityInventory(this), this);

@@ -131,7 +131,7 @@ public class ElementalistBasic {
 
 
                 tryToRemoveBasicStage(caster);
-                switch (basicStageMap.get(caster.getUniqueId())){
+                switch (getStage(caster)){
                     case 1:{
                         basicStage1(caster);
                         break;
@@ -553,6 +553,10 @@ public class ElementalistBasic {
         }
 
         return true;
+    }
+
+    private int getStage(LivingEntity caster){
+        return basicStageMap.getOrDefault(caster.getUniqueId(), 1);
     }
 
 }

@@ -84,6 +84,9 @@ public class TargetManager {
         if(entity != null){
             playerTargetBar.put(player.getUniqueId(), startTargetBar(player, entity));
 
+            if(profileManager.getIfEntityIsBoss(entity.getUniqueId())){
+                profileManager.setBossTarget(player, entity);
+            }
 
             if(entity.isDead()){
                 removeAllBars(player);

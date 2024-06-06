@@ -94,6 +94,11 @@ public class Immobile {
                     immobileMap.remove(entity.getUniqueId());
                     if(!(entity instanceof Player)){
 
+                        if(profileManager.getAnyProfile(entity).getIfDead() == null){
+                            this.cancel();
+                            return;
+                        }
+
                         if(!profileManager.getAnyProfile(entity).getIfDead()
                         && !profileManager.getAnyProfile(entity).getImmortality()){
                             entity.setAI(true);

@@ -225,7 +225,7 @@ public class PaladinBasic {
                 //check heal instead here
 
                 tryToRemoveBasicStage(caster);
-                switch (basicStageMap.get(caster.getUniqueId())){
+                switch (getStage(caster)){
                     case 1:{
                         basicStage1(caster);
                         break;
@@ -922,6 +922,10 @@ public class PaladinBasic {
     public double getSkillDamage(LivingEntity caster){
         double level = profileManager.getAnyProfile(caster).getStats().getLevel();
         return 10 + ((int)(level/3));
+    }
+
+    private int getStage(LivingEntity caster){
+        return basicStageMap.getOrDefault(caster.getUniqueId(), 1);
     }
 
 }

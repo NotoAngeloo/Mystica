@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Managers;
 
+import me.angeloo.mystica.CustomEvents.AiSignalEvent;
 import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.CustomEvents.TargetBarShouldUpdateEvent;
 import me.angeloo.mystica.Mystica;
@@ -104,10 +105,17 @@ public class DeathManager {
 
 
         if(!bySkill){
-            //TODO: res all nearby fake players, if not by skill
             target.teleport(target.getWorld().getSpawnLocation());
+            abilityManager.resetCooldowns(target);
+
             if(target instanceof Player){
-                abilityManager.resetCooldowns((Player) target);
+                if(!profileManager.getCompanions((Player) target).isEmpty()){
+                    for(LivingEntity companion : profileManager.getCompanions((Player) target)){
+                        companion.teleport(target.getWorld().getSpawnLocation());
+                        playerNowLive(companion, false, null);
+                        Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent(companion, "reset"));
+                    }
+                }
             }
 
         }

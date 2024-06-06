@@ -99,7 +99,7 @@ public class WarriorBasic {
                 }
 
                 tryToRemoveBasicStage(caster);
-                switch (basicStageMap.get(caster.getUniqueId())) {
+                switch (getStage(caster)) {
                     case 1: {
                         basicStage1(caster, 2);
                         break;
@@ -464,6 +464,10 @@ public class WarriorBasic {
     public double getSkillDamage(LivingEntity caster){
         double level = profileManager.getAnyProfile(caster).getStats().getLevel();
         return 14 + ((int)(level/3));
+    }
+
+    private int getStage(LivingEntity caster){
+        return basicStageMap.getOrDefault(caster.getUniqueId(), 1);
     }
 
 }

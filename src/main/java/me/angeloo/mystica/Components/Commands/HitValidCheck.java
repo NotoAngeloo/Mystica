@@ -2,7 +2,6 @@ package me.angeloo.mystica.Components.Commands;
 
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
-import me.angeloo.mystica.Managers.AggroManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
@@ -15,11 +14,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public class SkillHitValidCheck implements CommandExecutor {
+public class HitValidCheck implements CommandExecutor {
 
     private final ProfileManager profileManager;
 
-    public SkillHitValidCheck(Mystica main){
+    public HitValidCheck(Mystica main){
         profileManager = main.getProfileManager();
     }
 
@@ -34,7 +33,7 @@ public class SkillHitValidCheck implements CommandExecutor {
         if(args.length==2){
 
             LivingEntity caster;
-            Player target;
+            LivingEntity target;
 
             try{
                 caster = (LivingEntity) Bukkit.getEntity(UUID.fromString(args[0]));
@@ -45,7 +44,7 @@ public class SkillHitValidCheck implements CommandExecutor {
             assert caster != null;
 
             try{
-                target = (Player) Bukkit.getEntity(UUID.fromString(args[1]));
+                target = (LivingEntity) Bukkit.getEntity(UUID.fromString(args[1]));
             }catch (IllegalArgumentException exception){
                 return true;
             }
@@ -55,7 +54,6 @@ public class SkillHitValidCheck implements CommandExecutor {
             boolean targetDeathStatus = profileManager.getAnyProfile(target).getIfDead();
 
             if(targetDeathStatus){
-                //ignore
                 return true;
             }
 
@@ -70,5 +68,8 @@ public class SkillHitValidCheck implements CommandExecutor {
 
         return true;
     }
+
+
+
 
 }

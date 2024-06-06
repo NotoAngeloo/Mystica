@@ -4,6 +4,7 @@ import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.FakePlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
+import me.angeloo.mystica.CustomEvents.AiSignalEvent;
 import me.angeloo.mystica.CustomEvents.TargetBarShouldUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Components.NonPlayerProfile;
@@ -52,6 +53,7 @@ public class ProfileManager {
     private final Map<UUID, BukkitTask> furyTasks = new HashMap<>();
     private final Map<UUID, Boolean> resetProcessing = new HashMap<>();
 
+    private final Map<UUID, UUID> bossTarget = new HashMap<>();
 
     public ProfileManager(Mystica main) {
         this.main = main;
@@ -809,6 +811,19 @@ public class ProfileManager {
     }
 
     public List<LivingEntity> getCompanions(Player player){
+
+        if(companionMap.containsKey(player)) {
+
+            for (LivingEntity companion : companionMap.get(player)) {
+                if (companion.isDead()) {
+                    removeCompanion(player, companion);
+                }
+            }
+
+        }
+
+        //Bukkit.getLogger().info(String.valueOf(companionMap.getOrDefault(player, new ArrayList<>())));
+
         return companionMap.getOrDefault(player, new ArrayList<>());
     }
 
@@ -824,11 +839,35 @@ public class ProfileManager {
         return null;
     }
 
+    public void removeCompanion(Player player, LivingEntity companion){
+
+        List<LivingEntity> companions = getCompanions(player);
+
+        companions.remove(companion);
+
+        companionMap.put(player, companions);
+    }
+
     public void removeCompanions(Player player){
         for(LivingEntity companion : companionMap.get(player)){
             companion.remove();
         }
         companionMap.remove(player);
+    }
+
+    public void setBossTarget(Player player, LivingEntity bossTarget){
+        this.bossTarget.put(player.getUniqueId(), bossTarget.getUniqueId());
+
+        if(!getCompanions(player).isEmpty()){
+            for(LivingEntity companion : getCompanions(player)){
+                Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent(companion, "target"));
+            }
+        }
+
+    }
+
+    public UUID getBossTarget(LivingEntity entity){
+        return bossTarget.getOrDefault(entity.getUniqueId(), entity.getUniqueId());
     }
 
 }

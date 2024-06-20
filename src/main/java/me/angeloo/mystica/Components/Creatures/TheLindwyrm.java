@@ -116,7 +116,7 @@ public class TheLindwyrm {
                     return entity.isDead();
                 }
 
-                return null;
+                return true;
             }
 
             @Override

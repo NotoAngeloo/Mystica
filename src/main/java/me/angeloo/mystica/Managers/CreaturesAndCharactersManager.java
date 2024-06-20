@@ -38,6 +38,8 @@ public class CreaturesAndCharactersManager {
     private final HoLeeBoss hoLeeBoss;
 
     private final SammingSins sammingSins;
+    private final Luna luna;
+    private final Wings wings;
 
     public CreaturesAndCharactersManager(Mystica main){
         this.main = main;
@@ -54,6 +56,8 @@ public class CreaturesAndCharactersManager {
         captainNpc = new CaptainNpc(main);
         hoLeeBoss = new HoLeeBoss(main);
         sammingSins = new SammingSins(main);
+        luna = new Luna(main);
+        wings = new Wings(main);
     }
 
     public void spawnAllNpcs() throws InvalidMobTypeException {
@@ -65,25 +69,6 @@ public class CreaturesAndCharactersManager {
         captainNpc.spawn();
     }
 
-    public void spawnCompanions(Player player) {
-
-        Entity tank;
-
-        try{
-            tank = MythicBukkit.inst().getAPIHelper().spawnMythicMob("SammingSins", player.getLocation());
-        }catch (InvalidMobTypeException e) {
-            return;
-        }
-
-        if(tank instanceof LivingEntity){
-            profileManager.getAnyProfile((LivingEntity) tank);
-            Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent((LivingEntity) tank, "follow"));
-        }
-
-
-
-
-    }
 
     public void makeNpcProfile(String name, UUID uuid){
 
@@ -140,6 +125,14 @@ public class CreaturesAndCharactersManager {
                 sammingSins.makeProfile(uuid);
                 break;
             }
+            case "Luna":{
+                luna.makeProfile(uuid);
+                break;
+            }
+            case "Wings":{
+                wings.makeProfile(uuid);
+                break;
+            }
             default:{
                 profileManager.createNewDefaultNonPlayerProfile(uuid);
                 break;
@@ -169,7 +162,7 @@ public class CreaturesAndCharactersManager {
                     return entity.isDead();
                 }
 
-                return null;
+                return true;
             }
 
             @Override

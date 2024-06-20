@@ -117,7 +117,8 @@ public class ChangeResourceHandler {
 
             //here
             if(!profileManager.getCompanions((Player) damager).isEmpty()){
-                for(LivingEntity companion : profileManager.getCompanions((Player) damager)){
+                List<LivingEntity> companions = profileManager.getCompanions((Player) damager);
+                for(LivingEntity companion : companions){
                     Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent(companion, "attack"));
                 }
             }
@@ -312,7 +313,6 @@ public class ChangeResourceHandler {
         if(profileManager.getAnyProfile(player).getIfDead()){
             return;
         }
-
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 

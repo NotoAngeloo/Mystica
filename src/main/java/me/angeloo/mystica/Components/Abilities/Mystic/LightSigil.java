@@ -168,7 +168,8 @@ public class LightSigil {
                             current.getZ() + 10
                     );
 
-                    Set<LivingEntity> hitBySkill = new HashSet<>();
+                    Set<LivingEntity> hitByHeal = new HashSet<>();
+                    Set<LivingEntity> hitByDamage = new HashSet<>();
 
                     if(shepard){
                         for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
@@ -183,6 +184,10 @@ public class LightSigil {
 
                             LivingEntity hitEntity = (LivingEntity) entity;
 
+                            if(profileManager.getAnyProfile(hitEntity).getIfObject()){
+                                continue;
+                            }
+
                             if(hitEntity instanceof Player){
                                 if (pvpManager.pvpLogic(caster, (Player) hitEntity)) {
                                     continue;
@@ -195,12 +200,12 @@ public class LightSigil {
                                 }
                             }
 
-                            hitBySkill.add(hitEntity);
+                            hitByHeal.add(hitEntity);
 
                         }
 
 
-                        for(LivingEntity hitEntity : hitBySkill){
+                        for(LivingEntity hitEntity : hitByHeal){
 
                             if(hitEntity.getLocation().distance(current) <= 10){
                                 shootHealAtEntity(caster, sigil, hitEntity);
@@ -234,9 +239,9 @@ public class LightSigil {
                                 continue;
                             }
 
-                            hitBySkill.add(thisEntity);
+                            hitByDamage.add(thisEntity);
 
-                            for(LivingEntity livingEntity : hitBySkill){
+                            for(LivingEntity livingEntity : hitByDamage){
                                 shootDamageAtEntity(caster, sigil, livingEntity);
                             }
 
@@ -380,6 +385,7 @@ public class LightSigil {
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_8_Level_Bonus();
         healPower = healPower +  ((int)(skillLevel/10));
+
 
         double finalHealPower = healPower;
         new BukkitRunnable(){

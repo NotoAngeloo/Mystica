@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Managers;
 
+import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.BuffsAndDebuffs.*;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.entity.LivingEntity;
@@ -192,8 +193,11 @@ public class BuffAndDebuffManager {
     }
 
     public boolean getIfBasicInterrupt(LivingEntity entity){
+
+
         return
                 profileManager.getAnyProfile(entity).getIfDead()
+                || entity.isDead()
                 || getIfCantAct(entity)
                 || knockUp.getIfKnockUp(entity)
                 || pulled.getIfPulled(entity);

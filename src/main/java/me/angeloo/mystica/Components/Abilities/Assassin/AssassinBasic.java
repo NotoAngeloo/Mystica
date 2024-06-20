@@ -88,10 +88,16 @@ public class AssassinBasic {
                     return;
                 }
 
+                if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)).getIfDead()){
+                    this.cancel();
+                    stopBasicRunning(caster);
+                    return;
+                }
+
                 basicStage(caster);
 
                 if(caster instanceof Player){
-                    combatManager.startCombatTimer((Player) caster);
+                    combatManager.startCombatTimer(caster);
                 }
 
 

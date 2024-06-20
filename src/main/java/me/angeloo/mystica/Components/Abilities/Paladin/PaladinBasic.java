@@ -96,6 +96,12 @@ public class PaladinBasic {
                     return;
                 }
 
+                if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)).getIfDead()){
+                    this.cancel();
+                    stopBasicRunning(caster);
+                    return;
+                }
+
                 basicStageMap.remove(caster.getUniqueId());
             }
         }.runTaskLater(main, 50);

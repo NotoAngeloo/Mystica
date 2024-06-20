@@ -5,20 +5,21 @@ import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import me.angeloo.mystica.Components.FakePlayerProfile;
-import me.angeloo.mystica.Components.ProfileComponents.*;
+import me.angeloo.mystica.Components.ProfileComponents.Stats;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+
 import java.util.UUID;
 
-public class SammingSins {
+public class Luna {
 
     private final ProfileManager profileManager;
 
-    public SammingSins(Mystica main){
+    public Luna(Mystica main){
         profileManager = main.getProfileManager();
     }
 
@@ -91,16 +92,11 @@ public class SammingSins {
         defence+=(level);
         magic_defence+=(level);
 
-        attack-=(level);
         health+=(level*15);
-        defence+=(level);
-        magic_defence+=(level);
 
         Stats stats = new Stats(level, attack, health, mana, defence, magic_defence, crit);
 
-
-
-        FakePlayerProfile fakePlayerProfile = new FakePlayerProfile(false, false, stats.getHealth(), stats.getMana(), stats, "Paladin", "Templar");
+        FakePlayerProfile fakePlayerProfile = new FakePlayerProfile(false, false, stats.getHealth(), stats.getMana(), stats, "Ranger", "Animal Tamer");
 
         profileManager.addToFakePlayerProfileMap(uuid, fakePlayerProfile);
 

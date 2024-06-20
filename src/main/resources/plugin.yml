@@ -130,10 +130,6 @@ commands:
   MysticaQuest:
     description: opens quest books
     usage: /MysticaQuest <player> <quest/accept>
-  SpawnCompanions:
-    description: spawns companions for a player
-    usage: /SpawnCompanions <player>
-    permission: developer
   HitValidCheck:
     description: lets mms see if what they hit with a skill is valid
     usage: /HitValidCheck <caster> <target>

@@ -811,20 +811,23 @@ public class ProfileManager {
     }
 
     public List<LivingEntity> getCompanions(Player player){
+        return companionMap.getOrDefault(player, new ArrayList<>());
+    }
 
+    public void updateCompanions(Player player){
         if(companionMap.containsKey(player)) {
 
+            Set<LivingEntity> toRemove = new HashSet<>();
             for (LivingEntity companion : companionMap.get(player)) {
                 if (companion.isDead()) {
-                    removeCompanion(player, companion);
+                    toRemove.add(companion);
                 }
             }
 
+            for(LivingEntity companion : toRemove){
+                removeCompanion(player, companion);
+            }
         }
-
-        //Bukkit.getLogger().info(String.valueOf(companionMap.getOrDefault(player, new ArrayList<>())));
-
-        return companionMap.getOrDefault(player, new ArrayList<>());
     }
 
     public Player getCompanionsPlayer(LivingEntity companion){
@@ -841,33 +844,34 @@ public class ProfileManager {
 
     public void removeCompanion(Player player, LivingEntity companion){
 
-        List<LivingEntity> companions = getCompanions(player);
+        if(companionMap.containsKey(player)){
+            List<LivingEntity> companions = new ArrayList<>(companionMap.get(player));
+            companions.remove(companion);
 
-        companions.remove(companion);
+            if(companions.isEmpty()){
+                removeCompanions(player);
+                return;
+            }
 
-        companionMap.put(player, companions);
+            companionMap.put(player, companions);
+        }
+
     }
 
     public void removeCompanions(Player player){
         for(LivingEntity companion : companionMap.get(player)){
-            companion.remove();
+
+            if(companion != null){
+                companion.remove();
+            }
+
         }
         companionMap.remove(player);
     }
 
-    public void setBossTarget(Player player, LivingEntity bossTarget){
-        this.bossTarget.put(player.getUniqueId(), bossTarget.getUniqueId());
 
-        if(!getCompanions(player).isEmpty()){
-            for(LivingEntity companion : getCompanions(player)){
-                Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent(companion, "target"));
-            }
-        }
 
-    }
 
-    public UUID getBossTarget(LivingEntity entity){
-        return bossTarget.getOrDefault(entity.getUniqueId(), entity.getUniqueId());
-    }
+
 
 }

@@ -4,6 +4,9 @@ package me.angeloo.mystica.Utility.Listeners;
 import io.lumine.mythic.bukkit.events.MythicMobSpawnEvent;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -25,6 +28,16 @@ public class MMListeners implements Listener {
 
         UUID id = event.getMob().getUniqueId();
         profileManager.addToNonPlayerNameMap(name, id);
+
+        Entity entity = event.getEntity();
+
+        if(entity instanceof LivingEntity){
+            profileManager.getAnyProfile((LivingEntity) event.getEntity());
+
+            //Bukkit.getLogger().info("Made a profile for " + name);
+
+        }
+
 
         
     }

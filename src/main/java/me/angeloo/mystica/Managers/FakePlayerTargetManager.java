@@ -36,9 +36,8 @@ public class FakePlayerTargetManager {
             case "warrior":
             case "ranger":{
 
-                if(pveChecker.pveLogic(target) && !profileManager.getAnyProfile(target).getImmortality()){
+                if(pveChecker.pveLogic(target) && !profileManager.getAnyProfile(target).getIfObject()){
                     targetMap.put(entity.getUniqueId(), target);
-                    ((Creature) entity).setTarget(target);
                 }
 
                 break;
@@ -51,7 +50,6 @@ public class FakePlayerTargetManager {
 
                     //ignore if already targeting a boss
                     if(profileManager.getIfEntityIsBoss(currentTarget.getUniqueId())){
-                        //Bukkit.getLogger().info(entity.getName() +" ignored your suggestion");
                         break;
                     }
 
@@ -59,8 +57,7 @@ public class FakePlayerTargetManager {
 
                 if(pveChecker.pveLogic(target) && !profileManager.getAnyProfile(target).getIfObject()){
                     targetMap.put(entity.getUniqueId(), target);
-                    ((Creature) entity).setTarget(target);
-                    //Bukkit.getLogger().info(entity.getName() +" agreed with your suggestion");
+                    //Bukkit.getLogger().info("target of companion set to " + target);
                 }
 
                 break;

@@ -4,6 +4,7 @@ import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Components.Profile;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -37,7 +38,11 @@ public class DamageCalculator {
 
         double attack = profileManager.getAnyProfile(healer).getTotalAttack();
 
+        //Bukkit.getLogger().info("attack " + attack);
+
         amount *= (attack * .05);
+
+        //Bukkit.getLogger().info("amount " + amount);
 
         double multiplierForCrit = 1;
 
@@ -58,6 +63,7 @@ public class DamageCalculator {
         amount *= multiplierForCrit;
         amount *= multiplierForHealerBonus;
 
+        //Bukkit.getLogger().info("final amount " + amount);
         return amount;
     }
 

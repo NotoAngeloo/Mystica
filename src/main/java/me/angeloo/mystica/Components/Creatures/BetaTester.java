@@ -59,7 +59,7 @@ public class BetaTester {
                     return entity.isDead();
                 }
 
-                return null;
+                return true;
             }
 
             @Override

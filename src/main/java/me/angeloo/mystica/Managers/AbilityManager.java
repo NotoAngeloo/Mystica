@@ -357,6 +357,7 @@ public class AbilityManager {
     public void resetAbilityBuffs(LivingEntity caster){
         mysticAbilities.getEvilSpirit().removeShards(caster);
         mysticAbilities.getPurifyingBlast().unQueueInstantCast(caster);
+        mysticAbilities.getConsolation().removeTargets(caster);
         elementalistAbilities.getFieryWing().removeInflame(caster);
         shadowKnightAbilities.getInfection().removeEnhancement(caster);
         shadowKnightAbilities.getSoulReap().removeSoulMarks(caster);

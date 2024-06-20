@@ -98,7 +98,7 @@ public class AggroTick {
 
                 long currentTime = System.currentTimeMillis() / 1000;
                 long lastSet = aggroManager.getLastSetAsPriority(entity);
-                if(currentTime - lastSet > 20){
+                if(currentTime - lastSet > 30){
                     aggroManager.removeHighPriorityTarget(entity.getUniqueId());
                 }
 

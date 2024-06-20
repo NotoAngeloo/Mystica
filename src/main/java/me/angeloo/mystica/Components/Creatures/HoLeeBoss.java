@@ -320,7 +320,7 @@ public class HoLeeBoss {
                     return entity.isDead();
                 }
 
-                return null;
+                return true;
             }
 
             @Override

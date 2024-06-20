@@ -12,6 +12,7 @@ import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -181,27 +182,42 @@ public class ArcaneContract {
     }
 
     private void putOnCooldown(UUID id){
-        Player player = Bukkit.getPlayer(id);
 
-        if(player == null){
-            return;
-        }
+        Entity entity = Bukkit.getEntity(id);
+
+
 
         abilityReadyInMap.put(id, 120);
         new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(abilityReadyInMap.get(id) <= 0){
-                    cooldownDisplayer.displayCooldown(player, 7);
-                    this.cancel();
-                    return;
+                if(abilityReadyInMap.containsKey(id)){
+                    if(abilityReadyInMap.get(id) <= 0){
+
+                        if(entity instanceof Player){
+                            cooldownDisplayer.displayCooldown((LivingEntity) entity, 7);
+                        }
+
+                        this.cancel();
+                        return;
+                    }
                 }
 
-                int cooldown = abilityReadyInMap.get(id) - 1;
+
+                int cooldown;
+                if(abilityReadyInMap.containsKey(id)){
+                    cooldown = abilityReadyInMap.get(id) - 1;
+                }
+                else{
+                    cooldown = 0;
+                }
 
                 abilityReadyInMap.put(id, cooldown);
-                cooldownDisplayer.displayCooldown(player, 7);
+
+                if(entity instanceof Player){
+                    cooldownDisplayer.displayCooldown((LivingEntity) entity, 7);
+                }
             }
         }.runTaskTimer(main, 0,20);
     }

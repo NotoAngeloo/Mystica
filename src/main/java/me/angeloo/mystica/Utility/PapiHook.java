@@ -6,7 +6,6 @@ import me.angeloo.mystica.Mystica;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -17,13 +16,15 @@ import java.util.UUID;
 public class PapiHook extends PlaceholderExpansion {
 
     private final Mystica main;
-    private final RandomValidEntity randomValidEntity;
+    private final MysticaEntityGrabber mysticaEntityGrabber;
     private final ProfileManager profileManager;
+    private final TargetManager targetManager;
 
     public PapiHook(Mystica main){
         this.main = main;
-        randomValidEntity = new RandomValidEntity(main);
+        mysticaEntityGrabber = new MysticaEntityGrabber(main);
         profileManager = main.getProfileManager();
+        targetManager = main.getTargetManager();
     }
 
     @Override
@@ -47,28 +48,13 @@ public class PapiHook extends PlaceholderExpansion {
             Player player = offlinePlayer.getPlayer();
 
             switch (params.toLowerCase()){
-                case "bosstarget":{
-                    assert player != null;
-                    return String.valueOf(profileManager.getBossTarget(player));
-                }
                 case "random":{
-
                     assert player != null;
-
-                    UUID entityId = randomValidEntity.getRandomEntity(player);
-
-                    if(entityId == null){
-                        return "none";
-                    }
-
-                    LivingEntity targetedEntity = (LivingEntity) Bukkit.getEntity(entityId);
-
-                    if(profileManager.getAnyProfile(targetedEntity).getIfDead()){
-                        return "none";
-                    }
-
-
-                    return String.valueOf(randomValidEntity.getRandomEntity(player));
+                    return String.valueOf(mysticaEntityGrabber.getRandomEntity(player));
+                }
+                case "lowest":{
+                    assert player != null;
+                    return String.valueOf(mysticaEntityGrabber.getLowest(player));
                 }
                 case "class":{
                     return profileManager.getAnyProfile(player).getPlayerClass();

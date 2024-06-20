@@ -115,7 +115,7 @@ public class CorruptHeart {
                     return entity.isDead();
                 }
 
-                return null;
+                return true;
             }
 
             @Override

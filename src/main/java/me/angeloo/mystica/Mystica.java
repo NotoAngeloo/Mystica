@@ -167,7 +167,6 @@ public final class Mystica extends JavaPlugin{
         getCommand("FastTravel").setExecutor(new FastTravel(this));
         getCommand("ClassGuide").setExecutor(new ClassGuide(this));
         getCommand("MysticaQuest").setExecutor(new MysticaQuest(this));
-        getCommand("SpawnCompanions").setExecutor(new SpawnCompanions(this));
         getCommand("HitValidCheck").setExecutor(new HitValidCheck(this));
         getCommand("SetCaution").setExecutor(new SetCaution(this));
 

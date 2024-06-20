@@ -56,7 +56,7 @@ public class MadDummy {
                     return entity.isDead();
                 }
 
-                return null;
+                return true;
             }
 
             @Override

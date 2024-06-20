@@ -98,6 +98,12 @@ public class WarriorBasic {
                     return;
                 }
 
+                if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)).getIfDead()){
+                    this.cancel();
+                    stopBasicRunning(caster);
+                    return;
+                }
+
                 tryToRemoveBasicStage(caster);
                 switch (getStage(caster)) {
                     case 1: {

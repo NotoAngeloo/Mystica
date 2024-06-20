@@ -113,7 +113,7 @@ public class Dummy {
                     return entity.isDead();
                 }
 
-                return null;
+                return true;
             }
 
             @Override

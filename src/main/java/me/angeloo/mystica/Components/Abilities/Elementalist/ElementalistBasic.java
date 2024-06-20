@@ -97,6 +97,12 @@ public class ElementalistBasic {
                     return;
                 }
 
+                if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)).getIfDead()){
+                    this.cancel();
+                    stopBasicRunning(caster);
+                    return;
+                }
+
                 double totalRange = getRange(caster);
 
                 targetManager.setTargetToNearestValid(caster, totalRange);

@@ -212,6 +212,10 @@ public class PurifyingBlast {
 
                     LivingEntity livingEntity = (LivingEntity) entity;
 
+                    if(profileManager.getAnyProfile(livingEntity).getIfObject()){
+                        continue;
+                    }
+
                     if(hitBySkill.contains(livingEntity)){
                         continue;
                     }
@@ -323,5 +327,17 @@ public class PurifyingBlast {
 
     public void resetCooldown(LivingEntity caster){
         abilityReadyInMap.remove(caster.getUniqueId());
+    }
+
+    public boolean usable(LivingEntity caster){
+        if (getCooldown(caster) > 0) {
+            return false;
+        }
+
+        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+            return false;
+        }
+
+        return true;
     }
 }

@@ -1,6 +1,5 @@
 package me.angeloo.mystica.CustomEvents;
 
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

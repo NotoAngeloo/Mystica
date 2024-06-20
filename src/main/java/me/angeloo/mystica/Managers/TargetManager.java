@@ -84,10 +84,6 @@ public class TargetManager {
         if(entity != null){
             playerTargetBar.put(player.getUniqueId(), startTargetBar(player, entity));
 
-            if(profileManager.getIfEntityIsBoss(entity.getUniqueId())){
-                profileManager.setBossTarget(player, entity);
-            }
-
             if(entity.isDead()){
                 removeAllBars(player);
             }
@@ -192,45 +188,55 @@ public class TargetManager {
 
     public void setTeamTarget(Player player){
 
+        if(!profileManager.getCompanions(player).isEmpty()){
+            List<LivingEntity> companions = profileManager.getCompanions(player);
+
+            companions.sort(Comparator.comparingDouble(p -> profileManager.getAnyProfile(p).getCurrentHealth()/(double)profileManager.getAnyProfile(p).getTotalHealth()));
+            if(companions.size()>0){
+                setPlayerTarget(player, companions.get(0));
+            }
+            return;
+        }
+
         PartiesAPI api = Parties.getApi();
         PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
 
         assert partyPlayer != null;
-        if(!partyPlayer.isInParty()){
+        if(partyPlayer.isInParty()){
+            Party party = api.getParty(partyPlayer.getPartyId());
+            assert party != null;
+            Set<UUID> partySet = party.getMembers();
+
+            List<Player> partyList = new ArrayList<>();
+
+            for(UUID id : partySet){
+                Player partyMember = Bukkit.getPlayer(id);
+
+                if(partyMember == null){
+                    continue;
+                }
+
+
+                if(partyMember == player){
+                    continue;
+                }
+
+                if(profileManager.getAnyProfile(partyMember).getIfDead()){
+                    continue;
+                }
+
+                partyList.add(partyMember);
+            }
+
+            //depending on preference, sort it
+            partyList.sort(Comparator.comparingDouble(p -> profileManager.getAnyProfile(p).getCurrentHealth()/(double)profileManager.getAnyProfile(p).getTotalHealth()));
+
+            if(partyList.size()>0){
+                setPlayerTarget(player, partyList.get(0));
+            }
             return;
         }
 
-        Party party = api.getParty(partyPlayer.getPartyId());
-        assert party != null;
-        Set<UUID> partySet = party.getMembers();
-
-        List<Player> partyList = new ArrayList<>();
-
-        for(UUID id : partySet){
-            Player partyMember = Bukkit.getPlayer(id);
-
-            if(partyMember == null){
-                continue;
-            }
-
-
-            if(partyMember == player){
-                continue;
-            }
-
-            if(profileManager.getAnyProfile(partyMember).getIfDead()){
-                continue;
-            }
-
-            partyList.add(partyMember);
-        }
-
-        //depending on preference, sort it
-        partyList.sort(Comparator.comparingDouble(p -> profileManager.getAnyProfile(p).getCurrentHealth()/(double)profileManager.getAnyProfile(p).getTotalHealth()));
-
-        if(partyList.size()>0){
-            setPlayerTarget(player, partyList.get(0));
-        }
 
 
     }

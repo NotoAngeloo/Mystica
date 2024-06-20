@@ -61,7 +61,7 @@ public class HitValidCheck implements CommandExecutor {
             //send different signal
             if(MythicBukkit.inst().getAPIHelper().isMythicMob(caster.getUniqueId())){
                 AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).getEntity();
-                MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).signalMob(abstractEntity, "hitvalid");
+                MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).signalMob(abstractEntity, "hitValid");
             }
             return true;
         }

@@ -14,6 +14,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.List;
+
 public class NaturalRegenTick extends BukkitRunnable {
 
     private final ProfileManager profileManager;
@@ -33,17 +35,21 @@ public class NaturalRegenTick extends BukkitRunnable {
             boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
             long currentTime = System.currentTimeMillis()/1000;
 
+            //profileManager.updateCompanions(player);
+
             if(!profileManager.getCompanions(player).isEmpty()){
-                for(LivingEntity companion : profileManager.getCompanions(player)){
+
+                List<LivingEntity> companions = profileManager.getCompanions(player);
+                for(LivingEntity companion : companions){
                     Stats stats = profileManager.getAnyProfile(companion).getStats();
                     long lastManaed = changeResourceHandler.getLastManaed(companion.getUniqueId());
                     if(currentTime - lastManaed >= 20 || profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("shadow knight")){
                         int maxMana = stats.getMana();
-                        double currentMana = profileManager.getAnyProfile(player).getCurrentMana();
+                        double currentMana = profileManager.getAnyProfile(companion).getCurrentMana();
 
                         double manaRegenRate = maxMana * .01;
 
-                        if(profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("shadow knight")){
+                        if(profileManager.getAnyProfile(companion).getPlayerClass().equalsIgnoreCase("shadow knight")){
                             manaRegenRate = maxMana * .05;
                         }
 
@@ -52,15 +58,15 @@ public class NaturalRegenTick extends BukkitRunnable {
                         }
 
                         if(currentMana > maxMana){
-                            profileManager.getAnyProfile(player).setCurrentMana(maxMana);
+                            profileManager.getAnyProfile(companion).setCurrentMana(maxMana);
                         }
 
                         if(currentMana < maxMana){
-                            changeResourceHandler.addManaToEntity(player, manaRegenRate);
+                            changeResourceHandler.addManaToEntity(companion, manaRegenRate);
                         }
                     }
 
-                    long lastDamaged = changeResourceHandler.getLastDamaged(player.getUniqueId());
+                    long lastDamaged = changeResourceHandler.getLastDamaged(companion.getUniqueId());
 
                     //Bukkit.getLogger().info(String.valueOf(currentTime - lastDamaged));
 

@@ -794,6 +794,24 @@ public class GeneralEventListener implements Listener {
 
         LivingEntity caster = event.getPlayerWhoKilled();
 
+        Player companionPlayer;
+
+        if(caster instanceof Player){
+            companionPlayer = (Player) caster;
+        }
+        else{
+            companionPlayer = profileManager.getCompanionsPlayer(caster);
+        }
+
+        if(!profileManager.getCompanions(companionPlayer).isEmpty()){
+            for(LivingEntity companion : profileManager.getCompanions(companionPlayer)){
+                if(MythicBukkit.inst().getAPIHelper().isMythicMob(companion.getUniqueId())){
+                    AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(companion).getEntity();
+                    MythicBukkit.inst().getAPIHelper().getMythicMobInstance(companion).signalMob(abstractEntity, "reset");
+                }
+            }
+        }
+
         LivingEntity entity = event.getEntityWhoDied();
 
         Yield yield = profileManager.getAnyProfile(entity).getYield();
@@ -1240,8 +1258,8 @@ public class GeneralEventListener implements Listener {
                     damageSoundCooldown.put(defender.getUniqueId(), (System.currentTimeMillis() / 1000));
                 }
 
-                abilityManager.getWarriorAbilities().getSearingChains().tryToDecreaseCooldown((Player) defender);
-                abilityManager.getAssassinAbilities().getStealth().stealthBonusCheck((Player) defender, null);
+                abilityManager.getWarriorAbilities().getSearingChains().tryToDecreaseCooldown(defender);
+                abilityManager.getAssassinAbilities().getStealth().stealthBonusCheck(defender, null);
 
             }
 
@@ -1313,8 +1331,10 @@ public class GeneralEventListener implements Listener {
 
     }
 
+
     @EventHandler
     public void allEntityDamage(EntityDamageEvent event){
+
 
         double damage = event.getDamage();
 

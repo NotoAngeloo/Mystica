@@ -115,6 +115,13 @@ public class MysticBasic {
                     return;
                 }
 
+                if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)).getIfDead()){
+                    this.cancel();
+                    stopBasicRunning(caster);
+                    return;
+                }
+
+
                 double totalRange = getRange(caster);
 
                 targetManager.setTargetToNearestValid(caster, totalRange);
@@ -334,6 +341,13 @@ public class MysticBasic {
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
+
+                if(profileManager.getAnyProfile(caster).getIfDead()){
+                    this.cancel();
+                    basicRunning.remove(caster.getUniqueId());
+                    return;
+                }
+
                 basicStage(caster);
                 combatManager.startCombatTimer(caster);
             }
@@ -353,9 +367,11 @@ public class MysticBasic {
         if(targetManager.getPlayerTarget(caster) == null){
             target = caster;
             healing = true;
+            //Bukkit.getLogger().info(caster.getName() + " target null");
         }
         else{
             target = targetManager.getPlayerTarget(caster);
+            //Bukkit.getLogger().info(caster.getName() + " target " + target.getName());
         }
 
         if(target != caster){
@@ -368,6 +384,7 @@ public class MysticBasic {
             if(target instanceof Player){
                 if(!pvpManager.pvpLogic(caster, (Player) target)){
                     healing = true;
+                    //Bukkit.getLogger().info(caster.getName() + " target not in pvp");
                 }
                 else{
                     boolean targetDeathStatus = profileManager.getAnyProfile(target).getIfDead();
@@ -385,6 +402,7 @@ public class MysticBasic {
             if(!(target instanceof Player)){
                 if(!pveChecker.pveLogic(target)){
                     healing = true;
+                    //Bukkit.getLogger().info(caster.getName() + " target not in pve");
                 }
             }
         }
@@ -401,6 +419,7 @@ public class MysticBasic {
 
 
         if(!healing){
+            //Bukkit.getLogger().info(caster.getName() + " damaging");
             Location start = caster.getLocation();
             start.subtract(0, 1, 0);
             ArmorStand armorStand = caster.getWorld().spawn(start, ArmorStand.class);
@@ -488,12 +507,14 @@ public class MysticBasic {
         }
         else{
 
+            //Bukkit.getLogger().info(caster.getName() + " healing");
 
             double healPower = 1;
             boolean crit = damageCalculator.checkIfCrit(caster, 0);
             double healAmount  = damageCalculator.calculateHealing(caster, healPower, crit);
 
             changeResourceHandler.addHealthToEntity(target, healAmount, caster);
+            //Bukkit.getLogger().info("adding " + healAmount + " to " + target);
 
             if(shepard){
                 consolation.apply(caster, target);

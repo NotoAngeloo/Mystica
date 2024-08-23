@@ -420,7 +420,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getTemplarItem(){
-        return getItem(Material.YELLOW_DYE, 0,
+        return getItem(Material.YELLOW_DYE, 9,
                 ChatColor.of(paladinColor) + "Templar",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -444,7 +444,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getDivineItem(){
-        return getItem(Material.YELLOW_DYE, 0,
+        return getItem(Material.YELLOW_DYE, 19,
                 ChatColor.of(paladinColor) + "Divine",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -467,7 +467,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getDawnItem(){
-        return getItem(Material.YELLOW_DYE, 0,
+        return getItem(Material.YELLOW_DYE, 10,
                 ChatColor.of(paladinColor) + "Dawn",
                 "",
                 ChatColor.of(levelColor) + "Each level",

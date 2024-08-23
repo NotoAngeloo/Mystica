@@ -83,7 +83,7 @@ public class Pierce {
         combo.removeAnAmountOfPoints(caster, 1);
 
         if(caster instanceof Player){
-            combatManager.startCombatTimer((Player) caster);
+            combatManager.startCombatTimer(caster);
         }
 
 

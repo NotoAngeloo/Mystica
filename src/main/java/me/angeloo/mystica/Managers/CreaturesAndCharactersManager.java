@@ -92,6 +92,7 @@ public class CreaturesAndCharactersManager {
                 profileManager.setBossHome(uuid);
                 break;
             }
+            case "Gravestone":
             case "DemonPortal":
             case "HeartTendril":
             case "LindwyrmRock":{

@@ -206,6 +206,18 @@ public class ShieldAbilityManaDisplayer {
                 unicode.append("\uE059");
                 break;
             }
+            case "well of light":{
+                unicode.append("\uE067");
+                break;
+            }
+            case "shield of sanctity":{
+                unicode.append("\uE068");
+                break;
+            }
+            case "representative":{
+                unicode.append("\uE069");
+                break;
+            }
             default:{
                 unicode.append(abilityName);
                 break;

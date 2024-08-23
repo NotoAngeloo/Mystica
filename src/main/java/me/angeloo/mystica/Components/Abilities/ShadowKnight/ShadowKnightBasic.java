@@ -100,11 +100,14 @@ public class ShadowKnightBasic {
                     return;
                 }
 
-                if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)).getIfDead()){
-                    this.cancel();
-                    stopBasicRunning(caster);
-                    return;
+                if(targetManager.getPlayerTarget(caster) != null){
+                    if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)).getIfDead()){
+                        this.cancel();
+                        stopBasicRunning(caster);
+                        return;
+                    }
                 }
+
 
                 tryToRemoveBasicStage(caster);
                 switch (getStage(caster)) {

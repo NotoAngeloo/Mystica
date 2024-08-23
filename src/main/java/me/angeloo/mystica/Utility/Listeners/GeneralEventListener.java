@@ -80,6 +80,7 @@ public class GeneralEventListener implements Listener {
     private final DamageHealthBoard damageHealthBoard;
     private final CustomItemConverter customItemConverter;
     private final Locations locations;
+    private final GravestoneManager gravestoneManager;
 
     private final DamageCalculator damageCalculator;
     private final ChangeResourceHandler changeResourceHandler;
@@ -91,6 +92,8 @@ public class GeneralEventListener implements Listener {
 
     private final Map<UUID, Long> breakawayCooldown = new HashMap<>();
     private final Map<UUID, Long> damageSoundCooldown = new HashMap<>();
+
+    private final Set<UUID> combatLogs = new HashSet<>();
 
     public GeneralEventListener(Mystica main){
         this.main = main;
@@ -124,6 +127,7 @@ public class GeneralEventListener implements Listener {
         customItemConverter = new CustomItemConverter();
         firstClearManager = main.getFirstClearManager();
         locations = new Locations(main);
+        gravestoneManager = main.getGravestoneManager();
     }
 
     @EventHandler
@@ -156,8 +160,13 @@ public class GeneralEventListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event){
         Player player = event.getPlayer();
-        profileManager.getAnyProfile(player);
 
+        if(combatLogs.contains(player.getUniqueId())){
+            deathManager.playerNowDead(player);
+            combatLogs.remove(player.getUniqueId());
+        }
+
+        profileManager.getAnyProfile(player);
 
         player.sendMessage(dailyData.getLevelAnnouncement());
 
@@ -222,12 +231,15 @@ public class GeneralEventListener implements Listener {
 
         Player player = event.getPlayer();
 
+
+
         boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
         boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
 
         if(combatStatus){
             if(!deathStatus){
-                deathManager.playerNowDead(player);
+                combatLogs.add(player.getUniqueId());
+                //deathManager.playerNowDead(player);
             }
         }
 
@@ -289,7 +301,7 @@ public class GeneralEventListener implements Listener {
     public void noBreakBlocks(BlockBreakEvent event){
         Player player =  event.getPlayer();
 
-        if(player.getGameMode() == GameMode.CREATIVE){
+        if(player.getGameMode() == GameMode.CREATIVE && player.isOp() && !profileManager.getAnyProfile(player).getIfDead()){
             return;
         }
         event.setCancelled(true);
@@ -702,22 +714,6 @@ public class GeneralEventListener implements Listener {
         }
         event.setCancelled(true);
 
-        ItemStack item = event.getCurrentItem();
-
-        if(item != null && item.hasItemMeta()){
-
-            ItemMeta meta = item.getItemMeta();
-
-            assert meta != null;
-            String name = meta.getDisplayName();
-
-            if(name.equalsIgnoreCase("Exit Combat")){
-                combatManager.tryToEndCombat(player);
-                return;
-            }
-
-        }
-
         player.closeInventory();
         player.sendMessage("you can't do that right now");
     }
@@ -1109,7 +1105,9 @@ public class GeneralEventListener implements Listener {
     }
 
 
-    @EventHandler
+    //removed for new death system
+
+    /*@EventHandler
     public void noDeadMovement(PlayerMoveEvent event){
         Player player = event.getPlayer();
 
@@ -1132,7 +1130,7 @@ public class GeneralEventListener implements Listener {
             event.setCancelled(true);
             player.teleport(from);
         }
-    }
+    }*/
 
     @EventHandler
     public void noImmobile(PlayerMoveEvent event){
@@ -1164,7 +1162,8 @@ public class GeneralEventListener implements Listener {
     public void noTakeArmorstand(PlayerArmorStandManipulateEvent event){
         Player player = event.getPlayer();
 
-        if(player.getGameMode() == GameMode.CREATIVE){
+
+        if(player.getGameMode() == GameMode.CREATIVE && !profileManager.getAnyProfile(player).getIfDead()){
             return;
         }
 
@@ -1204,7 +1203,10 @@ public class GeneralEventListener implements Listener {
                     return;
                 }
 
-                aggroTick.startAggroTaskFor(defender);
+                if(!event.getIfPositive()){
+                    aggroTick.startAggroTaskFor(defender);
+                }
+
             }
 
         }
@@ -1605,7 +1607,6 @@ public class GeneralEventListener implements Listener {
         }
 
 
-
         Player player = event.getPlayer();
         abilityManager.interruptBasic(player);
 
@@ -1640,6 +1641,10 @@ public class GeneralEventListener implements Listener {
 
                 LivingEntity livingEntity = (LivingEntity) entity;
 
+                if(profileManager.getAnyProfile(livingEntity).getIfDead()){
+                    continue;
+                }
+
                 if(entity instanceof Player || profileManager.getAnyProfile(livingEntity).fakePlayer() ){
 
                     if(entity instanceof Player){
@@ -1649,7 +1654,6 @@ public class GeneralEventListener implements Listener {
                             }
                         }
                     }
-
 
 
                     double distanceSquared = entity.getLocation().distanceSquared(player.getLocation());
@@ -1664,7 +1668,10 @@ public class GeneralEventListener implements Listener {
                     boolean object = profileManager.getAnyProfile(player).getIfObject();
 
                     if(object){
-                        continue;
+
+                        if(!gravestoneManager.isGravestone(entity)){
+                            continue;
+                        }
                     }
 
                     double distanceSquared = entity.getLocation().distanceSquared(player.getLocation());
@@ -1715,6 +1722,10 @@ public class GeneralEventListener implements Listener {
 
                     LivingEntity livingEntity = (LivingEntity) entity;
 
+                    if(profileManager.getAnyProfile(livingEntity).getIfDead()){
+                        continue;
+                    }
+
                     if(entity instanceof Player || profileManager.getAnyProfile(livingEntity).fakePlayer()){
 
                         if(entity instanceof Player){
@@ -1750,7 +1761,10 @@ public class GeneralEventListener implements Listener {
                         boolean object = profileManager.getAnyProfile(livingEntity).getIfObject();
 
                         if(object){
-                            continue;
+
+                            if(!gravestoneManager.isGravestone(entity)){
+                                continue;
+                            }
                         }
 
                         if(profileManager.getAnyProfile((LivingEntity) entity).fakePlayer()){
@@ -1792,10 +1806,16 @@ public class GeneralEventListener implements Listener {
 
                     LivingEntity livingEntity = (LivingEntity) entity;
 
+                    if(profileManager.getAnyProfile(livingEntity).getIfDead()){
+                        continue;
+                    }
+
                     boolean object = profileManager.getAnyProfile(livingEntity).getIfObject();
 
                     if(object){
-                        continue;
+                        if(!gravestoneManager.isGravestone(entity)){
+                            continue;
+                        }
                     }
 
                     if(entity instanceof Player){

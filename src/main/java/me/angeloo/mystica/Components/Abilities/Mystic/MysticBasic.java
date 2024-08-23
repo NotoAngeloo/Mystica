@@ -115,10 +115,12 @@ public class MysticBasic {
                     return;
                 }
 
-                if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)).getIfDead()){
-                    this.cancel();
-                    stopBasicRunning(caster);
-                    return;
+                if(targetManager.getPlayerTarget(caster) != null){
+                    if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)).getIfDead()){
+                        this.cancel();
+                        stopBasicRunning(caster);
+                        return;
+                    }
                 }
 
 
@@ -342,11 +344,15 @@ public class MysticBasic {
             @Override
             public void run(){
 
-                if(profileManager.getAnyProfile(caster).getIfDead()){
-                    this.cancel();
-                    basicRunning.remove(caster.getUniqueId());
-                    return;
+
+                if(targetManager.getPlayerTarget(caster) != null){
+                    if(profileManager.getAnyProfile(caster).getIfDead()){
+                        this.cancel();
+                        basicRunning.remove(caster.getUniqueId());
+                        return;
+                    }
                 }
+
 
                 basicStage(caster);
                 combatManager.startCombatTimer(caster);

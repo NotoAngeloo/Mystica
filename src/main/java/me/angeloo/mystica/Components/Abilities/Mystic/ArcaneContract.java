@@ -31,6 +31,7 @@ public class ArcaneContract {
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
+    private final GravestoneManager gravestoneManager;
     private final CombatManager combatManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
@@ -50,6 +51,7 @@ public class ArcaneContract {
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         deathManager = new DeathManager(main);
+        gravestoneManager = main.getGravestoneManager();
     }
 
     private final double range = 10;
@@ -72,18 +74,24 @@ public class ArcaneContract {
             return;
         }
 
-        if(pveChecker.pveLogic(target)){
+        if(!gravestoneManager.isGravestone(target)){
             return;
         }
 
-        if(target instanceof Player){
-            if(pvpManager.pvpLogic(caster, (Player) target)){
+        LivingEntity actualTarget = gravestoneManager.getPlayer(target);
+
+        if(pveChecker.pveLogic(actualTarget)){
+            return;
+        }
+
+        if(actualTarget instanceof Player){
+            if(pvpManager.pvpLogic(caster, (Player) actualTarget)){
                 return;
             }
         }
 
 
-        if(!profileManager.getAnyProfile(target).getIfDead()){
+        if(!profileManager.getAnyProfile(actualTarget).getIfDead()){
             return;
         }
 
@@ -136,7 +144,7 @@ public class ArcaneContract {
 
         combatManager.startCombatTimer(caster);
 
-        execute(caster, target);
+        execute(caster, actualTarget);
 
     }
 

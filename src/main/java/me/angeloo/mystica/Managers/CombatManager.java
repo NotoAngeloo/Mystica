@@ -80,8 +80,6 @@ public class CombatManager {
                 player.getInventory().setItemInOffHand(playerEquipment.getOffhand());
             }
 
-            Bukkit.getServer().getPluginManager().callEvent(new HelpfulHintEvent(player, "combatend"));
-            player.getInventory().setItem(13, getItem(new ItemStack(Material.BARRIER), "Exit Combat"));
             cooldownDisplayer.initializeItems(player);
 
             /*PluginManager pluginManager = Bukkit.getPluginManager();
@@ -109,22 +107,12 @@ public class CombatManager {
         return lastCalledCombat.get(player.getUniqueId());
     }
 
-
-    public void tryToEndCombat(Player player){
-
-        if(canLeaveCombat(player)){
-            forceCombatEnd(player);
-        }
-        else{
-            player.sendMessage(((10000 -(System.currentTimeMillis() - getLastCalledCombat(player)))/1000) + " seconds left");
-        }
-
-    }
-
     public boolean canLeaveCombat(Player player){
 
         long currentTime = System.currentTimeMillis();
         long lastCalled = getLastCalledCombat(player);
+
+        //Bukkit.getLogger().info(String.valueOf(currentTime - lastCalled));
 
         return currentTime - lastCalled > 10000;
     }
@@ -169,22 +157,6 @@ public class CombatManager {
         abilityManager.resetAbilityBuffs(player);
         Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
         damageHealthBoard.removeScoreboard(player);
-    }
-
-    private ItemStack getItem(ItemStack item, String name, String... lore){
-        ItemMeta meta = item.getItemMeta();
-        assert meta != null;
-        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
-
-        List<String> lores = new ArrayList<>();
-
-        for (String s : lore){
-            lores.add(ChatColor.translateAlternateColorCodes('&', s));
-
-        }
-        meta.setLore(lores);
-        item.setItemMeta(meta);
-        return item;
     }
 
 

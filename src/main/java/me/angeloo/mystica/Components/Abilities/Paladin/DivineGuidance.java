@@ -209,6 +209,12 @@ public class DivineGuidance {
                 }
             }
 
+            if(!(entity instanceof Player)){
+                if(pveChecker.pveLogic(hitEntity)){
+                    continue;
+                }
+            }
+
             boolean deathStatus = profileManager.getAnyProfile(hitEntity).getIfDead();
 
             if(deathStatus){

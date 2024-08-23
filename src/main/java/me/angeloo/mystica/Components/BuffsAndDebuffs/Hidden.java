@@ -91,6 +91,11 @@ public class Hidden {
     }
 
     public void showWeapons(Player player){
+
+        if(profileManager.getAnyProfile(player).getIfDead()){
+            return;
+        }
+
         PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
         if(playerEquipment.getWeapon() != null){

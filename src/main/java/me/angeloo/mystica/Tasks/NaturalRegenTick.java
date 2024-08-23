@@ -3,6 +3,7 @@ package me.angeloo.mystica.Tasks;
 import me.angeloo.mystica.Components.ProfileComponents.Stats;
 import me.angeloo.mystica.Components.ProfileComponents.StatsFromGear;
 import me.angeloo.mystica.Managers.AbilityManager;
+import me.angeloo.mystica.Managers.CombatManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
@@ -21,9 +22,11 @@ public class NaturalRegenTick extends BukkitRunnable {
     private final ProfileManager profileManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
+    private final CombatManager combatManager;
 
     public NaturalRegenTick(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
+        combatManager = main.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
         shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, manager);
     }
@@ -31,6 +34,14 @@ public class NaturalRegenTick extends BukkitRunnable {
     @Override
     public void run() {
         for(Player player: Bukkit.getOnlinePlayers()){
+
+            if(profileManager.getAnyProfile(player).getIfInCombat()){
+
+                if(combatManager.canLeaveCombat(player)){
+                    combatManager.forceCombatEnd(player);
+                }
+            }
+
 
             boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
             long currentTime = System.currentTimeMillis()/1000;

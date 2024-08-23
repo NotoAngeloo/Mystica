@@ -44,6 +44,7 @@ public final class Mystica extends JavaPlugin{
     private PvpManager pvpManager;
     private CombatManager combatManager;
     private BuffAndDebuffManager buffAndDebuffManager;
+    private GravestoneManager gravestoneManager;
     private AbilityManager abilityManager;
     private DeathManager deathManager;
     private InventoryIndexingManager inventoryIndexingManager;
@@ -118,6 +119,7 @@ public final class Mystica extends JavaPlugin{
 
         damageCalculator = new DamageCalculator(this);
 
+        gravestoneManager = new GravestoneManager();
         abilityManager = new AbilityManager(this);
         combatManager = abilityManager.getCombatManager();
         deathManager = new DeathManager(this);
@@ -349,5 +351,7 @@ public final class Mystica extends JavaPlugin{
     public DailyData getDailyData(){return dailyData;}
 
     public DailyEventManager getDailyEventManager(){return dailyEventManager;}
+
+    public GravestoneManager getGravestoneManager(){return gravestoneManager;}
 
 }

@@ -119,6 +119,7 @@ public class AggroTick {
                     if(deathStatus || blackList){
                         ((Creature) entity).setTarget(null);
                     }else{
+                        //Bukkit.getLogger().info("starting combat from aggro");
                         playerCombatManager.startCombatTimer(targetedPlayer);
                     }
 

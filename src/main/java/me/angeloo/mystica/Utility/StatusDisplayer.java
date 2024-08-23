@@ -253,6 +253,10 @@ public class StatusDisplayer {
                 statusString.append(applyWarriorStatus(player));
                 break;
             }
+            case "paladin":{
+                statusString.append(applyPaladinStatus(player));
+                break;
+            }
         }
 
         return String.valueOf(statusString);
@@ -451,6 +455,16 @@ public class StatusDisplayer {
             statusString.append("\uE05B");
         }
 
+
+        return String.valueOf(statusString);
+    }
+
+    private String applyPaladinStatus(Player player){
+        StringBuilder statusString = new StringBuilder();
+
+        if(abilityManager.getPaladinAbilities().getDecision().getDecision(player)){
+            statusString.append("\uE06A");
+        }
 
         return String.valueOf(statusString);
     }
@@ -692,6 +706,10 @@ public class StatusDisplayer {
 
         if(buffAndDebuffManager.getConjuringForceBuff().getIfConjForceBuff(player)){
             statusString.append("\uE005");
+        }
+
+        if(buffAndDebuffManager.getWellCrit().getWellCrit(player) == 10){
+            statusString.append("\uE06B");
         }
 
         if(buffAndDebuffManager.getFlamingSigilBuff().getIfAttackBuff(player) || buffAndDebuffManager.getFlamingSigilBuff().getIfHealthBuff(player)){

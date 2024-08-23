@@ -1,5 +1,7 @@
 package me.angeloo.mystica.Managers;
 
+import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
+import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.CustomEvents.AiSignalEvent;
 import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.CustomEvents.TargetBarShouldUpdateEvent;
@@ -10,11 +12,18 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 
 public class DeathManager {
@@ -25,6 +34,7 @@ public class DeathManager {
     private final AggroManager aggroManager;
     private final DpsManager dpsManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
+    private final GravestoneManager gravestoneManager;
 
     public DeathManager(Mystica main){
         profileManager = main.getProfileManager();
@@ -33,9 +43,12 @@ public class DeathManager {
         aggroManager = main.getAggroManager();
         dpsManager = main.getDpsManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
+        gravestoneManager = main.getGravestoneManager();
     }
 
     public void playerNowDead(Player player){
+
+        Location deathLoc = player.getLocation();
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
@@ -62,7 +75,21 @@ public class DeathManager {
         player.setFoodLevel(20);
         player.setSaturation(20);
         player.setInvisible(true);
-        player.setGlowing(true);
+        //player.setGlowing(true);
+
+        Entity gravestone;
+
+        try{
+            gravestone = MythicBukkit.inst().getAPIHelper().spawnMythicMob("Gravestone", deathLoc);
+            gravestone.setCustomName(player.getName());
+            gravestoneManager.placeGravestone(gravestone, player);
+        }
+        catch (InvalidMobTypeException e){
+            throw new RuntimeException(e);
+        }
+
+
+
         abilityManager.resetAbilityBuffs(player);
         buffAndDebuffManager.removeAllBuffsAndDebuffs(player);
         abilityManager.interruptBasic(player);
@@ -73,6 +100,8 @@ public class DeathManager {
     }
 
     public void playerNowLive(LivingEntity target, Boolean bySkill, LivingEntity entityWhoCastSkill){
+
+        gravestoneManager.removeGravestone(target);
 
         profileManager.getAnyProfile(target).setIfDead(false);
         target.setGlowing(false);
@@ -141,5 +170,7 @@ public class DeathManager {
 
 
     }
+
+
 
 }

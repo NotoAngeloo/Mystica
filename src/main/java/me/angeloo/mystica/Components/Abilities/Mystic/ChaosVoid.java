@@ -51,7 +51,6 @@ public class ChaosVoid {
             return;
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
         combatManager.startCombatTimer(caster);
 
@@ -225,9 +224,6 @@ public class ChaosVoid {
         }
 
 
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
-            return false;
-        }
 
         return true;
     }

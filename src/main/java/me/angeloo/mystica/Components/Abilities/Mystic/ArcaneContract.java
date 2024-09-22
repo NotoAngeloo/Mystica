@@ -4,6 +4,7 @@ import com.alessiodp.parties.api.Parties;
 import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
+import me.angeloo.mystica.Components.Abilities.MysticAbilities;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
@@ -34,21 +35,21 @@ public class ArcaneContract {
     private final GravestoneManager gravestoneManager;
     private final CombatManager combatManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
-    private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
     private final DeathManager deathManager;
+    private final Mana mana;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public ArcaneContract(Mystica main, AbilityManager manager){
+    public ArcaneContract(Mystica main, AbilityManager manager, MysticAbilities mysticAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
+        mana = mysticAbilities.getMana();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         combatManager = manager.getCombatManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
-        changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         deathManager = new DeathManager(main);
         gravestoneManager = main.getGravestoneManager();
@@ -100,11 +101,12 @@ public class ArcaneContract {
         }
 
 
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+        if(mana.getCurrentMana(caster)<getCost()){
             return;
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+        mana.subTractManaFromEntity(caster, getCost());
+
 
         PartiesAPI api = Parties.getApi();
         PartyPlayer partyPlayer;
@@ -230,8 +232,8 @@ public class ArcaneContract {
         }.runTaskTimer(main, 0,20);
     }
 
-    public double getCost(){
-        return 20;
+    public int getCost(){
+        return 100;
     }
 
     public int getCooldown(LivingEntity caster){

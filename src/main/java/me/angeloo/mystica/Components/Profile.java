@@ -16,8 +16,6 @@ public interface Profile {
     void setIfInCombat(Boolean ifInCombat);
     double getCurrentHealth();
     void setCurrentHealth(double currentHealth);
-    double getCurrentMana();
-    void setCurrentMana(double currentMana);
 
     void setLevelStats(int level, String subclass);
 
@@ -29,7 +27,6 @@ public interface Profile {
 
 
     int getTotalHealth();
-    int getTotalMana();
     int getTotalAttack();
     int getTotalDefense();
     int getTotalMagicDefense();

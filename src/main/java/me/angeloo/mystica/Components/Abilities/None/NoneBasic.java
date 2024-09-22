@@ -33,8 +33,6 @@ public class NoneBasic {
     private final DamageCalculator damageCalculator;
     private final ChangeResourceHandler changeResourceHandler;
 
-    private final Adrenaline adrenaline;
-
     private final Map<UUID, Boolean> basicReadyMap = new HashMap<>();
 
 
@@ -48,8 +46,6 @@ public class NoneBasic {
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
         changeResourceHandler = main.getChangeResourceHandler();
-
-        adrenaline = noneAbilities.getAdrenaline();
     }
 
     public void useBasic(LivingEntity caster){
@@ -150,10 +146,6 @@ public class NoneBasic {
         }
 
         double skillDamage = 7;
-
-        if(adrenaline.getIfBuffTime(caster)>0){
-            skillDamage = 17;
-        }
 
         double level = profileManager.getAnyProfile(caster).getStats().getLevel();
         skillDamage = skillDamage + ((int)(level/10));

@@ -57,8 +57,6 @@ public class FlamingSigil {
             return;
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
-
         combatManager.startCombatTimer(caster);
 
         execute(caster);
@@ -238,16 +236,7 @@ public class FlamingSigil {
 
         Block block = caster.getLocation().subtract(0,1,0).getBlock();
 
-        if(block.getType() == Material.AIR){
-            return false;
-        }
-
-
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
-            return false;
-        }
-
-        return true;
+        return block.getType() != Material.AIR;
     }
 
 }

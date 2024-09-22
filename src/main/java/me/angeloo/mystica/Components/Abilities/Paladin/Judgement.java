@@ -74,7 +74,6 @@ public class Judgement {
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
         combatManager.startCombatTimer(caster);
 
@@ -306,16 +305,7 @@ public class Judgement {
 
         }
 
-        if(getCooldown(caster) > 0){
-            return false;
-        }
-
-
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
-            return false;
-        }
-
-        return true;
+        return getCooldown(caster) <= 0;
     }
 
 }

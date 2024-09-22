@@ -77,7 +77,6 @@ public class TorahSword {
             return;
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
         combatManager.startCombatTimer(caster);
 
@@ -363,10 +362,6 @@ public class TorahSword {
             return false;
         }
 
-
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
-            return false;
-        }
 
         return true;
     }

@@ -69,8 +69,6 @@ public class DuelistsFrenzy {
             return;
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
-
         combatManager.startCombatTimer(caster);
 
         execute(caster);
@@ -319,15 +317,7 @@ public class DuelistsFrenzy {
             return false;
         }
 
-        if(combo.getComboPoints(caster) < 6){
-            return false;
-        }
-
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
-            return false;
-        }
-
-        return true;
+        return combo.getComboPoints(caster) >= 6;
     }
 
 }

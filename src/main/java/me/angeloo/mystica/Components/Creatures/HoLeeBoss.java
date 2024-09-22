@@ -91,7 +91,7 @@ public class HoLeeBoss {
         int def = 70 + (50 * level-1);
         int mdef = 70 + (50 * level-1);
 
-        Stats stats = new Stats(level, atk, hp, 0, def, mdef, 0);
+        Stats stats = new Stats(level, atk, hp,  def, mdef, 0);
         Boolean isMovable = false;
         Boolean immortal = false;
         Boolean object = false;
@@ -127,15 +127,6 @@ public class HoLeeBoss {
 
             }
 
-            @Override
-            public double getCurrentMana() {
-                return 0;
-            }
-
-            @Override
-            public void setCurrentMana(double currentMana) {
-
-            }
 
             @Override
             public void setLevelStats(int level, String subclass) {
@@ -157,10 +148,6 @@ public class HoLeeBoss {
                 return getStats().getHealth();
             }
 
-            @Override
-            public int getTotalMana() {
-                return getStats().getMana();
-            }
 
             @Override
             public int getTotalAttack() {
@@ -295,7 +282,7 @@ public class HoLeeBoss {
         int def = 50 + (10 * level-1);
         int mdef = 50 + (10 * level-1);
 
-        Stats stats = new Stats(level, atk, hp, 0, def, mdef, 0);
+        Stats stats = new Stats(level, atk, hp,  def, mdef, 0);
         Boolean isMovable = false;
         Boolean immortal = false;
         Boolean object = false;
@@ -338,15 +325,6 @@ public class HoLeeBoss {
 
             }
 
-            @Override
-            public double getCurrentMana() {
-                return 0;
-            }
-
-            @Override
-            public void setCurrentMana(double currentMana) {
-
-            }
 
             @Override
             public void setLevelStats(int level, String subclass) {
@@ -368,10 +346,6 @@ public class HoLeeBoss {
                 return getStats().getHealth();
             }
 
-            @Override
-            public int getTotalMana() {
-                return getStats().getMana();
-            }
 
             @Override
             public int getTotalAttack() {

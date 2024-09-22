@@ -32,6 +32,7 @@ public class Enlightenment {
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
+    private final Mana mana;
     private final Consolation consolation;
     private final PurifyingBlast purifyingBlast;
 
@@ -43,6 +44,7 @@ public class Enlightenment {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
         damageCalculator = main.getDamageCalculator();
+        mana = mysticAbilities.getMana();
         consolation = mysticAbilities.getConsolation();
         purifyingBlast = mysticAbilities.getPurifyingBlast();
     }
@@ -57,7 +59,7 @@ public class Enlightenment {
             return;
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+        mana.subTractManaFromEntity(caster, getCost());
 
         combatManager.startCombatTimer(caster);
 
@@ -164,7 +166,7 @@ public class Enlightenment {
         return 10 + ((int)(skillLevel/3));
     }
 
-    public double getCost(){
+    public int getCost(){
         return 20;
     }
 
@@ -187,7 +189,7 @@ public class Enlightenment {
             return false;
         }
 
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+        if(mana.getCurrentMana(caster)<getCost()){
             return false;
         }
 

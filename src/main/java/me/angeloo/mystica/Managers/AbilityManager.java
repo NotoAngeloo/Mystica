@@ -51,6 +51,7 @@ public class AbilityManager {
         assassinAbilities = new AssassinAbilities(main, this);
     }
 
+
     public void useAbility(LivingEntity caster, int abilityNumber){
 
         if(buffAndDebuffManager.getIfInterrupt(caster)){
@@ -203,6 +204,39 @@ public class AbilityManager {
         }
     }
 
+    public void incrementResource(LivingEntity caster){
+
+        Profile playerProfile = profileManager.getAnyProfile(caster);
+
+        String clazz = playerProfile.getPlayerClass();
+
+        switch (clazz.toLowerCase()) {
+            case "elementalist": {
+                return;
+            }
+            case "ranger": {
+                return;
+            }
+            case "mystic": {
+                mysticAbilities.regenMana(caster);
+                return;
+            }
+            case "shadow knight": {
+                shadowKnightAbilities.regenEnergy(caster);
+                return;
+            }
+            case "paladin": {
+                return;
+            }
+            case "warrior": {
+                return;
+            }
+            case "assassin": {
+                return;
+            }
+        }
+    }
+
     public int getCooldown(Player player, int abilityNumber){
 
         Profile playerProfile = profileManager.getAnyProfile(player);
@@ -329,11 +363,6 @@ public class AbilityManager {
 
 
                 return 0;
-            }
-            case "none":{
-                if(abilityNumber==8){
-                    return noneAbilities.getAdrenaline().returnWhichItem(player);
-                }
             }
         }
 

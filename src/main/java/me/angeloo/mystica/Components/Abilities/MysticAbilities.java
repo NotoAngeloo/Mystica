@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 public class MysticAbilities {
 
     private final ProfileManager profileManager;
-
+    private final Mana mana;
     private final Consolation consolation;
     private final EvilSpirit evilSpirit;
     private final PlagueCurse plagueCurse;
@@ -35,6 +35,7 @@ public class MysticAbilities {
 
     public MysticAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
+        mana = new Mana(main);
         consolation = new Consolation(main);
         evilSpirit = new EvilSpirit(main, manager);
         plagueCurse = new PlagueCurse(main, manager, this);
@@ -47,10 +48,10 @@ public class MysticAbilities {
         healthAbsorb = new HealthAbsorb(main, manager);
         arcaneShield = new ArcaneShield(main, manager, this);
         purifyingBlast = new PurifyingBlast(main, manager, this);
-        forceOfWill = new ForceOfWill(main, manager);
+        forceOfWill = new ForceOfWill(main, manager, this);
         dreadfall = new Dreadfall(main, manager);
-        aurora = new Aurora(main, manager);
-        arcaneContract = new ArcaneContract(main, manager);
+        aurora = new Aurora(main, manager, this);
+        arcaneContract = new ArcaneContract(main, manager, this);
         lightSigil = new LightSigil(main, manager, this);
         arcaneMissiles = new ArcaneMissiles(main, manager);
         enlightenment = new Enlightenment(main, manager, this);
@@ -238,6 +239,10 @@ public class MysticAbilities {
         return 0;
     }
 
+    public void regenMana(LivingEntity caster){
+        mana.regenManaNaturally(caster);
+    }
+
     public void resetCooldowns(LivingEntity caster){
         arcaneContract.resetCooldown(caster);
         arcaneMissiles.resetCooldown(caster);
@@ -284,4 +289,5 @@ public class MysticAbilities {
     public ArcaneMissiles getArcaneMissiles(){return arcaneMissiles;}
     public Enlightenment getEnlightenment(){return enlightenment;}
     public Consolation getConsolation(){return consolation;}
+    public Mana getMana(){return mana;}
 }

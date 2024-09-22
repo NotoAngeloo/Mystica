@@ -27,12 +27,11 @@ public class MadDummy {
         int level = 1;
         int attack = 50;
         int health = 500;
-        int mana = 0;
         int defense = 50;
         int magic_defense = 50;
         int crit = 0;
 
-        Stats stats = new Stats(level,attack,health,mana,defense,magic_defense,crit);
+        Stats stats = new Stats(level,attack,health,defense,magic_defense,crit);
 
         Boolean isMovable = true;
         Boolean immortal = false;
@@ -74,15 +73,6 @@ public class MadDummy {
 
             }
 
-            @Override
-            public double getCurrentMana() {
-                return 0;
-            }
-
-            @Override
-            public void setCurrentMana(double currentMana) {
-
-            }
 
             @Override
             public void setLevelStats(int level, String subclass) {
@@ -103,11 +93,6 @@ public class MadDummy {
             @Override
             public int getTotalHealth() {
                 return health;
-            }
-
-            @Override
-            public int getTotalMana() {
-                return mana;
             }
 
             @Override

@@ -21,6 +21,7 @@ public class NaturalRegenTick extends BukkitRunnable {
 
     private final ProfileManager profileManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final AbilityManager abilityManager;
     private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
     private final CombatManager combatManager;
 
@@ -28,6 +29,7 @@ public class NaturalRegenTick extends BukkitRunnable {
         profileManager = main.getProfileManager();
         combatManager = main.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        abilityManager = main.getAbilityManager();
         shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, manager);
     }
 
@@ -42,7 +44,6 @@ public class NaturalRegenTick extends BukkitRunnable {
                 }
             }
 
-
             boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
             long currentTime = System.currentTimeMillis()/1000;
 
@@ -53,29 +54,6 @@ public class NaturalRegenTick extends BukkitRunnable {
                 List<LivingEntity> companions = profileManager.getCompanions(player);
                 for(LivingEntity companion : companions){
                     Stats stats = profileManager.getAnyProfile(companion).getStats();
-                    long lastManaed = changeResourceHandler.getLastManaed(companion.getUniqueId());
-                    if(currentTime - lastManaed >= 20 || profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("shadow knight")){
-                        int maxMana = stats.getMana();
-                        double currentMana = profileManager.getAnyProfile(companion).getCurrentMana();
-
-                        double manaRegenRate = maxMana * .01;
-
-                        if(profileManager.getAnyProfile(companion).getPlayerClass().equalsIgnoreCase("shadow knight")){
-                            manaRegenRate = maxMana * .05;
-                        }
-
-                        if(!combatStatus){
-                            manaRegenRate = maxMana * .3;
-                        }
-
-                        if(currentMana > maxMana){
-                            profileManager.getAnyProfile(companion).setCurrentMana(maxMana);
-                        }
-
-                        if(currentMana < maxMana){
-                            changeResourceHandler.addManaToEntity(companion, manaRegenRate);
-                        }
-                    }
 
                     long lastDamaged = changeResourceHandler.getLastDamaged(companion.getUniqueId());
 
@@ -105,37 +83,11 @@ public class NaturalRegenTick extends BukkitRunnable {
                 }
             }
 
+
             Stats stats = profileManager.getAnyProfile(player).getStats();
             StatsFromGear gearStats = profileManager.getAnyProfile(player).getGearStats();
 
-            long lastManaed = changeResourceHandler.getLastManaed(player.getUniqueId());
-
-            if(currentTime - lastManaed >= 20 || profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("shadow knight")){
-                int maxMana = stats.getMana() + gearStats.getMana();
-                double currentMana = profileManager.getAnyProfile(player).getCurrentMana();
-
-                double manaRegenRate = maxMana * .01;
-
-                if(profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("shadow knight")){
-                    manaRegenRate = maxMana * .05;
-                }
-
-                if(!combatStatus){
-                    manaRegenRate = maxMana * .3;
-                }
-
-                if(currentMana > maxMana){
-                    profileManager.getAnyProfile(player).setCurrentMana(maxMana);
-                }
-
-                if(currentMana < maxMana){
-                    changeResourceHandler.addManaToEntity(player, manaRegenRate);
-                }
-            }
-
-
             player.setFoodLevel(20);
-
 
             long lastDamaged = changeResourceHandler.getLastDamaged(player.getUniqueId());
 

@@ -73,7 +73,6 @@ public class SpiritualGift {
             }
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
         combatManager.startCombatTimer(caster);
 
@@ -228,11 +227,6 @@ public class SpiritualGift {
 
 
         if(getCooldown(caster) > 0){
-            return false;
-        }
-
-
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
             return false;
         }
 

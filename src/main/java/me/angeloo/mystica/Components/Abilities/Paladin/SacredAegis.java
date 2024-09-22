@@ -72,8 +72,6 @@ public class SacredAegis {
             target = caster;
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
-
         combatManager.startCombatTimer(caster);
 
         execute(caster, target);
@@ -276,10 +274,6 @@ public class SacredAegis {
             return false;
         }
 
-
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
-            return false;
-        }
 
         return true;
     }

@@ -94,9 +94,9 @@ public class Luna {
 
         health+=(level*15);
 
-        Stats stats = new Stats(level, attack, health, mana, defence, magic_defence, crit);
+        Stats stats = new Stats(level, attack, health, defence, magic_defence, crit);
 
-        FakePlayerProfile fakePlayerProfile = new FakePlayerProfile(false, false, stats.getHealth(), stats.getMana(), stats, "Ranger", "Animal Tamer");
+        FakePlayerProfile fakePlayerProfile = new FakePlayerProfile(false, false, stats.getHealth(),  stats, "Ranger", "Animal Tamer");
 
         profileManager.addToFakePlayerProfileMap(uuid, fakePlayerProfile);
 

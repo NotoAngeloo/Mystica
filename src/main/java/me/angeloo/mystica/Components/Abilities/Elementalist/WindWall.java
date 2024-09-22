@@ -28,7 +28,6 @@ public class WindWall {
     private final CombatManager combatManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CooldownDisplayer cooldownDisplayer;
-    private final ChangeResourceHandler changeResourceHandler;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -38,7 +37,6 @@ public class WindWall {
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
-        changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
 
     }
@@ -52,8 +50,6 @@ public class WindWall {
         if(!usable(caster)){
             return;
         }
-
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
         combatManager.startCombatTimer(caster);
 
@@ -185,16 +181,7 @@ public class WindWall {
     }
 
     public boolean usable(LivingEntity caster){
-        if (getCooldown(caster) > 0) {
-            return false;
-        }
-
-
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
-            return false;
-        }
-
-        return true;
+        return getCooldown(caster) <= 0;
     }
 
 }

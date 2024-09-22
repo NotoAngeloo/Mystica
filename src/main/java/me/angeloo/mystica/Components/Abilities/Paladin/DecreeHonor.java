@@ -96,12 +96,6 @@ public class DecreeHonor {
         }
 
 
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
-
         combatManager.startCombatTimer(caster);
 
         execute(caster, target);

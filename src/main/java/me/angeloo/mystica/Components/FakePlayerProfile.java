@@ -13,7 +13,6 @@ public class FakePlayerProfile implements Profile {
     private Boolean ifInCombat;
 
     private double currentHealth;
-    private double currentMana;
 
     private Stats stats;
 
@@ -27,8 +26,6 @@ public class FakePlayerProfile implements Profile {
             Boolean ifInCombat,
 
             double currentHealth,
-            double currentMana,
-
             Stats stats,
 
             String playerClass,
@@ -40,8 +37,6 @@ public class FakePlayerProfile implements Profile {
         this.ifDead = ifDead;
         this.ifInCombat = ifInCombat;
 
-        this.currentHealth = currentHealth;
-        this.currentMana = currentMana;
 
         this.stats = stats;
 
@@ -68,14 +63,6 @@ public class FakePlayerProfile implements Profile {
     @Override
     public void setCurrentHealth(double currentHealth) {
         this.currentHealth = currentHealth;
-    }
-    @Override
-    public double getCurrentMana() {
-        return currentMana;
-    }
-    @Override
-    public void setCurrentMana(double currentMana) {
-        this.currentMana = currentMana;
     }
 
 
@@ -114,10 +101,6 @@ public class FakePlayerProfile implements Profile {
         return stats.getHealth();
     }
 
-    @Override
-    public int getTotalMana() {
-        return stats.getMana();
-    }
 
     @Override
     public int getTotalAttack() {

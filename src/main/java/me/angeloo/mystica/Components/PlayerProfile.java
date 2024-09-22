@@ -9,7 +9,6 @@ public abstract class PlayerProfile implements Profile{
     private Boolean ifInCombat;
 
     private double currentHealth;
-    private double currentMana;
 
     private Stats stats;
     private StatsFromGear statsFromGear;
@@ -36,7 +35,6 @@ public abstract class PlayerProfile implements Profile{
             Boolean ifInCombat,
 
             double currentHealth,
-            double currentMana,
 
             Stats stats,
             StatsFromGear statsFromGear,
@@ -62,7 +60,6 @@ public abstract class PlayerProfile implements Profile{
         this.ifInCombat = ifInCombat;
 
         this.currentHealth = currentHealth;
-        this.currentMana = currentMana;
 
         this.stats = stats;
         this.statsFromGear = statsFromGear;
@@ -103,14 +100,6 @@ public abstract class PlayerProfile implements Profile{
     @Override
     public void setCurrentHealth(double currentHealth) {
         this.currentHealth = currentHealth;
-    }
-    @Override
-    public double getCurrentMana() {
-        return currentMana;
-    }
-    @Override
-    public void setCurrentMana(double currentMana) {
-        this.currentMana = currentMana;
     }
 
 
@@ -181,9 +170,6 @@ public abstract class PlayerProfile implements Profile{
     }
     public int getTotalAttack(){
         return stats.getAttack() + statsFromGear.getAttack();
-    }
-    public int getTotalMana(){
-        return stats.getMana() + statsFromGear.getMana();
     }
     public int getTotalDefense(){
         return stats.getDefense() + statsFromGear.getDefense();

@@ -65,7 +65,6 @@ public class Representative {
             return;
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
         combatManager.startCombatTimer(caster);
 
@@ -268,9 +267,6 @@ public class Representative {
         }
 
 
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
-            return false;
-        }
 
         return true;
     }

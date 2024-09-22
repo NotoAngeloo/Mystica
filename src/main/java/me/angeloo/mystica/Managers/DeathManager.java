@@ -70,7 +70,6 @@ public class DeathManager {
 
         player.setHealth(20);
         playerProfile.setCurrentHealth(playerProfile.getTotalHealth());
-        playerProfile.setCurrentMana(playerProfile.getTotalMana());
 
         player.setFoodLevel(20);
         player.setSaturation(20);

@@ -123,10 +123,6 @@ commands:
     description: lets devs give soulstones
     usage: /GiveSoulStone <player> <amount>
     permission: developer
-  FastTravel:
-    description: lets mms open fast travel ui
-    usage: /FastTravel <player>
-    permission: developer
   MysticaQuest:
     description: opens quest books
     usage: /MysticaQuest <player> <quest/accept>

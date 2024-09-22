@@ -48,8 +48,6 @@ public class Roll {
         }
 
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
-
         combatManager.startCombatTimer(caster);
 
         execute(caster);
@@ -154,10 +152,6 @@ public class Roll {
             return false;
         }
 
-
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
-            return false;
-        }
 
         return true;
     }

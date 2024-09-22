@@ -76,12 +76,6 @@ public class Stealth {
         if(!getIfStealthed(caster)){
 
 
-            if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
-                return;
-            }
-
-            changeResourceHandler.subTractManaFromEntity(caster, getCost());
-
             vanish(caster);
             return;
         }

@@ -49,7 +49,6 @@ public class InventoryEventListener implements Listener {
     private final DisplayWeapons displayWeapons;
     private final GearReader gearReader;
     private final BossLevelInv bossLevelInv;
-    private final FastTravelInv fastTravelInv;
     private final Locations locations;
     private final CustomItemConverter customItemConverter;
 
@@ -70,7 +69,6 @@ public class InventoryEventListener implements Listener {
         displayWeapons = new DisplayWeapons(main);
         gearReader = new GearReader(main);
         bossLevelInv = new BossLevelInv(main);
-        fastTravelInv = new FastTravelInv(main);
         locations = new Locations(main);
         customItemConverter = new CustomItemConverter();
     }
@@ -937,112 +935,6 @@ public class InventoryEventListener implements Listener {
         player.openInventory(bossLevelInv.openBossLevelInv(player));
     }
 
-    @EventHandler
-    public void onFastTravelClick(InventoryClickEvent event){
-        if(!event.getView().getTitle().equals("Fast Travel")) {
-            return;
-        }
-        event.setCancelled(true);
-
-        Player player = (Player) event.getWhoClicked();
-
-        if(event.getClickedInventory() == null){
-            return;
-        }
-
-        Inventory topInv = event.getView().getTopInventory();
-
-        if(event.getClickedInventory() != topInv){
-            return;
-        }
-
-        ItemStack item = event.getCurrentItem();
-
-        if(item == null){
-            return;
-        }
-
-        ItemStack selected = topInv.getItem(21);
-        assert selected != null;
-
-        switch ((event.getCurrentItem().getItemMeta().getDisplayName()).toLowerCase()) {
-            case " ":{
-                break;
-            }
-            case "buy":{
-
-                if(selected.getType().isAir()){
-                    return;
-                }
-
-                //check money first
-
-                player.getInventory().addItem(selected);
-
-                break;
-            }
-            case "teleport":{
-
-                if(selected.getType().isAir()){
-                    return;
-                }
-
-                Location closest = locations.getNearestLocation(player);
-
-                String colorlessName = selected.getItemMeta().getDisplayName().replaceAll("§.", "");
-
-                switch (colorlessName.toLowerCase()){
-                    case "teleport: stonemont":{
-
-                        //this isnt working properly
-                        if(closest != locations.stonemont()){
-                            player.teleport(locations.stonemont());
-                        }
-
-                        break;
-                    }
-                    case "teleport: cave of the lindwyrm":{
-
-                        if(closest != locations.caveOfLindwyrm()){
-                            player.teleport(locations.caveOfLindwyrm());
-                        }
-
-                        break;
-                    }
-                    case "teleport: windbluff prison":{
-
-                        if(closest != locations.windbluff()){
-                            player.teleport(locations.windbluff());
-                        }
-
-                        break;
-                    }
-                    case "teleport: traders outpost":{
-
-                        if(closest != locations.outpost()){
-                            player.teleport(locations.outpost());
-                        }
-
-                        break;
-                    }
-                }
-
-                player.closeInventory();
-                return;
-            }
-            case "set respawn":{
-                Location closest = locations.getNearestLocation(player);
-                player.getWorld().setSpawnLocation(closest);
-                break;
-            }
-            default:{
-                player.openInventory(fastTravelInv.openFastTravelInv(player, item));
-                return;
-            }
-        }
-
-        player.openInventory(fastTravelInv.openFastTravelInv(player, selected));
-    }
 
 
 }

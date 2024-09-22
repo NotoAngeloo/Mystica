@@ -27,7 +27,7 @@ public class Locations {
 
     public void displayDungeonEnters(){
 
-        World world = Bukkit.getWorld("world");
+        /*World world = Bukkit.getWorld("world");
         assert world != null;
 
         Location sewerLoc = new Location(world, 57, 93, -295.5);
@@ -81,45 +81,9 @@ public class Locations {
         TextDisplay stonemontPortal = world.spawn(teleportStonemont, TextDisplay.class);
         stonemontPortal.setCustomName("teleport");
 
+
+         */
     }
 
-    public Location getNearestLocation(Player player){
-        Location current = player.getLocation();
-
-        List<Location> locations = new ArrayList<>();
-        locations.add(stonemont());
-        locations.add(caveOfLindwyrm());
-        locations.add(windbluff());
-        locations.add(outpost());
-
-        double minDistance = Double.MAX_VALUE;
-        Location closestLocation = null;
-
-        for (Location location : locations) {
-            double distance = current.distanceSquared(location);
-            if (distance < minDistance) {
-                minDistance = distance;
-                closestLocation = location;
-            }
-        }
-
-        return closestLocation;
-    }
-
-    public Location stonemont(){
-        return new Location(Bukkit.getWorld("world"), 74, 100, -357, 90, 0);
-    }
-
-    public Location caveOfLindwyrm(){
-        return new Location(Bukkit.getWorld("world"), 549, 94, -121, 0, 0);
-    }
-
-    public Location windbluff(){
-        return new Location(Bukkit.getWorld("world"), -124, 70, 113, 0, 0);
-    }
-
-    public Location outpost(){
-        return new Location(Bukkit.getWorld("world"), -104, 72, 375, -90, 0);
-    }
-
+    
 }

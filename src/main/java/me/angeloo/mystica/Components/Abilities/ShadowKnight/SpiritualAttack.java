@@ -40,6 +40,7 @@ public class SpiritualAttack {
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
+    private final Energy energy;
     private final SoulReap soulReap;
 
     public SpiritualAttack(Mystica main, AbilityManager manager, ShadowKnightAbilities abilities){
@@ -53,6 +54,7 @@ public class SpiritualAttack {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        energy = abilities.getEnergy();
         soulReap = abilities.getSoulReap();
     }
 
@@ -72,7 +74,7 @@ public class SpiritualAttack {
             return;
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+        energy.subTractEnergyFromEntity(caster, getCost());
 
         combatManager.startCombatTimer(caster);
 
@@ -240,7 +242,7 @@ public class SpiritualAttack {
         return cooldown;
     }
 
-    public double getCost(){
+    public int getCost(){
         return 30;
     }
 
@@ -284,11 +286,7 @@ public class SpiritualAttack {
         }
 
 
-        if(profileManager.getAnyProfile(caster).getCurrentMana() < getCost()){
-            return false;
-        }
-
-        return true;
+        return energy.getCurrentEnergy(caster) >= getCost();
     }
 
 }

@@ -40,6 +40,8 @@ public class ConjuringForce {
         changeResourceHandler = main.getChangeResourceHandler();
     }
 
+    //TODO: conj force adds health if ur in it
+
     public void use(LivingEntity caster){
         if (!abilityReadyInMap.containsKey(caster.getUniqueId())) {
             abilityReadyInMap.put(caster.getUniqueId(), 0);
@@ -48,8 +50,6 @@ public class ConjuringForce {
         if(!usable(caster)){
             return;
         }
-
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
         combatManager.startCombatTimer(caster);
 
@@ -238,16 +238,7 @@ public class ConjuringForce {
     }
 
     public boolean usable(LivingEntity caster){
-        if (getCooldown(caster) > 0) {
-            return false;
-        }
-
-
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
-            return false;
-        }
-
-        return true;
+        return getCooldown(caster) <= 0;
     }
 
     public void resetCooldown(LivingEntity caster){

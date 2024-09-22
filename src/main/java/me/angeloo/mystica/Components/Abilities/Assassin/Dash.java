@@ -55,12 +55,6 @@ public class Dash {
         }
 
 
-        if(profileManager.getAnyProfile(player).getCurrentMana()<getCost()){
-            return;
-        }
-
-        changeResourceHandler.subTractManaFromEntity(player, getCost());
-
         combatManager.startCombatTimer(player);
 
         execute(player);

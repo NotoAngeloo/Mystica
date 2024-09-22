@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Mystic;
 
+import me.angeloo.mystica.Components.Abilities.MysticAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -35,10 +36,12 @@ public class ForceOfWill {
     private final AbilityManager abilityManager;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Mana mana;
+
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public ForceOfWill(Mystica main, AbilityManager manager){
+    public ForceOfWill(Mystica main, AbilityManager manager, MysticAbilities mysticAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         abilityManager = manager;
@@ -50,6 +53,7 @@ public class ForceOfWill {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        mana = mysticAbilities.getMana();
     }
 
     public void use(LivingEntity caster){
@@ -73,7 +77,7 @@ public class ForceOfWill {
 
                     combatManager.startCombatTimer(caster);
 
-                    changeResourceHandler.subTractManaFromEntity(caster, getCost());
+                    mana.subTractManaFromEntity(caster, getCost());
 
                     passThroughDamage(caster, target);
                     return;
@@ -87,7 +91,7 @@ public class ForceOfWill {
                         return;
                     }
 
-                    changeResourceHandler.subTractManaFromEntity(caster, getCost());
+                    mana.subTractManaFromEntity(caster, getCost());
 
                     combatManager.startCombatTimer(caster);
 
@@ -107,7 +111,6 @@ public class ForceOfWill {
         }
 
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
         combatManager.startCombatTimer(caster);
 
@@ -404,8 +407,8 @@ public class ForceOfWill {
         return baseRange + extraRange;
     }
 
-    public double getCost(){
-        return 5;
+    public int getCost(){
+        return 15;
     }
 
     public double getSkillDamage(LivingEntity caster){
@@ -442,9 +445,14 @@ public class ForceOfWill {
         }
 
 
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
-            return false;
+        //check shepardlogic
+        if(profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("shepard")){
+            if(mana.getCurrentMana(caster)<getCost()){
+                return false;
+            }
         }
+
+
 
         return true;
     }

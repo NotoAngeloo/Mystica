@@ -61,12 +61,12 @@ public class CreaturesAndCharactersManager {
     }
 
     public void spawnAllNpcs() throws InvalidMobTypeException {
-        newPlayerNpc.spawn();
-        dummy.spawn();
-        archbishopNpc.spawn();
-        hansNpc.spawn();
-        hoLeeNpc.spawn();
-        captainNpc.spawn();
+        //newPlayerNpc.spawn();
+        //dummy.spawn();
+        //archbishopNpc.spawn();
+        //hansNpc.spawn();
+        //hoLeeNpc.spawn();
+        //captainNpc.spawn();
     }
 
 
@@ -142,7 +142,7 @@ public class CreaturesAndCharactersManager {
     }
 
     private void makeDefaultNonCombatantProfile(UUID uuid){
-        Stats stats = new Stats(1,1,1,1,10,1,0);
+        Stats stats = new Stats(1,1,1,10,1,0);
         Boolean isMovable = false;
         Boolean immortal = true;
         Boolean object = false;
@@ -181,15 +181,6 @@ public class CreaturesAndCharactersManager {
 
             }
 
-            @Override
-            public double getCurrentMana() {
-                return 0;
-            }
-
-            @Override
-            public void setCurrentMana(double currentMana) {
-
-            }
 
             @Override
             public void setLevelStats(int level, String subclass) {
@@ -212,10 +203,6 @@ public class CreaturesAndCharactersManager {
                 return 0;
             }
 
-            @Override
-            public int getTotalMana() {
-                return 0;
-            }
 
             @Override
             public int getTotalAttack() {
@@ -320,7 +307,7 @@ public class CreaturesAndCharactersManager {
     }
 
     private void makeImmortalObjectProfile(UUID uuid){
-        Stats stats = new Stats(1,1,1,1,10,10,0);
+        Stats stats = new Stats(1,1,1,10,10,0);
         Boolean isMovable = false;
         Boolean immortal = true;
         Boolean object = true;
@@ -359,15 +346,6 @@ public class CreaturesAndCharactersManager {
 
             }
 
-            @Override
-            public double getCurrentMana() {
-                return 0;
-            }
-
-            @Override
-            public void setCurrentMana(double currentMana) {
-
-            }
 
             @Override
             public void setLevelStats(int level, String subclass) {
@@ -387,11 +365,6 @@ public class CreaturesAndCharactersManager {
 
             @Override
             public int getTotalHealth() {
-                return 0;
-            }
-
-            @Override
-            public int getTotalMana() {
                 return 0;
             }
 

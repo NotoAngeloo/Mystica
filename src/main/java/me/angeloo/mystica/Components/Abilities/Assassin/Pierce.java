@@ -78,7 +78,6 @@ public class Pierce {
             return;
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
         combo.removeAnAmountOfPoints(caster, 1);
 
@@ -277,16 +276,7 @@ public class Pierce {
             return false;
         }
 
-        if(combo.getComboPoints(caster) == 0){
-            return false;
-        }
-
-
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
-            return false;
-        }
-
-        return true;
+        return combo.getComboPoints(caster) != 0;
     }
 
 }

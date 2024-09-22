@@ -28,12 +28,11 @@ public class BetaTester {
         int level = 1;
         int at = 60;
         int hp = 257;
-        int mana = 0;
         int def = 60;
         int mdef = 60;
         int crit = 0;
 
-        Stats stats = new Stats(level, at, hp, mana, def, mdef, crit);
+        Stats stats = new Stats(level, at, hp, def, mdef, crit);
         Boolean isMovable = true;
         Boolean immmortal = false;
         Boolean object = false;
@@ -78,16 +77,6 @@ public class BetaTester {
             }
 
             @Override
-            public double getCurrentMana() {
-                return 0;
-            }
-
-            @Override
-            public void setCurrentMana(double currentMana) {
-
-            }
-
-            @Override
             public void setLevelStats(int level, String subclass) {
 
             }
@@ -107,10 +96,6 @@ public class BetaTester {
                 return getStats().getHealth();
             }
 
-            @Override
-            public int getTotalMana() {
-                return getStats().getMana();
-            }
 
             @Override
             public int getTotalAttack() {

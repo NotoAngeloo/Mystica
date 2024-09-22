@@ -45,10 +45,10 @@ public class DailyTick extends BukkitRunnable {
         }
 
         //every even hour
-        if(currentTime.getMinute()==0 && currentTime.getHour()%2==0){
+        /*if(currentTime.getMinute()==0 && currentTime.getHour()%2==0){
             //demon portal spawn reset
             dailyEventManager.getDemonInvasion().spawnDemonPortals();
-        }
+        }*/
 
         //other stuff on the hour
     }

@@ -71,7 +71,6 @@ public class HealthAbsorb {
             return;
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
         combatManager.startCombatTimer(caster);
 
@@ -375,16 +374,7 @@ public class HealthAbsorb {
             return false;
         }
 
-        if(getCooldown(caster) > 0){
-            return false;
-        }
-
-
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
-            return false;
-        }
-
-        return true;
+        return getCooldown(caster) <= 0;
     }
 
 }

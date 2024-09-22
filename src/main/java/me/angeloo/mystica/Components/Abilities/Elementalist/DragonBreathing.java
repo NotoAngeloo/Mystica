@@ -78,7 +78,6 @@ public class DragonBreathing {
             return;
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
         combatManager.startCombatTimer(caster);
 
@@ -378,15 +377,6 @@ public class DragonBreathing {
             return false;
         }
 
-        if(getCooldown(caster) > 0){
-            return false;
-        }
-
-
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
-            return false;
-        }
-
-        return true;
+        return getCooldown(caster) <= 0;
     }
 }

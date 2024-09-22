@@ -919,58 +919,6 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
-    public void teleportPlayer(PlayerInteractEvent event){
-        Player player = event.getPlayer();
-        ItemStack item = event.getItem();
-
-        boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
-
-        if(deathStatus){
-            return;
-        }
-
-        if(item == null){
-            return;
-        }
-
-        if(event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK){
-            return;
-        }
-
-
-        String colorlessName = item.getItemMeta().getDisplayName().replaceAll("§.", "");
-        ItemStack singleItem = customItemConverter.convert(item, 1);
-
-        //add a cooldown
-        switch (colorlessName.toLowerCase()){
-            case "teleport: stonemont":{
-                event.setCancelled(true);
-                player.getInventory().remove(singleItem);
-                player.teleport(locations.stonemont());
-                break;
-            }
-            case "teleport: cave of the lindwyrm":{
-                event.setCancelled(true);
-                player.getInventory().remove(singleItem);
-                player.teleport(locations.caveOfLindwyrm());
-                break;
-            }
-            case "teleport: windbluff prison":{
-                event.setCancelled(true);
-                player.getInventory().remove(singleItem);
-                player.teleport(locations.windbluff());
-                break;
-            }
-            case "teleport: traders outpost":{
-                event.setCancelled(true);
-                player.getInventory().remove(singleItem);
-                player.teleport(locations.outpost());
-                break;
-            }
-        }
-    }
-
-    @EventHandler
     public void rezPlayer(PlayerInteractEvent event){
 
         Player player = event.getPlayer();

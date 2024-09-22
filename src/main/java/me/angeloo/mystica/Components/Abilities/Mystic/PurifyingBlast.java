@@ -39,6 +39,7 @@ public class PurifyingBlast {
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
+    private final Mana mana;
     private final Consolation consolation;
     private final Map<UUID, Boolean> instantCast = new HashMap<>();
 
@@ -53,6 +54,7 @@ public class PurifyingBlast {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        mana = mysticAbilities.getMana();
         consolation = mysticAbilities.getConsolation();
     }
 
@@ -66,11 +68,11 @@ public class PurifyingBlast {
         }
 
 
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+        if(!usable(caster)){
             return;
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+        mana.subTractManaFromEntity(caster, getCost());
 
         combatManager.startCombatTimer(caster);
 
@@ -314,7 +316,7 @@ public class PurifyingBlast {
         return cooldown;
     }
 
-    public double getCost(){
+    public int getCost(){
         return 10;
     }
 
@@ -334,7 +336,7 @@ public class PurifyingBlast {
             return false;
         }
 
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+        if(mana.getCurrentMana(caster)<getCost()){
             return false;
         }
 

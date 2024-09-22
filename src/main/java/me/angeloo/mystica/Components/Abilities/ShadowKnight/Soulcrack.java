@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.ShadowKnight;
 
+import me.angeloo.mystica.Components.Abilities.ShadowKnightAbilities;
 import me.angeloo.mystica.Components.ClassEquipment.ShadowKnightEquipment;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
@@ -40,10 +41,12 @@ public class Soulcrack {
     private final DamageCalculator damageCalculator;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Energy energy;
+
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public Soulcrack(Mystica main, AbilityManager manager){
+    public Soulcrack(Mystica main, AbilityManager manager, ShadowKnightAbilities shadowKnightAbilities){
         this.main = main;
         abilityManager = manager;
         shadowKnightEquipment = new ShadowKnightEquipment();
@@ -55,6 +58,7 @@ public class Soulcrack {
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        energy = shadowKnightAbilities.getEnergy();
     }
 
     public void use(LivingEntity caster){
@@ -171,7 +175,7 @@ public class Soulcrack {
                     damageNear();
                 }
 
-                changeResourceHandler.addManaToEntity(caster, finalManaRestoration);
+                energy.addEnergyToEntity(caster, (int) finalManaRestoration);
 
                 double percent = ((double) ran / castTime) * 100;
 
@@ -271,7 +275,7 @@ public class Soulcrack {
         return 50 + ((int)(skillLevel/3));
     }
 
-    public double getEnergyRestored(){
+    public int getEnergyRestored(){
         return 50;
     }
 

@@ -73,7 +73,6 @@ public class ElementalMatrix {
             return;
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
         combatManager.startCombatTimer(caster);
 
@@ -194,8 +193,6 @@ public class ElementalMatrix {
         double maxHp = profileManager.getAnyProfile(caster).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(caster);
         changeResourceHandler.addHealthToEntity(caster, maxHp * .05, caster);
 
-        double maxMp = profileManager.getAnyProfile(caster).getTotalMana();
-        changeResourceHandler.addManaToEntity(caster, maxMp * .05);
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
@@ -225,10 +222,9 @@ public class ElementalMatrix {
 
         if(conjurer){
 
-            double maxMana = profileManager.getAnyProfile(caster).getTotalMana();
-            double currentMana = profileManager.getAnyProfile(caster).getCurrentMana();
+            double currentHealth = profileManager.getAnyProfile(caster).getCurrentHealth();
 
-            double percent = maxMana/currentMana;
+            double percent = maxHp/currentHealth;
 
             skillDamage = skillDamage * (1 + percent);
         }
@@ -416,16 +412,7 @@ public class ElementalMatrix {
             return false;
         }
 
-        if(getCooldown(caster) > 0){
-            return false;
-        }
-
-
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
-            return false;
-        }
-
-        return true;
+        return getCooldown(caster) <= 0;
     }
 
 }

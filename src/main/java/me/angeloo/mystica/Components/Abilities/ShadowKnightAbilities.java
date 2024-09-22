@@ -1,7 +1,6 @@
 package me.angeloo.mystica.Components.Abilities;
 
 
-import me.angeloo.mystica.Components.Abilities.Paladin.SpiritualGift;
 import me.angeloo.mystica.Components.Abilities.ShadowKnight.*;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
@@ -13,6 +12,7 @@ public class ShadowKnightAbilities {
 
     private final ProfileManager profileManager;
 
+    private final Energy energy;
     private final ShadowKnightBasic shadowKnightBasic;
     private final Infection infection;
     private final SpiritualAttack spiritualAttack;
@@ -27,17 +27,18 @@ public class ShadowKnightAbilities {
 
     public ShadowKnightAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
+        energy = new Energy();
         shadowKnightBasic = new ShadowKnightBasic(main, manager);
         infection = new Infection(main, manager);
         soulReap = new SoulReap(main, manager, this);
         spiritualAttack = new SpiritualAttack(main, manager, this);
         annihilation = new Annihilation(main, manager, this);
-        bloodShield = new BloodShield(main, manager);
-        burialGround = new BurialGround(main, manager);
+        bloodShield = new BloodShield(main, manager, this);
+        burialGround = new BurialGround(main, manager, this);
         bloodsucker = new Bloodsucker(main, manager, this);
-        shadowGrip = new ShadowGrip(main, manager);
+        shadowGrip = new ShadowGrip(main, manager, this);
         spectralSteed = new SpectralSteed(main, manager);
-        soulcrack = new Soulcrack(main, manager);
+        soulcrack = new Soulcrack(main, manager, this);
     }
 
     public void useShadowKnightAbility(LivingEntity caster, int abilityNumber){
@@ -97,6 +98,8 @@ public class ShadowKnightAbilities {
     public void useShadowKnightBasic(LivingEntity caster){
         shadowKnightBasic.useBasic(caster);
     }
+
+    public void regenEnergy(LivingEntity caster){energy.regenEnergyNaturally(caster);}
 
     public int getAbilityCooldown(Player player, int abilityNumber){
 
@@ -158,5 +161,6 @@ public class ShadowKnightAbilities {
     public Soulcrack getSoulcrack(){return soulcrack;}
     public Annihilation getAnnihilation(){return annihilation;}
     public ShadowKnightBasic getShadowKnightBasic(){return shadowKnightBasic;}
+    public Energy getEnergy(){return energy;}
 
 }

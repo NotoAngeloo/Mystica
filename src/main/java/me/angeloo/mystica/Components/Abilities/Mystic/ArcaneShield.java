@@ -28,7 +28,9 @@ public class ArcaneShield {
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Mana mana;
     private final Consolation consolation;
+
     private final Map<UUID, Boolean> needToRemove = new HashMap<>();
     private final Map<UUID, BukkitTask> shieldTaskMap = new HashMap<>();
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
@@ -45,6 +47,7 @@ public class ArcaneShield {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
         consolation = mysticAbilities.getConsolation();
+        mana = mysticAbilities.getMana();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
@@ -77,7 +80,8 @@ public class ArcaneShield {
             target = caster;
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+        mana.subTractManaFromEntity(caster, getCost());
+
 
         combatManager.startCombatTimer(caster);
 
@@ -210,7 +214,7 @@ public class ArcaneShield {
 
     }
 
-    public double getCost(){return 5;}
+    public int getCost(){return 5;}
 
     public int getCooldown(LivingEntity caster){
         int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
@@ -255,7 +259,7 @@ public class ArcaneShield {
         }
 
 
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+        if(mana.getCurrentMana(caster)<getCost()){
             return false;
         }
 

@@ -49,8 +49,6 @@ public class GladiatorHeart {
             return;
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
-
         combatManager.startCombatTimer(caster);
 
         execute(caster);
@@ -159,15 +157,7 @@ public class GladiatorHeart {
     }
 
     public boolean usable(LivingEntity caster){
-        if(getCooldown(caster) > 0){
-            return false;
-        }
-
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
-            return false;
-        }
-
-        return true;
+        return getCooldown(caster) <= 0;
     }
 
 }

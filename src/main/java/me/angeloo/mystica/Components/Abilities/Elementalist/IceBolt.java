@@ -74,7 +74,6 @@ public class IceBolt {
             return;
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
         combatManager.startCombatTimer(caster);
 
@@ -145,10 +144,10 @@ public class IceBolt {
 
         if(conjurer){
 
-            double maxMana = profileManager.getAnyProfile(caster).getTotalMana();
-            double currentMana = profileManager.getAnyProfile(caster).getCurrentMana();
+            double maxHealth = profileManager.getAnyProfile(caster).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(caster);
+            double currentHealth = profileManager.getAnyProfile(caster).getCurrentHealth();
 
-            double percent = maxMana/currentMana;
+            double percent = maxHealth/currentHealth;
 
             skillDamage = skillDamage * (1 + percent);
         }
@@ -293,16 +292,7 @@ public class IceBolt {
             return false;
         }
 
-        if(getCooldown(caster) > 0){
-            return false;
-        }
-
-
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
-            return false;
-        }
-
-        return true;
+        return getCooldown(caster) <= 0;
     }
 
 }

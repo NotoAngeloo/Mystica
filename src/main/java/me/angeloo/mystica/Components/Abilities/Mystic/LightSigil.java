@@ -42,6 +42,7 @@ public class LightSigil {
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
+    private final Mana mana;
     private final PurifyingBlast purifyingBlast;
 
     public LightSigil(Mystica main, AbilityManager manager, MysticAbilities mysticAbilities){
@@ -54,6 +55,7 @@ public class LightSigil {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        mana = mysticAbilities.getMana();
         purifyingBlast = mysticAbilities.getPurifyingBlast();
     }
 
@@ -66,7 +68,7 @@ public class LightSigil {
             return;
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+        mana.subTractManaFromEntity(caster, getCost());
 
         combatManager.startCombatTimer(caster);
 
@@ -475,7 +477,7 @@ public class LightSigil {
         return 14 +  ((int)(skillLevel/3));
     }
 
-    public double getCost(){
+    public int getCost(){
         return 5;
     }
 
@@ -498,7 +500,7 @@ public class LightSigil {
             return false;
         }
 
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+        if(mana.getCurrentMana(caster)<getCost()){
             return false;
         }
 

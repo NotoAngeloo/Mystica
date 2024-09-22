@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.ShadowKnight;
 
+import me.angeloo.mystica.Components.Abilities.ShadowKnightAbilities;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
@@ -23,18 +24,21 @@ public class BloodShield {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
 
+    private final Energy energy;
+
     private final Map<UUID, Integer> shieldTime = new HashMap<>();
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public BloodShield(Mystica main, AbilityManager manager){
+    public BloodShield(Mystica main, AbilityManager manager, ShadowKnightAbilities shadowKnightAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, manager);
         combatManager = manager.getCombatManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        energy = shadowKnightAbilities.getEnergy();
     }
 
     public void use(LivingEntity caster){
@@ -52,7 +56,7 @@ public class BloodShield {
         }
 
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+        energy.subTractEnergyFromEntity(caster, getCost());
 
         combatManager.startCombatTimer(caster);
 
@@ -149,7 +153,7 @@ public class BloodShield {
         shieldTime.put(caster.getUniqueId(), duration);
     }
 
-    public double getCost(){
+    public int getCost(){
         return 50;
     }
 
@@ -173,11 +177,7 @@ public class BloodShield {
         }
 
 
-        if(profileManager.getAnyProfile(caster).getCurrentMana() < getCost()){
-            return false;
-        }
-
-        return true;
+        return energy.getCurrentEnergy(caster) >= getCost();
     }
 
 }

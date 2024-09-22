@@ -23,7 +23,6 @@ public class Warp {
     private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
-    private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
@@ -35,7 +34,7 @@ public class Warp {
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
-        changeResourceHandler = main.getChangeResourceHandler();
+        ChangeResourceHandler changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
@@ -48,8 +47,6 @@ public class Warp {
         if(!usable(caster)){
             return;
         }
-
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
         combatManager.startCombatTimer(caster);
 
@@ -157,16 +154,7 @@ public class Warp {
     }
 
     public boolean usable(LivingEntity caster){
-        if(getCooldown(caster) > 0){
-            return false;
-        }
-
-
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
-            return false;
-        }
-
-        return true;
+        return getCooldown(caster) <= 0;
     }
 
 }

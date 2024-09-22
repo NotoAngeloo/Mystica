@@ -49,8 +49,6 @@ public class SanctityShield {
             return;
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
-
         combatManager.startCombatTimer(caster);
 
         execute(caster);
@@ -165,10 +163,6 @@ public class SanctityShield {
             return false;
         }
 
-
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
-            return false;
-        }
 
         return true;
     }

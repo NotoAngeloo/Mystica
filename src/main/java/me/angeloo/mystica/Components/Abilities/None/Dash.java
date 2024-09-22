@@ -19,10 +19,8 @@ import java.util.UUID;
 public class Dash {
 
     private final Mystica main;
-    private final ProfileManager profileManager;
     private final CombatManager combatManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
-    private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
@@ -30,10 +28,8 @@ public class Dash {
 
     public Dash(Mystica main, AbilityManager manager){
         this.main = main;
-        profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
-        changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
@@ -48,8 +44,6 @@ public class Dash {
         if(!usable(caster)){
             return;
         }
-
-        changeResourceHandler.subTractManaFromEntity(caster, cost);
 
         combatManager.startCombatTimer(caster);
 
@@ -118,14 +112,7 @@ public class Dash {
     }
 
     public boolean usable(LivingEntity caster){
-        if(getCooldown(caster) > 0){
-            return false;
-        }
-
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<cost){
-            return false;
-        }
-        return true;
+        return getCooldown(caster) <= 0;
     }
 
 }

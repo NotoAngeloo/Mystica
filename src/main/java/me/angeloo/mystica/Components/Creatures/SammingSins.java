@@ -80,14 +80,12 @@ public class SammingSins {
 
         int attack = 50 + (9 * level);
         int health = 100 + (117 * level);
-        int mana = 500;
         int defence = 50 + (8 * level);
         int magic_defence = 50 + (8 * level);
         int crit = 1;
 
         attack+=(level*2);
         health+=(level*15);
-        mana+=(level*100);
         defence+=(level);
         magic_defence+=(level);
 
@@ -96,11 +94,11 @@ public class SammingSins {
         defence+=(level);
         magic_defence+=(level);
 
-        Stats stats = new Stats(level, attack, health, mana, defence, magic_defence, crit);
+        Stats stats = new Stats(level, attack, health, defence, magic_defence, crit);
 
 
 
-        FakePlayerProfile fakePlayerProfile = new FakePlayerProfile(false, false, stats.getHealth(), stats.getMana(), stats, "Paladin", "Templar");
+        FakePlayerProfile fakePlayerProfile = new FakePlayerProfile(false, false, stats.getHealth(), stats, "Paladin", "Templar");
 
         profileManager.addToFakePlayerProfileMap(uuid, fakePlayerProfile);
 

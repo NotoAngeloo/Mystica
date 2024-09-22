@@ -30,7 +30,6 @@ public class EvilSpirit {
     private final CombatManager combatManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final AbilityManager abilityManager;
-    private final ChangeResourceHandler changeResourceHandler;
     private final Map<UUID, Integer> chaosShards = new HashMap<>();
     private final Map<UUID, Boolean> isEvilSpirit = new HashMap<>();
 
@@ -41,7 +40,6 @@ public class EvilSpirit {
         combatManager = manager.getCombatManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         abilityManager = manager;
-        changeResourceHandler = main.getChangeResourceHandler();
     }
 
     public void use(LivingEntity caster){
@@ -50,8 +48,6 @@ public class EvilSpirit {
             return;
         }
 
-
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
         combatManager.startCombatTimer(caster);
         execute(caster);
@@ -244,16 +240,7 @@ public class EvilSpirit {
 
         Block block = caster.getLocation().subtract(0,1,0).getBlock();
 
-        if(block.getType() == Material.AIR){
-            return false;
-        }
-
-
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
-            return false;
-        }
-
-        return true;
+        return block.getType() != Material.AIR;
     }
 
 }

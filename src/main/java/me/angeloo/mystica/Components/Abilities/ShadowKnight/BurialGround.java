@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.ShadowKnight;
 
+import me.angeloo.mystica.Components.Abilities.ShadowKnightAbilities;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Managers.CombatManager;
@@ -33,16 +34,19 @@ public class BurialGround {
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Energy energy;
+
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public BurialGround(Mystica main, AbilityManager manager){
+    public BurialGround(Mystica main, AbilityManager manager, ShadowKnightAbilities shadowKnightAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        energy = shadowKnightAbilities.getEnergy();
     }
 
     public void use(LivingEntity caster){
@@ -135,7 +139,7 @@ public class BurialGround {
                 if(playerValid()){
 
                     changeResourceHandler.addHealthToEntity(caster, finalHealAmount, caster);
-                    changeResourceHandler.addManaToEntity(caster, getEnergyRefund());
+                    energy.addEnergyToEntity(caster, getEnergyRefund());
 
                     if(blood){
                         buffAndDebuffManager.getDamageReduction().applyDamageReduction(caster, .8, 0);
@@ -189,7 +193,7 @@ public class BurialGround {
         return healAmount + ((int)(skillLevel/3));
     }
 
-    public double getEnergyRefund(){
+    public int getEnergyRefund(){
         return 10;
     }
 
@@ -214,11 +218,7 @@ public class BurialGround {
 
         Block block = caster.getLocation().subtract(0,1,0).getBlock();
 
-        if(block.getType() == Material.AIR){
-            return false;
-        }
-
-        return true;
+        return block.getType() != Material.AIR;
     }
 
 

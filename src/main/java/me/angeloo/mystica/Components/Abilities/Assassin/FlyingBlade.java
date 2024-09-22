@@ -76,7 +76,6 @@ public class FlyingBlade {
             return;
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
         if(caster instanceof Player){
             combatManager.startCombatTimer((Player) caster);
@@ -257,16 +256,7 @@ public class FlyingBlade {
             return false;
         }
 
-        if(getCooldown(caster) > 0){
-            return false;
-        }
-
-
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
-            return false;
-        }
-
-        return true;
+        return getCooldown(caster) <= 0;
     }
 
     public void resetCooldown(LivingEntity caster){

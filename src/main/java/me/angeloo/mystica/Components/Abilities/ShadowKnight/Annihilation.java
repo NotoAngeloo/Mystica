@@ -40,6 +40,7 @@ public class Annihilation {
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
+    private final Energy energy;
     private final Infection infection;
 
     public Annihilation(Mystica main, AbilityManager manager, ShadowKnightAbilities shadowKnightAbilities){
@@ -53,6 +54,7 @@ public class Annihilation {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        energy = shadowKnightAbilities.getEnergy();
         infection = shadowKnightAbilities.getInfection();
     }
 
@@ -73,7 +75,7 @@ public class Annihilation {
             return;
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+        energy.subTractEnergyFromEntity(caster, getCost());
 
         combatManager.startCombatTimer(caster);
 
@@ -243,7 +245,7 @@ public class Annihilation {
         return 45 + ((int)(skillLevel/3));
     }
 
-    public double getCost(){
+    public int getCost(){
         return 30;
     }
 
@@ -291,11 +293,7 @@ public class Annihilation {
         }
 
 
-        if(profileManager.getAnyProfile(caster).getCurrentMana() < getCost()){
-            return false;
-        }
-
-        return true;
+        return energy.getCurrentEnergy(caster) >= getCost();
     }
 
 }

@@ -79,8 +79,6 @@ public class BlessedArrow {
             target = caster;
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
-
         combatManager.startCombatTimer(caster);
 
         execute(caster, target);
@@ -124,11 +122,11 @@ public class BlessedArrow {
             skillDamage = skillDamage * 1.25;
         }
 
-        double mana = profileManager.getAnyProfile(caster).getTotalMana() * .5;
+        double health = profileManager.getAnyProfile(target).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(target);
 
         //check cry active
         if(target == caster){
-            restoreManaToAlly(caster, mana * skillLevel);
+            restoreHealthToAlly(caster, health, caster);
             return;
         }
 
@@ -200,14 +198,14 @@ public class BlessedArrow {
                         Player playerTarget = (Player) target;
 
                         if(!pvpManager.pvpLogic(caster, playerTarget)){
-                            restoreManaToAlly(playerTarget, mana * skillLevel);
+                            restoreHealthToAlly(playerTarget, health, caster);
                             return;
                         }
                     }
 
                     if(!(target instanceof Player)){
                         if(!pveChecker.pveLogic(target)){
-                            restoreManaToAlly(target, mana * skillLevel);
+                            restoreHealthToAlly(target, health, caster);
                             return;
                         }
                     }
@@ -259,11 +257,11 @@ public class BlessedArrow {
 
     }
 
-    private void restoreManaToAlly(LivingEntity target, double amount){
+    private void restoreHealthToAlly(LivingEntity target, double amount, LivingEntity caster){
 
         target.getWorld().spawnParticle(Particle.DRIP_WATER, target.getLocation(), 50, .5, 1, .5, 0);
 
-        changeResourceHandler.addManaToEntity(target, amount);
+        changeResourceHandler.addHealthToEntity(target, amount, caster);
     }
 
     public int getCooldown(LivingEntity caster){
@@ -301,16 +299,7 @@ public class BlessedArrow {
             }
         }
 
-        if(getCooldown(caster) > 0){
-            return false;
-        }
-
-
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
-            return false;
-        }
-
-        return true;
+        return getCooldown(caster) <= 0;
     }
 
 }

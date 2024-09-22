@@ -165,13 +165,12 @@ public class ProfileManager {
                     //stats
                     int level = config.getInt(id + ".stats.level");
 
-                    Stats stats = new Stats(level,50,100,500,50,50, 1);
+                    Stats stats = new Stats(level,50,100,50,50, 1);
                     assert playerClass != null;
                     assert playerSubclass != null;
                     stats.setLevelStats(level, playerClass, playerSubclass);
 
                     int hp = stats.getHealth();
-                    int mana = stats.getMana();
 
                     ItemStack[] savedInv = ((List<ItemStack>) config.get(id + ".savedInv")).toArray(new ItemStack[41]);
 
@@ -224,7 +223,7 @@ public class ProfileManager {
                     Milestones milestones = new Milestones(allMilestones);
 
                     PlayerBossLevel playerBossLevel = new PlayerBossLevel(bossLevel);
-                    PlayerProfile profile = new PlayerProfile(false, false, hp, mana,
+                    PlayerProfile profile = new PlayerProfile(false, false, hp,
                             stats,
                             gearStats,
                             playerClass,
@@ -329,7 +328,7 @@ public class ProfileManager {
 
     private void createNewPlayerProfile(UUID uuid){
 
-        Stats stats = new Stats(1,50,100,500,50,50, 1);
+        Stats stats = new Stats(1,50,100,50,50, 1);
         StatsFromGear gearStats = new StatsFromGear( 0, 0,0,0,0,0);
 
         int currentHealth = 20;
@@ -359,7 +358,7 @@ public class ProfileManager {
 
         Bal bal = new Bal(0);
 
-        PlayerProfile profile = new PlayerProfile(false, false, currentHealth, currentMana,
+        PlayerProfile profile = new PlayerProfile(false, false, currentHealth,
                 stats,
                 gearStats,
                 "none",
@@ -422,16 +421,17 @@ public class ProfileManager {
         assert maxHealthAttribute != null;
         maxHealthAttribute.setBaseValue(20);
 
-        World world = Bukkit.getWorld("world");
-        Location spawnLoc = new Location(world,74,100,-357,90,7);
 
+        World world = Bukkit.getWorld("world");
+        Location spawnLoc = new Location(world,409,68,-564,25,5);
         newPlayer.teleport(spawnLoc);
-        newPlayer.getWorld().setSpawnLocation(spawnLoc);
+
+
         newPlayer.getInventory().clear();
         newPlayer.sendMessage("You are playing a pre-release\nYour items and progress are subjected to being removed");
 
         //interactions stuff
-        PluginManager pluginManager = Bukkit.getPluginManager();
+        /*PluginManager pluginManager = Bukkit.getPluginManager();
         Plugin interactions =  pluginManager.getPlugin("interactions");
         if (interactions != null && interactions.isEnabled()) {
             Server server = Bukkit.getServer();
@@ -439,9 +439,9 @@ public class ProfileManager {
             server.dispatchCommand(server.getConsoleSender(), "interactions resetplayer " + newPlayer.getName() + " newplayer");
             server.dispatchCommand(server.getConsoleSender(), "interactions resetplayer " + newPlayer.getName() + " captain");
             server.dispatchCommand(server.getConsoleSender(), "interactions resetplayer " + newPlayer.getName() + " HoLee");
-        }
+        }*/
 
-        pathingManager.calculatePath(newPlayer, new Location(newPlayer.getWorld(), 64, 99, -350));
+        //pathingManager.calculatePath(newPlayer, new Location(newPlayer.getWorld(), 64, 99, -350));
         new DisplayWeapons(main).displayWeapons(newPlayer);
     }
 
@@ -462,7 +462,7 @@ public class ProfileManager {
     }
 
     public void createNewDefaultNonPlayerProfile(UUID uuid){
-        Stats stats = new Stats(1,1,1,0,1,1,0);
+        Stats stats = new Stats(1,1,1,1,1,0);
         double currentHealth = 1;
         Yield yield = new Yield(0, null);
         NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(currentHealth, stats, true, false, false, false, yield) {
@@ -498,15 +498,6 @@ public class ProfileManager {
 
             }
 
-            @Override
-            public double getCurrentMana() {
-                return 0;
-            }
-
-            @Override
-            public void setCurrentMana(double currentMana) {
-
-            }
 
             @Override
             public void setLevelStats(int level, String subclass) {
@@ -522,11 +513,6 @@ public class ProfileManager {
             @Override
             public int getTotalHealth() {
                 return getStats().getHealth();
-            }
-
-            @Override
-            public int getTotalMana() {
-                return getStats().getMana();
             }
 
             @Override

@@ -49,6 +49,7 @@ public class SoulReap {
 
     private final Map<UUID, Integer> soulMarks = new HashMap<>();
 
+    private final Energy energy;
     private final Infection infection;
 
     public SoulReap(Mystica main, AbilityManager manager, ShadowKnightAbilities shadowKnightAbilities){
@@ -64,6 +65,7 @@ public class SoulReap {
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         infection = shadowKnightAbilities.getInfection();
+        energy = shadowKnightAbilities.getEnergy();
     }
 
     private final double range = 8;
@@ -82,7 +84,7 @@ public class SoulReap {
             return;
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+        energy.subTractEnergyFromEntity(caster, getCost());
 
         combatManager.startCombatTimer(caster);
 
@@ -367,7 +369,7 @@ public class SoulReap {
         return skillDamage + ((int)(skillLevel/3));
     }
 
-    public double getCost(){
+    public int getCost(){
         return 30;
     }
 
@@ -405,7 +407,7 @@ public class SoulReap {
         }
 
 
-        if(profileManager.getAnyProfile(caster).getCurrentMana() < getCost()){
+        if(energy.getCurrentEnergy(caster) < getCost()){
             return false;
         }
 

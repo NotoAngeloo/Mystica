@@ -51,8 +51,6 @@ public class NoneRoll {
             return;
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, cost);
-
         combatManager.startCombatTimer(caster);
 
         execute(caster);
@@ -115,15 +113,7 @@ public class NoneRoll {
     }
 
     public boolean usable(LivingEntity caster){
-        if(getCooldown(caster) > 0){
-            return false;
-        }
-
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<cost){
-            return false;
-        }
-
-        return true;
+        return getCooldown(caster) <= 0;
     }
 
 }

@@ -14,6 +14,11 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.awt.*;
+
+import static me.angeloo.mystica.Mystica.mysticColor;
+import static me.angeloo.mystica.Mystica.shadowKnightColor;
+
 public class ShieldAbilityManaDisplayer {
 
     private final ProfileManager profileManager;
@@ -83,20 +88,31 @@ public class ShieldAbilityManaDisplayer {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        double maxMp = playerProfile.getTotalMana();
-        double currentMp = playerProfile.getCurrentMana();
-        int percent = (int) Math.floor((currentMp/maxMp) * 100);
+        double max = 500;
+        double current = 0;
 
         StringBuilder manaBar = new StringBuilder();
 
-        if(profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("shadow knight")){
-            manaBar.append(ChatColor.DARK_RED);
-        }
-        else{
-            manaBar.append(ChatColor.BLUE);
+        switch (profileManager.getAnyProfile(player).getPlayerClass().toLowerCase()){
+            case "shadow knight":{
+                max = 100;
+                current = abilityManager.getShadowKnightAbilities().getEnergy().getCurrentEnergy(player);
+                manaBar.append(ChatColor.of(shadowKnightColor));
+                break;
+            }
+            case "mystic":{
+
+                if(!profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("chaos")){
+                    current = abilityManager.getMysticAbilities().getMana().getCurrentMana(player);
+                    manaBar.append(ChatColor.of(mysticColor));
+                    break;
+                }
+
+                break;
+            }
         }
 
-
+        int percent = (int) Math.floor((current/max) * 100);
 
         for(int i = 0; i<15 ; i++){
             if(percent > (i*((double) 100/15))){
@@ -106,6 +122,9 @@ public class ShieldAbilityManaDisplayer {
                 manaBar.append(" ");
             }
         }
+
+
+
 
         return String.valueOf(manaBar);
     }

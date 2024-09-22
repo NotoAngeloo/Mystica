@@ -32,17 +32,14 @@ public class Kick {
     private final DamageCalculator damageCalculator;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
-    private final AbilityManager abilityManager;
     private final CooldownDisplayer cooldownDisplayer;
 
-    private final Adrenaline adrenaline;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public Kick(Mystica main, AbilityManager manager, NoneAbilities noneAbilities){
+    public Kick(Mystica main, AbilityManager manager){
         this.main = main;
-        abilityManager = manager;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
@@ -51,11 +48,9 @@ public class Kick {
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
-        adrenaline = noneAbilities.getAdrenaline();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    private final double cost = 20;
     private final double range = 7;
 
     public void use(LivingEntity caster){
@@ -73,7 +68,6 @@ public class Kick {
         }
 
 
-        changeResourceHandler.subTractManaFromEntity(caster, cost);
 
         combatManager.startCombatTimer(caster);
 
@@ -114,9 +108,6 @@ public class Kick {
 
         double skillDamage = 20;
 
-        if(adrenaline.getIfBuffTime(caster)>0){
-            skillDamage = 30;
-        }
 
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_1_Level_Bonus();
@@ -182,17 +173,6 @@ public class Kick {
 
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                         changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
-
-                        if(adrenaline.getIfBuffTime(caster)>0){
-
-                            if(profileManager.getAnyProfile(target).getIsMovable()){
-                                Vector awayDirection = target.getLocation().toVector().subtract(caster.getLocation().toVector()).normalize();
-                                Vector velocity = awayDirection.multiply(1.25).add(new Vector(0, 1, 0));
-                                target.setVelocity(velocity);
-                                buffAndDebuffManager.getKnockUp().applyKnockUp(target);
-                            }
-
-                        }
 
                         cancelTask();
                     }
@@ -287,16 +267,7 @@ public class Kick {
         }
 
 
-        if(getCooldown(caster) > 0){
-            return false;
-        }
-
-
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<cost){
-            return false;
-        }
-
-        return true;
+        return getCooldown(caster) <= 0;
     }
 
 

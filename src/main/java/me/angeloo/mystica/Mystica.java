@@ -166,7 +166,6 @@ public final class Mystica extends JavaPlugin{
         getCommand("Cosmetic").setExecutor(new Cosmetic(this));
         getCommand("BossLevel").setExecutor(new BossLevel(this));
         getCommand("GiveSoulStone").setExecutor(new GiveSoulStone(this));
-        getCommand("FastTravel").setExecutor(new FastTravel(this));
         getCommand("ClassGuide").setExecutor(new ClassGuide(this));
         getCommand("MysticaQuest").setExecutor(new MysticaQuest(this));
         getCommand("HitValidCheck").setExecutor(new HitValidCheck(this));
@@ -201,11 +200,11 @@ public final class Mystica extends JavaPlugin{
 
         World island = Bukkit.getWorld("world");
         assert island != null;
-        WorldBorder border = island.getWorldBorder();
-        Location center = new Location(island, 94, 66, 118);
-        border.setCenter(center);
-        double size = 1775;
-        border.setSize(size);
+        // WorldBorder border = island.getWorldBorder();
+        //Location center = new Location(island, 94, 66, 118);
+        //border.setCenter(center);
+        //double size = 1775;
+        //border.setSize(size);
 
 
 

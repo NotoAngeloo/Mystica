@@ -5,17 +5,15 @@ public class Stats {
     private int Level;
     private int Attack;
     private int Health;
-    private int Mana;
     private int Defense;
     private int Magic_Defense;
     private int Crit;
 
 
-    public Stats(int level, int attack, int health, int mana, int defense, int magic_defense, int crit) {
+    public Stats(int level, int attack, int health, int defense, int magic_defense, int crit) {
         Level = level;
         Attack = attack;
         Health = health;
-        Mana = mana;
         Defense = defense;
         Magic_Defense = magic_defense;
         Crit = crit;
@@ -31,9 +29,6 @@ public class Stats {
         return Health;
     }
 
-    public int getMana() {
-        return Mana;
-    }
 
     public int getDefense() {
         return Defense;
@@ -47,8 +42,8 @@ public class Stats {
         return Crit;
     }
 
-
     public void setLevel(int level){Level = level;}
+
 
 
     public void setLevelStats(int level, String playerClass, String subclass){
@@ -56,7 +51,6 @@ public class Stats {
         //base
         int attack = 50;
         int health = 100;
-        int mana = 500;
         int defence = 50;
         int magic_defence = 50;
         int crit = 1;
@@ -65,7 +59,6 @@ public class Stats {
             case "assassin":{
                 attack+=(level*2);
                 health+=(level*15);
-                mana+=(level*100);
                 defence+=(level);
                 magic_defence+=(level);
 
@@ -88,7 +81,6 @@ public class Stats {
 
                 attack+=(level*2);
                 health+=(level*15);
-                mana+=(level*100);
                 defence+=(level);
                 magic_defence+=(level);
 
@@ -110,7 +102,6 @@ public class Stats {
 
                 attack+=(level*2);
                 health+=(level*15);
-                mana+=(level*100);
                 defence+=(level);
                 magic_defence+=(level);
 
@@ -133,7 +124,6 @@ public class Stats {
 
                 attack+=(level*2);
                 health+=(level*15);
-                mana+=(level*100);
                 defence+=(level);
                 magic_defence+=(level);
 
@@ -161,7 +151,6 @@ public class Stats {
             case "ranger":{
                 attack+=(level*2);
                 health+=(level*15);
-                mana+=(level*100);
                 defence+=(level);
                 magic_defence+=(level);
 
@@ -185,7 +174,6 @@ public class Stats {
                 health+=(level*15);
                 defence+=(level);
                 magic_defence+=(level);
-                mana = 100;
 
                 switch (subclass.toLowerCase()){
                     case "doom": {
@@ -208,7 +196,6 @@ public class Stats {
 
                 attack+=(level*2);
                 health+=(level*15);
-                mana+=(level*100);
                 defence+=(level);
                 magic_defence+=(level);
 
@@ -232,7 +219,6 @@ public class Stats {
             case "none":{
                 attack+=(level*2);
                 health+=(level*15);
-                mana+=(level*100);
                 defence+=(level);
                 magic_defence+=(level);
             }
@@ -241,7 +227,6 @@ public class Stats {
 
         Attack = attack;
         Health = health;
-        Mana = mana;
         Defense = defence;
         Magic_Defense = magic_defence;
         Crit = crit;

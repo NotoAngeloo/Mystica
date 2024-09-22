@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Mystic;
 
+import me.angeloo.mystica.Components.Abilities.MysticAbilities;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
@@ -34,11 +35,12 @@ public class Aurora {
     private final PveChecker pveChecker;
     private final PvpManager pvpManager;
     private final CooldownDisplayer cooldownDisplayer;
+    private final Mana mana;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public Aurora(Mystica main, AbilityManager manager){
+    public Aurora(Mystica main, AbilityManager manager, MysticAbilities mysticAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
@@ -49,6 +51,7 @@ public class Aurora {
         pveChecker = main.getPveChecker();
         pvpManager = main.getPvpManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        mana = mysticAbilities.getMana();
     }
 
     private final double range = 20;
@@ -68,7 +71,7 @@ public class Aurora {
             target = caster;
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+        mana.subTractManaFromEntity(caster, getCost());
 
         combatManager.startCombatTimer(caster);
 
@@ -220,7 +223,7 @@ public class Aurora {
 
     }
 
-    public double getCost(){
+    public int getCost(){
         return 40;
     }
 
@@ -273,7 +276,7 @@ public class Aurora {
         }
 
 
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
+        if(mana.getCurrentMana(caster)<getCost()){
             return false;
         }
 

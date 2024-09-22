@@ -90,7 +90,7 @@ public class CorruptHeart {
         int def = 30 + (20 * level-1);
         int mdef = 30 + (20 * level-1);
 
-        Stats stats = new Stats(level, atk, hp, 0,  def, mdef, 0);
+        Stats stats = new Stats(level, atk, hp,  def, mdef, 0);
         Boolean isMovable = false;
         Boolean immortal = false;
         Boolean object = false;
@@ -133,15 +133,6 @@ public class CorruptHeart {
 
             }
 
-            @Override
-            public double getCurrentMana() {
-                return 0;
-            }
-
-            @Override
-            public void setCurrentMana(double currentMana) {
-
-            }
 
             @Override
             public void setLevelStats(int level, String subclass) {
@@ -163,10 +154,6 @@ public class CorruptHeart {
                 return getStats().getHealth();
             }
 
-            @Override
-            public int getTotalMana() {
-                return getStats().getMana();
-            }
 
             @Override
             public int getTotalAttack() {

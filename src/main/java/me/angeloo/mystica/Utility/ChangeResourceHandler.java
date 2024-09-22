@@ -347,31 +347,6 @@ public class ChangeResourceHandler {
 
     }
 
-    public void subTractManaFromEntity(LivingEntity caster, Double cost){
-
-        double currentMana = profileManager.getAnyProfile(caster).getCurrentMana();
-        double newCurrentMana = currentMana - cost;
-        profileManager.getAnyProfile(caster).setCurrentMana(newCurrentMana);
-
-        lastManaed.put(caster.getUniqueId(), (System.currentTimeMillis()/1000));
-    }
-
-    public void addManaToEntity(LivingEntity entity, Double amount){
-
-        Profile profile = profileManager.getAnyProfile(entity);
-
-        double actualMaxMana = profile.getTotalMana();
-
-        double currentMana = profileManager.getAnyProfile(entity).getCurrentMana();
-        double newCurrentMana = currentMana + amount;
-
-        if(newCurrentMana > actualMaxMana){
-            newCurrentMana = actualMaxMana;
-        }
-
-        profileManager.getAnyProfile(entity).setCurrentMana(newCurrentMana);
-        Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, true));
-    }
 
     public void addXpToPlayer(Player player, float amount) {
 
@@ -510,14 +485,7 @@ public class ChangeResourceHandler {
 
     }
 
-    public Long getLastManaed(UUID uuid){
 
-        if(!lastManaed.containsKey(uuid)){
-            lastManaed.put(uuid, (System.currentTimeMillis() / 1000) - 20);
-        }
-
-        return lastManaed.get(uuid);
-    }
 
     public void healPlayerToFull(Player player){
 

@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.ShadowKnight;
 
+import me.angeloo.mystica.Components.Abilities.ShadowKnightAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -37,10 +38,12 @@ public class ShadowGrip {
     private final AggroManager aggroManager;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Energy energy;
+
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public ShadowGrip(Mystica main, AbilityManager manager){
+    public ShadowGrip(Mystica main, AbilityManager manager, ShadowKnightAbilities shadowKnightAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
@@ -52,6 +55,7 @@ public class ShadowGrip {
         changeResourceHandler = main.getChangeResourceHandler();
         aggroManager = main.getAggroManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        energy = shadowKnightAbilities.getEnergy();
     }
 
     private final double range = 15;
@@ -71,7 +75,7 @@ public class ShadowGrip {
             return;
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
+        energy.subTractEnergyFromEntity(caster, getCost());
 
         combatManager.startCombatTimer(caster);
 
@@ -314,7 +318,7 @@ public class ShadowGrip {
         return cooldown;
     }
 
-    public double getCost(){
+    public int getCost(){
         return 30;
     }
 
@@ -359,11 +363,7 @@ public class ShadowGrip {
         }
 
 
-        if(profileManager.getAnyProfile(caster).getCurrentMana() < getCost()){
-            return false;
-        }
-
-        return true;
+        return energy.getCurrentEnergy(caster) >= getCost();
     }
 
 }

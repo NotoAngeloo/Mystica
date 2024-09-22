@@ -53,7 +53,6 @@ public class ElementalBreath {
             return;
         }
 
-        changeResourceHandler.subTractManaFromEntity(caster, getCost());
 
         combatManager.startCombatTimer(caster);
 
@@ -220,16 +219,7 @@ public class ElementalBreath {
             return false;
         }
 
-        if(getIfBuffTime(caster) > 0){
-            return false;
-        }
-
-
-        if(profileManager.getAnyProfile(caster).getCurrentMana()<getCost()){
-            return false;
-        }
-
-        return true;
+        return getIfBuffTime(caster) <= 0;
     }
 
 }

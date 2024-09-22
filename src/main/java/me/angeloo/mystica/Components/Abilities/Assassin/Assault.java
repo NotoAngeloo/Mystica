@@ -220,10 +220,6 @@ public class Assault {
         return 30 + ((int)(skillLevel/3));
     }
 
-    public double getCost(){
-        return 5;
-    }
-
     public boolean usable(LivingEntity caster, LivingEntity target){
 
         if(target != null){

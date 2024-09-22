@@ -27,6 +27,9 @@ public class Rage {
 
         int currentMana = getCurrentRage(caster);
         int newCurrentMana = currentMana - cost;
+        if(newCurrentMana < 0){
+            newCurrentMana = 0;
+        }
         manaAmount.put(caster.getUniqueId(), newCurrentMana);
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(caster, true));
     }
@@ -55,23 +58,18 @@ public class Rage {
 
     public void loseRageNaturally(LivingEntity entity) {
 
-
         int currentMana = getCurrentRage(entity);
 
-        int manaRegenRate = 50;
+        int manaRegenRate = 5;
 
         if (!profileManager.getAnyProfile(entity).getIfInCombat()) {
             manaRegenRate = 300;
         }
 
-        if (currentMana > maxMana) {
-            manaAmount.put(entity.getUniqueId(),maxMana);
-        }
-
-        if (currentMana < maxMana) {
+        if(currentMana > 0){
             subTractRageFromEntity(entity, manaRegenRate);
-
         }
+
     }
 
 

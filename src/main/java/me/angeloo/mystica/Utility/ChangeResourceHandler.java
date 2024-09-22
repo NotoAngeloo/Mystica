@@ -89,6 +89,8 @@ public class ChangeResourceHandler {
             damage = buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(entity, damage);
         }
 
+
+
         if(entity instanceof Player){
             subtractHealthFromPlayer((Player) entity, damage);
             Bukkit.getServer().getPluginManager().callEvent(new BoardValueUpdateEvent((Player) entity));
@@ -101,11 +103,6 @@ public class ChangeResourceHandler {
         }
 
         if(damager instanceof Player){
-
-            if(profileManager.getAnyProfile(damager).getMilestones().getMilestone("new_hunter_accept") &&
-            !profileManager.getAnyProfile(damager).getMilestones().getMilestone("new_hunter_complete")){
-                questManager.completeQuest((Player)damager, "new_hunter");
-            }
 
             //displayDamage((Player) damager, entity, damage);
 

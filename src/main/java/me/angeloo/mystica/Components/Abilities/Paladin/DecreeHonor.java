@@ -292,10 +292,6 @@ public class DecreeHonor {
         return 5 +  ((int)(skillLevel/3));
     }
 
-    public double getCost(){
-        return 5;
-    }
-
     public int getCooldown(LivingEntity caster){
 
         int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);

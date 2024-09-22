@@ -28,7 +28,6 @@ public class ElementalBreath {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CombatManager combatManager;
     private final CooldownDisplayer cooldownDisplayer;
-    private final ChangeResourceHandler changeResourceHandler;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> buffActiveMap = new HashMap<>();
@@ -39,7 +38,6 @@ public class ElementalBreath {
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
-        changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
@@ -204,10 +202,6 @@ public class ElementalBreath {
 
         return cooldown;
 
-    }
-
-    public double getCost(){
-        return 10;
     }
 
     public void resetCooldown(LivingEntity caster){

@@ -41,6 +41,7 @@ public class BitingRain {
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Focus focus;
     private final StarVolley starVolley;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
@@ -57,6 +58,7 @@ public class BitingRain {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        focus = rangerAbilities.getFocus();
         starVolley = rangerAbilities.getStarVolley();
     }
 
@@ -324,14 +326,10 @@ public class BitingRain {
 
     }
 
-    public double getCost(){
-        return 5;
-    }
-
     public double getSkillDamage(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_1_Level_Bonus();
-        return 20 + ((int)(skillLevel/3));
+        return focus.calculateFocusMultipliedDamage(caster, 20) + ((int)(skillLevel/3));
     }
 
     public int getCooldown(LivingEntity caster){
@@ -374,12 +372,7 @@ public class BitingRain {
             return false;
         }
 
-        if(getCooldown(caster) > 0){
-            return false;
-        }
-
-
-        return true;
+        return getCooldown(caster) <= 0;
     }
 
 }

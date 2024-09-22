@@ -97,8 +97,6 @@ public class BurningBlessing {
         return cooldown;
     }
 
-    public double getCost(){return 10;}
-
     public double getBuffAmount(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_8_Level_Bonus();

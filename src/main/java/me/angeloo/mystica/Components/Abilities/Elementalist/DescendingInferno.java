@@ -408,10 +408,6 @@ public class DescendingInferno {
         return 20 + ((int)(skillLevel/3));
     }
 
-    public double getCost(){
-        return 5;
-    }
-
     public int getCooldown(LivingEntity caster){
         int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
@@ -445,6 +441,11 @@ public class DescendingInferno {
             if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
                 return false;
             }
+
+            if(distance<1){
+                return false;
+            }
+
         }
 
         if(target == null){

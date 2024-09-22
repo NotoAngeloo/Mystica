@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Warrior;
 
+import me.angeloo.mystica.Components.Abilities.WarriorAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -38,11 +39,12 @@ public class MagmaSpikes {
     private final CombatManager combatManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
+    private final Rage rage;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public MagmaSpikes(Mystica main, AbilityManager manager){
+    public MagmaSpikes(Mystica main, AbilityManager manager, WarriorAbilities warriorAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         abilityManager = manager;
@@ -53,6 +55,7 @@ public class MagmaSpikes {
         pveChecker = main.getPveChecker();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        rage = warriorAbilities.getRage();
     }
 
     public void use(LivingEntity caster){
@@ -207,6 +210,7 @@ public class MagmaSpikes {
                             if(entity instanceof Player){
                                 if(pvpManager.pvpLogic(caster, (Player) entity)){
                                     changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                                    rage.addRageToEntity(caster, 10);
 
                                     if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
                                         Vector velocity = (new Vector(0, .75, 0));
@@ -220,6 +224,7 @@ public class MagmaSpikes {
                             if(pveChecker.pveLogic(livingEntity)){
                                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
                                 changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                                rage.addRageToEntity(caster, 10);
 
                                 if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
                                     Vector velocity = (new Vector(0, .75, 0));
@@ -394,10 +399,6 @@ public class MagmaSpikes {
         }
 
         return cooldown;
-    }
-
-    public double getCost(){
-        return 10;
     }
 
     public double getSkillDamage(LivingEntity caster){

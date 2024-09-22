@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Warrior;
 
+import me.angeloo.mystica.Components.Abilities.WarriorAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -32,11 +33,12 @@ public class DeathGaze {
     private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final Rage rage;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public DeathGaze(Mystica main, AbilityManager manager){
+    public DeathGaze(Mystica main, AbilityManager manager, WarriorAbilities warriorAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, manager);
@@ -47,6 +49,7 @@ public class DeathGaze {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        rage = warriorAbilities.getRage();
     }
 
     private final double range = 20;
@@ -200,6 +203,7 @@ public class DeathGaze {
                     double damage = (damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit));
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+                    rage.addRageToEntity(caster, 10);
 
                 }
 
@@ -364,10 +368,6 @@ public class DeathGaze {
         }
 
         return cooldown;
-    }
-
-    public double getCost(){
-        return 20;
     }
 
     public double getSkillDamage(LivingEntity caster){

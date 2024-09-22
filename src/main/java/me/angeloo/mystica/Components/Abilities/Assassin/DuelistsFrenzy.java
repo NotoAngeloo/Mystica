@@ -233,10 +233,6 @@ public class DuelistsFrenzy {
 
     }
 
-    public double getCost(){
-        return 20;
-    }
-
     public double getSkillDamage(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getStats().getLevel();
         return 150 + ((int)(skillLevel/3));

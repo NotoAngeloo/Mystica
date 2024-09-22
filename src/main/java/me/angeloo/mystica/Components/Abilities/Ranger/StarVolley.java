@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Ranger;
 
+import me.angeloo.mystica.Components.Abilities.RangerAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -34,11 +35,12 @@ public class StarVolley {
     private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final Focus focus;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public StarVolley(Mystica main, AbilityManager manager){
+    public StarVolley(Mystica main, AbilityManager manager, RangerAbilities rangerAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, manager);
@@ -49,6 +51,7 @@ public class StarVolley {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        focus = rangerAbilities.getFocus();
     }
 
     private final double range = 20;
@@ -210,11 +213,7 @@ public class StarVolley {
 
     public double getSkillDamage(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getStats().getLevel();
-        return 60 + ((int)(skillLevel/3));
-    }
-
-    public double getCost(){
-        return 20;
+        return focus.calculateFocusMultipliedDamage(caster, 60) + ((int)(skillLevel/3));
     }
 
     public int getCooldown(LivingEntity caster){

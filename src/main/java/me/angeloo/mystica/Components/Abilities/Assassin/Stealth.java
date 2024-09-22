@@ -239,10 +239,6 @@ public class Stealth {
 
     }
 
-    public double getCost(){
-        return 10;
-    }
-
     public double getSkillDamage(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_8_Level_Bonus();

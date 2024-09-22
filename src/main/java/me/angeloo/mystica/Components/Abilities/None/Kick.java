@@ -260,6 +260,10 @@ public class Kick {
             if(distance > range){
                 return false;
             }
+
+            if(distance<1){
+                return false;
+            }
         }
 
         if(target == null){

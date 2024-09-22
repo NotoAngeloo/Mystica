@@ -22,7 +22,6 @@ public class JusticeMark {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final PvpManager pvpManager;
     private final CombatManager combatManager;
-    private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, List<LivingEntity>> marked = new HashMap<>();
@@ -37,7 +36,6 @@ public class JusticeMark {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         pvpManager = main.getPvpManager();
         combatManager = manager.getCombatManager();
-        changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
@@ -159,10 +157,6 @@ public class JusticeMark {
 
     public List<LivingEntity> getMarkedTargets(LivingEntity caster){
         return marked.getOrDefault(caster.getUniqueId(), new ArrayList<>());
-    }
-
-    public double getCost(){
-        return 5;
     }
 
     public int getCooldown(LivingEntity caster){

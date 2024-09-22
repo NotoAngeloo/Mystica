@@ -239,10 +239,6 @@ public class MysticAbilities {
         return 0;
     }
 
-    public void regenMana(LivingEntity caster){
-        mana.regenManaNaturally(caster);
-    }
-
     public void resetCooldowns(LivingEntity caster){
         arcaneContract.resetCooldown(caster);
         arcaneMissiles.resetCooldown(caster);

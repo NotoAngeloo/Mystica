@@ -11,6 +11,7 @@ public class WarriorAbilities {
 
     private final ProfileManager profileManager;
 
+    private final Rage rage;
     private final WarriorBasic warriorBasic;
     private final LavaQuake lavaQuake;
     private final SearingChains searingChains;
@@ -26,17 +27,18 @@ public class WarriorAbilities {
     public WarriorAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
 
-        warriorBasic = new WarriorBasic(main, manager);
-        lavaQuake = new LavaQuake(main, manager);
-        searingChains = new SearingChains(main, manager);
-        tempestRage = new TempestRage(main, manager);
-        meteorCrater = new MeteorCrater(main, manager);
-        anvilDrop = new AnvilDrop(main, manager);
+        rage = new Rage(main);
+        warriorBasic = new WarriorBasic(main, manager, this);
+        lavaQuake = new LavaQuake(main, manager, this);
+        searingChains = new SearingChains(main, manager, this);
+        tempestRage = new TempestRage(main, manager, this);
+        meteorCrater = new MeteorCrater(main, manager, this);
+        anvilDrop = new AnvilDrop(main, manager, this);
         flamingSigil = new FlamingSigil(main, manager);
         burningBlessing = new BurningBlessing(main, manager);
-        magmaSpikes = new MagmaSpikes(main, manager);
+        magmaSpikes = new MagmaSpikes(main, manager, this);
         gladiatorHeart = new GladiatorHeart(main, manager);
-        deathGaze = new DeathGaze(main, manager);
+        deathGaze = new DeathGaze(main, manager, this);
     }
 
     public void useWarriorAbility(LivingEntity caster, int abilityNumber){
@@ -96,6 +98,7 @@ public class WarriorAbilities {
     public void useWarriorBasic(LivingEntity caster){
         warriorBasic.useBasic(caster);
     }
+
 
     public int getAbilityCooldown(Player player, int abilityNumber){
 
@@ -159,4 +162,5 @@ public class WarriorAbilities {
     public DeathGaze getDeathGaze(){return deathGaze;}
     public GladiatorHeart getGladiatorHeart(){return gladiatorHeart;}
     public WarriorBasic getWarriorBasic(){return warriorBasic;}
+    public Rage getRage(){return rage;}
 }

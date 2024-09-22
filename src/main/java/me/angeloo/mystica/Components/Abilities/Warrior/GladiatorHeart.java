@@ -148,10 +148,6 @@ public class GladiatorHeart {
         return cooldown;
     }
 
-    public double getCost(){
-        return 20;
-    }
-
     public void resetCooldown(LivingEntity caster){
         abilityReadyInMap.remove(caster.getUniqueId());
     }

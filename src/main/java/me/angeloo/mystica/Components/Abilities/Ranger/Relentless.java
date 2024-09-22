@@ -38,6 +38,7 @@ public class Relentless {
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
     private final StarVolley starVolley;
+    private final Focus focus;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -54,6 +55,7 @@ public class Relentless {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        focus = rangerAbilities.getFocus();
         starVolley = rangerAbilities.getStarVolley();
     }
 
@@ -285,14 +287,10 @@ public class Relentless {
 
     }
 
-    public double getCost(){
-        return 20;
-    }
-
     public double getSkillDamage(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_3_Level_Bonus();
-        return 40 + ((int)(skillLevel/3));
+        return focus.calculateFocusMultipliedDamage(caster, 40) + ((int)(skillLevel/3));
     }
 
     public int getCooldown(LivingEntity caster){
@@ -327,6 +325,10 @@ public class Relentless {
             double distance = caster.getLocation().distance(target.getLocation());
 
             if(distance > getRange(caster)){
+                return false;
+            }
+
+            if(distance<1){
                 return false;
             }
         }

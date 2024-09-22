@@ -40,6 +40,7 @@ public class BlessedArrow {
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Focus focus;
     private final StarVolley starVolley;
     private final RallyingCry rallyingCry;
 
@@ -58,6 +59,7 @@ public class BlessedArrow {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        focus = rangerAbilities.getFocus();
         starVolley = rangerAbilities.getStarVolley();
     }
 
@@ -274,15 +276,11 @@ public class BlessedArrow {
         return cooldown;
     }
 
-    public double getCost(){
-        return 10;
-    }
-
     public double getSkillDamage(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_5_Level_Bonus();
 
-        return 20 + ((int)(skillLevel/3));
+        return focus.calculateFocusMultipliedDamage(caster, 20) + ((int)(skillLevel/3));
     }
 
     public void resetCooldown(LivingEntity caster){
@@ -295,6 +293,10 @@ public class BlessedArrow {
             double distance = caster.getLocation().distance(target.getLocation());
 
             if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+                return false;
+            }
+
+            if(distance<1){
                 return false;
             }
         }

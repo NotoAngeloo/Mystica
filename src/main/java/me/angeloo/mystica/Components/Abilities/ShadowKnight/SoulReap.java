@@ -407,11 +407,7 @@ public class SoulReap {
         }
 
 
-        if(energy.getCurrentEnergy(caster) < getCost()){
-            return false;
-        }
-
-        return true;
+        return energy.getCurrentEnergy(caster) >= getCost();
     }
 
 }

@@ -208,10 +208,6 @@ public class Laceration {
         return 5 + ((int)(level/3));
     }
 
-    public double getCost(){
-        return 10;
-    }
-
     public int getCooldown(LivingEntity caster){
         int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 

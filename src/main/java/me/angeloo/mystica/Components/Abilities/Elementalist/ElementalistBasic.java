@@ -135,6 +135,10 @@ public class ElementalistBasic {
                     return;
                 }
 
+                if(distance<1){
+                    stopBasicRunning(caster);
+                    return;
+                }
 
                 tryToRemoveBasicStage(caster);
                 switch (getStage(caster)){
@@ -555,6 +559,10 @@ public class ElementalistBasic {
         double distance = caster.getLocation().distance(target.getLocation());
 
         if(distance > getRange(caster)){
+            return false;
+        }
+
+        if(distance<1){
             return false;
         }
 

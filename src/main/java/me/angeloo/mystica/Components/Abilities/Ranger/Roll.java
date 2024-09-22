@@ -22,7 +22,6 @@ public class Roll {
     private final ProfileManager profileManager;
     private final CombatManager combatManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
-    private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
@@ -33,7 +32,6 @@ public class Roll {
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
-        changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
@@ -129,10 +127,6 @@ public class Roll {
 
     }
 
-    public double getCost(){
-        return 5;
-    }
-
     public int getCooldown(LivingEntity caster){
         int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
@@ -148,12 +142,7 @@ public class Roll {
     }
 
     public boolean usable(LivingEntity caster){
-        if(getCooldown(caster) > 0){
-            return false;
-        }
-
-
-        return true;
+        return getCooldown(caster) <= 0;
     }
 
 }

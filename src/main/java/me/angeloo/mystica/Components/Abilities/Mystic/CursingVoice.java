@@ -29,7 +29,6 @@ public class CursingVoice {
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final BuffAndDebuffManager buffAndDebuffManager;
-    private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
@@ -43,7 +42,6 @@ public class CursingVoice {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
-        changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
@@ -142,10 +140,6 @@ public class CursingVoice {
         }.runTaskTimer(main, 0, 3);
 
 
-    }
-
-    public double getCost(){
-        return 10;
     }
 
     public int getCooldown(LivingEntity caster){

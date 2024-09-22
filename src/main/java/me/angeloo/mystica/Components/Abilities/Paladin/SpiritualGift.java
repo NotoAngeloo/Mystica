@@ -175,9 +175,6 @@ public class SpiritualGift {
 
     }
 
-    public double getCost(){
-        return 10;
-    }
 
     public double getHealPower(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +

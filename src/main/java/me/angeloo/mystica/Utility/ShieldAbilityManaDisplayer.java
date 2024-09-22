@@ -16,8 +16,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.awt.*;
 
-import static me.angeloo.mystica.Mystica.mysticColor;
-import static me.angeloo.mystica.Mystica.shadowKnightColor;
+import static me.angeloo.mystica.Mystica.*;
 
 public class ShieldAbilityManaDisplayer {
 
@@ -86,8 +85,6 @@ public class ShieldAbilityManaDisplayer {
 
     private String getManaBar(Player player){
 
-        Profile playerProfile = profileManager.getAnyProfile(player);
-
         double max = 500;
         double current = 0;
 
@@ -110,6 +107,18 @@ public class ShieldAbilityManaDisplayer {
 
                 break;
             }
+            case "warrior":{
+                current = abilityManager.getWarriorAbilities().getRage().getCurrentRage(player);
+                manaBar.append(ChatColor.of(warriorColor));
+                break;
+            }
+            case "ranger":{
+                max = 10;
+                current = abilityManager.getRangerAbilities().getFocus().getFocus(player);
+                //manaBar.append(ChatColor.of(rangerColor));
+                manaBar.append(ChatColor.GREEN);
+                break;
+            }
         }
 
         int percent = (int) Math.floor((current/max) * 100);
@@ -122,7 +131,6 @@ public class ShieldAbilityManaDisplayer {
                 manaBar.append(" ");
             }
         }
-
 
 
 

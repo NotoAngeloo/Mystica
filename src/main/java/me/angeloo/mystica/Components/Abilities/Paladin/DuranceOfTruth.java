@@ -122,6 +122,7 @@ public class DuranceOfTruth {
                         targeted = true;
                     }
 
+
                 }
             }
 
@@ -430,10 +431,6 @@ public class DuranceOfTruth {
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_7_Level_Bonus();
         return 25 + ((int)(skillLevel/3));
-    }
-
-    public double getCost(){
-        return 10;
     }
 
     public int getCooldown(LivingEntity caster){

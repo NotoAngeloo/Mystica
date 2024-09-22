@@ -42,6 +42,7 @@ public class WildSpirit {
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
     private final StarVolley starVolley;
+    private final Focus focus;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -59,6 +60,7 @@ public class WildSpirit {
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         starVolley = rangerAbilities.getStarVolley();
+        focus = rangerAbilities.getFocus();
     }
 
     public void sendSignal(LivingEntity caster){
@@ -379,12 +381,9 @@ public class WildSpirit {
     public double getSkillDamage(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_7_Level_Bonus();
-        return 10 + ((int)(skillLevel/3));
+        return focus.calculateFocusMultipliedDamage(caster, 10) + ((int)(skillLevel/3));
     }
 
-    public double getCost(){
-        return 10;
-    }
 
     public void resetCooldown(LivingEntity caster){
         abilityReadyInMap.remove(caster.getUniqueId());

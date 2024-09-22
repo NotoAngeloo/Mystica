@@ -232,8 +232,6 @@ public class SpiritualDescent {
         return 5 + ((int)(skillLevel/3));
     }
 
-    public double getCost(){return 10;}
-
 
     public int getCooldown(LivingEntity caster){
 

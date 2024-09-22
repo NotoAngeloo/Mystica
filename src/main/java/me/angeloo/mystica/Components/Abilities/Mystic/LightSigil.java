@@ -478,7 +478,7 @@ public class LightSigil {
     }
 
     public int getCost(){
-        return 5;
+        return 20;
     }
 
     public int getCooldown(LivingEntity caster){
@@ -500,11 +500,7 @@ public class LightSigil {
             return false;
         }
 
-        if(mana.getCurrentMana(caster)<getCost()){
-            return false;
-        }
-
-        return true;
+        return mana.getCurrentMana(caster) >= getCost();
     }
 
 }

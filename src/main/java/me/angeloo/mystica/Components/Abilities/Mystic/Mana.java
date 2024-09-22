@@ -32,6 +32,9 @@ public class Mana {
 
         int currentMana = getCurrentMana(caster);
         int newCurrentMana = currentMana - cost;
+        if(newCurrentMana < 0){
+            newCurrentMana = 0;
+        }
         manaAmount.put(caster.getUniqueId(), newCurrentMana);
         lastManaed.put(caster.getUniqueId(), (System.currentTimeMillis()/1000));
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(caster, true));

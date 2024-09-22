@@ -1081,8 +1081,27 @@ public class GeneralEventListener implements Listener {
     }*/
 
     @EventHandler
+    public void rangerLoseFocus(PlayerMoveEvent event){
+        Player player = event.getPlayer();
+
+        if(!profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("ranger")){
+            return;
+        }
+
+        Location from = event.getFrom();
+        Location to = event.getTo();
+        assert to != null;
+        if (from.getX() != to.getX() || from.getY() != to.getY() || from.getZ() != to.getZ()) {
+            abilityManager.getRangerAbilities().getFocus().loseFocus(player);
+        }
+
+    }
+
+    @EventHandler
     public void noImmobile(PlayerMoveEvent event){
         Player player = event.getPlayer();
+
+
 
         boolean immobile = buffAndDebuffManager.getImmobile().getImmobile(player);
 
@@ -1207,12 +1226,14 @@ public class GeneralEventListener implements Listener {
                     ((Player) defender).playSound(defender, Sound.ENTITY_PLAYER_HURT, 1, 1);
                     damageSoundCooldown.put(defender.getUniqueId(), (System.currentTimeMillis() / 1000));
                 }
-
-                abilityManager.getWarriorAbilities().getSearingChains().tryToDecreaseCooldown(defender);
-                abilityManager.getAssassinAbilities().getStealth().stealthBonusCheck(defender, null);
-
             }
 
+            abilityManager.getWarriorAbilities().getSearingChains().tryToDecreaseCooldown(defender);
+            abilityManager.getAssassinAbilities().getStealth().stealthBonusCheck(defender, null);
+
+            if(profileManager.getAnyProfile(defender).getPlayerClass().equalsIgnoreCase("warrior")){
+                abilityManager.getWarriorAbilities().getRage().addRageToEntity(defender, 10);
+            }
 
             buffAndDebuffManager.getSleep().forceWakeUp(defender);
 

@@ -38,6 +38,7 @@ public class ShadowCrows {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
+    private final Focus focus;
     private final StarVolley starVolley;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
@@ -55,6 +56,7 @@ public class ShadowCrows {
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         starVolley = rangerAbilities.getStarVolley();
+        focus = rangerAbilities.getFocus();
     }
 
     private final double range = 20;
@@ -281,12 +283,10 @@ public class ShadowCrows {
         return 0;
     }
 
-    public double getCost(){return 5;}
-
     public double getSkillDamage(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_2_Level_Bonus();
-        return 2 + ((int)(skillLevel/3));
+        return focus.calculateFocusMultipliedDamage(caster, 2) + ((int)(skillLevel/3));
     }
 
     public int getCooldown(LivingEntity caster){
@@ -323,6 +323,11 @@ public class ShadowCrows {
             if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
                 return false;
             }
+
+            if(distance<1){
+                return false;
+            }
+
         }
 
         if(target == null){

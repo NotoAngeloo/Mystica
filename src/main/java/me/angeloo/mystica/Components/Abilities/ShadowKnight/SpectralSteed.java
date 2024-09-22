@@ -334,10 +334,7 @@ public class SpectralSteed {
 
         Block block = caster.getLocation().subtract(0,1,0).getBlock();
 
-        if(block.getType() == Material.AIR){
-            return false;
-        }
-        return true;
+        return block.getType() != Material.AIR;
     }
 
 

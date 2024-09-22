@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Warrior;
 
+import me.angeloo.mystica.Components.Abilities.WarriorAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -41,10 +42,12 @@ public class MeteorCrater {
     private final PveChecker pveChecker;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Rage rage;
+
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public MeteorCrater(Mystica main, AbilityManager manager){
+    public MeteorCrater(Mystica main, AbilityManager manager, WarriorAbilities warriorAbilities){
         this.main = main;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
@@ -55,6 +58,7 @@ public class MeteorCrater {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        rage = warriorAbilities.getRage();
     }
 
     public void use(LivingEntity caster){
@@ -63,10 +67,11 @@ public class MeteorCrater {
             abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-
         if(!usable(caster)){
             return;
         }
+
+        rage.subTractRageFromEntity(caster, getCost());
 
         combatManager.startCombatTimer(caster);
 
@@ -76,7 +81,7 @@ public class MeteorCrater {
             cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        abilityReadyInMap.put(caster.getUniqueId(), 20);
+        abilityReadyInMap.put(caster.getUniqueId(), 2);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
@@ -332,8 +337,8 @@ public class MeteorCrater {
         return cooldown;
     }
 
-    public double getCost(){
-        return 20;
+    public int getCost(){
+        return 100;
     }
 
     public double getSkillDamage(LivingEntity caster){
@@ -353,6 +358,14 @@ public class MeteorCrater {
 
         Block block = caster.getLocation().subtract(0,1,0).getBlock();
 
-        return block.getType() != Material.AIR;
+        if(block.getType() == Material.AIR){
+            return false;
+        }
+
+        if(rage.getCurrentRage(caster) < getCost()){
+            return false;
+        }
+
+        return true;
     }
 }

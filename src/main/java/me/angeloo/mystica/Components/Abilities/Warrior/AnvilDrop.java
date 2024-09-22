@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Warrior;
 
+import me.angeloo.mystica.Components.Abilities.WarriorAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -38,10 +39,12 @@ public class AnvilDrop {
     private final PveChecker pveChecker;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Rage rage;
+
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public AnvilDrop(Mystica main, AbilityManager manager){
+    public AnvilDrop(Mystica main, AbilityManager manager, WarriorAbilities warriorAbilities){
         this.main = main;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
@@ -52,6 +55,7 @@ public class AnvilDrop {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        rage = warriorAbilities.getRage();
     }
 
     public void use(LivingEntity caster){
@@ -316,6 +320,7 @@ public class AnvilDrop {
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster);
+            rage.addRageToEntity(caster, 10);
 
             //also knockup
             if(profileManager.getAnyProfile(targetToHit).getIsMovable()){
@@ -336,10 +341,6 @@ public class AnvilDrop {
         return cooldown;
     }
 
-    public double getCost(){
-        return 10;
-    }
-
     public double getSkillDamage(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_5_Level_Bonus();
@@ -357,11 +358,7 @@ public class AnvilDrop {
 
         Block block = caster.getLocation().subtract(0,1,0).getBlock();
 
-        if(block.getType() == Material.AIR){
-            return false;
-        }
-
-        return true;
+        return block.getType() != Material.AIR;
     }
 
 }

@@ -358,10 +358,6 @@ public class ArcaneMissiles {
         }.runTaskTimer(main, 0, 6);
     }
 
-    public double getCost(){
-        return 20;
-    }
-
     public double getSkillDamage(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getStats().getLevel();
         return 70 + ((int)(skillLevel/3));
@@ -399,6 +395,10 @@ public class ArcaneMissiles {
             double distance = caster.getLocation().distance(target.getLocation());
 
             if(distance > getRange(caster)){
+                return false;
+            }
+
+            if(distance<1){
                 return false;
             }
         }

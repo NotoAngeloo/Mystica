@@ -162,10 +162,6 @@ public class WindWall {
 
     }
 
-    public double getCost(){
-        return 5;
-    }
-
     public int getCooldown(LivingEntity caster){
         int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 

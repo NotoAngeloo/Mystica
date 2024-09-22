@@ -236,10 +236,6 @@ public class WickedConcoction {
         return 50 + ((int)(skillLevel/3));
     }
 
-    public double getCost(){
-        return 20;
-    }
-
     public double getHealPower(){
         return 10;
     }
@@ -265,6 +261,10 @@ public class WickedConcoction {
             double distance = caster.getLocation().distance(target.getLocation());
 
             if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+                return false;
+            }
+
+            if(distance<1){
                 return false;
             }
 

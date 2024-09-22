@@ -352,6 +352,10 @@ public class ShadowGrip {
             if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
                 return false;
             }
+
+            if(distance<1){
+                return false;
+            }
         }
 
         if(target == null){

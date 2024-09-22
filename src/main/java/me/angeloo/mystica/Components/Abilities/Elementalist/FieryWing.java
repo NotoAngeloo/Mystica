@@ -303,10 +303,6 @@ public class FieryWing {
         }
     }
 
-    public double getCost() {
-        return 20;
-    }
-
     public double getSkillDamage(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getStats().getLevel();
         return 60 + ((int)(skillLevel/3));
@@ -346,6 +342,11 @@ public class FieryWing {
             if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
                 return false;
             }
+
+            if(distance<1){
+                return false;
+            }
+
         }
 
         if(target == null){

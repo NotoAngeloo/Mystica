@@ -207,10 +207,6 @@ public class FlyingBlade {
 
     }
 
-    public double getCost(){
-        return 10;
-    }
-
     public double getSkillDamage(LivingEntity caster){
 
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
@@ -248,6 +244,10 @@ public class FlyingBlade {
             double distance = caster.getLocation().distance(target.getLocation());
 
             if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+                return false;
+            }
+
+            if(distance<1){
                 return false;
             }
         }

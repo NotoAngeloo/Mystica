@@ -294,11 +294,7 @@ public class Soulcrack {
     }
 
     public boolean usable(LivingEntity caster){
-        if(getCooldown(caster) > 0){
-            return false;
-        }
-
-        return true;
+        return getCooldown(caster) <= 0;
     }
 
 }

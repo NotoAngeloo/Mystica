@@ -261,10 +261,6 @@ public class OrderShield {
         return 35 + ((int)(skillLevel/3));
     }
 
-    public double getCost(){
-        return 10;
-    }
-
     public int getCooldown(LivingEntity caster){
         int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
@@ -296,6 +292,10 @@ public class OrderShield {
             double distance = caster.getLocation().distance(target.getLocation());
 
             if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+                return false;
+            }
+
+            if(distance<1){
                 return false;
             }
         }

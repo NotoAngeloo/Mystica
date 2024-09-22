@@ -280,10 +280,6 @@ public class MercifulHealing {
         return  10 + ((int)(skillLevel/3));
     }
 
-    public double getCost(){
-        return 20;
-    }
-
     public void resetCooldown(LivingEntity caster){
         abilityReadyInMap.remove(caster.getUniqueId());
     }

@@ -29,7 +29,6 @@ public class FlamingSigil {
     private final ProfileManager profileManager;
     private final CombatManager combatManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
-    private final ChangeResourceHandler changeResourceHandler;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final CooldownDisplayer cooldownDisplayer;
@@ -42,7 +41,6 @@ public class FlamingSigil {
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
-        changeResourceHandler = main.getChangeResourceHandler();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
@@ -218,10 +216,6 @@ public class FlamingSigil {
         }
 
         return cooldown;
-    }
-
-    public double getCost(){
-        return 10;
     }
 
 

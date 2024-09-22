@@ -260,10 +260,6 @@ public class Judgement {
         return 30 + ((int)(skillLevel/3));
     }
 
-    public double getCost(){
-        return 10;
-    }
-
     public int getCooldown(LivingEntity entity){
 
         int cooldown = abilityReadyInMap.getOrDefault(entity.getUniqueId(), 0);

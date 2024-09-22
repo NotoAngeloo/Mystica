@@ -408,7 +408,7 @@ public class ForceOfWill {
     }
 
     public int getCost(){
-        return 15;
+        return 50;
     }
 
     public double getSkillDamage(LivingEntity caster){
@@ -439,6 +439,9 @@ public class ForceOfWill {
             return false;
         }
 
+        if(distance<1){
+            return false;
+        }
 
         if(getCooldown(caster) > 0){
             return false;
@@ -447,11 +450,8 @@ public class ForceOfWill {
 
         //check shepardlogic
         if(profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("shepard")){
-            if(mana.getCurrentMana(caster)<getCost()){
-                return false;
-            }
+            return mana.getCurrentMana(caster) >= getCost();
         }
-
 
 
         return true;

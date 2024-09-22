@@ -91,7 +91,7 @@ public class ArcaneShield {
             cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        abilityReadyInMap.put(caster.getUniqueId(), 10);
+        abilityReadyInMap.put(caster.getUniqueId(), 5);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
@@ -214,7 +214,7 @@ public class ArcaneShield {
 
     }
 
-    public int getCost(){return 5;}
+    public int getCost(){return 25;}
 
     public int getCooldown(LivingEntity caster){
         int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);

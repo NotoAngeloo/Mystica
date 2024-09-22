@@ -229,10 +229,6 @@ public class EvilSpirit {
         return 0;
     }
 
-    public double getCost(){
-        return 40;
-    }
-
     public boolean usable(LivingEntity caster){
         if(getChaosShards(caster)<6){
             return false;

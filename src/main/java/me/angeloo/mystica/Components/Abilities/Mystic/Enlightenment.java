@@ -69,7 +69,7 @@ public class Enlightenment {
             cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        abilityReadyInMap.put(caster.getUniqueId(), 20);
+        abilityReadyInMap.put(caster.getUniqueId(), 5);
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
@@ -167,7 +167,7 @@ public class Enlightenment {
     }
 
     public int getCost(){
-        return 20;
+        return 100;
     }
 
     public int getCooldown(LivingEntity caster){
@@ -189,11 +189,7 @@ public class Enlightenment {
             return false;
         }
 
-        if(mana.getCurrentMana(caster)<getCost()){
-            return false;
-        }
-
-        return true;
+        return mana.getCurrentMana(caster) >= getCost();
     }
 
 }

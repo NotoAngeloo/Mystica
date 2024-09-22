@@ -27,10 +27,8 @@ import java.util.UUID;
 public class RallyingCry {
 
     private final Mystica main;
-    private final ProfileManager profileManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CombatManager combatManager;
-    private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
@@ -39,10 +37,8 @@ public class RallyingCry {
 
     public RallyingCry(Mystica main, AbilityManager manager){
         this.main = main;
-        profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
-        changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
@@ -152,10 +148,6 @@ public class RallyingCry {
 
         }.runTaskTimer(main, 0, 1);
 
-    }
-
-    public double getCost(){
-        return 10;
     }
 
     public int getIfBuffTime(LivingEntity caster){

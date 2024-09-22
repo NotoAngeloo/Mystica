@@ -253,22 +253,13 @@ public class Representative {
         return 25 +  ((int)(level/3));
     }
 
-    public double getCost() {
-        return 20;
-    }
 
     public void resetCooldown(LivingEntity caster){
         abilityReadyInMap.remove(caster.getUniqueId());
     }
 
     public boolean usable(LivingEntity caster){
-        if (getCooldown(caster) > 0) {
-            return false;
-        }
-
-
-
-        return true;
+        return getCooldown(caster) <= 0;
     }
 
 }

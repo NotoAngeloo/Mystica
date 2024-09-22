@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Warrior;
 
+import me.angeloo.mystica.Components.Abilities.WarriorAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -38,11 +39,12 @@ public class SearingChains {
     private final ChangeResourceHandler changeResourceHandler;
     private final AggroManager aggroManager;
     private final CooldownDisplayer cooldownDisplayer;
+    private final Rage rage;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public SearingChains(Mystica main, AbilityManager manager){
+    public SearingChains(Mystica main, AbilityManager manager, WarriorAbilities warriorAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
@@ -54,6 +56,7 @@ public class SearingChains {
         changeResourceHandler = main.getChangeResourceHandler();
         aggroManager = main.getAggroManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        rage = warriorAbilities.getRage();
     }
 
     public void use(LivingEntity caster){
@@ -322,6 +325,7 @@ public class SearingChains {
                             if(entity instanceof Player){
                                 if(pvpManager.pvpLogic(caster, (Player) entity)){
                                     changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                                    rage.addRageToEntity(caster, 10);
                                     validCCTargets.add(livingEntity);
                                     buffAndDebuffManager.getPulled().applyPull(livingEntity);
                                     targetManager.setPlayerTarget((Player) entity, caster);
@@ -332,6 +336,7 @@ public class SearingChains {
                             if(pveChecker.pveLogic(livingEntity)){
                                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
                                 changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                                rage.addRageToEntity(caster, 10);
                                 if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
                                     validCCTargets.add(livingEntity);
                                     buffAndDebuffManager.getPulled().applyPull(livingEntity);
@@ -491,10 +496,6 @@ public class SearingChains {
         }
 
         return cooldown;
-    }
-
-    public double getCost(){
-        return 10;
     }
 
     public double getSkillDamage(LivingEntity caster){

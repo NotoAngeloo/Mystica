@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Warrior;
 
+import me.angeloo.mystica.Components.Abilities.WarriorAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -33,11 +34,12 @@ public class LavaQuake {
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final CooldownDisplayer cooldownDisplayer;
+    private final Rage rage;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public LavaQuake(Mystica main, AbilityManager manager){
+    public LavaQuake(Mystica main, AbilityManager manager, WarriorAbilities warriorAbilities){
         this.main = main;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
@@ -48,6 +50,7 @@ public class LavaQuake {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        rage = warriorAbilities.getRage();
     }
 
     public void use(LivingEntity caster){
@@ -198,6 +201,7 @@ public class LavaQuake {
                         if(pvpManager.pvpLogic(caster, (Player) entity)){
                             changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
                             buffAndDebuffManager.getGenericShield().removeShields(livingEntity);
+                            rage.addRageToEntity(caster, 10);
                         }
                         continue;
                     }
@@ -205,6 +209,7 @@ public class LavaQuake {
                     if(pveChecker.pveLogic(livingEntity)){
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
                         changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                        rage.addRageToEntity(caster, 10);
                     }
 
                 }
@@ -246,10 +251,6 @@ public class LavaQuake {
         }
 
         return cooldown;
-    }
-
-    public double getCost(){
-        return 5;
     }
 
     public double getSkillDamage(LivingEntity caster){

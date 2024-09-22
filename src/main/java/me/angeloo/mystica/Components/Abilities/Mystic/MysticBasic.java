@@ -105,6 +105,10 @@ public class MysticBasic {
             return;
         }
 
+        if(distance<1){
+            return;
+        }
+
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
@@ -155,6 +159,12 @@ public class MysticBasic {
                     stopBasicRunning(caster);
                     return;
                 }
+
+                if(distance<1){
+                    stopBasicRunning(caster);
+                    return;
+                }
+
 
                 basicStageChaos(caster);
                 combatManager.startCombatTimer(caster);
@@ -218,12 +228,16 @@ public class MysticBasic {
                 }
 
                 Vector direction = targetWasLoc.toVector().subtract(current.toVector());
+
+
                 double distance = current.distance(targetWasLoc);
                 double distanceThisTick = Math.min(distance, .75);
-                current.add(direction.normalize().multiply(distanceThisTick));
-                current.setDirection(direction);
 
+                current.add(direction.normalize().multiply(distanceThisTick));
+
+                current.setDirection(direction);
                 armorStand.teleport(current);
+
 
                 if(evilSpirit){
                     caster.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, current, 1, 0, 0, 0, 0);
@@ -423,6 +437,11 @@ public class MysticBasic {
             return;
         }
 
+
+        if(distance<1){
+            stopBasicRunning(caster);
+            return;
+        }
 
         if(!healing){
             //Bukkit.getLogger().info(caster.getName() + " damaging");

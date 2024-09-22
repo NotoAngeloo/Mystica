@@ -25,7 +25,6 @@ public class ConjuringForce {
     private final CombatManager combatManager;
     private final PvpManager pvpManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
-    private final ChangeResourceHandler changeResourceHandler;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -37,7 +36,6 @@ public class ConjuringForce {
         combatManager = manager.getCombatManager();
         pvpManager = main.getPvpManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
-        changeResourceHandler = main.getChangeResourceHandler();
     }
 
     //TODO: conj force adds health if ur in it
@@ -216,10 +214,6 @@ public class ConjuringForce {
             }
 
         }.runTaskTimer(main, 0, 1);
-    }
-
-    public double getCost(){
-        return 20;
     }
 
     public double getBuffAmount(LivingEntity caster){

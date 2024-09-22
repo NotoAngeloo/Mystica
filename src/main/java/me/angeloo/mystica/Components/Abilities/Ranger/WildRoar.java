@@ -26,7 +26,6 @@ public class WildRoar {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final PvpManager pvpManager;
     private final CombatManager combatManager;
-    private final ChangeResourceHandler changeResourceHandler;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -38,7 +37,6 @@ public class WildRoar {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         pvpManager = main.getPvpManager();
         combatManager = manager.getCombatManager();
-        changeResourceHandler = main.getChangeResourceHandler();
     }
 
     public void use(LivingEntity caster){
@@ -176,10 +174,6 @@ public class WildRoar {
 
     public double getBuffAmount(LivingEntity caster){
         return profileManager.getAnyProfile(caster).getStats().getLevel() * 1.25;
-    }
-
-    public double getCost(){
-        return 20;
     }
 
     public int getCooldown(LivingEntity caster){

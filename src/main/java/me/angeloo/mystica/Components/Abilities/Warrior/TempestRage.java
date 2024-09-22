@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Warrior;
 
+import me.angeloo.mystica.Components.Abilities.WarriorAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -38,11 +39,12 @@ public class TempestRage {
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final ChangeResourceHandler changeResourceHandler;
+    private final Rage rage;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public TempestRage(Mystica main, AbilityManager manager){
+    public TempestRage(Mystica main, AbilityManager manager, WarriorAbilities warriorAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
@@ -52,6 +54,7 @@ public class TempestRage {
         pveChecker = main.getPveChecker();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        rage = warriorAbilities.getRage();
     }
 
     public void use(LivingEntity caster) {
@@ -185,6 +188,7 @@ public class TempestRage {
                         if(entity instanceof Player){
                             if(pvpManager.pvpLogic(caster, (Player) entity)){
                                 changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                                rage.addRageToEntity(caster, 10);
                             }
                             continue;
                         }
@@ -192,6 +196,7 @@ public class TempestRage {
                         if(pveChecker.pveLogic(livingEntity)){
                             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
                             changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                            rage.addRageToEntity(caster, 10);
                         }
 
                     }
@@ -226,10 +231,6 @@ public class TempestRage {
         }
 
         return cooldown;
-    }
-
-    public double getCost(){
-        return 10;
     }
 
     public double getSkillDamage(LivingEntity caster){

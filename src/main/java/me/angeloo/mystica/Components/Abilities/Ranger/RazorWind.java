@@ -40,6 +40,7 @@ public class RazorWind {
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
     private final StarVolley starVolley;
+    private final Focus focus;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -57,6 +58,7 @@ public class RazorWind {
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         starVolley = rangerAbilities.getStarVolley();
+        focus = rangerAbilities.getFocus();
     }
 
     public void use(LivingEntity caster){
@@ -351,11 +353,7 @@ public class RazorWind {
     public double getSkillDamage(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_4_Level_Bonus();
-        return 40 + ((int)(skillLevel/3));
-    }
-
-    public double getCost(){
-        return 20;
+        return focus.calculateFocusMultipliedDamage(caster, 40) + ((int)(skillLevel/3));
     }
 
     public void resetCooldown(LivingEntity caster){
@@ -379,6 +377,10 @@ public class RazorWind {
             double distance = caster.getLocation().distance(target.getLocation());
 
             if(distance > getRange(caster)){
+                return false;
+            }
+
+            if(distance<1){
                 return false;
             }
         }

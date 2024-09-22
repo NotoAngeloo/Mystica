@@ -433,10 +433,6 @@ public class CovenantSword {
         return 40 + ((int)(skillLevel/3));
     }
 
-    public double getCost(){
-        return 20;
-    }
-
     public int getCooldown(LivingEntity caster){
         int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 

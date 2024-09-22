@@ -21,6 +21,9 @@ public class Energy {
 
         int currentMana = getCurrentEnergy(caster);
         int newCurrentMana = currentMana - cost;
+        if(newCurrentMana < 0){
+            newCurrentMana = 0;
+        }
         EnergyAmount.put(caster.getUniqueId(), newCurrentMana);
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(caster, true));
     }

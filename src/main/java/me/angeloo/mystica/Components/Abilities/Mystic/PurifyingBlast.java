@@ -82,7 +82,7 @@ public class PurifyingBlast {
             cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        abilityReadyInMap.put(caster.getUniqueId(), 12);
+        abilityReadyInMap.put(caster.getUniqueId(), 5);
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
@@ -317,7 +317,7 @@ public class PurifyingBlast {
     }
 
     public int getCost(){
-        return 10;
+        return 50;
     }
 
     public double getSkillDamage(LivingEntity caster){
@@ -336,10 +336,6 @@ public class PurifyingBlast {
             return false;
         }
 
-        if(mana.getCurrentMana(caster)<getCost()){
-            return false;
-        }
-
-        return true;
+        return mana.getCurrentMana(caster) >= getCost();
     }
 }

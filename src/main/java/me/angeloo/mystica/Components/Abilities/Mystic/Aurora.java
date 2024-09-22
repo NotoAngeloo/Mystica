@@ -81,7 +81,7 @@ public class Aurora {
             cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        abilityReadyInMap.put(caster.getUniqueId(), 35);
+        abilityReadyInMap.put(caster.getUniqueId(), 15);
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
@@ -224,7 +224,7 @@ public class Aurora {
     }
 
     public int getCost(){
-        return 40;
+        return 100;
     }
 
     public int getCooldown(LivingEntity caster){
@@ -276,11 +276,7 @@ public class Aurora {
         }
 
 
-        if(mana.getCurrentMana(caster)<getCost()){
-            return false;
-        }
-
-        return true;
+        return mana.getCurrentMana(caster) >= getCost();
     }
 
 }

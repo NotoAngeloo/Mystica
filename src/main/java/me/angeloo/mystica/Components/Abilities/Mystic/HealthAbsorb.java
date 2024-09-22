@@ -330,10 +330,6 @@ public class HealthAbsorb {
         return 25 + ((int)(skillLevel/3));
     }
 
-    public double getCost(){
-        return 5;
-    }
-
     public int getCooldown(LivingEntity caster){
 
         int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
@@ -366,6 +362,10 @@ public class HealthAbsorb {
             double distance = caster.getLocation().distance(target.getLocation());
 
             if(distance > getRange(caster)){
+                return false;
+            }
+
+            if(distance<1){
                 return false;
             }
         }

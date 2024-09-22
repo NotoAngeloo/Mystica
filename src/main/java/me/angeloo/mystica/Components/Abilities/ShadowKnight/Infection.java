@@ -402,17 +402,17 @@ public class Infection {
             if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
                 return false;
             }
+
+            if(distance<1){
+                return false;
+            }
         }
 
         if(target == null){
             return false;
         }
 
-        if(getCooldown(caster) > 0){
-            return false;
-        }
-
-        return true;
+        return getCooldown(caster) <= 0;
     }
 
 }

@@ -99,8 +99,6 @@ public class ShadowKnightAbilities {
         shadowKnightBasic.useBasic(caster);
     }
 
-    public void regenEnergy(LivingEntity caster){energy.regenEnergyNaturally(caster);}
-
     public int getAbilityCooldown(Player player, int abilityNumber){
 
         switch (abilityNumber){

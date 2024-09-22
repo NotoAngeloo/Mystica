@@ -293,10 +293,6 @@ public class PlagueCurse {
         return 30 + ((int)(skillLevel/3));
     }
 
-    public double getCost(){
-        return 5;
-    }
-
     public boolean getIfCursed(LivingEntity entity){
         return curseMap.getOrDefault(entity.getUniqueId(), false);
     }

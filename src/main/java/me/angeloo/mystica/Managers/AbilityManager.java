@@ -215,20 +215,22 @@ public class AbilityManager {
                 return;
             }
             case "ranger": {
+                rangerAbilities.getFocus().regenFocusNaturally(caster);
                 return;
             }
             case "mystic": {
-                mysticAbilities.regenMana(caster);
+                mysticAbilities.getMana().regenManaNaturally(caster);
                 return;
             }
             case "shadow knight": {
-                shadowKnightAbilities.regenEnergy(caster);
+                shadowKnightAbilities.getEnergy().regenEnergyNaturally(caster);
                 return;
             }
             case "paladin": {
                 return;
             }
             case "warrior": {
+                warriorAbilities.getRage().loseRageNaturally(caster);
                 return;
             }
             case "assassin": {

@@ -55,6 +55,8 @@ public class NaturalRegenTick extends BukkitRunnable {
                 for(LivingEntity companion : companions){
                     Stats stats = profileManager.getAnyProfile(companion).getStats();
 
+                    abilityManager.incrementResource(companion);
+
                     long lastDamaged = changeResourceHandler.getLastDamaged(companion.getUniqueId());
 
                     //Bukkit.getLogger().info(String.valueOf(currentTime - lastDamaged));
@@ -88,6 +90,8 @@ public class NaturalRegenTick extends BukkitRunnable {
             StatsFromGear gearStats = profileManager.getAnyProfile(player).getGearStats();
 
             player.setFoodLevel(20);
+
+            abilityManager.incrementResource(player);
 
             long lastDamaged = changeResourceHandler.getLastDamaged(player.getUniqueId());
 

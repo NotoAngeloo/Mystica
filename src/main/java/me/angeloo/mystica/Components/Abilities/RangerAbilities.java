@@ -15,6 +15,7 @@ public class RangerAbilities {
 
     private final ProfileManager profileManager;
 
+    private final Focus focus;
     private final RallyingCry rallyingCry;
     private final WildRoar wildRoar;
     private final StarVolley starVolley;
@@ -29,7 +30,8 @@ public class RangerAbilities {
 
     public RangerAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
-        starVolley = new StarVolley(main, manager);
+        focus = new Focus(main);
+        starVolley = new StarVolley(main, manager, this);
         rallyingCry = new RallyingCry(main, manager);
         wildRoar = new WildRoar(main, manager);
         relentless = new Relentless(main, manager, this);
@@ -102,6 +104,7 @@ public class RangerAbilities {
         rangerBasic.useBasic(caster);
     }
 
+
     public int getAbilityCooldown(LivingEntity caster, int abilityNumber){
 
         switch (abilityNumber){
@@ -167,4 +170,5 @@ public class RangerAbilities {
     public Roll getRoll(){return roll;}
     public WildRoar getWildRoar(){return wildRoar;}
     public RangerBasic getRangerBasic(){return rangerBasic;}
+    public Focus getFocus(){return focus;}
 }

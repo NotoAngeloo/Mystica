@@ -46,6 +46,8 @@ public class RangerBasic {
 
     private final Map<UUID, BukkitTask> removeBasicStageTaskMap = new HashMap<>();
 
+    private final Focus focus;
+
     public RangerBasic(Mystica main, AbilityManager manager, RangerAbilities rangerAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
@@ -57,6 +59,7 @@ public class RangerBasic {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        focus = rangerAbilities.getFocus();
     }
 
     public void useBasic(LivingEntity caster){
@@ -95,6 +98,11 @@ public class RangerBasic {
         double distance = caster.getLocation().distance(target.getLocation());
 
         if(distance > totalRange){
+            return;
+        }
+
+
+        if(distance<1){
             return;
         }
 
@@ -158,6 +166,11 @@ public class RangerBasic {
                 double distance = caster.getLocation().distance(target.getLocation());
 
                 if(distance > totalRange){
+                    stopBasicRunning(caster);
+                    return;
+                }
+
+                if(distance<1){
                     stopBasicRunning(caster);
                     return;
                 }
@@ -430,7 +443,7 @@ public class RangerBasic {
             skillDamage = skillDamage * 1.25;
         }
 
-        return skillDamage + ((int)(skillLevel/3));
+        return focus.calculateFocusMultipliedDamage(caster, skillDamage) + ((int)(skillLevel/3));
     }
 
     private int getStage(LivingEntity caster){

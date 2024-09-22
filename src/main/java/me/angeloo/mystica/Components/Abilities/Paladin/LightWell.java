@@ -355,10 +355,6 @@ public class LightWell {
         return 25 + ((int)(level/3));
     }
 
-    public double getCost(){
-        return 20;
-    }
-
     public int getCooldown(LivingEntity caster){
         int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 

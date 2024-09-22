@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Warrior;
 
+import me.angeloo.mystica.Components.Abilities.WarriorAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -37,13 +38,14 @@ public class WarriorBasic {
     private final PveChecker pveChecker;
     private final DamageCalculator damageCalculator;
     private final ChangeResourceHandler changeResourceHandler;
+    private final Rage rage;
 
     private final Map<UUID, Integer> basicStageMap = new HashMap<>();
     private final Map<UUID, BukkitTask> basicRunning = new HashMap<>();
 
     private final Map<UUID, BukkitTask> removeBasicStageTaskMap = new HashMap<>();
 
-    public WarriorBasic(Mystica main, AbilityManager manager){
+    public WarriorBasic(Mystica main, AbilityManager manager, WarriorAbilities warriorAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
@@ -53,6 +55,7 @@ public class WarriorBasic {
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
         changeResourceHandler = main.getChangeResourceHandler();
+        rage = warriorAbilities.getRage();
     }
 
     public void useBasic(LivingEntity caster){
@@ -248,6 +251,7 @@ public class WarriorBasic {
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster);
+            rage.addRageToEntity(caster, 10);
 
         }
         else{
@@ -406,6 +410,7 @@ public class WarriorBasic {
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster);
+            rage.addRageToEntity(caster, 10);
         }
         else{
             stopBasicRunning(caster);

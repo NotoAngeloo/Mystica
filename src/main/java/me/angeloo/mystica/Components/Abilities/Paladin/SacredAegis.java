@@ -30,7 +30,6 @@ public class SacredAegis {
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
-    private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
@@ -43,7 +42,6 @@ public class SacredAegis {
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
-        changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
@@ -228,11 +226,6 @@ public class SacredAegis {
         }.runTaskTimer(main, 0, 1);
 
     }
-
-    public double getCost(){
-        return 20;
-    }
-
     public int getSkillCooldown(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_6_Level_Bonus();

@@ -40,6 +40,7 @@ public class TorahSword {
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Purity purity;
     private final Decision decision;
     private final Judgement judgement;
 
@@ -59,6 +60,7 @@ public class TorahSword {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         decision = paladinAbilities.getDecision();
         judgement = paladinAbilities.getJudgement();
+        purity = paladinAbilities.getPurity();
     }
 
     private final double range = 10;
@@ -81,6 +83,7 @@ public class TorahSword {
         combatManager.startCombatTimer(caster);
 
         execute(caster);
+        purity.skillListAdd(caster, 1);
 
         if(cooldownTask.containsKey(caster.getUniqueId())){
             cooldownTask.get(caster.getUniqueId()).cancel();
@@ -312,7 +315,7 @@ public class TorahSword {
     public double getSkillDamage(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_1_Level_Bonus();
-        return 7 + ((int)(skillLevel/3));
+        return (purity.calculatePurityPercentDamage(caster, 1, 7)) + ((int)(skillLevel/3));
     }
 
     public int getCooldown(LivingEntity caster){

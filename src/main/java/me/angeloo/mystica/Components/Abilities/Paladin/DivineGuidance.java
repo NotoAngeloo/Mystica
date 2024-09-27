@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Paladin;
 
+import me.angeloo.mystica.Components.Abilities.PaladinAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -38,10 +39,12 @@ public class DivineGuidance {
     private final PveChecker pveChecker;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Purity purity;
+
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public DivineGuidance(Mystica main, AbilityManager manager){
+    public DivineGuidance(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
@@ -51,6 +54,7 @@ public class DivineGuidance {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        purity = paladinAbilities.getPurity();
     }
 
     public void use(LivingEntity caster){
@@ -66,6 +70,7 @@ public class DivineGuidance {
         combatManager.startCombatTimer(caster);
 
         execute(caster);
+        purity.skillListAdd(caster, 2);
 
         if(cooldownTask.containsKey(caster.getUniqueId())){
             cooldownTask.get(caster.getUniqueId()).cancel();
@@ -378,7 +383,7 @@ public class DivineGuidance {
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_2_Level_Bonus();
 
-        return 25 + ((int)(skillLevel/3));
+        return (purity.calculatePurityPercentDamage(caster, 2, 25)) + ((int)(skillLevel/3));
     }
 
     public int getCooldown(LivingEntity caster){

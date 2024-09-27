@@ -119,6 +119,12 @@ public class ShieldAbilityManaDisplayer {
                 manaBar.append(ChatColor.GREEN);
                 break;
             }
+            case "elementalist":{
+                max = 100;
+                current = abilityManager.getElementalistAbilities().getHeat().getHeat(player);
+                manaBar.append(ChatColor.of(elementalistColor));
+                break;
+            }
         }
 
         int percent = (int) Math.floor((current/max) * 100);
@@ -151,8 +157,6 @@ public class ShieldAbilityManaDisplayer {
         int cooldown = abilityManager.getUltimateCooldown(player);
 
         if(cooldown <= 0){
-
-            //TODO: a unicode character for each ultimate
 
             ItemStack ultimateItem = allSkillItems.getUltimate(player);
 

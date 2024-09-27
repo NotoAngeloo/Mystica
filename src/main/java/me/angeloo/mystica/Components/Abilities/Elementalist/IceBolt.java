@@ -41,6 +41,8 @@ public class IceBolt {
     private final ElementalBreath elementalBreath;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Heat heat;
+
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
@@ -56,6 +58,7 @@ public class IceBolt {
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         elementalBreath = elementalistAbilities.getElementalBreath();
+        heat = elementalistAbilities.getHeat();
     }
 
     private final double range = 20;
@@ -106,6 +109,8 @@ public class IceBolt {
     }
     
     private void execute(LivingEntity caster){
+
+        heat.reduceHeat(caster, 8);
 
         boolean conjurer = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("conjurer");
 

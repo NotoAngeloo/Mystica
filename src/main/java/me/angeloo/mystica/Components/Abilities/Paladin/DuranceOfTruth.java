@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Paladin;
 
+import me.angeloo.mystica.Components.Abilities.PaladinAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -40,10 +41,12 @@ public class DuranceOfTruth {
     private final PveChecker pveChecker;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Purity purity;
+
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public DuranceOfTruth(Mystica main, AbilityManager manager){
+    public DuranceOfTruth(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
         this.main = main;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
@@ -54,6 +57,7 @@ public class DuranceOfTruth {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        purity = paladinAbilities.getPurity();
     }
 
     public void use(LivingEntity caster){
@@ -71,6 +75,7 @@ public class DuranceOfTruth {
         combatManager.startCombatTimer(caster);
 
         execute(caster);
+        purity.skillListAdd(caster, 7);
 
         if(cooldownTask.containsKey(caster.getUniqueId())){
             cooldownTask.get(caster.getUniqueId()).cancel();
@@ -430,7 +435,7 @@ public class DuranceOfTruth {
     public double getSkillDamage(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_7_Level_Bonus();
-        return 25 + ((int)(skillLevel/3));
+        return (purity.calculatePurityPercentDamage(caster, 7, 25)) + ((int)(skillLevel/3));
     }
 
     public int getCooldown(LivingEntity caster){

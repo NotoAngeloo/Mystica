@@ -40,8 +40,10 @@ public class DescendingInferno {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Heat heat;
     private final FieryWing fieryWing;
     private final ElementalBreath elementalBreath;
+
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -59,7 +61,7 @@ public class DescendingInferno {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
-
+        heat = elementalistAbilities.getHeat();
         fieryWing = elementalistAbilities.getFieryWing();
         elementalBreath = elementalistAbilities.getElementalBreath();
 
@@ -113,6 +115,8 @@ public class DescendingInferno {
 
 
     private void execute(LivingEntity caster){
+
+        heat.addHeat(caster, 5);
 
         boolean conjurer = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("conjurer");
 

@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Elementalist;
 
+import me.angeloo.mystica.Components.Abilities.ElementalistAbilities;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
@@ -25,15 +26,18 @@ public class WindrushForm {
     private final CombatManager combatManager;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Heat heat;
+
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public WindrushForm(Mystica main, AbilityManager manager){
+    public WindrushForm(Mystica main, AbilityManager manager, ElementalistAbilities elementalistAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        heat = elementalistAbilities.getHeat();
     }
 
     public void use(LivingEntity caster){
@@ -84,6 +88,8 @@ public class WindrushForm {
     }
 
     private void execute(LivingEntity caster){
+
+        heat.reduceHeat(caster, 5);
 
         Location start = caster.getLocation();
         Vector direction = start.getDirection().normalize();

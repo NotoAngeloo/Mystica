@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Elementalist;
 
+import me.angeloo.mystica.Components.Abilities.ElementalistAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Managers.*;
@@ -36,11 +37,13 @@ public class FieryWing {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
 
+    private final Heat heat;
+
     private final Map<UUID, Integer> inflameMap = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
 
-    public FieryWing(Mystica main, AbilityManager manager){
+    public FieryWing(Mystica main, AbilityManager manager, ElementalistAbilities elementalistAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, manager);
@@ -51,6 +54,7 @@ public class FieryWing {
         damageCalculator = main.getDamageCalculator();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        heat = elementalistAbilities.getHeat();
     }
 
     private final double range = 20;
@@ -103,6 +107,8 @@ public class FieryWing {
     }
 
     private void execute(LivingEntity caster){
+
+        heat.addHeat(caster, 10);
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 

@@ -212,6 +212,7 @@ public class AbilityManager {
 
         switch (clazz.toLowerCase()) {
             case "elementalist": {
+                elementalistAbilities.getHeat().loseHeatNaturally(caster);
                 return;
             }
             case "ranger": {

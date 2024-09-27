@@ -40,6 +40,7 @@ public class FieryMagma {
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Heat heat;
     private final FieryWing fieryWing;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
@@ -57,7 +58,7 @@ public class FieryMagma {
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         fieryWing = elementalistAbilities.getFieryWing();
-
+        heat = elementalistAbilities.getHeat();
     }
 
     private final double range = 20;
@@ -109,6 +110,8 @@ public class FieryMagma {
     }
 
     private void execute(LivingEntity caster){
+
+        heat.addHeat(caster, 5);
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 

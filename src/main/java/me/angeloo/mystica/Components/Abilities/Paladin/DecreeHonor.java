@@ -40,6 +40,7 @@ public class DecreeHonor {
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Purity purity;
     private final JusticeMark justiceMark;
     private final MercifulHealing mercifulHealing;
 
@@ -59,6 +60,7 @@ public class DecreeHonor {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         justiceMark = paladinAbilities.getJusticeMark();
         mercifulHealing = paladinAbilities.getMercifulHealing();
+        purity = paladinAbilities.getPurity();
     }
 
     private final double range = 10;
@@ -99,6 +101,7 @@ public class DecreeHonor {
         combatManager.startCombatTimer(caster);
 
         execute(caster, target);
+        purity.skillListAdd(caster, 1);
 
         if(cooldownTask.containsKey(caster.getUniqueId())){
             cooldownTask.get(caster.getUniqueId()).cancel();;
@@ -283,13 +286,13 @@ public class DecreeHonor {
     public double getSkillDamage(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_1_Level_Bonus();
-        return 20 + ((int)(skillLevel/10));
+        return (purity.calculatePurityPercentDamage(caster, 1, 20))+ ((int)(skillLevel/10));
     }
 
     public double getHealPower(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_1_Level_Bonus();
-        return 5 +  ((int)(skillLevel/3));
+        return (purity.calculatePurityPercentDamage(caster, 1, 5)) +  ((int)(skillLevel/3));
     }
 
     public int getCooldown(LivingEntity caster){

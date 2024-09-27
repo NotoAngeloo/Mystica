@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Elementalist;
 
+import me.angeloo.mystica.Components.Abilities.ElementalistAbilities;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
@@ -32,13 +33,15 @@ public class WindWall {
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public WindWall(Mystica main, AbilityManager manager){
+    private final Heat heat;
+
+    public WindWall(Mystica main, AbilityManager manager, ElementalistAbilities elementalistAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
-
+        heat = elementalistAbilities.getHeat();
     }
 
     public void use(LivingEntity caster) {
@@ -88,6 +91,8 @@ public class WindWall {
     }
 
     private void execute(LivingEntity caster){
+
+        heat.reduceHeat(caster, 5);
 
         Location start = caster.getLocation();
 

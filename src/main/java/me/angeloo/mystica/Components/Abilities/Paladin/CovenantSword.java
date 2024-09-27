@@ -43,6 +43,7 @@ public class CovenantSword {
     private final AbilityManager abilityManager;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Purity purity;
     private final Decision decision;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
@@ -60,6 +61,7 @@ public class CovenantSword {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        purity = paladinAbilities.getPurity();
         decision = paladinAbilities.getDecision();
     }
 
@@ -79,6 +81,7 @@ public class CovenantSword {
         combatManager.startCombatTimer(caster);
 
         execute(caster);
+        purity.skillListAdd(caster, 4);
 
         if(cooldownTask.containsKey(caster.getUniqueId())){
             cooldownTask.get(caster.getUniqueId()).cancel();
@@ -430,7 +433,7 @@ public class CovenantSword {
     public double getSkillDamage(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_4_Level_Bonus();
-        return 40 + ((int)(skillLevel/3));
+        return (purity.calculatePurityPercentDamage(caster, 4, 40)) + ((int)(skillLevel/3));
     }
 
     public int getCooldown(LivingEntity caster){

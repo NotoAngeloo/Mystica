@@ -28,7 +28,6 @@ public class ChangeResourceHandler {
     private final DailyData dailyData;
     private final AggroManager aggroManager;
     private final ProfileManager profileManager;
-    private final QuestManager questManager;
     private final ProtocolManager protocolManager;
     private final Map<UUID, Long> lastDamaged = new HashMap<>();
     private final Map<UUID, Long> lastManaed = new HashMap<>();
@@ -44,7 +43,6 @@ public class ChangeResourceHandler {
     public ChangeResourceHandler(Mystica main){
         this.main = main;
         aggroManager = main.getAggroManager();
-        questManager = main.getQuestManager();
         dailyData = main.getDailyData();
         protocolManager = main.getProtocolManager();
         profileManager = main.getProfileManager();

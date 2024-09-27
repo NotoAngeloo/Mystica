@@ -40,6 +40,7 @@ public class DragonBreathing {
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Heat heat;
     private final FieryWing fieryWing;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
@@ -56,7 +57,7 @@ public class DragonBreathing {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
-
+        heat = elementalistAbilities.getHeat();
         fieryWing = elementalistAbilities.getFieryWing();
 
     }
@@ -112,6 +113,7 @@ public class DragonBreathing {
 
     private void execute(LivingEntity caster){
 
+        heat.addHeat(caster, 15);
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 

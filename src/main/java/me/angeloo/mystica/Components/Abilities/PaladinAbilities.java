@@ -11,6 +11,8 @@ public class PaladinAbilities {
 
     private final ProfileManager profileManager;
 
+    private final Purity purity;
+
     private final GloryOfPaladins gloryOfPaladins;
     private final PaladinBasic paladinBasic;
     private final TorahSword torahSword;
@@ -36,29 +38,32 @@ public class PaladinAbilities {
 
     public PaladinAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
+
+        purity = new Purity();
+
         decision = new Decision();
-        justiceMark = new JusticeMark(main, manager);
+        justiceMark = new JusticeMark(main, manager, this);
         representative = new Representative(main, manager);
 
         judgement = new Judgement(main, manager, this);
         covenantSword = new CovenantSword(main, manager, this);
         reigningSword = new ReigningSword(main, manager, this);
-        gloryOfPaladins = new GloryOfPaladins(main, manager);
+        gloryOfPaladins = new GloryOfPaladins(main, manager, this);
         paladinBasic = new PaladinBasic(main, manager, this);
-        divineGuidance = new DivineGuidance(main, manager);
-        orderShield = new OrderShield(main, manager);
-        duranceOfTruth = new DuranceOfTruth(main, manager);
+        divineGuidance = new DivineGuidance(main, manager, this);
+        orderShield = new OrderShield(main, manager, this);
+        duranceOfTruth = new DuranceOfTruth(main, manager, this);
         lightWell = new LightWell(main, manager);
         sanctityShield = new SanctityShield(main, manager);
         torahSword = new TorahSword(main, manager, this);
 
         mercifulHealing = new MercifulHealing(main, manager, this);
         decreeHonor = new DecreeHonor(main, manager, this);
-        honorCounter = new HonorCounter(main, manager);
-        divineInfusion = new DivineInfusion(main, manager);
-        spiritualGift = new SpiritualGift(main, manager);
-        sacredAegis = new SacredAegis(main, manager);
-        modestCalling = new ModestCalling(main, manager);
+        honorCounter = new HonorCounter(main, manager, this);
+        divineInfusion = new DivineInfusion(main, manager, this);
+        spiritualGift = new SpiritualGift(main, manager, this);
+        sacredAegis = new SacredAegis(main, manager, this);
+        modestCalling = new ModestCalling(main, manager, this);
 
 
     }
@@ -247,6 +252,7 @@ public class PaladinAbilities {
         torahSword.resetCooldown(caster);
     }
 
+    public Purity getPurity(){return purity;}
     public Representative getRepresentative(){return representative;}
     public MercifulHealing getMercifulHealing(){return mercifulHealing;}
     public JusticeMark getJusticeMark(){return justiceMark;}

@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Paladin;
 
+import me.angeloo.mystica.Components.Abilities.PaladinAbilities;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
@@ -31,11 +32,12 @@ public class SacredAegis {
     private final PvpManager pvpManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CooldownDisplayer cooldownDisplayer;
+    private final Purity purity;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public SacredAegis(Mystica main, AbilityManager manager){
+    public SacredAegis(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
@@ -43,6 +45,7 @@ public class SacredAegis {
         pvpManager = main.getPvpManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        purity = paladinAbilities.getPurity();
     }
 
     public void use(LivingEntity caster){
@@ -73,6 +76,7 @@ public class SacredAegis {
         combatManager.startCombatTimer(caster);
 
         execute(caster, target);
+        purity.skillListAdd(caster, 6);
 
 
         if(cooldownTask.containsKey(caster.getUniqueId())){

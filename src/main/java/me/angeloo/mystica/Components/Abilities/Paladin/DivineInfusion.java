@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Paladin;
 
+import me.angeloo.mystica.Components.Abilities.PaladinAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -40,10 +41,12 @@ public class DivineInfusion {
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Purity purity;
+
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public DivineInfusion(Mystica main, AbilityManager manager){
+    public DivineInfusion(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
@@ -54,6 +57,7 @@ public class DivineInfusion {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        purity = paladinAbilities.getPurity();
     }
 
     private final double range = 10;
@@ -77,6 +81,7 @@ public class DivineInfusion {
         combatManager.startCombatTimer(caster);
 
         execute(caster, target);
+        purity.skillListAdd(caster, 4);
 
         if(cooldownTask.containsKey(caster.getUniqueId())){
             cooldownTask.get(caster.getUniqueId()).cancel();
@@ -276,7 +281,7 @@ public class DivineInfusion {
     public double getSkillDamage(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_4_Level_Bonus();
-        return 15 + ((int)(skillLevel/3));
+        return (purity.calculatePurityPercentDamage(caster, 4, 15)) + ((int)(skillLevel/3));
     }
 
 

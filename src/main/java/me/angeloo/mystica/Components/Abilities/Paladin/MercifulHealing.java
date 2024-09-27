@@ -36,6 +36,7 @@ public class MercifulHealing {
     private final AbilityManager abilityManager;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Purity purity;
     private final JusticeMark justiceMark;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
@@ -54,6 +55,7 @@ public class MercifulHealing {
         changeResourceHandler = main.getChangeResourceHandler();
         abilityManager = manager;
         cooldownDisplayer= new CooldownDisplayer(main, manager);
+        purity = paladinAbilities.getPurity();
         justiceMark = paladinAbilities.getJusticeMark();
     }
 
@@ -78,6 +80,7 @@ public class MercifulHealing {
         combatManager.startCombatTimer(caster);
 
         execute(caster, target);
+        purity.skillListAdd(caster, 2);
 
         if(cooldownTask.containsKey(caster.getUniqueId())){
             cooldownTask.get(caster.getUniqueId()).cancel();
@@ -277,7 +280,7 @@ public class MercifulHealing {
     public double getHealPower(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_2_Level_Bonus();
-        return  10 + ((int)(skillLevel/3));
+        return  (purity.calculatePurityPercentDamage(caster, 2, 10)) + ((int)(skillLevel/3));
     }
 
     public void resetCooldown(LivingEntity caster){

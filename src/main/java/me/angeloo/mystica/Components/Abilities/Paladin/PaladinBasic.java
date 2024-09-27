@@ -41,6 +41,7 @@ public class PaladinBasic {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
 
+    private final Purity purity;
     private final Representative representative;
     private final JusticeMark justiceMark;
     private final GloryOfPaladins gloryOfPaladins;
@@ -63,6 +64,7 @@ public class PaladinBasic {
         representative = paladinAbilities.getRepresentative();
         gloryOfPaladins = paladinAbilities.getGloryOfPaladins();
         justiceMark = paladinAbilities.getJusticeMark();
+        purity = paladinAbilities.getPurity();
     }
 
     public void useBasic(LivingEntity caster){
@@ -179,6 +181,8 @@ public class PaladinBasic {
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
+
+                purity.skillListAdd(caster, 0);
 
                 if(subclass.equalsIgnoreCase("divine")){
 

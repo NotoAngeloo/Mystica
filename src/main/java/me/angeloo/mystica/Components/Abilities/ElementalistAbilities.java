@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 public class ElementalistAbilities {
 
     private final ProfileManager profileManager;
+    private final Heat heat;
     private final FieryWing fieryWing;
     private final ConjuringForce conjuringForce;
     private final ElementalBreath elementalBreath;
@@ -24,7 +25,8 @@ public class ElementalistAbilities {
 
     public ElementalistAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
-        fieryWing = new FieryWing(main, manager);
+        heat = new Heat(main);
+        fieryWing = new FieryWing(main, manager, this);
         conjuringForce = new ConjuringForce(main, manager);
         elementalBreath = new ElementalBreath(main, manager);
         fieryMagma = new FieryMagma(main, manager, this);
@@ -32,8 +34,8 @@ public class ElementalistAbilities {
         elemental_matrix = new ElementalMatrix(main, manager);
         iceBolt = new IceBolt(main, manager, this);
         dragonBreathing = new DragonBreathing(main, manager, this);
-        windrushForm = new WindrushForm(main, manager);
-        windWall = new WindWall(main, manager);
+        windrushForm = new WindrushForm(main, manager, this);
+        windWall = new WindWall(main, manager, this);
         elementalistBasic = new ElementalistBasic(main, manager);
     }
 
@@ -169,4 +171,5 @@ public class ElementalistAbilities {
     public ElementalMatrix getElemental_matrix(){return elemental_matrix;}
     public ConjuringForce getConjuringForce(){return conjuringForce;}
     public ElementalistBasic getElementalistBasic(){return elementalistBasic;}
+    public Heat getHeat(){return heat;}
 }

@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Paladin;
 
+import me.angeloo.mystica.Components.Abilities.PaladinAbilities;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
@@ -24,12 +25,14 @@ public class JusticeMark {
     private final CombatManager combatManager;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final Purity purity;
+
     private final Map<UUID, List<LivingEntity>> marked = new HashMap<>();
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public JusticeMark(Mystica main, AbilityManager manager){
+    public JusticeMark(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
         this.main = main;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
@@ -37,6 +40,7 @@ public class JusticeMark {
         pvpManager = main.getPvpManager();
         combatManager = manager.getCombatManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        purity = paladinAbilities.getPurity();
     }
 
     private final double range = 10;
@@ -62,6 +66,7 @@ public class JusticeMark {
         combatManager.startCombatTimer(caster);
 
         execute(caster, target);
+        purity.skillListAdd(caster, 8);
 
         if(cooldownTask.containsKey(caster.getUniqueId())){
             cooldownTask.get(caster.getUniqueId()).cancel();

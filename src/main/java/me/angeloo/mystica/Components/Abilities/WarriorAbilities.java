@@ -27,7 +27,7 @@ public class WarriorAbilities {
     public WarriorAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
 
-        rage = new Rage(main);
+        rage = new Rage(main, manager);
         warriorBasic = new WarriorBasic(main, manager, this);
         lavaQuake = new LavaQuake(main, manager, this);
         searingChains = new SearingChains(main, manager, this);

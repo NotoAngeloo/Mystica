@@ -289,4 +289,13 @@ public class SpiritualAttack {
         return energy.getCurrentEnergy(caster) >= getCost();
     }
 
+    public int returnWhichItem(Player player){
+
+        if(energy.getCurrentEnergy(player)<getCost()){
+            return 9;
+        }
+
+        return 0;
+    }
+
 }

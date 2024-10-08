@@ -4,17 +4,7 @@ import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.BoundingBox;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 
 public class Locations {
@@ -25,12 +15,16 @@ public class Locations {
         this.main = main;
     }
 
-    public void displayDungeonEnters(){
+    public void initializeLocationals(){
 
-        /*World world = Bukkit.getWorld("world");
+        World world = Bukkit.getWorld("world");
         assert world != null;
 
-        Location sewerLoc = new Location(world, 57, 93, -295.5);
+        /*Location spawnLoc = new Location(world,409,68,-564,25,5);
+        TextDisplay spawn = world.spawn(spawnLoc, TextDisplay.class);
+        spawn.setCustomName("spawn");
+
+        /*Location sewerLoc = new Location(world, 57, 93, -295.5);
         TextDisplay sewer = world.spawn(sewerLoc, TextDisplay.class);
         sewer.setRotation(180,0);
         sewer.setText("Corrupted Sewer" +

@@ -192,4 +192,13 @@ public class Enlightenment {
         return mana.getCurrentMana(caster) >= getCost();
     }
 
+    public int returnWhichItem(Player player){
+
+        if(mana.getCurrentMana(player)<getCost()){
+            return 6;
+        }
+
+        return 0;
+    }
+
 }

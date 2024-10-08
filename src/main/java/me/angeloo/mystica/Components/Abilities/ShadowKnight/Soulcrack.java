@@ -17,6 +17,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
@@ -121,11 +122,13 @@ public class Soulcrack {
         EntityEquipment entityEquipment = armorStand.getEquipment();
 
         ItemStack weapon = shadowKnightEquipment.getBaseWeapon();
-        ItemStack offhand = shadowKnightEquipment.getBaseOffhand();
+        ItemStack offhand = weapon.clone();
 
         if(caster instanceof Player){
             weapon = profileManager.getAnyProfile(caster).getPlayerEquipment().getWeapon();
-            offhand = profileManager.getAnyProfile(caster).getPlayerEquipment().getOffhand();
+            ItemMeta offhandItemMeta = offhand.getItemMeta();
+            offhandItemMeta.setCustomModelData(weapon.getItemMeta().getCustomModelData() + 1);
+            offhand.setItemMeta(offhandItemMeta);
         }
 
         assert entityEquipment != null;

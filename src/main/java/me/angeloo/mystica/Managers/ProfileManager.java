@@ -179,7 +179,7 @@ public class ProfileManager {
                     PlayerBag playerBag = new PlayerBag(items, bagUnlocks);
 
                     //equipment
-                    ItemStack[] equipment = ((List<ItemStack>) config.get(id + ".equipment")).toArray(new ItemStack[6]);
+                    ItemStack[] equipment = ((List<ItemStack>) config.get(id + ".equipment")).toArray(new ItemStack[5]);
                     PlayerEquipment playerEquipment = new PlayerEquipment(equipment);
 
                     StatsFromGear gearStats = new StatsFromGear(0, 0, 0,  0, 0, 0);
@@ -335,7 +335,7 @@ public class ProfileManager {
         int currentMana = 20;
 
         PlayerBag playerBag = new PlayerBag(new ArrayList<>(), 0);
-        PlayerEquipment playerEquipment = new PlayerEquipment(new ItemStack[6]);
+        PlayerEquipment playerEquipment = new PlayerEquipment(new ItemStack[5]);
 
         Skill_Level skillLevel = new Skill_Level(
                 0,0,0,0,0,0,0,0);
@@ -425,21 +425,24 @@ public class ProfileManager {
         World world = Bukkit.getWorld("world");
         Location spawnLoc = new Location(world,409,68,-564,25,5);
         newPlayer.teleport(spawnLoc);
-
+        newPlayer.getWorld().setSpawnLocation(spawnLoc);
 
         newPlayer.getInventory().clear();
         newPlayer.sendMessage("You are playing a pre-release\nYour items and progress are subjected to being removed");
 
+
         //interactions stuff
-        /*PluginManager pluginManager = Bukkit.getPluginManager();
+        PluginManager pluginManager = Bukkit.getPluginManager();
         Plugin interactions =  pluginManager.getPlugin("interactions");
         if (interactions != null && interactions.isEnabled()) {
             Server server = Bukkit.getServer();
 
-            server.dispatchCommand(server.getConsoleSender(), "interactions resetplayer " + newPlayer.getName() + " newplayer");
-            server.dispatchCommand(server.getConsoleSender(), "interactions resetplayer " + newPlayer.getName() + " captain");
-            server.dispatchCommand(server.getConsoleSender(), "interactions resetplayer " + newPlayer.getName() + " HoLee");
-        }*/
+            server.dispatchCommand(server.getConsoleSender(), "interactions resetplayer " + newPlayer.getName() + " tutorial");
+
+            //server.dispatchCommand(server.getConsoleSender(), "interactions resetplayer " + newPlayer.getName() + " newplayer");
+            //server.dispatchCommand(server.getConsoleSender(), "interactions resetplayer " + newPlayer.getName() + " captain");
+            //server.dispatchCommand(server.getConsoleSender(), "interactions resetplayer " + newPlayer.getName() + " HoLee");
+        }
 
         //pathingManager.calculatePath(newPlayer, new Location(newPlayer.getWorld(), 64, 99, -350));
         new DisplayWeapons(main).displayWeapons(newPlayer);

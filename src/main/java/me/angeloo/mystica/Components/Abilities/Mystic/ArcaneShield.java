@@ -266,4 +266,13 @@ public class ArcaneShield {
         return true;
     }
 
+    public int returnWhichItem(Player player){
+
+        if(mana.getCurrentMana(player)<getCost()){
+            return 10;
+        }
+
+        return 0;
+    }
+
 }

@@ -368,4 +368,16 @@ public class MeteorCrater {
 
         return true;
     }
+
+    public int returnWhichItem(Player player){
+
+        if(rage.getCurrentRage(player)<getCost()){
+            return 8;
+        }
+
+        return 0;
+    }
+
 }
+
+

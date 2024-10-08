@@ -22,46 +22,38 @@ public class PlayerEquipment {
         return Equipment[0];
     }
 
-    public ItemStack getOffhand(){
+    public ItemStack getHelmet(){
         return Equipment[1];
     }
 
-    public ItemStack getHelmet(){
+    public ItemStack getChestPlate(){
         return Equipment[2];
     }
 
-    public ItemStack getChestPlate(){
+    public ItemStack getLeggings(){
         return Equipment[3];
     }
 
-    public ItemStack getLeggings(){
-        return Equipment[4];
-    }
-
-    public ItemStack getBoots(){return Equipment[5];}
+    public ItemStack getBoots(){return Equipment[4];}
 
     public void setWeapon(ItemStack weapon){
         Equipment[0] = weapon;
     }
 
-    public void setOffhand(ItemStack offhand){
-        Equipment[1] = offhand;
-    }
-
     public void setHelmet(ItemStack helmet){
-        Equipment[2] = helmet;
+        Equipment[1] = helmet;
     }
 
     public void setChestPlate(ItemStack chestPlate){
-        Equipment[3] = chestPlate;
+        Equipment[2] = chestPlate;
     }
 
     public void setLeggings(ItemStack leggings){
-        Equipment[4] = leggings;
+        Equipment[3] = leggings;
     }
 
     public void setBoots(ItemStack boots){
-        Equipment[5] = boots;
+        Equipment[4] = boots;
     }
 
 }

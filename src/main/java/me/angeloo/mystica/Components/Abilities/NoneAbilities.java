@@ -26,7 +26,6 @@ public class NoneAbilities {
                 kick.use(caster);
                 return;
             }
-
             case 2:{
                 dash.use(caster);
                 return;

@@ -134,9 +134,11 @@ public class DeathManager {
 
         if(!bySkill){
             target.teleport(target.getWorld().getSpawnLocation());
+
             abilityManager.resetCooldowns(target);
 
             if(target instanceof Player){
+
                 if(!profileManager.getCompanions((Player) target).isEmpty()){
                     for(LivingEntity companion : profileManager.getCompanions((Player) target)){
                         companion.teleport(target.getWorld().getSpawnLocation());

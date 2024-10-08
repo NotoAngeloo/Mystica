@@ -51,9 +51,7 @@ public class Cosmetic implements CommandExecutor {
             PlayerEquipment equipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
             ItemStack weapon = equipment.getWeapon();
-            ItemMeta weaponMeta = weapon.getItemMeta();;
-            ItemStack offhand = equipment.getOffhand();
-            ItemMeta offhandMeta = offhand.getItemMeta();
+            ItemMeta weaponMeta = weapon.getItemMeta();
 
             ItemStack helmet = equipment.getHelmet();
             ItemMeta helmetMeta = helmet.getItemMeta();
@@ -71,8 +69,6 @@ public class Cosmetic implements CommandExecutor {
 
             weaponMeta.setDisplayName(ChatColor.of(new Color( 89, 147, 153)) + "Divine Sword");
             weaponMeta.setCustomModelData(4);
-            offhandMeta.setDisplayName(ChatColor.of(new Color( 89, 147, 153)) + "Divine Shield");
-            offhandMeta.setCustomModelData(5);
 
 
             chestMeta.setDisplayName(ChatColor.of(new Color( 89, 147, 153)) + "Divine Plate");
@@ -82,7 +78,6 @@ public class Cosmetic implements CommandExecutor {
             newHelmet.setItemMeta(helmetMeta);
 
             weapon.setItemMeta(weaponMeta);
-            offhand.setItemMeta(offhandMeta);
 
             chestPlate.setItemMeta(chestMeta);
             leggings.setItemMeta(leggingMeta);
@@ -91,7 +86,6 @@ public class Cosmetic implements CommandExecutor {
 
 
             equipment.setWeapon(weapon);
-            equipment.setOffhand(offhand);
 
             equipment.setHelmet(newHelmet);
 

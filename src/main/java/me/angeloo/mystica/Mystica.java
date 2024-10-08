@@ -95,7 +95,7 @@ public final class Mystica extends JavaPlugin{
         profileManager.loadProfilesFromConfig();
 
         locations = new Locations(this);
-        locations.displayDungeonEnters();
+        locations.initializeLocationals();
 
         questManager = new QuestManager(this);
 
@@ -170,6 +170,7 @@ public final class Mystica extends JavaPlugin{
         getCommand("MysticaQuest").setExecutor(new MysticaQuest(this));
         getCommand("HitValidCheck").setExecutor(new HitValidCheck(this));
         getCommand("SetCaution").setExecutor(new SetCaution(this));
+        getCommand("SignalNearbyNpc").setExecutor(new SignalNearbyNpc());
 
         AbilityInventory abilityInventory;
         this.getServer().getPluginManager().registerEvents(abilityInventory = new AbilityInventory(this), this);

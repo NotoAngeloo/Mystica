@@ -370,4 +370,13 @@ public class ShadowGrip {
         return energy.getCurrentEnergy(caster) >= getCost();
     }
 
+    public int returnWhichItem(Player player){
+
+        if(energy.getCurrentEnergy(player)<getCost()){
+            return 8;
+        }
+
+        return 0;
+    }
+
 }

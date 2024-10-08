@@ -118,6 +118,7 @@ public class CreaturesAndCharactersManager {
             case "HansNpc":
             case "NewPlayerNpc":
             case "ClassTutorial":
+            case "LunaNpc":
             case "ArchbishopNpc":{
                 makeDefaultNonCombatantProfile(uuid);
                 break;

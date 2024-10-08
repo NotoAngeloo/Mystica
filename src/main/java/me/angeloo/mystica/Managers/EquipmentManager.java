@@ -81,13 +81,8 @@ public class EquipmentManager {
         switch (clazz.toLowerCase()) {
             case "assassin": {
                 switch (equipSlot.toLowerCase()){
-                    case "main hand":{
+                    case "weapon":{
                         selectedMeta.setDisplayName(assassinEquipment.getBaseWeapon().getItemMeta().getDisplayName());
-                        oldItem.setType(Material.FLINT);
-                        break;
-                    }
-                    case "secondary":{
-                        selectedMeta.setDisplayName(assassinEquipment.getBaseOffhand().getItemMeta().getDisplayName());
                         oldItem.setType(Material.FLINT);
                         break;
                     }
@@ -125,13 +120,8 @@ public class EquipmentManager {
             }
             case "elementalist": {
                 switch (equipSlot.toLowerCase()){
-                    case "main hand":{
+                    case "weapon":{
                         selectedMeta.setDisplayName(elementalistEquipment.getBaseWeapon().getItemMeta().getDisplayName());
-                        oldItem.setType(Material.STICK);
-                        break;
-                    }
-                    case "secondary":{
-                        selectedMeta.setDisplayName(elementalistEquipment.getBaseOffhand().getItemMeta().getDisplayName());
                         oldItem.setType(Material.STICK);
                         break;
                     }
@@ -168,13 +158,8 @@ public class EquipmentManager {
             }
             case "mystic": {
                 switch (equipSlot.toLowerCase()){
-                    case "main hand":{
+                    case "weapon":{
                         selectedMeta.setDisplayName(mysticEquipment.getBaseWeapon().getItemMeta().getDisplayName());
-                        oldItem.setType(Material.BLAZE_ROD);
-                        break;
-                    }
-                    case "secondary":{
-                        selectedMeta.setDisplayName(mysticEquipment.getBaseOffhand().getItemMeta().getDisplayName());
                         oldItem.setType(Material.BLAZE_ROD);
                         break;
                     }
@@ -212,13 +197,8 @@ public class EquipmentManager {
             }
             case "paladin": {
                 switch (equipSlot.toLowerCase()){
-                    case "main hand":{
+                    case "weapon":{
                         selectedMeta.setDisplayName(paladinEquipment.getBaseWeapon().getItemMeta().getDisplayName());
-                        oldItem.setType(Material.IRON_SWORD);
-                        break;
-                    }
-                    case "secondary":{
-                        selectedMeta.setDisplayName(paladinEquipment.getBaseOffhand().getItemMeta().getDisplayName());
                         oldItem.setType(Material.IRON_SWORD);
                         break;
                     }
@@ -255,13 +235,8 @@ public class EquipmentManager {
             }
             case "ranger": {
                 switch (equipSlot.toLowerCase()){
-                    case "main hand":{
+                    case "weapon":{
                         selectedMeta.setDisplayName(rangerEquipment.getBaseWeapon().getItemMeta().getDisplayName());
-                        oldItem.setType(Material.FEATHER);
-                        break;
-                    }
-                    case "secondary":{
-                        selectedMeta.setDisplayName(rangerEquipment.getBaseOffhand().getItemMeta().getDisplayName());
                         oldItem.setType(Material.FEATHER);
                         break;
                     }
@@ -298,13 +273,8 @@ public class EquipmentManager {
             }
             case "shadow knight": {
                 switch (equipSlot.toLowerCase()){
-                    case "main hand":{
+                    case "weapon":{
                         selectedMeta.setDisplayName(shadowKnightEquipment.getBaseWeapon().getItemMeta().getDisplayName());
-                        oldItem.setType(Material.DIAMOND_SWORD);
-                        break;
-                    }
-                    case "secondary":{
-                        selectedMeta.setDisplayName(shadowKnightEquipment.getBaseOffhand().getItemMeta().getDisplayName());
                         oldItem.setType(Material.DIAMOND_SWORD);
                         break;
                     }
@@ -341,13 +311,8 @@ public class EquipmentManager {
             }
             case "warrior": {
                 switch (equipSlot.toLowerCase()){
-                    case "main hand":{
+                    case "weapon":{
                         selectedMeta.setDisplayName(warriorEquipment.getBaseWeapon().getItemMeta().getDisplayName());
-                        oldItem.setType(Material.BRICK);
-                        break;
-                    }
-                    case "secondary":{
-                        selectedMeta.setDisplayName(warriorEquipment.getBaseOffhand().getItemMeta().getDisplayName());
                         oldItem.setType(Material.BRICK);
                         break;
                     }
@@ -395,7 +360,7 @@ public class EquipmentManager {
         ItemStack baseGear = new ItemStack(Material.AIR);
 
         //randomly generate
-        int random = new Random().nextInt(6);
+        int random = new Random().nextInt(5);
 
         String clazz = profileManager.getAnyProfile(player).getPlayerClass();
 
@@ -407,22 +372,18 @@ public class EquipmentManager {
                         break;
                     }
                     case 1:{
-                        baseGear = assassinEquipment.getBaseOffhand();
-                        break;
-                    }
-                    case 2:{
                         baseGear = assassinEquipment.getBaseHelmet();
                         break;
                     }
-                    case 3:{
+                    case 2:{
                         baseGear = assassinEquipment.getBaseChestPlate();
                         break;
                     }
-                    case 4:{
+                    case 3:{
                         baseGear = assassinEquipment.getBaseLeggings();
                         break;
                     }
-                    case 5:{
+                    case 4:{
                         baseGear = assassinEquipment.getBaseBoots();
                         break;
                     }
@@ -436,22 +397,18 @@ public class EquipmentManager {
                         break;
                     }
                     case 1:{
-                        baseGear = elementalistEquipment.getBaseOffhand();
-                        break;
-                    }
-                    case 2:{
                         baseGear = elementalistEquipment.getBaseHelmet();
                         break;
                     }
-                    case 3:{
+                    case 2:{
                         baseGear = elementalistEquipment.getBaseChestPlate();
                         break;
                     }
-                    case 4:{
+                    case 3:{
                         baseGear = elementalistEquipment.getBaseLeggings();
                         break;
                     }
-                    case 5:{
+                    case 4:{
                         baseGear = elementalistEquipment.getBaseBoots();
                         break;
                     }
@@ -465,22 +422,18 @@ public class EquipmentManager {
                         break;
                     }
                     case 1:{
-                        baseGear = mysticEquipment.getBaseOffhand();
-                        break;
-                    }
-                    case 2:{
                         baseGear = mysticEquipment.getBaseHelmet();
                         break;
                     }
-                    case 3:{
+                    case 2:{
                         baseGear = mysticEquipment.getBaseChestPlate();
                         break;
                     }
-                    case 4:{
+                    case 3:{
                         baseGear = mysticEquipment.getBaseLeggings();
                         break;
                     }
-                    case 5:{
+                    case 4:{
                         baseGear = mysticEquipment.getBaseBoots();
                         break;
                     }
@@ -494,22 +447,18 @@ public class EquipmentManager {
                         break;
                     }
                     case 1:{
-                        baseGear = paladinEquipment.getBaseOffhand();
-                        break;
-                    }
-                    case 2:{
                         baseGear = paladinEquipment.getBaseHelmet();
                         break;
                     }
-                    case 3:{
+                    case 2:{
                         baseGear = paladinEquipment.getBaseChestPlate();
                         break;
                     }
-                    case 4:{
+                    case 3:{
                         baseGear = paladinEquipment.getBaseLeggings();
                         break;
                     }
-                    case 5:{
+                    case 4:{
                         baseGear = paladinEquipment.getBaseBoots();
                         break;
                     }
@@ -524,22 +473,18 @@ public class EquipmentManager {
                         break;
                     }
                     case 1:{
-                        baseGear = rangerEquipment.getBaseOffhand();
-                        break;
-                    }
-                    case 2:{
                         baseGear = rangerEquipment.getBaseHelmet();
                         break;
                     }
-                    case 3:{
+                    case 2:{
                         baseGear = rangerEquipment.getBaseChestPlate();
                         break;
                     }
-                    case 4:{
+                    case 3:{
                         baseGear = rangerEquipment.getBaseLeggings();
                         break;
                     }
-                    case 5:{
+                    case 4:{
                         baseGear = rangerEquipment.getBaseBoots();
                         break;
                     }
@@ -553,22 +498,18 @@ public class EquipmentManager {
                         break;
                     }
                     case 1:{
-                        baseGear = shadowKnightEquipment.getBaseOffhand();
-                        break;
-                    }
-                    case 2:{
                         baseGear = shadowKnightEquipment.getBaseHelmet();
                         break;
                     }
-                    case 3:{
+                    case 2:{
                         baseGear = shadowKnightEquipment.getBaseChestPlate();
                         break;
                     }
-                    case 4:{
+                    case 3:{
                         baseGear = shadowKnightEquipment.getBaseLeggings();
                         break;
                     }
-                    case 5:{
+                    case 4:{
                         baseGear = shadowKnightEquipment.getBaseBoots();
                         break;
                     }
@@ -577,27 +518,23 @@ public class EquipmentManager {
             }
             case "warrior":{
                 switch (random){
-                    case 0:{
+                    case 0: {
                         baseGear = warriorEquipment.getBaseWeapon();
                         break;
                     }
                     case 1:{
-                        baseGear = warriorEquipment.getBaseOffhand();
-                        break;
-                    }
-                    case 2:{
                         baseGear = warriorEquipment.getBaseHelmet();
                         break;
                     }
-                    case 3:{
+                    case 2:{
                         baseGear = warriorEquipment.getBaseChestPlate();
                         break;
                     }
-                    case 4:{
+                    case 3:{
                         baseGear = warriorEquipment.getBaseLeggings();
                         break;
                     }
-                    case 5:{
+                    case 4:{
                         baseGear = warriorEquipment.getBaseBoots();
                         break;
                     }
@@ -647,7 +584,7 @@ public class EquipmentManager {
         newLore.add("");
 
         //get what the base stats are
-        String[] valid = {"attack","health","mana","defense","magic defense","crit"};
+        String[] valid = {"attack","health","defense","magic defense","crit"};
         String regex = ".*?((?i:" + String.join("|", valid) + ")\\s*\\+\\s*(\\d+)).*";
         Pattern pattern = Pattern.compile(regex);
         for (String lore : lores){
@@ -716,11 +653,7 @@ public class EquipmentManager {
                                 break;
                             }
                             case "health":{
-                                newLore.add("Health + " + statCalculatorHealthMana(newLevel, value));
-                                break;
-                            }
-                            case "mana":{
-                                newLore.add("Mana + " + statCalculatorHealthMana(newLevel, value));
+                                newLore.add("Health + " + statCalculatorHealth(newLevel, value));
                                 break;
                             }
                             case "defense":{
@@ -841,7 +774,6 @@ public class EquipmentManager {
         int offenceCounter = 0;
         int critCounter = 0;
         int healthCounter = 0;
-        int manaCounter = 0;
         int defenseCounter = 0;
         int magicDefenseCounter = 0;
         int skillCounter = 0;
@@ -850,7 +782,6 @@ public class EquipmentManager {
         availableStats.add("offense");
         availableStats.add("crit");
         availableStats.add("health");
-        availableStats.add("mana");
         availableStats.add("defense");
         availableStats.add("magic defense");
         availableStats.add("skill");
@@ -880,13 +811,6 @@ public class EquipmentManager {
                     healthCounter++;
                     if(healthCounter==2){
                         availableStats.remove("health");
-                    }
-                    break;
-                }
-                case "mana":{
-                    manaCounter++;
-                    if(manaCounter==2){
-                        availableStats.remove("mana");
                     }
                     break;
                 }
@@ -942,16 +866,7 @@ public class EquipmentManager {
             NamespacedKey key = new NamespacedKey(Mystica.getPlugin(), "health_" + i);
             statRolls.set(key, PersistentDataType.INTEGER, statPercent);
 
-            newRandomStats.add("Health + " + statCalculatorHealthMana(level, statPercent));
-        }
-
-        for(int i=0;i<manaCounter;i++){
-            int statPercent = new Random().nextInt(101);
-
-            NamespacedKey key = new NamespacedKey(Mystica.getPlugin(), "mana_" + i);
-            statRolls.set(key, PersistentDataType.INTEGER, statPercent);
-
-            newRandomStats.add("Mana + " + statCalculatorHealthMana(level, statPercent));
+            newRandomStats.add("Health + " + statCalculatorHealth(level, statPercent));
         }
 
         for(int i=0;i<defenseCounter;i++){
@@ -1035,7 +950,7 @@ public class EquipmentManager {
         return rawStat;
     }
 
-    private int statCalculatorHealthMana(int level, double percent){
+    private int statCalculatorHealth(int level, double percent){
 
         level--;
 
@@ -1064,22 +979,13 @@ public class EquipmentManager {
         int base = 0;
 
         switch (slot.toLowerCase()){
-            case "main hand":{
+            case "weapon":{
                 switch (stat.toLowerCase()){
                     case "attack":
                     case "magic":{
                         base = 3;
                         break;
                     }
-                    case "health":{
-                        base = 18;
-                        break;
-                    }
-                }
-                break;
-            }
-            case "secondary":{
-                switch (stat.toLowerCase()){
                     case "magic defense":
                     case "defense":{
                         base = 4;

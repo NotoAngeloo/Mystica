@@ -35,7 +35,7 @@ public class MysticAbilities {
 
     public MysticAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
-        mana = new Mana(main);
+        mana = new Mana(main, manager);
         consolation = new Consolation(main);
         evilSpirit = new EvilSpirit(main, manager);
         plagueCurse = new PlagueCurse(main, manager, this);

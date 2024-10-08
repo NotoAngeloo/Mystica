@@ -1,8 +1,10 @@
 package me.angeloo.mystica.Components.Abilities.Mystic;
 
 import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
+import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 
@@ -13,6 +15,7 @@ import java.util.UUID;
 public class Mana {
 
     private final ProfileManager profileManager;
+    private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, Long> lastManaed = new HashMap<>();
 
@@ -20,8 +23,9 @@ public class Mana {
 
     private final int maxMana = 500;
 
-    public Mana(Mystica main){
+    public Mana(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
     //here change it
@@ -37,6 +41,13 @@ public class Mana {
         }
         manaAmount.put(caster.getUniqueId(), newCurrentMana);
         lastManaed.put(caster.getUniqueId(), (System.currentTimeMillis()/1000));
+
+        cooldownDisplayer.displayCooldown(caster, 1);
+        cooldownDisplayer.displayCooldown(caster, 2);
+        cooldownDisplayer.displayCooldown(caster, 6);
+        cooldownDisplayer.displayCooldown(caster, 7);
+        cooldownDisplayer.displayCooldown(caster, 8);
+
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(caster, true));
     }
 
@@ -48,6 +59,13 @@ public class Mana {
             newCurrentMana = maxMana;
         }
         manaAmount.put(entity.getUniqueId(), newCurrentMana);
+
+        cooldownDisplayer.displayCooldown(entity, 1);
+        cooldownDisplayer.displayCooldown(entity, 2);
+        cooldownDisplayer.displayCooldown(entity, 6);
+        cooldownDisplayer.displayCooldown(entity , 7);
+        cooldownDisplayer.displayCooldown(entity, 8);
+
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, true));
     }
 

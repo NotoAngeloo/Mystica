@@ -9,6 +9,8 @@ import me.angeloo.mystica.Utility.DisplayWeapons;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class Hidden {
 
@@ -76,9 +78,9 @@ public class Hidden {
                     ((Player)caster).getInventory().setItemInMainHand(playerEquipment.getWeapon());
                 }
 
-                if (playerEquipment.getOffhand() != null){
+                /*if (playerEquipment.getOffhand() != null){
                     ((Player)caster).getInventory().setItemInOffHand(playerEquipment.getOffhand());
-                }
+                }*/
 
                 DisplayWeapons displayWeapons  = new DisplayWeapons(main);
                 displayWeapons.displayArmor((Player) caster);
@@ -100,11 +102,14 @@ public class Hidden {
 
         if(playerEquipment.getWeapon() != null){
             player.getInventory().setItemInMainHand(playerEquipment.getWeapon());
+            ItemStack offhand = playerEquipment.getWeapon().clone();
+            ItemMeta offhandItemMeta = offhand.getItemMeta();
+            offhandItemMeta.setCustomModelData(offhand.getItemMeta().getCustomModelData() + 1);
+            offhand.setItemMeta(offhandItemMeta);
+            player.getInventory().setItemInOffHand(offhand);
+
         }
 
-        if (playerEquipment.getOffhand() != null){
-            player.getInventory().setItemInOffHand(playerEquipment.getOffhand());
-        }
     }
 
 }

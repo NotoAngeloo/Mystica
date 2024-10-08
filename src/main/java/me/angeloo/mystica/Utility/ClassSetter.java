@@ -47,7 +47,6 @@ public class ClassSetter {
         switch(clazz.toLowerCase()){
             case "elementalist":{
                 playerProfile.getPlayerEquipment().setWeapon(elementalistEquipment.getBaseWeapon());
-                playerProfile.getPlayerEquipment().setOffhand(elementalistEquipment.getBaseOffhand());
                 playerProfile.getPlayerEquipment().setHelmet(elementalistEquipment.getBaseHelmet());
                 playerProfile.getPlayerEquipment().setChestPlate(elementalistEquipment.getBaseChestPlate());
                 playerProfile.getPlayerEquipment().setLeggings(elementalistEquipment.getBaseLeggings());
@@ -56,7 +55,6 @@ public class ClassSetter {
             }
             case "ranger":{
                 playerProfile.getPlayerEquipment().setWeapon(rangerEquipment.getBaseWeapon());
-                playerProfile.getPlayerEquipment().setOffhand(rangerEquipment.getBaseOffhand());
                 playerProfile.getPlayerEquipment().setHelmet(rangerEquipment.getBaseHelmet());
                 playerProfile.getPlayerEquipment().setChestPlate(rangerEquipment.getBaseChestPlate());
                 playerProfile.getPlayerEquipment().setLeggings(rangerEquipment.getBaseLeggings());
@@ -65,7 +63,6 @@ public class ClassSetter {
             }
             case "mystic":{
                 playerProfile.getPlayerEquipment().setWeapon(mysticEquipment.getBaseWeapon());
-                playerProfile.getPlayerEquipment().setOffhand(mysticEquipment.getBaseOffhand());
                 playerProfile.getPlayerEquipment().setHelmet(mysticEquipment.getBaseHelmet());
                 playerProfile.getPlayerEquipment().setChestPlate(mysticEquipment.getBaseChestPlate());
                 playerProfile.getPlayerEquipment().setLeggings(mysticEquipment.getBaseLeggings());
@@ -74,7 +71,6 @@ public class ClassSetter {
             }
             case "shadow knight":{
                 playerProfile.getPlayerEquipment().setWeapon(shadowKnightEquipment.getBaseWeapon());
-                playerProfile.getPlayerEquipment().setOffhand(shadowKnightEquipment.getBaseOffhand());
                 playerProfile.getPlayerEquipment().setHelmet(shadowKnightEquipment.getBaseHelmet());
                 playerProfile.getPlayerEquipment().setChestPlate(shadowKnightEquipment.getBaseChestPlate());
                 playerProfile.getPlayerEquipment().setLeggings(shadowKnightEquipment.getBaseLeggings());
@@ -83,7 +79,6 @@ public class ClassSetter {
             }
             case "paladin":{
                 playerProfile.getPlayerEquipment().setWeapon(paladinEquipment.getBaseWeapon());
-                playerProfile.getPlayerEquipment().setOffhand(paladinEquipment.getBaseOffhand());
                 playerProfile.getPlayerEquipment().setHelmet(paladinEquipment.getBaseHelmet());
                 playerProfile.getPlayerEquipment().setChestPlate(paladinEquipment.getBaseChestPlate());
                 playerProfile.getPlayerEquipment().setLeggings(paladinEquipment.getBaseLeggings());
@@ -92,7 +87,6 @@ public class ClassSetter {
             }
             case "warrior":{
                 playerProfile.getPlayerEquipment().setWeapon(warriorEquipment.getBaseWeapon());
-                playerProfile.getPlayerEquipment().setOffhand(warriorEquipment.getBaseOffhand());
                 playerProfile.getPlayerEquipment().setHelmet(warriorEquipment.getBaseHelmet());
                 playerProfile.getPlayerEquipment().setChestPlate(warriorEquipment.getBaseChestPlate());
                 playerProfile.getPlayerEquipment().setLeggings(warriorEquipment.getBaseLeggings());
@@ -101,7 +95,6 @@ public class ClassSetter {
             }
             case "assassin":{
                 playerProfile.getPlayerEquipment().setWeapon(assassinEquipment.getBaseWeapon());
-                playerProfile.getPlayerEquipment().setOffhand(assassinEquipment.getBaseOffhand());
                 playerProfile.getPlayerEquipment().setHelmet(assassinEquipment.getBaseHelmet());
                 playerProfile.getPlayerEquipment().setChestPlate(assassinEquipment.getBaseChestPlate());
                 playerProfile.getPlayerEquipment().setLeggings(assassinEquipment.getBaseLeggings());
@@ -110,7 +103,6 @@ public class ClassSetter {
             }
             case "none":{
                 playerProfile.getPlayerEquipment().setWeapon(new ItemStack(Material.AIR));
-                playerProfile.getPlayerEquipment().setOffhand(new ItemStack(Material.AIR));
                 playerProfile.getPlayerEquipment().setHelmet(new ItemStack(Material.AIR));
                 playerProfile.getPlayerEquipment().setChestPlate(new ItemStack(Material.AIR));
                 playerProfile.getPlayerEquipment().setLeggings(new ItemStack(Material.AIR));

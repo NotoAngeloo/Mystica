@@ -320,20 +320,91 @@ public class AbilityManager {
 
         switch (clazz.toLowerCase()){
             case "elementalist":
-            case "shadow knight":
             case "paladin":
-            case "ranger":
+            case "ranger":{
+
+                return 0;
+            }
+            case "shadow knight":{
+
+                if(abilityNumber == 2){
+                    return shadowKnightAbilities.getSpiritualAttack().returnWhichItem(player);
+                }
+
+                if(abilityNumber == 4){
+                    return shadowKnightAbilities.getBloodsucker().returnWhichItem(player);
+                }
+
+                if(abilityNumber == 5){
+                    return shadowKnightAbilities.getSoulReap().returnWhichItem(player);
+                }
+
+                if(abilityNumber == 6){
+                    return shadowKnightAbilities.getShadowGrip().returnWhichItem(player);
+                }
+
+                if(abilityNumber == -1){
+
+                    if(subclass.equalsIgnoreCase("blood")){
+                        return shadowKnightAbilities.getBloodShield().returnWhichItem(player);
+                    }
+
+                    if(subclass.equalsIgnoreCase("doom")){
+                        return shadowKnightAbilities.getAnnihilation().returnWhichItem(player);
+                    }
+
+                }
+
+                return 0;
+            }
+
             case "warrior": {
 
+                if(abilityNumber == 4){
+                    return warriorAbilities.getMeteorCrater().returnWhichItem(player);
+                }
 
                 return 0;
             }
             case "mystic":{
-                if(abilityNumber==-1){
 
-                    if(subclass.equalsIgnoreCase("chaos")){
+                if(subclass.equalsIgnoreCase("chaos")){
+
+                    if(abilityNumber==-1){
                         return mysticAbilities.getChaosMysticModelData(player);
                     }
+
+
+                }
+
+                if(!subclass.equalsIgnoreCase("chaos")){
+
+                    if(abilityNumber == 1){
+                        return mysticAbilities.getArcaneShield().returnWhichItem(player);
+                    }
+
+                    if(abilityNumber == 2){
+                        return mysticAbilities.getPurifyingBlast().returnWhichItem(player);
+                    }
+
+                    if(abilityNumber == 6){
+                        return mysticAbilities.getAurora().returnWhichItem(player);
+                    }
+
+                    if(abilityNumber == 7){
+                        return mysticAbilities.getArcaneContract().returnWhichItem(player);
+                    }
+
+                    if(abilityNumber == 8){
+                        return mysticAbilities.getLightSigil().returnWhichItem(player);
+                    }
+
+                    if(subclass.equalsIgnoreCase("shepard")){
+                        if(abilityNumber == -1){
+                            return mysticAbilities.getEnlightenment().returnWhichItem(player);
+                        }
+                    }
+
 
                 }
 

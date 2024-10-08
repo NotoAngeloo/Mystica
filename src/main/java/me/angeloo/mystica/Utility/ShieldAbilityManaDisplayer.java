@@ -7,6 +7,7 @@ import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import net.kyori.adventure.platform.facet.Facet;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -92,37 +93,42 @@ public class ShieldAbilityManaDisplayer {
 
         switch (profileManager.getAnyProfile(player).getPlayerClass().toLowerCase()){
             case "shadow knight":{
+                //manaBar.append(ChatColor.of(shadowKnightColor));
+                manaBar.append(ChatColor.DARK_RED);
                 max = 100;
                 current = abilityManager.getShadowKnightAbilities().getEnergy().getCurrentEnergy(player);
-                manaBar.append(ChatColor.of(shadowKnightColor));
                 break;
             }
             case "mystic":{
 
+                //manaBar.append(ChatColor.of(mysticColor));
+                manaBar.append(ChatColor.DARK_PURPLE);
+
                 if(!profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("chaos")){
                     current = abilityManager.getMysticAbilities().getMana().getCurrentMana(player);
-                    manaBar.append(ChatColor.of(mysticColor));
                     break;
                 }
 
                 break;
             }
             case "warrior":{
+                //manaBar.append(ChatColor.of(warriorColor));
+                manaBar.append(ChatColor.RED);
                 current = abilityManager.getWarriorAbilities().getRage().getCurrentRage(player);
-                manaBar.append(ChatColor.of(warriorColor));
                 break;
             }
             case "ranger":{
+                manaBar.append(ChatColor.GREEN);
                 max = 10;
                 current = abilityManager.getRangerAbilities().getFocus().getFocus(player);
                 //manaBar.append(ChatColor.of(rangerColor));
-                manaBar.append(ChatColor.GREEN);
                 break;
             }
             case "elementalist":{
+                //manaBar.append(ChatColor.of(elementalistColor));
+                manaBar.append(ChatColor.BLUE);
                 max = 100;
                 current = abilityManager.getElementalistAbilities().getHeat().getHeat(player);
-                manaBar.append(ChatColor.of(elementalistColor));
                 break;
             }
         }
@@ -137,7 +143,6 @@ public class ShieldAbilityManaDisplayer {
                 manaBar.append(" ");
             }
         }
-
 
 
         return String.valueOf(manaBar);
@@ -197,11 +202,26 @@ public class ShieldAbilityManaDisplayer {
                 break;
             }
             case "annihilation":{
-                unicode.append("\uE041");
+
+                if(abilityManager.getShadowKnightAbilities().getAnnihilation().returnWhichItem(player) == 0){
+                    unicode.append("\uE041");
+                }
+                else{
+                    unicode.append("\uE06D");
+                }
+
+
                 break;
             }
             case "blood shield":{
-                unicode.append("\uE042");
+
+                if(abilityManager.getShadowKnightAbilities().getBloodShield().returnWhichItem(player) == 0){
+                    unicode.append("\uE042");
+                }
+                else{
+                    unicode.append("\uE06E");
+                }
+
                 break;
             }
             case "arcane missiles":{
@@ -209,7 +229,14 @@ public class ShieldAbilityManaDisplayer {
                 break;
             }
             case "enlightenment":{
-                unicode.append("\uE047");
+
+                if(abilityManager.getMysticAbilities().getEnlightenment().returnWhichItem(player) == 0){
+                    unicode.append("\uE047");
+                }
+                else{
+                    unicode.append("\uE06C");
+                }
+
                 break;
             }
             case "duelist's frenzy":{

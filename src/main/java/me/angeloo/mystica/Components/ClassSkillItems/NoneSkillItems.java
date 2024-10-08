@@ -46,14 +46,14 @@ public class NoneSkillItems {
                         ChatColor.of(Color.WHITE) + "Kick your enemy for slightly more",
                         ChatColor.of(Color.WHITE) + "damage than punching them");
             }
-            case 4: {
+            case 2: {
                 return getItem(Material.WHITE_DYE, 2,
                         ChatColor.of(Color.WHITE) + "Dash",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_2_Level_Bonus()),
                         "",
                         ChatColor.of(Color.WHITE) + "Increase your movement speed.");
             }
-            case 5: {
+            case 3: {
                 return getItem(Material.WHITE_DYE, 3,
                         ChatColor.of(Color.WHITE) + "Roll",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_3_Level_Bonus()),

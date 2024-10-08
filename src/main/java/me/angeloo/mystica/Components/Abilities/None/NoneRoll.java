@@ -65,7 +65,7 @@ public class NoneRoll {
             public void run(){
 
                 if(getCooldown(caster) <= 0){
-                    cooldownDisplayer.displayCooldown(caster, 5);
+                    cooldownDisplayer.displayCooldown(caster, 3);
                     this.cancel();
                     return;
                 }
@@ -74,7 +74,7 @@ public class NoneRoll {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(caster, 5);
+                cooldownDisplayer.displayCooldown(caster, 3);
 
             }
         }.runTaskTimer(main, 0,20);

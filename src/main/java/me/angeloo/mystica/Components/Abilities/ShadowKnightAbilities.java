@@ -27,7 +27,7 @@ public class ShadowKnightAbilities {
 
     public ShadowKnightAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
-        energy = new Energy();
+        energy = new Energy(main, manager);
         shadowKnightBasic = new ShadowKnightBasic(main, manager);
         infection = new Infection(main, manager);
         soulReap = new SoulReap(main, manager, this);

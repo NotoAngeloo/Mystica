@@ -40,6 +40,7 @@ import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -93,6 +94,7 @@ public class GeneralEventListener implements Listener {
     private final Map<UUID, Long> breakawayCooldown = new HashMap<>();
     private final Map<UUID, Long> damageSoundCooldown = new HashMap<>();
 
+    private final Map<UUID, Location> previousLocations = new HashMap<>();
     private final Set<UUID> combatLogs = new HashSet<>();
 
     public GeneralEventListener(Mystica main){
@@ -169,6 +171,21 @@ public class GeneralEventListener implements Listener {
         profileManager.getAnyProfile(player);
 
         player.sendMessage(dailyData.getLevelAnnouncement());
+
+        PluginManager pluginManager = Bukkit.getPluginManager();
+        Plugin interactions = pluginManager.getPlugin("interactions");
+        Server server = Bukkit.getServer();
+        if(interactions != null && interactions.isEnabled()){
+
+            new BukkitRunnable(){
+                @Override
+                public void run(){
+                    server.dispatchCommand(server.getConsoleSender(), "interactions start tutorial " +  player.getName());
+                }
+            }.runTaskLater(main, 5);
+
+        }
+
 
 
         if(!profileManager.getPlayerNameMap().containsKey(player.getName())){
@@ -452,6 +469,28 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
+    public void menuClick(InventoryClickEvent event){
+        Inventory clickedInv = event.getClickedInventory();
+        if (clickedInv == null) {
+            return;
+        }
+
+        String title = event.getView().getTitle();
+
+        if(!title.equalsIgnoreCase("crafting")){
+            return;
+        }
+
+        if(clickedInv.getType() == InventoryType.PLAYER){
+            return;
+        }
+
+        Player player = (Player) event.getWhoClicked();
+
+        player.openInventory(abilityInventory.openAbilityInventory(player, -1));
+    }
+
+    /*@EventHandler
     public void menuInitialization(PlayerJoinEvent event){
         Player player = event.getPlayer();
         setMenuItems(player.getOpenInventory().getTopInventory());
@@ -583,7 +622,7 @@ public class GeneralEventListener implements Listener {
         }
 
 
-    }
+    }*/
 
     @EventHandler
     public void noOffHandEquip(InventoryClickEvent event){
@@ -1818,6 +1857,15 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
+    public void OnTeleport(PlayerTeleportEvent event){
+        Player player = event.getPlayer();
+        if (!(event.getFrom().getWorld() == event.getTo().getWorld())) {
+            // Store the player's previous location before the teleport
+            previousLocations.put(player.getUniqueId(), event.getFrom());
+        }
+    }
+
+    @EventHandler
     public void WorldChange(PlayerChangedWorldEvent event){
 
         Player player = event.getPlayer();
@@ -1827,6 +1875,27 @@ public class GeneralEventListener implements Listener {
 
         displayWeapons.displayArmor(player);
         displayWeapons.displayWeapons(player);
+
+        gravestoneManager.removeGravestone(player);
+
+        if(!profileManager.getCompanions(player).isEmpty()){
+            profileManager.removeCompanions(player);
+        }
+
+        if(!player.getWorld().equals(Bukkit.getWorld("world"))){
+            player.getWorld().setSpawnLocation(player.getLocation());
+        }
+
+        if(event.getFrom().getName().contains("tutorial_")){
+            Location previousLoc = previousLocations.get(player.getUniqueId());
+
+            Location newLoc = new Location(player.getWorld(), previousLoc.getX(), previousLoc.getY(), previousLoc.getZ(), previousLoc.getYaw(), previousLoc.getPitch());
+
+            //but check the hidden interaction first (player dies in tutorial)
+            player.teleport(newLoc);
+
+        }
+
     }
 
     @EventHandler

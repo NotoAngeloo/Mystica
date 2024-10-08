@@ -25,7 +25,6 @@ public class ClassSwapper {
         PlayerEquipment equipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
         return (equipment.getWeapon() != null && !equipment.getWeapon().getType().isAir())
-                || (equipment.getOffhand() != null && !equipment.getOffhand().getType().isAir())
                 || (equipment.getHelmet() != null && !equipment.getHelmet().getType().isAir())
                 || (equipment.getChestPlate() != null && !equipment.getChestPlate().getType().isAir())
                 || (equipment.getLeggings() != null && !equipment.getLeggings().getType().isAir())

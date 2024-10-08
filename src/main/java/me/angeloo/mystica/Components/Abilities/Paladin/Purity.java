@@ -29,8 +29,7 @@ public class Purity {
     private LinkedList<Integer> getSaved(LivingEntity entity){
 
         if(!savedAbilities.containsKey(entity.getUniqueId())){
-            LinkedList<Integer> defaultList = new LinkedList<>(Arrays.asList(0, 0, 0, 0, 0));
-            savedAbilities.put(entity.getUniqueId(), defaultList);
+            resetPurity(entity);
         }
 
         return savedAbilities.get(entity.getUniqueId());
@@ -54,6 +53,11 @@ public class Purity {
         int percent = (int) Math.floor((purity/120) * 100);
 
         return damage * (1+ percent);
+    }
+
+    public void resetPurity(LivingEntity entity){
+        LinkedList<Integer> defaultList = new LinkedList<>(Arrays.asList(0, 0, 0, 0, 0));
+        savedAbilities.put(entity.getUniqueId(), defaultList);
     }
 
 

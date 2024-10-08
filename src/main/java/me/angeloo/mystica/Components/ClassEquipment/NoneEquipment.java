@@ -28,7 +28,7 @@ public class NoneEquipment {
         return getItem(Material.KELP, 1,
                 ChatColor.of(Color.WHITE) + "Empty Hand",
                 ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + "0",
-                ChatColor.of(menuColor) + "Main Hand",
+                ChatColor.of(menuColor) + "Weapon",
                 "",
                 ChatColor.of(menuColor) + "Requires " + ChatColor.of(Color.WHITE) + "None");
     }

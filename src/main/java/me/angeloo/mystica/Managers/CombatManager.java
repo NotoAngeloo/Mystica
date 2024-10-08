@@ -70,15 +70,18 @@ public class CombatManager {
             PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
             if(playerEquipment.getWeapon() != null){
-                player.getInventory().setItemInMainHand(playerEquipment.getWeapon());
+                ItemStack weapon = playerEquipment.getWeapon();
+                ItemStack offhand = weapon.clone();
+                ItemMeta offhandMeta = offhand.getItemMeta();
+                offhandMeta.setCustomModelData(weapon.getItemMeta().getCustomModelData() + 1);
+                offhand.setItemMeta(offhandMeta);
+                player.getInventory().setItemInMainHand(weapon);
+                player.getInventory().setItemInOffHand(offhand);
             }
             else{
                 player.getInventory().setItemInMainHand(new NoneEquipment().getBaseWeapon());
             }
 
-            if (playerEquipment.getOffhand() != null){
-                player.getInventory().setItemInOffHand(playerEquipment.getOffhand());
-            }
 
             cooldownDisplayer.initializeItems(player);
 
@@ -124,6 +127,11 @@ public class CombatManager {
         }
 
         profileManager.getAnyProfile(player).setIfInCombat(false);
+
+        if(profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("paladin")){
+            abilityManager.getPaladinAbilities().getPurity().resetPurity(player);
+        }
+
 
         player.getInventory().clear(13);
 

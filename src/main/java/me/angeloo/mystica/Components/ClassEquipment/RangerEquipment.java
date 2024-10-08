@@ -28,26 +28,16 @@ public class RangerEquipment {
         return getItem(Material.FEATHER, 1,
                 ChatColor.of(rangerColor) + "Ranger's Bow",
                 ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + "1",
-                ChatColor.of(menuColor) + "Main Hand",
+                ChatColor.of(menuColor) + "Weapon",
                 "",
                 ChatColor.of(Color.WHITE) + "Attack + 3",
-                ChatColor.of(Color.WHITE) + "Health + 18",
-                "",
-                ChatColor.of(menuColor) + "Requires " + ChatColor.of(rangerColor) + "Ranger");
-    }
-
-    public ItemStack getBaseOffhand(){
-        return getItem(Material.FEATHER, 2,
-                ChatColor.of(rangerColor) + "Ranger's Quiver",
-                ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + "1",
-                ChatColor.of(menuColor) + "Secondary",
-                "",
                 ChatColor.of(Color.WHITE) + "Health + 18",
                 ChatColor.of(Color.WHITE) + "Defense + 4",
                 ChatColor.of(Color.WHITE) + "Magic Defense + 4",
                 "",
                 ChatColor.of(menuColor) + "Requires " + ChatColor.of(rangerColor) + "Ranger");
     }
+
 
     public ItemStack getBaseHelmet(){
         return getItem(Material.CHAIN, 2,

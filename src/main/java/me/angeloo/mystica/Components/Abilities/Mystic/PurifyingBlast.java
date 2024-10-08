@@ -338,4 +338,16 @@ public class PurifyingBlast {
 
         return mana.getCurrentMana(caster) >= getCost();
     }
+
+    public int returnWhichItem(Player player){
+
+        if(mana.getCurrentMana(player)<getCost()){
+
+            //Bukkit.getLogger().info("player doesnt have enough mana, adding model daat by 10");
+
+            return 10;
+        }
+
+        return 0;
+    }
 }

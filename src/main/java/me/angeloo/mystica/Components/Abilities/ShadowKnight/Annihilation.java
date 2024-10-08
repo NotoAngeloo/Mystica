@@ -296,4 +296,13 @@ public class Annihilation {
         return energy.getCurrentEnergy(caster) >= getCost();
     }
 
+    public int returnWhichItem(Player player){
+
+        if(energy.getCurrentEnergy(player)<getCost()){
+            return 6;
+        }
+
+        return 0;
+    }
+
 }

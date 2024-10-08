@@ -81,14 +81,12 @@ public class Luna {
 
         int attack = 50 + (9 * level);
         int health = 100 + (117 * level);
-        int mana = 500;
         int defence = 50 + (8 * level);
         int magic_defence = 50 + (8 * level);
         int crit = 1;
 
         attack+=(level*2);
         health+=(level*15);
-        mana+=(level*100);
         defence+=(level);
         magic_defence+=(level);
 

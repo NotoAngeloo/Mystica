@@ -33,7 +33,6 @@ public class Dash {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
-    private final double cost = 5;
 
     public void use(LivingEntity caster){
 
@@ -59,7 +58,7 @@ public class Dash {
             public void run(){
 
                 if(getCooldown(caster) <= 0){
-                    cooldownDisplayer.displayCooldown(caster, 4);
+                    cooldownDisplayer.displayCooldown(caster, 2);
                     this.cancel();
                     return;
                 }
@@ -68,7 +67,7 @@ public class Dash {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
-                cooldownDisplayer.displayCooldown(caster, 4);
+                cooldownDisplayer.displayCooldown(caster, 2);
 
             }
         }.runTaskTimer(main, 0,20);

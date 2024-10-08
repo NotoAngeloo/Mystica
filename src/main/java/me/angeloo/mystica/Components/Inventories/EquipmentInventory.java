@@ -38,7 +38,6 @@ public class EquipmentInventory implements Listener {
         Inventory inv = Bukkit.createInventory(null, 9 * 6, ChatColor.WHITE + "\uF808\uE066\uF828");
 
         inv.setItem(14, playerEquipment.getWeapon());
-        inv.setItem(16, playerEquipment.getOffhand());
         inv.setItem(22, playerEquipment.getHelmet());
         inv.setItem(23, playerEquipment.getChestPlate());
         inv.setItem(24, playerEquipment.getLeggings());
@@ -84,7 +83,6 @@ public class EquipmentInventory implements Listener {
 
             List<Integer> equipmentSlots = new ArrayList<>();
             equipmentSlots.add(14);
-            equipmentSlots.add(16);
             equipmentSlots.add(22);
             equipmentSlots.add(23);
             equipmentSlots.add(24);
@@ -188,14 +186,9 @@ public class EquipmentInventory implements Listener {
 
         PlayerEquipment equipment = profileManager.getAnyProfile(player).getPlayerEquipment();
         switch (equipSlot.toLowerCase()){
-            case "main hand":{
+            case "weapon":{
                 player.getInventory().addItem(equipment.getWeapon());
                 equipment.setWeapon(null);
-                break;
-            }
-            case "secondary":{
-                player.getInventory().addItem(equipment.getOffhand());
-                equipment.setOffhand(null);
                 break;
             }
             case "helmet":{
@@ -232,20 +225,11 @@ public class EquipmentInventory implements Listener {
         //instead of returning if not null, swap the items
 
         switch (equipSlot.toLowerCase()){
-            case "main hand":{
+            case "weapon":{
                 if(inventory.getItem(14) != null){
                     return;
                 }
                 equipment.setWeapon(selectedItem);
-                assert selectedItem != null;
-                player.getInventory().remove(selectedItem);
-                break;
-            }
-            case "secondary":{
-                if(inventory.getItem(16) != null){
-                    return;
-                }
-                equipment.setOffhand(selectedItem);
                 assert selectedItem != null;
                 player.getInventory().remove(selectedItem);
                 break;

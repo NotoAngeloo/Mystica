@@ -503,4 +503,13 @@ public class LightSigil {
         return mana.getCurrentMana(caster) >= getCost();
     }
 
+    public int returnWhichItem(Player player){
+
+        if(mana.getCurrentMana(player)<getCost()){
+            return 7;
+        }
+
+        return 0;
+    }
+
 }

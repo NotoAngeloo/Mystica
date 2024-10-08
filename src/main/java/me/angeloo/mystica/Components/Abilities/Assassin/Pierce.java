@@ -122,7 +122,6 @@ public class Pierce {
         Location start = caster.getLocation().clone();
 
         ItemStack weapon = assassinEquipment.getBaseWeapon();
-        ItemStack offhand = assassinEquipment.getBaseOffhand();
 
         ArmorStand stand = caster.getWorld().spawn(start.clone().subtract(0,10,0), ArmorStand.class);
         stand.setInvisible(true);
@@ -134,7 +133,7 @@ public class Pierce {
         assert entityEquipment != null;
         entityEquipment.setItemInMainHand(weapon); //-90, 90
         stand.setRightArmPose(new EulerAngle(Math.toRadians(0), Math.toRadians(0), Math.toRadians(0)));
-        entityEquipment.setItemInOffHand(offhand);
+        entityEquipment.setItemInOffHand(weapon);
         stand.setLeftArmPose(new EulerAngle(Math.toRadians(0), Math.toRadians(0), Math.toRadians(-0)));
         stand.teleport(start.clone().add(0,.5,0));
 

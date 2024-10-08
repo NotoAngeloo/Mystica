@@ -1,8 +1,10 @@
 package me.angeloo.mystica.Components.Abilities.Warrior;
 
 import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
+import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 
@@ -14,12 +16,15 @@ public class Rage {
 
     private final ProfileManager profileManager;
 
+    private final CooldownDisplayer cooldownDisplayer;
+
     private final Map<UUID, Integer> manaAmount = new HashMap<>();
 
     private final int maxMana = 500;
 
-    public Rage(Mystica main){
+    public Rage(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
 
@@ -31,6 +36,7 @@ public class Rage {
             newCurrentMana = 0;
         }
         manaAmount.put(caster.getUniqueId(), newCurrentMana);
+        cooldownDisplayer.displayCooldown(caster, 4);
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(caster, true));
     }
 
@@ -42,6 +48,7 @@ public class Rage {
             newCurrentMana = maxMana;
         }
         manaAmount.put(entity.getUniqueId(), newCurrentMana);
+        cooldownDisplayer.displayCooldown(entity, 4);
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, true));
     }
 

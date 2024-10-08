@@ -44,7 +44,6 @@ public class GearReader {
         PlayerEquipment equipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
         ItemStack weapon = equipment.getWeapon();
-        ItemStack offHand = equipment.getOffhand();
         ItemStack helmet = equipment.getHelmet();
         ItemStack chestPlate = equipment.getChestPlate();
         ItemStack leggings = equipment.getLeggings();
@@ -98,81 +97,6 @@ public class GearReader {
                     }
                     case "magic defense":{
                         magic_defense+=amount;
-                        break;
-                    }
-                    case "skill 1":{
-                        skill_1+=amount;
-                        break;
-                    }
-                    case "skill 2":{
-                        skill_2+=amount;
-                        break;
-                    }
-                    case "skill 3":{
-                        skill_3+=amount;
-                        break;
-                    }
-                    case "skill 4":{
-                        skill_4+=amount;
-                        break;
-                    }
-                    case "skill 5":{
-                        skill_5+=amount;
-                        break;
-                    }
-                    case "skill 6":{
-                        skill_6+=amount;
-                        break;
-                    }
-                    case "skill 7":{
-                        skill_7+=amount;
-                        break;
-                    }
-                    case "skill 8":{
-                        skill_8+=amount;
-                        break;
-                    }
-                }
-            }
-        }
-
-        if(offHand!=null && !offHand.getType().equals(Material.AIR)){
-            ItemMeta meta = offHand.getItemMeta();
-            assert meta != null;
-            List<String> lores = meta.getLore();
-            assert lores != null;
-            for(String lore : lores){
-                Matcher matcher = pattern.matcher(lore);
-                if (!matcher.matches()) {
-                    continue;
-                }
-                String stat = matcher.group(1);
-                stat = stat.replaceAll("\\+\\s*\\d+", "").trim();
-                int amount = Integer.parseInt(matcher.group(2));
-
-                switch (stat.toLowerCase()){
-                    case "attack":{
-                        attack+=amount;
-                        break;
-                    }
-                    case "health":{
-                        health+=amount;
-                        break;
-                    }
-                    case "mana":{
-                        mana+=amount;
-                        break;
-                    }
-                    case "defense":{
-                        defense+=amount;
-                        break;
-                    }
-                    case "magic defense":{
-                        magic_defense+=amount;
-                        break;
-                    }
-                    case "crit":{
-                        crit+=amount;
                         break;
                     }
                     case "skill 1":{

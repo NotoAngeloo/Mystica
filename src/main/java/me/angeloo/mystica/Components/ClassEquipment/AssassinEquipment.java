@@ -28,20 +28,9 @@ public class AssassinEquipment {
         return getItem(Material.FLINT, 1,
                 ChatColor.of(assassinColor) + "Assassin's Dagger",
                 ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + "1",
-                ChatColor.of(menuColor) + "Main Hand",
+                ChatColor.of(menuColor) + "Weapon",
                 "",
                 ChatColor.of(Color.WHITE) + "Attack + 3",
-                ChatColor.of(Color.WHITE) + "Health + 18",
-                "",
-                ChatColor.of(menuColor) + "Requires " + ChatColor.of(assassinColor) + "Assassin");
-    }
-
-    public ItemStack getBaseOffhand(){
-        return getItem(Material.FLINT, 2,
-                ChatColor.of(assassinColor) + "Assassin's Dagger",
-                ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + "1",
-                ChatColor.of(menuColor) + "Secondary",
-                "",
                 ChatColor.of(Color.WHITE) + "Health + 18",
                 ChatColor.of(Color.WHITE) + "Defense + 4",
                 ChatColor.of(Color.WHITE) + "Magic Defense + 4",

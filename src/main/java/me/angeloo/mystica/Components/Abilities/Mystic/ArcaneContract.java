@@ -250,4 +250,13 @@ public class ArcaneContract {
         abilityReadyInMap.remove(caster.getUniqueId());
     }
 
+    public int returnWhichItem(Player player){
+
+        if(mana.getCurrentMana(player)<getCost()){
+            return 7;
+        }
+
+        return 0;
+    }
+
 }

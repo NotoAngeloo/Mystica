@@ -1,6 +1,9 @@
 package me.angeloo.mystica.Components.Abilities.ShadowKnight;
 
 import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
+import me.angeloo.mystica.Managers.AbilityManager;
+import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.CooldownDisplayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 
@@ -10,11 +13,14 @@ import java.util.UUID;
 
 public class Energy {
 
+    private final CooldownDisplayer cooldownDisplayer;
+
     private final Map<UUID, Integer> EnergyAmount = new HashMap<>();
 
     private final int maxEnergy = 100;
 
-    public Energy(){
+    public Energy(Mystica main, AbilityManager manager){
+        cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
     public void subTractEnergyFromEntity(LivingEntity caster, int cost){
@@ -25,6 +31,12 @@ public class Energy {
             newCurrentMana = 0;
         }
         EnergyAmount.put(caster.getUniqueId(), newCurrentMana);
+
+        cooldownDisplayer.displayCooldown(caster, 2);
+        cooldownDisplayer.displayCooldown(caster, 4);
+        cooldownDisplayer.displayCooldown(caster, 5);
+        cooldownDisplayer.displayCooldown(caster, 6);
+
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(caster, true));
     }
 
@@ -36,6 +48,12 @@ public class Energy {
             newCurrentMana = maxEnergy;
         }
         EnergyAmount.put(entity.getUniqueId(), newCurrentMana);
+
+        cooldownDisplayer.displayCooldown(entity, 2);
+        cooldownDisplayer.displayCooldown(entity, 4);
+        cooldownDisplayer.displayCooldown(entity, 5);
+        cooldownDisplayer.displayCooldown(entity, 6);
+
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, true));
     }
 

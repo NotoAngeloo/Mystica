@@ -91,6 +91,7 @@ public class WarriorBasic {
 
     private void executeBasic(LivingEntity caster){
 
+        basicRunning.put(caster.getUniqueId(), null);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
@@ -254,9 +255,7 @@ public class WarriorBasic {
             rage.addRageToEntity(caster, 10);
 
         }
-        else{
-            stopBasicRunning(caster);
-        }
+
 
         new BukkitRunnable(){
             double traveled = 0;

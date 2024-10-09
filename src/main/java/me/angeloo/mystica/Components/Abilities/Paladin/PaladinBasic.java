@@ -178,6 +178,7 @@ public class PaladinBasic {
 
         String subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
+        basicRunning.put(caster.getUniqueId(), null);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
@@ -239,19 +240,19 @@ public class PaladinBasic {
                 tryToRemoveBasicStage(caster);
                 switch (getStage(caster)){
                     case 1:{
-                        basicStage1(caster);
+                        basicStage1(caster, 2);
                         break;
                     }
                     case 2:{
-                        basicStage2(caster);
+                        basicStage1(caster, 3);
                         break;
                     }
                     case 3:{
-                        basicStage3(caster);
+                        basicStage1(caster, 4);
                         break;
                     }
                     case 4:{
-                        basicStage4(caster);
+                        basicStage1(caster, 5);
                         break;
                     }
                     case 5:{
@@ -276,39 +277,13 @@ public class PaladinBasic {
         basicStageMap.put(caster.getUniqueId(), 1);
     }
 
-    private void basicStage1(LivingEntity caster){
+    private void basicStage1(LivingEntity caster, int newStage){
 
-        basicStageMap.put(caster.getUniqueId(), 2);
-
-        Location start = caster.getLocation().clone().subtract(0,3,0);
+        basicStageMap.put(caster.getUniqueId(), newStage);
 
         Vector direction = caster.getLocation().getDirection().setY(0).normalize();
-        start.add(direction.multiply(3));
-        start.add(0,6,0);
-        direction.rotateAroundY(45);
-        start.setDirection(direction);
-
-        ArmorStand armorStand = caster.getWorld().spawn(start, ArmorStand.class);
-        armorStand.setInvisible(true);
-        armorStand.setGravity(false);
-        armorStand.setCollidable(false);
-        armorStand.setInvulnerable(true);
-        armorStand.setMarker(true);
-
-        EntityEquipment entityEquipment = armorStand.getEquipment();
-
-        ItemStack basicItem = new ItemStack(Material.SUGAR);
-        ItemMeta meta = basicItem.getItemMeta();
-        assert meta != null;
-        meta.setCustomModelData(1);
-        basicItem.setItemMeta(meta);
-        assert entityEquipment != null;
-        entityEquipment.setHelmet(basicItem);
-
 
         Location loc = caster.getLocation().clone().add(direction.multiply(1.25));
-
-        //player.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1, 0, 0, 0, 0);
 
         BoundingBox hitBox = new BoundingBox(
                 loc.getX() - 3,
@@ -389,536 +364,68 @@ public class PaladinBasic {
             gloryOfPaladins.procGlory(caster, targetToHit);
 
         }
+
+        Location startStand = caster.getLocation();
+
+        ArmorStand armorStand = caster.getWorld().spawn(startStand.clone().subtract(0,10,0), ArmorStand.class);
+        armorStand.setInvisible(true);
+        armorStand.setGravity(false);
+        armorStand.setCollidable(false);
+        armorStand.setInvulnerable(true);
+        armorStand.setMarker(true);
+
+        EntityEquipment entityEquipment = armorStand.getEquipment();
+
+
+        ItemStack item = new ItemStack(Material.SUGAR);
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+
+        if(newStage%2==0){
+            meta.setCustomModelData(1);
+        }
         else{
-            stopBasicRunning(caster);
+            meta.setCustomModelData(2);
         }
 
+
+        item.setItemMeta(meta);
+
+        assert entityEquipment != null;
+        entityEquipment.setHelmet(item);
+        armorStand.teleport(startStand);
+
         new BukkitRunnable(){
-            double traveled = 0;
             int count = 0;
             @Override
             public void run(){
 
-                if(caster instanceof Player){
-                    if(!((Player)caster).isOnline()){
-                        cancelTask();
-                    }
-                }
 
-                Vector direction = caster.getLocation().getDirection().setY(0).normalize();
+                Location current = armorStand.getLocation();
 
-                Location current = caster.getLocation().clone();
-                current.add(direction.multiply(3));
-                current.add(0,2,0);
-                current.subtract(0,traveled,0);
-                direction.rotateAroundY(45);
+                current.add(direction.normalize().multiply(.25));
+
                 current.setDirection(direction);
+
                 armorStand.teleport(current);
 
-                caster.getWorld().spawnParticle(Particle.WAX_OFF, current.clone().add(0,1,0), 1, 0, 0, 0, 0);
 
-                if(traveled>=3){
+                if (count > 10) {
                     cancelTask();
                 }
 
-                if(count>100){
-                    cancelTask();
-                }
 
-                traveled +=.5;
                 count++;
-
             }
 
-            private void cancelTask(){
-                armorStand.remove();
+            private void cancelTask() {
                 this.cancel();
-
-
+                armorStand.remove();
             }
-
         }.runTaskTimer(main, 0, 1);
     }
 
-    private void basicStage2(LivingEntity caster){
 
-        basicStageMap.put(caster.getUniqueId(), 3);
-
-        Location start = caster.getLocation().clone().subtract(0,3,0);
-
-        Vector direction = caster.getLocation().getDirection().setY(0).normalize();
-        Vector crossProduct = direction.clone().crossProduct(new Vector(0,1,0)).normalize();
-        start.add(direction.multiply(4));
-        start.subtract(crossProduct.multiply(3));
-
-        ArmorStand armorStand = caster.getWorld().spawn(start, ArmorStand.class);
-        armorStand.setInvisible(true);
-        armorStand.setGravity(false);
-        armorStand.setCollidable(false);
-        armorStand.setInvulnerable(true);
-        armorStand.setMarker(true);
-
-        EntityEquipment entityEquipment = armorStand.getEquipment();
-
-        ItemStack basicItem = new ItemStack(Material.SUGAR);
-        ItemMeta meta = basicItem.getItemMeta();
-        assert meta != null;
-        meta.setCustomModelData(2);
-        basicItem.setItemMeta(meta);
-        assert entityEquipment != null;
-        entityEquipment.setHelmet(basicItem);
-
-        Location loc = caster.getLocation().clone().add(direction.multiply(1.25));
-
-        BoundingBox hitBox = new BoundingBox(
-                loc.getX() - 3,
-                loc.getY() - 2,
-                loc.getZ() - 3,
-                loc.getX() + 3,
-                loc.getY() + 4,
-                loc.getZ() + 3
-        );
-
-        LivingEntity targetToHit = null;
-        LivingEntity target = targetManager.getPlayerTarget(caster);
-        LivingEntity firstHit = null;
-
-        boolean targetHit = false;
-
-
-
-        for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
-
-            if(entity == caster){
-                continue;
-            }
-
-            if(entity.isDead()){
-                continue;
-            }
-
-            if(!(entity instanceof LivingEntity)){
-                continue;
-            }
-
-            if(entity instanceof Player){
-                if(!pvpManager.pvpLogic(caster, (Player) entity)){
-                    continue;
-                }
-            }
-
-            if(entity instanceof ArmorStand){
-                continue;
-            }
-
-            LivingEntity livingEntity = (LivingEntity) entity;
-
-            if(!(entity instanceof Player)){
-                if(!pveChecker.pveLogic(livingEntity)){
-                    continue;
-                }
-            }
-
-            if(firstHit == null){
-                firstHit = livingEntity;
-            }
-
-            if(target != null){
-                if(livingEntity == target){
-                    targetHit = true;
-                    targetToHit = livingEntity;
-                    break;
-                }
-            }
-        }
-
-        if(!targetHit && firstHit!= null){
-            targetToHit = firstHit;
-        }
-
-        if(targetToHit != null){
-            targetManager.setPlayerTarget(caster, targetToHit);
-
-
-            boolean crit = damageCalculator.checkIfCrit(caster, 0);
-            double damage = damageCalculator.calculateDamage(caster, targetToHit, "Physical", getSkillDamage(caster)
-                    + representative.getAdditionalBonusFromBuff(caster), crit);
-
-            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
-            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster);
-
-            gloryOfPaladins.procGlory(caster, targetToHit);
-
-        }
-        else{
-            stopBasicRunning(caster);
-        }
-
-        new BukkitRunnable(){
-            double traveled = 0;
-            int count = 0;
-            @Override
-            public void run(){
-
-                if(caster instanceof Player){
-                    if(!((Player)caster).isOnline()){
-                        cancelTask();
-                    }
-                }
-
-                Vector direction = caster.getLocation().getDirection().setY(0).normalize();
-                Vector crossProduct = direction.clone().crossProduct(new Vector(0,1,0)).normalize();
-
-                Location current = caster.getLocation().clone();
-                current.add(direction.multiply(4));
-                current.subtract(crossProduct.multiply(3));
-                current.add(crossProduct.multiply(traveled));
-
-                armorStand.teleport(current);
-
-                caster.getWorld().spawnParticle(Particle.WAX_OFF, current.clone().add(0,1,0), 1, 0, 0, 0, 0);
-
-                if(traveled>=2){
-                    cancelTask();
-                }
-
-                if(count>100){
-                    cancelTask();
-                }
-
-                count++;
-                traveled +=.4;
-
-            }
-
-            private void cancelTask(){
-                armorStand.remove();
-                this.cancel();
-
-
-            }
-
-        }.runTaskTimer(main, 0, 2);
-
-    }
-
-    private void basicStage3(LivingEntity caster){
-
-        basicStageMap.put(caster.getUniqueId(), 4);
-
-        Location start = caster.getLocation().clone().subtract(0,3,0);
-
-        Vector direction = caster.getLocation().getDirection().setY(0).normalize();
-        start.add(direction.multiply(3));
-        direction.rotateAroundY(-45);
-        start.setDirection(direction);
-
-        ArmorStand armorStand = caster.getWorld().spawn(start, ArmorStand.class);
-        armorStand.setInvisible(true);
-        armorStand.setGravity(false);
-        armorStand.setCollidable(false);
-        armorStand.setInvulnerable(true);
-        armorStand.setMarker(true);
-
-        EntityEquipment entityEquipment = armorStand.getEquipment();
-
-        ItemStack basicItem = new ItemStack(Material.SUGAR);
-        ItemMeta meta = basicItem.getItemMeta();
-        assert meta != null;
-        meta.setCustomModelData(1);
-        basicItem.setItemMeta(meta);
-        assert entityEquipment != null;
-        entityEquipment.setHelmet(basicItem);
-
-
-        Location loc = caster.getLocation().clone().add(direction.multiply(1.25));
-
-        //player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, loc, 1, 0, 0, 0, 0);
-
-        BoundingBox hitBox = new BoundingBox(
-                loc.getX() - 3,
-                loc.getY() - 2,
-                loc.getZ() - 3,
-                loc.getX() + 3,
-                loc.getY() + 4,
-                loc.getZ() + 3
-        );
-
-        LivingEntity targetToHit = null;
-        LivingEntity target = targetManager.getPlayerTarget(caster);
-        LivingEntity firstHit = null;
-
-        boolean targetHit = false;
-
-
-        for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
-
-            if(entity == caster){
-                continue;
-            }
-
-            if(entity.isDead()){
-                continue;
-            }
-
-            if(!(entity instanceof LivingEntity)){
-                continue;
-            }
-
-            if(entity instanceof Player){
-                if(!pvpManager.pvpLogic(caster, (Player) entity)){
-                    continue;
-                }
-            }
-
-            if(entity instanceof ArmorStand){
-                continue;
-            }
-
-            LivingEntity livingEntity = (LivingEntity) entity;
-
-            if(!(entity instanceof Player)){
-                if(!pveChecker.pveLogic(livingEntity)){
-                    continue;
-                }
-            }
-
-            if(firstHit == null){
-                firstHit = livingEntity;
-            }
-
-            if(target != null){
-                if(livingEntity == target){
-                    targetHit = true;
-                    targetToHit = livingEntity;
-                    break;
-                }
-            }
-        }
-
-        if(!targetHit && firstHit != null){
-            targetToHit = firstHit;
-        }
-
-        if(targetToHit != null){
-            targetManager.setPlayerTarget(caster, targetToHit);
-
-
-            boolean crit = damageCalculator.checkIfCrit(caster, 0);
-            double damage = damageCalculator.calculateDamage(caster, targetToHit, "Physical", getSkillDamage(caster)
-                    + representative.getAdditionalBonusFromBuff(caster), crit);
-
-            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
-            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster);
-
-            gloryOfPaladins.procGlory(caster, targetToHit);
-
-        }
-        else{
-            stopBasicRunning(caster);
-        }
-
-        new BukkitRunnable(){
-            double traveled = 0;
-            int count = 0;
-            @Override
-            public void run(){
-
-                if(caster instanceof Player){
-                    if(!((Player)caster).isOnline()){
-                        cancelTask();
-                    }
-                }
-
-                Vector direction = caster.getLocation().getDirection().setY(0).normalize();
-
-                Location current = caster.getLocation().clone();
-                current.add(direction.multiply(3));
-                current.add(0,traveled,0);
-                direction.rotateAroundY(-45);
-                current.setDirection(direction);
-                armorStand.teleport(current);
-
-                caster.getWorld().spawnParticle(Particle.WAX_OFF, current.clone().add(0,1,0), 1, 0, 0, 0, 0);
-
-                if(traveled>=2){
-                    cancelTask();
-                }
-
-                if(count>100){
-                    cancelTask();
-                }
-
-                count++;
-                traveled +=.4;
-
-            }
-
-            private void cancelTask(){
-                armorStand.remove();
-                this.cancel();
-
-            }
-
-        }.runTaskTimer(main, 0, 1);
-
-    }
-
-    private void basicStage4(LivingEntity caster){
-
-        basicStageMap.put(caster.getUniqueId(), 5);
-
-        Location start = caster.getLocation().clone().subtract(0,3,0);
-
-        Vector direction = caster.getLocation().getDirection().setY(0).normalize();
-        Vector crossProduct = direction.clone().crossProduct(new Vector(0,1,0)).normalize();
-        start.add(direction.multiply(4));
-        start.add(crossProduct.multiply(3));
-
-        ArmorStand armorStand = caster.getWorld().spawn(start, ArmorStand.class);
-        armorStand.setInvisible(true);
-        armorStand.setGravity(false);
-        armorStand.setCollidable(false);
-        armorStand.setInvulnerable(true);
-        armorStand.setMarker(true);
-
-        EntityEquipment entityEquipment = armorStand.getEquipment();
-
-        ItemStack basicItem = new ItemStack(Material.SUGAR);
-        ItemMeta meta = basicItem.getItemMeta();
-        assert meta != null;
-        meta.setCustomModelData(2);
-        basicItem.setItemMeta(meta);
-        assert entityEquipment != null;
-        entityEquipment.setHelmet(basicItem);
-
-
-        Location loc = caster.getLocation().clone().add(direction.multiply(1.25));
-
-
-        BoundingBox hitBox = new BoundingBox(
-                loc.getX() - 3,
-                loc.getY() - 2,
-                loc.getZ() - 3,
-                loc.getX() + 3,
-                loc.getY() + 4,
-                loc.getZ() + 3
-        );
-
-        LivingEntity targetToHit = null;
-        LivingEntity target = targetManager.getPlayerTarget(caster);
-        LivingEntity firstHit = null;
-
-        boolean targetHit = false;
-
-
-        for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
-
-            if(entity == caster){
-                continue;
-            }
-
-            if(entity.isDead()){
-                continue;
-            }
-
-            if(!(entity instanceof LivingEntity)){
-                continue;
-            }
-
-            if(entity instanceof Player){
-                if(!pvpManager.pvpLogic(caster, (Player) entity)){
-                    continue;
-                }
-            }
-
-            if(entity instanceof ArmorStand){
-                continue;
-            }
-
-            LivingEntity livingEntity = (LivingEntity) entity;
-
-            if(!(entity instanceof Player)){
-                if(!pveChecker.pveLogic(livingEntity)){
-                    continue;
-                }
-            }
-
-            if(firstHit == null){
-                firstHit = livingEntity;
-            }
-
-            if(target != null){
-                if(livingEntity == target){
-                    targetHit = true;
-                    targetToHit = livingEntity;
-                    break;
-                }
-            }
-        }
-
-        if(!targetHit && firstHit!= null){
-            targetToHit = firstHit;
-        }
-
-        if(targetToHit != null){
-            targetManager.setPlayerTarget(caster, targetToHit);
-
-
-            boolean crit = damageCalculator.checkIfCrit(caster, 0);
-            double damage = damageCalculator.calculateDamage(caster, targetToHit, "Physical", getSkillDamage(caster)
-                    + representative.getAdditionalBonusFromBuff(caster), crit);
-
-            Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
-            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster);
-
-            gloryOfPaladins.procGlory(caster, targetToHit);
-        }
-        else{
-            stopBasicRunning(caster);
-        }
-
-        new BukkitRunnable(){
-            double traveled = 0;
-            @Override
-            public void run(){
-
-                if(caster instanceof Player){
-                    if(!((Player)caster).isOnline()){
-                        cancelTask();
-                    }
-                }
-
-                Vector direction = caster.getLocation().getDirection().setY(0).normalize();
-                Vector crossProduct = direction.clone().crossProduct(new Vector(0,1,0)).normalize();
-
-                Location current = caster.getLocation().clone();
-                current.add(direction.multiply(4));
-                current.add(crossProduct.multiply(3));
-                current.subtract(crossProduct.multiply(traveled));
-
-                armorStand.teleport(current);
-
-                caster.getWorld().spawnParticle(Particle.WAX_OFF, current.clone().add(0,1,0), 1, 0, 0, 0, 0);
-
-                if(traveled>=2){
-                    cancelTask();
-                }
-
-                traveled +=.4;
-
-            }
-
-            private void cancelTask(){
-                armorStand.remove();
-                this.cancel();
-
-
-            }
-
-        }.runTaskTimer(main, 0, 2);
-
-    }
 
     private boolean getIfBasicRunning(LivingEntity caster){
         return basicRunning.containsKey(caster.getUniqueId());

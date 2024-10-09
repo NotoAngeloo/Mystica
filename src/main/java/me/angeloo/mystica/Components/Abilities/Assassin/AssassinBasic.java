@@ -13,11 +13,15 @@ import me.angeloo.mystica.Utility.DamageCalculator;
 import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
@@ -78,6 +82,7 @@ public class AssassinBasic {
 
     private void executeBasic(LivingEntity caster){
 
+        basicRunning.put(caster.getUniqueId(), null);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
@@ -97,7 +102,6 @@ public class AssassinBasic {
                 }
 
 
-
                 basicStage(caster);
 
                 if(caster instanceof Player){
@@ -108,8 +112,6 @@ public class AssassinBasic {
             }
         }.runTaskTimer(main, 0, 8);
         basicRunning.put(caster.getUniqueId(), task);
-
-
 
 
     }
@@ -225,9 +227,58 @@ public class AssassinBasic {
                 combo.addComboPoint(caster);
             }
         }
-        else{
-            stopBasicRunning(caster);
-        }
+
+
+        Location startStand = caster.getLocation();
+
+        ArmorStand armorStand = caster.getWorld().spawn(startStand.clone().subtract(0,10,0), ArmorStand.class);
+        armorStand.setInvisible(true);
+        armorStand.setGravity(false);
+        armorStand.setCollidable(false);
+        armorStand.setInvulnerable(true);
+        armorStand.setMarker(true);
+
+        EntityEquipment entityEquipment = armorStand.getEquipment();
+
+        ItemStack item = new ItemStack(Material.SLIME_BALL);
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setCustomModelData(4);
+        item.setItemMeta(meta);
+
+        assert entityEquipment != null;
+        entityEquipment.setHelmet(item);
+        armorStand.teleport(startStand);
+
+        new BukkitRunnable(){
+            int count = 0;
+            @Override
+            public void run(){
+
+
+                Location current = armorStand.getLocation();
+
+                current.add(direction.normalize().multiply(.25));
+
+                current.setDirection(direction);
+
+                armorStand.teleport(current);
+
+
+                if (count > 10) {
+                    cancelTask();
+                }
+
+
+                count++;
+            }
+
+            private void cancelTask() {
+                this.cancel();
+                armorStand.remove();
+            }
+        }.runTaskTimer(main, 0, 1);
+
     }
 
     private boolean getIfEvenOdd(Player player){

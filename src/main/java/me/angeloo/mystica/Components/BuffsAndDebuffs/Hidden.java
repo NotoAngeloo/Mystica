@@ -72,15 +72,8 @@ public class Hidden {
             }
 
             if(caster instanceof Player){
-                PlayerEquipment playerEquipment = profileManager.getAnyProfile(caster).getPlayerEquipment();
 
-                if(playerEquipment.getWeapon() != null){
-                    ((Player)caster).getInventory().setItemInMainHand(playerEquipment.getWeapon());
-                }
-
-                /*if (playerEquipment.getOffhand() != null){
-                    ((Player)caster).getInventory().setItemInOffHand(playerEquipment.getOffhand());
-                }*/
+                showWeapons((Player) caster);
 
                 DisplayWeapons displayWeapons  = new DisplayWeapons(main);
                 displayWeapons.displayArmor((Player) caster);

@@ -60,27 +60,27 @@ public class Stealth {
             abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
+        if(getIfStealthed(caster)){
+            reveal(caster);
+            cooldownDisplayer.displayCooldown(caster, 8);
+            if(caster instanceof Player){
+                combatManager.startCombatTimer(caster);
+            }
+            return;
+        }
+
         if(getCooldown(caster) > 0){
             return;
         }
 
-
         cooldownDisplayer.displayCooldown(caster, 8);
 
         if(caster instanceof Player){
-            combatManager.startCombatTimer((Player) caster);
+            combatManager.startCombatTimer(caster);
         }
 
+        vanish(caster);
 
-
-        if(!getIfStealthed(caster)){
-
-
-            vanish(caster);
-            return;
-        }
-
-        reveal(caster);
     }
 
     private void vanish(LivingEntity caster){
@@ -255,7 +255,6 @@ public class Stealth {
             int time = timeInStealth.getOrDefault(caster.getUniqueId(), 0);
             return 10 - time;
         }
-
 
         int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 

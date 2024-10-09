@@ -134,6 +134,10 @@ commands:
     description: lets mms mess with fake player ai
     usage: /SetCaution <entityuuid> <boolean>
     permission: developer
+  SignalNearbyNpc:
+    description: lets interactions signal mms
+    usage: /SignalNearbyNpc <player> <signal>
+    permission: developer
 
 permissions:
   developer:

@@ -151,6 +151,11 @@ public class WildSpirit {
             @Override
             public void run(){
 
+                if(caster.isDead()){
+                    despawn();
+                    return;
+                }
+
                 if(profileManager.getAnyProfile(caster).getIfDead()){
                     despawn();
                     return;

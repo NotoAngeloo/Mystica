@@ -115,7 +115,7 @@ public class EquipmentManager {
                         break;
                     }
                 }
-                lore.set(requireLine, assassinEquipment.getBaseWeapon().getItemMeta().getLore().get(6));
+                lore.set(requireLine, assassinEquipment.getBaseWeapon().getItemMeta().getLore().get(assassinEquipment.getBaseWeapon().getItemMeta().getLore().size()-1));
                 break;
             }
             case "elementalist": {
@@ -153,7 +153,7 @@ public class EquipmentManager {
                         break;
                     }
                 }
-                lore.set(requireLine, elementalistEquipment.getBaseWeapon().getItemMeta().getLore().get(6));
+                lore.set(requireLine, elementalistEquipment.getBaseWeapon().getItemMeta().getLore().get(elementalistEquipment.getBaseWeapon().getItemMeta().getLore().size()-1));
                 break;
             }
             case "mystic": {
@@ -192,7 +192,7 @@ public class EquipmentManager {
                         break;
                     }
                 }
-                lore.set(requireLine, mysticEquipment.getBaseWeapon().getItemMeta().getLore().get(6));
+                lore.set(requireLine, mysticEquipment.getBaseWeapon().getItemMeta().getLore().get(mysticEquipment.getBaseWeapon().getItemMeta().getLore().size()-1));
                 break;
             }
             case "paladin": {
@@ -230,7 +230,7 @@ public class EquipmentManager {
                         break;
                     }
                 }
-                lore.set(requireLine, paladinEquipment.getBaseWeapon().getItemMeta().getLore().get(6));
+                lore.set(requireLine, paladinEquipment.getBaseWeapon().getItemMeta().getLore().get(paladinEquipment.getBaseWeapon().getItemMeta().getLore().size()-1));
                 break;
             }
             case "ranger": {
@@ -268,7 +268,7 @@ public class EquipmentManager {
                         break;
                     }
                 }
-                lore.set(requireLine, rangerEquipment.getBaseWeapon().getItemMeta().getLore().get(6));
+                lore.set(requireLine, rangerEquipment.getBaseWeapon().getItemMeta().getLore().get(rangerEquipment.getBaseWeapon().getItemMeta().getLore().size()-1));
                 break;
             }
             case "shadow knight": {
@@ -306,7 +306,7 @@ public class EquipmentManager {
                         break;
                     }
                 }
-                lore.set(requireLine, shadowKnightEquipment.getBaseWeapon().getItemMeta().getLore().get(6));
+                lore.set(requireLine, shadowKnightEquipment.getBaseWeapon().getItemMeta().getLore().get(shadowKnightEquipment.getBaseWeapon().getItemMeta().getLore().size()-1));
                 break;
             }
             case "warrior": {
@@ -344,7 +344,7 @@ public class EquipmentManager {
                         break;
                     }
                 }
-                lore.set(requireLine, warriorEquipment.getBaseWeapon().getItemMeta().getLore().get(6));
+                lore.set(requireLine, warriorEquipment.getBaseWeapon().getItemMeta().getLore().get(warriorEquipment.getBaseWeapon().getItemMeta().getLore().size()-1));
                 break;
             }
         }

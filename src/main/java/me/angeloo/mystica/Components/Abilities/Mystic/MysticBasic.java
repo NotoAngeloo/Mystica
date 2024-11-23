@@ -1,5 +1,7 @@
 package me.angeloo.mystica.Components.Abilities.Mystic;
 
+import io.lumine.mythic.api.adapters.AbstractEntity;
+import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.Abilities.MysticAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
@@ -358,6 +360,10 @@ public class MysticBasic {
             @Override
             public void run(){
 
+                if(caster == null){
+                    this.cancel();
+                    return;
+                }
 
                 if(targetManager.getPlayerTarget(caster) != null){
                     if(profileManager.getAnyProfile(caster).getIfDead()){
@@ -378,6 +384,11 @@ public class MysticBasic {
     }
 
     private void basicStage(LivingEntity caster){
+
+        if(caster == null){
+            return;
+        }
+
         LivingEntity target;
 
         boolean shepard = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("shepard");
@@ -438,9 +449,16 @@ public class MysticBasic {
         }
 
 
-        if(distance<1){
-            stopBasicRunning(caster);
-            return;
+        if(target != caster){
+            if(distance<1){
+                stopBasicRunning(caster);
+                return;
+            }
+        }
+
+        if(MythicBukkit.inst().getAPIHelper().isMythicMob(caster.getUniqueId())){
+            AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).getEntity();
+            MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).signalMob(abstractEntity, "basic");
         }
 
         if(!healing){

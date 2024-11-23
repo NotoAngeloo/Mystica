@@ -53,6 +53,8 @@ public class DamageCalculator {
 
         double multiplierForHealerBonus = 1;
 
+
+
         if(profileManager.getAnyProfile(healer).getPlayerSubclass().equalsIgnoreCase("shepard")
         || profileManager.getAnyProfile(healer).getPlayerSubclass().equalsIgnoreCase("divine")){
             multiplierForHealerBonus = 1.2;

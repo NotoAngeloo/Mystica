@@ -158,7 +158,7 @@ public class FakePlayerTargetManager {
     //do something different for mystics
 
     public LivingEntity getTarget(LivingEntity entity){
-        return targetMap.get(entity.getUniqueId());
+        return targetMap.getOrDefault(entity.getUniqueId(), entity);
     }
 
 

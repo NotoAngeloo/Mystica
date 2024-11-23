@@ -15,11 +15,11 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class Wings {
+public class Darwin {
 
     private final ProfileManager profileManager;
 
-    public Wings(Mystica main){
+    public Darwin(Mystica main){
         profileManager = main.getProfileManager();
     }
 
@@ -90,12 +90,11 @@ public class Wings {
         defence+=(level);
         magic_defence+=(level);
 
-        health+=(level*15);
+        attack+=level;
 
         Stats stats = new Stats(level, attack, health, defence, magic_defence, crit);
 
-
-        FakePlayerProfile fakePlayerProfile = new FakePlayerProfile(false, false, stats.getHealth(), stats, "Mystic", "Shepard");
+        FakePlayerProfile fakePlayerProfile = new FakePlayerProfile(false, false, stats.getHealth(),  stats, "Warrior", "Executioner");
 
         profileManager.addToFakePlayerProfileMap(uuid, fakePlayerProfile);
 

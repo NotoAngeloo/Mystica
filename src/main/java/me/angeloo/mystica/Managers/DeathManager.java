@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Managers;
 
+import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.CustomEvents.AiSignalEvent;
@@ -45,6 +46,7 @@ public class DeathManager {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         gravestoneManager = main.getGravestoneManager();
     }
+
 
     public void playerNowDead(Player player){
 

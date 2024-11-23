@@ -81,7 +81,6 @@ public class Roll {
 
         Location start = caster.getLocation();
 
-
         Vector direction = start.getDirection().normalize();
 
         double shieldAmount = (profileManager.getAnyProfile(caster).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(caster)) / 4;

@@ -82,7 +82,7 @@ public class Mana {
 
         long currentTime = System.currentTimeMillis() / 1000;
 
-        if (currentTime - getLastManaed(entity.getUniqueId()) >= 20) {
+        if (currentTime - getLastManaed(entity.getUniqueId()) >= 10) {
             int currentMana = getCurrentMana(entity);
 
             int manaRegenRate = 50;

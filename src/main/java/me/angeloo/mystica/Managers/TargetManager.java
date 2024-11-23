@@ -32,6 +32,8 @@ public class TargetManager {
     private final Map<UUID, BossBar> targetShieldBar = new HashMap<>();
     private final ProfileManager profileManager;
 
+    private final Map<UUID, UUID> bossTarget = new HashMap<>();
+
     public TargetManager(Mystica main){
         fakePlayerTargetManager = main.getFakePlayerTargetManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
@@ -83,6 +85,11 @@ public class TargetManager {
 
         if(entity != null){
             playerTargetBar.put(player.getUniqueId(), startTargetBar(player, entity));
+
+            //if they are an enemy
+            if(pveChecker.pveLogic(entity)){
+                setBossTarget(player, entity);
+            }
 
             if(entity.isDead()){
                 removeAllBars(player);
@@ -350,5 +357,38 @@ public class TargetManager {
 
     public Map<UUID, LivingEntity> getTargetMap(){
         return playerTarget;
+    }
+
+    public boolean isTargeting(LivingEntity caster, LivingEntity target){
+
+        if(!(caster instanceof Player)){
+
+            return false;
+        }
+
+        if(!playerTarget.containsKey(caster.getUniqueId())){
+            return false;
+        }
+
+        return playerTarget.get(caster.getUniqueId()) == target;
+    }
+
+    private void setBossTarget(Player player, LivingEntity target){
+        bossTarget.put(player.getUniqueId(), target.getUniqueId());
+    }
+
+    public UUID getBossTarget(Player player){
+
+        /*if(bossTarget.containsKey(player.getUniqueId())){
+            Entity entity = Bukkit.getEntity(bossTarget.get(player.getUniqueId()));
+
+            if(entity == null || entity.isDead()){
+                bossTarget.remove(player.getUniqueId());
+
+                Bukkit.getLogger().info("removing boss target");
+
+            }*/
+
+        return bossTarget.getOrDefault(player.getUniqueId(), player.getUniqueId());
     }
 }

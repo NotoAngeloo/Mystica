@@ -95,26 +95,6 @@ public class BurialGround {
         boolean blood = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("blood");
 
         Location start = caster.getLocation();
-        ArmorStand armorStand = caster.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
-        armorStand.setInvisible(true);
-        armorStand.setGravity(false);
-        armorStand.setCollidable(false);
-        armorStand.setInvulnerable(true);
-        armorStand.setMarker(true);
-
-        EntityEquipment entityEquipment = armorStand.getEquipment();
-
-        ItemStack ground = new ItemStack(Material.REDSTONE);
-        ItemMeta meta = ground.getItemMeta();
-        assert meta != null;
-
-        meta.setCustomModelData(10);
-
-        ground.setItemMeta(meta);
-        assert entityEquipment != null;
-        entityEquipment.setHelmet(ground);
-
-        armorStand.teleport(start);
 
 
         double finalHealAmount = getHealPercent(caster);
@@ -126,7 +106,6 @@ public class BurialGround {
                 if(caster instanceof Player){
                     if(!((Player)caster).isOnline()){
                         this.cancel();
-                        armorStand.remove();
 
                         if(blood){
                             buffAndDebuffManager.getDamageReduction().removeReduction(caster);
@@ -150,9 +129,9 @@ public class BurialGround {
 
                 for (int i = 0; i < 16; i++) {
                     double angle = i * increment;
-                    double x = armorStand.getLocation().getX() + (3 * Math.cos(angle));
-                    double z = armorStand.getLocation().getZ() + (3 * Math.sin(angle));
-                    double y = armorStand.getLocation().getY();
+                    double x = start.getX() + (3 * Math.cos(angle));
+                    double z = start.getZ() + (3 * Math.sin(angle));
+                    double y = start.getY();
                     Location loc = new Location(caster.getWorld(), x, y, z);
 
                     caster.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, loc, 1,0, 0, 0, 0);
@@ -160,7 +139,6 @@ public class BurialGround {
 
                 if(ran>=7){
                     this.cancel();
-                    armorStand.remove();
 
                     if(blood){
                         buffAndDebuffManager.getDamageReduction().removeReduction(caster);
@@ -173,7 +151,7 @@ public class BurialGround {
 
             private boolean playerValid(){
 
-                double distance = caster.getLocation().distance(armorStand.getLocation());
+                double distance = caster.getLocation().distance(start);
 
                 if(distance>5){
                     return false;

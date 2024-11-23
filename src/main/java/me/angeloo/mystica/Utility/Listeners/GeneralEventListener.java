@@ -1259,19 +1259,23 @@ public class GeneralEventListener implements Listener {
 
             long currentTime = System.currentTimeMillis() / 1000;
 
-            if(defender instanceof Player){
-                if(currentTime - damageSoundCooldown.get(defender.getUniqueId()) > 0.5){
+            if((defender instanceof Player) || profileManager.getAnyProfile(defender).fakePlayer()){
 
-                    ((Player) defender).playSound(defender, Sound.ENTITY_PLAYER_HURT, 1, 1);
-                    damageSoundCooldown.put(defender.getUniqueId(), (System.currentTimeMillis() / 1000));
+                if(defender instanceof Player){
+                    if(currentTime - damageSoundCooldown.get(defender.getUniqueId()) > 0.5){
+
+                        ((Player) defender).playSound(defender, Sound.ENTITY_PLAYER_HURT, 1, 1);
+                        damageSoundCooldown.put(defender.getUniqueId(), (System.currentTimeMillis() / 1000));
+                    }
                 }
-            }
 
-            abilityManager.getWarriorAbilities().getSearingChains().tryToDecreaseCooldown(defender);
-            abilityManager.getAssassinAbilities().getStealth().stealthBonusCheck(defender, null);
+                abilityManager.getWarriorAbilities().getSearingChains().tryToDecreaseCooldown(defender);
+                abilityManager.getAssassinAbilities().getStealth().stealthBonusCheck(defender, null);
 
-            if(profileManager.getAnyProfile(defender).getPlayerClass().equalsIgnoreCase("warrior")){
-                abilityManager.getWarriorAbilities().getRage().addRageToEntity(defender, 10);
+                if(profileManager.getAnyProfile(defender).getPlayerClass().equalsIgnoreCase("warrior")){
+                    abilityManager.getWarriorAbilities().getRage().addRageToEntity(defender, 10);
+                }
+
             }
 
             buffAndDebuffManager.getSleep().forceWakeUp(defender);
@@ -1647,6 +1651,14 @@ public class GeneralEventListener implements Listener {
                     continue;
                 }
 
+                if(MythicBukkit.inst().getAPIHelper().isMythicMob(entity.getUniqueId())){
+                    String mobType = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).getMobType();
+
+                    if(mobType.equalsIgnoreCase("safezone")){
+                        continue;
+                    }
+                }
+
                 LivingEntity livingEntity = (LivingEntity) entity;
 
                 if(profileManager.getAnyProfile(livingEntity).getIfDead()){
@@ -1726,6 +1738,14 @@ public class GeneralEventListener implements Listener {
 
                     if(!(entity instanceof LivingEntity)){
                         continue;
+                    }
+
+                    if(MythicBukkit.inst().getAPIHelper().isMythicMob(entity.getUniqueId())){
+                        String mobType = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).getMobType();
+
+                        if(mobType.equalsIgnoreCase("safezone")){
+                            continue;
+                        }
                     }
 
                     LivingEntity livingEntity = (LivingEntity) entity;
@@ -1810,6 +1830,14 @@ public class GeneralEventListener implements Listener {
 
                     if(!(entity instanceof LivingEntity)){
                         continue;
+                    }
+
+                    if(MythicBukkit.inst().getAPIHelper().isMythicMob(entity.getUniqueId())){
+                        String mobType = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).getMobType();
+
+                        if(mobType.equalsIgnoreCase("safezone")){
+                            continue;
+                        }
                     }
 
                     LivingEntity livingEntity = (LivingEntity) entity;

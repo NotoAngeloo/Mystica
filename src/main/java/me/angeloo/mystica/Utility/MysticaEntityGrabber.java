@@ -24,7 +24,11 @@ public class MysticaEntityGrabber {
         targetManager = main.getTargetManager();
     }
 
-    public UUID getLowest(Player player){
+    public UUID getBossTarget(Player player){
+        return targetManager.getBossTarget(player);
+    }
+
+    public UUID getLowestPhp(Player player){
 
         List<LivingEntity> liveParty = new ArrayList<>();
 
@@ -39,7 +43,9 @@ public class MysticaEntityGrabber {
                 liveParty.add(member);
             }
 
-            liveParty.sort(Comparator.comparingDouble(p -> profileManager.getAnyProfile(p).getCurrentHealth() / profileManager.getAnyProfile(p).getTotalHealth()));
+            liveParty.sort(Comparator.comparingDouble(p -> profileManager.getAnyProfile(p).getCurrentHealth()/(double)profileManager.getAnyProfile(p).getTotalHealth()));
+
+            //liveParty.sort(Comparator.comparingDouble(p -> profileManager.getAnyProfile(p).getCurrentHealth()));
 
             if(!liveParty.isEmpty()){
                 return liveParty.get(liveParty.size()-1).getUniqueId();
@@ -56,7 +62,7 @@ public class MysticaEntityGrabber {
             liveParty.add(member);
         }
 
-        liveParty.sort(Comparator.comparingDouble(p -> profileManager.getAnyProfile(p).getCurrentHealth() / profileManager.getAnyProfile(p).getTotalHealth()));
+        liveParty.sort(Comparator.comparingDouble(p -> profileManager.getAnyProfile(p).getCurrentHealth()));
 
         if(!liveParty.isEmpty()){
             return liveParty.get(liveParty.size()-1).getUniqueId();
@@ -106,7 +112,35 @@ public class MysticaEntityGrabber {
         return player.getUniqueId();
     }
 
+    public int getValidAmount(Player player){
+        List<LivingEntity> liveParty = new ArrayList<>();
 
+        if(!profileManager.getCompanions(player).isEmpty()){
+            List<LivingEntity> fakeParty = getFakeParty(player);
+
+
+            for(LivingEntity member : fakeParty){
+                if(profileManager.getAnyProfile(member).getIfDead()){
+                    continue;
+                }
+                liveParty.add(member);
+            }
+
+            return liveParty.size();
+
+        }
+
+        List<LivingEntity> realParty = getParty(player);
+
+        for(LivingEntity member : realParty){
+            if(profileManager.getAnyProfile(member).getIfDead()){
+                continue;
+            }
+            liveParty.add(member);
+        }
+
+        return liveParty.size();
+    }
 
     private List<LivingEntity> getFakeParty(Player player){
         List<LivingEntity> fakeParty = new ArrayList<>();
@@ -123,14 +157,13 @@ public class MysticaEntityGrabber {
         PartiesAPI api = Parties.getApi();
         PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
         assert partyPlayer != null;
-        if(partyPlayer.isInParty()){
+        if(partyPlayer.isInParty()) {
             Party party = api.getParty(partyPlayer.getPartyId());
             assert party != null;
-            for(UUID partyMemberId : party.getMembers()){
+            for (UUID partyMemberId : party.getMembers()) {
                 realParty.add(Bukkit.getPlayer(partyMemberId));
             }
         }
-        realParty.add(player);
         return realParty;
     }
 

@@ -1,5 +1,7 @@
 package me.angeloo.mystica.Components.Abilities.Paladin;
 
+import io.lumine.mythic.api.adapters.AbstractEntity;
+import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.Abilities.PaladinAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
@@ -229,6 +231,12 @@ public class PaladinBasic {
                             }
 
                             healTarget(caster, target);
+
+                            if(MythicBukkit.inst().getAPIHelper().isMythicMob(caster.getUniqueId())){
+                                AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).getEntity();
+                                MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).signalMob(abstractEntity, "basic");
+                            }
+
                             return;
                         }
                     }
@@ -236,6 +244,10 @@ public class PaladinBasic {
                 }
 
                 //check heal instead here
+                if(MythicBukkit.inst().getAPIHelper().isMythicMob(caster.getUniqueId())){
+                    AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).getEntity();
+                    MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).signalMob(abstractEntity, "basic");
+                }
 
                 tryToRemoveBasicStage(caster);
                 switch (getStage(caster)){

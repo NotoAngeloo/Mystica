@@ -11,7 +11,7 @@ public class Pulled {
 
     private final Map<UUID, Boolean> knockedUp = new HashMap<>();
 
-    public Pulled(Mystica main){
+    public Pulled(){
     }
 
     public void applyPull(LivingEntity entity){

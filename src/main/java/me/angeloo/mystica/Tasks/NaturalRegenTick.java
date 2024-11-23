@@ -47,7 +47,7 @@ public class NaturalRegenTick extends BukkitRunnable {
             boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
             long currentTime = System.currentTimeMillis()/1000;
 
-            //profileManager.updateCompanions(player);
+            profileManager.updateCompanions(player);
 
             if(!profileManager.getCompanions(player).isEmpty()){
 
@@ -68,7 +68,7 @@ public class NaturalRegenTick extends BukkitRunnable {
                         double healthRegenRate = maxHealth * .01;
 
                         if(!combatStatus){
-                            healthRegenRate = maxHealth * .3;
+                            healthRegenRate = maxHealth;
                         }
 
                         if(currentHealth > maxHealth){

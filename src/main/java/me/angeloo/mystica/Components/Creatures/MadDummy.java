@@ -165,6 +165,7 @@ public class MadDummy {
                 return null;
             }
 
+
             @Override
             public Skill_Level getSkillLevels() {
                 return null;

@@ -27,6 +27,7 @@ public class CreaturesAndCharactersManager {
 
     private final TheLindwyrm theLindwyrm;
     private final CorruptHeart corruptHeart;
+    private final WeberBoss weberBoss;
     private final BetaTester betaTester;
     private final Dummy dummy;
     private final MadDummy madDummy;
@@ -46,6 +47,7 @@ public class CreaturesAndCharactersManager {
         profileManager = main.getProfileManager();
         theLindwyrm = new TheLindwyrm(main);
         corruptHeart = new CorruptHeart(main);
+        weberBoss = new WeberBoss(main);
         betaTester = new BetaTester(main);
         dummy = new Dummy(main);
         madDummy = new MadDummy(main);
@@ -78,6 +80,11 @@ public class CreaturesAndCharactersManager {
                 profileManager.setBossHome(uuid);
                 break;
             }
+            case "WeberBoss":{
+                weberBoss.makeProfile(uuid);
+                profileManager.setBossHome(uuid);
+                break;
+            }
             case "HoLeeBoss":{
                 hoLeeBoss.makeProfile(uuid);
                 profileManager.setBossHome(uuid);
@@ -93,6 +100,7 @@ public class CreaturesAndCharactersManager {
                 break;
             }
             case "Gravestone":
+            case "SafeZone":
             case "DemonPortal":
             case "HeartTendril":
             case "LindwyrmRock":{
@@ -303,6 +311,7 @@ public class CreaturesAndCharactersManager {
             public PlayerBossLevel getPlayerBossLevel() {
                 return null;
             }
+
         };
         profileManager.addToNonPlayerProfiles(uuid, nonPlayerProfile);
     }

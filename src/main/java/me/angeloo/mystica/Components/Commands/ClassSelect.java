@@ -19,7 +19,7 @@ public class ClassSelect implements CommandExecutor {
     private final InventoryIndexingManager inventoryIndexingManager;
 
     public ClassSelect(Mystica main){
-        classSelectInventory = new ClassSelectInventory();
+        classSelectInventory = new ClassSelectInventory(main);
         inventoryIndexingManager = main.getInventoryIndexingManager();
     }
 

@@ -26,17 +26,10 @@ commands:
     description: opens class select
     usage: /ClassSelect <player>
     permission: developer
-  ClassSwap:
-    description: opens class swap
-    usage: /ClassSwap <player>
-    /permission: developer
   GearSwap:
     description: opens gear swap
     usage: /GearSwap <player>
     permission: developer
-  ClassGuide:
-    description: opens class guide
-    usage: /classguide
   SeeRawDamage:
     description: allows for better testing of seeing damage
     usage: /SeeRawDamage

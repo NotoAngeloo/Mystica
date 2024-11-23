@@ -57,6 +57,9 @@ public class AggroTick {
                 List<LivingEntity> attackers = new ArrayList<>();
 
                 for(LivingEntity attacker : originalAttackerList){
+
+                    playerCombatManager.startCombatTimer(attacker);
+
                     boolean blacklist = aggroManager.getIfOnBlackList(attacker);
                     boolean deathStatus = profileManager.getAnyProfile(attacker).getIfDead();
 
@@ -111,6 +114,8 @@ public class AggroTick {
 
                 if(((Creature) entity).getTarget() != null){
                     LivingEntity targetedPlayer = ((Creature)entity).getTarget();
+
+                    //Bukkit.getLogger().info(targetedPlayer.getName());
 
                     boolean deathStatus = profileManager.getAnyProfile(targetedPlayer).getIfDead();
 

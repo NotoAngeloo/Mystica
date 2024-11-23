@@ -4,6 +4,7 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import io.lumine.mythic.api.adapters.AbstractEntity;
+import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.Stats;
@@ -14,6 +15,8 @@ import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -28,9 +31,9 @@ public class ChangeResourceHandler {
     private final DailyData dailyData;
     private final AggroManager aggroManager;
     private final ProfileManager profileManager;
+    private final GravestoneManager gravestoneManager;
     private final ProtocolManager protocolManager;
     private final Map<UUID, Long> lastDamaged = new HashMap<>();
-    private final Map<UUID, Long> lastManaed = new HashMap<>();
 
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final DpsManager dpsManager;
@@ -48,6 +51,7 @@ public class ChangeResourceHandler {
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         dpsManager = main.getDpsManager();
+        gravestoneManager = main.getGravestoneManager();
     }
 
     public void subtractHealthFromEntity(LivingEntity entity, Double damage, LivingEntity damager){
@@ -58,6 +62,10 @@ public class ChangeResourceHandler {
         }
 
         if(buffAndDebuffManager.getImmune().getImmune(entity)){
+            return;
+        }
+
+        if(entity instanceof ArmorStand){
             return;
         }
 
@@ -117,6 +125,10 @@ public class ChangeResourceHandler {
                     Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent(companion, "attack"));
                 }
             }
+        }
+
+        if(profileManager.getAnyProfile(damager).fakePlayer()){
+            dpsManager.addToDamageDealt(damager, damage);
         }
 
         if(profileManager.getAnyProfile(entity).getImmortality()){
@@ -199,6 +211,17 @@ public class ChangeResourceHandler {
                 AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).getEntity();
                 MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).signalMob(abstractEntity, "die");
                 Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent(entity, "stop"));
+            }
+
+            Entity gravestone;
+
+            try{
+                gravestone = MythicBukkit.inst().getAPIHelper().spawnMythicMob("Gravestone", entity.getLocation());
+                gravestone.setCustomName(entity.getName());
+                gravestoneManager.placeGravestone(gravestone, entity);
+            }
+            catch (InvalidMobTypeException e){
+                throw new RuntimeException(e);
             }
         }
     }
@@ -479,7 +502,6 @@ public class ChangeResourceHandler {
         }
 
     }
-
 
 
     public void healPlayerToFull(Player player){

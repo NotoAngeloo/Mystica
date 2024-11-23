@@ -153,7 +153,7 @@ public abstract class PlayerProfile implements Profile{
     @Override
     public PlayerBag getPlayerBag(){return playerBag;}
     @Override
-    public PlayerEquipment getPlayerEquipment(){return  playerEquipment;}
+    public PlayerEquipment getPlayerEquipment(){return playerEquipment;}
     @Override
     public Skill_Level getSkillLevels(){return skillLevel;}
     @Override

@@ -33,7 +33,6 @@ public final class Mystica extends JavaPlugin{
     private PathingManager pathingManager;
 
     private ClassSetter classSetter;
-    private ClassSwapper classSwapper;
     private StealthTargetBlacklist stealthTargetBlacklist;
     private FakePlayerTargetManager fakePlayerTargetManager;
     private TargetManager targetManager;
@@ -100,8 +99,6 @@ public final class Mystica extends JavaPlugin{
         questManager = new QuestManager(this);
 
         classSetter = new ClassSetter(this);
-        classSwapper = new ClassSwapper(this);
-
         pvpManager = new PvpManager(this);
         pveChecker = new PveChecker(this);
 
@@ -112,6 +109,7 @@ public final class Mystica extends JavaPlugin{
         fakePlayerTargetManager = new FakePlayerTargetManager(this);
         targetManager = new TargetManager(this);
 
+        gravestoneManager = new GravestoneManager();
         dpsManager = new DpsManager(this);
         changeResourceHandler = new ChangeResourceHandler(this);
 
@@ -119,7 +117,6 @@ public final class Mystica extends JavaPlugin{
 
         damageCalculator = new DamageCalculator(this);
 
-        gravestoneManager = new GravestoneManager();
         abilityManager = new AbilityManager(this);
         combatManager = abilityManager.getCombatManager();
         deathManager = new DeathManager(this);
@@ -146,7 +143,6 @@ public final class Mystica extends JavaPlugin{
         getCommand("Equipment").setExecutor(new Equipment(this));
         getCommand("Trash").setExecutor(new Trash());
         getCommand("ClassSelect").setExecutor(new ClassSelect(this));
-        getCommand("ClassSwap").setExecutor(new ClassSwap(this));
         getCommand("GearSwap").setExecutor(new GearSwap());
         getCommand("WhatAreMyStats").setExecutor(new WhatAreMyStats(this));
         getCommand("ToggleImmunity").setExecutor(new ToggleImmunity(this));
@@ -166,7 +162,6 @@ public final class Mystica extends JavaPlugin{
         getCommand("Cosmetic").setExecutor(new Cosmetic(this));
         getCommand("BossLevel").setExecutor(new BossLevel(this));
         getCommand("GiveSoulStone").setExecutor(new GiveSoulStone(this));
-        getCommand("ClassGuide").setExecutor(new ClassGuide(this));
         getCommand("MysticaQuest").setExecutor(new MysticaQuest(this));
         getCommand("HitValidCheck").setExecutor(new HitValidCheck(this));
         getCommand("SetCaution").setExecutor(new SetCaution(this));
@@ -175,6 +170,7 @@ public final class Mystica extends JavaPlugin{
         AbilityInventory abilityInventory;
         this.getServer().getPluginManager().registerEvents(abilityInventory = new AbilityInventory(this), this);
         this.getServer().getPluginManager().registerEvents(new EquipmentInventory(this), this);
+        this.getServer().getPluginManager().registerEvents(new ClassSelectInventory(this), this);
 
         SpecInventory specInventory = abilityInventory.getSpecInventory();
         this.getServer().getPluginManager().registerEvents(specInventory, this);
@@ -269,8 +265,6 @@ public final class Mystica extends JavaPlugin{
     public ClassSetter getClassSetter(){
         return classSetter;
     }
-
-    public ClassSwapper getClassSwapper(){return classSwapper;}
 
     public StealthTargetBlacklist getStealthTargetBlacklist(){return stealthTargetBlacklist;}
 

@@ -1,5 +1,7 @@
 package me.angeloo.mystica.Components.Abilities.Ranger;
 
+import io.lumine.mythic.api.adapters.AbstractEntity;
+import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.Abilities.RangerAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
@@ -175,6 +177,10 @@ public class RangerBasic {
                     return;
                 }
 
+                if(MythicBukkit.inst().getAPIHelper().isMythicMob(caster.getUniqueId())){
+                    AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).getEntity();
+                    MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).signalMob(abstractEntity, "basic");
+                }
 
                 tryToRemoveBasicStage(caster);
                 switch (getStage(caster)){

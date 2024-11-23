@@ -53,8 +53,6 @@ public class ProfileManager {
     private final Map<UUID, BukkitTask> furyTasks = new HashMap<>();
     private final Map<UUID, Boolean> resetProcessing = new HashMap<>();
 
-    private final Map<UUID, UUID> bossTarget = new HashMap<>();
-
     public ProfileManager(Mystica main) {
         this.main = main;
         File dataFolder = main.getDataFolder();
@@ -301,6 +299,7 @@ public class ProfileManager {
             }
             else{
                 createNewDefaultNonPlayerProfile(entity.getUniqueId());
+                //Bukkit.getLogger().info("creating new default profile for " + entity.getName());
             }
 
         }
@@ -332,7 +331,6 @@ public class ProfileManager {
         StatsFromGear gearStats = new StatsFromGear( 0, 0,0,0,0,0);
 
         int currentHealth = 20;
-        int currentMana = 20;
 
         PlayerBag playerBag = new PlayerBag(new ArrayList<>(), 0);
         PlayerEquipment playerEquipment = new PlayerEquipment(new ItemStack[5]);
@@ -800,11 +798,18 @@ public class ProfileManager {
     }
 
     public List<LivingEntity> getCompanions(Player player){
+
+        /*if(companionMap.containsKey(player)){
+            Bukkit.getLogger().info(String.valueOf(companionMap.get(player).size()));
+        }*/
+
         return companionMap.getOrDefault(player, new ArrayList<>());
     }
 
     public void updateCompanions(Player player){
         if(companionMap.containsKey(player)) {
+
+            //Bukkit.getLogger().info("current companions " + companionMap.get(player));
 
             Set<LivingEntity> toRemove = new HashSet<>();
             for (LivingEntity companion : companionMap.get(player)) {
@@ -837,6 +842,8 @@ public class ProfileManager {
             List<LivingEntity> companions = new ArrayList<>(companionMap.get(player));
             companions.remove(companion);
 
+            //Bukkit.getLogger().info("removing " + companion.getUniqueId());
+
             if(companions.isEmpty()){
                 removeCompanions(player);
                 return;
@@ -855,11 +862,9 @@ public class ProfileManager {
             }
 
         }
+        //Bukkit.getLogger().info("removing from map");
         companionMap.remove(player);
     }
-
-
-
 
 
 

@@ -335,14 +335,8 @@ public class FakePlayerAiManager {
                 LivingEntity lowest = liveParty.get(0);
 
 
-                /*LivingEntity boss = (LivingEntity) Bukkit.getEntity(profileManager.getBossTarget(companionPlayer));
+                LivingEntity boss = (LivingEntity) Bukkit.getEntity(targetManager.getBossTarget(companionPlayer));
                 assert boss != null;
-                LivingEntity tank = null;
-
-                if(boss != companionPlayer){
-                    tank = ((Creature)boss).getTarget();
-                }*/
-
 
                 double base = 0;
                 for(LivingEntity member : fakeParty){
@@ -392,15 +386,20 @@ public class FakePlayerAiManager {
                     }
                 }
 
-                if(mysticAbilities.getLightSigil().usable(companion)){
-                    mysticAbilities.getLightSigil().use(companion);
-                    return;
+                if(averagePhp <= 75){
+                    if(mysticAbilities.getLightSigil().usable(companion)){
+                        mysticAbilities.getLightSigil().use(companion);
+                        return;
+                    }
                 }
 
+
                 targetManager.setPlayerTarget(companion, lowest);
+
                 if(targetManager.getPlayerTarget(companion) == companion){
                     targetManager.setPlayerTarget(companion, null);
                 }
+
                 mysticAbilities.getMysticBasic().useBasic(companion);
 
             }

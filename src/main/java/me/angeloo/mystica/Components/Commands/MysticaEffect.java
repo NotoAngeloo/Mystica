@@ -2,6 +2,7 @@ package me.angeloo.mystica.Components.Commands;
 
 import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Managers.ProfileManager;
+import me.angeloo.mystica.Managers.TargetManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import org.bukkit.Bukkit;
@@ -19,11 +20,13 @@ public class MysticaEffect implements CommandExecutor {
     private final ProfileManager profileManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final BuffAndDebuffManager buffAndDebuffManager;
+    private final TargetManager targetManager;
 
     public MysticaEffect(Mystica main) {
         profileManager = main.getProfileManager();
         changeResourceHandler = main.getChangeResourceHandler();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
+        targetManager = main.getTargetManager();
     }
 
     @Override
@@ -122,6 +125,34 @@ public class MysticaEffect implements CommandExecutor {
                 }
                 case "melt":{
                     buffAndDebuffManager.getArmorMelt().applyArmorMelt(target);
+                    return true;
+                }
+                case "heal_percent":{
+                    double totalHealth = profileManager.getAnyProfile(target).getTotalHealth();
+                    double healed = totalHealth * (amount * .01);
+                    changeResourceHandler.addHealthToEntity(target, healed, caster);
+                    return true;
+                }
+                case "fear":{
+                    buffAndDebuffManager.getFear().applyFear(target, amount);
+                    return true;
+                }
+                case "fear_if_targeting":{
+
+                    if(targetManager.isTargeting(target, caster)){
+                        buffAndDebuffManager.getFear().applyFear(target, amount);
+
+                        if(target instanceof Player){
+                            if(!profileManager.getCompanions((Player)target).isEmpty())  {
+                                for(LivingEntity companion : profileManager.getCompanions((Player) target)){
+                                    buffAndDebuffManager.getFear().applyFear(companion, amount);
+                                }
+                            }
+                        }
+
+
+                    }
+
                     return true;
                 }
             }

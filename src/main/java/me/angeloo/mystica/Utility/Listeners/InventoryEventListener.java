@@ -36,8 +36,7 @@ public class InventoryEventListener implements Listener {
 
     private final ProfileManager profileManager;
     private final EquipmentManager equipmentManager;
-    private final ClassSetter classSetter;
-    private final ClassSwapper classSwapper;
+
     private final QuestManager questManager;
     private final InventoryIndexingManager inventoryIndexingManager;
     private final BagInventory bagInventory;
@@ -57,8 +56,6 @@ public class InventoryEventListener implements Listener {
         profileManager = main.getProfileManager();
         equipmentManager = new EquipmentManager(main);
         questManager = main.getQuestManager();
-        classSetter = main.getClassSetter();
-        classSwapper = main.getClassSwapper();
         inventoryIndexingManager = main.getInventoryIndexingManager();
         bagInventory = main.getBagInventory();
         buyInvSlotsInventory = new BuyInvSlotsInventory(main);
@@ -310,149 +307,6 @@ public class InventoryEventListener implements Listener {
         }
     }
 
-
-    @EventHandler
-    public void classSelector(InventoryClickEvent event){
-        if(!event.getView().getTitle().equals("Select a Class")){
-            return;
-        }
-        event.setCancelled(true);
-
-        if(event.getClickedInventory() == null){
-            return;
-        }
-
-        Inventory inv = event.getView().getTopInventory();
-
-        if(event.getClickedInventory() != inv){
-            return;
-        }
-
-        ItemStack item = event.getCurrentItem();
-
-        if(item == null){
-            return;
-        }
-
-        if(!item.hasItemMeta()){
-            return;
-        }
-
-        Player player = (Player) event.getWhoClicked();
-
-        String name = item.getItemMeta().getDisplayName();
-        name = name.replaceAll("§.", "");
-
-        ItemStack classItem = event.getView().getTopInventory().getItem(13);
-        assert classItem != null;
-        String className = classItem.getItemMeta().getDisplayName().replaceAll("§.", "");
-
-        if (name.equalsIgnoreCase("select")) {
-            classSetter.setClass(player, className);
-            player.closeInventory();
-            return;
-        }
-
-        int index = inventoryIndexingManager.getClassIndex(player);
-
-        if(name.equalsIgnoreCase("next")){
-            index++;
-        }
-
-        if(name.equalsIgnoreCase("previous")){
-            index--;
-        }
-
-        if(index<0){
-            index = 6;
-        }
-
-        if(index>6){
-            index = 0;
-        }
-
-        inventoryIndexingManager.setClassIndex(player, index);
-
-        player.openInventory(new ClassSelectInventory().openClassSelect(index));
-
-    }
-
-    @EventHandler
-    public void classSwapper(InventoryClickEvent event){
-        if(!event.getView().getTitle().equals("Swap Class")){
-            return;
-        }
-        event.setCancelled(true);
-
-        if(event.getClickedInventory() == null){
-            return;
-        }
-
-        Inventory inv = event.getView().getTopInventory();
-
-        if(event.getClickedInventory() != inv){
-            return;
-        }
-
-        ItemStack item = event.getCurrentItem();
-
-        if(item == null){
-            return;
-        }
-
-        if(!item.hasItemMeta()){
-            return;
-        }
-
-        Player player = (Player) event.getWhoClicked();
-
-        String name = item.getItemMeta().getDisplayName();
-        name = name.replaceAll("§.", "");
-
-        ItemStack classItem = event.getView().getTopInventory().getItem(13);
-        assert classItem != null;
-        String className = classItem.getItemMeta().getDisplayName().replaceAll("§.", "");
-
-        if (name.equalsIgnoreCase("select")) {
-
-            if(classSwapper.hasEquipment(player)){
-                player.sendMessage("Remove your Equipment");
-                return;
-            }
-
-            if(profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase(className)){
-                player.sendMessage("You are already this class");
-                return;
-            }
-
-            classSwapper.swapClass(player, className);
-            player.closeInventory();
-            return;
-        }
-
-        int index = inventoryIndexingManager.getClassIndex(player);
-
-        if(name.equalsIgnoreCase("next")){
-            index++;
-        }
-
-        if(name.equalsIgnoreCase("previous")){
-            index--;
-        }
-
-        if(index<0){
-            index = 6;
-        }
-
-        if(index>6){
-            index = 0;
-        }
-
-        inventoryIndexingManager.setClassIndex(player, index);
-
-        player.openInventory(new ClassSelectInventory().openClassSwap(index));
-
-    }
 
     @EventHandler
     public void IdentifyClick(InventoryClickEvent event){

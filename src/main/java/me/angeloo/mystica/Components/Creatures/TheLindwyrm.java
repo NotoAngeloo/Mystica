@@ -25,7 +25,6 @@ public class TheLindwyrm {
 
     private final ProfileManager profileManager;
 
-
     public TheLindwyrm(Mystica main){
         profileManager = main.getProfileManager();
     }
@@ -226,6 +225,7 @@ public class TheLindwyrm {
             public PlayerBossLevel getPlayerBossLevel() {
                 return null;
             }
+
 
             @Override
             public Skill_Level getSkillLevels() {

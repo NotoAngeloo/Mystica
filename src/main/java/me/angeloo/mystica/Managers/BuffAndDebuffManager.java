@@ -1,6 +1,5 @@
 package me.angeloo.mystica.Managers;
 
-import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.BuffsAndDebuffs.*;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.entity.LivingEntity;
@@ -25,6 +24,7 @@ public class BuffAndDebuffManager {
     private final Haste haste;
     private final GenericDamageReduction damageReduction;
     private final Silence silence;
+    private final Fear fear;
     private final WellCrit wellCrit;
     private final Modest modest;
     private final KnockUp knockUp;
@@ -58,12 +58,13 @@ public class BuffAndDebuffManager {
         haste = new Haste(main);
         damageReduction = new GenericDamageReduction(main);
         silence = new Silence(main);
+        fear = new Fear(main);
         wellCrit = new WellCrit();
         modest = new Modest(main);
         pierceBuff = new PierceBuff(main);
         bladeTempestCrit = new BladeTempestCrit(main);
         concoctionDebuff = new ConcoctionDebuff(main);
-        pulled = new Pulled(main);
+        pulled = new Pulled();
         blocking = new Blocking(main);
         passThrough = new PassThrough();
         armorMelt = new ArmorMelt(main);
@@ -99,6 +100,7 @@ public class BuffAndDebuffManager {
     public Blocking getBlocking(){return blocking;}
     public PassThrough getPassThrough(){return passThrough;}
     public ArmorMelt getArmorMelt(){return armorMelt;}
+    public Fear getFear(){return fear;}
 
     public void removeAllBuffsAndDebuffs(LivingEntity entity){
         flamingSigilBuff.removeAttackBuff(entity);
@@ -124,7 +126,7 @@ public class BuffAndDebuffManager {
         pulled.removePull(entity);
         blocking.removeBlocking(entity);
         armorMelt.removeMelt(entity);
-
+        fear.removeFear(entity);
 
         if(entity instanceof Player){
             Player player = (Player) entity;
@@ -189,7 +191,8 @@ public class BuffAndDebuffManager {
                 || getIfCantAct(entity)
                 || silence.getSilence(entity)
                 || knockUp.getIfKnockUp(entity)
-                || pulled.getIfPulled(entity);
+                || pulled.getIfPulled(entity)
+                || fear.getFear(entity);
     }
 
     public boolean getIfBasicInterrupt(LivingEntity entity){

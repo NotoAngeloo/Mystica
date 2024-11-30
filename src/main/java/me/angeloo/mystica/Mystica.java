@@ -166,6 +166,7 @@ public final class Mystica extends JavaPlugin{
         getCommand("HitValidCheck").setExecutor(new HitValidCheck(this));
         getCommand("SetCaution").setExecutor(new SetCaution(this));
         getCommand("SignalNearbyNpc").setExecutor(new SignalNearbyNpc());
+        getCommand("StopCompanionRotation").setExecutor(new StopCompanionRotation(this));
 
         AbilityInventory abilityInventory;
         this.getServer().getPluginManager().registerEvents(abilityInventory = new AbilityInventory(this), this);

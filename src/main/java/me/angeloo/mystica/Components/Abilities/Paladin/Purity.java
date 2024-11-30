@@ -52,7 +52,7 @@ public class Purity {
 
         int percent = (int) Math.floor((purity/120) * 100);
 
-        return damage * (1+ percent);
+        return damage *  (1 +((double)percent / 100));
     }
 
     public void resetPurity(LivingEntity entity){

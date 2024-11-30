@@ -56,7 +56,6 @@ public class ChangeResourceHandler {
 
     public void subtractHealthFromEntity(LivingEntity entity, Double damage, LivingEntity damager){
 
-
         if(profileManager.getIfResetProcessing(entity)){
             return;
         }
@@ -228,6 +227,10 @@ public class ChangeResourceHandler {
 
     private void subtractHealthFromPlayer(Player player, double damage) {
 
+        if(!player.isOnline()){
+            return;
+        }
+
         if(profileManager.getAnyProfile(player).getIfDead()){
             return;
         }
@@ -327,6 +330,10 @@ public class ChangeResourceHandler {
     }
 
     private void addHealthToPlayer(Player player, Double health){
+
+        if(!player.isOnline()){
+            return;
+        }
 
         if(profileManager.getAnyProfile(player).getIfDead()){
             return;

@@ -33,7 +33,7 @@ public class Focus {
 
     private void addFocusToEntity(LivingEntity entity, int amount){
 
-        if(!profileManager.getAnyProfile(entity).getIfInCombat()){
+        if(!profileManager.getAnyProfile(entity).getIfInCombat() && !profileManager.getAnyProfile(entity).getIfDead()){
            return;
         }
 

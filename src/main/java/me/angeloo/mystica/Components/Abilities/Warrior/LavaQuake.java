@@ -117,6 +117,10 @@ public class LavaQuake {
                         targeted = true;
                     }
 
+                    if(distance<1){
+                        targeted = false;
+                    }
+
                 }
             }
 
@@ -127,6 +131,10 @@ public class LavaQuake {
 
                     if(distance < baseRange){
                         targeted = true;
+                    }
+
+                    if(distance<1){
+                        targeted = false;
                     }
 
                 }

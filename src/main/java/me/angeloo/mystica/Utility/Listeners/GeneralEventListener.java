@@ -891,6 +891,8 @@ public class GeneralEventListener implements Listener {
         }
         else{
             Player player = profileManager.getCompanionsPlayer(caster);
+            changeResourceHandler.addXpToPlayer(player, xpYield);
+            bagInventory.addItemsToPlayerBagByPickup(player, itemDrops);
             victors.add(player);
         }
 
@@ -1028,9 +1030,14 @@ public class GeneralEventListener implements Listener {
 
         if(!profileManager.getCompanions(player).isEmpty()){
             for(LivingEntity companion : profileManager.getCompanions(player)){
-                if(!profileManager.getAnyProfile(companion).getIfDead()){
+
+                if(fakePlayerAiManager.getIfRotationRunning(companion)){
                     return;
                 }
+
+                /*if(!profileManager.getAnyProfile(companion).getIfDead()){
+                    return;
+                }*/
             }
         }
 
@@ -1958,7 +1965,7 @@ public class GeneralEventListener implements Listener {
         String signal = event.getSignal();
 
         if(signal.equalsIgnoreCase("stop")){
-            fakePlayerAiManager.stopAiTask(companion);
+            fakePlayerAiManager.stopAiTask(companion.getUniqueId());
             return;
         }
 

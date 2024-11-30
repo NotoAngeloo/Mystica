@@ -87,7 +87,7 @@ public class WeberBoss {
 
         int hp = 10000 + (150 * (level-1));
         int atk = 60 + (35 * level-1);
-        int def = 30 + (25 * level-1);
+        int def = 40 + (35 * level-1);
         int mdef = 50 + (45 * level-1);
 
         Stats stats = new Stats(level, atk, hp,  def, mdef, 0);

@@ -175,6 +175,7 @@ public class ArcaneShield {
                     @Override
                     public void run(){
 
+
                         boolean stillHasAShield = buffAndDebuffManager.getGenericShield().getCurrentShieldAmount(thisTarget) > 0;
 
                         if(!stillHasAShield || needToRemove.get(thisTarget.getUniqueId())){

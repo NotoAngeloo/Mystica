@@ -147,6 +147,13 @@ public class RangerBasic {
                 LivingEntity target = targetManager.getPlayerTarget(caster);
 
                 if(target == null){
+                    this.cancel();
+                    stopBasicRunning(caster);
+                    return;
+                }
+
+                if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)).getIfDead() || profileManager.getAnyProfile(caster).getIfDead()){
+                    this.cancel();
                     stopBasicRunning(caster);
                     return;
                 }

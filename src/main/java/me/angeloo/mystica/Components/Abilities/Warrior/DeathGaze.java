@@ -311,6 +311,9 @@ public class DeathGaze {
 
                 }
 
+                if(ran>=60){
+                    cancelTask();
+                }
                 ran++;
             }
 

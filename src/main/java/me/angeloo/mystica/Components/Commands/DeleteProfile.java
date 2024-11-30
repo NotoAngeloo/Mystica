@@ -1,5 +1,7 @@
 package me.angeloo.mystica.Components.Commands;
 
+import me.angeloo.mystica.Managers.AbilityManager;
+import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
@@ -13,9 +15,13 @@ import org.jetbrains.annotations.NotNull;
 public class DeleteProfile implements CommandExecutor {
 
     private final ProfileManager profileManager;
+    private final AbilityManager abilityManager;
+    private final BuffAndDebuffManager buffAndDebuffManager;
 
     public DeleteProfile(Mystica main){
         profileManager = main.getProfileManager();
+        abilityManager = main.getAbilityManager();
+        buffAndDebuffManager = main.getBuffAndDebuffManager();
     }
 
     @Override
@@ -38,6 +44,10 @@ public class DeleteProfile implements CommandExecutor {
             sender.sendMessage("player doesn't exist");
             return true;
         }
+
+        abilityManager.resetAbilityBuffs(player);
+        abilityManager.resetCooldowns(player);
+        buffAndDebuffManager.removeAllBuffsAndDebuffs(player);
 
         profileManager.removePlayerProfile(player);
 

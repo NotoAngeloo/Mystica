@@ -43,8 +43,7 @@ public class ClassSelectInventory implements Listener {
 
         switch (index){
             case 0:{
-                title = "\uF80A\uF801\uE06F\uF82A\uF821" + "\uF80A\uF802\uE070\uF82A\uF822";
-                //inv.setItem(13, getAssassinItem());
+                title = "\uF809\uF808\uF804\uE06F" + "\uF802\uE070" +  "\uF82A\uF828\uF825\uF80D\uE071" + "\uF802\uE072";
                 break;
             }
             case 1:{
@@ -80,6 +79,7 @@ public class ClassSelectInventory implements Listener {
 
         }
 
+        Inventory inv = Bukkit.createInventory(null, 9 * 6, ChatColor.WHITE + title);
 
         //arrows
         //inv.setItem(45, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
@@ -92,13 +92,13 @@ public class ClassSelectInventory implements Listener {
 
 
 
-        return Bukkit.createInventory(null, 9 * 6, ChatColor.WHITE + title);
+        return inv;
     }
 
     @EventHandler
     public void classClicks(InventoryClickEvent event){
 
-        if(event.getView().getTitle().equalsIgnoreCase(ChatColor.WHITE + "\uF80A\uF801\uE06F\uF82A\uF821" + "\uF80A\uF802\uE070\uF82A\uF822")
+        if(event.getView().getTitle().equalsIgnoreCase(ChatColor.WHITE + "\uF809\uF808\uF804\uE06F" + "\uF802\uE070" +  "\uF82A\uF828\uF825\uF80D\uE071" + "\uF802\uE072")
                 || event.getView().getTitle().equalsIgnoreCase(ChatColor.WHITE + "elementalist")
                 || event.getView().getTitle().equalsIgnoreCase(ChatColor.WHITE + "mystic")
                 || event.getView().getTitle().equalsIgnoreCase(ChatColor.WHITE + "paladin")
@@ -134,7 +134,7 @@ public class ClassSelectInventory implements Listener {
                 String colorlessTitle = title.replaceAll("§.", "");
 
                 switch (colorlessTitle){
-                    case ("\uF80A\uF801\uE06F\uF82A\uF821\uF80A\uF802\uE070\uF82A\uF822"):
+                    case ("\uF809\uF808\uF804\uE06F" + "\uF802\uE070" +  "\uF82A\uF828\uF825\uF80D\uE071" + "\uF802\uE072"):
                     {
                         classSetter.setClass(player, "Assassin");
                         player.closeInventory();

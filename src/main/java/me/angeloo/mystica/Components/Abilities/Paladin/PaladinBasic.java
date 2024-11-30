@@ -185,6 +185,18 @@ public class PaladinBasic {
             @Override
             public void run(){
 
+                if(caster.isDead() || profileManager.getAnyProfile(caster).getIfDead()){
+                    stopBasicRunning(caster);
+                    this.cancel();
+                    return;
+                }
+
+                if(targetManager.getPlayerTarget(caster) != null && targetManager.getPlayerTarget(caster).isDead()){
+                    stopBasicRunning(caster);
+                    this.cancel();
+                    return;
+                }
+
                 purity.skillListAdd(caster, 0);
 
                 if(subclass.equalsIgnoreCase("divine")){
@@ -243,13 +255,13 @@ public class PaladinBasic {
 
                 }
 
-                //check heal instead here
                 if(MythicBukkit.inst().getAPIHelper().isMythicMob(caster.getUniqueId())){
                     AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).getEntity();
                     MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).signalMob(abstractEntity, "basic");
                 }
 
                 tryToRemoveBasicStage(caster);
+
                 switch (getStage(caster)){
                     case 1:{
                         basicStage1(caster, 2);

@@ -130,6 +130,16 @@ public class AggroTick {
 
                 }
 
+                if(((Creature) entity).getTarget() != null){
+                    LivingEntity targetedPlayer = ((Creature)entity).getTarget();
+
+                    if(targetedPlayer.isDead()){
+                        aggroManager.removeFromAllAttackerLists(targetedPlayer);
+                        ((Creature) entity).setTarget(null);
+                    }
+
+                }
+
                 //ok set the new target if its null, meaning no highest dps nor priority
                 if(((Creature) entity).getTarget() == null){
 

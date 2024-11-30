@@ -321,11 +321,101 @@ public class ProfileManager {
             createNewPlayerProfile(uuid);
         }
 
-        return playerProfiles.get(uuid);
+        return playerProfiles.getOrDefault(uuid, fallbackProfile());
     }
 
+    private PlayerProfile fallbackProfile(){
+
+        Stats stats = new Stats(1,1,1,1,1, 1);
+        StatsFromGear gearStats = new StatsFromGear( 0, 0,0,0,0,0);
+
+        int currentHealth = 1;
+
+        PlayerBag playerBag = new PlayerBag(new ArrayList<>(), 0);
+        PlayerEquipment playerEquipment = new PlayerEquipment(new ItemStack[5]);
+
+        Skill_Level skillLevel = new Skill_Level(
+                0,0,0,0,0,0,0,0);
+
+        int[] defaultSkillSlots = new int[8];
+        defaultSkillSlots[0] = 1;
+        defaultSkillSlots[1] = 2;
+        defaultSkillSlots[2] = 3;
+        defaultSkillSlots[3] = 4;
+        defaultSkillSlots[4] = 5;
+        defaultSkillSlots[5] = 6;
+        defaultSkillSlots[6] = 7;
+        defaultSkillSlots[7] = 8;
+
+        EquipSkills equipSkills = new EquipSkills(defaultSkillSlots);
+
+        PlayerBossLevel playerBossLevel = new PlayerBossLevel(1);
+
+        Milestones milestones = new Milestones(new HashMap<>());
+
+        Bal bal = new Bal(0);
+
+        return new PlayerProfile(false, false, currentHealth,
+                stats,
+                gearStats,
+                "none",
+                "none",
+                new ItemStack[41],
+                playerBag,
+                playerEquipment,
+                skillLevel,
+                equipSkills,
+                playerBossLevel,
+                milestones,
+                bal) {
+
+
+            @Override
+            public Boolean getIsPassive() {
+                return false;
+            }
+
+            @Override
+            public Boolean getIsMovable() {
+                return true;
+            }
+
+            @Override
+            public Boolean getImmortality() {
+                return false;
+            }
+
+            @Override
+            public Boolean getIfObject() {
+                return false;
+            }
+
+            @Override
+            public Yield getYield() {
+                return null;
+            }
+
+            @Override
+            public Boolean fakePlayer() {
+                return false;
+            }
+
+            @Override
+            public void getVoidsOnDeath(Set<Player> players) {
+
+            }
+
+
+        };
+    }
 
     private void createNewPlayerProfile(UUID uuid){
+
+        Player newPlayer = Bukkit.getPlayer(uuid);
+
+        if(newPlayer == null){
+            return;
+        }
 
         Stats stats = new Stats(1,50,100,50,50, 1);
         StatsFromGear gearStats = new StatsFromGear( 0, 0,0,0,0,0);
@@ -410,8 +500,6 @@ public class ProfileManager {
         };
         playerProfiles.put(uuid, profile);
 
-        Player newPlayer = Bukkit.getPlayer(uuid);
-        assert newPlayer != null;
         newPlayer.setLevel(1);
         newPlayer.setExp(0);
 

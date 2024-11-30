@@ -1,6 +1,8 @@
 package me.angeloo.mystica.Components.Abilities.Elementalist;
 
 
+import io.lumine.mythic.api.adapters.AbstractEntity;
+import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -97,7 +99,7 @@ public class ElementalistBasic {
                     return;
                 }
 
-                if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)).getIfDead()){
+                if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)).getIfDead() || profileManager.getAnyProfile(caster).getIfDead()){
                     this.cancel();
                     stopBasicRunning(caster);
                     return;
@@ -138,6 +140,11 @@ public class ElementalistBasic {
                 if(distance<1){
                     stopBasicRunning(caster);
                     return;
+                }
+
+                if(MythicBukkit.inst().getAPIHelper().isMythicMob(caster.getUniqueId())){
+                    AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).getEntity();
+                    MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).signalMob(abstractEntity, "basic");
                 }
 
                 tryToRemoveBasicStage(caster);

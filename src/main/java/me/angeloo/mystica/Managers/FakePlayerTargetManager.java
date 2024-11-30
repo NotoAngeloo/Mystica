@@ -36,6 +36,10 @@ public class FakePlayerTargetManager {
             case "warrior":
             case "ranger":{
 
+                if(target == null){
+                    break;
+                }
+
                 if(pveChecker.pveLogic(target) && !profileManager.getAnyProfile(target).getIfObject()){
                     targetMap.put(entity.getUniqueId(), target);
                 }

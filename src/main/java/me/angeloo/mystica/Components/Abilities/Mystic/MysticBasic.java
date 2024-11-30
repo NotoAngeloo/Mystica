@@ -360,15 +360,22 @@ public class MysticBasic {
             @Override
             public void run(){
 
-                if(caster == null){
+                if(caster.isDead()){
+                    stopBasicRunning(caster);
                     this.cancel();
+                    return;
+                }
+
+                if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)).getIfDead() || profileManager.getAnyProfile(caster).getIfDead()){
+                    this.cancel();
+                    stopBasicRunning(caster);
                     return;
                 }
 
                 if(targetManager.getPlayerTarget(caster) != null){
                     if(profileManager.getAnyProfile(caster).getIfDead()){
                         this.cancel();
-                        basicRunning.remove(caster.getUniqueId());
+                        stopBasicRunning(caster);
                         return;
                     }
                 }

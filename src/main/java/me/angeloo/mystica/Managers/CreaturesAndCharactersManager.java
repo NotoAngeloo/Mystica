@@ -41,6 +41,8 @@ public class CreaturesAndCharactersManager {
     private final SammingSins sammingSins;
     private final Luna luna;
     private final Wings wings;
+    private final Darwin darwin;
+    private final Slippy slippy;
 
     public CreaturesAndCharactersManager(Mystica main){
         this.main = main;
@@ -60,6 +62,8 @@ public class CreaturesAndCharactersManager {
         sammingSins = new SammingSins(main);
         luna = new Luna(main);
         wings = new Wings(main);
+        darwin = new Darwin(main);
+        slippy = new Slippy(main);
     }
 
     public void spawnAllNpcs() throws InvalidMobTypeException {
@@ -129,6 +133,14 @@ public class CreaturesAndCharactersManager {
             case "LunaNpc":
             case "ArchbishopNpc":{
                 makeDefaultNonCombatantProfile(uuid);
+                break;
+            }
+            case "Slippy":{
+                slippy.makeProfile(uuid);
+                break;
+            }
+            case "Darwin":{
+                darwin.makeProfile(uuid);
                 break;
             }
             case "SammingSins":{

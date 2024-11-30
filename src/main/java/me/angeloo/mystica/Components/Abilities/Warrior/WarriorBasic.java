@@ -104,6 +104,12 @@ public class WarriorBasic {
                     return;
                 }
 
+                if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)).getIfDead() || profileManager.getAnyProfile(caster).getIfDead()){
+                    this.cancel();
+                    stopBasicRunning(caster);
+                    return;
+                }
+
                 if(targetManager.getPlayerTarget(caster) != null){
                     if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)).getIfDead()){
                         this.cancel();

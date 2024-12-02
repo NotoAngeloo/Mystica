@@ -44,6 +44,7 @@ public final class Mystica extends JavaPlugin{
     private CombatManager combatManager;
     private BuffAndDebuffManager buffAndDebuffManager;
     private GravestoneManager gravestoneManager;
+    private BossCastingManager bossCastingManager;
     private AbilityManager abilityManager;
     private DeathManager deathManager;
     private InventoryIndexingManager inventoryIndexingManager;
@@ -102,12 +103,14 @@ public final class Mystica extends JavaPlugin{
         pvpManager = new PvpManager(this);
         pveChecker = new PveChecker(this);
 
+        bossCastingManager = new BossCastingManager(this);
         stealthTargetBlacklist = new StealthTargetBlacklist();
         aggroManager = new AggroManager();
         buffAndDebuffManager = new BuffAndDebuffManager(this);
 
         fakePlayerTargetManager = new FakePlayerTargetManager(this);
         targetManager = new TargetManager(this);
+
 
         gravestoneManager = new GravestoneManager();
         dpsManager = new DpsManager(this);
@@ -167,6 +170,7 @@ public final class Mystica extends JavaPlugin{
         getCommand("SetCaution").setExecutor(new SetCaution(this));
         getCommand("SignalNearbyNpc").setExecutor(new SignalNearbyNpc());
         getCommand("StopCompanionRotation").setExecutor(new StopCompanionRotation(this));
+        getCommand("DisplayInterruptBar").setExecutor(new DisplayInterruptBar(this));
 
         AbilityInventory abilityInventory;
         this.getServer().getPluginManager().registerEvents(abilityInventory = new AbilityInventory(this), this);
@@ -348,5 +352,7 @@ public final class Mystica extends JavaPlugin{
     public DailyEventManager getDailyEventManager(){return dailyEventManager;}
 
     public GravestoneManager getGravestoneManager(){return gravestoneManager;}
+
+    public BossCastingManager getBossCastingManager(){return bossCastingManager;}
 
 }

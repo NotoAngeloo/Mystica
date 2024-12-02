@@ -28,6 +28,7 @@ public class NoneBasic {
     private final ProfileManager profileManager;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
+    private final FakePlayerTargetManager fakePlayerTargetManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final DamageCalculator damageCalculator;
@@ -36,12 +37,13 @@ public class NoneBasic {
     private final Map<UUID, Boolean> basicReadyMap = new HashMap<>();
 
 
-    public NoneBasic(Mystica main, AbilityManager manager, NoneAbilities noneAbilities){
+    public NoneBasic(Mystica main, AbilityManager manager){
         this.main = main;
 
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
+        fakePlayerTargetManager = main.getFakePlayerTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
@@ -151,7 +153,12 @@ public class NoneBasic {
         skillDamage = skillDamage + ((int)(level/10));
 
         if(targetToHit != null){
-            targetManager.setPlayerTarget(caster, targetToHit);
+            if(caster instanceof Player){
+                targetManager.setPlayerTarget((Player)caster, targetToHit);
+            }
+            else{
+                fakePlayerTargetManager.setFakePlayerTarget(caster, targetToHit);
+            }
 
 
             boolean crit = damageCalculator.checkIfCrit(caster, 0);

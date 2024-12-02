@@ -286,6 +286,7 @@ public class MeteorCrater {
                         if(entity instanceof Player){
                             if(pvpManager.pvpLogic(caster, (Player) entity)){
                                 changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                                buffAndDebuffManager.getBossInterrupt().interrupt(caster, target);
                                 stunEntity(target);
                             }
                             continue;
@@ -294,6 +295,7 @@ public class MeteorCrater {
                         if(pveChecker.pveLogic(livingEntity)){
                             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
                             changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                            buffAndDebuffManager.getBossInterrupt().interrupt(caster, target);
                             stunEntity(target);
                         }
 

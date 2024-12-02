@@ -5,7 +5,8 @@ import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import io.lumine.mythic.bukkit.MythicBukkit;
-import me.angeloo.mystica.Components.Items.UnidentifiedEquipment;
+import me.angeloo.mystica.Components.Items.UnidentifiedHelmet;
+import me.angeloo.mystica.Components.Items.UnidentifiedWeapon;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
@@ -454,7 +455,7 @@ public class HoLeeBoss {
 
         List<ItemStack> itemDrops = new ArrayList<>();
 
-        itemDrops.add(new UnidentifiedEquipment(level + 5));
+        itemDrops.add(new UnidentifiedWeapon(level + 3));
 
         return itemDrops;
     }

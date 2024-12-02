@@ -31,6 +31,7 @@ public class MysticBasic {
     private final ProfileManager profileManager;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
+    private final FakePlayerTargetManager fakePlayerTargetManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final DamageCalculator damageCalculator;
@@ -47,6 +48,7 @@ public class MysticBasic {
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
+        fakePlayerTargetManager = main.getFakePlayerTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
@@ -366,11 +368,25 @@ public class MysticBasic {
                     return;
                 }
 
-                if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)).getIfDead() || profileManager.getAnyProfile(caster).getIfDead()){
-                    this.cancel();
-                    stopBasicRunning(caster);
-                    return;
+                if(caster instanceof Player){
+                    if(targetManager.getPlayerTarget(caster) != null){
+                        if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)).getIfDead() || profileManager.getAnyProfile(caster).getIfDead()){
+                            this.cancel();
+                            stopBasicRunning(caster);
+                            return;
+                        }
+                    }
                 }
+                else{
+                    if(fakePlayerTargetManager.getTarget(caster) != null){
+                        if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)).getIfDead() || profileManager.getAnyProfile(caster).getIfDead()){
+                            this.cancel();
+                            stopBasicRunning(caster);
+                            return;
+                        }
+                    }
+                }
+
 
                 if(targetManager.getPlayerTarget(caster) != null){
                     if(profileManager.getAnyProfile(caster).getIfDead()){
@@ -402,7 +418,7 @@ public class MysticBasic {
 
         boolean healing = false;
 
-        if(targetManager.getPlayerTarget(caster) == null){
+        if(targetManager.getPlayerTarget(caster) == null || targetManager.getPlayerTarget(caster) == caster){
             target = caster;
             healing = true;
             //Bukkit.getLogger().info(caster.getName() + " target null");
@@ -414,7 +430,15 @@ public class MysticBasic {
 
         if(target != caster){
             if(target.isDead()){
-                targetManager.setPlayerTarget(caster, null);
+
+                if(caster instanceof Player){
+                    targetManager.setPlayerTarget((Player)caster, null);
+                }
+                else{
+                    fakePlayerTargetManager.setFakePlayerTarget(caster, null);
+                }
+
+
                 stopBasicRunning(caster);
                 return;
             }
@@ -428,7 +452,12 @@ public class MysticBasic {
                     boolean targetDeathStatus = profileManager.getAnyProfile(target).getIfDead();
 
                     if(targetDeathStatus){
-                        targetManager.setPlayerTarget(caster, null);
+                        if(caster instanceof Player){
+                            targetManager.setPlayerTarget((Player)caster, null);
+                        }
+                        else{
+                            fakePlayerTargetManager.setFakePlayerTarget(caster, null);
+                        }
                         stopBasicRunning(caster);
                         return;
                     }

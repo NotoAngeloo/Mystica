@@ -51,7 +51,7 @@ public class ArmorMelt {
                     continue;
                 }
 
-                Player player = (Player) entity;
+                Player player = (Player) thisEntity;
 
                 player.sendMessage(entity.getName() + "'s armor has shattered. Secondary tank, take aggro!");
             }

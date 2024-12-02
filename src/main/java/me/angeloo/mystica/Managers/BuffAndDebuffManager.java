@@ -37,6 +37,7 @@ public class BuffAndDebuffManager {
     private final Blocking blocking;
     private final PassThrough passThrough;
     private final ArmorMelt armorMelt;
+    private final BossInterrupt bossInterrupt;
 
     public BuffAndDebuffManager(Mystica main){
         profileManager = main.getProfileManager();
@@ -68,6 +69,7 @@ public class BuffAndDebuffManager {
         blocking = new Blocking(main);
         passThrough = new PassThrough();
         armorMelt = new ArmorMelt(main);
+        bossInterrupt = new BossInterrupt(main);
     }
 
     public Immune getImmune(){return immune;}
@@ -101,6 +103,7 @@ public class BuffAndDebuffManager {
     public PassThrough getPassThrough(){return passThrough;}
     public ArmorMelt getArmorMelt(){return armorMelt;}
     public Fear getFear(){return fear;}
+    public BossInterrupt getBossInterrupt(){return bossInterrupt;}
 
     public void removeAllBuffsAndDebuffs(LivingEntity entity){
         flamingSigilBuff.removeAttackBuff(entity);

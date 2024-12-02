@@ -236,6 +236,7 @@ public class SoulReap {
                     removeSoulMarks(caster);
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+                    buffAndDebuffManager.getBossInterrupt().interrupt(caster, target);
                 }
 
                 double percent = ((double) angle / -1500) * 100;

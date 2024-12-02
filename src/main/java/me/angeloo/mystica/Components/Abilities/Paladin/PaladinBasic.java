@@ -37,6 +37,7 @@ public class PaladinBasic {
     private final ProfileManager profileManager;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
+    private final FakePlayerTargetManager fakePlayerTargetManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final DamageCalculator damageCalculator;
@@ -58,6 +59,7 @@ public class PaladinBasic {
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
+        fakePlayerTargetManager = main.getFakePlayerTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
@@ -376,7 +378,12 @@ public class PaladinBasic {
         }
 
         if(targetToHit != null){
-            targetManager.setPlayerTarget(caster, targetToHit);
+            if(caster instanceof Player){
+                targetManager.setPlayerTarget((Player)caster, targetToHit);
+            }
+            else{
+                fakePlayerTargetManager.setFakePlayerTarget(caster, targetToHit);
+            }
 
             boolean crit = damageCalculator.checkIfCrit(caster, 0);
             double damage = damageCalculator.calculateDamage(caster, targetToHit, "Physical", getSkillDamage(caster)

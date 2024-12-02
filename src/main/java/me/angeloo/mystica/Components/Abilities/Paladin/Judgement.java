@@ -210,7 +210,8 @@ public class Judgement {
                     aggroManager.setAsHighPriorityTarget(target, caster);
 
                     if(target instanceof Player){
-                        targetManager.setPlayerTarget(target, caster);
+
+                        targetManager.setPlayerTarget((Player)target, caster);
                         return;
                     }
                 }

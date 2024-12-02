@@ -25,7 +25,7 @@ public class FakePlayerAiManager {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final TargetManager targetManager;
+    private final FakePlayerTargetManager fakePlayerTargetManager;
     private final AbilityManager abilityManager;
 
     private final Map<UUID, BukkitTask> aiTaskMap = new HashMap<>();
@@ -36,7 +36,7 @@ public class FakePlayerAiManager {
         this.main = main;
         profileManager = main.getProfileManager();
         abilityManager = main.getAbilityManager();
-        targetManager = main.getTargetManager();
+        fakePlayerTargetManager = main.getFakePlayerTargetManager();
     }
 
 
@@ -101,7 +101,7 @@ public class FakePlayerAiManager {
 
                 //check goal before casting skills, they may want to run
 
-                LivingEntity target = targetManager.getPlayerTarget(companion);
+                LivingEntity target = fakePlayerTargetManager.getTarget(companion);
 
                 if(target.isDead()){
                     stopAiTask(companion.getUniqueId());
@@ -191,7 +191,7 @@ public class FakePlayerAiManager {
 
                 //check goal before casting skills, they may want to run
 
-                LivingEntity target = targetManager.getPlayerTarget(companion);
+                LivingEntity target = fakePlayerTargetManager.getTarget(companion);
 
                 if(target.isDead()){
                     stopAiTask(companion.getUniqueId());
@@ -372,9 +372,10 @@ public class FakePlayerAiManager {
 
                 if(averagePhp <= 50){
                     if(mysticAbilities.getAurora().usable(companion, lowest)){
-                        targetManager.setPlayerTarget(companion, lowest);
-                        if(targetManager.getPlayerTarget(companion) == companion){
-                            targetManager.setPlayerTarget(companion, null);
+                        fakePlayerTargetManager.setFakePlayerTarget(companion, lowest);
+
+                        if(fakePlayerTargetManager.getTarget(companion) == companion){
+                            fakePlayerTargetManager.setFakePlayerTarget(companion, null);
                         }
                         mysticAbilities.getAurora().use(companion);
                         return;
@@ -383,9 +384,10 @@ public class FakePlayerAiManager {
                 }
 
                 if(lowestHealthPercent<=50){
-                    targetManager.setPlayerTarget(companion, lowest);
-                    if(targetManager.getPlayerTarget(companion) == companion){
-                        targetManager.setPlayerTarget(companion, null);
+                    fakePlayerTargetManager.setFakePlayerTarget(companion, lowest);
+
+                    if(fakePlayerTargetManager.getTarget(companion) == companion){
+                        fakePlayerTargetManager.setFakePlayerTarget(companion, null);
                     }
                     if(mysticAbilities.getArcaneShield().usable(companion, lowest)){
                         mysticAbilities.getArcaneShield().use(companion);
@@ -401,15 +403,15 @@ public class FakePlayerAiManager {
                 }
 
 
-                targetManager.setPlayerTarget(companion, lowest);
+                fakePlayerTargetManager.setFakePlayerTarget(companion, lowest);
 
-                if(targetManager.getPlayerTarget(companion) == companion){
-                    targetManager.setPlayerTarget(companion, null);
+                if(fakePlayerTargetManager.getTarget(companion) == companion){
+                    fakePlayerTargetManager.setFakePlayerTarget(companion, null);
                 }
 
                 mysticAbilities.getMysticBasic().useBasic(companion);
 
-                targetManager.setPlayerTarget(companion, lowest);
+                fakePlayerTargetManager.setFakePlayerTarget(companion, lowest);
 
             }
         }.runTaskTimer(main, 0, 10);
@@ -439,7 +441,7 @@ public class FakePlayerAiManager {
 
                 //check goal before casting skills, they may want to run
 
-                LivingEntity target = targetManager.getPlayerTarget(companion);
+                LivingEntity target = fakePlayerTargetManager.getTarget(companion);
 
                 if(target.isDead()){
                     stopAiTask(companion.getUniqueId());
@@ -536,7 +538,7 @@ public class FakePlayerAiManager {
 
                 //check goal before casting skills, they may want to run
 
-                LivingEntity target = targetManager.getPlayerTarget(companion);
+                LivingEntity target = fakePlayerTargetManager.getTarget(companion);
 
                 if(target.isDead()){
                     stopAiTask(companion.getUniqueId());

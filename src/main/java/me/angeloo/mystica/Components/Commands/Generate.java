@@ -33,7 +33,7 @@ public class Generate implements CommandExecutor {
             int level = Integer.parseInt(args[0]);
 
             //testing purposes only, will increase level later
-            player.getInventory().addItem(equipmentManager.generate(player, level));
+            player.getInventory().addItem(equipmentManager.generate(player, level, -1));
             return true;
         }
 
@@ -53,7 +53,7 @@ public class Generate implements CommandExecutor {
                 return true;
             }
 
-            player.getInventory().addItem(equipmentManager.generate(player, level));
+            player.getInventory().addItem(equipmentManager.generate(player, level, -1));
             return true;
         }
 

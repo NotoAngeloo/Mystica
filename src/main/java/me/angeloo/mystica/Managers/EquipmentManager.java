@@ -355,18 +355,20 @@ public class EquipmentManager {
         return oldItem;
     }
 
-    public ItemStack generate(Player player, int level){
+    public ItemStack generate(Player player, int level, int gearType){
 
         ItemStack baseGear = new ItemStack(Material.AIR);
 
         //randomly generate
-        int random = new Random().nextInt(5);
+        if(gearType == -1){
+            gearType = new Random().nextInt(5);
+        }
 
         String clazz = profileManager.getAnyProfile(player).getPlayerClass();
 
         switch (clazz.toLowerCase()){
             case "assassin":{
-                switch (random){
+                switch (gearType){
                     case 0:{
                         baseGear = assassinEquipment.getBaseWeapon();
                         break;
@@ -391,7 +393,7 @@ public class EquipmentManager {
                 break;
             }
             case "elementalist":{
-                switch (random){
+                switch (gearType){
                     case 0:{
                         baseGear = elementalistEquipment.getBaseWeapon();
                         break;
@@ -416,7 +418,7 @@ public class EquipmentManager {
                 break;
             }
             case "mystic":{
-                switch (random){
+                switch (gearType){
                     case 0:{
                         baseGear = mysticEquipment.getBaseWeapon();
                         break;
@@ -441,7 +443,7 @@ public class EquipmentManager {
                 break;
             }
             case "paladin":{
-                switch (random){
+                switch (gearType){
                     case 0:{
                         baseGear = paladinEquipment.getBaseWeapon();
                         break;
@@ -467,7 +469,7 @@ public class EquipmentManager {
                 break;
             }
             case "ranger":{
-                switch (random){
+                switch (gearType){
                     case 0:{
                         baseGear = rangerEquipment.getBaseWeapon();
                         break;
@@ -492,7 +494,7 @@ public class EquipmentManager {
                 break;
             }
             case "shadow knight":{
-                switch (random){
+                switch (gearType){
                     case 0:{
                         baseGear = shadowKnightEquipment.getBaseWeapon();
                         break;
@@ -517,7 +519,7 @@ public class EquipmentManager {
                 break;
             }
             case "warrior":{
-                switch (random){
+                switch (gearType){
                     case 0: {
                         baseGear = warriorEquipment.getBaseWeapon();
                         break;
@@ -552,6 +554,59 @@ public class EquipmentManager {
         }
 
         return upgrade(baseGear, level);
+    }
+
+    public ItemStack identify(Player player, ItemStack equipment){
+
+
+        //check level
+        ItemMeta meta = equipment.getItemMeta();
+        assert meta != null;
+        List<String> lores = meta.getLore();
+        assert lores != null;
+        int level = 0;
+        String levelRegex = ".*\\b(?i:level:)\\s*(\\d+).*";
+        Pattern levelPattern = Pattern.compile(levelRegex);
+        for(String lore : lores){
+            String colorlessString = lore.replaceAll("§.", "");
+            Matcher levelMatcher = levelPattern.matcher(colorlessString);
+            if(levelMatcher.matches()){
+                level = Integer.parseInt(levelMatcher.group(1));
+                break;
+            }
+
+        }
+
+        String name = meta.getDisplayName();
+        name = name.replaceAll("Unidentified", "");
+        String colorlessName = name.replaceAll("§.", "");
+
+        int gearType = -1;
+
+        switch (colorlessName.toLowerCase()){
+            case "weapon":{
+                gearType = 0;
+                break;
+            }
+            case "helmet":{
+                gearType = 1;
+                break;
+            }
+            case "chestplate":{
+                gearType = 2;
+                break;
+            }
+            case "leggings":{
+                gearType = 3;
+                break;
+            }
+            case "boots":{
+                gearType = 4;
+                break;
+            }
+        }
+
+        return generate(player, level, gearType);
     }
 
     public ItemStack upgrade(ItemStack equipment, int newLevel){

@@ -31,6 +31,7 @@ public class AnvilDrop {
     private final Mystica main;
     private final ProfileManager profileManager;
     private final TargetManager targetManager;
+    private final FakePlayerTargetManager fakePlayerTargetManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CombatManager combatManager;
     private final ChangeResourceHandler changeResourceHandler;
@@ -47,6 +48,7 @@ public class AnvilDrop {
     public AnvilDrop(Mystica main, AbilityManager manager, WarriorAbilities warriorAbilities){
         this.main = main;
         targetManager = main.getTargetManager();
+        fakePlayerTargetManager = main.getFakePlayerTargetManager();
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
@@ -304,7 +306,12 @@ public class AnvilDrop {
         }
 
         if(targetToHit != null){
-            targetManager.setPlayerTarget(caster, targetToHit);
+            if(caster instanceof Player){
+                targetManager.setPlayerTarget((Player)caster, targetToHit);
+            }
+            else{
+                fakePlayerTargetManager.setFakePlayerTarget(caster, targetToHit);
+            }
             Location playerLoc = caster.getLocation().clone();
             Vector targetDir = targetToHit.getLocation().toVector().subtract(playerLoc.toVector());
             playerLoc.setDirection(targetDir);

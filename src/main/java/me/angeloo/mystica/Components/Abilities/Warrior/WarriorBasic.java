@@ -36,6 +36,7 @@ public class WarriorBasic {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
+    private final FakePlayerTargetManager fakePlayerTargetManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final DamageCalculator damageCalculator;
@@ -53,6 +54,7 @@ public class WarriorBasic {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
+        fakePlayerTargetManager = main.getFakePlayerTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
@@ -104,14 +106,16 @@ public class WarriorBasic {
                     return;
                 }
 
-                if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)).getIfDead() || profileManager.getAnyProfile(caster).getIfDead()){
+
+
+                if(profileManager.getAnyProfile(caster).getIfDead()){
                     this.cancel();
                     stopBasicRunning(caster);
                     return;
                 }
 
                 if(targetManager.getPlayerTarget(caster) != null){
-                    if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)).getIfDead()){
+                    if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)).getIfDead() || targetManager.getPlayerTarget(caster).isDead()){
                         this.cancel();
                         stopBasicRunning(caster);
                         return;
@@ -257,7 +261,12 @@ public class WarriorBasic {
         }
 
         if(targetToHit != null){
-            targetManager.setPlayerTarget(caster, targetToHit);
+            if(caster instanceof Player){
+                targetManager.setPlayerTarget((Player)caster, targetToHit);
+            }
+            else{
+                fakePlayerTargetManager.setFakePlayerTarget(caster, targetToHit);
+            }
 
             boolean crit = damageCalculator.checkIfCrit(caster, 0);
             double damage = damageCalculator.calculateDamage(caster, targetToHit, "Physical", getSkillDamage(caster), crit);
@@ -414,7 +423,12 @@ public class WarriorBasic {
         }
 
         if(targetToHit != null){
-            targetManager.setPlayerTarget(caster, targetToHit);
+            if(caster instanceof Player){
+                targetManager.setPlayerTarget((Player)caster, targetToHit);
+            }
+            else{
+                fakePlayerTargetManager.setFakePlayerTarget(caster, targetToHit);
+            }
 
             boolean crit = damageCalculator.checkIfCrit(caster, 0);
             double damage = damageCalculator.calculateDamage(caster, targetToHit, "Physical", getSkillDamage(caster), crit);
@@ -423,9 +437,7 @@ public class WarriorBasic {
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster);
             rage.addRageToEntity(caster, 10);
         }
-        else{
-            stopBasicRunning(caster);
-        }
+
 
         new BukkitRunnable(){
             double traveled = 0;

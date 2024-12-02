@@ -135,6 +135,10 @@ commands:
     description: lets companions stop their rotation
     usage: /StopCompanionRotation <target.uuid>
     permission: developer
+  DisplayInterruptBar:
+    description: lets mm display their interrupt bar
+    usage: /DisplayInterruptBar <caster.uuid> <speed> <max>
+    permission: developer
 
 permissions:
   developer:

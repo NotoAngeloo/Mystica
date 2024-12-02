@@ -22,6 +22,7 @@ import java.util.*;
 
 public class TargetManager {
 
+    private final BossCastingManager bossCastingManager;
     private final FakePlayerTargetManager fakePlayerTargetManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final StealthTargetBlacklist stealthTargetBlacklist;
@@ -30,11 +31,13 @@ public class TargetManager {
     private final Map<UUID, LivingEntity> playerTarget = new HashMap<>();
     private final Map<UUID, BossBar> playerTargetBar = new HashMap<>();
     private final Map<UUID, BossBar> targetShieldBar = new HashMap<>();
+    private final Map<UUID, BossBar> interruptBar = new HashMap<>();
     private final ProfileManager profileManager;
 
     private final Map<UUID, UUID> bossTarget = new HashMap<>();
 
     public TargetManager(Mystica main){
+        bossCastingManager = main.getBossCastingManager();
         fakePlayerTargetManager = main.getFakePlayerTargetManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         stealthTargetBlacklist = main.getStealthTargetBlacklist();
@@ -65,18 +68,12 @@ public class TargetManager {
 
     }
 
-    public void setPlayerTarget(LivingEntity caster, LivingEntity entity){
+    public void setPlayerTarget(Player player, LivingEntity entity){
 
         if(entity instanceof ArmorStand){
             return;
         }
 
-        if(!(caster instanceof Player)){
-            fakePlayerTargetManager.setFakePlayerTarget(caster, entity);
-            return;
-        }
-
-        Player player = (Player) caster;
 
         playerTarget.put(player.getUniqueId(), entity);
         if(playerTargetBar.containsKey(player.getUniqueId())){
@@ -317,9 +314,30 @@ public class TargetManager {
             startShieldBar(player, entity);
         }
 
-
+        //check if entity is casting a skill
+        if(bossCastingManager.getCastPercent(entity) > 0){
+            startInterruptBar(player, entity);
+        }
 
         return bossBar;
+    }
+
+    private void startInterruptBar(Player player, LivingEntity entity){
+
+        BossBar interruptBar = Bukkit.createBossBar("",BarColor.PURPLE, BarStyle.SOLID);
+
+        double castMax = bossCastingManager.getCastMax(entity);
+        double castAmount = bossCastingManager.getCastPercent(entity);
+
+        if(castAmount > castMax){
+            castAmount = castMax;
+        }
+
+        interruptBar.setProgress(castAmount/castMax);
+        interruptBar.addPlayer(player);
+        interruptBar.setVisible(true);
+
+        this.interruptBar.put(player.getUniqueId(), interruptBar);
     }
 
     private void startShieldBar(Player player, LivingEntity entity){
@@ -342,6 +360,7 @@ public class TargetManager {
     public void removeAllBars(Player player){
         BossBar bossBar = playerTargetBar.get(player.getUniqueId());
         BossBar shieldBar = targetShieldBar.get(player.getUniqueId());
+        BossBar interruptBar = this.interruptBar.get(player.getUniqueId());
 
         if(bossBar != null){
             bossBar.removePlayer(player);
@@ -351,6 +370,11 @@ public class TargetManager {
         if(shieldBar != null){
             shieldBar.removePlayer(player);
             targetShieldBar.remove(player.getUniqueId());
+        }
+
+        if(interruptBar != null){
+            interruptBar.removePlayer(player);
+            this.interruptBar.remove(player.getUniqueId());
         }
 
     }
@@ -391,4 +415,6 @@ public class TargetManager {
 
         return bossTarget.getOrDefault(player.getUniqueId(), player.getUniqueId());
     }
+
+
 }

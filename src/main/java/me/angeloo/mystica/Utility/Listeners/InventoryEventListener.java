@@ -356,32 +356,10 @@ public class InventoryEventListener implements Listener {
             switch (slot){
                 case 22:{
 
-                    //check for stones here
-
-                    //check level
-                    ItemMeta meta = old.getItemMeta();
-                    assert meta != null;
-                    List<String> lores = meta.getLore();
-                    assert lores != null;
-                    int level = 0;
-                    String levelRegex = ".*\\b(?i:level:)\\s*(\\d+).*";
-                    Pattern levelPattern = Pattern.compile(levelRegex);
-                    for(String lore : lores){
-                        String colorlessString = lore.replaceAll("§.", "");
-                        Matcher levelMatcher = levelPattern.matcher(colorlessString);
-                        if(levelMatcher.matches()){
-                            level = Integer.parseInt(levelMatcher.group(1));
-                            break;
-                        }
-
-                    }
-
-                    if(level == 0){
-                        return;
-                    }
+                    ItemStack newItem = equipmentManager.identify(player, old);
 
                     player.getInventory().remove(old);
-                    player.getInventory().addItem(equipmentManager.generate(player,level));
+                    player.getInventory().addItem(newItem);
                     player.openInventory(identifyInventory.openIdentifyInventory(new ItemStack(Material.AIR)));
                     return;
                 }

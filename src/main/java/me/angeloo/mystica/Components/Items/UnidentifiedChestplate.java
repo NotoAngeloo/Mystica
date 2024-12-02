@@ -13,18 +13,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class UnidentifiedEquipment extends ItemStack {
+public class UnidentifiedChestplate extends ItemStack {
 
-    public UnidentifiedEquipment(int level){
+    public UnidentifiedChestplate(int level){
         super(Material.IRON_INGOT);
         ItemMeta meta = this.getItemMeta();
         assert meta != null;
-        meta.setDisplayName(ChatColor.of(new Color(218, 133, 36)) + "Unidentified Equipment");
+        meta.setDisplayName(ChatColor.of(new Color(218, 133, 36)) + "Unidentified Chestplate");
         List<String> lore = new ArrayList<>();
         lore.add(ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + level);
         meta.setLore(lore);
-        meta.getPersistentDataContainer().set(new NamespacedKey(Mystica.getPlugin(), "uuid"),PersistentDataType.STRING, UUID.randomUUID().toString());
+        meta.getPersistentDataContainer().set(new NamespacedKey(Mystica.getPlugin(), "uuid"), PersistentDataType.STRING, UUID.randomUUID().toString());
         this.setItemMeta(meta);
     }
-
 }

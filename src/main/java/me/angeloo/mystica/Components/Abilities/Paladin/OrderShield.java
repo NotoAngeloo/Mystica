@@ -190,8 +190,10 @@ public class OrderShield {
                     boolean crit = damageCalculator.checkIfCrit(caster, 0);
                     double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
 
+
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+                    buffAndDebuffManager.getBossInterrupt().interrupt(caster, target);
                 }
 
                 angle+=45;

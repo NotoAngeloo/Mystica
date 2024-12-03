@@ -171,6 +171,7 @@ public final class Mystica extends JavaPlugin{
         getCommand("SignalNearbyNpc").setExecutor(new SignalNearbyNpc());
         getCommand("StopCompanionRotation").setExecutor(new StopCompanionRotation(this));
         getCommand("DisplayInterruptBar").setExecutor(new DisplayInterruptBar(this));
+        getCommand("CompanionNeedsToInterrupt").setExecutor(new CompanionNeedsToInterrupt(this));
 
         AbilityInventory abilityInventory;
         this.getServer().getPluginManager().registerEvents(abilityInventory = new AbilityInventory(this), this);

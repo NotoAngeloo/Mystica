@@ -45,6 +45,7 @@ public class ProfileManager {
     private final Map<UUID, FakePlayerProfile> fakePlayerProfileMap = new HashMap<>();
     private final Map<UUID, NonPlayerProfile> nonPlayerProfiles = new HashMap<>();
 
+    private final Map<UUID, Boolean> companionCombatMap = new HashMap<>();
     private final Map<Player, List<LivingEntity>> companionMap = new HashMap<>();
 
     private final Map<String, Player> playerNameMap = new HashMap<>();
@@ -954,6 +955,9 @@ public class ProfileManager {
         companionMap.remove(player);
     }
 
+    public boolean getIfCompanionInCombat(UUID companion){return companionCombatMap.getOrDefault(companion, false);}
+    public void setCompanionCombat(UUID companion){companionCombatMap.put(companion, true);}
+    public void removeCompanionCombat(UUID companion){companionCombatMap.remove(companion);}
 
 
 }

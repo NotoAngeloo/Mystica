@@ -74,9 +74,9 @@ public class Focus {
 
     public double calculateFocusMultipliedDamage(LivingEntity entity, double damage){
 
-        int percent = (int) Math.floor(((double) getFocus(entity) /10) * 100);
+        int percent = (int) Math.floor(((double) getFocus(entity) / 10) * 100);
 
-        return damage * (1 + percent);
+        return damage *  (1 +((double)percent / 100));
     }
 
 }

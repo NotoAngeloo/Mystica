@@ -5,6 +5,8 @@ import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import me.angeloo.mystica.Components.Items.SoulStone;
+import me.angeloo.mystica.Components.Items.UnidentifiedBoots;
+import me.angeloo.mystica.Components.Items.UnidentifiedHelmet;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
@@ -85,10 +87,10 @@ public class CorruptHeart {
             level = profileManager.getAnyProfile(theClosestPlayersLeader).getPlayerBossLevel().getBossLevel();
         }
 
-        int hp = 6000 + (100 * (level-1));
-        int atk = 50 + (25 * level-1);
-        int def = 30 + (20 * level-1);
-        int mdef = 30 + (20 * level-1);
+        int hp = 10000 + (150 * (level-1));
+        int atk = 60 + (35 * level-1);
+        int def = 40 + (35 * level-1);
+        int mdef = 50 + (45 * level-1);
 
         Stats stats = new Stats(level, atk, hp,  def, mdef, 0);
         Boolean isMovable = false;
@@ -96,7 +98,7 @@ public class CorruptHeart {
         Boolean object = false;
         Boolean passive = false;
 
-        float xpYield = 0f;
+        float xpYield = 1.5f;
 
         Yield yield = new Yield(xpYield, dropItems(level));
         NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(hp, stats, isMovable, immortal, passive, object, yield) {
@@ -249,7 +251,7 @@ public class CorruptHeart {
 
             @Override
             public void getVoidsOnDeath(Set<Player> players) {
-                Bukkit.getServer().getPluginManager().callEvent(new BossKillQuestCompleteEvent(players, "sewer2"));
+                //Bukkit.getServer().getPluginManager().callEvent(new BossKillQuestCompleteEvent(players, "sewer2"));
             }
 
 
@@ -263,9 +265,11 @@ public class CorruptHeart {
 
         List<ItemStack> itemDrops = new ArrayList<>();
 
-        for(int i = 0; i<=(2 * level); i++){
+        for(int i = 0; i<=(10 * level); i++){
             itemDrops.add(new SoulStone());
         }
+
+        itemDrops.add(new UnidentifiedBoots(level + 1));
 
         return itemDrops;
     }

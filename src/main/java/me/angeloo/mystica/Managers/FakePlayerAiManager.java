@@ -31,6 +31,7 @@ public class FakePlayerAiManager {
     private final Map<UUID, BukkitTask> aiTaskMap = new HashMap<>();
 
     private final Map<UUID, Boolean> cautionMap = new HashMap<>();
+    private final Map<UUID, Boolean> needToInterrupt = new HashMap<>();
 
     public FakePlayerAiManager(Mystica main){
         this.main = main;
@@ -167,6 +168,7 @@ public class FakePlayerAiManager {
         }.runTaskTimer(main, 0, 10);
 
         aiTaskMap.put(companion.getUniqueId(), task);
+        profileManager.setCompanionCombat(companion.getUniqueId());
     }
 
     private void startTemplarRotation(LivingEntity companion){
@@ -303,6 +305,7 @@ public class FakePlayerAiManager {
         }.runTaskTimer(main, 0, 10);
 
         aiTaskMap.put(companion.getUniqueId(), task);
+        profileManager.setCompanionCombat(companion.getUniqueId());
 
     }
 
@@ -417,6 +420,7 @@ public class FakePlayerAiManager {
         }.runTaskTimer(main, 0, 10);
 
         aiTaskMap.put(companion.getUniqueId(), task);
+        profileManager.setCompanionCombat(companion.getUniqueId());
     }
 
     private void startExecutionerRotation(LivingEntity companion){
@@ -452,13 +456,28 @@ public class FakePlayerAiManager {
 
                 double distance = target.getLocation().distance(companion.getLocation());
 
-                //if need to interupt, do it
+                //Bukkit.getLogger().info(String.valueOf(warriorAbilities.getRage().getCurrentRage(companion)));
 
-                /*if(warriorAbilities.getMeteorCrater().usable(companion)){
-                    warriorAbilities.getMeteorCrater().use(companion);
-                    //also say they interupted
-                    return;
-                }*/
+                //if need to interupt, do it
+                if(getIfNeedToInterrupt(companion)){
+
+                    //Bukkit.getLogger().info("need to interrupt");
+
+                    if(warriorAbilities.getMeteorCrater().usable(companion)){
+
+                        //Bukkit.getLogger().info("usable");
+
+                        if(distance<5){
+                            //Bukkit.getLogger().info("Skill cast");
+                            warriorAbilities.getMeteorCrater().use(companion);
+                            removeInterrupt(companion);
+                            return;
+                        }
+
+                    }
+                }
+
+
 
                 if(warriorAbilities.getFlamingSigil().usable(companion)){
                     warriorAbilities.getFlamingSigil().use(companion);
@@ -513,7 +532,7 @@ public class FakePlayerAiManager {
         }.runTaskTimer(main, 0, 10);
 
         aiTaskMap.put(companion.getUniqueId(), task);
-
+        profileManager.setCompanionCombat(companion.getUniqueId());
     }
 
     private void startConjurerRotation(LivingEntity companion){
@@ -619,13 +638,14 @@ public class FakePlayerAiManager {
         }.runTaskTimer(main, 0, 10);
 
         aiTaskMap.put(companion.getUniqueId(), task);
-
+        profileManager.setCompanionCombat(companion.getUniqueId());
     }
 
     public void stopAiTask(UUID uuid){
 
         if(aiTaskMap.containsKey(uuid)){
             aiTaskMap.get(uuid).cancel();
+            profileManager.removeCompanionCombat(uuid);
         }
 
         Entity entity = Bukkit.getEntity(uuid);
@@ -636,12 +656,14 @@ public class FakePlayerAiManager {
         //Bukkit.getLogger().info("rotation stopped");
 
         aiTaskMap.remove(uuid);
-
     }
 
     public void setCaution(LivingEntity entity, boolean caution){
         cautionMap.put(entity.getUniqueId(), caution);
     }
+    public void setNeedToInterrupt(LivingEntity entity, boolean needs){needToInterrupt.put(entity.getUniqueId(),needs);}
+    private void removeInterrupt(LivingEntity entity){needToInterrupt.remove(entity.getUniqueId());}
+    private boolean getIfNeedToInterrupt(LivingEntity entity){return needToInterrupt.getOrDefault(entity.getUniqueId(), false);}
 
     private boolean getIfCautious(LivingEntity entity){
         return cautionMap.getOrDefault(entity.getUniqueId(), false);

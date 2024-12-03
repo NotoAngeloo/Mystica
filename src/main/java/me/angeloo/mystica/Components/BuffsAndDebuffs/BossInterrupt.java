@@ -38,7 +38,7 @@ public class BossInterrupt {
 
             Player player = (Player) thisEntity;
 
-            player.sendMessage(caster.getName() + " has successfully interrupted " + target.getName() +"'s ability!");
+            player.sendMessage(caster.getName() + " has successfully interrupted the ability!");
         }
 
         bossCastingManager.setShouldInterrupt(target);

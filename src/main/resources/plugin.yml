@@ -139,6 +139,10 @@ commands:
     description: lets mm display their interrupt bar
     usage: /DisplayInterruptBar <caster.uuid> <speed> <max>
     permission: developer
+  CompanionNeedsToInterrupt:
+    description: lets mm know when specific skills should be used
+    usage: /CompanionNeedsToInterrupt <caster.uuid> <true/false>
+    permission: developer
 
 permissions:
   developer:

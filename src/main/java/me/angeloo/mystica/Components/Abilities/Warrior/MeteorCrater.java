@@ -365,6 +365,7 @@ public class MeteorCrater {
         }
 
         if(rage.getCurrentRage(caster) < getCost()){
+            Bukkit.getLogger().info("not enough rage (" + rage.getCurrentRage(caster) + " out of " + getCost() + ")");
             return false;
         }
 

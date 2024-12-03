@@ -7,6 +7,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -87,9 +88,18 @@ public class Mana {
 
             int manaRegenRate = 50;
 
-            if (!profileManager.getAnyProfile(entity).getIfInCombat()) {
-                manaRegenRate = 150;
+            if(entity instanceof Player){
+                if (!profileManager.getAnyProfile(entity).getIfInCombat()) {
+                    manaRegenRate = 150;
+                }
             }
+            else{
+                if(!profileManager.getIfCompanionInCombat(entity.getUniqueId())){
+                    manaRegenRate = 150;
+                }
+            }
+
+
 
             if (currentMana > maxMana) {
                 manaAmount.put(entity.getUniqueId(),maxMana);

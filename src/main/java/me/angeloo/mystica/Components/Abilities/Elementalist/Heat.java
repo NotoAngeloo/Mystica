@@ -8,6 +8,7 @@ import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -72,9 +73,17 @@ public class Heat {
 
         int manaRegenRate = 1;
 
-        if (!profileManager.getAnyProfile(entity).getIfInCombat()) {
-            manaRegenRate = 20;
+        if(entity instanceof Player){
+            if (!profileManager.getAnyProfile(entity).getIfInCombat()) {
+                manaRegenRate = 20;
+            }
         }
+        else{
+            if(!profileManager.getIfCompanionInCombat(entity.getUniqueId())){
+                manaRegenRate = 20;
+            }
+        }
+
 
         if(currentMana > 0){
             reduceHeat(entity, manaRegenRate);

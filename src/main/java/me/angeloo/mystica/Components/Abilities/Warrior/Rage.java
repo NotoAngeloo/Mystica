@@ -7,6 +7,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -69,9 +70,18 @@ public class Rage {
 
         int manaRegenRate = 5;
 
-        if (!profileManager.getAnyProfile(entity).getIfInCombat()) {
-            manaRegenRate = 300;
+        if(entity instanceof Player){
+            if (!profileManager.getAnyProfile(entity).getIfInCombat()) {
+                manaRegenRate = 300;
+            }
         }
+        else{
+            if(!profileManager.getIfCompanionInCombat(entity.getUniqueId())){
+                manaRegenRate = 300;
+            }
+        }
+
+
 
         if(currentMana > 0){
             subTractRageFromEntity(entity, manaRegenRate);

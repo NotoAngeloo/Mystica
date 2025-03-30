@@ -13,9 +13,6 @@ commands:
   Trash:
     description: allows players to throw away items
     usage: /Trash
-  ToggleBoardType:
-    description: allows players to toggle which board they see
-    usage: /ToggleBoardType
   Bag:
     description: opens the players bag
     usage: /Bag
@@ -80,10 +77,6 @@ commands:
     description: saves profiles manually
     usage: /ManualSave
     permission: developer
-  ForcePortals:
-    description: forces demon portals to spawn
-    usage: /ForcePortals
-    permission: developer
   SavePaths:
     description: saves paths manually
     usage: /SavePaths
@@ -142,6 +135,10 @@ commands:
   CompanionNeedsToInterrupt:
     description: lets mm know when specific skills should be used
     usage: /CompanionNeedsToInterrupt <caster.uuid> <true/false>
+    permission: developer
+  Matchmaking:
+    description: opens matchmaking for player
+    usage: /Matchmaking <player> <dungeon>
     permission: developer
 
 permissions:

@@ -93,6 +93,12 @@ public class ElementalistBasic {
             @Override
             public void run(){
 
+                if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)) == null){
+                    this.cancel();
+                    stopBasicRunning(caster);
+                    return;
+                }
+
                 if(buffAndDebuffManager.getIfBasicInterrupt(caster)){
                     this.cancel();
                     stopBasicRunning(caster);

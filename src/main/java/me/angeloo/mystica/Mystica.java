@@ -29,6 +29,8 @@ public final class Mystica extends JavaPlugin{
     private ProfileManager profileManager;
     private ProfileFileWriter profileFileWriter;
 
+    private MysticaPartyManager mysticaPartyManager;
+
     private DailyData dailyData;
     private PathingManager pathingManager;
 
@@ -51,13 +53,10 @@ public final class Mystica extends JavaPlugin{
     private PveChecker pveChecker;
     private DamageCalculator damageCalculator;
     private ChangeResourceHandler changeResourceHandler;
-    private DamageHealthBoard damageHealthBoard;
     private Locations locations;
-    private QuestManager questManager;
-    private DailyEventManager dailyEventManager;
 
+    private MatchmakingInventory matchmakingInventory;
     private BagInventory bagInventory;
-    private QuestInventory questInventory;
 
     private FirstClearManager firstClearManager;
 
@@ -94,10 +93,10 @@ public final class Mystica extends JavaPlugin{
         profileManager = new ProfileManager(this);
         profileManager.loadProfilesFromConfig();
 
+        mysticaPartyManager = new MysticaPartyManager(this);
+
         locations = new Locations(this);
         locations.initializeLocationals();
-
-        questManager = new QuestManager(this);
 
         classSetter = new ClassSetter(this);
         pvpManager = new PvpManager(this);
@@ -116,7 +115,6 @@ public final class Mystica extends JavaPlugin{
         dpsManager = new DpsManager(this);
         changeResourceHandler = new ChangeResourceHandler(this);
 
-        damageHealthBoard = new DamageHealthBoard(this);
 
         damageCalculator = new DamageCalculator(this);
 
@@ -128,14 +126,13 @@ public final class Mystica extends JavaPlugin{
 
         inventoryIndexingManager = new InventoryIndexingManager();
         bagInventory = new BagInventory(this);
-        questInventory = new QuestInventory(this);
+
+        matchmakingInventory = new MatchmakingInventory(this);
 
         firstClearManager = new FirstClearManager(this);
         firstClearManager.createOrLoadFolder();
 
         aggroTick = new AggroTick(this);
-
-        dailyEventManager = new DailyEventManager(this);
 
         getCommand("ToggleGlobalPvp").setExecutor(new ToggleGlobalPvp(this));
         getCommand("SeeRawDamage").setExecutor(new SeeRawDamage(this));
@@ -154,29 +151,28 @@ public final class Mystica extends JavaPlugin{
         getCommand("Generate").setExecutor(new Generate(this));
         getCommand("Identify").setExecutor(new Identify());
         getCommand("ManualSave").setExecutor(new ManualSave(this));
-        getCommand("ForcePortals").setExecutor(new ForcePortals(this));
         getCommand("DeleteProfile").setExecutor(new DeleteProfile(this));
         getCommand("SetMileStone").setExecutor(new SetMilestone(this));
         getCommand("MysticaInteractions").setExecutor(new MysticaInteractions(this));
         getCommand("PathTool").setExecutor(new PathTool());
         getCommand("DisplayPath").setExecutor(new DisplayPath(this));
         getCommand("SavePaths").setExecutor(new SavePaths(this));
-        getCommand("ToggleBoardType").setExecutor(new ToggleBoardType(this));
         getCommand("Cosmetic").setExecutor(new Cosmetic(this));
         getCommand("BossLevel").setExecutor(new BossLevel(this));
         getCommand("GiveSoulStone").setExecutor(new GiveSoulStone(this));
-        getCommand("MysticaQuest").setExecutor(new MysticaQuest(this));
         getCommand("HitValidCheck").setExecutor(new HitValidCheck(this));
         getCommand("SetCaution").setExecutor(new SetCaution(this));
         getCommand("SignalNearbyNpc").setExecutor(new SignalNearbyNpc());
         getCommand("StopCompanionRotation").setExecutor(new StopCompanionRotation(this));
         getCommand("DisplayInterruptBar").setExecutor(new DisplayInterruptBar(this));
         getCommand("CompanionNeedsToInterrupt").setExecutor(new CompanionNeedsToInterrupt(this));
+        getCommand("Matchmaking").setExecutor(new Matchmaking(this));
 
         AbilityInventory abilityInventory;
         this.getServer().getPluginManager().registerEvents(abilityInventory = new AbilityInventory(this), this);
         this.getServer().getPluginManager().registerEvents(new EquipmentInventory(this), this);
         this.getServer().getPluginManager().registerEvents(new ClassSelectInventory(this), this);
+        this.getServer().getPluginManager().registerEvents(matchmakingInventory, this);
 
         SpecInventory specInventory = abilityInventory.getSpecInventory();
         this.getServer().getPluginManager().registerEvents(specInventory, this);
@@ -184,6 +180,8 @@ public final class Mystica extends JavaPlugin{
         this.getServer().getPluginManager().registerEvents(new InventoryEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new GeneralEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new MMListeners(this), this);
+
+
 
         NaturalRegenTick regenTick = new NaturalRegenTick(this, abilityManager);
         regenTick.runTaskTimer(this, 0, 40);
@@ -334,10 +332,6 @@ public final class Mystica extends JavaPlugin{
         return bagInventory;
     }
 
-    public QuestInventory getQuestInventory(){return questInventory;}
-
-    public DamageHealthBoard getDamageHealthBoard(){return damageHealthBoard;}
-
     public ProfileFileWriter getProfileFileWriter(){
         return profileFileWriter;
     }
@@ -346,14 +340,14 @@ public final class Mystica extends JavaPlugin{
 
     public Locations getLocations(){return locations;}
 
-    public QuestManager getQuestManager(){return questManager;}
-
     public DailyData getDailyData(){return dailyData;}
-
-    public DailyEventManager getDailyEventManager(){return dailyEventManager;}
 
     public GravestoneManager getGravestoneManager(){return gravestoneManager;}
 
     public BossCastingManager getBossCastingManager(){return bossCastingManager;}
+
+    public MatchmakingInventory getMatchmakingInventory(){return matchmakingInventory;}
+
+    public MysticaPartyManager getMysticaPartyManager(){return mysticaPartyManager;}
 
 }

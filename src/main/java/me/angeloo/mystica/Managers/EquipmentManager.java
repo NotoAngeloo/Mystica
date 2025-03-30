@@ -3,9 +3,14 @@ package me.angeloo.mystica.Managers;
 import me.angeloo.mystica.Components.ClassEquipment.*;
 import me.angeloo.mystica.Mystica;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -1102,6 +1107,177 @@ public class EquipmentManager {
         statString.append(base*level);
 
         return String.valueOf(statString);
+    }
+
+
+    public ItemStack generateItem(Player player, int level, int tier, int gearType){
+
+        ItemStack baseGear = new ItemStack(Material.AIR);
+
+        //randomly generate
+        if(gearType == -1){
+            gearType = new Random().nextInt(5);
+        }
+
+        if(tier==1){
+            return baseGear;
+        }
+
+        ItemMeta meta;
+
+        if(baseGear.hasItemMeta()){
+            meta = baseGear.getItemMeta();
+        }
+        else{
+            Bukkit.getLogger().info("attempted to generate new T2+ equipment without setting up default");
+            return baseGear;
+        }
+
+        assert meta != null;
+        PersistentDataContainer statRolls = meta.getPersistentDataContainer();
+
+        if(tier>=2){
+            //add bonus stats
+
+
+            List<String> availableStats = new ArrayList<>();
+            availableStats.add("attack");
+            availableStats.add("crit");
+            availableStats.add("health");
+            availableStats.add("defense");
+            availableStats.add("magic defense");
+
+            Collections.shuffle(availableStats);
+
+            String highStat = availableStats.get(0);
+            int highStatNumber = 0;
+            String lowStat = availableStats.get(1);
+            int lowStatNumber = 0;
+
+            switch (highStat.toLowerCase()){
+                case "attack":
+                case "defense":
+                case "magic defense":{
+                    highStatNumber = getHighAttackOrDefense(level);
+                    break;
+                }
+                case "crit":{
+                    highStatNumber = getHighCrit();
+                    break;
+                }
+                case "health":{
+                    highStatNumber = getHighHealth(level);
+                    break;
+                }
+            }
+
+            switch (lowStat.toLowerCase()){
+                case "attack":
+                case "defense":
+                case "magic defense":{
+                    lowStatNumber = getLowAttackOrDefense(level);
+                    break;
+                }
+                case "crit":{
+                    lowStatNumber = getLowCrit();
+                    break;
+                }
+                case "health":{
+                    lowStatNumber = getLowHealth(level);
+                    break;
+                }
+            }
+
+            //this is data to serialize/deserialize on saving it as a string in storage
+
+            NamespacedKey high_stat = new NamespacedKey(Mystica.getPlugin(), "high_stat");
+            statRolls.set(high_stat, PersistentDataType.STRING, highStat);
+            NamespacedKey low_stat = new NamespacedKey(Mystica.getPlugin(), "low_stat");
+            statRolls.set(low_stat, PersistentDataType.STRING, lowStat);
+        }
+
+        if(tier>=3){
+            //add skill levels
+            int skillAmount = new Random().nextInt(2);
+            for (int i=0;i<skillAmount;i++){
+                int statAmount = new Random().nextInt(5) + 1;
+
+                //in the future, change this to incorporate more than 8 skill
+                int skillNumber = new Random().nextInt(8) + 1;
+
+                NamespacedKey key = new NamespacedKey(Mystica.getPlugin(), "skill_" + skillNumber);
+                statRolls.set(key, PersistentDataType.INTEGER, statAmount);
+
+                //newRandomStats.add("Skill " + skillNumber + " + " + statAmount);
+            }
+        }
+
+        //closing unicode
+
+        return baseGear;
+    }
+
+    public ItemStack deserialize(int gearType, int level, int tier, String clazz, String ... data){
+
+        ItemStack baseGear = new ItemStack(Material.AIR);
+
+        switch (clazz.toLowerCase()){
+            case "assassin":{
+                switch (gearType){
+                    case 0:{
+                        baseGear = assassinEquipment.getBaseWeapon();
+                        break;
+                    }
+                    case 1:{
+                        baseGear = assassinEquipment.getBaseHelmet();
+                        break;
+                    }
+                    case 2:{
+                        baseGear = assassinEquipment.getBaseChestPlate();
+                        break;
+                    }
+                    case 3:{
+                        baseGear = assassinEquipment.getBaseLeggings();
+                        break;
+                    }
+                    case 4:{
+                        baseGear = assassinEquipment.getBaseBoots();
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+
+        return baseGear;
+    }
+
+    private int getLowAttackOrDefense(int level){
+        level--;
+        return 10 * (1 + level);
+    }
+
+    private int getHighAttackOrDefense(int level){
+        level--;
+        return 20 * (1 + level);
+    }
+
+    private int getLowHealth(int level){
+        level--;
+        return 5 * (1 + level);
+    }
+
+    private int getHighHealth(int level){
+        level--;
+        return 10 * (1 + level);
+    }
+
+    private int getLowCrit(){
+        return 5;
+    }
+
+    private int getHighCrit(){
+        return 10;
     }
 
 }

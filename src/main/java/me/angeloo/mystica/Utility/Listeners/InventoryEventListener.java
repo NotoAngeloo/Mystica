@@ -3,17 +3,11 @@ package me.angeloo.mystica.Utility.Listeners;
 
 import me.angeloo.mystica.Components.Inventories.*;
 import me.angeloo.mystica.Components.Items.SoulStone;
-import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
-import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
-import me.angeloo.mystica.CustomEvents.HelpfulHintEvent;
 import me.angeloo.mystica.Managers.EquipmentManager;
 import me.angeloo.mystica.Managers.InventoryIndexingManager;
 import me.angeloo.mystica.Managers.ProfileManager;
-import me.angeloo.mystica.Managers.QuestManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.*;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,13 +16,11 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class InventoryEventListener implements Listener {
 
@@ -37,7 +29,6 @@ public class InventoryEventListener implements Listener {
     private final ProfileManager profileManager;
     private final EquipmentManager equipmentManager;
 
-    private final QuestManager questManager;
     private final InventoryIndexingManager inventoryIndexingManager;
     private final BagInventory bagInventory;
     private final BuyInvSlotsInventory buyInvSlotsInventory;
@@ -55,7 +46,6 @@ public class InventoryEventListener implements Listener {
         this.main = main;
         profileManager = main.getProfileManager();
         equipmentManager = new EquipmentManager(main);
-        questManager = main.getQuestManager();
         inventoryIndexingManager = main.getInventoryIndexingManager();
         bagInventory = main.getBagInventory();
         buyInvSlotsInventory = new BuyInvSlotsInventory(main);
@@ -179,86 +169,6 @@ public class InventoryEventListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void questBookClick(InventoryClickEvent event){
-        if(!event.getView().getTitle().equals("Quests")){
-            return;
-        }
-
-        event.setCancelled(true);
-
-        if(event.getClickedInventory() == null){
-            return;
-        }
-
-        Player player = (Player) event.getWhoClicked();
-
-        Inventory inventory = player.getOpenInventory().getTopInventory();
-
-        if(event.getClickedInventory() != inventory){
-            return;
-        }
-
-        ItemStack item = event.getCurrentItem();
-
-        if(item == null){
-            return;
-        }
-
-        int index = inventoryIndexingManager.getBagIndex(player);
-
-        switch (event.getCurrentItem().getItemMeta().getDisplayName().toLowerCase()){
-            /*case "Scroll Up":{
-                if(index == 0){
-                    return;
-                }
-                index--;
-                player.openInventory(bagInventory.openBagInventory(player, index));
-                inventoryIndexingManager.setBagIndex(player, index);
-                break;
-            }
-            case "Scroll Down": {
-                //scroll down, if in range
-                int range = profileManager.getAnyProfile(player).getPlayerBag().getNumUnlocks();
-                if(range <= index){
-                    player.openInventory(buyInvSlotsInventory.openBuyInv(player));
-                    return;
-                }
-
-                index++;
-                player.openInventory(bagInventory.openBagInventory(player, index));
-                inventoryIndexingManager.setBagIndex(player, index);
-                break;
-            }*/
-            case "new hunter":{
-                questManager.rereadQuest(player, "new_hunter");
-                break;
-            }
-            case "captain moon":{
-                questManager.rereadQuest(player, "missions");
-                break;
-            }
-            case "the archbishop's request":{
-                questManager.rereadQuest(player,"sewer");
-                break;
-            }
-            case "heart of corruption":{
-                questManager.rereadQuest(player, "sewer2");
-                break;
-            }
-            case "cave of the lindwyrm":{
-                questManager.rereadQuest(player, "lindwyrm");
-                break;
-            }
-            case "the general's arrival":{
-                questManager.rereadQuest(player, "ho_lee");
-                break;
-            }
-        }
-
-
-
-    }
 
     @EventHandler
     public void buyMoreSlots(InventoryClickEvent event){

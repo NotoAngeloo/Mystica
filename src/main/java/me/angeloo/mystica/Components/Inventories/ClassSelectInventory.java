@@ -41,38 +41,51 @@ public class ClassSelectInventory implements Listener {
 
         String title = "something went wrong";
 
+        //old is "\uF809\uF808\uF804\uE06F" + "\uF802\uE070" +  "\uF82A\uF828\uF825\uF80D\uE071" + "\uF802\uE072";
+        // "\uF82A\uF828%s" "\uF825%s", "\uF80D%s",
+        // second half is offset space 40, space 5, space -256 which = -206
+
+
         switch (index){
             case 0:{
-                title = "\uF809\uF808\uF804\uE06F" + "\uF802\uE070" +  "\uF82A\uF828\uF825\uF80D\uE071" + "\uF802\uE072";
+                //title = "\uF809\uF808\uF804\uE06F" + "\uF801\uE070" +  "\uF82A\uF828\uF825\uF80D\uE071" + "\uF801\uE072";
+                //title = "\uF809\uF808\uF804\uE06F" + "\uF801\uE070\uF821" +  "\uF82A\uF828\uF825\uF80D\uE071" + "\uF801\uE072";
+                title = "\uF809\uF808\uF804\uE06F" + "\uF801\uE070\uF821" +  "\uF82A\uF826\uF825\uF80D\uE071" + "\uF801\uE072";
+
                 break;
             }
             case 1:{
-                title = "elementalist";
+                //title = "elementalist";
+                title = "\uF809\uF808\uF804\uE073" + "\uF801\uE074\uF821" +  "\uF82A\uF826\uF825\uF80D\uE075" + "\uF801\uE076";
                 //inv.setItem(13, getElementalistItem());
                 break;
             }
             case 2:{
-                title = "mystic";
+                //title = "mystic";
+                title = "\uF809\uF808\uF804\uE077" + "\uF801\uE078\uF821" +  "\uF82A\uF826\uF825\uF80D\uE079" + "\uF801\uE07A";
                 //inv.setItem(13, getMysticItem());
                 break;
             }
             case 3:{
-                title = "paladin";
+                //title = "paladin";
+                title = "\uF809\uF808\uF804\uE07B" + "\uF801\uE07C\uF821" +  "\uF82A\uF826\uF825\uF80D\uE07D" + "\uF801\uE07E";
                 //inv.setItem(13, getPaladinItem());
                 break;
             }
             case 4:{
-                title = "ranger";
+                //title = "ranger";
+                title = "\uF809\uF808\uF804\uE07F" + "\uF801\uE080\uF821" +  "\uF82A\uF826\uF825\uF80D\uE081" + "\uF801\uE082";
                 //inv.setItem(13, getRangerItem());
                 break;
             }
             case 5:{
-                title = "shadow knight";
+                //title = "shadow knight";
+                title = "\uF809\uF808\uF804\uE083" + "\uF801\uE084\uF821" +  "\uF82A\uF826\uF825\uF80D\uE085" + "\uF801\uE086";
                 //inv.setItem(13, getShadowKnightItem());
                 break;
             }
             case 6:{
-                title = "warrior";
+                title = "\uF809\uF808\uF804\uE087" + "\uF801\uE088\uF821" +  "\uF82A\uF826\uF825\uF80D\uE089" + "\uF801\uE08A";
                 //inv.setItem(13, getWarriorItem());
                 break;
             }
@@ -98,13 +111,13 @@ public class ClassSelectInventory implements Listener {
     @EventHandler
     public void classClicks(InventoryClickEvent event){
 
-        if(event.getView().getTitle().equalsIgnoreCase(ChatColor.WHITE + "\uF809\uF808\uF804\uE06F" + "\uF802\uE070" +  "\uF82A\uF828\uF825\uF80D\uE071" + "\uF802\uE072")
-                || event.getView().getTitle().equalsIgnoreCase(ChatColor.WHITE + "elementalist")
-                || event.getView().getTitle().equalsIgnoreCase(ChatColor.WHITE + "mystic")
-                || event.getView().getTitle().equalsIgnoreCase(ChatColor.WHITE + "paladin")
-                || event.getView().getTitle().equalsIgnoreCase(ChatColor.WHITE + "ranger")
-                || event.getView().getTitle().equalsIgnoreCase(ChatColor.WHITE + "shadow knight")
-                || event.getView().getTitle().equalsIgnoreCase(ChatColor.WHITE + "warrior")){
+        if(event.getView().getTitle().equalsIgnoreCase(ChatColor.WHITE + "\uF809\uF808\uF804\uE06F" + "\uF801\uE070\uF821" +  "\uF82A\uF826\uF825\uF80D\uE071" + "\uF801\uE072")
+                || event.getView().getTitle().equalsIgnoreCase(ChatColor.WHITE + "\uF809\uF808\uF804\uE073" + "\uF801\uE074\uF821" +  "\uF82A\uF826\uF825\uF80D\uE075" + "\uF801\uE076")
+                || event.getView().getTitle().equalsIgnoreCase(ChatColor.WHITE + "\uF809\uF808\uF804\uE077" + "\uF801\uE078\uF821" +  "\uF82A\uF826\uF825\uF80D\uE079" + "\uF801\uE07A")
+                || event.getView().getTitle().equalsIgnoreCase(ChatColor.WHITE + "\uF809\uF808\uF804\uE07B" + "\uF801\uE07C\uF821" +  "\uF82A\uF826\uF825\uF80D\uE07D" + "\uF801\uE07E")
+                || event.getView().getTitle().equalsIgnoreCase(ChatColor.WHITE + "\uF809\uF808\uF804\uE07F" + "\uF801\uE080\uF821" +  "\uF82A\uF826\uF825\uF80D\uE081" + "\uF801\uE082")
+                || event.getView().getTitle().equalsIgnoreCase(ChatColor.WHITE + "\uF809\uF808\uF804\uE083" + "\uF801\uE084\uF821" +  "\uF82A\uF826\uF825\uF80D\uE085" + "\uF801\uE086")
+                || event.getView().getTitle().equalsIgnoreCase(ChatColor.WHITE + "\uF809\uF808\uF804\uE087" + "\uF801\uE088\uF821" +  "\uF82A\uF826\uF825\uF80D\uE089" + "\uF801\uE08A")){
 
             event.setCancelled(true);
 
@@ -134,43 +147,45 @@ public class ClassSelectInventory implements Listener {
                 String colorlessTitle = title.replaceAll("§.", "");
 
                 switch (colorlessTitle){
-                    case ("\uF809\uF808\uF804\uE06F" + "\uF802\uE070" +  "\uF82A\uF828\uF825\uF80D\uE071" + "\uF802\uE072"):
+
+                    case ("\uF809\uF808\uF804\uE06F" + "\uF801\uE070\uF821" +  "\uF82A\uF826\uF825\uF80D\uE071" + "\uF801\uE072"):
                     {
                         classSetter.setClass(player, "Assassin");
                         player.closeInventory();
                         return;
+
                     }
-                    case ("elementalist"):
+                    case ("\uF809\uF808\uF804\uE073" + "\uF801\uE074\uF821" +  "\uF82A\uF826\uF825\uF80D\uE075" + "\uF801\uE076"):
                     {
                         classSetter.setClass(player, "Elementalist");
                         player.closeInventory();
                         return;
                     }
-                    case ("mystic"):
+                    case ("\uF809\uF808\uF804\uE077" + "\uF801\uE078\uF821" +  "\uF82A\uF826\uF825\uF80D\uE079" + "\uF801\uE07A"):
                     {
                         classSetter.setClass(player, "Mystic");
                         player.closeInventory();
                         return;
                     }
-                    case ("paladin"):
+                    case ("\uF809\uF808\uF804\uE07B" + "\uF801\uE07C\uF821" +  "\uF82A\uF826\uF825\uF80D\uE07D" + "\uF801\uE07E"):
                     {
                         classSetter.setClass(player, "Paladin");
                         player.closeInventory();
                         return;
                     }
-                    case ("ranger"):
+                    case ("\uF809\uF808\uF804\uE07F" + "\uF801\uE080\uF821" +  "\uF82A\uF826\uF825\uF80D\uE081" + "\uF801\uE082"):
                     {
                         classSetter.setClass(player, "Ranger");
                         player.closeInventory();
                         return;
                     }
-                    case ("shadow knight"):
+                    case ("\uF809\uF808\uF804\uE083" + "\uF801\uE084\uF821" +  "\uF82A\uF826\uF825\uF80D\uE085" + "\uF801\uE086"):
                     {
                         classSetter.setClass(player, "Shadow Knight");
                         player.closeInventory();
                         return;
                     }
-                    case ("warrior"):
+                    case ("\uF809\uF808\uF804\uE087" + "\uF801\uE088\uF821" +  "\uF82A\uF826\uF825\uF80D\uE089" + "\uF801\uE08A"):
                     {
                         classSetter.setClass(player, "warrior");
                         player.closeInventory();

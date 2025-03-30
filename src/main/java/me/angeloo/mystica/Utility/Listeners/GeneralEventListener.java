@@ -1,7 +1,6 @@
 package me.angeloo.mystica.Utility.Listeners;
 
 import com.alessiodp.parties.api.Parties;
-import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import com.comphenix.protocol.ProtocolLib;
@@ -57,6 +56,7 @@ public class GeneralEventListener implements Listener {
     private final FakePlayerAiManager fakePlayerAiManager;
     private final DailyData dailyData;
     private final ProfileManager profileManager;
+    private final MysticaPartyManager mysticaPartyManager;
     private final PathingManager pathingManager;
     private final StealthTargetBlacklist stealthTargetBlacklist;
     private final AggroTick aggroTick;
@@ -67,7 +67,6 @@ public class GeneralEventListener implements Listener {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final AbilityManager abilityManager;
     private final DeathManager deathManager;
-    private final QuestManager questManager;
     private final InventoryIndexingManager inventoryIndexingManager;
     private final EquipmentInventory equipmentInventory;
     private final AbilityInventory abilityInventory;
@@ -78,7 +77,6 @@ public class GeneralEventListener implements Listener {
     private final GearReader gearReader;
     private final BagInventory bagInventory;
     private final ClassSetter classSetter;
-    private final DamageHealthBoard damageHealthBoard;
     private final CustomItemConverter customItemConverter;
     private final Locations locations;
     private final GravestoneManager gravestoneManager;
@@ -110,7 +108,6 @@ public class GeneralEventListener implements Listener {
         targetManager = main.getTargetManager();
         combatManager = main.getCombatManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
-        questManager = main.getQuestManager();
         abilityManager = main.getAbilityManager();
         deathManager = main.getDeathManager();
         inventoryIndexingManager = main.getInventoryIndexingManager();
@@ -125,11 +122,11 @@ public class GeneralEventListener implements Listener {
         bagInventory = main.getBagInventory();
         gearReader = new GearReader(main);
         classSetter = new ClassSetter(main);
-        damageHealthBoard = main.getDamageHealthBoard();
         customItemConverter = new CustomItemConverter();
         firstClearManager = main.getFirstClearManager();
         locations = new Locations(main);
         gravestoneManager = main.getGravestoneManager();
+        mysticaPartyManager = main.getMysticaPartyManager();
     }
 
     @EventHandler
@@ -856,47 +853,14 @@ public class GeneralEventListener implements Listener {
 
         Set<Player> victors = new HashSet<>();
 
-        if(caster instanceof Player){
-            Player player = (Player) caster;
-            PartiesAPI api = Parties.getApi();
-            PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
-            assert partyPlayer != null;
-            if(partyPlayer.isInParty()){
-
-                Party party = api.getParty(partyPlayer.getPartyId());
-
-                assert party != null;
-                Set<UUID> partyMemberList = party.getMembers();
-
-                //List<Player> partyList = new ArrayList<>();
-
-                for(UUID partyMemberId : partyMemberList){
-                    Player partyMember = Bukkit.getPlayer(partyMemberId);
-
-                    if(partyMember==null){
-                        continue;
-                    }
-
-                    changeResourceHandler.addXpToPlayer(partyMember, (xpYield / partyMemberList.size()));
-                    bagInventory.addItemsToPlayerBagByPickup(partyMember, itemDrops);
-                    victors.add(partyMember);
-                }
-
-            }
-            else {
-                changeResourceHandler.addXpToPlayer(player, xpYield);
-                bagInventory.addItemsToPlayerBagByPickup(player, itemDrops);
-                victors.add(player);
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMParty(caster));
+        for(LivingEntity member : mParty){
+            if(member instanceof Player){
+                changeResourceHandler.addXpToPlayer((Player)member,xpYield/mParty.size());
+                bagInventory.addItemsToPlayerBagByPickup((Player)member,itemDrops);
+                victors.add((Player)member);
             }
         }
-        else{
-            Player player = profileManager.getCompanionsPlayer(caster);
-            changeResourceHandler.addXpToPlayer(player, xpYield);
-            bagInventory.addItemsToPlayerBagByPickup(player, itemDrops);
-            victors.add(player);
-        }
-
-
 
         //check bosshomes
         if(profileManager.getIfEntityIsBoss(entity.getUniqueId())){
@@ -950,14 +914,6 @@ public class GeneralEventListener implements Listener {
 
     }
 
-    @EventHandler
-    public void completeKillQuest(BossKillQuestCompleteEvent event){
-
-        for(Player player : event.getPlayers()){
-            questManager.completeQuest(player, event.getObjectiveOf());
-        }
-
-    }
 
     @EventHandler
     public void rezPlayer(PlayerInteractEvent event){
@@ -985,61 +941,34 @@ public class GeneralEventListener implements Listener {
 
         event.setCancelled(true);
 
-        PartiesAPI api = Parties.getApi();
-        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMParty(player));
 
-        assert partyPlayer != null;
-        if(partyPlayer.isInParty()){
-            Party party = api.getParty(partyPlayer.getPartyId());
+        for(LivingEntity member : mParty){
 
-            assert party != null;
-            Set<UUID> partyMemberList = party.getMembers();
-
-            party.getMembers().remove(partyPlayer.getPartyId());
-
-            //excludes the player
-            for(UUID memberID : partyMemberList){
-
-                //exclude dead players from this
-                Player member = Bukkit.getPlayer(memberID);
-
-                if(member == null){
-                    continue;
-                }
-
+            if(member instanceof Player){
                 boolean partyMemberDeathStatus = profileManager.getAnyProfile(member).getIfDead();
 
                 if(partyMemberDeathStatus){
                     continue;
                 }
+            }
 
-                boolean partyMemberCombatStatus = profileManager.getAnyProfile(member).getIfInCombat();
 
-                if(partyMemberCombatStatus){
-                    event.setCancelled(true);
-                    
-                    if(combatManager.canLeaveCombat(member)){
-                        //request them
-                        member.sendMessage(ChatColor.of(new java.awt.Color(0, 153, 0)) + player.getName() + ChatColor.RESET + " requests that you exit combat.");
-                    }
+            boolean partyMemberCombatStatus = profileManager.getAnyProfile(member).getIfInCombat();
 
+            if(partyMemberCombatStatus){
+                return;
+            }
+
+            if(!(member instanceof Player)){
+                if(fakePlayerAiManager.getIfRotationRunning(member)){
                     return;
                 }
             }
+
+
         }
 
-        if(!profileManager.getCompanions(player).isEmpty()){
-            for(LivingEntity companion : profileManager.getCompanions(player)){
-
-                if(fakePlayerAiManager.getIfRotationRunning(companion)){
-                    return;
-                }
-
-                /*if(!profileManager.getAnyProfile(companion).getIfDead()){
-                    return;
-                }*/
-            }
-        }
 
         deathManager.playerNowLive(player, false, null);
         displayWeapons.displayWeapons(player);
@@ -1324,34 +1253,6 @@ public class GeneralEventListener implements Listener {
 
     }
 
-    @EventHandler
-    public void boardUpdate(BoardValueUpdateEvent event){
-
-        Player player = event.getPlayer();
-
-        PartiesAPI api = Parties.getApi();
-
-        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
-
-        assert partyPlayer != null;
-        if(partyPlayer.isInParty()){
-            Party party = api.getParty(partyPlayer.getPartyId());
-            assert party != null;
-            Set<UUID> partyMemberList = party.getMembers();
-            for (UUID memberId : partyMemberList){
-
-                Player partyMember = Bukkit.getPlayer(memberId);
-
-                if(partyMember == null){
-                    continue;
-                }
-
-                damageHealthBoard.update(partyMember);
-            }
-        }
-
-    }
-
 
     @EventHandler
     public void allEntityDamage(EntityDamageEvent event){
@@ -1528,67 +1429,39 @@ public class GeneralEventListener implements Listener {
 
         World playerWorld = caster.getWorld();
 
-        PartiesAPI api = Parties.getApi();
-
-        if(caster instanceof Player){
-
-            Player player = (Player) caster;
-
-            PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
-
-            assert partyPlayer != null;
-            if(partyPlayer.isInParty()){
-
-                Party party = api.getParty(partyPlayer.getPartyId());
-
-                assert party != null;
-                Set<UUID> partyMemberList = party.getMembers();
-
-                for(UUID partyMemberId : partyMemberList){
-
-                    Player partyMember = Bukkit.getPlayer(partyMemberId);
-
-                    if(partyMember == null){
-                        continue;
-                    }
-
-                    if(!partyMember.isOnline()){
-                        continue;
-                    }
-
-                    if(partyMember == player){
-                        continue;
-                    }
-
-                    boolean deathStatus = profileManager.getAnyProfile(partyMember).getIfDead();
-
-                    if(deathStatus){
-                        continue;
-                    }
-
-                    World memberWorld = partyMember.getWorld();
-
-                    if(playerWorld != memberWorld){
-                        continue;
-                    }
-
-                    double distance = player.getLocation().distance(partyMember.getLocation());
-
-                    if(distance > 20){
-                        continue;
-                    }
-
-                    aggroManager.addAttacker(entity, partyMember);
-
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMParty(caster));
+        for(LivingEntity member : mParty){
+            if(member instanceof Player){
+                if(((Player) member).isOnline()){
+                    continue;
                 }
-            }
 
-            if(!profileManager.getCompanions(player).isEmpty()){
-                for(LivingEntity companion : profileManager.getCompanions(player)){
-                    aggroManager.addAttacker(entity, companion);
+                if(member == caster){
+                    continue;
                 }
+
+                boolean deathStatus = profileManager.getAnyProfile(member).getIfDead();
+
+                if(deathStatus){
+                    continue;
+                }
+
+                World memberWorld = member.getWorld();
+
+                if(playerWorld != memberWorld){
+                    continue;
+                }
+
+                double distance = caster.getLocation().distance(member.getLocation());
+
+                if(distance > 20){
+                    continue;
+                }
+
+                aggroManager.addAttacker(entity, member);
             }
         }
+
 
     }
 

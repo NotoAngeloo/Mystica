@@ -6,7 +6,6 @@ import me.angeloo.mystica.CustomEvents.HelpfulHintEvent;
 import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
-import me.angeloo.mystica.Utility.DamageHealthBoard;
 import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.StatusDisplayer;
 import net.md_5.bungee.api.ChatColor;
@@ -30,7 +29,6 @@ public class CombatManager {
     private final ProfileManager profileManager;
     private final AbilityManager abilityManager;
     private final DpsManager dpsManager;
-    private final DamageHealthBoard damageHealthBoard;
 
     private final CooldownDisplayer cooldownDisplayer;
 
@@ -42,7 +40,6 @@ public class CombatManager {
         abilityManager = manager;
         dpsManager = main.getDpsManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
-        damageHealthBoard = main.getDamageHealthBoard();
     }
 
 
@@ -57,7 +54,7 @@ public class CombatManager {
         boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
 
         if (!combatStatus){
-            player.sendMessage("You are now in combat");
+            //player.sendMessage("You are now in combat");
 
             profileManager.getAnyProfile(player).setSavedInv(player.getInventory().getContents());
             player.getInventory().clear();
@@ -135,7 +132,7 @@ public class CombatManager {
 
         player.getInventory().clear(13);
 
-        player.sendMessage("You are no longer in combat");
+        //player.sendMessage("You are no longer in combat");
 
         //and restore their inventories
 
@@ -164,7 +161,6 @@ public class CombatManager {
         dpsManager.removeDps(player);
         abilityManager.resetAbilityBuffs(player);
         Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
-        damageHealthBoard.removeScoreboard(player);
     }
 
 

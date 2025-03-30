@@ -37,6 +37,7 @@ public class CreaturesAndCharactersManager {
     private final HoLeeNpc hoLeeNpc;
     private final CaptainNpc captainNpc;
     private final HoLeeBoss hoLeeBoss;
+    private final CoersicaBoss coersicaBoss;
 
     private final SammingSins sammingSins;
     private final Luna luna;
@@ -59,6 +60,7 @@ public class CreaturesAndCharactersManager {
         hoLeeNpc = new HoLeeNpc(main);
         captainNpc = new CaptainNpc(main);
         hoLeeBoss = new HoLeeBoss(main);
+        coersicaBoss = new CoersicaBoss(main);
         sammingSins = new SammingSins(main);
         luna = new Luna(main);
         wings = new Wings(main);
@@ -89,6 +91,19 @@ public class CreaturesAndCharactersManager {
                 profileManager.setBossHome(uuid);
                 break;
             }
+            case "CoersicaBoss":{
+                coersicaBoss.makeProfile(uuid);
+                profileManager.setBossHome(uuid);
+                break;
+            }
+            case "Coersica_Dimension_Rift":{
+                coersicaBoss.makeSpawnablePortalProfile(uuid);
+                break;
+            }
+            case "Coersica_Shadow_Elemental": {
+                coersicaBoss.makeSpawnableProfile(uuid);
+                break;
+            }
             case "HoLeeBoss":{
                 hoLeeBoss.makeProfile(uuid);
                 profileManager.setBossHome(uuid);
@@ -105,8 +120,16 @@ public class CreaturesAndCharactersManager {
             }
             case "Gravestone":
             case "SafeZone":
+            case "TankZone":
+            case "RangedZone":
+            case "MeleeZone":
+            case "Nothing":
             case "DemonPortal":
             case "HeartTendril":
+            case "Dimension_Rift":
+            case "ChaosSeed":
+            case "ShadowSeed":
+            case"Coersica_Shadow_Grip":
             case "LindwyrmRock":{
                 makeImmortalObjectProfile(uuid);
                 break;

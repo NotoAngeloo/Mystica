@@ -31,6 +31,7 @@ public class ElementalMatrix {
     private final Mystica main;
 
     private final ProfileManager profileManager;
+    private final MysticaPartyManager mysticaPartyManager;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
@@ -46,6 +47,7 @@ public class ElementalMatrix {
     public ElementalMatrix(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
+        mysticaPartyManager = main.getMysticaPartyManager();
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
@@ -109,90 +111,26 @@ public class ElementalMatrix {
 
         boolean conjurer = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("conjurer");
 
-        if(caster instanceof Player){
-            PartiesAPI api = Parties.getApi();
-            Player player = (Player) caster;
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMParty(caster));
 
-            PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
-            assert partyPlayer != null;
-            if(partyPlayer.isInParty()){
+        for(LivingEntity member : mParty){
 
-                Party party = api.getParty(partyPlayer.getPartyId());
-
-                assert party != null;
-                Set<UUID> partyMemberList = party.getMembers();
-
-                for(UUID partyMemberId : partyMemberList){
-
-                    Player partyMember = Bukkit.getPlayer(partyMemberId);
-
-                    if(partyMember == null){
-                        continue;
-                    }
-
-                    if(!partyMember.isOnline()){
-                        continue;
-                    }
-
-                    if(partyMember == player){
-                        continue;
-                    }
-
-                    boolean deathStatus = profileManager.getAnyProfile(partyMember).getIfDead();
-
-                    if(deathStatus){
-                        continue;
-                    }
-
-                    double maxHp = profileManager.getAnyProfile(partyMember).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(partyMember);
-
-                    changeResourceHandler.addHealthToEntity(partyMember, maxHp * .05, player);
-
-                }
-            }
-
-            if(!profileManager.getCompanions(player).isEmpty()){
-                for(LivingEntity companion : profileManager.getCompanions(player)){
-                    boolean deathStatus = profileManager.getAnyProfile(companion).getIfDead();
-                    if(deathStatus){
-                        continue;
-                    }
-                    double maxHp = profileManager.getAnyProfile(companion).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(companion);
-
-                    changeResourceHandler.addHealthToEntity(companion, maxHp * .05, caster);
-                }
-            }
-        }
-        else{
-            Player player = profileManager.getCompanionsPlayer(caster);
-
-            if(!profileManager.getAnyProfile(player).getIfDead()){
-                double maxHp = profileManager.getAnyProfile(player).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player);
-                changeResourceHandler.addHealthToEntity(player, maxHp * .05, caster);
-            }
-
-            for(LivingEntity companion : profileManager.getCompanions(player)){
-
-                if(caster == companion){
+            if(member instanceof Player){
+                if(!((Player)member).isOnline()){
                     continue;
                 }
 
-                boolean deathStatus = profileManager.getAnyProfile(companion).getIfDead();
+                boolean deathStatus = profileManager.getAnyProfile(member).getIfDead();
+
                 if(deathStatus){
                     continue;
                 }
-                double maxHp = profileManager.getAnyProfile(companion).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(companion);
 
-                changeResourceHandler.addHealthToEntity(companion, maxHp * .05, player);
+                double maxHp = profileManager.getAnyProfile(member).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(member);
+
+                changeResourceHandler.addHealthToEntity(member, maxHp * .05, caster);
             }
-
         }
-
-
-
-        double maxHp = profileManager.getAnyProfile(caster).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(caster);
-        changeResourceHandler.addHealthToEntity(caster, maxHp * .05, caster);
-
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
@@ -224,7 +162,7 @@ public class ElementalMatrix {
 
             double currentHealth = profileManager.getAnyProfile(caster).getCurrentHealth();
 
-            double percent = maxHp/currentHealth;
+            double percent = (profileManager.getAnyProfile(caster).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(caster))/currentHealth;
 
             skillDamage = skillDamage * (1 + percent);
         }

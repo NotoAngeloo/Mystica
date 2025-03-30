@@ -25,6 +25,19 @@ public class AssassinEquipment {
 
     public ItemStack getBaseWeapon(){
 
+        /*return getItem(Material.FLINT, 1,
+                ChatColor.of(assassinColor) + "Dagger" + ChatColor.BLACK + "        Tier 1",
+        "~~~~~~~~",
+        ChatColor.of(menuColor) + "Class: Assassin",
+        ChatColor.of(menuColor) + "Level: 1",
+        "~~~~~~~~",
+        ChatColor.of(Color.WHITE) + "Attack + 3",
+        ChatColor.of(Color.WHITE) + "Health + 18",
+        ChatColor.of(Color.WHITE) + "Defense + 4",
+        ChatColor.of(Color.WHITE) + "Magic Defense + 4",
+        "~~~~~~~~");*/
+
+
         return getItem(Material.FLINT, 1,
                 ChatColor.of(assassinColor) + "Assassin's Dagger",
                 ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + "1",

@@ -19,16 +19,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class ArcaneContract {
 
     private final Mystica main;
 
     private final ProfileManager profileManager;
+    private final MysticaPartyManager mysticaPartyManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
@@ -44,6 +42,7 @@ public class ArcaneContract {
     public ArcaneContract(Mystica main, AbilityManager manager, MysticAbilities mysticAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
+        mysticaPartyManager = main.getMysticaPartyManager();
         mana = mysticAbilities.getMana();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
@@ -108,41 +107,10 @@ public class ArcaneContract {
         mana.subTractManaFromEntity(caster, getCost());
 
 
-        PartiesAPI api = Parties.getApi();
-        PartyPlayer partyPlayer;
-
-        if(caster instanceof Player){
-            partyPlayer = api.getPartyPlayer(caster.getUniqueId());
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMParty(caster));
+        for(LivingEntity member : mParty){
+            putOnCooldown(member.getUniqueId());
         }
-        else{
-            partyPlayer = api.getPartyPlayer(profileManager.getCompanionsPlayer(caster).getUniqueId());
-
-            if(!profileManager.getCompanions(profileManager.getCompanionsPlayer(caster)).isEmpty()){
-                for(LivingEntity companion : profileManager.getCompanions(profileManager.getCompanionsPlayer(caster))){
-                    putOnCooldown(companion.getUniqueId());
-                }
-            }
-
-        }
-
-        assert partyPlayer != null;
-        if(partyPlayer.isInParty()){
-
-            Party party = api.getParty(partyPlayer.getPartyId());
-
-            assert party != null;
-            Set<UUID> partyMemberList = party.getMembers();
-
-            for(UUID partyMemberId : partyMemberList){
-                putOnCooldown(partyMemberId);
-            }
-        }
-
-
-
-
-        putOnCooldown(caster.getUniqueId());
-        //also for rest of team
 
         combatManager.startCombatTimer(caster);
 

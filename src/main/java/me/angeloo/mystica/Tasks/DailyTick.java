@@ -1,6 +1,5 @@
 package me.angeloo.mystica.Tasks;
 
-import me.angeloo.mystica.Managers.DailyEventManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DailyData;
 
@@ -14,11 +13,9 @@ public class DailyTick extends BukkitRunnable {
 
     private static final LocalTime DAILY_RESET = LocalTime.of(0, 0);
 
-    private final DailyEventManager dailyEventManager;
     private final DailyData dailyData;
 
     public DailyTick(Mystica main){
-        dailyEventManager = main.getDailyEventManager();
         dailyData = main.getDailyData();
     }
 

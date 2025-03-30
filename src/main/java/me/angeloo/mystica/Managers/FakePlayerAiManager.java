@@ -223,14 +223,6 @@ public class FakePlayerAiManager {
                     return;
                 }
 
-                if(!getIfCautious(companion)){
-                    if(distance>=8 && distance < 15){
-                        if(paladinAbilities.getDuranceOfTruth().usable(companion)){
-                            paladinAbilities.getDuranceOfTruth().use(companion);
-                            return;
-                        }
-                    }
-                }
 
 
                 if (distance >= 10) {
@@ -286,9 +278,11 @@ public class FakePlayerAiManager {
                 }
 
                 if(!getIfCautious(companion)){
-                    if(paladinAbilities.getDuranceOfTruth().usable(companion)){
-                        paladinAbilities.getDuranceOfTruth().use(companion);
-                        return;
+                    if(distance<=8){
+                        if(paladinAbilities.getDuranceOfTruth().usable(companion)){
+                            paladinAbilities.getDuranceOfTruth().use(companion);
+                            return;
+                        }
                     }
                 }
 

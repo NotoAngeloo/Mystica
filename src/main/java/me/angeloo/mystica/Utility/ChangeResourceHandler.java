@@ -169,6 +169,8 @@ public class ChangeResourceHandler {
 
         entity.setHealth(hearts);
 
+        //Bukkit.getLogger().info("Entity named " + entity.getName() + " took " + damage +" damage and is now at " + actualCurrentHealth + " health out of " + actualMaxHealth);
+
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, false));
 
     }
@@ -211,6 +213,16 @@ public class ChangeResourceHandler {
                 AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).getEntity();
                 MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).signalMob(abstractEntity, "die");
                 Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent(entity, "stop"));
+            }
+
+            List<Entity> passengers = entity.getPassengers();
+
+            for(Entity passenger : passengers){
+
+                if(MythicBukkit.inst().getAPIHelper().isMythicMob(passenger.getUniqueId())){
+                    AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(passenger).getEntity();
+                    MythicBukkit.inst().getAPIHelper().getMythicMobInstance(passenger).signalMob(abstractEntity, "playerdeath");
+                }
             }
 
             Entity gravestone;
@@ -517,6 +529,101 @@ public class ChangeResourceHandler {
         double actualMaxHealth = profileManager.getAnyProfile(player).getTotalHealth();
         profileManager.getAnyProfile(player).setCurrentHealth(actualMaxHealth);
         player.setHealth(20);
+    }
+
+    public void killEntityNoMatterWhat(LivingEntity entity){
+
+        if(entity instanceof ArmorStand){
+            return;
+        }
+
+        if(entity instanceof Player){
+            killPlayerNoMatterWhat((Player) entity);
+            Bukkit.getServer().getPluginManager().callEvent(new BoardValueUpdateEvent((Player) entity));
+            return;
+        }
+
+        if(profileManager.getAnyProfile(entity).fakePlayer()){
+            killFakePlayerNoMatterWhat(entity);
+            return;
+        }
+
+
+        //double newCurrentHealth = 0.0;
+        //profileManager.getAnyProfile(entity).setCurrentHealth(newCurrentHealth);
+
+        //entity.setHealth(0);
+
+        //Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, false));
+    }
+
+    private void killPlayerNoMatterWhat(Player player){
+        if(!player.isOnline()){
+            return;
+        }
+
+        if(profileManager.getAnyProfile(player).getIfDead()){
+            return;
+        }
+
+        double newCurrentHealth = 0;
+        profileManager.getAnyProfile(player).setCurrentHealth(newCurrentHealth);
+
+        player.setHealth(0);
+
+        Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(player, false));
+
+        lastDamaged.put(player.getUniqueId(), (System.currentTimeMillis()/1000));
+    }
+
+    private void killFakePlayerNoMatterWhat(LivingEntity entity){
+
+        if(profileManager.getAnyProfile(entity).getIfDead()){
+            return;
+        }
+
+        double newCurrentHealth = 0;
+        profileManager.getAnyProfile(entity).setCurrentHealth(newCurrentHealth);
+
+        Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, false));
+
+        lastDamaged.put(entity.getUniqueId(), (System.currentTimeMillis()/1000));
+
+        //fake kill entity
+        buffAndDebuffManager.removeAllBuffsAndDebuffs(entity);
+        profileManager.getAnyProfile(entity).setIfDead(true);
+        profileManager.getAnyProfile(entity).setCurrentHealth(profileManager.getAnyProfile(entity).getTotalHealth());
+        dpsManager.removeDps(entity);
+        aggroManager.removeFromAllAttackerLists(entity);
+        //fakePlayerAiManager.removeInterrupt(entity);
+        entity.setAI(false);
+        if(MythicBukkit.inst().getAPIHelper().isMythicMob(entity.getUniqueId())){
+            AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).getEntity();
+            MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).signalMob(abstractEntity, "die");
+            Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent(entity, "stop"));
+        }
+
+        List<Entity> passengers = entity.getPassengers();
+
+        for(Entity passenger : passengers){
+
+            if(MythicBukkit.inst().getAPIHelper().isMythicMob(passenger.getUniqueId())){
+                AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(passenger).getEntity();
+                MythicBukkit.inst().getAPIHelper().getMythicMobInstance(passenger).signalMob(abstractEntity, "playerdeath");
+            }
+        }
+
+        Entity gravestone;
+
+        try{
+            gravestone = MythicBukkit.inst().getAPIHelper().spawnMythicMob("Gravestone", entity.getLocation());
+            gravestone.setCustomName(entity.getName());
+            gravestoneManager.placeGravestone(gravestone, entity);
+        }
+        catch (InvalidMobTypeException e){
+            throw new RuntimeException(e);
+        }
+
     }
 
     public void displayDamage(Player player, LivingEntity target, double amount){

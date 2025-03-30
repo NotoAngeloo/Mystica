@@ -23,6 +23,7 @@ import org.bukkit.scoreboard.Scoreboard;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -89,6 +90,15 @@ public class DeathManager {
             throw new RuntimeException(e);
         }
 
+        List<Entity> passengers = player.getPassengers();
+
+        for(Entity passenger : passengers){
+
+            if(MythicBukkit.inst().getAPIHelper().isMythicMob(passenger.getUniqueId())){
+                AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(passenger).getEntity();
+                MythicBukkit.inst().getAPIHelper().getMythicMobInstance(passenger).signalMob(abstractEntity, "playerdeath");
+            }
+        }
 
 
         abilityManager.resetAbilityBuffs(player);
@@ -163,13 +173,6 @@ public class DeathManager {
         }
 
 
-        if(target instanceof Player){
-            Scoreboard scoreboard = ((Player)target).getScoreboard();
-            scoreboard.clearSlot(DisplaySlot.SIDEBAR);
-            ((Player)target).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(""));
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(((Player)target)));
-            Bukkit.getServer().getPluginManager().callEvent(new TargetBarShouldUpdateEvent(target));
-        }
 
 
     }

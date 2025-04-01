@@ -4,8 +4,6 @@ import me.angeloo.mystica.Managers.MysticaPartyManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Managers.TargetManager;
 import me.angeloo.mystica.Mystica;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -24,17 +22,30 @@ public class MysticaEntityGrabber {
     }
 
     public UUID getBossTarget(Player player){
+
+        //List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMParty(player));
+
+
         return targetManager.getBossTarget(player);
     }
 
     public UUID getLowestPhp(Player player){
 
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMParty(player));
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMPartyMemberList(player));
 
-        mParty.sort(Comparator.comparingDouble(p -> profileManager.getAnyProfile(p).getCurrentHealth()));
+        List<LivingEntity> liveParty = new ArrayList<>();
+
+        for(LivingEntity member : mParty){
+            if(profileManager.getAnyProfile(member).getIfDead()){
+                continue;
+            }
+            liveParty.add(member);
+        }
+
+        liveParty.sort(Comparator.comparingDouble(p -> profileManager.getAnyProfile(p).getCurrentHealth()));
 
         if(!mParty.isEmpty()){
-            return mParty.get(mParty.size()-1).getUniqueId();
+            return liveParty.get(mParty.size()-1).getUniqueId();
         }
 
         return player.getUniqueId();
@@ -42,21 +53,43 @@ public class MysticaEntityGrabber {
 
     public UUID getRandomEntity(Player player){
 
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMParty(player));
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMPartyMemberList(player));
 
-        Collections.shuffle(mParty);
+        List<LivingEntity> liveParty = new ArrayList<>();
+
+        for(LivingEntity member : mParty){
+            if(profileManager.getAnyProfile(member).getIfDead()){
+                continue;
+            }
+            liveParty.add(member);
+        }
+
+        Collections.shuffle(liveParty);
 
         if(!mParty.isEmpty()){
-            return mParty.get(0).getUniqueId();
+            return liveParty.get(0).getUniqueId();
         }
 
         return player.getUniqueId();
     }
 
     public int getValidAmount(Player player){
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMParty(player));
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMPartyMemberList(player));
 
-        return mParty.size();
+        List<LivingEntity> liveParty = new ArrayList<>();
+
+        for(LivingEntity member : mParty){
+            if(profileManager.getAnyProfile(member).getIfDead()){
+                continue;
+            }
+            liveParty.add(member);
+        }
+
+        return liveParty.size();
+    }
+
+    public UUID getMPartyLeader(Player player){
+        return mysticaPartyManager.getMPartyLeader(player).getUniqueId();
     }
 
 

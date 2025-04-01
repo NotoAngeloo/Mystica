@@ -1,9 +1,6 @@
 package me.angeloo.mystica.Utility.Listeners;
 
-import com.alessiodp.parties.api.Parties;
-import com.alessiodp.parties.api.interfaces.Party;
-import com.alessiodp.parties.api.interfaces.PartyPlayer;
-import com.comphenix.protocol.ProtocolLib;
+import com.alessiodp.parties.api.events.bukkit.player.BukkitPartiesPlayerPostJoinEvent;
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.Inventories.AbilityInventory;
@@ -35,9 +32,7 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.PluginDisableEvent;
-import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.inventory.*;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -47,8 +42,6 @@ import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
 import java.util.*;
-
-import static me.angeloo.mystica.Mystica.questColor;
 
 public class GeneralEventListener implements Listener {
 
@@ -853,7 +846,7 @@ public class GeneralEventListener implements Listener {
 
         Set<Player> victors = new HashSet<>();
 
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMParty(caster));
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMPartyMemberList(caster));
         for(LivingEntity member : mParty){
             if(member instanceof Player){
                 changeResourceHandler.addXpToPlayer((Player)member,xpYield/mParty.size());
@@ -941,7 +934,7 @@ public class GeneralEventListener implements Listener {
 
         event.setCancelled(true);
 
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMParty(player));
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMPartyMemberList(player));
 
         for(LivingEntity member : mParty){
 
@@ -1429,14 +1422,10 @@ public class GeneralEventListener implements Listener {
 
         World playerWorld = caster.getWorld();
 
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMParty(caster));
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMPartyMemberList(caster));
         for(LivingEntity member : mParty){
             if(member instanceof Player){
                 if(((Player) member).isOnline()){
-                    continue;
-                }
-
-                if(member == caster){
                     continue;
                 }
 
@@ -1445,21 +1434,25 @@ public class GeneralEventListener implements Listener {
                 if(deathStatus){
                     continue;
                 }
-
-                World memberWorld = member.getWorld();
-
-                if(playerWorld != memberWorld){
-                    continue;
-                }
-
-                double distance = caster.getLocation().distance(member.getLocation());
-
-                if(distance > 20){
-                    continue;
-                }
-
-                aggroManager.addAttacker(entity, member);
             }
+
+            if(member == caster){
+                continue;
+            }
+
+            World memberWorld = member.getWorld();
+
+            if(playerWorld != memberWorld){
+                continue;
+            }
+
+            double distance = caster.getLocation().distance(member.getLocation());
+
+            if(distance > 100){
+                continue;
+            }
+
+            aggroManager.addAttacker(entity, member);
         }
 
 
@@ -1807,26 +1800,13 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
-    public void onHelpfulHint(HelpfulHintEvent event){
+    public void onCompanionRemoval(EntityDeathEvent event){
 
-        Player player = event.getPlayer();
+        LivingEntity entity = event.getEntity();
 
-        String whatHint = event.getWhatHint();
-
-
-        switch (whatHint.toLowerCase()){
-            case "combatend":{
-                player.sendMessage(ChatColor.of(questColor) + "Helpful Hint: " +
-                        ChatColor.RESET + "Open your inventory to exit combat");
-                return;
-            }
-            case "target":{
-
-                player.sendMessage(ChatColor.of(questColor) + "Helpful Hint: " +
-                        ChatColor.RESET + "Right click to target, and (q) to remove your target");
-
-                return;
-            }
+        if(profileManager.getAnyProfile(entity).fakePlayer()){
+            Player companionPlayer = profileManager.getCompanionsPlayer(entity);
+            profileManager.updateCompanions(companionPlayer);
         }
 
     }
@@ -1844,6 +1824,15 @@ public class GeneralEventListener implements Listener {
 
         fakePlayerAiManager.signal(companion, signal);
 
+    }
+
+    @EventHandler
+    public void onPartyJoin(BukkitPartiesPlayerPostJoinEvent event){
+
+        Player player = Bukkit.getPlayer(event.getPartyPlayer().getPartyId());
+        Player newLeader = Bukkit.getPlayer(event.getParty().getLeader());
+        profileManager.transferCompanionsToLeader(player, newLeader);
+        mysticaPartyManager.setLeaderPlayer(player, newLeader);
     }
 
 

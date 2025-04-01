@@ -5,23 +5,25 @@ import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.MysticaParty;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class MysticaPartyManager {
 
     private final ProfileManager profileManager;
 
+    private final Map<Player, MysticaParty> mPartyMap = new HashMap<>();
+    private final Map<Player, Player> leaderPlayer = new HashMap<>();
+
     public MysticaPartyManager(Mystica main){
         profileManager = main.getProfileManager();
     }
 
-    public List<LivingEntity> getMParty(LivingEntity caster){
+    public List<LivingEntity> getMPartyMemberList(LivingEntity caster){
         List<LivingEntity> mParty = new ArrayList<>();
         mParty.add(caster);
 
@@ -58,6 +60,79 @@ public class MysticaPartyManager {
 
         return mParty;
     }
+
+    public Player getMPartyLeader(LivingEntity entity){
+
+        Player player;
+
+        if(entity instanceof Player){
+            player = (Player) entity;
+        }
+        else{
+            player = profileManager.getCompanionsPlayer(entity);
+        }
+
+        PartiesAPI api = Parties.getApi();
+        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
+        assert partyPlayer != null;
+        if(partyPlayer.isInParty()){
+            Party party = api.getParty(partyPlayer.getPartyId());
+            assert party != null;
+            return Bukkit.getPlayer(party.getLeader());
+        }
+        return player;
+
+    }
+
+    public Set<Player> getPartyPlayers(Player player){
+        Set<Player> playerSet = new HashSet<>();
+        PartiesAPI api = Parties.getApi();
+        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
+        assert partyPlayer != null;
+        if(partyPlayer.isInParty()){
+            Party party = api.getParty(partyPlayer.getPartyId());
+            assert party != null;
+            for(UUID memberId : party.getMembers()){
+                playerSet.add(Bukkit.getPlayer(memberId));
+            }
+            return playerSet;
+        }
+        playerSet.add(player);
+        return playerSet;
+    }
+
+    public void createMParty(Player leader){
+        MysticaParty mysticaParty = new MysticaParty(leader);
+        mPartyMap.put(leader, mysticaParty);
+    }
+
+    public void transferMParty(Player oldPlayer, Player newPlayer){
+
+        if(mPartyMap.containsKey(oldPlayer)){
+            mPartyMap.put(newPlayer, mPartyMap.get(oldPlayer));
+            mPartyMap.remove(oldPlayer);
+        }
+
+    }
+
+    public MysticaParty getPlayerMParty(Player player){
+
+        if(mPartyMap.containsKey(getLeaderPlayer(player))){
+            return mPartyMap.get(getLeaderPlayer(player));
+        }
+
+        return null;
+    }
+
+
+    public void setLeaderPlayer(Player player, Player leaderPlayer){
+        this.leaderPlayer.put(player, leaderPlayer);
+    }
+
+    public Player getLeaderPlayer(Player player){
+        return leaderPlayer.getOrDefault(player, player);
+    }
+
 
 
 }

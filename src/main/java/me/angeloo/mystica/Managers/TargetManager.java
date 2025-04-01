@@ -1,14 +1,9 @@
 package me.angeloo.mystica.Managers;
 
-import com.alessiodp.parties.api.Parties;
-import com.alessiodp.parties.api.interfaces.PartiesAPI;
-import com.alessiodp.parties.api.interfaces.Party;
-import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.PveChecker;
 import me.angeloo.mystica.Utility.StealthTargetBlacklist;
 import org.bukkit.Bukkit;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -194,7 +189,7 @@ public class TargetManager {
 
     public void setTeamTarget(Player player){
 
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMParty(player));
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMPartyMemberList(player));
         mParty.sort(Comparator.comparingDouble(p -> profileManager.getAnyProfile(p).getCurrentHealth()/(double)profileManager.getAnyProfile(p).getTotalHealth()));
         setPlayerTarget(player, mParty.get(0));
 

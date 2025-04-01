@@ -1,5 +1,9 @@
 package me.angeloo.mystica.Managers;
 
+import com.alessiodp.parties.api.Parties;
+import com.alessiodp.parties.api.interfaces.PartiesAPI;
+import com.alessiodp.parties.api.interfaces.Party;
+import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.FakePlayerProfile;
@@ -47,6 +51,7 @@ public class ProfileManager {
 
     private final Map<UUID, Boolean> companionCombatMap = new HashMap<>();
     private final Map<Player, List<LivingEntity>> companionMap = new HashMap<>();
+    private final Map<LivingEntity, Player> companionsPlayer = new HashMap<>();
 
     private final Map<String, Player> playerNameMap = new HashMap<>();
     private final Map<UUID, String> nonPlayerNameMap = new HashMap<>();
@@ -882,23 +887,17 @@ public class ProfileManager {
     public void addCompanion(Player player, LivingEntity companion){
         List<LivingEntity> currentCompanions = getCompanions(player);
         currentCompanions.add(companion);
-        //Bukkit.getLogger().info(companion.getName() + " added to companions");
         companionMap.put(player, currentCompanions);
+        companionsPlayer.put(companion, player);
     }
 
     public List<LivingEntity> getCompanions(Player player){
-
-        /*if(companionMap.containsKey(player)){
-            Bukkit.getLogger().info(String.valueOf(companionMap.get(player).size()));
-        }*/
-
         return companionMap.getOrDefault(player, new ArrayList<>());
     }
 
     public void updateCompanions(Player player){
-        if(companionMap.containsKey(player)) {
 
-            //Bukkit.getLogger().info("current companions " + companionMap.get(player));
+        if(companionMap.containsKey(player)) {
 
             Set<LivingEntity> toRemove = new HashSet<>();
             for (LivingEntity companion : companionMap.get(player)) {
@@ -909,20 +908,13 @@ public class ProfileManager {
 
             for(LivingEntity companion : toRemove){
                 removeCompanion(player, companion);
+                companionsPlayer.remove(companion);
             }
         }
     }
 
     public Player getCompanionsPlayer(LivingEntity companion){
-        for(Map.Entry<Player, List<LivingEntity>> entry : companionMap.entrySet()){
-            Player player = entry.getKey();
-            List<LivingEntity> companions = entry.getValue();
-            if(companions.contains(companion)){
-                return player;
-            }
-        }
-
-        return null;
+        return companionsPlayer.getOrDefault(companion, null);
     }
 
     public void removeCompanion(Player player, LivingEntity companion){
@@ -933,7 +925,7 @@ public class ProfileManager {
 
             //Bukkit.getLogger().info("removing " + companion.getUniqueId());
 
-            if(companions.isEmpty()){
+            if(companions.isEmpty() && (companionsPlayer.get(companion)==player)){
                 removeCompanions(player);
                 return;
             }
@@ -953,6 +945,20 @@ public class ProfileManager {
         }
         //Bukkit.getLogger().info("removing from map");
         companionMap.remove(player);
+    }
+
+    public void transferCompanionsToLeader(Player player, Player newPlayer){
+        List<LivingEntity> companions = new ArrayList<>(getCompanions(player));
+
+        if(!companions.isEmpty()){
+            for(LivingEntity companion : companions){
+                addCompanion(newPlayer, companion);
+                companionsPlayer.put(companion, newPlayer);
+            }
+
+            companionMap.remove(player);
+
+        }
     }
 
     public boolean getIfCompanionInCombat(UUID companion){return companionCombatMap.getOrDefault(companion, false);}

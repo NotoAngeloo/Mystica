@@ -47,7 +47,7 @@ public class NaturalRegenTick extends BukkitRunnable {
             boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
             long currentTime = System.currentTimeMillis()/1000;
 
-            profileManager.updateCompanions(player);
+            //profileManager.updateCompanions(player);
 
             if(!profileManager.getCompanions(player).isEmpty()){
 

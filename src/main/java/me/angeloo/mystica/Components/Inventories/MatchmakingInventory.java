@@ -1,6 +1,9 @@
 package me.angeloo.mystica.Components.Inventories;
 
+import me.angeloo.mystica.Managers.MatchMakingManager;
+import me.angeloo.mystica.Managers.MysticaPartyManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.MysticaParty;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -22,10 +25,12 @@ import java.util.UUID;
 
 public class MatchmakingInventory implements Listener {
 
-    private final Mystica main;
+    private final MysticaPartyManager mysticaPartyManager;
+    private final MatchMakingManager matchMakingManager;
 
     public MatchmakingInventory(Mystica main){
-        this.main = main;
+        mysticaPartyManager = main.getMysticaPartyManager();
+        matchMakingManager = main.getMatchMakingManager();
     }
 
     public Inventory openDungeonEnter(String dungeon){
@@ -119,19 +124,19 @@ public class MatchmakingInventory implements Listener {
             String dungeon = "";
 
             if(title.contains("\uE08E")){
-                dungeon = "cave_of_lindwyrm";
+                dungeon = "Cave_of_Lindwyrm";
             }
 
             if(title.contains("\uE08F")){
-                dungeon = "curse_of_shadow";
+                dungeon = "Curse_of_Shadow";
             }
 
             if(title.contains("\uE090")){
-                dungeon = "heart_of_corruption";
+                dungeon = "Heart_of_Corruption";
             }
 
             if(title.contains("\uE091")){
-                dungeon = "acolyte_of_chaos";
+                dungeon = "Acolyte_of_Chaos";
             }
 
             Player player = (Player) event.getWhoClicked();
@@ -144,7 +149,8 @@ public class MatchmakingInventory implements Listener {
             enterSlots.add(47);
 
             if(enterSlots.contains(slot)){
-                Bukkit.getLogger().info("enter " + dungeon);
+                //maybe throw a warning if doesn't have max number of players
+                Mystica.dungeonsApi().initiateDungeonForPlayer(player, dungeon);
                 return;
             }
 
@@ -154,6 +160,11 @@ public class MatchmakingInventory implements Listener {
             matchmakerSlots.add(50);
 
             if(matchmakerSlots.contains(slot)){
+
+                if(mysticaPartyManager.getPlayerMParty(player) != null){
+                    mysticaPartyManager.getPlayerMParty(player).clearRoles();
+                }
+
                 player.openInventory(openRoleSelect(dungeon, false));
                 return;
             }
@@ -164,13 +175,28 @@ public class MatchmakingInventory implements Listener {
             botSlots.add(53);
 
             if(botSlots.contains(slot)){
-                player.openInventory(openRoleSelect(dungeon, true));
+
+                //get for all mparty
+                if(mysticaPartyManager.getPlayerMParty(player) == null){
+                    Bukkit.getLogger().info("creating mparty");
+                    Player leader = mysticaPartyManager.getMPartyLeader(player);
+                    mysticaPartyManager.createMParty(leader);
+                }
+
+                mysticaPartyManager.getPlayerMParty(player).clearRoles();
+
+                for(Player partyPlayer : mysticaPartyManager.getPartyPlayers(player)){
+                    partyPlayer.openInventory(openRoleSelect(dungeon, true));
+                }
+
                 return;
             }
 
         }
 
+        //matchmaking
         if(event.getView().getTitle().contains("\uE092")){
+
 
             event.setCancelled(true);
 
@@ -180,33 +206,31 @@ public class MatchmakingInventory implements Listener {
                 return;
             }
 
-            boolean bots = true;
-
-            if(inv.getItem(53) == null){
-                bots = false;
-            }
+            boolean bots = inv.getItem(53) != null;
 
             String title = event.getView().getTitle();
 
             String dungeon = "";
 
             if(title.contains("\uE08E")){
-                dungeon = "cave_of_lindwyrm";
+                dungeon = "Cave_of_Lindwyrm";
             }
 
             if(title.contains("\uE08F")){
-                dungeon = "curse_of_shadow";
+                dungeon = "Curse_of_Shadow";
             }
 
             if(title.contains("\uE090")){
-                dungeon = "heart_of_corruption";
+                dungeon = "Heart_of_Corruption";
             }
 
             if(title.contains("\uE091")){
-                dungeon = "acolyte_of_chaos";
+                dungeon = "Acolyte_of_Chaos";
             }
 
             Player player = (Player) event.getWhoClicked();
+
+            MysticaParty mParty = mysticaPartyManager.getPlayerMParty(player);
 
             int slot = event.getSlot();
 
@@ -244,15 +268,27 @@ public class MatchmakingInventory implements Listener {
             healSlots.add(35);
 
             if(dpsSlots.contains(slot)){
-                Bukkit.getLogger().info("dps" + bots);
+                mParty.addOrChangeMemberRole(player, "damage");
+                //Bukkit.getLogger().info("MParty led by " + mParty.getLeader().getName() + " had player " + player.getName() + " change role to damage");
+                player.closeInventory();
+                matchMakingManager.matchMakeReadyCheck(player, dungeon, bots);
+                return;
             }
 
             if(tankSlots.contains(slot)){
-                Bukkit.getLogger().info("tank" + bots);
+                mParty.addOrChangeMemberRole(player, "tank");
+                //Bukkit.getLogger().info("MParty led by " + mParty.getLeader().getName() + " had player " + player.getName() + " change role to tank");
+                player.closeInventory();
+                matchMakingManager.matchMakeReadyCheck(player, dungeon, bots);
+                return;
             }
 
             if(healSlots.contains(slot)){
-                Bukkit.getLogger().info("heal" + bots);
+                mParty.addOrChangeMemberRole(player, "heal");
+                //Bukkit.getLogger().info("MParty led by " + mParty.getLeader().getName() + " had player " + player.getName() + " change role to heal");
+                player.closeInventory();
+                matchMakingManager.matchMakeReadyCheck(player, dungeon, bots);
+                return;
             }
 
         }

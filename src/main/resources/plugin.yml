@@ -5,6 +5,7 @@ depend:
   - Parties
   - ProtocolLib
   - PlaceholderAPI
+  - MythicDungeons
 softdepend:
   - MythicMobs
   - Interactions

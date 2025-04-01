@@ -67,6 +67,10 @@ public class PapiHook extends PlaceholderExpansion {
                     assert player != null;
                     return String.valueOf(mysticaEntityGrabber.getBossTarget(player));
                 }
+                case "leader":{
+                    assert player != null;
+                    return String.valueOf(mysticaEntityGrabber.getMPartyLeader(player));
+                }
                 default:{
                     return String.valueOf(profileManager.getAnyProfile(player).getMilestones().getMilestone(params));
                 }

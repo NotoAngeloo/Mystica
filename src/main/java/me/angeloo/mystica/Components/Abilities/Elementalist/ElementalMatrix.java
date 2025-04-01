@@ -1,9 +1,5 @@
 package me.angeloo.mystica.Components.Abilities.Elementalist;
 
-import com.alessiodp.parties.api.Parties;
-import com.alessiodp.parties.api.interfaces.PartiesAPI;
-import com.alessiodp.parties.api.interfaces.Party;
-import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -111,7 +107,7 @@ public class ElementalMatrix {
 
         boolean conjurer = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("conjurer");
 
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMParty(caster));
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMPartyMemberList(caster));
 
         for(LivingEntity member : mParty){
 

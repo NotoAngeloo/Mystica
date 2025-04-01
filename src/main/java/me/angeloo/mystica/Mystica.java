@@ -11,6 +11,7 @@ import me.angeloo.mystica.Utility.*;
 import me.angeloo.mystica.Utility.Listeners.GeneralEventListener;
 import me.angeloo.mystica.Utility.Listeners.InventoryEventListener;
 import me.angeloo.mystica.Utility.Listeners.MMListeners;
+import net.playavalon.mythicdungeons.api.MythicDungeonsService;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -30,6 +31,7 @@ public final class Mystica extends JavaPlugin{
     private ProfileFileWriter profileFileWriter;
 
     private MysticaPartyManager mysticaPartyManager;
+    private MatchMakingManager matchMakingManager;
 
     private DailyData dailyData;
     private PathingManager pathingManager;
@@ -74,7 +76,9 @@ public final class Mystica extends JavaPlugin{
 
     public static Color questColor = new Color(255, 128, 0);
 
-
+    public static MythicDungeonsService dungeonsApi(){
+        return Bukkit.getServer().getServicesManager().load(MythicDungeonsService.class);
+    }
 
     @Override
     public void onEnable() {
@@ -94,6 +98,7 @@ public final class Mystica extends JavaPlugin{
         profileManager.loadProfilesFromConfig();
 
         mysticaPartyManager = new MysticaPartyManager(this);
+        matchMakingManager = new MatchMakingManager(this);
 
         locations = new Locations(this);
         locations.initializeLocationals();
@@ -349,5 +354,7 @@ public final class Mystica extends JavaPlugin{
     public MatchmakingInventory getMatchmakingInventory(){return matchmakingInventory;}
 
     public MysticaPartyManager getMysticaPartyManager(){return mysticaPartyManager;}
+
+    public MatchMakingManager getMatchMakingManager(){return matchMakingManager;}
 
 }

@@ -2,7 +2,6 @@ package me.angeloo.mystica.Managers;
 
 import me.angeloo.mystica.Components.ClassEquipment.NoneEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
-import me.angeloo.mystica.CustomEvents.HelpfulHintEvent;
 import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.CooldownDisplayer;

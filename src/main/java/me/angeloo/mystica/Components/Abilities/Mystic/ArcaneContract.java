@@ -1,13 +1,8 @@
 package me.angeloo.mystica.Components.Abilities.Mystic;
 
-import com.alessiodp.parties.api.Parties;
-import com.alessiodp.parties.api.interfaces.PartiesAPI;
-import com.alessiodp.parties.api.interfaces.Party;
-import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import me.angeloo.mystica.Components.Abilities.MysticAbilities;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.PveChecker;
 import org.bukkit.Bukkit;
@@ -107,7 +102,7 @@ public class ArcaneContract {
         mana.subTractManaFromEntity(caster, getCost());
 
 
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMParty(caster));
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMPartyMemberList(caster));
         for(LivingEntity member : mParty){
             putOnCooldown(member.getUniqueId());
         }

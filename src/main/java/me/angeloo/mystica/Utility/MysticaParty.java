@@ -30,6 +30,10 @@ public class MysticaParty {
         memberRole.remove(member);
     }
 
+    public void changeLeader(Player player){
+        this.leader = player;
+    }
+
     public boolean hasTank(){
 
         for(Map.Entry<LivingEntity, String> key : memberRole.entrySet()){
@@ -47,6 +51,15 @@ public class MysticaParty {
                 return true;
             }
         }
+        return false;
+    }
+
+    public boolean needsDamage(){
+
+        if(hasTank() && hasHeal()){
+            return numberRoleSelected() >= 2;
+        }
+
         return false;
     }
 

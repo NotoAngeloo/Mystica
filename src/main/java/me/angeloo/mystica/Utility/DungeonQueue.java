@@ -2,7 +2,6 @@ package me.angeloo.mystica.Utility;
 
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DungeonQueue {
@@ -25,7 +24,7 @@ public class DungeonQueue {
         tankQueue.remove(player);
     }
 
-    public void addHealQueue(Player player){
+    public void joinHealQueue(Player player){
         healQueue.add(player);
     }
 
@@ -33,12 +32,49 @@ public class DungeonQueue {
         healQueue.remove(player);
     }
 
-    public void addDamageQueue(Player player){
+    public void joinDamageQueue(Player player){
         damageQueue.add(player);
     }
 
     public void removeDamageQueue(Player player){
         damageQueue.remove(player);
+    }
+
+    public boolean hasEnoughTanks(){
+        return !tankQueue.isEmpty();
+    }
+
+    public boolean hasEnoughHeal(){
+        return !healQueue.isEmpty();
+    }
+
+    public boolean hasEnoughDamage(){
+        return damageQueue.size() >= 3;
+    }
+
+    public Player getFirstTank(){
+        if(!tankQueue.isEmpty()){
+            return tankQueue.get(0);
+        }
+        return null;
+    }
+
+    public Player getFirstHeal(){
+        if(!healQueue.isEmpty()){
+            return healQueue.get(0);
+        }
+        return null;
+    }
+
+    public List<Player> getDamagePlayers(){
+        return damageQueue;
+    }
+    public List<Player> getHealPlayers(){
+        return healQueue;
+    }
+
+    public List<Player> getTankPlayers(){
+        return tankQueue;
     }
 
 }

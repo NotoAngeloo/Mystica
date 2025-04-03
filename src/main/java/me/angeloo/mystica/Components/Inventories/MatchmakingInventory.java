@@ -161,11 +161,18 @@ public class MatchmakingInventory implements Listener {
 
             if(matchmakerSlots.contains(slot)){
 
-                if(mysticaPartyManager.getPlayerMParty(player) != null){
-                    mysticaPartyManager.getPlayerMParty(player).clearRoles();
+                if(mysticaPartyManager.getPlayerMParty(player) == null){
+                    Bukkit.getLogger().info("creating mparty to matchmake");
+                    Player leader = mysticaPartyManager.getMPartyLeader(player);
+                    mysticaPartyManager.createMParty(leader);
                 }
 
-                player.openInventory(openRoleSelect(dungeon, false));
+                mysticaPartyManager.getPlayerMParty(player).clearRoles();
+
+                for(Player partyPlayer : mysticaPartyManager.getPartyPlayers(player)){
+                    partyPlayer.openInventory(openRoleSelect(dungeon, false));
+                }
+
                 return;
             }
 
@@ -178,7 +185,7 @@ public class MatchmakingInventory implements Listener {
 
                 //get for all mparty
                 if(mysticaPartyManager.getPlayerMParty(player) == null){
-                    Bukkit.getLogger().info("creating mparty");
+                    Bukkit.getLogger().info("creating mparty for bots");
                     Player leader = mysticaPartyManager.getMPartyLeader(player);
                     mysticaPartyManager.createMParty(leader);
                 }
@@ -267,25 +274,51 @@ public class MatchmakingInventory implements Listener {
             healSlots.add(34);
             healSlots.add(35);
 
+            boolean soloQueue = false;
+            if(!bots){
+                if(mysticaPartyManager.getPartyPlayers(player).size()==1){
+                    soloQueue = true;
+                }
+            }
+
+
             if(dpsSlots.contains(slot)){
+
+                if(soloQueue){
+                    matchMakingManager.queueDamage(player, dungeon);
+                    player.closeInventory();
+                    return;
+                }
+
                 mParty.addOrChangeMemberRole(player, "damage");
-                //Bukkit.getLogger().info("MParty led by " + mParty.getLeader().getName() + " had player " + player.getName() + " change role to damage");
                 player.closeInventory();
                 matchMakingManager.matchMakeReadyCheck(player, dungeon, bots);
                 return;
             }
 
             if(tankSlots.contains(slot)){
+
+                if(soloQueue){
+                    matchMakingManager.queueTank(player, dungeon);
+                    player.closeInventory();
+                    return;
+                }
+
                 mParty.addOrChangeMemberRole(player, "tank");
-                //Bukkit.getLogger().info("MParty led by " + mParty.getLeader().getName() + " had player " + player.getName() + " change role to tank");
                 player.closeInventory();
                 matchMakingManager.matchMakeReadyCheck(player, dungeon, bots);
                 return;
             }
 
             if(healSlots.contains(slot)){
+
+                if(soloQueue){
+                    matchMakingManager.queueHeal(player, dungeon);
+                    player.closeInventory();
+                    return;
+                }
+
                 mParty.addOrChangeMemberRole(player, "heal");
-                //Bukkit.getLogger().info("MParty led by " + mParty.getLeader().getName() + " had player " + player.getName() + " change role to heal");
                 player.closeInventory();
                 matchMakingManager.matchMakeReadyCheck(player, dungeon, bots);
                 return;

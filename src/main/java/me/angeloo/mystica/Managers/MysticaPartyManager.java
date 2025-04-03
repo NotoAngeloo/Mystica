@@ -106,6 +106,10 @@ public class MysticaPartyManager {
         mPartyMap.put(leader, mysticaParty);
     }
 
+    public void removeMParty(Player player){
+        mPartyMap.remove(player);
+    }
+
     public void transferMParty(Player oldPlayer, Player newPlayer){
 
         if(mPartyMap.containsKey(oldPlayer)){
@@ -133,6 +137,29 @@ public class MysticaPartyManager {
         return leaderPlayer.getOrDefault(player, player);
     }
 
+    public void createPartyFromMatchmaking(Player tank, Player heal, Player damage1, Player damage2, Player damage3){
+        PartiesAPI api = Parties.getApi();
 
+        PartyPlayer tankPlayer = api.getPartyPlayer(tank.getUniqueId());
+        PartyPlayer healPlayer = api.getPartyPlayer(heal.getUniqueId());
+        PartyPlayer damage1Player = api.getPartyPlayer(damage1.getUniqueId());
+        PartyPlayer damage2Player = api.getPartyPlayer(damage2.getUniqueId());
+        PartyPlayer damage3Player = api.getPartyPlayer(damage3.getUniqueId());
+
+        api.createParty("", tankPlayer);
+        Party party = api.getPartyOfPlayer(tank.getUniqueId());
+        assert party != null;
+        assert healPlayer != null;
+        party.addMember(healPlayer);
+        assert damage1Player != null;
+        party.addMember(damage1Player);
+        assert damage2Player != null;
+        party.addMember(damage2Player);
+        assert damage3Player != null;
+        party.addMember(damage3Player);
+    }
+
+
+    //team merger???
 
 }

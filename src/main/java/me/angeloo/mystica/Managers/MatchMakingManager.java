@@ -1,10 +1,7 @@
 package me.angeloo.mystica.Managers;
 
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
-import io.lumine.mythic.api.mobs.MythicMob;
-import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.MythicBukkit;
-import io.lumine.mythic.core.mobs.ActiveMob;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DungeonQueue;
 import me.angeloo.mystica.Utility.MysticaParty;
@@ -14,10 +11,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 public class MatchMakingManager {
@@ -27,6 +21,8 @@ public class MatchMakingManager {
     private final MysticaPartyManager mysticaPartyManager;
 
     private final Map<String, DungeonQueue> dungeonQueueMap = new HashMap<>();
+    private final Map<String, List<MysticaParty>> teamQueueList = new HashMap<>();
+    //private final List<MysticaParty> teameQueueList = new ArrayList<>();
 
     public MatchMakingManager(Mystica main){
         this.main = main;
@@ -159,45 +155,104 @@ public class MatchMakingManager {
 
 
         //enter matchmake
+        addToTeamQueue(mParty, dungeon);
+        //a runnable to show time in queue
 
     }
 
-
-
-
-    public void queueTank(Player player, String dungeon, boolean bots){
-
-        if(bots){
-            //get mparty, then fill rest with bots. instant enter
-
-            MysticaParty mParty = mysticaPartyManager.getPlayerMParty(player);
-
-            Bukkit.getLogger().info(String.valueOf(mParty));
-            //Mystica.dungeonsApi().initiateDungeonForPlayer(player, dungeon);
-            return;
-        }
-
+    private void addToTeamQueue(MysticaParty mParty, String dungeon){
+        List<MysticaParty> mParties = new ArrayList<>(teamQueueList.getOrDefault(dungeon, new ArrayList<>()));
+        mParties.add(mParty);
+        teamQueueList.put(dungeon, mParties);
     }
 
-    public void queueDamage(Player player, String dungeon, boolean bots){
-
-        if(bots){
-            return;
+    public void cancelTeamMatchmaking(MysticaParty mParty){
+        for(Map.Entry<String, List<MysticaParty>> mysticaPartyEntry : teamQueueList.entrySet()){
+            mysticaPartyEntry.getValue().remove(mParty);
         }
     }
 
-    public void queueHeal(Player player, String dungeon, boolean bots){
-
-        if(bots){
-            return;
+    public void cancelSoloMatchmaking(Player player){
+        for(Map.Entry<String, DungeonQueue> queue : dungeonQueueMap.entrySet()){
+            queue.getValue().removeTankQueue(player);
+            queue.getValue().removeHealQueue(player);
+            queue.getValue().removeDamageQueue(player);
         }
     }
 
-    public void unQueuePlayer(Player player){
+    private MysticaParty getFirstValidMParty(String role, String dungeon){
 
+        List<MysticaParty> partyList = new ArrayList<>(teamQueueList.getOrDefault(dungeon, new ArrayList<>()));
+
+        for(MysticaParty mParty : partyList){
+
+            if(role.equalsIgnoreCase("tank") && !mParty.hasTank()){
+                return mParty;
+            }
+
+            if(role.equalsIgnoreCase("heal") &&  !mParty.hasHeal()){
+                return mParty;
+            }
+
+            if(role.equalsIgnoreCase("damage") && mParty.needsDamage()){
+                return mParty;
+            }
+        }
+
+        return null;
     }
 
-    private void checkIfMatchFound(Player player){
+    public void queueTank(Player player, String dungeon){
+        mysticaPartyManager.removeMParty(player);
+        cancelSoloMatchmaking(player);
+        DungeonQueue queue = getDungeonQueue(dungeon);
+        queue.joinTankQueue(player);
+        checkIfMatchFound(dungeon);
+    }
+
+    public void queueDamage(Player player, String dungeon){
+        mysticaPartyManager.removeMParty(player);
+        cancelSoloMatchmaking(player);
+        DungeonQueue queue = getDungeonQueue(dungeon);
+        queue.joinDamageQueue(player);
+        checkIfMatchFound(dungeon);
+    }
+
+    public void queueHeal(Player player, String dungeon){
+        mysticaPartyManager.removeMParty(player);
+        cancelSoloMatchmaking(player);
+        DungeonQueue queue = getDungeonQueue(dungeon);
+        queue.joinHealQueue(player);
+        checkIfMatchFound(dungeon);
+    }
+
+
+    private void checkIfMatchFound(String dungeon){
+
+        DungeonQueue queue = getDungeonQueue(dungeon);
+
+        Bukkit.getLogger().info("tanks queued " + queue.getTankPlayers());
+        Bukkit.getLogger().info("heal queued " + queue.getHealPlayers());
+        Bukkit.getLogger().info("damage queued " + queue.getDamagePlayers());
+        //perhaps have a confirm screen
+
+        //check solo players
+        if(queue.hasEnoughTanks() && queue.hasEnoughHeal() && queue.hasEnoughDamage()){
+
+            Player tank = queue.getFirstTank();
+            Player heal = queue.getFirstHeal();
+            List<Player> damagePlayers = new ArrayList<>(queue.getDamagePlayers());
+            Player damage1 = damagePlayers.get(0);
+            Player damage2 = damagePlayers.get(1);
+            Player damage3 = damagePlayers.get(2);
+
+
+
+            mysticaPartyManager.createPartyFromMatchmaking(tank, heal, damage1, damage2, damage3);
+
+            Mystica.dungeonsApi().initiateDungeonForPlayer(tank, dungeon);
+
+        }
 
     }
 

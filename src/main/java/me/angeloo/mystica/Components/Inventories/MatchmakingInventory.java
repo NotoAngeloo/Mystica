@@ -115,7 +115,7 @@ public class MatchmakingInventory implements Listener {
         
 
         if(bots){
-            inv.setItem(53, getItem(Material.KELP, 1, " ",
+            inv.setItem(8, getItem(Material.KELP, 1, " ",
                     "this item helps the gui work"));
         }
 
@@ -377,6 +377,7 @@ public class MatchmakingInventory implements Listener {
                 return;
             }
 
+            return;
         }
 
         if(event.getView().getTitle().contains("\uE08D")) {
@@ -390,7 +391,7 @@ public class MatchmakingInventory implements Listener {
                 return;
             }
 
-            boolean bots = inv.getItem(53) != null;
+            boolean bots = inv.getItem(8) != null;
 
             String title = event.getView().getTitle();
 
@@ -413,6 +414,32 @@ public class MatchmakingInventory implements Listener {
             }
 
             Player player = (Player) event.getWhoClicked();
+
+            int slot = event.getSlot();
+
+            List<Integer> confirmSlots = new ArrayList<>();
+            confirmSlots.add(45);
+            confirmSlots.add(46);
+            confirmSlots.add(47);
+
+            List<Integer> cancelSlots = new ArrayList<>();
+            cancelSlots.add(51);
+            cancelSlots.add(52);
+            cancelSlots.add(53);
+
+
+            if(confirmSlots.contains(slot)){
+                //perhaps I can have another inventory that shows number of people?? or just grey out the confirm button
+                player.closeInventory();
+                matchMakingManager.matchMakeConfirmEnter(player, dungeon, bots);
+                return;
+            }
+
+            if(cancelSlots.contains(slot)){
+                player.closeInventory();
+                matchMakingManager.cancelEnterDungeon(player);
+                return;
+            }
         }
 
     }

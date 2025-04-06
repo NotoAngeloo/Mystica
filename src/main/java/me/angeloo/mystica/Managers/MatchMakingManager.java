@@ -26,6 +26,8 @@ public class MatchMakingManager {
     private final Map<String, List<MysticaParty>> teamQueueList = new HashMap<>();
     //private final List<MysticaParty> teameQueueList = new ArrayList<>();
 
+    private final Map<MysticaParty, Integer> amountConfirmEnter = new HashMap<>();
+
     public MatchMakingManager(Mystica main){
         this.main = main;
         mysticaPartyManager = main.getMysticaPartyManager();
@@ -48,22 +50,30 @@ public class MatchMakingManager {
 
     }
 
-    /*public void matchMakeReadyCheck(Player player, String dungeon, boolean bots){
+    public void matchMakeConfirmEnter(Player player, String dungeon, boolean bots){
 
         Set<Player> partyPlayers = mysticaPartyManager.getPartyPlayers(player);
+        int needToConfirm = partyPlayers.size();
         MysticaParty mParty = mysticaPartyManager.getPlayerMParty(player);
 
-        //Bukkit.getLogger().info("Party has " + partyPlayers.size());
-        //Bukkit.getLogger().info("MParty has " + mParty.numberRoleSelected());
+        if(getAmountConfirmed(mParty) == 0){
+            amountConfirmEnter.put(mParty, 1);
+            Bukkit.getLogger().info("nobody confirm yet, creating counter");
+        }else{
+            addConfirmEnter(mParty);
+            Bukkit.getLogger().info("adding to counter");
+        }
 
-        if(mParty.numberRoleSelected() < partyPlayers.size()){
+        if(needToConfirm!=getAmountConfirmed(mParty)){
             return;
         }
 
+        Bukkit.getLogger().info("all required players confirmed");
+        amountConfirmEnter.remove(mParty);
+
         if(bots){
             //need to check if this does for all the players
-            //Mystica.dungeonsApi().initiateDungeonForPlayer(player, dungeon);
-            //then wait for the dungeon to be available
+            Mystica.dungeonsApi().initiateDungeonForPlayer(player, dungeon);
 
             //which means they clicked bots while having max people
             if(mParty.numberRoleSelected() == 5 ){
@@ -176,8 +186,31 @@ public class MatchMakingManager {
         //enter matchmake
         addToTeamQueue(mParty, dungeon);
         //a runnable to show time in queue
+    }
 
-    }*/
+    private void addConfirmEnter(MysticaParty mParty){
+        int amount = getAmountConfirmed(mParty);
+        amount++;
+        amountConfirmEnter.put(mParty, amount);
+    }
+
+    private int getAmountConfirmed(MysticaParty mParty){
+
+        if(amountConfirmEnter.containsKey(mParty)){
+            return amountConfirmEnter.get(mParty);
+        }
+
+        return 0;
+    }
+
+    public void cancelEnterDungeon(Player player){
+        MysticaParty mParty = mysticaPartyManager.getPlayerMParty(player);
+        Set<Player> partyPlayers = mysticaPartyManager.getPartyPlayers(player);
+
+        amountConfirmEnter.remove(mParty);
+    }
+
+
 
     private void addToTeamQueue(MysticaParty mParty, String dungeon){
         List<MysticaParty> mParties = new ArrayList<>(teamQueueList.getOrDefault(dungeon, new ArrayList<>()));

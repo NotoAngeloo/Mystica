@@ -99,6 +99,7 @@ public final class Mystica extends JavaPlugin{
 
         mysticaPartyManager = new MysticaPartyManager(this);
         matchMakingManager = new MatchMakingManager(this);
+        matchmakingInventory = matchMakingManager.getMatchmakingInventory();
 
         locations = new Locations(this);
         locations.initializeLocationals();
@@ -131,8 +132,6 @@ public final class Mystica extends JavaPlugin{
 
         inventoryIndexingManager = new InventoryIndexingManager();
         bagInventory = new BagInventory(this);
-
-        matchmakingInventory = new MatchmakingInventory(this);
 
         firstClearManager = new FirstClearManager(this);
         firstClearManager.createOrLoadFolder();

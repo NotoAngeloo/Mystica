@@ -2,6 +2,7 @@ package me.angeloo.mystica.Managers;
 
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import io.lumine.mythic.bukkit.MythicBukkit;
+import me.angeloo.mystica.Components.Inventories.MatchmakingInventory;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DungeonQueue;
 import me.angeloo.mystica.Utility.MysticaParty;
@@ -19,6 +20,7 @@ public class MatchMakingManager {
     private final Mystica main;
 
     private final MysticaPartyManager mysticaPartyManager;
+    private final MatchmakingInventory matchmakingInventory;
 
     private final Map<String, DungeonQueue> dungeonQueueMap = new HashMap<>();
     private final Map<String, List<MysticaParty>> teamQueueList = new HashMap<>();
@@ -27,9 +29,26 @@ public class MatchMakingManager {
     public MatchMakingManager(Mystica main){
         this.main = main;
         mysticaPartyManager = main.getMysticaPartyManager();
+        matchmakingInventory = new MatchmakingInventory(main, this);
     }
 
     public void matchMakeReadyCheck(Player player, String dungeon, boolean bots){
+
+        List<Player> joiners = new ArrayList<>(mysticaPartyManager.getPartyPlayers(player));
+        MysticaParty mParty = mysticaPartyManager.getPlayerMParty(player);
+
+        if(mParty.numberRoleSelected() < joiners.size()){
+            return;
+        }
+
+        //open the new inventory
+        for(Player partyPlayer : joiners){
+            partyPlayer.openInventory(matchmakingInventory.openMatchFound(dungeon, joiners, bots));
+        }
+
+    }
+
+    /*public void matchMakeReadyCheck(Player player, String dungeon, boolean bots){
 
         Set<Player> partyPlayers = mysticaPartyManager.getPartyPlayers(player);
         MysticaParty mParty = mysticaPartyManager.getPlayerMParty(player);
@@ -43,7 +62,7 @@ public class MatchMakingManager {
 
         if(bots){
             //need to check if this does for all the players
-            Mystica.dungeonsApi().initiateDungeonForPlayer(player, dungeon);
+            //Mystica.dungeonsApi().initiateDungeonForPlayer(player, dungeon);
             //then wait for the dungeon to be available
 
             //which means they clicked bots while having max people
@@ -158,7 +177,7 @@ public class MatchMakingManager {
         addToTeamQueue(mParty, dungeon);
         //a runnable to show time in queue
 
-    }
+    }*/
 
     private void addToTeamQueue(MysticaParty mParty, String dungeon){
         List<MysticaParty> mParties = new ArrayList<>(teamQueueList.getOrDefault(dungeon, new ArrayList<>()));
@@ -267,6 +286,10 @@ public class MatchMakingManager {
         }
 
         return dungeonQueueMap.get(dungeonName);
+    }
+
+    public MatchmakingInventory getMatchmakingInventory(){
+        return matchmakingInventory;
     }
 
 }

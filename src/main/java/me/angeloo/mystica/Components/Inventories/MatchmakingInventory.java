@@ -28,9 +28,9 @@ public class MatchmakingInventory implements Listener {
     private final MysticaPartyManager mysticaPartyManager;
     private final MatchMakingManager matchMakingManager;
 
-    public MatchmakingInventory(Mystica main){
+    public MatchmakingInventory(Mystica main, MatchMakingManager manager){
         mysticaPartyManager = main.getMysticaPartyManager();
-        matchMakingManager = main.getMatchMakingManager();
+        matchMakingManager = manager;
     }
 
     public Inventory openDungeonEnter(String dungeon){
@@ -66,6 +66,58 @@ public class MatchmakingInventory implements Listener {
 
         //inv.setItem(0, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
         //inv.setItem(53, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
+
+        return inv;
+    }
+
+    public Inventory openMatchFound(String dungeon, List<Player> joiners, boolean bots){
+        String dungeonSplash = "";
+
+        switch (dungeon.toLowerCase()){
+            case "cave_of_lindwyrm":{
+                dungeonSplash = "\uE08E";
+                break;
+            }
+            case "curse_of_shadow":{
+                dungeonSplash = "\uE08F";
+                break;
+            }
+            case "heart_of_corruption":{
+                dungeonSplash = "\uE090";
+                break;
+            }
+            case "acolyte_of_chaos":{
+                dungeonSplash = "\uE091";
+                break;
+            }
+            default:{
+                Bukkit.getLogger().info("invalid dungeon");
+                break;
+            }
+
+
+        }
+
+        Inventory inv = Bukkit.createInventory(null, 9 * 6, ChatColor.WHITE + "\uF807" + dungeonSplash + "\uF80D" + "\uF82B\uF829" + "\uE08D");
+
+        //default bot icons
+        for(int i = 18; i<=26;i+=2){
+            inv.setItem(i, new ItemStack(Material.RED_STAINED_GLASS_PANE));
+        }
+
+        //fill the slots with the joiners
+        int itemSlot = 18;
+        for(int i = 0; i<=joiners.size()-1; i++){
+            inv.setItem(itemSlot, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
+            itemSlot += 2;
+        }
+
+        
+
+        if(bots){
+            inv.setItem(53, getItem(Material.KELP, 1, " ",
+                    "this item helps the gui work"));
+        }
 
         return inv;
     }
@@ -109,6 +161,7 @@ public class MatchmakingInventory implements Listener {
     @EventHandler
     public void dungeonEnterClicks(InventoryClickEvent event){
 
+        //This is the main page, in which you select to join the dungeon, matchmake, or instant bots
         if(event.getView().getTitle().contains("\uE08B")){
 
             event.setCancelled(true);
@@ -201,7 +254,7 @@ public class MatchmakingInventory implements Listener {
 
         }
 
-        //matchmaking
+        //this is the matchmaking page
         if(event.getView().getTitle().contains("\uE092")){
 
 
@@ -325,6 +378,43 @@ public class MatchmakingInventory implements Listener {
             }
 
         }
+
+        if(event.getView().getTitle().contains("\uE08D")) {
+
+
+            event.setCancelled(true);
+
+            Inventory inv = event.getView().getTopInventory();
+
+            if (event.getClickedInventory() != inv) {
+                return;
+            }
+
+            boolean bots = inv.getItem(53) != null;
+
+            String title = event.getView().getTitle();
+
+            String dungeon = "";
+
+            if (title.contains("\uE08E")) {
+                dungeon = "Cave_of_Lindwyrm";
+            }
+
+            if (title.contains("\uE08F")) {
+                dungeon = "Curse_of_Shadow";
+            }
+
+            if (title.contains("\uE090")) {
+                dungeon = "Heart_of_Corruption";
+            }
+
+            if (title.contains("\uE091")) {
+                dungeon = "Acolyte_of_Chaos";
+            }
+
+            Player player = (Player) event.getWhoClicked();
+        }
+
     }
 
     private ItemStack getItem(Material material, int modelData, String name, String ... lore) {

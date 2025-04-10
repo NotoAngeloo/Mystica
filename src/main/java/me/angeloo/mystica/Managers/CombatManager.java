@@ -1,31 +1,24 @@
 package me.angeloo.mystica.Managers;
 
-import me.angeloo.mystica.Components.ClassEquipment.NoneEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DisplayWeapons;
-import me.angeloo.mystica.Utility.StatusDisplayer;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.Server;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
 
 
 import java.util.*;
-import java.util.List;
 
 public class CombatManager {
 
     private final Mystica main;
     private final ProfileManager profileManager;
+    private final ItemManager itemManager;
     private final AbilityManager abilityManager;
     private final DpsManager dpsManager;
 
@@ -37,6 +30,7 @@ public class CombatManager {
         this.main = main;
         profileManager = main.getProfileManager();
         abilityManager = manager;
+        itemManager = main.getClassEquipmentManager();
         dpsManager = main.getDpsManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
@@ -75,7 +69,7 @@ public class CombatManager {
                 player.getInventory().setItemInOffHand(offhand);
             }
             else{
-                player.getInventory().setItemInMainHand(new NoneEquipment().getBaseWeapon());
+                player.getInventory().setItemInMainHand(itemManager.getNoneEquipment().getBaseWeapon());
             }
 
 

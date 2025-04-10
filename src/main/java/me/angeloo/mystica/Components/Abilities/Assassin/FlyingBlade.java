@@ -1,7 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Assassin;
 
 import me.angeloo.mystica.Components.Abilities.AssassinAbilities;
-import me.angeloo.mystica.Components.ClassEquipment.AssassinEquipment;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -29,7 +28,7 @@ public class FlyingBlade {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final AssassinEquipment assassinEquipment;
+    private final ItemManager itemManager;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
@@ -47,7 +46,7 @@ public class FlyingBlade {
     public FlyingBlade(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
-        assassinEquipment = new AssassinEquipment();
+        itemManager = main.getClassEquipmentManager();
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
@@ -124,7 +123,7 @@ public class FlyingBlade {
         armorStand.setInvulnerable(true);
         armorStand.setMarker(true);
         EntityEquipment entityEquipment = armorStand.getEquipment();
-        ItemStack weapon = assassinEquipment.getBaseWeapon();
+        ItemStack weapon = itemManager.getAssassinEquipment().getBaseWeapon();
         assert entityEquipment != null;
         entityEquipment.setHelmet(weapon);
         armorStand.teleport(start);

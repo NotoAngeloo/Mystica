@@ -6,11 +6,7 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -39,14 +35,15 @@ public class EquipmentManager {
 
     public EquipmentManager(Mystica main){
         profileManager = main.getProfileManager();
-        noneEquipment = new NoneEquipment();
-        assassinEquipment = new AssassinEquipment();
-        elementalistEquipment = new ElementalistEquipment();
-        mysticEquipment = new MysticEquipment();
-        paladinEquipment = new PaladinEquipment();
-        rangerEquipment = new RangerEquipment();
-        shadowKnightEquipment = new ShadowKnightEquipment();
-        warriorEquipment = new WarriorEquipment();
+        ItemManager itemManager = main.getClassEquipmentManager();
+        noneEquipment = itemManager.getNoneEquipment();
+        assassinEquipment = itemManager.getAssassinEquipment();
+        elementalistEquipment = itemManager.getElementalistEquipment();
+        mysticEquipment = itemManager.getMysticEquipment();
+        paladinEquipment = itemManager.getPaladinEquipment();
+        rangerEquipment = itemManager.getRangerEquipment();
+        shadowKnightEquipment = itemManager.getShadowKnightEquipment();
+        warriorEquipment = itemManager.getWarriorEquipment();
     }
 
     public int getItemLevel(ItemStack equipment){

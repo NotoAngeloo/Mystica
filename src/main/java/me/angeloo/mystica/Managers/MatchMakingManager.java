@@ -11,6 +11,11 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.*;
 
@@ -27,6 +32,8 @@ public class MatchMakingManager {
     //private final List<MysticaParty> teameQueueList = new ArrayList<>();
 
     private final Map<MysticaParty, Integer> amountConfirmEnter = new HashMap<>();
+
+    private final Map<UUID, BukkitTask> taskMap = new HashMap<>();
 
     public MatchMakingManager(Mystica main){
         this.main = main;
@@ -184,7 +191,7 @@ public class MatchMakingManager {
 
 
         //enter matchmake
-        addToTeamQueue(mParty, dungeon);
+        //addToTeamQueue(mParty, dungeon);
         //a runnable to show time in queue
     }
 
@@ -207,6 +214,10 @@ public class MatchMakingManager {
         MysticaParty mParty = mysticaPartyManager.getPlayerMParty(player);
         Set<Player> partyPlayers = mysticaPartyManager.getPartyPlayers(player);
 
+        for(Player partyPlayer : partyPlayers){
+            partyPlayer.sendMessage(player.getName() + " canceled entering dungeon");
+        }
+
         amountConfirmEnter.remove(mParty);
     }
 
@@ -224,11 +235,15 @@ public class MatchMakingManager {
         }
     }
 
-    public void cancelSoloMatchmaking(Player player){
+    public void cancelMatchmaking(Player player){
         for(Map.Entry<String, DungeonQueue> queue : dungeonQueueMap.entrySet()){
             queue.getValue().removeTankQueue(player);
             queue.getValue().removeHealQueue(player);
             queue.getValue().removeDamageQueue(player);
+        }
+
+        if(taskMap.containsKey(player.getUniqueId())){
+            taskMap.get(player.getUniqueId()).cancel();
         }
     }
 
@@ -256,37 +271,52 @@ public class MatchMakingManager {
 
     public void queueTank(Player player, String dungeon){
         mysticaPartyManager.removeMParty(player);
-        cancelSoloMatchmaking(player);
+        cancelMatchmaking(player);
         DungeonQueue queue = getDungeonQueue(dungeon);
         queue.joinTankQueue(player);
-        checkIfMatchFound(dungeon);
+        player.sendMessage("Successfully joined queue");
+        startQueueTimer(player);
+
+        if(checkIfSoloMatchFound(dungeon)){
+            return;
+        }
+
     }
 
     public void queueDamage(Player player, String dungeon){
         mysticaPartyManager.removeMParty(player);
-        cancelSoloMatchmaking(player);
+        cancelMatchmaking(player);
         DungeonQueue queue = getDungeonQueue(dungeon);
         queue.joinDamageQueue(player);
-        checkIfMatchFound(dungeon);
+        player.sendMessage("Successfully joined queue");
+        startQueueTimer(player);
+
+        if(checkIfSoloMatchFound(dungeon)){
+            return;
+        }
     }
 
     public void queueHeal(Player player, String dungeon){
         mysticaPartyManager.removeMParty(player);
-        cancelSoloMatchmaking(player);
+        cancelMatchmaking(player);
         DungeonQueue queue = getDungeonQueue(dungeon);
         queue.joinHealQueue(player);
-        checkIfMatchFound(dungeon);
+        player.sendMessage("Successfully joined queue");
+        startQueueTimer(player);
+
+        if(checkIfSoloMatchFound(dungeon)){
+            return;
+        }
+
     }
 
-
-    private void checkIfMatchFound(String dungeon){
+    private boolean checkIfSoloMatchFound(String dungeon){
 
         DungeonQueue queue = getDungeonQueue(dungeon);
 
-        Bukkit.getLogger().info("tanks queued " + queue.getTankPlayers());
+        /*Bukkit.getLogger().info("tanks queued " + queue.getTankPlayers());
         Bukkit.getLogger().info("heal queued " + queue.getHealPlayers());
-        Bukkit.getLogger().info("damage queued " + queue.getDamagePlayers());
-        //perhaps have a confirm screen
+        Bukkit.getLogger().info("damage queued " + queue.getDamagePlayers());*/
 
         //check solo players
         if(queue.hasEnoughTanks() && queue.hasEnoughHeal() && queue.hasEnoughDamage()){
@@ -298,14 +328,26 @@ public class MatchMakingManager {
             Player damage2 = damagePlayers.get(1);
             Player damage3 = damagePlayers.get(2);
 
+            List<Player> joiners = new ArrayList<>();
+            joiners.add(tank);
+            joiners.add(heal);
+            joiners.addAll(damagePlayers);
 
+            for(Player joiner : joiners){
+                cancelMatchmaking(joiner);
+            }
 
             mysticaPartyManager.createPartyFromMatchmaking(tank, heal, damage1, damage2, damage3);
 
-            Mystica.dungeonsApi().initiateDungeonForPlayer(tank, dungeon);
+            //do the enter confirm thing
+            matchmakingInventory.openMatchFound(dungeon, joiners, false);
 
+            //Mystica.dungeonsApi().initiateDungeonForPlayer(tank, dungeon);
+
+            return true;
         }
 
+        return false;
     }
 
     private void addNewDungeonQueue(String dungeonName){
@@ -323,6 +365,28 @@ public class MatchMakingManager {
 
     public MatchmakingInventory getMatchmakingInventory(){
         return matchmakingInventory;
+    }
+
+    private void startQueueTimer(Player player){
+
+        Scoreboard queueTimer = Bukkit.getScoreboardManager().getNewScoreboard();
+        Objective objective = queueTimer.registerNewObjective("", "dummy", "");
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        Score score = objective.getScore("Time in queue:");
+        score.setScore(0);
+        player.setScoreboard(queueTimer);
+
+        BukkitTask queueBoard = new BukkitRunnable(){
+
+            @Override
+            public void run(){
+                score.setScore(score.getScore() + 1);
+            }
+
+
+        }.runTaskTimer(main, 0, 20);
+
+        taskMap.put(player.getUniqueId(), queueBoard);
     }
 
 }

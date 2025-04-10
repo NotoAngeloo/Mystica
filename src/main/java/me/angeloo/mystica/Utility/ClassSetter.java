@@ -1,15 +1,10 @@
 package me.angeloo.mystica.Utility;
 
-import me.angeloo.mystica.Components.ClassEquipment.*;
 import me.angeloo.mystica.Components.Profile;
-import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
+import me.angeloo.mystica.Managers.ItemManager;
 import me.angeloo.mystica.Managers.EquipmentManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -21,28 +16,14 @@ public class ClassSetter {
 
     private final ProfileManager profileManager;
     private final EquipmentManager equipmentManager;
-    private final NoneEquipment noneEquipment;
-    private final ElementalistEquipment elementalistEquipment;
-    private final RangerEquipment rangerEquipment;
-    private final MysticEquipment mysticEquipment;
-    private final ShadowKnightEquipment shadowKnightEquipment;
-    private final PaladinEquipment paladinEquipment;
-    private final WarriorEquipment warriorEquipment;
-    private final AssassinEquipment assassinEquipment;
+    private final ItemManager itemManager;
     private final DisplayWeapons displayWeapons;
     private final GearReader gearReader;
 
     public ClassSetter(Mystica main){
         profileManager = main.getProfileManager();
         equipmentManager = new EquipmentManager(main);
-        noneEquipment = new NoneEquipment();
-        elementalistEquipment = new ElementalistEquipment();
-        rangerEquipment = new RangerEquipment();
-        mysticEquipment = new MysticEquipment();
-        shadowKnightEquipment = new ShadowKnightEquipment();
-        paladinEquipment = new PaladinEquipment();
-        warriorEquipment = new WarriorEquipment();
-        assassinEquipment = new AssassinEquipment();
+        itemManager = main.getClassEquipmentManager();
         displayWeapons = new DisplayWeapons(main);
         gearReader = new GearReader(main);
     }
@@ -64,59 +45,59 @@ public class ClassSetter {
 
             switch(clazz.toLowerCase()){
                 case "elementalist":{
-                    playerProfile.getPlayerEquipment().setWeapon(elementalistEquipment.getBaseWeapon());
-                    playerProfile.getPlayerEquipment().setHelmet(elementalistEquipment.getBaseHelmet());
-                    playerProfile.getPlayerEquipment().setChestPlate(elementalistEquipment.getBaseChestPlate());
-                    playerProfile.getPlayerEquipment().setLeggings(elementalistEquipment.getBaseLeggings());
-                    playerProfile.getPlayerEquipment().setBoots(elementalistEquipment.getBaseBoots());
+                    playerProfile.getPlayerEquipment().setWeapon(itemManager.getElementalistEquipment().getBaseWeapon());
+                    playerProfile.getPlayerEquipment().setHelmet(itemManager.getElementalistEquipment().getBaseHelmet());
+                    playerProfile.getPlayerEquipment().setChestPlate(itemManager.getElementalistEquipment().getBaseChestPlate());
+                    playerProfile.getPlayerEquipment().setLeggings(itemManager.getElementalistEquipment().getBaseLeggings());
+                    playerProfile.getPlayerEquipment().setBoots(itemManager.getElementalistEquipment().getBaseBoots());
                     break;
                 }
                 case "ranger":{
-                    playerProfile.getPlayerEquipment().setWeapon(rangerEquipment.getBaseWeapon());
-                    playerProfile.getPlayerEquipment().setHelmet(rangerEquipment.getBaseHelmet());
-                    playerProfile.getPlayerEquipment().setChestPlate(rangerEquipment.getBaseChestPlate());
-                    playerProfile.getPlayerEquipment().setLeggings(rangerEquipment.getBaseLeggings());
-                    playerProfile.getPlayerEquipment().setBoots(rangerEquipment.getBaseBoots());
+                    playerProfile.getPlayerEquipment().setWeapon(itemManager.getRangerEquipment().getBaseWeapon());
+                    playerProfile.getPlayerEquipment().setHelmet(itemManager.getRangerEquipment().getBaseHelmet());
+                    playerProfile.getPlayerEquipment().setChestPlate(itemManager.getRangerEquipment().getBaseChestPlate());
+                    playerProfile.getPlayerEquipment().setLeggings(itemManager.getRangerEquipment().getBaseLeggings());
+                    playerProfile.getPlayerEquipment().setBoots(itemManager.getRangerEquipment().getBaseBoots());
                     break;
                 }
                 case "mystic":{
-                    playerProfile.getPlayerEquipment().setWeapon(mysticEquipment.getBaseWeapon());
-                    playerProfile.getPlayerEquipment().setHelmet(mysticEquipment.getBaseHelmet());
-                    playerProfile.getPlayerEquipment().setChestPlate(mysticEquipment.getBaseChestPlate());
-                    playerProfile.getPlayerEquipment().setLeggings(mysticEquipment.getBaseLeggings());
-                    playerProfile.getPlayerEquipment().setBoots(mysticEquipment.getBaseBoots());
+                    playerProfile.getPlayerEquipment().setWeapon(itemManager.getMysticEquipment().getBaseWeapon());
+                    playerProfile.getPlayerEquipment().setHelmet(itemManager.getMysticEquipment().getBaseHelmet());
+                    playerProfile.getPlayerEquipment().setChestPlate(itemManager.getMysticEquipment().getBaseChestPlate());
+                    playerProfile.getPlayerEquipment().setLeggings(itemManager.getMysticEquipment().getBaseLeggings());
+                    playerProfile.getPlayerEquipment().setBoots(itemManager.getMysticEquipment().getBaseBoots());
                     break;
                 }
                 case "shadow knight":{
-                    playerProfile.getPlayerEquipment().setWeapon(shadowKnightEquipment.getBaseWeapon());
-                    playerProfile.getPlayerEquipment().setHelmet(shadowKnightEquipment.getBaseHelmet());
-                    playerProfile.getPlayerEquipment().setChestPlate(shadowKnightEquipment.getBaseChestPlate());
-                    playerProfile.getPlayerEquipment().setLeggings(shadowKnightEquipment.getBaseLeggings());
-                    playerProfile.getPlayerEquipment().setBoots(shadowKnightEquipment.getBaseBoots());
+                    playerProfile.getPlayerEquipment().setWeapon(itemManager.getShadowKnightEquipment().getBaseWeapon());
+                    playerProfile.getPlayerEquipment().setHelmet(itemManager.getShadowKnightEquipment().getBaseHelmet());
+                    playerProfile.getPlayerEquipment().setChestPlate(itemManager.getShadowKnightEquipment().getBaseChestPlate());
+                    playerProfile.getPlayerEquipment().setLeggings(itemManager.getShadowKnightEquipment().getBaseLeggings());
+                    playerProfile.getPlayerEquipment().setBoots(itemManager.getShadowKnightEquipment().getBaseBoots());
                     break;
                 }
                 case "paladin":{
-                    playerProfile.getPlayerEquipment().setWeapon(paladinEquipment.getBaseWeapon());
-                    playerProfile.getPlayerEquipment().setHelmet(paladinEquipment.getBaseHelmet());
-                    playerProfile.getPlayerEquipment().setChestPlate(paladinEquipment.getBaseChestPlate());
-                    playerProfile.getPlayerEquipment().setLeggings(paladinEquipment.getBaseLeggings());
-                    playerProfile.getPlayerEquipment().setBoots(paladinEquipment.getBaseBoots());
+                    playerProfile.getPlayerEquipment().setWeapon(itemManager.getPaladinEquipment().getBaseWeapon());
+                    playerProfile.getPlayerEquipment().setHelmet(itemManager.getPaladinEquipment().getBaseHelmet());
+                    playerProfile.getPlayerEquipment().setChestPlate(itemManager.getPaladinEquipment().getBaseChestPlate());
+                    playerProfile.getPlayerEquipment().setLeggings(itemManager.getPaladinEquipment().getBaseLeggings());
+                    playerProfile.getPlayerEquipment().setBoots(itemManager.getPaladinEquipment().getBaseBoots());
                     break;
                 }
                 case "warrior":{
-                    playerProfile.getPlayerEquipment().setWeapon(warriorEquipment.getBaseWeapon());
-                    playerProfile.getPlayerEquipment().setHelmet(warriorEquipment.getBaseHelmet());
-                    playerProfile.getPlayerEquipment().setChestPlate(warriorEquipment.getBaseChestPlate());
-                    playerProfile.getPlayerEquipment().setLeggings(warriorEquipment.getBaseLeggings());
-                    playerProfile.getPlayerEquipment().setBoots(warriorEquipment.getBaseBoots());
+                    playerProfile.getPlayerEquipment().setWeapon(itemManager.getWarriorEquipment().getBaseWeapon());
+                    playerProfile.getPlayerEquipment().setHelmet(itemManager.getWarriorEquipment().getBaseHelmet());
+                    playerProfile.getPlayerEquipment().setChestPlate(itemManager.getWarriorEquipment().getBaseChestPlate());
+                    playerProfile.getPlayerEquipment().setLeggings(itemManager.getWarriorEquipment().getBaseLeggings());
+                    playerProfile.getPlayerEquipment().setBoots(itemManager.getWarriorEquipment().getBaseBoots());
                     break;
                 }
                 case "assassin":{
-                    playerProfile.getPlayerEquipment().setWeapon(assassinEquipment.getBaseWeapon());
-                    playerProfile.getPlayerEquipment().setHelmet(assassinEquipment.getBaseHelmet());
-                    playerProfile.getPlayerEquipment().setChestPlate(assassinEquipment.getBaseChestPlate());
-                    playerProfile.getPlayerEquipment().setLeggings(assassinEquipment.getBaseLeggings());
-                    playerProfile.getPlayerEquipment().setBoots(assassinEquipment.getBaseBoots());
+                    playerProfile.getPlayerEquipment().setWeapon(itemManager.getAssassinEquipment().getBaseWeapon());
+                    playerProfile.getPlayerEquipment().setHelmet(itemManager.getAssassinEquipment().getBaseHelmet());
+                    playerProfile.getPlayerEquipment().setChestPlate(itemManager.getAssassinEquipment().getBaseChestPlate());
+                    playerProfile.getPlayerEquipment().setLeggings(itemManager.getAssassinEquipment().getBaseLeggings());
+                    playerProfile.getPlayerEquipment().setBoots(itemManager.getAssassinEquipment().getBaseBoots());
                     break;
                 }
                 case "none":{

@@ -37,6 +37,7 @@ public final class Mystica extends JavaPlugin{
     private PathingManager pathingManager;
 
     private ClassSetter classSetter;
+    private ItemManager itemManager;
     private StealthTargetBlacklist stealthTargetBlacklist;
     private FakePlayerTargetManager fakePlayerTargetManager;
     private TargetManager targetManager;
@@ -103,6 +104,9 @@ public final class Mystica extends JavaPlugin{
 
         locations = new Locations(this);
         locations.initializeLocationals();
+
+
+        itemManager = new ItemManager();
 
         classSetter = new ClassSetter(this);
         pvpManager = new PvpManager(this);
@@ -355,5 +359,8 @@ public final class Mystica extends JavaPlugin{
     public MysticaPartyManager getMysticaPartyManager(){return mysticaPartyManager;}
 
     public MatchMakingManager getMatchMakingManager(){return matchMakingManager;}
+
+    public ItemManager getClassEquipmentManager(){return itemManager;}
+
 
 }

@@ -18,9 +18,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class MatchmakingInventory implements Listener {
@@ -100,15 +102,31 @@ public class MatchmakingInventory implements Listener {
 
         Inventory inv = Bukkit.createInventory(null, 9 * 6, ChatColor.WHITE + "\uF807" + dungeonSplash + "\uF80D" + "\uF82B\uF829" + "\uE08D");
 
-        //default bot icons
-        for(int i = 18; i<=26;i+=2){
-            inv.setItem(i, new ItemStack(Material.RED_STAINED_GLASS_PANE));
+        //default bot icons TODO: come up with something later
+
+        if(bots){
+            for(int i = 18; i<=26;i+=2){
+                inv.setItem(i, new ItemStack(Material.RED_STAINED_GLASS_PANE));
+            }
         }
+
 
         //fill the slots with the joiners
         int itemSlot = 18;
         for(int i = 0; i<=joiners.size()-1; i++){
-            inv.setItem(itemSlot, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
+
+            ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+            SkullMeta meta = (SkullMeta) head.getItemMeta();
+
+            if(meta != null){
+                meta.setOwningPlayer(joiners.get(i));
+                meta.setDisplayName(joiners.get(i).getName());
+                head.setItemMeta(meta);
+            }
+
+
+
+            inv.setItem(itemSlot, head);
             itemSlot += 2;
         }
 
@@ -380,6 +398,7 @@ public class MatchmakingInventory implements Listener {
             return;
         }
 
+        //confirm enter dungeon
         if(event.getView().getTitle().contains("\uE08D")) {
 
 
@@ -436,7 +455,13 @@ public class MatchmakingInventory implements Listener {
             }
 
             if(cancelSlots.contains(slot)){
-                player.closeInventory();
+
+                Set<Player> partyPlayers = mysticaPartyManager.getPartyPlayers(player);
+
+                for(Player partyPlayer : partyPlayers){
+                    partyPlayer.closeInventory();
+                }
+
                 matchMakingManager.cancelEnterDungeon(player);
                 return;
             }

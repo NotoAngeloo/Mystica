@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.ClassEquipment;
 
+import me.angeloo.mystica.Managers.ItemManager;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -18,46 +19,18 @@ import static me.angeloo.mystica.Mystica.menuColor;
 
 public class NoneEquipment {
 
-    public NoneEquipment()
-    {
+    private final ItemManager manager;
 
+    public NoneEquipment(ItemManager manager) {
+        this.manager = manager;
     }
 
     public ItemStack getBaseWeapon(){
 
-        return getItem(Material.KELP, 1,
+        return manager.getItem(Material.KELP, 1,
                 ChatColor.of(Color.WHITE) + "Empty Hand",
-                ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + "0",
-                ChatColor.of(menuColor) + "Weapon",
-                "",
-                ChatColor.of(menuColor) + "Requires " + ChatColor.of(Color.WHITE) + "None");
+                ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + "0");
     }
 
-    private ItemStack getItem(Material material, int modelData, String name, String ... lore){
 
-        AttributeModifier zeroer = new AttributeModifier(UUID.randomUUID(), "generic.attackDamage",
-                0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND);
-
-        ItemStack item = new ItemStack(material);
-
-        ItemMeta meta = item.getItemMeta();
-        assert meta != null;
-        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
-        meta.setUnbreakable(true);
-
-        List<String> lores = new ArrayList<>();
-
-        for (String s : lore){
-            lores.add(ChatColor.translateAlternateColorCodes('&', s));
-        }
-
-        meta.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE, zeroer);
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-
-        meta.setLore(lores);
-        meta.setCustomModelData(modelData);
-
-        item.setItemMeta(meta);
-        return item;
-    }
 }

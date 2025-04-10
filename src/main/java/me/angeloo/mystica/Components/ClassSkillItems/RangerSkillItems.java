@@ -1,10 +1,9 @@
 package me.angeloo.mystica.Components.ClassSkillItems;
 
-import me.angeloo.mystica.Components.ClassEquipment.NoneEquipment;
 import me.angeloo.mystica.Components.Profile;
-import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.Skill_Level;
 import me.angeloo.mystica.Managers.AbilityManager;
+import me.angeloo.mystica.Managers.ItemManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import net.md_5.bungee.api.ChatColor;
@@ -29,10 +28,12 @@ public class RangerSkillItems {
 
     private final ProfileManager profileManager;
     private final AbilityManager abilityManager;
+    private final ItemManager itemManager;
 
     public RangerSkillItems(Mystica main,AbilityManager manager){
         profileManager = main.getProfileManager();
         abilityManager = manager;
+        itemManager = main.getClassEquipmentManager();
     }
 
     public ItemStack getSkill(int number, Player player){
@@ -161,15 +162,7 @@ public class RangerSkillItems {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        ItemStack basicItem = new NoneEquipment().getBaseWeapon();
-
-        PlayerEquipment equipment = playerProfile.getPlayerEquipment();
-
-        ItemStack weapon = equipment.getWeapon();
-
-        if(weapon != null && !weapon.getType().isAir()){
-            basicItem = equipment.getWeapon().clone();
-        }
+        ItemStack basicItem = itemManager.getRangerEquipment().getBaseWeapon();
 
         ItemMeta basicMeta = basicItem.getItemMeta();
         List<String> basicLore = new ArrayList<>();

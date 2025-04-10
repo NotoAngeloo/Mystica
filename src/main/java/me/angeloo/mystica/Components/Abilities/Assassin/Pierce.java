@@ -1,7 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Assassin;
 
 import me.angeloo.mystica.Components.Abilities.AssassinAbilities;
-import me.angeloo.mystica.Components.ClassEquipment.AssassinEquipment;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -28,7 +27,7 @@ import java.util.UUID;
 public class Pierce {
 
     private final Mystica main;
-    private final AssassinEquipment assassinEquipment;
+    private final ItemManager itemManager;
     private final ProfileManager profileManager;
     private final TargetManager targetManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
@@ -47,7 +46,7 @@ public class Pierce {
 
     public Pierce(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
         this.main = main;
-        assassinEquipment = new AssassinEquipment();
+        itemManager = main.getClassEquipmentManager();
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
@@ -121,7 +120,7 @@ public class Pierce {
 
         Location start = caster.getLocation().clone();
 
-        ItemStack weapon = assassinEquipment.getBaseWeapon();
+        ItemStack weapon = itemManager.getAssassinEquipment().getBaseWeapon();
 
         ArmorStand stand = caster.getWorld().spawn(start.clone().subtract(0,10,0), ArmorStand.class);
         stand.setInvisible(true);

@@ -1,7 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.ShadowKnight;
 
 import me.angeloo.mystica.Components.Abilities.ShadowKnightAbilities;
-import me.angeloo.mystica.Components.ClassEquipment.ShadowKnightEquipment;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -31,7 +30,7 @@ import java.util.UUID;
 public class Soulcrack {
 
     private final Mystica main;
-    private final ShadowKnightEquipment shadowKnightEquipment;
+    private final ItemManager itemManager;
     private final AbilityManager abilityManager;
     private final ProfileManager profileManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
@@ -50,7 +49,7 @@ public class Soulcrack {
     public Soulcrack(Mystica main, AbilityManager manager, ShadowKnightAbilities shadowKnightAbilities){
         this.main = main;
         abilityManager = manager;
-        shadowKnightEquipment = new ShadowKnightEquipment();
+        itemManager = main.getClassEquipmentManager();
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
@@ -121,7 +120,7 @@ public class Soulcrack {
 
         EntityEquipment entityEquipment = armorStand.getEquipment();
 
-        ItemStack weapon = shadowKnightEquipment.getBaseWeapon();
+        ItemStack weapon = itemManager.getShadowKnightEquipment().getBaseWeapon();
         ItemStack offhand = weapon.clone();
 
         if(caster instanceof Player){

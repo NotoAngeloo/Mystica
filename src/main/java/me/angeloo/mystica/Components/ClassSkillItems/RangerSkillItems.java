@@ -33,7 +33,7 @@ public class RangerSkillItems {
     public RangerSkillItems(Mystica main,AbilityManager manager){
         profileManager = main.getProfileManager();
         abilityManager = manager;
-        itemManager = main.getClassEquipmentManager();
+        itemManager = main.getItemManager();
     }
 
     public ItemStack getSkill(int number, Player player){
@@ -162,7 +162,7 @@ public class RangerSkillItems {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        ItemStack basicItem = itemManager.getRangerEquipment().getBaseWeapon();
+        ItemStack basicItem = itemManager.getRangerEquipment().getBaseWeapon(1);
 
         ItemMeta basicMeta = basicItem.getItemMeta();
         List<String> basicLore = new ArrayList<>();

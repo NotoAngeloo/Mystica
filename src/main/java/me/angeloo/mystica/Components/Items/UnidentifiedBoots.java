@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Items;
 
+import me.angeloo.mystica.Managers.ItemManager;
 import me.angeloo.mystica.Mystica;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
@@ -13,17 +14,46 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class UnidentifiedBoots extends ItemStack {
+import static me.angeloo.mystica.Mystica.*;
+import static me.angeloo.mystica.Mystica.levelColor;
 
-    public UnidentifiedBoots(int level){
-        super(Material.IRON_INGOT);
-        ItemMeta meta = this.getItemMeta();
-        assert meta != null;
-        meta.setDisplayName(ChatColor.of(new Color(218, 133, 36)) + "Unidentified Boots");
-        List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.of(new Color(176, 159, 109)) + "Level: " + ChatColor.of(new Color(255,255,255)) + level);
-        meta.setLore(lore);
-        meta.getPersistentDataContainer().set(new NamespacedKey(Mystica.getPlugin(), "uuid"), PersistentDataType.STRING, UUID.randomUUID().toString());
-        this.setItemMeta(meta);
+public class UnidentifiedBoots {
+
+    private final ItemManager manager;
+
+    public UnidentifiedBoots(ItemManager manager){
+        this.manager = manager;
+    }
+
+
+    public ItemStack getUnidentifiedT1Boots(int level){
+
+        return manager.getItem(Material.IRON_INGOT, 1,
+                ChatColor.of(commonColor) + "Unidentified Boots",
+                manager.buildCommonTop(2),
+                ChatColor.of(commonColor) + "Unidentified Boots",
+                manager.buildCommonDivider(2),
+                ChatColor.of(menuColor) + "Level: " + level,
+                ChatColor.of(menuColor) + "Tier: 1",
+                manager.buildCommonBottom(2));
+    }
+
+    public ItemStack getUnidentifiedT2Boots(int level){
+
+        return manager.getItem(Material.IRON_INGOT, 1,
+                ChatColor.of(uncommonColor) + "Unidentified Boots",
+                manager.buildUncommonTop(2),
+                ChatColor.of(uncommonColor) + "Unidentified Boots",
+                manager.buildUncommonDivider(2),
+                ChatColor.of(menuColor) + "Level: " + level,
+                ChatColor.of(menuColor) + "Tier: 2",
+                manager.buildUncommonDivider(2),
+                ChatColor.of(menuColor) + "Bonus Attribute",
+                ChatColor.of(uncommonColor) + "Attack",
+                ChatColor.of(uncommonColor) + "Health",
+                ChatColor.of(uncommonColor) + "Defense",
+                ChatColor.of(uncommonColor) + "Magic Defense",
+                ChatColor.of(uncommonColor) + "Crit",
+                manager.buildUncommonBottom(2));
     }
 }

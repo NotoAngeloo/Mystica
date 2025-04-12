@@ -33,7 +33,7 @@ public class ElementalistSkillItems {
 
     public ElementalistSkillItems(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
-        itemManager = main.getClassEquipmentManager();
+        itemManager = main.getItemManager();
         abilityManager = manager;
     }
 
@@ -182,7 +182,7 @@ public class ElementalistSkillItems {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        ItemStack basicItem = itemManager.getElementalistEquipment().getBaseWeapon();
+        ItemStack basicItem = itemManager.getElementalistEquipment().getBaseWeapon(1);
 
         ItemMeta basicMeta = basicItem.getItemMeta();
         List<String> basicLore = new ArrayList<>();

@@ -6,7 +6,6 @@ import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import me.angeloo.mystica.Components.Items.SoulStone;
 import me.angeloo.mystica.Components.Items.UnidentifiedChestplate;
-import me.angeloo.mystica.Components.Items.UnidentifiedHelmet;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
@@ -268,7 +267,7 @@ public class TheLindwyrm {
             itemDrops.add(new SoulStone());
         }
 
-        itemDrops.add(new UnidentifiedChestplate(level + 1));
+        //itemDrops.add(new UnidentifiedChestplate(level + 1));
 
         return itemDrops;
     }

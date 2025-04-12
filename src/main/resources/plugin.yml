@@ -141,6 +141,10 @@ commands:
     description: opens matchmaking for player
     usage: /Matchmaking <player> <dungeon>
     permission: developer
+  MysticaItem:
+    description: allows devs to get unidentified items
+    usage: /MysticaItem <player>
+    permission: developer
 
 permissions:
   developer:

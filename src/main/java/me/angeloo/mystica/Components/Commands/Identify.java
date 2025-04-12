@@ -1,6 +1,8 @@
 package me.angeloo.mystica.Components.Commands;
 
 import me.angeloo.mystica.Components.Inventories.IdentifyInventory;
+import me.angeloo.mystica.Managers.EquipmentManager;
+import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -12,10 +14,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class Identify implements CommandExecutor {
 
+    private final EquipmentManager equipmentManager;
     private final IdentifyInventory identifyInventory;
 
-    public Identify(){
+    public Identify(Mystica main){
         identifyInventory = new IdentifyInventory();
+        equipmentManager = main.getEquipmentManager();
     }
 
     @Override
@@ -30,7 +34,11 @@ public class Identify implements CommandExecutor {
 
             Player player = (Player) sender;
 
-            player.openInventory(identifyInventory.openIdentifyInventory(new ItemStack(Material.AIR)));
+            ItemStack equipment = player.getInventory().getItemInMainHand();
+
+            player.getInventory().addItem(equipmentManager.identify(player, equipment));
+
+            //player.openInventory(identifyInventory.openIdentifyInventory(new ItemStack(Material.AIR)));
 
             return true;
         }
@@ -49,7 +57,7 @@ public class Identify implements CommandExecutor {
                 return true;
             }
 
-            player.openInventory(identifyInventory.openIdentifyInventory(new ItemStack(Material.AIR)));
+            //player.openInventory(identifyInventory.openIdentifyInventory(new ItemStack(Material.AIR)));
             return true;
         }
 

@@ -18,11 +18,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static me.angeloo.mystica.Mystica.menuColor;
+import static me.angeloo.mystica.Mystica.*;
 
 public class EquipmentManager {
 
     private final ProfileManager profileManager;
+    private final ItemManager itemManager;
 
     private final NoneEquipment noneEquipment;
     private final AssassinEquipment assassinEquipment;
@@ -35,7 +36,7 @@ public class EquipmentManager {
 
     public EquipmentManager(Mystica main){
         profileManager = main.getProfileManager();
-        ItemManager itemManager = main.getClassEquipmentManager();
+        itemManager = main.getItemManager();
         noneEquipment = itemManager.getNoneEquipment();
         assassinEquipment = itemManager.getAssassinEquipment();
         elementalistEquipment = itemManager.getElementalistEquipment();
@@ -46,7 +47,7 @@ public class EquipmentManager {
         warriorEquipment = itemManager.getWarriorEquipment();
     }
 
-    public int getItemLevel(ItemStack equipment){
+    private int getItemLevel(ItemStack equipment){
 
         ItemMeta meta = equipment.getItemMeta();
         assert meta != null;
@@ -68,521 +69,115 @@ public class EquipmentManager {
         return level;
     }
 
-    public ItemStack swap(Player player, ItemStack oldItem) {
+    private int getItemTier(ItemStack equipment){
 
-
-        String clazz = profileManager.getAnyProfile(player).getPlayerClass();
-
-        ItemMeta selectedMeta = oldItem.getItemMeta();
-        assert selectedMeta != null;
-        List<String> lore = selectedMeta.getLore();
-        assert lore != null;
-        String equipSlot = lore.get(1);
-        equipSlot = equipSlot.replaceAll("§.", "");
-
-        switch (clazz.toLowerCase()) {
-            case "assassin": {
-                switch (equipSlot.toLowerCase()){
-                    case "weapon":{
-                        selectedMeta.setDisplayName(assassinEquipment.getBaseWeapon().getItemMeta().getDisplayName());
-                        oldItem.setType(Material.FLINT);
-                        break;
-                    }
-                    case "helmet":{
-                        selectedMeta.setDisplayName(assassinEquipment.getBaseHelmet().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(7);
-                        break;
-                    }
-                    case "chestplate":{
-                        selectedMeta.setDisplayName(assassinEquipment.getBaseChestPlate().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(7);
-                        break;
-                    }
-                    case "leggings":{
-                        selectedMeta.setDisplayName(assassinEquipment.getBaseLeggings().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(7);
-                        break;
-                    }
-                    case "boots":{
-                        selectedMeta.setDisplayName(assassinEquipment.getBaseBoots().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(7);
-                        break;
-                    }
-                }
-
-                int requireLine = -1;
-                for(String loreline : selectedMeta.getLore()){
-                    if(loreline.contains("Requires")){
-                        requireLine = selectedMeta.getLore().indexOf(loreline);
-                        break;
-                    }
-                }
-                lore.set(requireLine, assassinEquipment.getBaseWeapon().getItemMeta().getLore().get(assassinEquipment.getBaseWeapon().getItemMeta().getLore().size()-1));
-                break;
-            }
-            case "elementalist": {
-                switch (equipSlot.toLowerCase()){
-                    case "weapon":{
-                        selectedMeta.setDisplayName(elementalistEquipment.getBaseWeapon().getItemMeta().getDisplayName());
-                        oldItem.setType(Material.STICK);
-                        break;
-                    }
-                    case "helmet":{
-                        selectedMeta.setDisplayName(elementalistEquipment.getBaseHelmet().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(1);
-                        break;
-                    }
-                    case "chestplate":{
-                        selectedMeta.setDisplayName(elementalistEquipment.getBaseChestPlate().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(1);
-                        break;
-                    }
-                    case "leggings":{
-                        selectedMeta.setDisplayName(elementalistEquipment.getBaseLeggings().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(1);
-                        break;
-                    }
-                    case "boots":{
-                        selectedMeta.setDisplayName(elementalistEquipment.getBaseBoots().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(1);
-                        break;
-                    }
-                }
-                int requireLine = -1;
-                for(String loreline : selectedMeta.getLore()){
-                    if(loreline.contains("Requires")){
-                        requireLine = selectedMeta.getLore().indexOf(loreline);
-                        break;
-                    }
-                }
-                lore.set(requireLine, elementalistEquipment.getBaseWeapon().getItemMeta().getLore().get(elementalistEquipment.getBaseWeapon().getItemMeta().getLore().size()-1));
-                break;
-            }
-            case "mystic": {
-                switch (equipSlot.toLowerCase()){
-                    case "weapon":{
-                        selectedMeta.setDisplayName(mysticEquipment.getBaseWeapon().getItemMeta().getDisplayName());
-                        oldItem.setType(Material.BLAZE_ROD);
-                        break;
-                    }
-                    case "helmet":{
-                        selectedMeta.setDisplayName(mysticEquipment.getBaseHelmet().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(3);
-                        selectedMeta.setCustomModelData(3);
-                        break;
-                    }
-                    case "chestplate":{
-                        selectedMeta.setDisplayName(mysticEquipment.getBaseChestPlate().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(3);
-                        break;
-                    }
-                    case "leggings":{
-                        selectedMeta.setDisplayName(mysticEquipment.getBaseLeggings().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(3);
-                        break;
-                    }
-                    case "boots":{
-                        selectedMeta.setDisplayName(mysticEquipment.getBaseBoots().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(3);
-                        break;
-                    }
-                }
-                int requireLine = -1;
-                for(String loreline : selectedMeta.getLore()){
-                    if(loreline.contains("Requires")){
-                        requireLine = selectedMeta.getLore().indexOf(loreline);
-                        break;
-                    }
-                }
-                lore.set(requireLine, mysticEquipment.getBaseWeapon().getItemMeta().getLore().get(mysticEquipment.getBaseWeapon().getItemMeta().getLore().size()-1));
-                break;
-            }
-            case "paladin": {
-                switch (equipSlot.toLowerCase()){
-                    case "weapon":{
-                        selectedMeta.setDisplayName(paladinEquipment.getBaseWeapon().getItemMeta().getDisplayName());
-                        oldItem.setType(Material.IRON_SWORD);
-                        break;
-                    }
-                    case "helmet":{
-                        selectedMeta.setDisplayName(paladinEquipment.getBaseHelmet().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(5);
-                        break;
-                    }
-                    case "chestplate":{
-                        selectedMeta.setDisplayName(paladinEquipment.getBaseChestPlate().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(5);
-                        break;
-                    }
-                    case "leggings":{
-                        selectedMeta.setDisplayName(paladinEquipment.getBaseLeggings().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(5);
-                        break;
-                    }
-                    case "boots":{
-                        selectedMeta.setDisplayName(paladinEquipment.getBaseBoots().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(5);
-                        break;
-                    }
-                }
-                int requireLine = -1;
-                for(String loreline : selectedMeta.getLore()){
-                    if(loreline.contains("Requires")){
-                        requireLine = selectedMeta.getLore().indexOf(loreline);
-                        break;
-                    }
-                }
-                lore.set(requireLine, paladinEquipment.getBaseWeapon().getItemMeta().getLore().get(paladinEquipment.getBaseWeapon().getItemMeta().getLore().size()-1));
-                break;
-            }
-            case "ranger": {
-                switch (equipSlot.toLowerCase()){
-                    case "weapon":{
-                        selectedMeta.setDisplayName(rangerEquipment.getBaseWeapon().getItemMeta().getDisplayName());
-                        oldItem.setType(Material.FEATHER);
-                        break;
-                    }
-                    case "helmet":{
-                        selectedMeta.setDisplayName(rangerEquipment.getBaseHelmet().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(2);
-                        break;
-                    }
-                    case "chestplate":{
-                        selectedMeta.setDisplayName(rangerEquipment.getBaseChestPlate().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(2);
-                        break;
-                    }
-                    case "leggings":{
-                        selectedMeta.setDisplayName(rangerEquipment.getBaseLeggings().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(2);
-                        break;
-                    }
-                    case "boots":{
-                        selectedMeta.setDisplayName(rangerEquipment.getBaseBoots().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(2);
-                        break;
-                    }
-                }
-                int requireLine = -1;
-                for(String loreline : selectedMeta.getLore()){
-                    if(loreline.contains("Requires")){
-                        requireLine = selectedMeta.getLore().indexOf(loreline);
-                        break;
-                    }
-                }
-                lore.set(requireLine, rangerEquipment.getBaseWeapon().getItemMeta().getLore().get(rangerEquipment.getBaseWeapon().getItemMeta().getLore().size()-1));
-                break;
-            }
-            case "shadow knight": {
-                switch (equipSlot.toLowerCase()){
-                    case "weapon":{
-                        selectedMeta.setDisplayName(shadowKnightEquipment.getBaseWeapon().getItemMeta().getDisplayName());
-                        oldItem.setType(Material.DIAMOND_SWORD);
-                        break;
-                    }
-                    case "helmet":{
-                        selectedMeta.setDisplayName(shadowKnightEquipment.getBaseHelmet().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(4);
-                        break;
-                    }
-                    case "chestplate":{
-                        selectedMeta.setDisplayName(shadowKnightEquipment.getBaseChestPlate().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(4);
-                        break;
-                    }
-                    case "leggings":{
-                        selectedMeta.setDisplayName(shadowKnightEquipment.getBaseLeggings().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(4);
-                        break;
-                    }
-                    case "boots":{
-                        selectedMeta.setDisplayName(shadowKnightEquipment.getBaseBoots().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(4);
-                        break;
-                    }
-                }
-                int requireLine = -1;
-                for(String loreline : selectedMeta.getLore()){
-                    if(loreline.contains("Requires")){
-                        requireLine = selectedMeta.getLore().indexOf(loreline);
-                        break;
-                    }
-                }
-                lore.set(requireLine, shadowKnightEquipment.getBaseWeapon().getItemMeta().getLore().get(shadowKnightEquipment.getBaseWeapon().getItemMeta().getLore().size()-1));
-                break;
-            }
-            case "warrior": {
-                switch (equipSlot.toLowerCase()){
-                    case "weapon":{
-                        selectedMeta.setDisplayName(warriorEquipment.getBaseWeapon().getItemMeta().getDisplayName());
-                        oldItem.setType(Material.BRICK);
-                        break;
-                    }
-                    case "helmet":{
-                        selectedMeta.setDisplayName(warriorEquipment.getBaseHelmet().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(6);
-                        break;
-                    }
-                    case "chestplate":{
-                        selectedMeta.setDisplayName(warriorEquipment.getBaseChestPlate().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(6);
-                        break;
-                    }
-                    case "leggings":{
-                        selectedMeta.setDisplayName(warriorEquipment.getBaseLeggings().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(6);
-                        break;
-                    }
-                    case "boots":{
-                        selectedMeta.setDisplayName(warriorEquipment.getBaseBoots().getItemMeta().getDisplayName());
-                        selectedMeta.setCustomModelData(6);
-                        break;
-                    }
-                }
-                int requireLine = -1;
-                for(String loreline : selectedMeta.getLore()){
-                    if(loreline.contains("Requires")){
-                        requireLine = selectedMeta.getLore().indexOf(loreline);
-                        break;
-                    }
-                }
-                lore.set(requireLine, warriorEquipment.getBaseWeapon().getItemMeta().getLore().get(warriorEquipment.getBaseWeapon().getItemMeta().getLore().size()-1));
-                break;
-            }
-        }
-
-        selectedMeta.setLore(lore);
-        oldItem.setItemMeta(selectedMeta);
-
-        return oldItem;
-    }
-
-    public ItemStack generate(Player player, int level, int gearType){
-
-        ItemStack baseGear = new ItemStack(Material.AIR);
-
-        //randomly generate
-        if(gearType == -1){
-            gearType = new Random().nextInt(5);
-        }
-
-        String clazz = profileManager.getAnyProfile(player).getPlayerClass();
-
-        switch (clazz.toLowerCase()){
-            case "assassin":{
-                switch (gearType){
-                    case 0:{
-                        baseGear = assassinEquipment.getBaseWeapon();
-                        break;
-                    }
-                    case 1:{
-                        baseGear = assassinEquipment.getBaseHelmet();
-                        break;
-                    }
-                    case 2:{
-                        baseGear = assassinEquipment.getBaseChestPlate();
-                        break;
-                    }
-                    case 3:{
-                        baseGear = assassinEquipment.getBaseLeggings();
-                        break;
-                    }
-                    case 4:{
-                        baseGear = assassinEquipment.getBaseBoots();
-                        break;
-                    }
-                }
-                break;
-            }
-            case "elementalist":{
-                switch (gearType){
-                    case 0:{
-                        baseGear = elementalistEquipment.getBaseWeapon();
-                        break;
-                    }
-                    case 1:{
-                        baseGear = elementalistEquipment.getBaseHelmet();
-                        break;
-                    }
-                    case 2:{
-                        baseGear = elementalistEquipment.getBaseChestPlate();
-                        break;
-                    }
-                    case 3:{
-                        baseGear = elementalistEquipment.getBaseLeggings();
-                        break;
-                    }
-                    case 4:{
-                        baseGear = elementalistEquipment.getBaseBoots();
-                        break;
-                    }
-                }
-                break;
-            }
-            case "mystic":{
-                switch (gearType){
-                    case 0:{
-                        baseGear = mysticEquipment.getBaseWeapon();
-                        break;
-                    }
-                    case 1:{
-                        baseGear = mysticEquipment.getBaseHelmet();
-                        break;
-                    }
-                    case 2:{
-                        baseGear = mysticEquipment.getBaseChestPlate();
-                        break;
-                    }
-                    case 3:{
-                        baseGear = mysticEquipment.getBaseLeggings();
-                        break;
-                    }
-                    case 4:{
-                        baseGear = mysticEquipment.getBaseBoots();
-                        break;
-                    }
-                }
-                break;
-            }
-            case "paladin":{
-                switch (gearType){
-                    case 0:{
-                        baseGear = paladinEquipment.getBaseWeapon();
-                        break;
-                    }
-                    case 1:{
-                        baseGear = paladinEquipment.getBaseHelmet();
-                        break;
-                    }
-                    case 2:{
-                        baseGear = paladinEquipment.getBaseChestPlate();
-                        break;
-                    }
-                    case 3:{
-                        baseGear = paladinEquipment.getBaseLeggings();
-                        break;
-                    }
-                    case 4:{
-                        baseGear = paladinEquipment.getBaseBoots();
-                        break;
-                    }
-                }
-
-                break;
-            }
-            case "ranger":{
-                switch (gearType){
-                    case 0:{
-                        baseGear = rangerEquipment.getBaseWeapon();
-                        break;
-                    }
-                    case 1:{
-                        baseGear = rangerEquipment.getBaseHelmet();
-                        break;
-                    }
-                    case 2:{
-                        baseGear = rangerEquipment.getBaseChestPlate();
-                        break;
-                    }
-                    case 3:{
-                        baseGear = rangerEquipment.getBaseLeggings();
-                        break;
-                    }
-                    case 4:{
-                        baseGear = rangerEquipment.getBaseBoots();
-                        break;
-                    }
-                }
-                break;
-            }
-            case "shadow knight":{
-                switch (gearType){
-                    case 0:{
-                        baseGear = shadowKnightEquipment.getBaseWeapon();
-                        break;
-                    }
-                    case 1:{
-                        baseGear = shadowKnightEquipment.getBaseHelmet();
-                        break;
-                    }
-                    case 2:{
-                        baseGear = shadowKnightEquipment.getBaseChestPlate();
-                        break;
-                    }
-                    case 3:{
-                        baseGear = shadowKnightEquipment.getBaseLeggings();
-                        break;
-                    }
-                    case 4:{
-                        baseGear = shadowKnightEquipment.getBaseBoots();
-                        break;
-                    }
-                }
-                break;
-            }
-            case "warrior":{
-                switch (gearType){
-                    case 0: {
-                        baseGear = warriorEquipment.getBaseWeapon();
-                        break;
-                    }
-                    case 1:{
-                        baseGear = warriorEquipment.getBaseHelmet();
-                        break;
-                    }
-                    case 2:{
-                        baseGear = warriorEquipment.getBaseChestPlate();
-                        break;
-                    }
-                    case 3:{
-                        baseGear = warriorEquipment.getBaseLeggings();
-                        break;
-                    }
-                    case 4:{
-                        baseGear = warriorEquipment.getBaseBoots();
-                        break;
-                    }
-                }
-                break;
-            }
-            case "none":{
-                baseGear = noneEquipment.getBaseWeapon();
-                break;
-            }
-        }
-
-        if(baseGear.getType().equals(Material.AIR)){
-            return baseGear;
-        }
-
-        return upgrade(baseGear, level);
-    }
-
-    public ItemStack identify(Player player, ItemStack equipment){
-
-
-        //check level
         ItemMeta meta = equipment.getItemMeta();
         assert meta != null;
         List<String> lores = meta.getLore();
         assert lores != null;
-        int level = 0;
-        String levelRegex = ".*\\b(?i:level:)\\s*(\\d+).*";
-        Pattern levelPattern = Pattern.compile(levelRegex);
+
+        int tier = 0;
+        String tierRegex = ".*\\b(?i:tier:)\\s*(\\d+).*";
+        Pattern tierPattern = Pattern.compile(tierRegex);
         for(String lore : lores){
             String colorlessString = lore.replaceAll("§.", "");
-            Matcher levelMatcher = levelPattern.matcher(colorlessString);
-            if(levelMatcher.matches()){
-                level = Integer.parseInt(levelMatcher.group(1));
+            Matcher tierMatcher = tierPattern.matcher(colorlessString);
+            if(tierMatcher.matches()){
+                tier = Integer.parseInt(tierMatcher.group(1));
                 break;
             }
 
         }
+        return tier;
+    }
+
+    private int getEquipmentTier(ItemStack equipment){
+
+        ItemMeta meta = equipment.getItemMeta();
+        assert meta != null;
+        List<String> lores = meta.getLore();
+        assert lores != null;
+
+        int tier = 0;
+        Pattern tierPattern = Pattern.compile("(?i)\\bTier\\s+(\\d+)");
+        for(String lore : lores){
+            String colorlessString = lore.replaceAll("§.", "");
+            Matcher tierMatcher = tierPattern.matcher(colorlessString);
+
+            if(tierMatcher.find()){
+                tier = Integer.parseInt(tierMatcher.group(1));
+            }
+
+        }
+
+        return tier;
+    }
+
+    private int getGearType(ItemStack equipment){
+
+        ItemMeta meta = equipment.getItemMeta();
+        assert meta != null;
+        List<String> lores = meta.getLore();
+        assert lores != null;
 
         String name = meta.getDisplayName();
-        name = name.replaceAll("Unidentified", "");
-        String colorlessName = name.replaceAll("§.", "");
+        name = name.replaceAll("§.", "");
+        name = name.replaceAll("Assassin's ", "");
+        name = name.replaceAll("Elementalist's ", "");
+        name = name.replaceAll("Mystic's ", "");
+        name = name.replaceAll("Paladin's ", "");
+        name = name.replaceAll("Ranger's ", "");
+        name = name.replaceAll("Shadow Knight's ", "");
+        name = name.replaceAll("Warrior's ", "");
 
+
+        switch (name.toLowerCase()){
+            case "dagger":
+            case "catalyst":
+            case "staff":
+            case "sword":
+            case "bow":
+            case "greatsword":
+            case "axe":{
+                return 0;
+            }
+            case "scarf":
+            case "hood":
+            case "helmet":{
+                return 1;
+            }
+            case "tunic":
+            case "plate":{
+                return 2;
+            }
+            case "breeches":{
+                return 3;
+            }
+            case "boots":{
+                return 4;
+            }
+        }
+
+        return -1;
+    }
+
+
+
+    public ItemStack identify(Player player, ItemStack equipment){
+
+        ItemMeta meta = equipment.getItemMeta();
+        assert meta != null;
+        List<String> lores = meta.getLore();
+        assert lores != null;
+        int level = getItemLevel(equipment);
+        int tier = getItemTier(equipment);
+
+        //Bukkit.getLogger().info("level is " + level);
+        //Bukkit.getLogger().info("tier is " + tier);
+
+        String name = meta.getDisplayName();
+        name = name.replaceAll("Unidentified ", "");
+        String colorlessName = name.replaceAll("§.", "");
         int gearType = -1;
 
         switch (colorlessName.toLowerCase()){
@@ -608,10 +203,394 @@ public class EquipmentManager {
             }
         }
 
-        return generate(player, level, gearType);
+        return generateItem(player, level, tier, gearType);
     }
 
-    public ItemStack upgrade(ItemStack equipment, int newLevel){
+    public ItemStack generateItem(Player player, int level, int tier, int gearType){
+
+        ItemStack baseGear = new ItemStack(Material.AIR);
+
+        //randomly generate
+        if(gearType == -1){
+            gearType = new Random().nextInt(5);
+        }
+
+        String clazz = profileManager.getAnyProfile(player).getPlayerClass();
+
+        switch (clazz.toLowerCase()) {
+            case "assassin": {
+                switch (gearType) {
+                    case 0: {
+                        baseGear = assassinEquipment.getBaseWeapon(level);
+                        break;
+                    }
+                    case 1: {
+                        baseGear = assassinEquipment.getBaseHelmet(level);
+                        break;
+                    }
+                    case 2: {
+                        baseGear = assassinEquipment.getBaseChestPlate(level);
+                        break;
+                    }
+                    case 3: {
+                        baseGear = assassinEquipment.getBaseLeggings(level);
+                        break;
+                    }
+                    case 4: {
+                        baseGear = assassinEquipment.getBaseBoots(level);
+                        break;
+                    }
+                }
+                break;
+            }
+            case "elementalist": {
+                switch (gearType) {
+                    case 0: {
+                        baseGear = elementalistEquipment.getBaseWeapon(level);
+                        break;
+                    }
+                    case 1: {
+                        baseGear = elementalistEquipment.getBaseHelmet(level);
+                        break;
+                    }
+                    case 2: {
+                        baseGear = elementalistEquipment.getBaseChestPlate(level);
+                        break;
+                    }
+                    case 3: {
+                        baseGear = elementalistEquipment.getBaseLeggings(level);
+                        break;
+                    }
+                    case 4: {
+                        baseGear = elementalistEquipment.getBaseBoots(level);
+                        break;
+                    }
+                }
+                break;
+            }
+            case "mystic": {
+                switch (gearType) {
+                    case 0: {
+                        baseGear = mysticEquipment.getBaseWeapon(level);
+                        break;
+                    }
+                    case 1: {
+                        baseGear = mysticEquipment.getBaseHelmet(level);
+                        break;
+                    }
+                    case 2: {
+                        baseGear = mysticEquipment.getBaseChestPlate(level);
+                        break;
+                    }
+                    case 3: {
+                        baseGear = mysticEquipment.getBaseLeggings(level);
+                        break;
+                    }
+                    case 4: {
+                        baseGear = mysticEquipment.getBaseBoots(level);
+                        break;
+                    }
+                }
+                break;
+            }
+            case "paladin": {
+                switch (gearType) {
+                    case 0: {
+                        baseGear = paladinEquipment.getBaseWeapon(level);
+                        break;
+                    }
+                    case 1: {
+                        baseGear = paladinEquipment.getBaseHelmet(level);
+                        break;
+                    }
+                    case 2: {
+                        baseGear = paladinEquipment.getBaseChestPlate(level);
+                        break;
+                    }
+                    case 3: {
+                        baseGear = paladinEquipment.getBaseLeggings(level);
+                        break;
+                    }
+                    case 4: {
+                        baseGear = paladinEquipment.getBaseBoots(level);
+                        break;
+                    }
+                }
+                break;
+            }
+            case "ranger": {
+                switch (gearType) {
+                    case 0: {
+                        baseGear = rangerEquipment.getBaseWeapon(level);
+                        break;
+                    }
+                    case 1: {
+                        baseGear = rangerEquipment.getBaseHelmet(level);
+                        break;
+                    }
+                    case 2: {
+                        baseGear = rangerEquipment.getBaseChestPlate(level);
+                        break;
+                    }
+                    case 3: {
+                        baseGear = rangerEquipment.getBaseLeggings(level);
+                        break;
+                    }
+                    case 4: {
+                        baseGear = rangerEquipment.getBaseBoots(level);
+                        break;
+                    }
+                }
+                break;
+            }
+            case "shadow knight": {
+                switch (gearType) {
+                    case 0: {
+                        baseGear = shadowKnightEquipment.getBaseWeapon(level);
+                        break;
+                    }
+                    case 1: {
+                        baseGear = shadowKnightEquipment.getBaseHelmet(level);
+                        break;
+                    }
+                    case 2: {
+                        baseGear = shadowKnightEquipment.getBaseChestPlate(level);
+                        break;
+                    }
+                    case 3: {
+                        baseGear = shadowKnightEquipment.getBaseLeggings(level);
+                        break;
+                    }
+                    case 4: {
+                        baseGear = shadowKnightEquipment.getBaseBoots(level);
+                        break;
+                    }
+                }
+                break;
+            }
+            case "warrior": {
+                switch (gearType) {
+                    case 0: {
+                        baseGear = warriorEquipment.getBaseWeapon(level);
+                        break;
+                    }
+                    case 1: {
+                        baseGear = warriorEquipment.getBaseHelmet(level);
+                        break;
+                    }
+                    case 2: {
+                        baseGear = warriorEquipment.getBaseChestPlate(level);
+                        break;
+                    }
+                    case 3: {
+                        baseGear = warriorEquipment.getBaseLeggings(level);
+                        break;
+                    }
+                    case 4: {
+                        baseGear = warriorEquipment.getBaseBoots(level);
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+
+        if(tier==1){
+            return baseGear;
+        }
+
+        ItemMeta meta;
+
+        if(baseGear.hasItemMeta()){
+            meta = baseGear.getItemMeta();
+        }
+        else{
+            Bukkit.getLogger().info("attempted to generate new T2+ equipment without setting up default");
+            return baseGear;
+        }
+
+        assert meta != null;
+        List<String> lores = meta.getLore();
+
+        assert lores != null;
+        int tierLine = -1;
+        for(String loreLine : lores){
+            if(loreLine.contains("Tier")){
+                tierLine = lores.indexOf(loreLine);
+                break;
+            }
+        }
+
+        String oldTier = lores.get(tierLine);
+        String newTier = oldTier.replaceAll("(?i)(\\bTier\\s*)\\d+", "$1" + tier);
+        lores.set(tierLine, newTier);
+
+        if(tier>=2){
+            //add bonus stats
+
+            //removes the bottom temporarily
+            lores.remove(lores.size()-1);
+
+            if(tier == 2){
+
+                //this is the top part
+                lores.set(0, itemManager.buildUncommonTop(2));
+
+                String commonDivider = itemManager.buildCommonDivider(2).replaceAll("§.", "");
+
+                for(String lore : lores){
+                    if(lore.contains(commonDivider)){
+                        lores.set(lores.indexOf(lore), itemManager.buildUncommonDivider(2));
+                    }
+                }
+
+
+            }
+
+            if(tier == 3){
+                //this is the top part
+                lores.set(0, itemManager.buildRareTop(2));
+
+                String commonDivider = itemManager.buildCommonDivider(2).replaceAll("§.", "");
+
+                for(String lore : lores){
+                    if(lore.contains(commonDivider)){
+                        lores.set(lores.indexOf(lore), itemManager.buildRareDivider(2));
+                    }
+                }
+
+
+            }
+
+            List<String> availableStats = new ArrayList<>();
+            availableStats.add("Attack");
+            availableStats.add("Crit");
+            availableStats.add("Health");
+            availableStats.add("Defense");
+            availableStats.add("Magic Defense");
+
+            Collections.shuffle(availableStats);
+
+            String highStat = availableStats.get(0);
+            int highStatNumber = 0;
+            String lowStat = availableStats.get(1);
+            int lowStatNumber = 0;
+
+            switch (highStat.toLowerCase()){
+                case "attack":
+                case "defense":
+                case "magic defense":{
+                    highStatNumber = getHighAttackOrDefense(level);
+                    break;
+                }
+                case "crit":{
+                    highStatNumber = getHighCrit();
+                    break;
+                }
+                case "health":{
+                    highStatNumber = getHighHealth(level);
+                    break;
+                }
+            }
+
+            switch (lowStat.toLowerCase()){
+                case "attack":
+                case "defense":
+                case "magic defense":{
+                    lowStatNumber = getLowAttackOrDefense(level);
+                    break;
+                }
+                case "crit":{
+                    lowStatNumber = getLowCrit();
+                    break;
+                }
+                case "health":{
+                    lowStatNumber = getLowHealth(level);
+                    break;
+                }
+            }
+
+
+            lores.add(ChatColor.of(menuColor) + "Bonus Attributes");
+            lores.add(ChatColor.of(uncommonColor) + highStat + " + " + highStatNumber);
+            lores.add(ChatColor.of(uncommonColor) + lowStat + " + " + lowStatNumber);
+
+            //this is data to serialize/deserialize on saving it as a string in storage
+            /*NamespacedKey high_stat = new NamespacedKey(Mystica.getPlugin(), "high_stat");
+            statRolls.set(high_stat, PersistentDataType.STRING, highStat);
+            NamespacedKey low_stat = new NamespacedKey(Mystica.getPlugin(), "low_stat");
+            statRolls.set(low_stat, PersistentDataType.STRING, lowStat); */
+        }
+
+        if(tier == 2){
+            lores.add(itemManager.buildUncommonBottom(2));
+            meta.setLore(lores);
+            baseGear.setItemMeta(meta);
+
+            return baseGear;
+        }
+
+        if(tier == 3){
+            lores.add(itemManager.buildRareDivider(2));
+        }
+
+        //add more divider rarities in the future
+
+        lores.add(ChatColor.of(menuColor) + "Special Attribute");
+
+        int statAmount = new Random().nextInt(5) + 1;
+        int statAmount2 = new Random().nextInt(5) + 1;
+        int skillNumber = new Random().nextInt(8) + 1;
+        int skillNumber2 = new Random().nextInt(8) + 1;
+
+        //NamespacedKey key = new NamespacedKey(Mystica.getPlugin(), "skill_" + i);
+        //statRolls.set(key, PersistentDataType.INTEGER, statAmount);
+
+        lores.add(ChatColor.of(rareColor) + "Skill " + skillNumber + " + " + statAmount);
+        lores.add(ChatColor.of(rareColor) + "Skill " + skillNumber2 + " + " + statAmount2);
+
+        lores.add(itemManager.buildRareBottom(2));
+        meta.setLore(lores);
+        baseGear.setItemMeta(meta);
+
+        return baseGear;
+    }
+
+    public ItemStack upgrade(Player player, ItemStack equipment, int newLevel){
+
+        if(equipment.getType().equals(Material.AIR)){
+            Bukkit.getLogger().info("no item");
+            return equipment;
+        }
+
+        int tier = getEquipmentTier(equipment);
+        int gearType = getGearType(equipment);
+
+        Bukkit.getLogger().info("tier " + tier);
+        Bukkit.getLogger().info("geartype " + gearType);
+
+        if(gearType == -1){
+            Bukkit.getLogger().info("invalid equipment type attempted upgrade");
+            return equipment;
+        }
+
+        if(tier == 1){
+            Bukkit.getLogger().info("generating level " + newLevel);
+            return generateItem(player, newLevel, tier, gearType);
+        }
+
+        ItemMeta meta = equipment.getItemMeta();
+        assert meta != null;
+        List<String> lores = meta.getLore();
+
+
+
+
+
+        return equipment;
+    }
+
+    /*public ItemStack upgrade(ItemStack equipment, int newLevel){
 
         if(equipment.getType().equals(Material.AIR)){
             return equipment;
@@ -744,9 +723,9 @@ public class EquipmentManager {
 
         newLore.add(lores.get(whichLine));
 
-        /*for(String lore : newLore){
+        for(String lore : newLore){
             Bukkit.getLogger().info(lore);
-        }*/
+        }
 
         ItemStack newItem = equipment.clone();
         ItemMeta newMeta = newItem.getItemMeta();
@@ -755,9 +734,9 @@ public class EquipmentManager {
         newItem.setItemMeta(newMeta);
 
         return newItem;
-    }
+    } */
 
-    public ItemStack reforge(ItemStack equipment){
+    /*public ItemStack reforge(ItemStack equipment){
 
 
         ItemMeta meta = equipment.getItemMeta();
@@ -961,7 +940,7 @@ public class EquipmentManager {
         newItem.setItemMeta(newMeta);
 
         return newItem;
-    }
+    } */
 
     //offense/defense 1-5 base. +2 min, +4 max per level
     //crit 1-5 base. +1 min +2 max per level
@@ -1027,194 +1006,7 @@ public class EquipmentManager {
     }
 
 
-    private String getNewBaseStatString(String slot, String stat, int level){
-
-        StringBuilder statString = new StringBuilder();
-
-        statString.append(ChatColor.of(new Color(255,255,255))).append(stat).append(" + ");
-
-        int base = 0;
-
-        switch (slot.toLowerCase()){
-            case "weapon":{
-                switch (stat.toLowerCase()){
-                    case "attack":
-                    case "magic":{
-                        base = 3;
-                        break;
-                    }
-                    case "magic defense":
-                    case "defense":{
-                        base = 4;
-                        break;
-                    }
-                    case "health":{
-                        base = 18;
-                        break;
-                    }
-                }
-                break;
-            }
-            case "helmet":{
-                switch (stat.toLowerCase()){
-                    case "health":{
-                        base = 50;
-                        break;
-                    }
-                }
-                break;
-            }
-            case "chestplate":{
-                switch (stat.toLowerCase()){
-                    case "magic defense":
-                    case "defense":{
-                        base = 4;
-                        break;
-                    }
-                    case "health":{
-                        base = 31;
-                        break;
-                    }
-                }
-                break;
-            }
-            case "leggings":{
-                switch (stat.toLowerCase()){
-                    case "attack":
-                    case "magic":{
-                        base = 4;
-                        break;
-                    }
-                }
-                break;
-            }
-            case "boots":{
-                switch (stat.toLowerCase()){
-                    case "attack":
-                    case "magic":{
-                        base = 2;
-                        break;
-                    }
-                }
-                break;
-            }
-
-        }
-
-        statString.append(base*level);
-
-        return String.valueOf(statString);
-    }
-
-
-    public ItemStack generateItem(Player player, int level, int tier, int gearType){
-
-        ItemStack baseGear = new ItemStack(Material.AIR);
-
-        //randomly generate
-        if(gearType == -1){
-            gearType = new Random().nextInt(5);
-        }
-
-        if(tier==1){
-            return baseGear;
-        }
-
-        ItemMeta meta;
-
-        if(baseGear.hasItemMeta()){
-            meta = baseGear.getItemMeta();
-        }
-        else{
-            Bukkit.getLogger().info("attempted to generate new T2+ equipment without setting up default");
-            return baseGear;
-        }
-
-        assert meta != null;
-        PersistentDataContainer statRolls = meta.getPersistentDataContainer();
-
-        if(tier>=2){
-            //add bonus stats
-
-
-            List<String> availableStats = new ArrayList<>();
-            availableStats.add("attack");
-            availableStats.add("crit");
-            availableStats.add("health");
-            availableStats.add("defense");
-            availableStats.add("magic defense");
-
-            Collections.shuffle(availableStats);
-
-            String highStat = availableStats.get(0);
-            int highStatNumber = 0;
-            String lowStat = availableStats.get(1);
-            int lowStatNumber = 0;
-
-            switch (highStat.toLowerCase()){
-                case "attack":
-                case "defense":
-                case "magic defense":{
-                    highStatNumber = getHighAttackOrDefense(level);
-                    break;
-                }
-                case "crit":{
-                    highStatNumber = getHighCrit();
-                    break;
-                }
-                case "health":{
-                    highStatNumber = getHighHealth(level);
-                    break;
-                }
-            }
-
-            switch (lowStat.toLowerCase()){
-                case "attack":
-                case "defense":
-                case "magic defense":{
-                    lowStatNumber = getLowAttackOrDefense(level);
-                    break;
-                }
-                case "crit":{
-                    lowStatNumber = getLowCrit();
-                    break;
-                }
-                case "health":{
-                    lowStatNumber = getLowHealth(level);
-                    break;
-                }
-            }
-
-            //this is data to serialize/deserialize on saving it as a string in storage
-
-            NamespacedKey high_stat = new NamespacedKey(Mystica.getPlugin(), "high_stat");
-            statRolls.set(high_stat, PersistentDataType.STRING, highStat);
-            NamespacedKey low_stat = new NamespacedKey(Mystica.getPlugin(), "low_stat");
-            statRolls.set(low_stat, PersistentDataType.STRING, lowStat);
-        }
-
-        if(tier>=3){
-            //add skill levels
-            int skillAmount = new Random().nextInt(2);
-            for (int i=0;i<skillAmount;i++){
-                int statAmount = new Random().nextInt(5) + 1;
-
-                //in the future, change this to incorporate more than 8 skill
-                int skillNumber = new Random().nextInt(8) + 1;
-
-                NamespacedKey key = new NamespacedKey(Mystica.getPlugin(), "skill_" + skillNumber);
-                statRolls.set(key, PersistentDataType.INTEGER, statAmount);
-
-                //newRandomStats.add("Skill " + skillNumber + " + " + statAmount);
-            }
-        }
-
-        //closing unicode
-
-        return baseGear;
-    }
-
-    public ItemStack deserialize(int gearType, int level, int tier, String clazz, String ... data){
+    /*public ItemStack deserialize(int gearType, int level, int tier, String clazz, String ... data){
 
         ItemStack baseGear = new ItemStack(Material.AIR);
 
@@ -1247,32 +1039,27 @@ public class EquipmentManager {
         }
 
         return baseGear;
-    }
+    }*/
 
     private int getLowAttackOrDefense(int level){
         level--;
         return 10 * (1 + level);
     }
-
     private int getHighAttackOrDefense(int level){
         level--;
         return 20 * (1 + level);
     }
-
     private int getLowHealth(int level){
         level--;
         return 5 * (1 + level);
     }
-
     private int getHighHealth(int level){
         level--;
         return 10 * (1 + level);
     }
-
     private int getLowCrit(){
         return 5;
     }
-
     private int getHighCrit(){
         return 10;
     }

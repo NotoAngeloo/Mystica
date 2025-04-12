@@ -6,11 +6,9 @@ import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import me.angeloo.mystica.Components.Items.SoulStone;
 import me.angeloo.mystica.Components.Items.UnidentifiedBoots;
-import me.angeloo.mystica.Components.Items.UnidentifiedHelmet;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
-import me.angeloo.mystica.CustomEvents.BossKillQuestCompleteEvent;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
@@ -269,7 +267,7 @@ public class CorruptHeart {
             itemDrops.add(new SoulStone());
         }
 
-        itemDrops.add(new UnidentifiedBoots(level + 1));
+        //itemDrops.add(new UnidentifiedBoots(level + 1));
 
         return itemDrops;
     }

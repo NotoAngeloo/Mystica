@@ -46,7 +46,7 @@ public class FlyingBlade {
     public FlyingBlade(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
-        itemManager = main.getClassEquipmentManager();
+        itemManager = main.getItemManager();
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
@@ -123,7 +123,7 @@ public class FlyingBlade {
         armorStand.setInvulnerable(true);
         armorStand.setMarker(true);
         EntityEquipment entityEquipment = armorStand.getEquipment();
-        ItemStack weapon = itemManager.getAssassinEquipment().getBaseWeapon();
+        ItemStack weapon = itemManager.getAssassinEquipment().getBaseWeapon(1);
         assert entityEquipment != null;
         entityEquipment.setHelmet(weapon);
         armorStand.teleport(start);

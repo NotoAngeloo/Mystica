@@ -34,7 +34,7 @@ public class MysticSkillItem {
     public MysticSkillItem(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
         abilityManager = manager;
-        itemManager = main.getClassEquipmentManager();
+        itemManager = main.getItemManager();
     }
 
     public ItemStack getSkill(int number, Player player){
@@ -291,7 +291,7 @@ public class MysticSkillItem {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        ItemStack basicItem = itemManager.getMysticEquipment().getBaseWeapon();
+        ItemStack basicItem = itemManager.getMysticEquipment().getBaseWeapon(1);
 
         ItemMeta basicMeta = basicItem.getItemMeta();
         List<String> basicLore = new ArrayList<>();

@@ -26,7 +26,7 @@ public class ReforgeInventory {
 
         Inventory inv = Bukkit.createInventory(null, 9 * 3,"Reforge");
 
-        for(int i=0;i<27;i++){
+        /*for(int i=0;i<27;i++){
             inv.setItem(i, getItem(Material.BLACK_STAINED_GLASS_PANE, 0, " "));
         }
 
@@ -38,7 +38,7 @@ public class ReforgeInventory {
 
         if(calculateNewItem){
             inv.setItem(15, equipmentManager.reforge(oldItem));
-        }
+        }*/
 
         return inv;
     }

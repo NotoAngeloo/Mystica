@@ -25,7 +25,7 @@ public class UpgradeInventory {
 
         Inventory inv = Bukkit.createInventory(null, 9 * 3,"Upgrade");
 
-        for(int i=0;i<27;i++){
+        /*for(int i=0;i<27;i++){
             inv.setItem(i, getItem(Material.BLACK_STAINED_GLASS_PANE, 0, " "));
         }
 
@@ -70,7 +70,7 @@ public class UpgradeInventory {
                         "higher level"));
             }
 
-        }
+        }*/
 
         return inv;
     }

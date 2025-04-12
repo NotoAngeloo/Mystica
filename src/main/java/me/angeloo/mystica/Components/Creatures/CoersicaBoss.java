@@ -650,7 +650,7 @@ public class CoersicaBoss {
 
         List<ItemStack> itemDrops = new ArrayList<>();
 
-        itemDrops.add(new UnidentifiedWeapon(level + 3));
+        //itemDrops.add(new UnidentifiedWeapon(level + 3));
 
         return itemDrops;
     }

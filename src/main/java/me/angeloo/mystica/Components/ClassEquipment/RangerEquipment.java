@@ -26,79 +26,79 @@ public class RangerEquipment {
         this.manager = manager;
     }
 
-    public ItemStack getBaseWeapon() {
+    public ItemStack getBaseWeapon(int level) {
 
         return manager.getItem(Material.FEATHER, 1,
                 ChatColor.of(rangerColor) + "Bow",
-                ChatColor.WHITE + manager.buildCommonTop(2),
+                manager.buildCommonTop(2),
                 ChatColor.of(rangerColor) + "Bow" + ChatColor.of(Color.WHITE) + " Tier 1",
                 "",
                 ChatColor.of(menuColor) + "Class: Ranger",
-                ChatColor.of(menuColor) + "Level: 1",
-                ChatColor.WHITE + manager.buildCommonDivider(2),
-                ChatColor.of(Color.WHITE) + "Attack + 3",
-                ChatColor.of(Color.WHITE) + "Health + 18",
-                ChatColor.of(Color.WHITE) + "Defense + 4",
-                ChatColor.of(Color.WHITE) + "Magic Defense + 4",
-                ChatColor.WHITE + manager.buildCommonBottom(2));
+                ChatColor.of(menuColor) + "Level: " + level,
+                manager.buildCommonDivider(2),
+                ChatColor.of(Color.WHITE) + "Attack + " + manager.getWeaponBaseAttack(level),
+                ChatColor.of(Color.WHITE) + "Health + " + manager.getWeaponBaseHealth(level),
+                ChatColor.of(Color.WHITE) + "Defense + " + manager.getWeaponBaseDefense(level),
+                ChatColor.of(Color.WHITE) + "Magic Defense + " + manager.getWeaponBaseDefense(level),
+                manager.buildCommonBottom(2));
     }
 
-    public ItemStack getBaseHelmet() {
+    public ItemStack getBaseHelmet(int level) {
 
         return manager.getItem(Material.CHAIN, 2,
                 ChatColor.of(rangerColor) + "Ranger's Hood",
-                ChatColor.WHITE + manager.buildCommonTop(2),
+                manager.buildCommonTop(2),
                 ChatColor.of(rangerColor) + "Hood" + ChatColor.of(Color.WHITE) + " Tier 1",
                 "",
                 ChatColor.of(menuColor) + "Class: Ranger",
-                ChatColor.of(menuColor) + "Level: 1",
-                ChatColor.WHITE + manager.buildCommonDivider(2),
-                ChatColor.of(Color.WHITE) + "Health + 50",
-                ChatColor.WHITE + manager.buildCommonBottom(2));
+                ChatColor.of(menuColor) + "Level: " + level,
+                manager.buildCommonDivider(2),
+                ChatColor.of(Color.WHITE) + "Health + " + manager.getHelmetBaseHealth(level),
+                manager.buildCommonBottom(2));
     }
 
-    public ItemStack getBaseChestPlate() {
+    public ItemStack getBaseChestPlate(int level) {
 
         return manager.getItem(Material.CHAINMAIL_CHESTPLATE, 2,
                 ChatColor.of(rangerColor) + "Ranger's Tunic",
-                ChatColor.WHITE + manager.buildCommonTop(2),
+                manager.buildCommonTop(2),
                 ChatColor.of(rangerColor) + "Tunic" + ChatColor.of(Color.WHITE) + " Tier 1",
                 "",
                 ChatColor.of(menuColor) + "Class: Ranger",
-                ChatColor.of(menuColor) + "Level: 1",
-                ChatColor.WHITE + manager.buildCommonDivider(2),
-                ChatColor.of(Color.WHITE) + "Health + 31",
-                ChatColor.of(Color.WHITE) + "Defense + 4",
-                ChatColor.of(Color.WHITE) + "Magic Defense + 4",
-                ChatColor.WHITE + manager.buildCommonBottom(2));
+                ChatColor.of(menuColor) + "Level: " + level,
+                manager.buildCommonDivider(2),
+                ChatColor.of(Color.WHITE) + "Health + " + manager.getChestBaseHealth(level),
+                ChatColor.of(Color.WHITE) + "Defense + " + manager.getWeaponBaseDefense(level),
+                ChatColor.of(Color.WHITE) + "Magic Defense + " + manager.getChestBaseDefense(level),
+                manager.buildCommonBottom(2));
     }
 
-    public ItemStack getBaseLeggings() {
+    public ItemStack getBaseLeggings(int level) {
 
         return manager.getItem(Material.CHAINMAIL_LEGGINGS, 2,
                 ChatColor.of(rangerColor) + "Ranger's Breeches",
-                ChatColor.WHITE + manager.buildCommonTop(2),
+                manager.buildCommonTop(2),
                 ChatColor.of(rangerColor) + "Breeches" + ChatColor.of(Color.WHITE) + " Tier 1",
                 "",
                 ChatColor.of(menuColor) + "Class: Ranger",
-                ChatColor.of(menuColor) + "Level: 1",
-                ChatColor.WHITE + manager.buildCommonDivider(2),
-                ChatColor.of(Color.WHITE) + "Attack + 4",
-                ChatColor.WHITE + manager.buildCommonBottom(2));
+                ChatColor.of(menuColor) + "Level: " + level,
+                manager.buildCommonDivider(2),
+                ChatColor.of(Color.WHITE) + "Attack + " + manager.getLeggingBaseAttack(level),
+                manager.buildCommonBottom(2));
     }
 
-    public ItemStack getBaseBoots() {
+    public ItemStack getBaseBoots(int level) {
 
         return manager.getItem(Material.CHAINMAIL_BOOTS, 2,
                 ChatColor.of(rangerColor) + "Ranger's Boots",
-                ChatColor.WHITE + manager.buildCommonTop(2),
+                manager.buildCommonTop(2),
                 ChatColor.of(rangerColor) + "Boots" + ChatColor.of(Color.WHITE) + " Tier 1",
                 "",
                 ChatColor.of(menuColor) + "Class: Ranger",
-                ChatColor.of(menuColor) + "Level: 1",
-                ChatColor.WHITE + manager.buildCommonDivider(2),
-                ChatColor.of(Color.WHITE) + "Attack + 2",
-                ChatColor.WHITE + manager.buildCommonBottom(2));
+                ChatColor.of(menuColor) + "Level: " + level,
+                manager.buildCommonDivider(2),
+                ChatColor.of(Color.WHITE) + "Attack + " + manager.getBootsBaseAttack(level),
+                manager.buildCommonBottom(2));
     }
 
 

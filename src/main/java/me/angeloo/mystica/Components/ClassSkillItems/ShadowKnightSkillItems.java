@@ -33,7 +33,7 @@ public class ShadowKnightSkillItems {
     public ShadowKnightSkillItems(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
         abilityManager = manager;
-        itemManager = main.getClassEquipmentManager();
+        itemManager = main.getItemManager();
     }
 
     public ItemStack getSkill(int number, Player player){
@@ -183,7 +183,7 @@ public class ShadowKnightSkillItems {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        ItemStack basicItem = itemManager.getShadowKnightEquipment().getBaseWeapon();
+        ItemStack basicItem = itemManager.getShadowKnightEquipment().getBaseWeapon(1);
 
         ItemMeta basicMeta = basicItem.getItemMeta();
         List<String> basicLore = new ArrayList<>();

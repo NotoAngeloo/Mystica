@@ -33,7 +33,7 @@ public class PaladinSkillItems {
     public PaladinSkillItems(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
         abilityManager = manager;
-        itemManager = main.getClassEquipmentManager();
+        itemManager = main.getItemManager();
     }
 
     public ItemStack getSkill(int number, Player player){
@@ -288,7 +288,7 @@ public class PaladinSkillItems {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        ItemStack basicItem = itemManager.getPaladinEquipment().getBaseWeapon();
+        ItemStack basicItem = itemManager.getPaladinEquipment().getBaseWeapon(1);
 
         ItemMeta basicMeta = basicItem.getItemMeta();
         List<String> basicLore = new ArrayList<>();

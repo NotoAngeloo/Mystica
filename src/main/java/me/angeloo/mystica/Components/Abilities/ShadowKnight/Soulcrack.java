@@ -49,7 +49,7 @@ public class Soulcrack {
     public Soulcrack(Mystica main, AbilityManager manager, ShadowKnightAbilities shadowKnightAbilities){
         this.main = main;
         abilityManager = manager;
-        itemManager = main.getClassEquipmentManager();
+        itemManager = main.getItemManager();
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
@@ -120,7 +120,7 @@ public class Soulcrack {
 
         EntityEquipment entityEquipment = armorStand.getEquipment();
 
-        ItemStack weapon = itemManager.getShadowKnightEquipment().getBaseWeapon();
+        ItemStack weapon = itemManager.getShadowKnightEquipment().getBaseWeapon(1);
         ItemStack offhand = weapon.clone();
 
         if(caster instanceof Player){

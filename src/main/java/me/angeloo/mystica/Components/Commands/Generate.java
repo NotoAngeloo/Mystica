@@ -22,7 +22,7 @@ public class Generate implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
 
-        if(args.length == 1){
+        /*if(args.length == 1){
             if(!(sender instanceof Player)){
                 sender.sendMessage("only players");
                 return true;
@@ -57,7 +57,7 @@ public class Generate implements CommandExecutor {
             return true;
         }
 
-
+*/
         return true;
     }
 }

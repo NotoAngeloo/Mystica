@@ -2,6 +2,7 @@ package me.angeloo.mystica.Managers;
 
 
 import me.angeloo.mystica.Components.ClassEquipment.*;
+import me.angeloo.mystica.Components.Items.*;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -11,12 +12,19 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 
 public class ItemManager {
+
+    private final UnidentifiedHelmet unidentifiedHelmet;
+    private final UnidentifiedChestplate unidentifiedChestplate;
+    private final UnidentifiedLeggings unidentifiedLeggings;
+    private final UnidentifiedBoots unidentifiedBoots;
+    private final UnidentifiedWeapon unidentifiedWeapon;
 
     private final AssassinEquipment assassinEquipment;
     private final ElementalistEquipment elementalistEquipment;
@@ -28,6 +36,12 @@ public class ItemManager {
     private final WarriorEquipment warriorEquipment;
 
     public ItemManager(){
+        unidentifiedHelmet = new UnidentifiedHelmet(this);
+        unidentifiedChestplate = new UnidentifiedChestplate(this);
+        unidentifiedLeggings = new UnidentifiedLeggings(this);
+        unidentifiedBoots = new UnidentifiedBoots(this);
+        unidentifiedWeapon =new UnidentifiedWeapon(this);
+
         assassinEquipment = new AssassinEquipment(this);
         elementalistEquipment = new ElementalistEquipment(this);
         mysticEquipment = new MysticEquipment(this);
@@ -96,9 +110,8 @@ public class ItemManager {
         //22 offset
         tooltip.append("\uF829\uF826").append(topRight).append("\uF809\uF806");
 
-        return tooltip.toString();
+        return ChatColor.of(Color.WHITE) + tooltip.toString();
     }
-
     public String buildCommonDivider(int width){
 
         StringBuilder tooltip = new StringBuilder();
@@ -128,9 +141,8 @@ public class ItemManager {
         //22 offset
         tooltip.append(right);
 
-        return tooltip.toString();
+        return ChatColor.of(Color.WHITE) + tooltip.toString();
     }
-
     public String buildCommonBottom(int width){
 
         StringBuilder tooltip = new StringBuilder();
@@ -160,38 +172,257 @@ public class ItemManager {
         //22 offset
         tooltip.append("\uF829\uF826").append(topRight).append("\uF809\uF806");
 
-        return tooltip.toString();
+        return ChatColor.of(Color.WHITE) + tooltip.toString();
+    }
+    public String buildUncommonTop(int width){
+
+        StringBuilder tooltip = new StringBuilder();
+
+        String topLeft = "\uE09C";
+        String topMid = "\uE09D";
+        String topRight = "\uE09E";
+
+        tooltip.append("\uF809\uF806").append(topLeft); //-22 space
+
+        //-1 space
+        tooltip.append("\uF801");
+
+        StringBuilder center = new StringBuilder();
+        for(int i=0;i<width;i++){
+            center.append(topMid);
+            //-1 space
+            center.append("\uF801");
+        }
+
+        tooltip.append(center);
+
+        //-23 space
+        tooltip.append("\uF809\uF807");
+
+
+        //22 offset
+        tooltip.append("\uF829\uF826").append(topRight).append("\uF809\uF806");
+
+        return ChatColor.of(Color.WHITE) + tooltip.toString();
+    }
+    public String buildUncommonDivider(int width){
+
+        StringBuilder tooltip = new StringBuilder();
+
+        String left = "\uE09F";
+        String mid = "\uE0A0";
+        String right = "\uE0A1";
+
+        //-5 space
+        tooltip.append("\uF805");
+
+        tooltip.append(left);
+
+        //-1 space
+        tooltip.append("\uF801");
+
+        StringBuilder center = new StringBuilder();
+        for(int i=0;i<width;i++){
+            center.append(mid);
+            //-1 space
+            center.append("\uF801");
+        }
+
+        tooltip.append(center);
+
+
+        //22 offset
+        tooltip.append(right);
+
+        return ChatColor.of(Color.WHITE) + tooltip.toString();
+    }
+    public String buildUncommonBottom(int width){
+
+        StringBuilder tooltip = new StringBuilder();
+
+        String topLeft = "\uE0A2";
+        String topMid = "\uE0A3";
+        String topRight = "\uE0A4";
+
+        tooltip.append("\uF809\uF806").append(topLeft); //-22 space
+
+        //-1 space
+        tooltip.append("\uF801");
+
+        StringBuilder center = new StringBuilder();
+        for(int i=0;i<width;i++){
+            center.append(topMid);
+            //-1 space
+            center.append("\uF801");
+        }
+
+        tooltip.append(center);
+
+        //-23 space
+        tooltip.append("\uF809\uF807");
+
+
+        //22 offset
+        tooltip.append("\uF829\uF826").append(topRight).append("\uF809\uF806");
+
+        return ChatColor.of(Color.WHITE) +tooltip.toString();
+    }
+    public String buildRareTop(int width){
+
+        StringBuilder tooltip = new StringBuilder();
+
+        String topLeft = "\uE0A5";
+        String topMid = "\uE0A6";
+        String topRight = "\uE0A7";
+
+        tooltip.append("\uF809\uF806").append(topLeft); //-22 space
+
+        //-1 space
+        tooltip.append("\uF801");
+
+        StringBuilder center = new StringBuilder();
+        for(int i=0;i<width;i++){
+            center.append(topMid);
+            //-1 space
+            center.append("\uF801");
+        }
+
+        tooltip.append(center);
+
+        //-23 space
+        tooltip.append("\uF809\uF807");
+
+
+        //22 offset
+        tooltip.append("\uF829\uF826").append(topRight).append("\uF809\uF806");
+
+        return ChatColor.of(Color.WHITE) + tooltip.toString();
+    }
+    public String buildRareDivider(int width){
+
+        StringBuilder tooltip = new StringBuilder();
+
+        String left = "\uE0A8";
+        String mid = "\uE0A9";
+        String right = "\uE0AA";
+
+        //-5 space
+        tooltip.append("\uF805");
+
+        tooltip.append(left);
+
+        //-1 space
+        tooltip.append("\uF801");
+
+        StringBuilder center = new StringBuilder();
+        for(int i=0;i<width;i++){
+            center.append(mid);
+            //-1 space
+            center.append("\uF801");
+        }
+
+        tooltip.append(center);
+
+
+        //22 offset
+        tooltip.append(right);
+
+        return ChatColor.of(Color.WHITE) + tooltip.toString();
+    }
+    public String buildRareBottom(int width){
+
+        StringBuilder tooltip = new StringBuilder();
+
+        String topLeft = "\uE0AB";
+        String topMid = "\uE0AC";
+        String topRight = "\uE0AD";
+
+        tooltip.append("\uF809\uF806").append(topLeft); //-22 space
+
+        //-1 space
+        tooltip.append("\uF801");
+
+        StringBuilder center = new StringBuilder();
+        for(int i=0;i<width;i++){
+            center.append(topMid);
+            //-1 space
+            center.append("\uF801");
+        }
+
+        tooltip.append(center);
+
+        //-23 space
+        tooltip.append("\uF809\uF807");
+
+
+        //22 offset
+        tooltip.append("\uF829\uF826").append(topRight).append("\uF809\uF806");
+
+        return ChatColor.of(Color.WHITE) +tooltip.toString();
+    }
+
+    public UnidentifiedHelmet getUnidentifiedHelmet(){return unidentifiedHelmet;}
+    public UnidentifiedChestplate getUnidentifiedChestplate() {
+        return unidentifiedChestplate;
+    }
+    public UnidentifiedLeggings getUnidentifiedLeggings() {
+        return unidentifiedLeggings;
+    }
+    public UnidentifiedBoots getUnidentifiedBoots() {
+        return unidentifiedBoots;
+    }
+    public UnidentifiedWeapon getUnidentifiedWeapon() {
+        return unidentifiedWeapon;
     }
 
     public AssassinEquipment getAssassinEquipment() {
         return assassinEquipment;
     }
-
     public ElementalistEquipment getElementalistEquipment() {
         return elementalistEquipment;
     }
-
     public MysticEquipment getMysticEquipment() {
         return mysticEquipment;
     }
-
     public NoneEquipment getNoneEquipment() {
         return noneEquipment;
     }
-
     public PaladinEquipment getPaladinEquipment() {
         return paladinEquipment;
     }
-
     public RangerEquipment getRangerEquipment() {
         return rangerEquipment;
     }
-
     public ShadowKnightEquipment getShadowKnightEquipment() {
         return shadowKnightEquipment;
     }
-
     public WarriorEquipment getWarriorEquipment() {
         return warriorEquipment;
     }
+
+    public int getWeaponBaseAttack(int level){
+        return 3 * level;
+    }
+    public int getWeaponBaseHealth(int level){
+        return 18 * level;
+    }
+    public int getWeaponBaseDefense(int level){
+        return 4 * level;
+    }
+    public int getHelmetBaseHealth(int level){
+        return 50 * level;
+    }
+    public int getChestBaseHealth(int level){
+        return 31 * level;
+    }
+    public int getChestBaseDefense(int level){
+        return 4 * level;
+    }
+    public int getLeggingBaseAttack(int level){
+        return 4 * level;
+    }
+    public int getBootsBaseAttack(int level){
+        return 2 * level;
+    }
+
 }

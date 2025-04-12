@@ -37,6 +37,7 @@ public final class Mystica extends JavaPlugin{
     private PathingManager pathingManager;
 
     private ClassSetter classSetter;
+    private EquipmentManager equipmentManager;
     private ItemManager itemManager;
     private StealthTargetBlacklist stealthTargetBlacklist;
     private FakePlayerTargetManager fakePlayerTargetManager;
@@ -73,9 +74,10 @@ public final class Mystica extends JavaPlugin{
 
     public static Color menuColor = new Color(176, 159, 109);
     public static Color levelColor = new Color(0,102,0);
-    public static Color soulstoneColor = new Color(23, 32, 112);
 
-    public static Color questColor = new Color(255, 128, 0);
+    public static Color commonColor = new Color(137, 141, 173);
+    public static Color uncommonColor = new Color(138, 221, 31);
+    public static Color rareColor = new Color(57, 164, 179);
 
     public static MythicDungeonsService dungeonsApi(){
         return Bukkit.getServer().getServicesManager().load(MythicDungeonsService.class);
@@ -107,6 +109,7 @@ public final class Mystica extends JavaPlugin{
 
 
         itemManager = new ItemManager();
+        equipmentManager = new EquipmentManager(this);
 
         classSetter = new ClassSetter(this);
         pvpManager = new PvpManager(this);
@@ -157,7 +160,7 @@ public final class Mystica extends JavaPlugin{
         getCommand("Reforge").setExecutor(new Reforge(this));
         getCommand("Upgrade").setExecutor(new Upgrade(this));
         getCommand("Generate").setExecutor(new Generate(this));
-        getCommand("Identify").setExecutor(new Identify());
+        getCommand("Identify").setExecutor(new Identify(this));
         getCommand("ManualSave").setExecutor(new ManualSave(this));
         getCommand("DeleteProfile").setExecutor(new DeleteProfile(this));
         getCommand("SetMileStone").setExecutor(new SetMilestone(this));
@@ -175,6 +178,7 @@ public final class Mystica extends JavaPlugin{
         getCommand("DisplayInterruptBar").setExecutor(new DisplayInterruptBar(this));
         getCommand("CompanionNeedsToInterrupt").setExecutor(new CompanionNeedsToInterrupt(this));
         getCommand("Matchmaking").setExecutor(new Matchmaking(this));
+        getCommand("MysticaItem").setExecutor(new MysticaItem(this));
 
         AbilityInventory abilityInventory;
         this.getServer().getPluginManager().registerEvents(abilityInventory = new AbilityInventory(this), this);
@@ -360,7 +364,8 @@ public final class Mystica extends JavaPlugin{
 
     public MatchMakingManager getMatchMakingManager(){return matchMakingManager;}
 
-    public ItemManager getClassEquipmentManager(){return itemManager;}
+    public ItemManager getItemManager(){return itemManager;}
 
+    public EquipmentManager getEquipmentManager(){return equipmentManager;}
 
 }

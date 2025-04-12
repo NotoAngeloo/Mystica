@@ -32,7 +32,7 @@ public class AssassinSkillItems {
 
     public AssassinSkillItems(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
-        itemManager = main.getClassEquipmentManager();
+        itemManager = main.getItemManager();
         abilityManager = manager;
     }
 
@@ -178,7 +178,7 @@ public class AssassinSkillItems {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        ItemStack basicItem = itemManager.getAssassinEquipment().getBaseWeapon();
+        ItemStack basicItem = itemManager.getAssassinEquipment().getBaseWeapon(1);
 
 
         ItemMeta basicMeta = basicItem.getItemMeta();;

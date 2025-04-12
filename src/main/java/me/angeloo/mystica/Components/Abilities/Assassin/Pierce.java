@@ -46,7 +46,7 @@ public class Pierce {
 
     public Pierce(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
         this.main = main;
-        itemManager = main.getClassEquipmentManager();
+        itemManager = main.getItemManager();
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
@@ -120,7 +120,7 @@ public class Pierce {
 
         Location start = caster.getLocation().clone();
 
-        ItemStack weapon = itemManager.getAssassinEquipment().getBaseWeapon();
+        ItemStack weapon = itemManager.getAssassinEquipment().getBaseWeapon(1);
 
         ArmorStand stand = caster.getWorld().spawn(start.clone().subtract(0,10,0), ArmorStand.class);
         stand.setInvisible(true);

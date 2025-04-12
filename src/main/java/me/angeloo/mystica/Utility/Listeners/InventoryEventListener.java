@@ -266,11 +266,11 @@ public class InventoryEventListener implements Listener {
             switch (slot){
                 case 22:{
 
-                    ItemStack newItem = equipmentManager.identify(player, old);
+                    /*ItemStack newItem = equipmentManager.identify(player, old);
 
                     player.getInventory().remove(old);
                     player.getInventory().addItem(newItem);
-                    player.openInventory(identifyInventory.openIdentifyInventory(new ItemStack(Material.AIR)));
+                    player.openInventory(identifyInventory.openIdentifyInventory(new ItemStack(Material.AIR)));*/
                     return;
                 }
 
@@ -453,7 +453,7 @@ public class InventoryEventListener implements Listener {
                     }
 
                     topInv.remove(equipment);
-                    topInv.addItem(equipmentManager.swap(player, equipment));
+                    //topInv.addItem(equipmentManager.swap(player, equipment));
 
                 }
 

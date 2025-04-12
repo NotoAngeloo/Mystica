@@ -9,7 +9,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static me.angeloo.mystica.Mystica.soulstoneColor;
+
 
 public class SoulStone extends ItemStack {
 
@@ -17,7 +17,7 @@ public class SoulStone extends ItemStack {
         super(Material.LAPIS_LAZULI);
         ItemMeta meta = this.getItemMeta();
         assert meta != null;
-        meta.setDisplayName(ChatColor.of(soulstoneColor) + "Soul Stone");
+        //meta.setDisplayName(ChatColor.of(soulstoneColor) + "Soul Stone");
         this.setItemMeta(meta);
     }
 }

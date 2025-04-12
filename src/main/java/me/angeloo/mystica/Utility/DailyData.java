@@ -9,9 +9,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 
-import static me.angeloo.mystica.Mystica.levelColor;
-import static me.angeloo.mystica.Mystica.questColor;
-
 
 public class DailyData {
 
@@ -108,7 +105,7 @@ public class DailyData {
     }
 
     public String getLevelAnnouncement(){
-        return ChatColor.of(questColor) + "Max level is currently " + ChatColor.of(levelColor) + maxLevel + ChatColor.GRAY + " (" + daysTilIncrease + " days until increased)";
+        return "Max level is currently " + maxLevel + ChatColor.GRAY + " (" + daysTilIncrease + " days until increased)";
     }
 
 }

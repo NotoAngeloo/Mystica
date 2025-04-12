@@ -30,7 +30,7 @@ public class CombatManager {
         this.main = main;
         profileManager = main.getProfileManager();
         abilityManager = manager;
-        itemManager = main.getClassEquipmentManager();
+        itemManager = main.getItemManager();
         dpsManager = main.getDpsManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }

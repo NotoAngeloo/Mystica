@@ -33,7 +33,7 @@ public class WarriorSkillItems {
     public WarriorSkillItems(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
         abilityManager = manager;
-        itemManager = main.getClassEquipmentManager();
+        itemManager = main.getItemManager();
     }
 
     public ItemStack getSkill(int number, Player player){
@@ -171,7 +171,7 @@ public class WarriorSkillItems {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        ItemStack basicItem = itemManager.getWarriorEquipment().getBaseWeapon();
+        ItemStack basicItem = itemManager.getWarriorEquipment().getBaseWeapon(1);
 
         ItemMeta basicMeta = basicItem.getItemMeta();
         List<String> basicLore = new ArrayList<>();

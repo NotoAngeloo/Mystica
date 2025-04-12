@@ -20,7 +20,7 @@ public class DisplayWeapons {
 
     public DisplayWeapons(Mystica main){
         profileManager = main.getProfileManager();
-        itemManager = main.getClassEquipmentManager();
+        itemManager = main.getItemManager();
     }
 
     public void displayArmor(Player player){

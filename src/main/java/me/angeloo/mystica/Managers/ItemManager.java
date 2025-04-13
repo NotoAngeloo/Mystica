@@ -400,6 +400,54 @@ public class ItemManager {
         return warriorEquipment;
     }
 
+    public List<String> getWeaponBaseStats(int level){
+
+        List<String> baseLores = new ArrayList<>();
+
+        baseLores.add(ChatColor.of(Color.WHITE) + "Attack + " + getWeaponBaseAttack(level));
+        baseLores.add(ChatColor.of(Color.WHITE) + "Health + " + getWeaponBaseHealth(level));
+        baseLores.add(ChatColor.of(Color.WHITE) + "Defense + " + getWeaponBaseDefense(level));
+        baseLores.add(ChatColor.of(Color.WHITE) + "Magic Defense + " + getWeaponBaseDefense(level));
+
+        return baseLores;
+    }
+
+    public List<String> getHelmetBaseStats(int level){
+
+        List<String> baseLores = new ArrayList<>();
+        baseLores.add(ChatColor.of(Color.WHITE) + "Health + " + getHelmetBaseHealth(level));
+        return baseLores;
+    }
+
+    public List<String> getChestplateBaseStats(int level){
+
+        List<String> baseLores = new ArrayList<>();
+
+        baseLores.add(ChatColor.of(Color.WHITE) + "Health + " + getChestBaseHealth(level));
+        baseLores.add(ChatColor.of(Color.WHITE) + "Defense + " + getChestBaseDefense(level));
+        baseLores.add(ChatColor.of(Color.WHITE) + "Magic Defense + " + getChestBaseDefense(level));
+
+        return baseLores;
+    }
+
+    public List<String> getLeggingsBaseStats(int level){
+
+        List<String> baseLores = new ArrayList<>();
+
+        baseLores.add(ChatColor.of(Color.WHITE) + "Attack + " + getLeggingBaseAttack(level));
+
+        return baseLores;
+    }
+
+    public List<String> getBootsBaseStats(int level){
+
+        List<String> baseLores = new ArrayList<>();
+
+        baseLores.add(ChatColor.of(Color.WHITE) + "Attack + " + getBootsBaseAttack(level));
+
+        return baseLores;
+    }
+
     public int getWeaponBaseAttack(int level){
         return 3 * level;
     }

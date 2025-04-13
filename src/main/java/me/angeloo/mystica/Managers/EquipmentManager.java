@@ -566,8 +566,8 @@ public class EquipmentManager {
         int tier = getEquipmentTier(equipment);
         int gearType = getGearType(equipment);
 
-        Bukkit.getLogger().info("tier " + tier);
-        Bukkit.getLogger().info("geartype " + gearType);
+        //Bukkit.getLogger().info("tier " + tier);
+        //Bukkit.getLogger().info("geartype " + gearType);
 
         if(gearType == -1){
             Bukkit.getLogger().info("invalid equipment type attempted upgrade");
@@ -579,15 +579,138 @@ public class EquipmentManager {
             return generateItem(player, newLevel, tier, gearType);
         }
 
-        ItemMeta meta = equipment.getItemMeta();
+        ItemStack newEquipment = equipment.clone();
+        ItemMeta meta = newEquipment.getItemMeta();
         assert meta != null;
         List<String> lores = meta.getLore();
+        assert lores != null;
+        //copies first 4 lines
+        List<String> newLores = new ArrayList<>(lores.subList(0, Math.min(4, lores.size())));
+
+        newLores.add(ChatColor.of(menuColor) + "Level: " + newLevel);
+
+        switch (tier){
+            case 2:{
+                newLores.add(itemManager.buildUncommonDivider(2));
+                break;
+            }
+            case 3:{
+                newLores.add(itemManager.buildRareDivider(2));
+                break;
+            }
+        }
+
+        switch (gearType) {
+            case 0: {
+                newLores.addAll(itemManager.getWeaponBaseStats(newLevel));
+                break;
+            }
+            case 1: {
+                newLores.addAll(itemManager.getHelmetBaseStats(newLevel));
+                break;
+            }
+            case 2: {
+                newLores.addAll(itemManager.getChestplateBaseStats(newLevel));
+                break;
+            }
+            case 3: {
+                newLores.addAll(itemManager.getLeggingsBaseStats(newLevel));
+                break;
+            }
+            case 4: {
+                newLores.addAll(itemManager.getBootsBaseStats(newLevel));
+                break;
+            }
+        }
+
+        newLores.add(ChatColor.of(menuColor) + "Bonus Attributes");
+        //now highstat lowstat
+
+        int pointer = newLores.size();
+        String highStat = lores.get(pointer);
+        String lowStat = lores.get(pointer + 1);
+
+        highStat = highStat.replaceAll("§.", "");
+        lowStat = lowStat.replaceAll("§.", "");
+
+        highStat = highStat.replaceFirst("\\s*\\+\\s*\\d+$", "");
+        lowStat = lowStat.replaceFirst("\\s*\\+\\s*\\d+$", "");
+
+        int highStatNumber = 0;
+        int lowStatNumber = 0;
+
+        switch (highStat.toLowerCase()){
+            case "attack":
+            case "defense":
+            case "magic defense":{
+                highStatNumber = getHighAttackOrDefense(newLevel);
+                break;
+            }
+            case "crit":{
+                highStatNumber = getHighCrit();
+                break;
+            }
+            case "health":{
+                highStatNumber = getHighHealth(newLevel);
+                break;
+            }
+        }
+
+        switch (lowStat.toLowerCase()){
+            case "attack":
+            case "defense":
+            case "magic defense":{
+                lowStatNumber = getLowAttackOrDefense(newLevel);
+                break;
+            }
+            case "crit":{
+                lowStatNumber = getLowCrit();
+                break;
+            }
+            case "health":{
+                lowStatNumber = getLowHealth(newLevel);
+                break;
+            }
+        }
+
+        newLores.add(ChatColor.of(uncommonColor) + highStat + " + " + highStatNumber);
+        newLores.add(ChatColor.of(uncommonColor) + lowStat + " + " + lowStatNumber);
+
+        if(tier == 2){
+            newLores.add(itemManager.buildUncommonBottom(2));
+            meta.setLore(newLores);
+            newEquipment.setItemMeta(meta);
+
+            return newEquipment;
+        }
+
+        switch (tier){
+            case 3:{
+                newLores.add(itemManager.buildRareDivider(2));
+                break;
+            }
+        }
 
 
 
+        pointer = newLores.size();
+
+        newLores.addAll(lores.subList(pointer, Math.min(pointer + 3, lores.size())));
+
+        //Bukkit.getLogger().info(lores.get(pointer));
+
+        if(tier == 3){
+            newLores.add(itemManager.buildRareBottom(2));
+            meta.setLore(newLores);
+            newEquipment.setItemMeta(meta);
+            return newEquipment;
+        }
+
+        meta.setLore(newLores);
+        newEquipment.setItemMeta(meta);
 
 
-        return equipment;
+        return newEquipment;
     }
 
     /*public ItemStack upgrade(ItemStack equipment, int newLevel){

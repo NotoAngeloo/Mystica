@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.Commands;
 
 import me.angeloo.mystica.Components.Inventories.ReforgeInventory;
+import me.angeloo.mystica.Managers.EquipmentManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -13,9 +14,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class Reforge implements CommandExecutor {
 
+    private final EquipmentManager equipmentManager;
     private final ReforgeInventory reforgeInventory;
 
     public Reforge(Mystica main){
+        equipmentManager = main.getEquipmentManager();
         reforgeInventory = new ReforgeInventory(main);
     }
 
@@ -31,7 +34,10 @@ public class Reforge implements CommandExecutor {
 
             Player player = (Player) sender;
 
-            player.openInventory(reforgeInventory.openReforgeInventory(player, new ItemStack(Material.AIR), false));
+            ItemStack equipment = player.getInventory().getItemInMainHand();
+            player.getInventory().addItem(equipmentManager.reforge(equipment));
+
+            //player.openInventory(reforgeInventory.openReforgeInventory(player, new ItemStack(Material.AIR), false));
 
             return true;
         }

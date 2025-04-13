@@ -713,151 +713,91 @@ public class EquipmentManager {
         return newEquipment;
     }
 
-    /*public ItemStack upgrade(ItemStack equipment, int newLevel){
+    public ItemStack reforge(ItemStack equipment){
 
         if(equipment.getType().equals(Material.AIR)){
+            Bukkit.getLogger().info("no item");
             return equipment;
         }
 
-
-        ItemMeta meta = equipment.getItemMeta();
+        ItemStack newEquipment = equipment.clone();
+        ItemMeta meta = newEquipment.getItemMeta();
         assert meta != null;
         List<String> lores = meta.getLore();
         assert lores != null;
 
-        boolean hasReforgeStats = false;
-        for(String lore : lores){
-            if (!lore.startsWith("§") && !lore.equalsIgnoreCase("")) {
-                hasReforgeStats = true;
+        int pointer = -1;
+        for(String loreLine : lores){
+            if(loreLine.contains("Bonus Attributes")){
+                pointer = lores.indexOf(loreLine);
                 break;
             }
         }
 
-        List<String> newLore = new ArrayList<>();
-        List<String> randomStats = new ArrayList<>();
-        newLore.add(ChatColor.of(menuColor) + "Level: " + ChatColor.of(Color.WHITE) + newLevel);
-
-        //get the slot of the item
-        String slot = lores.get(1).replaceAll("§.", "");
-        newLore.add(ChatColor.of(menuColor) + slot);
-        newLore.add("");
-
-        //get what the base stats are
-        String[] valid = {"attack","health","defense","magic defense","crit"};
-        String regex = ".*?((?i:" + String.join("|", valid) + ")\\s*\\+\\s*(\\d+)).*";
-        Pattern pattern = Pattern.compile(regex);
-        for (String lore : lores){
-
-            if(!lore.startsWith("§") && !lore.equalsIgnoreCase("")){
-                randomStats.add(lore);
-                continue;
-            }
-
-            Matcher matcher = pattern.matcher(lore);
-            if (!matcher.matches()) {
-                continue;
-            }
-
-            String stat = matcher.group(1);
-            stat = stat.replaceAll("\\+\\s*\\d+", "").trim();
-
-            newLore.add(getNewBaseStatString(slot, stat, newLevel));
+        if(pointer == -1){
+            Bukkit.getLogger().info("invalid equipment");
+            return equipment;
         }
 
-        newLore.add("");
+        int level = getItemLevel(equipment);
 
-        if(hasReforgeStats){
 
-            PersistentDataContainer container = meta.getPersistentDataContainer();
+        List<String> availableStats = new ArrayList<>();
+        availableStats.add("Attack");
+        availableStats.add("Crit");
+        availableStats.add("Health");
+        availableStats.add("Defense");
+        availableStats.add("Magic Defense");
 
-            for(String lore : randomStats){
-                String name = lore.replaceAll("\\s*\\+\\s*\\d+\\s*", "").toLowerCase();
+        Collections.shuffle(availableStats);
 
-                if(name.startsWith("skill")){
-                    int skillNumber = Integer.parseInt(name.replaceAll("skill ", ""));
-                    int skillLevel = Integer.parseInt(lore.replaceAll(".*\\+\\s*(\\d+).*", "$1"));
-                    newLore.add("Skill " + skillNumber + " + " + skillLevel);
-                    continue;
-                    //Bukkit.getLogger().info(skillNumber + " " + skillLevel);
-                }
+        String highStat = availableStats.get(0);
+        int highStatNumber = 0;
+        String lowStat = availableStats.get(1);
+        int lowStatNumber = 0;
 
-                if(name.equalsIgnoreCase("attack")){
-                    name = "offense";
-                }
-
-                name = name.replaceAll(" ", "_");
-
-                //because loop within loop and a lore appears twice, it also detects two different namespace keys. remove one of them after its detected
-
-                for (NamespacedKey key : container.getKeys()) {
-                    String stat = key.getKey();
-                    stat = stat.replaceAll("_[0-9]+$", "");
-
-                    int value = container.get(key, PersistentDataType.INTEGER);
-
-                    //Bukkit.getLogger().info(stat);
-
-                    if(name.equalsIgnoreCase(stat)){
-                        //remove from container
-                        container.remove(key);
-
-                        //calculate the stat based on the value
-                        switch(name.toLowerCase()){
-                            case "offense":{
-                                newLore.add("Attack + " + statCalculatorOffenseDefense(newLevel, value));
-                                break;
-                            }
-                            case "crit":{
-                                newLore.add("Crit + " + statCalculatorCrit(newLevel, value));
-                                break;
-                            }
-                            case "health":{
-                                newLore.add("Health + " + statCalculatorHealth(newLevel, value));
-                                break;
-                            }
-                            case "defense":{
-                                newLore.add("Defense + " + statCalculatorOffenseDefense(newLevel, value));
-                                break;
-                            }
-                            case "magic_defense":{
-                                newLore.add("Magic Defense + " + statCalculatorOffenseDefense(newLevel, value));
-                                break;
-                            }
-                        }
-                    }
-
-                }
-
+        switch (highStat.toLowerCase()){
+            case "attack":
+            case "defense":
+            case "magic defense":{
+                highStatNumber = getHighAttackOrDefense(level);
+                break;
             }
-
-            newLore.add("");
-        }
-
-        int whichLine = 0;
-        String requiresRegex = "(?i)requires ";
-        Pattern requiresPattern = Pattern.compile(requiresRegex);
-        for(String lore : lores){
-            String colorlessString = lore.replaceAll("§.", "");
-            Matcher requiresMatcher = requiresPattern.matcher(colorlessString);
-            if(requiresMatcher.find()){
-                whichLine = lores.indexOf(lore);
+            case "crit":{
+                highStatNumber = getHighCrit();
+                break;
+            }
+            case "health":{
+                highStatNumber = getHighHealth(level);
+                break;
             }
         }
 
-        newLore.add(lores.get(whichLine));
-
-        for(String lore : newLore){
-            Bukkit.getLogger().info(lore);
+        switch (lowStat.toLowerCase()){
+            case "attack":
+            case "defense":
+            case "magic defense":{
+                lowStatNumber = getLowAttackOrDefense(level);
+                break;
+            }
+            case "crit":{
+                lowStatNumber = getLowCrit();
+                break;
+            }
+            case "health":{
+                lowStatNumber = getLowHealth(level);
+                break;
+            }
         }
 
-        ItemStack newItem = equipment.clone();
-        ItemMeta newMeta = newItem.getItemMeta();
-        assert newMeta != null;
-        newMeta.setLore(newLore);
-        newItem.setItemMeta(newMeta);
+        lores.set(pointer + 1, ChatColor.of(uncommonColor) + highStat + " + " + highStatNumber);
+        lores.set(pointer + 2, ChatColor.of(uncommonColor) + lowStat + " + " + lowStatNumber);
 
-        return newItem;
-    } */
+        meta.setLore(lores);
+        newEquipment.setItemMeta(meta);
+
+        return newEquipment;
+    }
 
     /*public ItemStack reforge(ItemStack equipment){
 

@@ -799,211 +799,45 @@ public class EquipmentManager {
         return newEquipment;
     }
 
-    /*public ItemStack reforge(ItemStack equipment){
+    public ItemStack refine(ItemStack equipment){
+        if(equipment.getType().equals(Material.AIR)){
+            Bukkit.getLogger().info("no item");
+            return equipment;
+        }
 
-
-        ItemMeta meta = equipment.getItemMeta();
+        ItemStack newEquipment = equipment.clone();
+        ItemMeta meta = newEquipment.getItemMeta();
         assert meta != null;
         List<String> lores = meta.getLore();
         assert lores != null;
 
-        boolean hasReforgeStats = false;
-
-        int level = 0;
-        String levelRegex = ".*\\b(?i:level:)\\s*(\\d+).*";
-        Pattern levelPattern = Pattern.compile(levelRegex);
-        for(String lore : lores){
-            String colorlessString = lore.replaceAll("§.", "");
-            Matcher levelMatcher = levelPattern.matcher(colorlessString);
-            if(levelMatcher.matches()){
-                level = Integer.parseInt(levelMatcher.group(1));
-                continue;
-            }
-
-            if(!lore.startsWith("§") && !lore.equalsIgnoreCase("")){
-                hasReforgeStats = true;
+        int pointer = -1;
+        for(String loreLine : lores){
+            if(loreLine.contains("Special Attribute")){
+                pointer = lores.indexOf(loreLine);
+                break;
             }
         }
 
-        ItemStack newItem = equipment.clone();
-        ItemMeta newMeta = newItem.getItemMeta();
-        assert newMeta != null;
-
-        if(hasReforgeStats){
-
-            for (NamespacedKey key : newMeta.getPersistentDataContainer().getKeys()) {
-                newMeta.getPersistentDataContainer().remove(key);
-            }
-
-            List<String> editedLore = new ArrayList<>();
-
-            int index = 0;
-            for(String lore : lores){
-
-                if(lore.startsWith("§")){
-                    editedLore.add(lore);
-                }
-
-                if(lore.equalsIgnoreCase("") && lores.get(index+1).startsWith("§")){
-                    editedLore.add(lore);
-                }
-
-                index++;
-            }
-
-            newMeta.setLore(editedLore);
-            newItem.setItemMeta(newMeta);
-
+        if(pointer == -1){
+            Bukkit.getLogger().info("invalid equipment");
+            return equipment;
         }
 
-        List<String> newLores = newMeta.getLore();
-
-        int whichLine = 0;
-        String requiresRegex = "(?i)requires ";
-        Pattern requiresPattern = Pattern.compile(requiresRegex);
-        assert newLores != null;
-        for(String lore : newLores){
-            String colorlessString = lore.replaceAll("§.", "");
-            Matcher requiresMatcher = requiresPattern.matcher(colorlessString);
-            if(requiresMatcher.find()){
-                whichLine = newLores.indexOf(lore) - 1;
-            }
-        }
-
-        int offenceCounter = 0;
-        int critCounter = 0;
-        int healthCounter = 0;
-        int defenseCounter = 0;
-        int magicDefenseCounter = 0;
-        int skillCounter = 0;
-
-        List<String> availableStats = new ArrayList<>();
-        availableStats.add("offense");
-        availableStats.add("crit");
-        availableStats.add("health");
-        availableStats.add("defense");
-        availableStats.add("magic defense");
-        availableStats.add("skill");
-
-        int randomStatAmount = new Random().nextInt(6);
-        for (int i = 0; i<=randomStatAmount; i++) {
-
-            Collections.shuffle(availableStats);
-            String stat = availableStats.get(0);
-            //Bukkit.getLogger().info(stat);
-            switch (stat.toLowerCase()){
-                case "offense":{
-                    offenceCounter++;
-                    if(offenceCounter==2){
-                        availableStats.remove("offense");
-                    }
-                    break;
-                }
-                case "crit":{
-                    critCounter++;
-                    if(critCounter==2){
-                        availableStats.remove("crit");
-                    }
-                    break;
-                }
-                case "health":{
-                    healthCounter++;
-                    if(healthCounter==2){
-                        availableStats.remove("health");
-                    }
-                    break;
-                }
-                case "defense":{
-                    defenseCounter++;
-                    if(defenseCounter==2){
-                        availableStats.remove("defense");
-                    }
-                    break;
-                }
-                case "magic defense":{
-                    magicDefenseCounter++;
-                    if(magicDefenseCounter==2){
-                        availableStats.remove("magic defense");
-                    }
-                    break;
-                }
-                case "skill":{
-                    skillCounter++;
-                    if(skillCounter==2){
-                        availableStats.remove("skill");
-                    }
-                    break;
-                }
-            }
-
-        }
-
-        List<String> newRandomStats = new ArrayList<>();
-        newRandomStats.add("");
-        PersistentDataContainer statRolls = newMeta.getPersistentDataContainer();
-
-        for(int i=0;i<offenceCounter;i++){
-            int statPercent = new Random().nextInt(101);
-
-            NamespacedKey key = new NamespacedKey(Mystica.getPlugin(), "offense_" + i);
-            statRolls.set(key, PersistentDataType.INTEGER, statPercent);
-            newRandomStats.add("Attack + " + statCalculatorOffenseDefense(level, statPercent));
-        }
-
-        for(int i=0;i<critCounter;i++){
-            int statPercent = new Random().nextInt(101);
-
-            NamespacedKey key = new NamespacedKey(Mystica.getPlugin(), "crit_" + i);
-            statRolls.set(key, PersistentDataType.INTEGER, statPercent);
-
-            newRandomStats.add("Crit + " + statCalculatorCrit(level, statPercent));
-        }
-
-        for(int i=0;i<healthCounter;i++){
-            int statPercent = new Random().nextInt(101);
-
-            NamespacedKey key = new NamespacedKey(Mystica.getPlugin(), "health_" + i);
-            statRolls.set(key, PersistentDataType.INTEGER, statPercent);
-
-            newRandomStats.add("Health + " + statCalculatorHealth(level, statPercent));
-        }
-
-        for(int i=0;i<defenseCounter;i++){
-            int statPercent = new Random().nextInt(101);
-
-            NamespacedKey key = new NamespacedKey(Mystica.getPlugin(), "defense_" + i);
-            statRolls.set(key, PersistentDataType.INTEGER, statPercent);
-
-            newRandomStats.add("Defense + " + statCalculatorOffenseDefense(level, statPercent));
-        }
-
-        for(int i=0;i<magicDefenseCounter;i++){
-            int statPercent = new Random().nextInt(101);
-
-            NamespacedKey key = new NamespacedKey(Mystica.getPlugin(), "magic_defense_" + i);
-            statRolls.set(key, PersistentDataType.INTEGER, statPercent);
-
-            newRandomStats.add("Magic Defense + " + statCalculatorOffenseDefense(level, statPercent));
-        }
+        int statAmount = new Random().nextInt(5) + 1;
+        int statAmount2 = new Random().nextInt(5) + 1;
+        int skillNumber = new Random().nextInt(8) + 1;
+        int skillNumber2 = new Random().nextInt(8) + 1;
 
 
-        for(int i=0;i<skillCounter;i++){
-            int statAmount = new Random().nextInt(5) + 1;
+        lores.set(pointer + 1, ChatColor.of(rareColor) + "Skill " + skillNumber + " + " + statAmount);
+        lores.set(pointer + 2, ChatColor.of(rareColor) + "Skill " + skillNumber2 + " + " + statAmount2);
 
-            int skillNumber = new Random().nextInt(8) + 1;
+        meta.setLore(lores);
+        newEquipment.setItemMeta(meta);
 
-            NamespacedKey key = new NamespacedKey(Mystica.getPlugin(), "skill_" + i);
-            statRolls.set(key, PersistentDataType.INTEGER, statAmount);
-
-            newRandomStats.add("Skill " + skillNumber + " + " + statAmount);
-        }
-
-        newLores.addAll(whichLine, newRandomStats);
-        newMeta.setLore(newLores);
-        newItem.setItemMeta(newMeta);
-
-        return newItem;
-    } */
+        return newEquipment;
+    }
 
     //offense/defense 1-5 base. +2 min, +4 max per level
     //crit 1-5 base. +1 min +2 max per level

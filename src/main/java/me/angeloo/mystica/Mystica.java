@@ -158,6 +158,7 @@ public final class Mystica extends JavaPlugin{
         getCommand("WhatAreMyStats").setExecutor(new WhatAreMyStats(this));
         getCommand("ToggleImmunity").setExecutor(new ToggleImmunity(this));
         getCommand("Reforge").setExecutor(new Reforge(this));
+        getCommand("Refine").setExecutor(new Refine(this));
         getCommand("Upgrade").setExecutor(new Upgrade(this));
         getCommand("Generate").setExecutor(new Generate(this));
         getCommand("Identify").setExecutor(new Identify(this));

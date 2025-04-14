@@ -18,7 +18,7 @@ public class Identify implements CommandExecutor {
     private final IdentifyInventory identifyInventory;
 
     public Identify(Mystica main){
-        identifyInventory = new IdentifyInventory();
+        identifyInventory = main.getIdentifyInventory();
         equipmentManager = main.getEquipmentManager();
     }
 
@@ -34,11 +34,10 @@ public class Identify implements CommandExecutor {
 
             Player player = (Player) sender;
 
-            ItemStack equipment = player.getInventory().getItemInMainHand();
+            //ItemStack equipment = player.getInventory().getItemInMainHand();
+            //player.getInventory().addItem(equipmentManager.identify(player, equipment));
 
-            player.getInventory().addItem(equipmentManager.identify(player, equipment));
-
-            //player.openInventory(identifyInventory.openIdentifyInventory(new ItemStack(Material.AIR)));
+            player.openInventory(identifyInventory.openIdentifyInventory(player, false));
 
             return true;
         }

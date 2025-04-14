@@ -47,7 +47,7 @@ public class EquipmentManager {
         warriorEquipment = itemManager.getWarriorEquipment();
     }
 
-    private int getItemLevel(ItemStack equipment){
+    public int getItemLevel(ItemStack equipment){
 
         ItemMeta meta = equipment.getItemMeta();
         assert meta != null;
@@ -69,7 +69,7 @@ public class EquipmentManager {
         return level;
     }
 
-    private int getItemTier(ItemStack equipment){
+    public int getItemTier(ItemStack equipment){
 
         ItemMeta meta = equipment.getItemMeta();
         assert meta != null;
@@ -91,7 +91,7 @@ public class EquipmentManager {
         return tier;
     }
 
-    private int getEquipmentTier(ItemStack equipment){
+    public int getEquipmentTier(ItemStack equipment){
 
         ItemMeta meta = equipment.getItemMeta();
         assert meta != null;

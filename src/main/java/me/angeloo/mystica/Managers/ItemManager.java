@@ -26,6 +26,8 @@ public class ItemManager {
     private final UnidentifiedBoots unidentifiedBoots;
     private final UnidentifiedWeapon unidentifiedWeapon;
 
+    private final SoulStone soulStone;
+
     private final AssassinEquipment assassinEquipment;
     private final ElementalistEquipment elementalistEquipment;
     private final MysticEquipment mysticEquipment;
@@ -41,6 +43,8 @@ public class ItemManager {
         unidentifiedLeggings = new UnidentifiedLeggings(this);
         unidentifiedBoots = new UnidentifiedBoots(this);
         unidentifiedWeapon =new UnidentifiedWeapon(this);
+
+        soulStone = new SoulStone(this);
 
         assassinEquipment = new AssassinEquipment(this);
         elementalistEquipment = new ElementalistEquipment(this);
@@ -71,6 +75,31 @@ public class ItemManager {
         }
 
         meta.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE, zeroer);
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+
+        meta.setLore(lores);
+        meta.setCustomModelData(modelData);
+
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    public ItemStack getStackableItem(Material material, int modelData, String name, String ... lore){
+
+        ItemStack item = new ItemStack(material);
+
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
+        meta.setUnbreakable(true);
+
+        List<String> lores = new ArrayList<>();
+
+        for (String s : lore){
+            lores.add(ChatColor.translateAlternateColorCodes('&', s));
+        }
+
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
 
@@ -374,6 +403,8 @@ public class ItemManager {
     public UnidentifiedWeapon getUnidentifiedWeapon() {
         return unidentifiedWeapon;
     }
+
+    public SoulStone getSoulStone(){return soulStone;}
 
     public AssassinEquipment getAssassinEquipment() {
         return assassinEquipment;

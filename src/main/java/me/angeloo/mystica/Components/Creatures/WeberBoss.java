@@ -262,9 +262,9 @@ public class WeberBoss {
 
         List<ItemStack> itemDrops = new ArrayList<>();
 
-        for(int i = 0; i<=(10 * level); i++){
+        /*for(int i = 0; i<=(10 * level); i++){
             itemDrops.add(new SoulStone());
-        }
+        }*/
 
         //itemDrops.add(new OldUnidentifiedHelmet(level + 1));
 

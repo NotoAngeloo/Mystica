@@ -59,6 +59,7 @@ public final class Mystica extends JavaPlugin{
     private ChangeResourceHandler changeResourceHandler;
     private Locations locations;
 
+    private IdentifyInventory identifyInventory;
     private MatchmakingInventory matchmakingInventory;
     private BagInventory bagInventory;
 
@@ -139,6 +140,7 @@ public final class Mystica extends JavaPlugin{
 
         inventoryIndexingManager = new InventoryIndexingManager();
         bagInventory = new BagInventory(this);
+        identifyInventory = new IdentifyInventory(this);
 
         firstClearManager = new FirstClearManager(this);
         firstClearManager.createOrLoadFolder();
@@ -187,8 +189,11 @@ public final class Mystica extends JavaPlugin{
         this.getServer().getPluginManager().registerEvents(new ClassSelectInventory(this), this);
         this.getServer().getPluginManager().registerEvents(matchmakingInventory, this);
 
+
         SpecInventory specInventory = abilityInventory.getSpecInventory();
         this.getServer().getPluginManager().registerEvents(specInventory, this);
+
+        this.getServer().getPluginManager().registerEvents(identifyInventory, this);
 
         this.getServer().getPluginManager().registerEvents(new InventoryEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new GeneralEventListener(this), this);
@@ -368,5 +373,7 @@ public final class Mystica extends JavaPlugin{
     public ItemManager getItemManager(){return itemManager;}
 
     public EquipmentManager getEquipmentManager(){return equipmentManager;}
+
+    public IdentifyInventory getIdentifyInventory(){return identifyInventory;}
 
 }

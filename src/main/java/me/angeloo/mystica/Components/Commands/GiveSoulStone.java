@@ -2,6 +2,7 @@ package me.angeloo.mystica.Components.Commands;
 
 import me.angeloo.mystica.Components.Inventories.BagInventory;
 import me.angeloo.mystica.Components.Items.SoulStone;
+import me.angeloo.mystica.Managers.ItemManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
@@ -18,9 +19,11 @@ public class GiveSoulStone implements CommandExecutor {
 
     private final ProfileManager profileManager;
     private final BagInventory bagInventory;
+    private final ItemManager itemManager;
 
     public GiveSoulStone(Mystica main){
         profileManager = main.getProfileManager();
+        itemManager = main.getItemManager();
         bagInventory = main.getBagInventory();
     }
 
@@ -54,10 +57,12 @@ public class GiveSoulStone implements CommandExecutor {
         int amount = Integer.parseInt(args[1]);
 
         boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
+        ItemStack stone = itemManager.getSoulStone().getSoulStone();
 
         if(!combatStatus){
             for(int i = 0; i < amount; i++){
-                player.getInventory().addItem(new SoulStone());
+
+                player.getInventory().addItem(stone);
             }
         }
 
@@ -66,7 +71,7 @@ public class GiveSoulStone implements CommandExecutor {
             List<ItemStack> items = new ArrayList<>();
 
             for(int i = 0; i < amount + 1; i++){
-                items.add(new SoulStone());
+                player.getInventory().addItem(stone);
             }
 
             bagInventory.addItemsToPlayerBagByPickup(player, items);

@@ -1,23 +1,29 @@
 package me.angeloo.mystica.Components.Items;
 
+import me.angeloo.mystica.Managers.ItemManager;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+
+import static me.angeloo.mystica.Mystica.uncommonColor;
 
 
+public class SoulStone{
 
-public class SoulStone extends ItemStack {
+    private final ItemManager manager;
 
-    public SoulStone() {
-        super(Material.LAPIS_LAZULI);
-        ItemMeta meta = this.getItemMeta();
-        assert meta != null;
-        //meta.setDisplayName(ChatColor.of(soulstoneColor) + "Soul Stone");
-        this.setItemMeta(meta);
+    public SoulStone(ItemManager manager){
+        this.manager = manager;
+    }
+
+    public ItemStack getSoulStone(){
+        return manager.getStackableItem(Material.LAPIS_LAZULI, 1,
+                ChatColor.of(uncommonColor) + "Soul Stone",
+                ChatColor.of(Color.WHITE) + "Made from condensed mana force",
+                "",
+                ChatColor.of(Color.WHITE) + "A useful material for enhancing equipment");
     }
 }

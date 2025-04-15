@@ -4,12 +4,10 @@ import me.angeloo.mystica.Components.Inventories.IdentifyInventory;
 import me.angeloo.mystica.Managers.EquipmentManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class Identify implements CommandExecutor {
@@ -37,7 +35,7 @@ public class Identify implements CommandExecutor {
             //ItemStack equipment = player.getInventory().getItemInMainHand();
             //player.getInventory().addItem(equipmentManager.identify(player, equipment));
 
-            player.openInventory(identifyInventory.openIdentifyInventory(player, false));
+            player.openInventory(identifyInventory.openIdentifyInventory(player));
 
             return true;
         }

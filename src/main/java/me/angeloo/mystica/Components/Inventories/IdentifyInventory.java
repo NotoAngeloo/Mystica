@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -31,15 +32,9 @@ public class IdentifyInventory implements Listener {
 
     //have the identify button show up, only when proper materials put in
 
-    public Inventory openIdentifyInventory(Player player, boolean button){
+    public Inventory openIdentifyInventory(Player player){
 
-        Inventory inv;
-
-        if(button){
-            inv = Bukkit.createInventory(null, 9*6, ChatColor.WHITE + "\uF807" + "\uE0AE" + "\uF80D" + "\uF82B\uF829" +"\uE0B0");
-        }else{
-            inv = Bukkit.createInventory(null, 9*6, ChatColor.WHITE + "\uF807" + "\uE0AE" + "\uF80D" + "\uF82B\uF829" +"\uE0AF");
-        }
+        Inventory inv = Bukkit.createInventory(null, 9*6, ChatColor.WHITE + "\uF807" + "\uE0AE" + "\uF80D" + "\uF82B\uF829" +"\uE0AF");
 
         //inv.setItem(20, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
         //inv.setItem(24, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
@@ -89,8 +84,6 @@ public class IdentifyInventory implements Listener {
         int level = equipmentManager.getItemLevel(equipment);
         int tier = equipmentManager.getItemTier(equipment);
 
-        Bukkit.getLogger().info("level " + level + " tier " + tier);
-
         return level * ((tier * 3) - 2);
     }
 
@@ -101,32 +94,36 @@ public class IdentifyInventory implements Listener {
 
             event.setCancelled(true);
 
-            ItemStack item = event.getCurrentItem();
+            Player player = (Player) event.getWhoClicked();
 
-            if(item == null){
-                return;
-            }
-
-            if(!item.hasItemMeta()){
-                return;
-            }
-
-            ItemMeta meta = item.getItemMeta();
-
-            assert meta != null;
-            if(!meta.hasDisplayName()){
-                return;
-            }
             Inventory topInv = event.getView().getTopInventory();
             Inventory bottomInv = event.getView().getBottomInventory();
             String title = event.getView().getTitle();
 
             if(event.getClickedInventory() == bottomInv){
+
+                ItemStack item = event.getCurrentItem();
+
+                if(item == null){
+                    return;
+                }
+
+                if(!item.hasItemMeta()){
+                    return;
+                }
+
+                ItemMeta meta = item.getItemMeta();
+
+                assert meta != null;
+                if(!meta.hasDisplayName()){
+                    return;
+                }
+
                 String name = meta.getDisplayName();
                 name = name.replaceAll("§.", "");
 
                 if(!name.toLowerCase().contains("unidentified")){
-                    Bukkit.getLogger().info("invalid item");
+                    //Bukkit.getLogger().info("invalid item");
                     return;
                 }
 
@@ -139,10 +136,128 @@ public class IdentifyInventory implements Listener {
                 assert stone != null;
                 stone.setAmount(required);
 
+                int has = 0;
+                ItemStack hasStones = topInv.getItem(37);
+                if(hasStones != null){
+                    has = hasStones.getAmount();
+                }
+
+
+                if(has >= required){
+                    event.getView().setTitle(ChatColor.WHITE + "\uF807" + "\uE0AE" + "\uF80D" + "\uF82B\uF829" +"\uE0B0");
+                }
+                else{
+                    event.getView().setTitle(ChatColor.WHITE + "\uF807" + "\uE0AE" + "\uF80D" + "\uF82B\uF829" +"\uE0AF");
+                }
+                return;
+
             }
 
+            if(event.getClickedInventory() == topInv){
 
+                if(!title.contains("\uE0B0")){
+                    return;
+                }
 
+                int slot = event.getSlot();
+
+                List<Integer> identifySLots= new ArrayList<>();
+                identifySLots.add(51);
+                identifySLots.add(52);
+                identifySLots.add(53);
+
+                if(identifySLots.contains(slot)){
+                    ItemStack blueprint = topInv.getItem(20);
+                    assert blueprint != null;
+                    ItemStack costItem = topInv.getItem(39);
+                    assert costItem != null;
+                    int cost = costItem.getAmount();
+
+                    //remove items from players inventory
+                    for(int i = 0; i < bottomInv.getSize(); i++){
+                        ItemStack item = bottomInv.getItem(i);
+
+                        if(item == null){
+                            continue;
+                        }
+
+                        if(!item.isSimilar(blueprint)){
+                            continue;
+                        }
+
+                        bottomInv.setItem(i, null);
+                        break;
+                    }
+                    //remove cost stones
+                    for(int i = 0; i < bottomInv.getSize(); i++){
+                        ItemStack item = bottomInv.getItem(i);
+
+                        if(item == null){
+                            continue;
+                        }
+
+                        if(!item.isSimilar(costItem)){
+                            continue;
+                        }
+
+                        int amount = item.getAmount();
+
+                        if(amount <= cost){
+                            bottomInv.setItem(i, null);
+                            cost -= amount;
+                        }
+                        else{
+                            item.setAmount(amount - cost);
+                            break;
+                        }
+
+                    }
+
+                    ItemStack equipment = equipmentManager.identify(player, blueprint);
+                    topInv.setItem(24, equipment);
+                    topInv.setItem(20, null);
+                    topInv.setItem(39, null);
+
+                    ItemStack hasStones = exampleStone;
+                    hasStones.setAmount(stoneCount(player));
+                    topInv.setItem(37, hasStones);
+
+                    return;
+                }
+
+                if(slot == 24){
+
+                    ItemStack equipment = topInv.getItem(24);
+
+                    if(equipment == null){
+                        return;
+                    }
+
+                    topInv.setItem(24, null);
+                    player.getInventory().addItem(equipment);
+                    return;
+                }
+
+            }
+
+        }
+
+    }
+
+    @EventHandler
+    public void closeIdentify(InventoryCloseEvent event){
+
+        if(event.getView().getTitle().contains("\uE0AE")){
+
+            Player player = (Player) event.getPlayer();
+
+            ItemStack identified = event.getView().getTopInventory().getItem(24);
+
+            if(identified == null){
+                return;
+            }
+
+            player.getInventory().addItem(identified);
         }
 
     }

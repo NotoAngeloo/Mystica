@@ -53,8 +53,7 @@ public class Identify implements CommandExecutor {
                 sender.sendMessage("player not online");
                 return true;
             }
-
-            //player.openInventory(identifyInventory.openIdentifyInventory(new ItemStack(Material.AIR)));
+            player.openInventory(identifyInventory.openIdentifyInventory(player));
             return true;
         }
 

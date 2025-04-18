@@ -40,8 +40,8 @@ public class IdentifyInventory implements Listener {
         //inv.setItem(24, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
 
 
-        inv.setItem(37, exampleStone);
-        ItemStack stone = inv.getItem(37);
+        inv.setItem(38, exampleStone.clone());
+        ItemStack stone = inv.getItem(38);
         assert stone != null;
         stone.setAmount(stoneCount(player));
 
@@ -68,10 +68,11 @@ public class IdentifyInventory implements Listener {
                 continue;
             }
 
-            assert exampleStone.hasItemMeta();
-            assert exampleStone.getItemMeta() != null;
-            assert exampleStone.getItemMeta().hasDisplayName();
-            if(meta.getDisplayName().equalsIgnoreCase(exampleStone.getItemMeta().getDisplayName())){
+            ItemStack stone = exampleStone.clone();
+            assert stone.hasItemMeta();
+            assert stone.getItemMeta() != null;
+            assert stone.getItemMeta().hasDisplayName();
+            if(meta.getDisplayName().equalsIgnoreCase(stone.getItemMeta().getDisplayName())){
                 count += item.getAmount();
             }
 
@@ -128,16 +129,17 @@ public class IdentifyInventory implements Listener {
                 }
 
                 topInv.setItem(20, item.clone());
+                topInv.setItem(24, null);
 
                 int required = getRequired(item);
 
-                topInv.setItem(39, exampleStone);
+                topInv.setItem(39, exampleStone.clone());
                 ItemStack stone = topInv.getItem(39);
                 assert stone != null;
                 stone.setAmount(required);
 
                 int has = 0;
-                ItemStack hasStones = topInv.getItem(37);
+                ItemStack hasStones = topInv.getItem(38);
                 if(hasStones != null){
                     has = hasStones.getAmount();
                 }
@@ -218,9 +220,9 @@ public class IdentifyInventory implements Listener {
                     topInv.setItem(20, null);
                     topInv.setItem(39, null);
 
-                    ItemStack hasStones = exampleStone;
+                    ItemStack hasStones = exampleStone.clone();
                     hasStones.setAmount(stoneCount(player));
-                    topInv.setItem(37, hasStones);
+                    topInv.setItem(38, hasStones);
 
                     return;
                 }

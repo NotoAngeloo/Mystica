@@ -14,12 +14,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class Reforge implements CommandExecutor {
 
-    private final EquipmentManager equipmentManager;
     private final ReforgeInventory reforgeInventory;
 
     public Reforge(Mystica main){
-        equipmentManager = main.getEquipmentManager();
-        reforgeInventory = new ReforgeInventory(main);
+        reforgeInventory = main.getReforgeInventory();
     }
 
     @Override
@@ -34,10 +32,7 @@ public class Reforge implements CommandExecutor {
 
             Player player = (Player) sender;
 
-            ItemStack equipment = player.getInventory().getItemInMainHand();
-            player.getInventory().addItem(equipmentManager.reforge(equipment));
-
-            //player.openInventory(reforgeInventory.openReforgeInventory(player, new ItemStack(Material.AIR), false));
+            player.openInventory(reforgeInventory.openReforgeInventory(player));
 
             return true;
         }
@@ -56,7 +51,7 @@ public class Reforge implements CommandExecutor {
                 return true;
             }
 
-            player.openInventory(reforgeInventory.openReforgeInventory(player, new ItemStack(Material.AIR), false));
+            player.openInventory(reforgeInventory.openReforgeInventory(player));
             return true;
         }
 

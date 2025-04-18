@@ -32,9 +32,6 @@ public class InventoryEventListener implements Listener {
     private final InventoryIndexingManager inventoryIndexingManager;
     private final BagInventory bagInventory;
     private final BuyInvSlotsInventory buyInvSlotsInventory;
-    private final ReforgeInventory reforgeInventory;
-    private final UpgradeInventory upgradeInventory;
-    private final IdentifyInventory identifyInventory;
     private final EquipmentInformation equipmentInformation;
     private final DisplayWeapons displayWeapons;
     private final GearReader gearReader;
@@ -49,9 +46,6 @@ public class InventoryEventListener implements Listener {
         inventoryIndexingManager = main.getInventoryIndexingManager();
         bagInventory = main.getBagInventory();
         buyInvSlotsInventory = new BuyInvSlotsInventory(main);
-        reforgeInventory = new ReforgeInventory(main);
-        upgradeInventory = new UpgradeInventory(main);
-        identifyInventory = new IdentifyInventory(main);
         equipmentInformation = new EquipmentInformation();
         displayWeapons = new DisplayWeapons(main);
         gearReader = new GearReader(main);

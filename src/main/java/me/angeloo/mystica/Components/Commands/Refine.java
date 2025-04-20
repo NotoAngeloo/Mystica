@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Commands;
 
+import me.angeloo.mystica.Components.Inventories.RefineInventory;
 import me.angeloo.mystica.Components.Inventories.ReforgeInventory;
 import me.angeloo.mystica.Managers.EquipmentManager;
 import me.angeloo.mystica.Mystica;
@@ -14,10 +15,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class Refine implements CommandExecutor {
 
-    private final EquipmentManager equipmentManager;
+    private final RefineInventory refineInventory;
 
     public Refine(Mystica main){
-        equipmentManager = main.getEquipmentManager();
+        refineInventory = main.getRefineInventory();
     }
 
     @Override
@@ -32,10 +33,8 @@ public class Refine implements CommandExecutor {
 
             Player player = (Player) sender;
 
-            ItemStack equipment = player.getInventory().getItemInMainHand();
-            player.getInventory().addItem(equipmentManager.refine(equipment));
 
-            //player.openInventory(reforgeInventory.openReforgeInventory(player, new ItemStack(Material.AIR), false));
+            player.openInventory(refineInventory.openRefineInventory(player));
 
             return true;
         }

@@ -63,7 +63,6 @@ public class GeneralEventListener implements Listener {
     private final InventoryIndexingManager inventoryIndexingManager;
     private final EquipmentInventory equipmentInventory;
     private final AbilityInventory abilityInventory;
-    private final EquipmentInformation equipmentInformation;
     private final DisplayWeapons displayWeapons;
     private final StatusDisplayer statusDisplayer;
     private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
@@ -106,7 +105,6 @@ public class GeneralEventListener implements Listener {
         inventoryIndexingManager = main.getInventoryIndexingManager();
         equipmentInventory = new EquipmentInventory(main);
         abilityInventory = new AbilityInventory(main);
-        equipmentInformation = new EquipmentInformation();
         displayWeapons = new DisplayWeapons(main);
         statusDisplayer = new StatusDisplayer(main, abilityManager);
         shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, abilityManager);
@@ -431,12 +429,12 @@ public class GeneralEventListener implements Listener {
 
         if (!combatStatus) {
 
-            List<Material> validEquipment = equipmentInformation.getAllEquipmentTypes();
+            //List<Material> validEquipment = equipmentInformation.getAllEquipmentTypes();
             Material itemType = itemInMain.getType();
 
-            if(!validEquipment.contains(itemType)){
+            /*if(!validEquipment.contains(itemType)){
                 return;
-            }
+            }*/
 
             player.openInventory(equipmentInventory.openEquipmentInventory(player, null, false));
             event.setCancelled(true);

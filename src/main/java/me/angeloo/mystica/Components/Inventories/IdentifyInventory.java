@@ -129,7 +129,12 @@ public class IdentifyInventory implements Listener {
                 }
 
                 topInv.setItem(20, item.clone());
-                topInv.setItem(24, null);
+
+                if(topInv.getItem(24) != null){
+                    player.getInventory().addItem(topInv.getItem(24));
+                    topInv.setItem(24, null);
+                }
+
 
                 int required = getRequired(item);
 
@@ -157,11 +162,25 @@ public class IdentifyInventory implements Listener {
 
             if(event.getClickedInventory() == topInv){
 
+                int slot = event.getSlot();
+
+                if(slot == 24){
+
+                    ItemStack equipment = topInv.getItem(24);
+
+                    if(equipment == null){
+                        return;
+                    }
+
+                    topInv.setItem(24, null);
+                    player.getInventory().addItem(equipment);
+                    return;
+                }
+
                 if(!title.contains("\uE0B0")){
                     return;
                 }
 
-                int slot = event.getSlot();
 
                 List<Integer> identifySLots= new ArrayList<>();
                 identifySLots.add(51);
@@ -224,19 +243,8 @@ public class IdentifyInventory implements Listener {
                     hasStones.setAmount(stoneCount(player));
                     topInv.setItem(38, hasStones);
 
-                    return;
-                }
+                    event.getView().setTitle(ChatColor.WHITE + "\uF807" + "\uE0AE" + "\uF80D" + "\uF82B\uF829" +"\uE0AF");
 
-                if(slot == 24){
-
-                    ItemStack equipment = topInv.getItem(24);
-
-                    if(equipment == null){
-                        return;
-                    }
-
-                    topInv.setItem(24, null);
-                    player.getInventory().addItem(equipment);
                     return;
                 }
 

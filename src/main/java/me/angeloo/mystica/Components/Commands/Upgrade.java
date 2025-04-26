@@ -19,7 +19,7 @@ public class Upgrade implements CommandExecutor {
 
     public Upgrade(Mystica main){
         equipmentManager = main.getEquipmentManager();
-        upgradeInventory = new UpgradeInventory(main);
+        upgradeInventory = main.getUpgradeInventory();
     }
 
     @Override
@@ -34,11 +34,8 @@ public class Upgrade implements CommandExecutor {
 
             Player player = (Player) sender;
 
-            //player.openInventory(upgradeInventory.openUpgradeInventory(player, new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR)));
+            player.openInventory(upgradeInventory.openUpgradeInventory(player));
 
-            ItemStack equipment = player.getInventory().getItemInMainHand();
-
-            player.getInventory().addItem(equipmentManager.upgrade(player, equipment, 2));
 
             return true;
         }
@@ -57,7 +54,7 @@ public class Upgrade implements CommandExecutor {
                 return true;
             }
 
-            player.openInventory(upgradeInventory.openUpgradeInventory(player, new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR)));
+            player.openInventory(upgradeInventory.openUpgradeInventory(player));
             return true;
         }
 

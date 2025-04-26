@@ -31,17 +31,12 @@ public class MysticaItem implements CommandExecutor {
 
             Player player = (Player) sender;
 
-            player.getInventory().addItem(itemManager.getUnidentifiedHelmet().getUnidentifiedT1Helmet(1));
-            player.getInventory().addItem(itemManager.getUnidentifiedHelmet().getUnidentifiedT2Helmet(1));
-            player.getInventory().addItem(itemManager.getUnidentifiedChestplate().getUnidentifiedT1Chestplate(1));
-            player.getInventory().addItem(itemManager.getUnidentifiedChestplate().getUnidentifiedT2Chestplate(1));
-            player.getInventory().addItem(itemManager.getUnidentifiedLeggings().getUnidentifiedT1Leggings(1));
-            player.getInventory().addItem(itemManager.getUnidentifiedLeggings().getUnidentifiedT2Leggings(1));
-            player.getInventory().addItem(itemManager.getUnidentifiedBoots().getUnidentifiedT1Boots(1));
-            player.getInventory().addItem(itemManager.getUnidentifiedBoots().getUnidentifiedT2Boots(1));
             player.getInventory().addItem(itemManager.getUnidentifiedWeapon().getUnidentifiedT1Weapon(1));
             player.getInventory().addItem(itemManager.getUnidentifiedWeapon().getUnidentifiedT2Weapon(1));
             player.getInventory().addItem(itemManager.getUnidentifiedWeapon().getUnidentifiedT3Weapon(1));
+
+            player.getInventory().addItem(itemManager.getUnidentifiedWeapon().getUnidentifiedT1Weapon(2));
+            player.getInventory().addItem(itemManager.getUnidentifiedWeapon().getUnidentifiedT1Weapon(3));
 
             return true;
         }

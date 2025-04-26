@@ -4,7 +4,6 @@ import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DisplayWeapons;
-import me.angeloo.mystica.Utility.EquipmentInformation;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -23,12 +22,10 @@ public class EquipmentInventory implements Listener {
 
     private final ProfileManager profileManager;
     private final DisplayWeapons displayWeapons;
-    private final EquipmentInformation equipmentInformation;
 
     public EquipmentInventory(Mystica main) {
         profileManager = main.getProfileManager();
         displayWeapons = new DisplayWeapons(main);
-        equipmentInformation = new EquipmentInformation();
     }
 
 
@@ -141,13 +138,13 @@ public class EquipmentInventory implements Listener {
 
         }
 
-        List<Material> validEquipment = equipmentInformation.getAllEquipmentTypes();
+        //List<Material> validEquipment = equipmentInformation.getAllEquipmentTypes();
         assert item != null;
         Material itemType = item.getType();
 
-        if(!validEquipment.contains(itemType)){
+        /*if(!validEquipment.contains(itemType)){
             return;
-        }
+        }*/
 
         ItemMeta meta = item.getItemMeta();
 

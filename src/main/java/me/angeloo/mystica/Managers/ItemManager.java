@@ -20,6 +20,8 @@ import java.util.UUID;
 
 public class ItemManager {
 
+    private final List<Material> equipmentTypes;
+
     private final UnidentifiedHelmet unidentifiedHelmet;
     private final UnidentifiedChestplate unidentifiedChestplate;
     private final UnidentifiedLeggings unidentifiedLeggings;
@@ -54,7 +56,25 @@ public class ItemManager {
         rangerEquipment = new RangerEquipment(this);
         shadowKnightEquipment = new ShadowKnightEquipment(this);
         warriorEquipment = new WarriorEquipment(this);
+
+        equipmentTypes = new ArrayList<>();
+        equipmentTypes.add(Material.STICK);
+        equipmentTypes.add(Material.FLINT);
+        equipmentTypes.add(Material.BLAZE_ROD);
+        equipmentTypes.add(Material.IRON_SWORD);
+        equipmentTypes.add(Material.FEATHER);
+        equipmentTypes.add(Material.DIAMOND_SWORD);
+        equipmentTypes.add(Material.BRICK);
+        equipmentTypes.add(Material.CHAIN);
+        equipmentTypes.add(Material.KELP);
+        equipmentTypes.add(Material.CHAINMAIL_CHESTPLATE);
+        equipmentTypes.add(Material.CHAINMAIL_LEGGINGS);
+        equipmentTypes.add(Material.CHAINMAIL_BOOTS);
+        //i forgot what this last one is
+        //equipmentTypes.add(Material.IRON_NUGGET);
     }
+
+    public List<Material> getEquipmentTypes(){return equipmentTypes;}
 
     public ItemStack getItem(Material material, int modelData, String name, String ... lore){
 

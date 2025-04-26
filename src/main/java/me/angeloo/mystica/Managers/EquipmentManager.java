@@ -161,8 +161,6 @@ public class EquipmentManager {
         return -1;
     }
 
-
-
     public ItemStack identify(Player player, ItemStack equipment){
 
         ItemMeta meta = equipment.getItemMeta();
@@ -566,7 +564,7 @@ public class EquipmentManager {
         int tier = getEquipmentTier(equipment);
         int gearType = getGearType(equipment);
 
-        //Bukkit.getLogger().info("tier " + tier);
+        Bukkit.getLogger().info("tier " + tier);
         //Bukkit.getLogger().info("geartype " + gearType);
 
         if(gearType == -1){

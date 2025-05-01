@@ -15,7 +15,7 @@ public class Equipment implements CommandExecutor {
     private final ProfileManager profileManager;
 
     public Equipment(Mystica main){
-        equipmentInventory = new EquipmentInventory(main);
+        equipmentInventory = main.getEquipmentInventory();
         profileManager = main.getProfileManager();
     }
     @Override
@@ -35,7 +35,7 @@ public class Equipment implements CommandExecutor {
             return true;
         }
 
-        player.openInventory(equipmentInventory.openEquipmentInventory(player, null, false));
+        player.openInventory(equipmentInventory.openEquipmentInventory(player));
 
         return true;
     }

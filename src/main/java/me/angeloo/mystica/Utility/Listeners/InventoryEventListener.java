@@ -33,7 +33,6 @@ public class InventoryEventListener implements Listener {
     private final BagInventory bagInventory;
     private final BuyInvSlotsInventory buyInvSlotsInventory;
     private final DisplayWeapons displayWeapons;
-    private final GearReader gearReader;
     private final BossLevelInv bossLevelInv;
     private final Locations locations;
     private final CustomItemConverter customItemConverter;
@@ -46,7 +45,6 @@ public class InventoryEventListener implements Listener {
         bagInventory = main.getBagInventory();
         buyInvSlotsInventory = new BuyInvSlotsInventory(main);
         displayWeapons = new DisplayWeapons(main);
-        gearReader = new GearReader(main);
         bossLevelInv = new BossLevelInv(main);
         locations = new Locations(main);
         customItemConverter = new CustomItemConverter();
@@ -78,25 +76,6 @@ public class InventoryEventListener implements Listener {
             }
         }
         bagInventory.addItemsToPlayerBagByInventoryClose(player, items, index);
-
-    }
-
-    @EventHandler
-    public void gearClose(InventoryCloseEvent event){
-        if(!event.getView().getTitle().equals(event.getPlayer().getName() + "'s Equipment")){
-            return;
-        }
-
-        Player player = (Player) event.getPlayer();
-
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-                displayWeapons.displayWeapons(player);
-                displayWeapons.displayArmor(player);
-                gearReader.setGearStats(player);
-            }
-        }.runTaskLater(main, 1);
 
     }
 

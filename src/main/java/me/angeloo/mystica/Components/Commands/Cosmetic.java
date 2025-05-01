@@ -29,7 +29,7 @@ public class Cosmetic implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
 
-        if(args.length == 0){
+        /*if(args.length == 0){
 
             if(!(sender instanceof Player)){
                 sender.sendMessage("only players");
@@ -93,11 +93,10 @@ public class Cosmetic implements CommandExecutor {
             equipment.setLeggings(leggings);
             equipment.setBoots(boots);
 
-            displayWeapons.displayWeapons(player);
             displayWeapons.displayArmor(player);
 
             return true;
-        }
+        }*/
 
 
 

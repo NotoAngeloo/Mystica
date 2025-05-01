@@ -17,6 +17,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
+import static me.angeloo.mystica.Mystica.uncommonColor;
+
 public class ReforgeInventory implements Listener {
 
     private final EquipmentManager equipmentManager;
@@ -89,7 +91,13 @@ public class ReforgeInventory implements Listener {
         List<String> lores = meta.getLore();
         assert lores != null;
         for(String loreLine : lores){
-            if(loreLine.contains("Bonus Attributes")){
+            /*if(loreLine.contains("Bonus Attributes")){
+                return true;
+            }*/
+            //Bukkit.getLogger().info(loreLine);
+
+
+            if(loreLine.contains("§x§8§A§D§D§1§F")){
                 return true;
             }
         }

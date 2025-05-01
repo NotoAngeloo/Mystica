@@ -27,57 +27,21 @@ public class DisplayWeapons {
 
         PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
-        if(playerEquipment.getHelmet() != null){
-            player.getInventory().setHelmet(playerEquipment.getHelmet());
-        }
+        player.getInventory().setHelmet(playerEquipment.getHelmet());
 
-        if(playerEquipment.getChestPlate() != null){
-            player.getInventory().setChestplate(playerEquipment.getChestPlate());
-        }
+        player.getInventory().setChestplate(playerEquipment.getChestPlate());
 
 
-        if(playerEquipment.getLeggings() != null){
-            player.getInventory().setLeggings(playerEquipment.getLeggings());
-        }
+        player.getInventory().setLeggings(playerEquipment.getLeggings());
 
-        if(playerEquipment.getBoots() != null){
-            player.getInventory().setBoots(playerEquipment.getBoots());
-        }
-    }
-
-    public void unDisplayArmor(Player player){
-
-    }
-
-    public void displayWeapons(Player player){
-
-        //maybe change color based on class
+        player.getInventory().setBoots(playerEquipment.getBoots());
 
         ItemStack displayedWeapon = itemManager.getNoneEquipment().getBaseWeapon();
 
-        PlayerEquipment equipment = profileManager.getAnyProfile(player).getPlayerEquipment();
-
-        ItemStack weapon = equipment.getWeapon();
-
-        if(weapon != null && !weapon.getType().isAir()){
-            displayedWeapon = equipment.getWeapon().clone();
-        }
-
-
-
-        if(displayedWeapon.hasItemMeta() && displayedWeapon.getItemMeta().hasCustomModelData()){
+        if(playerEquipment.getWeapon() != null){
+            displayedWeapon = playerEquipment.getWeapon().clone();
             ItemMeta meta = displayedWeapon.getItemMeta();
-            meta.setDisplayName(profileManager.getAnyProfile(player).getPlayerClass());
-            List<String> lore = new ArrayList<>();
-
-            lore.add(ChatColor.of(new Color(102, 0, 0)) + "Attack: " + profileManager.getAnyProfile(player).getTotalAttack());
-            lore.add(ChatColor.of(new Color(0, 102, 0)) + "Health: " + profileManager.getAnyProfile(player).getTotalHealth());
-            lore.add(ChatColor.of(new Color(153, 153, 0)) + "Defense: " + profileManager.getAnyProfile(player).getTotalDefense());
-            lore.add(ChatColor.of(new Color(0, 102, 102)) + "Magic Defense: " + profileManager.getAnyProfile(player).getTotalMagicDefense());
-            lore.add(ChatColor.of(new Color(255, 255, 255)) + "Crit: " + profileManager.getAnyProfile(player).getTotalCrit());
-
-
-            meta.setLore(lore);
+            assert meta != null;
             int displayModel = meta.getCustomModelData();
             displayModel = displayModel + 2;
             meta.setCustomModelData(displayModel);

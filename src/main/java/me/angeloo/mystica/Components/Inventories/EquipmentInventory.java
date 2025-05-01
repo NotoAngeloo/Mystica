@@ -1,12 +1,14 @@
 package me.angeloo.mystica.Components.Inventories;
 
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
+import me.angeloo.mystica.Managers.EquipmentManager;
+import me.angeloo.mystica.Managers.ItemManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DisplayWeapons;
+import me.angeloo.mystica.Utility.GearReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,291 +18,365 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
 
 public class EquipmentInventory implements Listener {
 
     private final ProfileManager profileManager;
+    private final ItemManager itemManager;
+    private final EquipmentManager equipmentManager;
+    private final GearReader gearReader;
     private final DisplayWeapons displayWeapons;
 
     public EquipmentInventory(Mystica main) {
         profileManager = main.getProfileManager();
+        gearReader = main.getGearReader();
         displayWeapons = new DisplayWeapons(main);
+        itemManager = main.getItemManager();
+        equipmentManager = main.getEquipmentManager();
     }
 
 
-    public Inventory openEquipmentInventory(Player player, ItemStack actionItem, boolean fromTop) {
+    public Inventory openEquipmentInventory(Player player) {
         PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
-        Inventory inv = Bukkit.createInventory(null, 9 * 6, ChatColor.WHITE + "\uF808\uE066\uF828");
+        Inventory inv = Bukkit.createInventory(null, 9*6, ChatColor.WHITE + "\uF807" + "\uE066");
 
-        inv.setItem(14, playerEquipment.getWeapon());
-        inv.setItem(22, playerEquipment.getHelmet());
-        inv.setItem(23, playerEquipment.getChestPlate());
-        inv.setItem(24, playerEquipment.getLeggings());
-        inv.setItem(25, playerEquipment.getBoots());
+        inv.setItem(18, playerEquipment.getWeapon());
 
-        if (actionItem == null) {
-            return inv;
+        inv.setItem(10, playerEquipment.getHelmet());
+        inv.setItem(19, playerEquipment.getChestPlate());
+        inv.setItem(28, playerEquipment.getLeggings());
+        inv.setItem(37, playerEquipment.getBoots());
+
+        
+        //health
+        int health = profileManager.getAnyProfile(player).getTotalHealth();
+
+        List<String> healthStatStrings = statStringDivider(health);
+        Collections.reverse(healthStatStrings);
+
+        if(healthStatStrings.size() >= 3){
+            inv.setItem(6, itemManager.getNumberItem(healthStatStrings.get(2)));
         }
 
-        inv.setItem(10, actionItem);
-
-        inv.setItem(48, getAddItem());
-
-        if (fromTop) {
-            inv.setItem(48, getRemoveItem());
+        if(healthStatStrings.size() >= 2){
+            inv.setItem(7, itemManager.getNumberItem(healthStatStrings.get(1)));
         }
+
+        if(healthStatStrings.size() >= 1){
+            inv.setItem(8, itemManager.getNumberItem(healthStatStrings.get(0)));
+        }
+
+
+
+        //attack
+        int attack = profileManager.getAnyProfile(player).getTotalAttack();
+
+        List<String> attackStatStrings = statStringDivider(attack);
+        Collections.reverse(attackStatStrings);
+
+        if(attackStatStrings.size() >= 3){
+            inv.setItem(15, itemManager.getNumberItem(attackStatStrings.get(2)));
+        }
+
+        if(attackStatStrings.size() >= 2){
+            inv.setItem(16, itemManager.getNumberItem(attackStatStrings.get(1)));
+        }
+
+        if(attackStatStrings.size() >= 1){
+            inv.setItem(17, itemManager.getNumberItem(attackStatStrings.get(0)));
+        }
+
+        //defense
+        int defense = profileManager.getAnyProfile(player).getTotalDefense();
+
+        List<String> defenseStatStrings = statStringDivider(defense);
+        Collections.reverse(defenseStatStrings);
+
+        if(defenseStatStrings.size() >= 3){
+            inv.setItem(24, itemManager.getNumberItem(defenseStatStrings.get(2)));
+        }
+
+        if(defenseStatStrings.size() >= 2){
+            inv.setItem(25, itemManager.getNumberItem(defenseStatStrings.get(1)));
+        }
+
+        if(defenseStatStrings.size() >= 1){
+            inv.setItem(26, itemManager.getNumberItem(defenseStatStrings.get(0)));
+        }
+
+
+        //magic defense
+        int magic = profileManager.getAnyProfile(player).getTotalMagicDefense();
+
+        List<String> magicStatStrings = statStringDivider(magic);
+        Collections.reverse(magicStatStrings);
+
+        if(magicStatStrings.size() >= 3){
+            inv.setItem(33, itemManager.getNumberItem(magicStatStrings.get(2)));
+        }
+
+        if(magicStatStrings.size() >= 2){
+            inv.setItem(34, itemManager.getNumberItem(magicStatStrings.get(1)));
+        }
+
+        if(magicStatStrings.size() >= 1){
+            inv.setItem(35, itemManager.getNumberItem(magicStatStrings.get(0)));
+        }
+
+
+        //crit
+        int crit = profileManager.getAnyProfile(player).getTotalCrit();
+
+        List<String> critStatStrings = statStringDivider(crit);
+        Collections.reverse(critStatStrings);
+
+        if(critStatStrings.size() >= 3){
+            inv.setItem(42, itemManager.getNumberItem(critStatStrings.get(2)));
+        }
+
+        if(critStatStrings.size() >= 2){
+            inv.setItem(43, itemManager.getNumberItem(critStatStrings.get(1)));
+        }
+
+        if(critStatStrings.size() >= 1){
+            inv.setItem(44, itemManager.getNumberItem(critStatStrings.get(0)));
+        }
+
+
 
         return inv;
     }
 
+    private List<String> statStringDivider(int stat){
+
+        List<String> result = new ArrayList<>();
+
+        String statString = String.valueOf(stat);
+
+        int index = statString.length();
+
+        while (index > 2){
+            result.add(0, statString.substring(index - 2, index));
+            index -= 2;
+        }
+
+        if(index > 0){
+            result.add(0, statString.substring(0, index));
+        }
+
+        return result;
+    }
+
+
     @EventHandler
     public void gearClick(InventoryClickEvent event){
-        if(!event.getView().getTitle().equalsIgnoreCase(ChatColor.WHITE + "\uF808\uE066\uF828")){
-            return;
-        }
 
-        event.setCancelled(true);
+        if(event.getView().getTitle().contains("\uE066")){
 
-        Player player = (Player) event.getWhoClicked();
+            event.setCancelled(true);
 
-        if(event.getClickedInventory() == null){
-            return;
-        }
+            Player player = (Player) event.getWhoClicked();
 
-        ItemStack item = event.getCurrentItem();
+            Inventory topInv = event.getView().getTopInventory();
+            Inventory bottomInv = event.getView().getBottomInventory();
 
+            PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
-        Inventory topInv = event.getView().getTopInventory();
+            if(event.getClickedInventory() == bottomInv){
 
-        if(event.getClickedInventory() == topInv){
+                ItemStack item = event.getCurrentItem();
 
-            int slot = event.getSlot();
-
-            List<Integer> equipmentSlots = new ArrayList<>();
-            equipmentSlots.add(14);
-            equipmentSlots.add(22);
-            equipmentSlots.add(23);
-            equipmentSlots.add(24);
-            equipmentSlots.add(25);
-
-            if(equipmentSlots.contains(slot)){
                 if(item == null){
                     return;
                 }
-                player.openInventory(openEquipmentInventory(player, item, true));
-                return;
-            }
 
-            ItemStack selectedItem = event.getInventory().getItem(10);
-
-            if(selectedItem == null){
-                return;
-            }
-
-            ItemMeta selectedMeta = selectedItem.getItemMeta();
-            assert selectedMeta != null;
-            List<String> lore = selectedMeta.getLore();
-            assert lore != null;
-            String equipSlot = lore.get(1);
-            equipSlot = equipSlot.replaceAll("§.", "");
-
-            List<Integer> actionSlots = new ArrayList<>();
-            actionSlots.add(47);
-            actionSlots.add(46);
-            actionSlots.add(45);
-
-            if(actionSlots.contains(slot)){
-                ItemStack actionItem = event.getClickedInventory().getItem(48);
-
-                if(actionItem == null){
+                if(!item.hasItemMeta()){
                     return;
                 }
 
-                switch(actionItem.getItemMeta().getCustomModelData()){
-                    case 4:{
-                        removeEquipment(player, equipSlot);
-                        break;
+                ItemMeta meta = item.getItemMeta();
+
+                assert meta != null;
+                if(!meta.hasDisplayName()){
+                    return;
+                }
+
+
+                if(!itemManager.getEquipmentTypes().contains(item.getType())){
+                    return;
+                }
+
+                //check where it belongs
+                int gearType = equipmentManager.getGearType(item);
+
+                if(gearType == -1){
+                    return;
+                }
+
+                switch (gearType){
+                    case 0:{
+
+                        ItemStack oldWeapon = topInv.getItem(18);
+
+                        if(oldWeapon != null){
+                            //Bukkit.getLogger().info(String.valueOf(oldWeapon));
+                            player.getInventory().addItem(oldWeapon);
+                        }
+
+                        playerEquipment.setWeapon(item);
+                        player.getInventory().remove(item);
+                        gearReader.setGearStats(player);
+                        player.openInventory(openEquipmentInventory(player));
+                        displayWeapons.displayArmor(player);
+                        return;
+                    }
+                    case 1:{
+
+                        ItemStack oldHelmet = topInv.getItem(10);
+
+                        if(oldHelmet != null){
+                            player.getInventory().addItem(oldHelmet);
+                        }
+
+                        playerEquipment.setHelmet(item);
+                        player.getInventory().remove(item);
+                        gearReader.setGearStats(player);
+                        player.openInventory(openEquipmentInventory(player));
+                        displayWeapons.displayArmor(player);
+                        return;
+
+                    }
+                    case 2:{
+
+                        ItemStack oldChestPlate = topInv.getItem(19);
+
+                        if(oldChestPlate != null){
+                            player.getInventory().addItem(oldChestPlate);
+                        }
+
+                        playerEquipment.setChestPlate(item);
+                        player.getInventory().remove(item);
+                        gearReader.setGearStats(player);
+                        player.openInventory(openEquipmentInventory(player));
+                        displayWeapons.displayArmor(player);
+                        return;
+
                     }
                     case 3:{
-                        addEquipmentIfValid(player, equipSlot);
-                        break;
+
+                        ItemStack oldLeggings = topInv.getItem(28);
+
+                        if(oldLeggings != null){
+                            player.getInventory().addItem(oldLeggings);
+                        }
+
+                        playerEquipment.setLeggings(item);
+                        player.getInventory().remove(item);
+                        gearReader.setGearStats(player);
+                        player.openInventory(openEquipmentInventory(player));
+                        displayWeapons.displayArmor(player);
+                        return;
+
                     }
+                    case 4:{
 
+                        ItemStack oldBoots = topInv.getItem(37);
+
+                        if(oldBoots != null){
+                            player.getInventory().addItem(oldBoots);
+                        }
+
+                        playerEquipment.setBoots(item);
+                        player.getInventory().remove(item);
+                        gearReader.setGearStats(player);
+                        player.openInventory(openEquipmentInventory(player));
+                        displayWeapons.displayArmor(player);
+                        return;
+
+                    }
                 }
 
-                displayWeapons.displayWeapons(player);
-                displayWeapons.displayArmor(player);
-                return;
+
             }
 
+            if(event.getClickedInventory() == topInv){
 
-        }
+                ItemStack item = event.getCurrentItem();
 
-        //List<Material> validEquipment = equipmentInformation.getAllEquipmentTypes();
-        assert item != null;
-        Material itemType = item.getType();
-
-        /*if(!validEquipment.contains(itemType)){
-            return;
-        }*/
-
-        ItemMeta meta = item.getItemMeta();
-
-        assert meta != null;
-        List<String> lores = meta.getLore();
-
-        String requirement = "none";
-
-        assert lores != null;
-        for(String lore : lores){
-            if(lore.contains("Requires")){
-                requirement = lore;
-                requirement = requirement.replaceAll("§.", "");
-                requirement = requirement.replaceAll("Requires ", "");
-            }
-        }
-
-        String clazz = profileManager.getAnyProfile(player).getPlayerClass();
-
-        if(requirement.equalsIgnoreCase("none") || requirement.equalsIgnoreCase(clazz)){
-            player.openInventory(openEquipmentInventory(player, item, false));
-            return;
-        }
-
-        player.sendMessage("you do not meet the requirements");
-    }
-
-    private void removeEquipment(Player player, String equipSlot){
-
-        boolean isInventoryFull = player.getInventory().firstEmpty() == -1;
-
-        if(isInventoryFull){
-            player.sendMessage("inventory full");
-            return;
-        }
-
-        PlayerEquipment equipment = profileManager.getAnyProfile(player).getPlayerEquipment();
-        switch (equipSlot.toLowerCase()){
-            case "weapon":{
-                player.getInventory().addItem(equipment.getWeapon());
-                equipment.setWeapon(null);
-                break;
-            }
-            case "helmet":{
-                player.getInventory().addItem(equipment.getHelmet());
-                equipment.setHelmet(null);
-                break;
-            }
-            case "chestplate":{
-                player.getInventory().addItem(equipment.getChestPlate());
-                equipment.setChestPlate(null);
-                break;
-            }
-            case "leggings":{
-                player.getInventory().addItem(equipment.getLeggings());
-                equipment.setLeggings(null);
-                break;
-            }
-            case "boots":{
-                player.getInventory().addItem(equipment.getBoots());
-                equipment.setBoots(null);
-                break;
-            }
-        }
-
-        player.openInventory(openEquipmentInventory(player, null, false));
-    }
-
-    private void addEquipmentIfValid(Player player, String equipSlot){
-
-        Inventory inventory = player.getOpenInventory().getTopInventory();
-        PlayerEquipment equipment = profileManager.getAnyProfile(player).getPlayerEquipment();
-        ItemStack selectedItem = inventory.getItem(10);
-
-        //instead of returning if not null, swap the items
-
-        switch (equipSlot.toLowerCase()){
-            case "weapon":{
-                if(inventory.getItem(14) != null){
+                if(item == null){
                     return;
                 }
-                equipment.setWeapon(selectedItem);
-                assert selectedItem != null;
-                player.getInventory().remove(selectedItem);
-                break;
-            }
-            case "helmet":{
-                if(inventory.getItem(22) != null){
+
+                if(!item.hasItemMeta()){
                     return;
                 }
-                equipment.setHelmet(selectedItem);
-                assert selectedItem != null;
-                player.getInventory().remove(selectedItem);
-                break;
-            }
-            case "chestplate":{
-                if(inventory.getItem(23) != null){
+
+                ItemMeta meta = item.getItemMeta();
+
+                assert meta != null;
+                if(!meta.hasDisplayName()){
                     return;
                 }
-                equipment.setChestPlate(selectedItem);
-                assert selectedItem != null;
-                player.getInventory().remove(selectedItem);
-                break;
-            }
-            case "leggings":{
-                if(inventory.getItem(24) != null){
-                    return;
+
+                switch (event.getSlot()){
+                    case 18:{
+                        player.getInventory().addItem(item);
+                        topInv.setItem(18, null);
+                        playerEquipment.setWeapon(null);
+                        gearReader.setGearStats(player);
+                        player.openInventory(openEquipmentInventory(player));
+                        displayWeapons.displayArmor(player);
+                        return;
+                    }
+                    case 10:{
+                        player.getInventory().addItem(item);
+                        topInv.setItem(10, null);
+                        playerEquipment.setHelmet(null);
+                        gearReader.setGearStats(player);
+                        player.openInventory(openEquipmentInventory(player));
+                        displayWeapons.displayArmor(player);
+                        return;
+                    }
+                    case 19:{
+                        player.getInventory().addItem(item);
+                        topInv.setItem(19, null);
+                        playerEquipment.setChestPlate(null);
+                        gearReader.setGearStats(player);
+                        player.openInventory(openEquipmentInventory(player));
+                        displayWeapons.displayArmor(player);
+                        return;
+                    }
+                    case 28:{
+                        player.getInventory().addItem(item);
+                        topInv.setItem(28, null);
+                        playerEquipment.setLeggings(null);
+                        gearReader.setGearStats(player);
+                        player.openInventory(openEquipmentInventory(player));
+                        displayWeapons.displayArmor(player);
+                        return;
+                    }
+                    case 37:{
+                        player.getInventory().addItem(item);
+                        topInv.setItem(37, null);
+                        playerEquipment.setBoots(null);
+                        gearReader.setGearStats(player);
+                        player.openInventory(openEquipmentInventory(player));
+                        displayWeapons.displayArmor(player);
+                        return;
+                    }
                 }
-                equipment.setLeggings(selectedItem);
-                assert selectedItem != null;
-                player.getInventory().remove(selectedItem);
-                break;
+
             }
-            case "boots":{
-                if(inventory.getItem(25) != null){
-                    return;
-                }
-                equipment.setBoots(selectedItem);
-                assert selectedItem != null;
-                player.getInventory().remove(selectedItem);
-                break;
-            }
+
         }
-        player.openInventory(openEquipmentInventory(player, null, false));
-        displayWeapons.displayWeapons(player);
-        displayWeapons.displayArmor(player);
+
     }
 
-    private ItemStack getRemoveItem(){
-        return getItem(Material.EMERALD, 4,
-                " ");
-    }
 
-    private ItemStack getAddItem(){
-        return getItem(Material.EMERALD, 3,
-                " ");
-    }
-
-    private ItemStack getItem(Material material, int modelData, String name, String ... lore){
-        ItemStack item = new ItemStack(material);
-
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
-
-        List<String> lores = new ArrayList<>();
-
-        for (String s : lore){
-            lores.add(ChatColor.translateAlternateColorCodes('&', s));
-        }
-        meta.setLore(lores);
-
-        meta.setCustomModelData(modelData);
-
-        item.setItemMeta(meta);
-        return item;
-    }
 
 }
 

@@ -24,7 +24,7 @@ public class ClassSetter {
         profileManager = main.getProfileManager();
         equipmentManager = new EquipmentManager(main);
         itemManager = main.getItemManager();
-        displayWeapons = new DisplayWeapons(main);
+        displayWeapons = main.getDisplayWeapons();
         gearReader = new GearReader(main);
     }
 
@@ -46,7 +46,6 @@ public class ClassSetter {
         player.sendMessage("You are now a(n) " + clazz);
 
 
-        displayWeapons.displayWeapons(player);
         displayWeapons.displayArmor(player);
         gearReader.setGearStats(player);
 

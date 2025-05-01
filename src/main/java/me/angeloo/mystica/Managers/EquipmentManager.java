@@ -113,7 +113,7 @@ public class EquipmentManager {
         return tier;
     }
 
-    private int getGearType(ItemStack equipment){
+    public int getGearType(ItemStack equipment){
 
         ItemMeta meta = equipment.getItemMeta();
         assert meta != null;
@@ -424,7 +424,6 @@ public class EquipmentManager {
         lores.set(tierLine, newTier);
 
         if(tier>=2){
-            //add bonus stats
 
             //removes the bottom temporarily
             lores.remove(lores.size()-1);
@@ -509,7 +508,7 @@ public class EquipmentManager {
             }
 
 
-            lores.add(ChatColor.of(menuColor) + "Bonus Attributes");
+            //lores.add(ChatColor.of(menuColor) + "Bonus Attributes");
             lores.add(ChatColor.of(uncommonColor) + highStat + " + " + highStatNumber);
             lores.add(ChatColor.of(uncommonColor) + lowStat + " + " + lowStatNumber);
 
@@ -564,7 +563,7 @@ public class EquipmentManager {
         int tier = getEquipmentTier(equipment);
         int gearType = getGearType(equipment);
 
-        Bukkit.getLogger().info("tier " + tier);
+        //Bukkit.getLogger().info("tier " + tier);
         //Bukkit.getLogger().info("geartype " + gearType);
 
         if(gearType == -1){
@@ -573,7 +572,7 @@ public class EquipmentManager {
         }
 
         if(tier == 1){
-            Bukkit.getLogger().info("generating level " + newLevel);
+            //Bukkit.getLogger().info("generating level " + newLevel);
             return generateItem(player, newLevel, tier, gearType);
         }
 
@@ -621,7 +620,7 @@ public class EquipmentManager {
             }
         }
 
-        newLores.add(ChatColor.of(menuColor) + "Bonus Attributes");
+        //newLores.add(ChatColor.of(menuColor) + "Bonus Attributes");
         //now highstat lowstat
 
         int pointer = newLores.size();
@@ -714,7 +713,7 @@ public class EquipmentManager {
     public ItemStack reforge(ItemStack equipment){
 
         if(equipment.getType().equals(Material.AIR)){
-            Bukkit.getLogger().info("no item");
+            //Bukkit.getLogger().info("no item");
             return equipment;
         }
 
@@ -726,14 +725,18 @@ public class EquipmentManager {
 
         int pointer = -1;
         for(String loreLine : lores){
-            if(loreLine.contains("Bonus Attributes")){
+            /*if(loreLine.contains("Bonus Attributes")){
                 pointer = lores.indexOf(loreLine);
                 break;
+            }*/
+            if(loreLine.contains("§x§8§A§D§D§1§F")){
+                pointer = lores.indexOf(loreLine);
+                //Bukkit.getLogger().info("bonus attribute detected");
             }
         }
 
         if(pointer == -1){
-            Bukkit.getLogger().info("invalid equipment");
+            //Bukkit.getLogger().info("invalid equipment");
             return equipment;
         }
 
@@ -788,8 +791,8 @@ public class EquipmentManager {
             }
         }
 
-        lores.set(pointer + 1, ChatColor.of(uncommonColor) + highStat + " + " + highStatNumber);
-        lores.set(pointer + 2, ChatColor.of(uncommonColor) + lowStat + " + " + lowStatNumber);
+        lores.set(pointer - 1, ChatColor.of(uncommonColor) + highStat + " + " + highStatNumber);
+        lores.set(pointer, ChatColor.of(uncommonColor) + lowStat + " + " + lowStatNumber);
 
         meta.setLore(lores);
         newEquipment.setItemMeta(meta);
@@ -799,7 +802,7 @@ public class EquipmentManager {
 
     public ItemStack refine(ItemStack equipment){
         if(equipment.getType().equals(Material.AIR)){
-            Bukkit.getLogger().info("no item");
+            //Bukkit.getLogger().info("no item");
             return equipment;
         }
 
@@ -818,7 +821,7 @@ public class EquipmentManager {
         }
 
         if(pointer == -1){
-            Bukkit.getLogger().info("invalid equipment");
+            //Bukkit.getLogger().info("invalid equipment");
             return equipment;
         }
 
@@ -835,69 +838,6 @@ public class EquipmentManager {
         newEquipment.setItemMeta(meta);
 
         return newEquipment;
-    }
-
-    //offense/defense 1-5 base. +2 min, +4 max per level
-    //crit 1-5 base. +1 min +2 max per level
-    //health/mana 5-10 base. +2 min +4 max per level
-    //regen/mana regen. 1-3 base. +1 min +2 max per level
-    //level 1-5 flat
-
-    private int statCalculatorOffenseDefense(int level, double percent){
-
-        level--;
-
-        double minBase = 1;
-        double maxBase = 5;
-
-        minBase += 2*level;
-        maxBase += 4*level;
-
-        int rawStat;
-
-        double convert = (percent * ((maxBase-minBase) / 100)) + minBase;
-
-        rawStat = (int) convert;
-
-        return rawStat;
-    }
-
-    private int statCalculatorCrit(int level, double percent){
-
-        level--;
-
-        double minBase = 1;
-        double maxBase = 5;
-
-        minBase += level;
-        maxBase += 2*level;
-
-        int rawStat;
-
-        double convert = (percent * ((maxBase-minBase) / 100)) + minBase;
-
-        rawStat = (int) convert;
-
-        return rawStat;
-    }
-
-    private int statCalculatorHealth(int level, double percent){
-
-        level--;
-
-        double minBase = 5;
-        double maxBase = 10;
-
-        minBase += 2*level;
-        maxBase += 4*level;
-
-        int rawStat;
-
-        double convert = (percent * ((maxBase-minBase) / 100)) + minBase;
-
-        rawStat = (int) convert;
-
-        return rawStat;
     }
 
 

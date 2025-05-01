@@ -340,6 +340,10 @@ public class UpgradeInventory implements Listener {
                     topInv.setItem(24, null);
                     topInv.setItem(39, null);
 
+                    for (int i = 0; i < 8; i++) {
+                        topInv.setItem(targetSlots[i], null);
+                    }
+
                     player.getInventory().addItem(newItem);
 
 

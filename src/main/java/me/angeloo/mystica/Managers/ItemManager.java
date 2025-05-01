@@ -130,6 +130,40 @@ public class ItemManager {
         return item;
     }
 
+
+    public ItemStack getNumberItem(String number){
+
+        ItemStack item = new ItemStack(Material.EMERALD);
+
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ""));
+        meta.setUnbreakable(true);
+
+
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+
+        //figure out if the number is over 99
+
+        int modelData = 0;
+
+        if(number.length() == 2 && number.startsWith("0")){
+            int value = Integer.parseInt(number);
+
+            if(value >=0 && value <= 9){
+                modelData = 101 + value;
+            }
+        }
+        else{
+            modelData = Integer.parseInt(number) + 1;
+        }
+
+        meta.setCustomModelData(modelData);
+        item.setItemMeta(meta);
+        return item;
+    }
+
     public String buildCommonTop(int width){
 
         StringBuilder tooltip = new StringBuilder();

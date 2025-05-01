@@ -30,12 +30,10 @@ public class SpecInventory implements Listener {
 
     private final ProfileManager profileManager;
     private final AbilityInventory abilityInventory;
-    private final DisplayWeapons displayWeapons;
 
     public SpecInventory(Mystica main, AbilityInventory abilityInventory){
         profileManager = main.getProfileManager();
         this.abilityInventory = abilityInventory;
-        displayWeapons = new DisplayWeapons(main);
     }
 
     public Inventory openSpecInventory(Player player){
@@ -142,7 +140,7 @@ public class SpecInventory implements Listener {
             player.openInventory(openSpecInventory(player));
             profileManager.getAnyProfile(player).getStats().setLevelStats(profileManager.getAnyProfile(player).getStats().getLevel(),
                     profileManager.getAnyProfile(player).getPlayerClass(), name);
-            displayWeapons.displayWeapons(player);
+
             return;
         }
 

@@ -186,7 +186,7 @@ public class ProfileManager {
                     ItemStack[] equipment = ((List<ItemStack>) config.get(id + ".equipment")).toArray(new ItemStack[5]);
                     PlayerEquipment playerEquipment = new PlayerEquipment(equipment);
 
-                    StatsFromGear gearStats = new StatsFromGear(0, 0, 0,  0, 0, 0);
+                    StatsFromGear gearStats = new StatsFromGear(0,  0,  0, 0, 0);
 
                     int skill1_bonus = config.getInt(id + ".skill_level.skill1_bonus");
                     int skill2_bonus = config.getInt(id + ".skill_level.skill2_bonus");
@@ -333,7 +333,7 @@ public class ProfileManager {
     private PlayerProfile fallbackProfile(){
 
         Stats stats = new Stats(1,1,1,1,1, 1);
-        StatsFromGear gearStats = new StatsFromGear( 0, 0,0,0,0,0);
+        StatsFromGear gearStats = new StatsFromGear( 0, 0,0,0,0);
 
         int currentHealth = 1;
 
@@ -424,7 +424,7 @@ public class ProfileManager {
         }
 
         Stats stats = new Stats(1,50,100,50,50, 1);
-        StatsFromGear gearStats = new StatsFromGear( 0, 0,0,0,0,0);
+        StatsFromGear gearStats = new StatsFromGear( 0, 0,0,0,0);
 
         int currentHealth = 20;
 
@@ -537,7 +537,6 @@ public class ProfileManager {
         }
 
         //pathingManager.calculatePath(newPlayer, new Location(newPlayer.getWorld(), 64, 99, -350));
-        new DisplayWeapons(main).displayWeapons(newPlayer);
     }
 
     public void removePlayerProfile(Player player){

@@ -36,7 +36,9 @@ public final class Mystica extends JavaPlugin{
     private DailyData dailyData;
     private PathingManager pathingManager;
 
+    private DisplayWeapons displayWeapons;
     private ClassSetter classSetter;
+    private GearReader gearReader;
     private EquipmentManager equipmentManager;
     private ItemManager itemManager;
     private StealthTargetBlacklist stealthTargetBlacklist;
@@ -63,6 +65,7 @@ public final class Mystica extends JavaPlugin{
     private ReforgeInventory reforgeInventory;
     private RefineInventory refineInventory;
     private UpgradeInventory upgradeInventory;
+    private EquipmentInventory equipmentInventory;
     private MatchmakingInventory matchmakingInventory;
     private BagInventory bagInventory;
 
@@ -111,10 +114,11 @@ public final class Mystica extends JavaPlugin{
         locations = new Locations(this);
         locations.initializeLocationals();
 
-
         itemManager = new ItemManager();
         equipmentManager = new EquipmentManager(this);
+        displayWeapons = new DisplayWeapons(this);
 
+        gearReader = new GearReader(this);
         classSetter = new ClassSetter(this);
         pvpManager = new PvpManager(this);
         pveChecker = new PveChecker(this);
@@ -147,6 +151,7 @@ public final class Mystica extends JavaPlugin{
         reforgeInventory = new ReforgeInventory(this);
         refineInventory = new RefineInventory(this);
         upgradeInventory = new UpgradeInventory(this);
+        equipmentInventory = new EquipmentInventory(this);
 
         firstClearManager = new FirstClearManager(this);
         firstClearManager.createOrLoadFolder();
@@ -191,7 +196,6 @@ public final class Mystica extends JavaPlugin{
 
         AbilityInventory abilityInventory;
         this.getServer().getPluginManager().registerEvents(abilityInventory = new AbilityInventory(this), this);
-        this.getServer().getPluginManager().registerEvents(new EquipmentInventory(this), this);
         this.getServer().getPluginManager().registerEvents(new ClassSelectInventory(this), this);
         this.getServer().getPluginManager().registerEvents(matchmakingInventory, this);
 
@@ -203,6 +207,7 @@ public final class Mystica extends JavaPlugin{
         this.getServer().getPluginManager().registerEvents(reforgeInventory, this);
         this.getServer().getPluginManager().registerEvents(refineInventory, this);
         this.getServer().getPluginManager().registerEvents(upgradeInventory, this);
+        this.getServer().getPluginManager().registerEvents(equipmentInventory, this);
 
         this.getServer().getPluginManager().registerEvents(new InventoryEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new GeneralEventListener(this), this);
@@ -390,5 +395,11 @@ public final class Mystica extends JavaPlugin{
     public RefineInventory getRefineInventory(){return refineInventory;}
 
     public UpgradeInventory getUpgradeInventory(){return upgradeInventory;}
+
+    public EquipmentInventory getEquipmentInventory(){return equipmentInventory;}
+
+    public GearReader getGearReader(){return gearReader;}
+
+    public DisplayWeapons getDisplayWeapons(){return displayWeapons;}
 
 }

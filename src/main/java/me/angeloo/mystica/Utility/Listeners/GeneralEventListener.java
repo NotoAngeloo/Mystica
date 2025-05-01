@@ -55,12 +55,12 @@ public class GeneralEventListener implements Listener {
     private final AggroTick aggroTick;
     private final AggroManager aggroManager;
     private final PvpManager pvpManager;
+    private final ItemManager itemManager;
     private final TargetManager targetManager;
     private final CombatManager combatManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final AbilityManager abilityManager;
     private final DeathManager deathManager;
-    private final InventoryIndexingManager inventoryIndexingManager;
     private final EquipmentInventory equipmentInventory;
     private final AbilityInventory abilityInventory;
     private final DisplayWeapons displayWeapons;
@@ -92,6 +92,7 @@ public class GeneralEventListener implements Listener {
         dailyData = main.getDailyData();
         profileManager = main.getProfileManager();
         pathingManager = main.getPathingManager();
+        itemManager = main.getItemManager();
         fakePlayerAiManager = main.getFakePlayerAiManager();
         stealthTargetBlacklist = main.getStealthTargetBlacklist();
         aggroTick = main.getAggroTick();
@@ -102,10 +103,9 @@ public class GeneralEventListener implements Listener {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         abilityManager = main.getAbilityManager();
         deathManager = main.getDeathManager();
-        inventoryIndexingManager = main.getInventoryIndexingManager();
-        equipmentInventory = new EquipmentInventory(main);
+        equipmentInventory = main.getEquipmentInventory();
         abilityInventory = new AbilityInventory(main);
-        displayWeapons = new DisplayWeapons(main);
+        displayWeapons = main.getDisplayWeapons();
         statusDisplayer = new StatusDisplayer(main, abilityManager);
         shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, abilityManager);
         damageCalculator = main.getDamageCalculator();
@@ -429,19 +429,17 @@ public class GeneralEventListener implements Listener {
 
         if (!combatStatus) {
 
-            //List<Material> validEquipment = equipmentInformation.getAllEquipmentTypes();
+
+            List<Material> validEquipment = itemManager.getEquipmentTypes();
             Material itemType = itemInMain.getType();
 
-            /*if(!validEquipment.contains(itemType)){
+            if(!validEquipment.contains(itemType)){
                 return;
-            }*/
+            }
 
-            player.openInventory(equipmentInventory.openEquipmentInventory(player, null, false));
             event.setCancelled(true);
-            player.getInventory().setHelmet(null);
-            player.getInventory().setChestplate(null);
-            player.getInventory().setLeggings(null);
-            player.getInventory().setBoots(null);
+            player.openInventory(equipmentInventory.openEquipmentInventory(player));
+            displayWeapons.displayArmor(player);
         }
 
     }
@@ -478,139 +476,6 @@ public class GeneralEventListener implements Listener {
         player.openInventory(abilityInventory.openAbilityInventory(player, -1));
     }
 
-    /*@EventHandler
-    public void menuInitialization(PlayerJoinEvent event){
-        Player player = event.getPlayer();
-        setMenuItems(player.getOpenInventory().getTopInventory());
-    }
-
-    @EventHandler
-    public void menuClose(InventoryCloseEvent event){
-        String title = event.getView().getTitle();
-
-        if(title.equalsIgnoreCase("crafting")){
-            event.getView().getTopInventory().clear();
-        }
-
-        Player player = (Player) event.getPlayer();
-
-
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-
-                if(player.getOpenInventory().getTitle().equalsIgnoreCase("crafting")
-                        && player.getGameMode().equals(GameMode.SURVIVAL)){
-
-                    this.cancel();
-                    Inventory crafting = event.getView().getTopInventory();
-                    setMenuItems(crafting);
-                    player.updateInventory();
-                }
-
-            }
-        }.runTaskTimer(main, 0, 20);
-
-    }
-
-    private void setMenuItems(Inventory inventory){
-
-        inventory.setItem(1, getItem(Material.OAK_SAPLING, 0, ChatColor.of(new java.awt.Color(0,102,0)) + "Skills",
-                "click to open skill menu"));
-        inventory.setItem(2, getItem(Material.CHEST, 0, ChatColor.of(new java.awt.Color(176, 159, 109)) + "Bag",
-                "click to open bag"));
-        inventory.setItem(3, getItem(Material.PAPER, 0, "Coming Soon",
-                "to own on dvd and vhs"));
-        inventory.setItem(4, getItem(Material.SKELETON_SKULL, 0, ChatColor.of(new java.awt.Color(176, 0, 0)) + "Stuck",
-                "click to teleport to your spawn"));
-    }
-
-    private ItemStack getItem(Material material, int modelData, String name, String ... lore){
-
-        ItemStack item = new ItemStack(material);
-
-        ItemMeta meta = item.getItemMeta();
-        assert meta != null;
-        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
-
-        List<String> lores = new ArrayList<>();
-
-        for (String s : lore){
-            lores.add(ChatColor.translateAlternateColorCodes('&', s));
-        }
-
-        meta.setLore(lores);
-        meta.setCustomModelData(modelData);
-
-        item.setItemMeta(meta);
-        return item;
-    }
-
-    @EventHandler
-    public void menuClick(InventoryClickEvent event){
-        Inventory clickedInv = event.getClickedInventory();
-        if (clickedInv == null) {
-            return;
-        }
-
-        String title = event.getView().getTitle();
-
-        if(!title.equalsIgnoreCase("crafting")){
-            return;
-        }
-
-        if(clickedInv.getType() == InventoryType.PLAYER){
-            return;
-        }
-
-        Player player = (Player) event.getWhoClicked();
-
-        ItemStack item = player.getItemOnCursor();
-        ItemStack tempItem = item.clone();
-        event.setCancelled(true);
-        player.setItemOnCursor(null);
-        player.getInventory().addItem(tempItem);
-
-
-        switch (event.getSlot()){
-            case 1:{
-                //player.openInventory(abilityInventory.openAbilityInventory(player, new ItemStack(Material.AIR), false));
-                player.openInventory(abilityInventory.openAbilityInventory(player, -1));
-                break;
-            }
-            case 2:{
-                player.openInventory(bagInventory.openBagInventory(player, inventoryIndexingManager.getBagIndex(player)));
-                break;
-            }
-            case 4:{
-                if(profileManager.getAnyProfile(player).getIfInCombat()){
-                    player.sendMessage("cannot use in combat");
-                    return;
-                }
-
-                if(profileManager.getAnyProfile(player).getIfDead()){
-                    player.sendMessage("cannot use while dead");
-                    return;
-                }
-
-                if(breakawayCooldown.get(player.getUniqueId()) == null){
-                    breakawayCooldown.put(player.getUniqueId(), (System.currentTimeMillis() / 1000) - 300);
-                }
-
-                long currentTime = System.currentTimeMillis() / 1000;
-                if(currentTime - breakawayCooldown.get(player.getUniqueId()) < 300){
-                    player.sendMessage("command on cooldown");
-                    return;
-                }
-                breakawayCooldown.put(player.getUniqueId(), currentTime);
-
-                player.teleport(Bukkit.getWorld("world").getSpawnLocation());
-                break;
-            }
-        }
-
-
-    }*/
 
     @EventHandler
     public void noOffHandEquip(InventoryClickEvent event){
@@ -649,7 +514,7 @@ public class GeneralEventListener implements Listener {
             ItemStack tempItem = item.clone();
             event.setCancelled(true);
             player.setItemOnCursor(null);
-            player.openInventory(equipmentInventory.openEquipmentInventory(player, new ItemStack(Material.AIR), false));
+            player.openInventory(equipmentInventory.openEquipmentInventory(player));
             player.getInventory().addItem(tempItem);
         }
     }
@@ -670,12 +535,9 @@ public class GeneralEventListener implements Listener {
             ItemStack tempItem = item.clone();
             event.setCancelled(true);
             player.setItemOnCursor(null);
-            player.getInventory().setHelmet(null);
-            player.getInventory().setChestplate(null);
-            player.getInventory().setLeggings(null);
-            player.getInventory().setBoots(null);
+            displayWeapons.displayArmor(player);
 
-            player.openInventory(equipmentInventory.openEquipmentInventory(player, null, false));
+            player.openInventory(equipmentInventory.openEquipmentInventory(player));
             player.getInventory().addItem(tempItem);
             return;
         }
@@ -691,6 +553,7 @@ public class GeneralEventListener implements Listener {
             ClickType clickType = event.getClick();
             if(clickType.isShiftClick()){
                 ItemStack item = event.getCurrentItem();
+                assert item != null;
                 if (item.getType().name().endsWith("_HELMET") ||
                         item.getType().name().endsWith("_CHESTPLATE") ||
                         item.getType().name().endsWith("_LEGGINGS") ||
@@ -704,7 +567,7 @@ public class GeneralEventListener implements Listener {
                     player.getInventory().setLeggings(null);
                     player.getInventory().setBoots(null);
 
-                    player.openInventory(equipmentInventory.openEquipmentInventory(player, null, false));
+                    player.openInventory(equipmentInventory.openEquipmentInventory(player));
                     player.getInventory().addItem(tempItem);
                 }
             }
@@ -962,7 +825,7 @@ public class GeneralEventListener implements Listener {
 
 
         deathManager.playerNowLive(player, false, null);
-        displayWeapons.displayWeapons(player);
+        displayWeapons.displayArmor(player);
 
     }
 
@@ -1773,7 +1636,6 @@ public class GeneralEventListener implements Listener {
         combatManager.forceCombatEnd(player);
 
         displayWeapons.displayArmor(player);
-        displayWeapons.displayWeapons(player);
 
         gravestoneManager.removeGravestone(player);
 

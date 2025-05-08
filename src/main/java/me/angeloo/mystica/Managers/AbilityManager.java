@@ -516,4 +516,5 @@ public class AbilityManager {
         warriorAbilities.resetCooldowns(caster);
     }
 
+
 }

@@ -104,7 +104,7 @@ public class GeneralEventListener implements Listener {
         abilityManager = main.getAbilityManager();
         deathManager = main.getDeathManager();
         equipmentInventory = main.getEquipmentInventory();
-        abilityInventory = new AbilityInventory(main);
+        abilityInventory = main.getAbilityInventory();
         displayWeapons = main.getDisplayWeapons();
         statusDisplayer = new StatusDisplayer(main, abilityManager);
         shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, abilityManager);

@@ -27,13 +27,14 @@ public class DisplayWeapons {
 
         PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
+        player.getInventory().setHelmet(null);
+        player.getInventory().setChestplate(null);
+        player.getInventory().setLeggings(null);
+        player.getInventory().setBoots(null);
+
         player.getInventory().setHelmet(playerEquipment.getHelmet());
-
         player.getInventory().setChestplate(playerEquipment.getChestPlate());
-
-
         player.getInventory().setLeggings(playerEquipment.getLeggings());
-
         player.getInventory().setBoots(playerEquipment.getBoots());
 
         ItemStack displayedWeapon = itemManager.getNoneEquipment().getBaseWeapon();

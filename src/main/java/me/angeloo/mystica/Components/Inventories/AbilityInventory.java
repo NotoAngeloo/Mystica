@@ -2,6 +2,7 @@ package me.angeloo.mystica.Components.Inventories;
 
 import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
+import me.angeloo.mystica.Managers.ItemManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
@@ -17,24 +18,27 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class AbilityInventory implements Listener {
 
     private final ProfileManager profileManager;
     private final AllSkillItems allSkillItems;
+    private final ItemManager itemManager;
     private final SpecInventory specInventory;
 
     public AbilityInventory(Mystica main){
         profileManager = main.getProfileManager();
-        allSkillItems = new AllSkillItems(main, main.getAbilityManager());
+        allSkillItems = main.getAllSkillItems();
+        itemManager = main.getItemManager();
         specInventory = new SpecInventory(main, this);
     }
 
     public Inventory openAbilityInventory(Player player, int selectedSlot){
         EquipSkills equipSkills = profileManager.getAnyProfile(player).getEquipSkills();
 
-        //\uE064
-        Inventory inv = Bukkit.createInventory(null, 9*6, ChatColor.WHITE + "\uF808\uE064\uF828");
+        //\uE064 is the inv itself,
+        Inventory inv = Bukkit.createInventory(null, 9*6, ChatColor.WHITE + "\uF807" + "\uE064");
 
         inv.setItem(9, allSkillItems.getPlayerSkill(player, 1));
         inv.setItem(10, allSkillItems.getPlayerSkill(player, 2));
@@ -48,15 +52,17 @@ public class AbilityInventory implements Listener {
         //the select item
         if(selectedSlot != -1){
 
-            ItemStack selector = new ItemStack(Material.AIR);
+            ItemStack selector;
 
             if(selectedSlot >=0 && selectedSlot<=8){
-                selector = getItem(Material.EMERALD, 1, " ");
+
+                selector = itemManager.getItem(Material.DIAMOND, 1, " ");
+
                 inv.setItem(selectedSlot, selector);
             }
 
             if(selectedSlot>=9 && selectedSlot <=16){
-                selector = getItem(Material.EMERALD, 2, " ");
+                selector = itemManager.getItem(Material.DIAMOND, 2, " ");
                 inv.setItem(selectedSlot + 9, selector);
             }
 
@@ -74,116 +80,92 @@ public class AbilityInventory implements Listener {
         inv.setItem(43, allSkillItems.getPlayerSkill(player, equipSkills.getAnySlot()[7]));
         inv.setItem(44, allSkillItems.getBasic(player));
 
+
         inv.setItem(49, allSkillItems.getUltimate(player));
+
 
         return inv;
     }
 
     @EventHandler
     public void abilityClicks(InventoryClickEvent event){
-        if (!event.getView().getTitle().equalsIgnoreCase(ChatColor.WHITE + "\uF808\uE064\uF828")) {
-            return;
-        }
-        event.setCancelled(true);
+        if(event.getView().getTitle().contains(ChatColor.WHITE + "\uF807" + "\uE064")){
+            event.setCancelled(true);
 
-        Player player = (Player) event.getWhoClicked();
+            Inventory topInv = event.getView().getTopInventory();
 
-        if(event.getClickedInventory() == null){
-            return;
-        }
-        Inventory topInv = event.getView().getTopInventory();
-
-        if(event.getClickedInventory() != topInv){
-            return;
-        }
-
-        int slot = event.getSlot();
-
-        EquipSkills equipSkills = profileManager.getAnyProfile(player).getEquipSkills();
-
-        List<Integer> skillSlots = new ArrayList<>();
-        for(int i=9;i<=16;i++){
-            skillSlots.add(i);
-        }
-
-        if(skillSlots.contains(slot)){
-            slot-=9;
-
-            if(equipSkills.whichSlotIsTheSkillEquippedIn(slot+1) != -1){
-                equipSkills.setAnySlot(equipSkills.whichSlotIsTheSkillEquippedIn(slot+1), 0);
+            if(event.getClickedInventory() != topInv){
+                return;
             }
 
-            player.openInventory(openAbilityInventory(player, slot));
-            return;
-        }
+            Player player = (Player) event.getWhoClicked();
 
-        List<Integer> equipSlots = new ArrayList<>();
-        for(int i=36;i<=43;i++){
-            equipSlots.add(i);
-        }
+            int slot = event.getSlot();
 
-        if(equipSlots.contains(slot)){
-            //Bukkit.getLogger().info(String.valueOf(slot));
+            EquipSkills equipSkills = profileManager.getAnyProfile(player).getEquipSkills();
 
-            int selectSlot = -1;
-            ItemStack[] contents = topInv.getContents();
+            List<Integer> skillSlots = new ArrayList<>();
+            for(int i=9;i<=16;i++){
+                skillSlots.add(i);
+            }
 
-            for (int i = 0; i < contents.length; i++) {
-                if (contents[i] != null && contents[i].getType().equals(Material.EMERALD)) {
-                    selectSlot = i;
-                    break;
+            if(skillSlots.contains(slot)){
+                slot-=9;
+
+                if(equipSkills.whichSlotIsTheSkillEquippedIn(slot+1) != -1){
+                    equipSkills.setAnySlot(equipSkills.whichSlotIsTheSkillEquippedIn(slot+1), 0);
                 }
+
+                player.openInventory(openAbilityInventory(player, slot));
+                return;
             }
 
-            if(selectSlot != -1){
-                if(selectSlot <=7){
-                    int skillNumber = selectSlot+1;
+            List<Integer> equipSlots = new ArrayList<>();
+            for(int i=36;i<=43;i++){
+                equipSlots.add(i);
+            }
+
+            if(equipSlots.contains(slot)){
+                //Bukkit.getLogger().info(String.valueOf(slot));
+
+                int selectSlot = -1;
+                ItemStack[] contents = topInv.getContents();
+
+                for (int i = 0; i < contents.length; i++) {
+                    if (contents[i] != null && contents[i].getType().equals(Material.DIAMOND)) {
+                        selectSlot = i;
+                        break;
+                    }
+                }
+
+                if(selectSlot != -1){
+                    if(selectSlot <=7){
+                        int skillNumber = selectSlot+1;
+                        int putTheSkillHere = slot - 36;
+                        equipSkills.setAnySlot(putTheSkillHere, skillNumber);
+                        player.openInventory(openAbilityInventory(player, -1));
+                    }
+                }
+
+                if(selectSlot == -1){
                     int putTheSkillHere = slot - 36;
-                    equipSkills.setAnySlot(putTheSkillHere, skillNumber);
+                    equipSkills.setAnySlot(putTheSkillHere, 0);
                     player.openInventory(openAbilityInventory(player, -1));
                 }
+
             }
 
-            if(selectSlot == -1){
-                int putTheSkillHere = slot - 36;
-                equipSkills.setAnySlot(putTheSkillHere, 0);
-                player.openInventory(openAbilityInventory(player, -1));
+            List<Integer> pathSlots = new ArrayList<>();
+            for(int i=51;i<=53;i++){
+                pathSlots.add(i);
             }
 
+            if(pathSlots.contains(slot)){
+                player.openInventory(specInventory.openSpecInventory(player));
+            }
         }
-
-        List<Integer> pathSlots = new ArrayList<>();
-        for(int i=50;i<=53;i++){
-            pathSlots.add(i);
-        }
-
-        if(pathSlots.contains(slot)){
-            player.openInventory(specInventory.openSpecInventory(player));
-        }
-
     }
 
+    public SpecInventory getSpecInventory(){return specInventory;}
 
-    private ItemStack getItem(Material material, int modelData, String name, String ... lore){
-        ItemStack item = new ItemStack(material);
-
-        ItemMeta meta = item.getItemMeta();
-        assert meta != null;
-        meta.setCustomModelData(modelData);
-        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
-
-        List<String> lores = new ArrayList<>();
-
-        for (String s : lore){
-            lores.add(ChatColor.translateAlternateColorCodes('&', s));
-        }
-        meta.setLore(lores);
-
-        item.setItemMeta(meta);
-        return item;
-    }
-
-    public SpecInventory getSpecInventory() {
-        return specInventory;
-    }
 }

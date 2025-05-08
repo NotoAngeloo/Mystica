@@ -3,6 +3,7 @@ package me.angeloo.mystica;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
+import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Commands.*;
 import me.angeloo.mystica.Components.Inventories.*;
 import me.angeloo.mystica.Managers.*;
@@ -41,6 +42,7 @@ public final class Mystica extends JavaPlugin{
     private GearReader gearReader;
     private EquipmentManager equipmentManager;
     private ItemManager itemManager;
+    private AllSkillItems allSkillItems;
     private StealthTargetBlacklist stealthTargetBlacklist;
     private FakePlayerTargetManager fakePlayerTargetManager;
     private TargetManager targetManager;
@@ -61,6 +63,8 @@ public final class Mystica extends JavaPlugin{
     private ChangeResourceHandler changeResourceHandler;
     private Locations locations;
 
+    private AbilityInventory abilityInventory;
+    private SpecInventory specInventory;
     private IdentifyInventory identifyInventory;
     private ReforgeInventory reforgeInventory;
     private RefineInventory refineInventory;
@@ -142,10 +146,13 @@ public final class Mystica extends JavaPlugin{
         abilityManager = new AbilityManager(this);
         combatManager = abilityManager.getCombatManager();
         deathManager = new DeathManager(this);
+        allSkillItems = abilityManager.getAllSkillItems();
 
         fakePlayerAiManager = new FakePlayerAiManager(this);
 
         inventoryIndexingManager = new InventoryIndexingManager();
+        abilityInventory = new AbilityInventory(this);
+        specInventory = abilityInventory.getSpecInventory();
         bagInventory = new BagInventory(this);
         identifyInventory = new IdentifyInventory(this);
         reforgeInventory = new ReforgeInventory(this);
@@ -194,15 +201,16 @@ public final class Mystica extends JavaPlugin{
         getCommand("Matchmaking").setExecutor(new Matchmaking(this));
         getCommand("MysticaItem").setExecutor(new MysticaItem(this));
 
-        AbilityInventory abilityInventory;
-        this.getServer().getPluginManager().registerEvents(abilityInventory = new AbilityInventory(this), this);
+
         this.getServer().getPluginManager().registerEvents(new ClassSelectInventory(this), this);
         this.getServer().getPluginManager().registerEvents(matchmakingInventory, this);
 
 
-        SpecInventory specInventory = abilityInventory.getSpecInventory();
-        this.getServer().getPluginManager().registerEvents(specInventory, this);
+        //SpecInventory specInventory = abilityInventory.getSpecInventory();
+        //this.getServer().getPluginManager().registerEvents(specInventory, this);
 
+        this.getServer().getPluginManager().registerEvents(abilityInventory, this);
+        this.getServer().getPluginManager().registerEvents(specInventory, this);
         this.getServer().getPluginManager().registerEvents(identifyInventory, this);
         this.getServer().getPluginManager().registerEvents(reforgeInventory, this);
         this.getServer().getPluginManager().registerEvents(refineInventory, this);
@@ -401,5 +409,9 @@ public final class Mystica extends JavaPlugin{
     public GearReader getGearReader(){return gearReader;}
 
     public DisplayWeapons getDisplayWeapons(){return displayWeapons;}
+
+    public AbilityInventory getAbilityInventory(){return abilityInventory;}
+
+    public AllSkillItems getAllSkillItems(){return allSkillItems;}
 
 }

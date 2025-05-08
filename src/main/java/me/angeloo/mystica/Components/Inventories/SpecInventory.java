@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.Inventories;
 
 import me.angeloo.mystica.Components.Profile;
+import me.angeloo.mystica.Managers.ItemManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DisplayWeapons;
@@ -29,22 +30,36 @@ import static me.angeloo.mystica.Mystica.*;
 public class SpecInventory implements Listener {
 
     private final ProfileManager profileManager;
+    private final ItemManager itemManager;
     private final AbilityInventory abilityInventory;
 
     public SpecInventory(Mystica main, AbilityInventory abilityInventory){
         profileManager = main.getProfileManager();
+        itemManager = main.getItemManager();
         this.abilityInventory = abilityInventory;
     }
 
     public Inventory openSpecInventory(Player player){
-        Inventory inv = Bukkit.createInventory(null, 9*6, org.bukkit.ChatColor.WHITE + "\uF808\uE065\uF828");
+        Inventory inv = Bukkit.createInventory(null, 9*6, ChatColor.WHITE + "\uF807" + "\uE065");
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
         String clazz = playerProfile.getPlayerClass();
         String subClass = playerProfile.getPlayerSubclass();
 
-        inv.setItem(22, getSubclassItem(subClass));
+        //inv.setItem(27, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
+
+        //inv.setItem(5, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
+        //inv.setItem(3, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
+
+        //inv.setItem(20, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
+        //inv.setItem(22, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
+        //inv.setItem(24, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
+
+
+
+        //inv.setItem(40, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
+        inv.setItem(40, getSubclassItem(subClass));
 
         switch (clazz.toLowerCase()){
             case "elementalist":{
@@ -100,59 +115,64 @@ public class SpecInventory implements Listener {
 
     @EventHandler
     public void specClicks(InventoryClickEvent event){
-        if (!event.getView().getTitle().equalsIgnoreCase(org.bukkit.ChatColor.WHITE + "\uF808\uE065\uF828")) {
-            return;
-        }
-        event.setCancelled(true);
+        if(event.getView().getTitle().contains(ChatColor.WHITE + "\uF807" + "\uE065")){
+            event.setCancelled(true);
 
-        Player player = (Player) event.getWhoClicked();
+            Inventory topInv = event.getView().getTopInventory();
 
-        if(event.getClickedInventory() == null){
-            return;
-        }
-
-        Inventory inv = event.getView().getTopInventory();
-
-        if(event.getClickedInventory() != inv){
-            return;
-        }
-
-        int slot = event.getSlot();
-
-        ItemStack item = event.getCurrentItem();
-
-        List<Integer> validSlots = new ArrayList<>();
-        validSlots.add(9);
-        validSlots.add(18);
-        validSlots.add(27);
-
-        if(validSlots.contains(slot)){
-
-            if(item==null){
+            if(event.getClickedInventory() != topInv){
                 return;
             }
 
-            String name = event.getCurrentItem().getItemMeta().getDisplayName();
+            Player player = (Player) event.getWhoClicked();
 
-            name = name.replaceAll("§.", "");
+            int slot = event.getSlot();
+            ItemStack item = event.getCurrentItem();
 
-            profileManager.getAnyProfile(player).setPlayerSubclass(name);
-            player.openInventory(openSpecInventory(player));
-            profileManager.getAnyProfile(player).getStats().setLevelStats(profileManager.getAnyProfile(player).getStats().getLevel(),
-                    profileManager.getAnyProfile(player).getPlayerClass(), name);
+            List<Integer> specSlots = new ArrayList<>();
+            specSlots.add(9);
+            specSlots.add(18);
+            specSlots.add(27);
 
-            return;
-        }
+            if(specSlots.contains(slot)){
+                if(item==null){
+                    return;
+                }
 
-        List<Integer> skillSlots = new ArrayList<>();
-        for(int i=46;i<=49;i++){
-            skillSlots.add(i);
-        }
+                if(!item.hasItemMeta()){
+                    return;
+                }
 
-        if(skillSlots.contains(slot)){
-            player.openInventory(abilityInventory.openAbilityInventory(player, -1));
+                ItemMeta meta = item.getItemMeta();
+
+                assert meta != null;
+                if(!meta.hasDisplayName()){
+                    return;
+                }
+
+                String name = meta.getDisplayName();
+
+                name = name.replaceAll("§.", "");
+
+                profileManager.getAnyProfile(player).setPlayerSubclass(name);
+                player.openInventory(openSpecInventory(player));
+                profileManager.getAnyProfile(player).getStats().setLevelStats(profileManager.getAnyProfile(player).getStats().getLevel(),
+                        profileManager.getAnyProfile(player).getPlayerClass(), name);
+
+                return;
+            }
+
+            List<Integer> skillSlots = new ArrayList<>();
+            for(int i=46;i<=48;i++){
+                skillSlots.add(i);
+            }
+
+            if(skillSlots.contains(slot)){
+                player.openInventory(abilityInventory.openAbilityInventory(player, -1));
+            }
         }
     }
+
 
     private ItemStack getSubclassItem(String subclass){
 
@@ -196,7 +216,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getPyromancerItem(){
-        return getItem(Material.CYAN_DYE, 9,
+        return itemManager.getItem(Material.CYAN_DYE, 9,
                 ChatColor.of(elementalistColor) + "Pyromancer",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -216,7 +236,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getConjurerItem(){
-        return getItem(Material.CYAN_DYE, 10,
+        return itemManager.getItem(Material.CYAN_DYE, 10,
                 ChatColor.of(elementalistColor) + "Conjurer",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -238,7 +258,7 @@ public class SpecInventory implements Listener {
 
 
     private ItemStack getScoutItem(){
-        return getItem(Material.LIME_DYE, 9,
+        return itemManager.getItem(Material.LIME_DYE, 9,
                 ChatColor.of(rangerColor) + "Scout",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -246,7 +266,7 @@ public class SpecInventory implements Listener {
                 "",
                 ChatColor.of(Color.WHITE) + "Crit rate increased by 10%",
                 "",
-                ChatColor.of(Color.WHITE) + "Increases crit of " + ChatColor.of(new Color(34, 111, 80)) + "Razor Wind " +
+                ChatColor.of(Color.WHITE) + "Increases crit of " + ChatColor.of(rangerColor) + "Razor Wind " +
                         ChatColor.of(Color.WHITE) + "by 15%",
                 ChatColor.of(Color.WHITE) + "Applies haste level 1 after a skill",
                 ChatColor.of(Color.WHITE) + "inflicts a critical hit",
@@ -260,7 +280,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getTamerItem(){
-        return getItem(Material.LIME_DYE, 10,
+        return itemManager.getItem(Material.LIME_DYE, 10,
                 ChatColor.of(rangerColor) + "Animal Tamer",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -281,7 +301,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getChaosItem(){
-        return getItem(Material.ENDER_EYE, 0,
+        return itemManager.getItem(Material.ENDER_EYE, 0,
                 ChatColor.of(mysticColor) + "Chaos",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -305,7 +325,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getArcaneItem(){
-        return getItem(Material.PURPLE_DYE, 9,
+        return itemManager.getItem(Material.PURPLE_DYE, 9,
                 ChatColor.of(mysticColor) + "Arcane Master",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -329,7 +349,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getShepardItem(){
-        return getItem(Material.PURPLE_DYE, 10,
+        return itemManager.getItem(Material.PURPLE_DYE, 10,
                 ChatColor.of(mysticColor) + "Shepard",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -360,7 +380,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getBloodItem(){
-        return getItem(Material.RED_DYE, 9,
+        return itemManager.getItem(Material.RED_DYE, 9,
                 ChatColor.of(shadowKnightColor) + "Blood",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -391,7 +411,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getDoomItem(){
-        return getItem(Material.RED_DYE, 10,
+        return itemManager.getItem(Material.RED_DYE, 10,
                 ChatColor.of(shadowKnightColor) + "Doom",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -418,7 +438,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getTemplarItem(){
-        return getItem(Material.YELLOW_DYE, 9,
+        return itemManager.getItem(Material.YELLOW_DYE, 9,
                 ChatColor.of(paladinColor) + "Templar",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -442,7 +462,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getDivineItem(){
-        return getItem(Material.YELLOW_DYE, 19,
+        return itemManager.getItem(Material.YELLOW_DYE, 19,
                 ChatColor.of(paladinColor) + "Divine",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -465,7 +485,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getDawnItem(){
-        return getItem(Material.YELLOW_DYE, 10,
+        return itemManager.getItem(Material.YELLOW_DYE, 10,
                 ChatColor.of(paladinColor) + "Dawn",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -492,7 +512,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getExecutionerItem(){
-        return getItem(Material.ORANGE_DYE, 10,
+        return itemManager.getItem(Material.ORANGE_DYE, 10,
                 ChatColor.of(warriorColor) + "Executioner",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -518,7 +538,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getGladiatorItem(){
-        return getItem(Material.ORANGE_DYE, 9,
+        return itemManager.getItem(Material.ORANGE_DYE, 9,
                 ChatColor.of(warriorColor) + "Gladiator",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -541,7 +561,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getDuelistItem(){
-        return getItem(Material.PINK_DYE, 12,
+        return itemManager.getItem(Material.PINK_DYE, 12,
                 ChatColor.of(assassinColor) + "Duelist",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -566,7 +586,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getAlchemistItem(){
-        return getItem(Material.PINK_DYE, 14,
+        return itemManager.getItem(Material.PINK_DYE, 14,
                 ChatColor.of(assassinColor) + "Alchemist",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -589,32 +609,7 @@ public class SpecInventory implements Listener {
                 ChatColor.of(Color.WHITE) + "for 15 seconds.");
     }
 
-    private ItemStack getItem(Material material, int modelData, String name, String ... lore){
 
-        AttributeModifier zeroer = new AttributeModifier(UUID.randomUUID(), "generic.attackDamage",
-                0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND);
-
-        ItemStack item = new ItemStack(material);
-
-        ItemMeta meta = item.getItemMeta();
-        assert meta != null;
-        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
-
-        List<String> lores = new ArrayList<>();
-
-        for (String s : lore){
-            lores.add(ChatColor.translateAlternateColorCodes('&', s));
-        }
-
-        meta.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE, zeroer);
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-
-        meta.setLore(lores);
-        meta.setCustomModelData(modelData);
-
-        item.setItemMeta(meta);
-        return item;
-    }
 
 
 }

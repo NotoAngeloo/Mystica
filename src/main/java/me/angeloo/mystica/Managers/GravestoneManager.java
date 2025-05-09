@@ -29,7 +29,7 @@ public class GravestoneManager {
         return gravestones.get(entity);
     }
 
-    private Entity getGravestone(LivingEntity player){
+    public Entity getGravestone(LivingEntity player){
         return playersGravestone.get(player);
     }
 

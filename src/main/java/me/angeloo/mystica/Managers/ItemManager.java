@@ -131,13 +131,13 @@ public class ItemManager {
     }
 
 
-    public ItemStack getNumberItem(String number){
+    public ItemStack getNumberItem(String number, int wholeNumber){
 
         ItemStack item = new ItemStack(Material.EMERALD);
 
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ""));
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', String.valueOf(wholeNumber)));
         meta.setUnbreakable(true);
 
 

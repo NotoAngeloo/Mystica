@@ -113,6 +113,31 @@ public class EquipmentManager {
         return tier;
     }
 
+    public String getEquipmentClass(ItemStack equipment){
+
+        ItemMeta meta = equipment.getItemMeta();
+        assert meta != null;
+        List<String> lores = meta.getLore();
+        assert lores != null;
+
+        String equipmentClass = "";
+        Pattern pattern = Pattern.compile("(?i)Class:\\s*(.*)");
+        for(String lore : lores){
+            String colorlessString = lore.replaceAll("§.", "");
+            Matcher tierMatcher = pattern.matcher(colorlessString);
+
+            if(tierMatcher.find()){
+                equipmentClass = tierMatcher.group(1);
+            }
+
+        }
+
+
+        //Bukkit.getLogger().info(equipmentClass);
+
+        return equipmentClass;
+    }
+
     public int getGearType(ItemStack equipment){
 
         ItemMeta meta = equipment.getItemMeta();

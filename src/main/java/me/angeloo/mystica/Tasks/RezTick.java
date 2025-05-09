@@ -1,29 +1,29 @@
 package me.angeloo.mystica.Tasks;
 
-import me.angeloo.mystica.Components.Items.RezItem;
+import me.angeloo.mystica.Managers.FakePlayerAiManager;
+import me.angeloo.mystica.Managers.MysticaPartyManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.CustomItemConverter;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 public class RezTick extends BukkitRunnable {
 
     private final ProfileManager profileManager;
-    private final CustomItemConverter customItemConverter;
+    private final MysticaPartyManager mysticaPartyManager;
+    private final FakePlayerAiManager fakePlayerAiManager;
 
     public RezTick(Mystica main){
         profileManager = main.getProfileManager();
-        customItemConverter = new CustomItemConverter();
+        mysticaPartyManager = main.getMysticaPartyManager();
+        fakePlayerAiManager = main.getFakePlayerAiManager();
     }
 
     @Override
@@ -36,14 +36,41 @@ public class RezTick extends BukkitRunnable {
                 continue;
             }
 
+            String rezMessage = "Left Click to Respawn";
 
-            deathStatus = profileManager.getAnyProfile(player).getIfDead();
+            List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMPartyMemberList(player));
 
-            if(deathStatus){
-                //give them items that rez them
-                ItemStack rezItem = customItemConverter.convert(new RezItem(), 1);
-                player.getInventory().setItem(4, rezItem);
+            for(LivingEntity member : mParty){
+
+                if(member instanceof Player){
+                    boolean partyMemberDeathStatus = profileManager.getAnyProfile(member).getIfDead();
+
+                    if(partyMemberDeathStatus){
+                        continue;
+                    }
+                }
+
+
+                boolean partyMemberCombatStatus = profileManager.getAnyProfile(member).getIfInCombat();
+
+                if(partyMemberCombatStatus){
+                    rezMessage = "Party in Combat";
+                    break;
+                }
+
+                if(!(member instanceof Player)){
+                    if(fakePlayerAiManager.getIfRotationRunning(member)){
+                        rezMessage = "Party in Combat";
+                        break;
+                    }
+                }
+
+
             }
+
+
+
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(rezMessage));
         }
     }
 }

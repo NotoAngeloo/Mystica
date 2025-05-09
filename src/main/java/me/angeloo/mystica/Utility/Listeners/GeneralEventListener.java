@@ -7,7 +7,6 @@ import me.angeloo.mystica.Components.Inventories.AbilityInventory;
 import me.angeloo.mystica.Components.Inventories.BagInventory;
 import me.angeloo.mystica.Components.Inventories.EquipmentInventory;
 import me.angeloo.mystica.Components.Items.PathToolItem;
-import me.angeloo.mystica.Components.Items.RezItem;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.CustomEvents.*;
@@ -69,7 +68,6 @@ public class GeneralEventListener implements Listener {
     private final GearReader gearReader;
     private final BagInventory bagInventory;
     private final ClassSetter classSetter;
-    private final CustomItemConverter customItemConverter;
     private final Locations locations;
     private final GravestoneManager gravestoneManager;
 
@@ -113,7 +111,6 @@ public class GeneralEventListener implements Listener {
         bagInventory = main.getBagInventory();
         gearReader = new GearReader(main);
         classSetter = new ClassSetter(main);
-        customItemConverter = new CustomItemConverter();
         firstClearManager = main.getFirstClearManager();
         locations = new Locations(main);
         gravestoneManager = main.getGravestoneManager();
@@ -207,12 +204,6 @@ public class GeneralEventListener implements Listener {
             PlayerInventory playerInventory = player.getInventory();
 
             if(playerInventory.contains(Material.BARRIER)){
-                hasBadItem = true;
-            }
-
-            ItemStack rezItem = customItemConverter.convert(new RezItem(), 1);
-
-            if(playerInventory.contains(rezItem)){
                 hasBadItem = true;
             }
 
@@ -770,71 +761,15 @@ public class GeneralEventListener implements Listener {
 
 
     @EventHandler
-    public void rezPlayer(PlayerInteractEvent event){
-
-        Player player = event.getPlayer();
-        ItemStack item = event.getItem();
-
-        boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
-
-        if(!deathStatus){
-            return;
-        }
-
-        if(item == null){
-            return;
-        }
-
-        if(!item.isSimilar(customItemConverter.convert(new RezItem(), 1))) {
-            return;
-        }
-
-        if(event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK){
-            return;
-        }
-
-        event.setCancelled(true);
-
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMPartyMemberList(player));
-
-        for(LivingEntity member : mParty){
-
-            if(member instanceof Player){
-                boolean partyMemberDeathStatus = profileManager.getAnyProfile(member).getIfDead();
-
-                if(partyMemberDeathStatus){
-                    continue;
-                }
-            }
-
-
-            boolean partyMemberCombatStatus = profileManager.getAnyProfile(member).getIfInCombat();
-
-            if(partyMemberCombatStatus){
-                return;
-            }
-
-            if(!(member instanceof Player)){
-                if(fakePlayerAiManager.getIfRotationRunning(member)){
-                    return;
-                }
-            }
-
-
-        }
-
-
-        deathManager.playerNowLive(player, false, null);
-        displayWeapons.displayArmor(player);
-
-    }
-
-    @EventHandler
     public void onManualCombatStart(PlayerAnimationEvent event) {
 
         Player player = event.getPlayer();
 
         if(!player.isSneaking()){
+            return;
+        }
+
+        if(player.getGameMode() != GameMode.SURVIVAL){
             return;
         }
 
@@ -881,33 +816,6 @@ public class GeneralEventListener implements Listener {
         }
     }
 
-
-    //removed for new death system
-
-    /*@EventHandler
-    public void noDeadMovement(PlayerMoveEvent event){
-        Player player = event.getPlayer();
-
-        boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
-
-        if(!deathStatus){
-            return;
-        }
-
-        Block block = player.getLocation().subtract(0,.1,0).getBlock();
-
-        if(block.getType() == Material.AIR){
-            return;
-        }
-
-        Location from = event.getFrom();
-        Location to = event.getTo();
-        assert to != null;
-        if (from.getX() != to.getX() || from.getY() != to.getY() || from.getZ() != to.getZ()) {
-            event.setCancelled(true);
-            player.teleport(from);
-        }
-    }*/
 
     @EventHandler
     public void rangerLoseFocus(PlayerMoveEvent event){
@@ -1695,5 +1603,96 @@ public class GeneralEventListener implements Listener {
         mysticaPartyManager.setLeaderPlayer(player, newLeader);
     }
 
+    @EventHandler
+    public void rezPlayer(PlayerInteractEvent event){
+
+        Player player = event.getPlayer();
+
+        if(player.getGameMode() != GameMode.SPECTATOR){
+            return;
+        }
+
+        boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
+
+        if(!deathStatus){
+            return;
+        }
+
+        if(event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_AIR){
+            event.setCancelled(true);
+
+            List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMPartyMemberList(player));
+
+            for(LivingEntity member : mParty){
+
+                if(member instanceof Player){
+                    boolean partyMemberDeathStatus = profileManager.getAnyProfile(member).getIfDead();
+
+                    if(partyMemberDeathStatus){
+                        continue;
+                    }
+                }
+
+
+                boolean partyMemberCombatStatus = profileManager.getAnyProfile(member).getIfInCombat();
+
+                if(partyMemberCombatStatus){
+                    return;
+                }
+
+                if(!(member instanceof Player)){
+                    if(fakePlayerAiManager.getIfRotationRunning(member)){
+                        return;
+                    }
+                }
+
+
+            }
+
+
+            deathManager.playerNowLive(player, false, null);
+            displayWeapons.displayArmor(player);
+        }
+
+    }
+
+    @EventHandler
+    public void spectorMove(PlayerMoveEvent event){
+
+        Player player = event.getPlayer();
+
+        // Only apply logic if the player is in spectator mode
+        if (player.getGameMode() != GameMode.SPECTATOR) {
+            return;
+        }
+
+        Location to = event.getTo();
+        Location from = event.getFrom();
+
+        // Check if the player is actually moving to a new block
+        if (to != null && (to.getBlockX() != from.getBlockX() || to.getBlockY() != from.getBlockY() || to.getBlockZ() != from.getBlockZ())) {
+
+            // Check if the target block is not air (or other passable blocks if needed)
+            if (!to.getBlock().isPassable()) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+
+        if(to == null){
+            return;
+        }
+
+        Entity gravestone = gravestoneManager.getGravestone(player);
+
+        Location gravestoneLoc = gravestone.getLocation();
+        double distance = to.distance(gravestoneLoc);
+
+        if (distance > 10) {
+            event.setCancelled(true);
+            return;
+        }
+
+    }
 
 }

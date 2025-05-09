@@ -13,6 +13,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -64,6 +65,7 @@ public class DeathManager {
         }
 
         player.getInventory().clear();
+        player.setGameMode(GameMode.SPECTATOR);
 
         profileManager.getAnyProfile(player).setIfDead(true);
 
@@ -82,7 +84,7 @@ public class DeathManager {
         Entity gravestone;
 
         try{
-            gravestone = MythicBukkit.inst().getAPIHelper().spawnMythicMob("Gravestone", deathLoc);
+            gravestone = MythicBukkit.inst().getAPIHelper().spawnMythicMob("Corpse", deathLoc);
             gravestone.setCustomName(player.getName());
             gravestoneManager.placeGravestone(gravestone, player);
         }
@@ -120,6 +122,11 @@ public class DeathManager {
         target.setFireTicks(0);
         target.setVisualFire(false);
         //more effects?
+
+        if(target instanceof Player){
+            ((Player) target).setGameMode(GameMode.SURVIVAL);
+            ((Player) target).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(""));
+        }
 
 
         if(target instanceof Player){

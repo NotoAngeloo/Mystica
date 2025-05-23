@@ -90,9 +90,16 @@ public class TargetManager {
             }
 
             if(!profileManager.getCompanions(player).isEmpty()){
-                for(LivingEntity companion : profileManager.getCompanions(player)){
+                for(UUID companion : profileManager.getCompanions(player)){
                     //Bukkit.getLogger().info("suggesting");
-                    fakePlayerTargetManager.suggestTarget(companion, entity);
+
+                    LivingEntity livingEntity = (LivingEntity) Bukkit.getEntity(companion);
+
+                    if(livingEntity == null){
+                        continue;
+                    }
+
+                    fakePlayerTargetManager.suggestTarget(livingEntity, entity);
                 }
             }
         }

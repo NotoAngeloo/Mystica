@@ -118,7 +118,6 @@ public class CreaturesAndCharactersManager {
                 profileManager.setBossHome(uuid);
                 break;
             }
-            case "Gravestone":
             case "SafeZone":
             case "TankZone":
             case "RangedZone":

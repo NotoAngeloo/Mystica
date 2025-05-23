@@ -103,7 +103,7 @@ public class SammingSins {
         profileManager.addToFakePlayerProfileMap(uuid, fakePlayerProfile);
 
         if(theClosestPlayersLeader != null){
-            profileManager.addCompanion(closestPlayer, (LivingEntity) entity);
+            profileManager.addCompanion(closestPlayer, entity.getUniqueId());
         }
 
     }

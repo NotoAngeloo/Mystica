@@ -188,6 +188,11 @@ public class AnvilDrop {
                     }
                 }
 
+                if(caster.isDead()){
+                    this.cancel();
+                    return;
+                }
+
                 if(profileManager.getAnyProfile(caster).getIfDead()){
                     this.cancel();
                     //abilityManager.setSkillRunning(player, false);

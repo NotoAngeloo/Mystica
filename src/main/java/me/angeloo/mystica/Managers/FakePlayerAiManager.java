@@ -25,6 +25,7 @@ public class FakePlayerAiManager {
     private final Mystica main;
 
     private final ProfileManager profileManager;
+    private final MysticaPartyManager mysticaPartyManager;
     private final FakePlayerTargetManager fakePlayerTargetManager;
     private final AbilityManager abilityManager;
 
@@ -35,6 +36,7 @@ public class FakePlayerAiManager {
 
     public FakePlayerAiManager(Mystica main){
         this.main = main;
+        mysticaPartyManager = main.getMysticaPartyManager();
         profileManager = main.getProfileManager();
         abilityManager = main.getAbilityManager();
         fakePlayerTargetManager = main.getFakePlayerTargetManager();
@@ -307,9 +309,7 @@ public class FakePlayerAiManager {
         MysticAbilities mysticAbilities = abilityManager.getMysticAbilities();
 
         Player companionPlayer = profileManager.getCompanionsPlayer(companion);
-        List<LivingEntity> companions = profileManager.getCompanions(companionPlayer);
-        List<LivingEntity> fakeParty = new ArrayList<>(companions);
-        fakeParty.add(companionPlayer);
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMPartyMemberList(companion));
 
         BukkitTask task = new BukkitRunnable(){
             @Override
@@ -331,7 +331,7 @@ public class FakePlayerAiManager {
 
                 List<LivingEntity> liveParty = new ArrayList<>();
 
-                for(LivingEntity member : fakeParty){
+                for(LivingEntity member : mParty){
                     if(profileManager.getAnyProfile(member).getIfDead()){
                         continue;
                     }
@@ -343,10 +343,10 @@ public class FakePlayerAiManager {
 
 
                 double base = 0;
-                for(LivingEntity member : fakeParty){
+                for(LivingEntity member : mParty){
                     base += ((profileManager.getAnyProfile(member).getCurrentHealth()/(double)profileManager.getAnyProfile(member).getTotalHealth()) * 100);
                 }
-                double averagePhp = base / fakeParty.size();
+                double averagePhp = base / mParty.size();
 
                 //Bukkit.getLogger().info(String.valueOf(averagePhp));
 

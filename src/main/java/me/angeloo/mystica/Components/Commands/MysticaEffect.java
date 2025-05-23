@@ -144,8 +144,14 @@ public class MysticaEffect implements CommandExecutor {
 
                         if(target instanceof Player){
                             if(!profileManager.getCompanions((Player)target).isEmpty())  {
-                                for(LivingEntity companion : profileManager.getCompanions((Player) target)){
-                                    buffAndDebuffManager.getFear().applyFear(companion, amount);
+                                for(UUID companion : profileManager.getCompanions((Player) target)){
+                                    LivingEntity entity = (LivingEntity) Bukkit.getEntity(companion);
+
+                                    if(entity == null){
+                                        continue;
+                                    }
+
+                                    buffAndDebuffManager.getFear().applyFear(entity, amount);
                                 }
                             }
                         }

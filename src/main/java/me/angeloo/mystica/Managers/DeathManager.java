@@ -159,10 +159,17 @@ public class DeathManager {
             if(target instanceof Player){
 
                 if(!profileManager.getCompanions((Player) target).isEmpty()){
-                    for(LivingEntity companion : profileManager.getCompanions((Player) target)){
-                        companion.teleport(target.getWorld().getSpawnLocation());
-                        playerNowLive(companion, false, null);
-                        Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent(companion, "reset"));
+                    for(UUID companion : profileManager.getCompanions((Player) target)){
+
+                        LivingEntity livingEntity = (LivingEntity) Bukkit.getEntity(companion);
+
+                        if(livingEntity != null){
+                            livingEntity.teleport(target.getWorld().getSpawnLocation());
+                            playerNowLive(livingEntity, false, null);
+                            Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent(livingEntity, "reset"));
+                        }
+
+
                     }
                 }
             }

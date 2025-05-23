@@ -10,6 +10,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AbilityManager {
@@ -65,6 +66,7 @@ public class AbilityManager {
 
         interruptBasic(caster);
 
+
         Profile playerProfile = profileManager.getAnyProfile(caster);
 
         String clazz = playerProfile.getPlayerClass();
@@ -113,6 +115,13 @@ public class AbilityManager {
 
         if(buffAndDebuffManager.getIfCantAct(caster)){
             return;
+        }
+
+        if(caster instanceof Player){
+            if(profileManager.getAnyProfile(caster).getPlayerEquipment().getWeapon() == null){
+                noneAbilities.useNoneBasic(caster);
+                return;
+            }
         }
 
 
@@ -516,5 +525,11 @@ public class AbilityManager {
         warriorAbilities.resetCooldowns(caster);
     }
 
+    /*public void hideFromPlayers(LivingEntity armorStand){
+        List<Player> players = armorStand.getWorld().getPlayers();
+        for(Player player : players){
+            player.hideEntity(Mystica.getPlugin(), armorStand);
+        }
+    }*/
 
 }

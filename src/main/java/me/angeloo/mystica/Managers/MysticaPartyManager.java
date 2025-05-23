@@ -25,7 +25,7 @@ public class MysticaPartyManager {
 
     public List<LivingEntity> getMPartyMemberList(LivingEntity caster){
         List<LivingEntity> mParty = new ArrayList<>();
-        mParty.add(caster);
+        //mParty.add(caster);
 
 
         Player player;
@@ -51,10 +51,25 @@ public class MysticaPartyManager {
                 mParty.add(Bukkit.getPlayer(partyMemberId));
             }
         }
+        else{
+            mParty.add(caster);
+        }
 
         if(!profileManager.getCompanions(partyLeader).isEmpty()){
-            List<LivingEntity> companions = profileManager.getCompanions(player);
-            mParty.addAll(companions);
+            List<UUID> companions = profileManager.getCompanions(player);
+
+            for(UUID companionId : companions){
+                LivingEntity companion = (LivingEntity) Bukkit.getEntity(companionId);
+
+                if(companion == null){
+                    continue;
+                }
+
+                mParty.add(companion);
+
+            }
+
+            Bukkit.getLogger().info("companions: " + companions);
         }
 
 

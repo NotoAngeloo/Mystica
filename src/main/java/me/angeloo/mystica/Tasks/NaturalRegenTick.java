@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
+import java.util.UUID;
 
 public class NaturalRegenTick extends BukkitRunnable {
 
@@ -51,19 +52,26 @@ public class NaturalRegenTick extends BukkitRunnable {
 
             if(!profileManager.getCompanions(player).isEmpty()){
 
-                List<LivingEntity> companions = profileManager.getCompanions(player);
-                for(LivingEntity companion : companions){
-                    Stats stats = profileManager.getAnyProfile(companion).getStats();
+                List<UUID> companions = profileManager.getCompanions(player);
+                for(UUID companion : companions){
 
-                    abilityManager.incrementResource(companion);
+                    LivingEntity livingEntity = (LivingEntity) Bukkit.getEntity(companion);
 
-                    long lastDamaged = changeResourceHandler.getLastDamaged(companion.getUniqueId());
+                    if(livingEntity == null){
+                        continue;
+                    }
+
+                    Stats stats = profileManager.getAnyProfile(livingEntity).getStats();
+
+                    abilityManager.incrementResource(livingEntity);
+
+                    long lastDamaged = changeResourceHandler.getLastDamaged(companion);
 
                     //Bukkit.getLogger().info(String.valueOf(currentTime - lastDamaged));
 
                     if(currentTime - lastDamaged >= 20){
                         int maxHealth = stats.getHealth();
-                        double currentHealth = profileManager.getAnyProfile(companion).getCurrentHealth();
+                        double currentHealth = profileManager.getAnyProfile(livingEntity).getCurrentHealth();
 
                         double healthRegenRate = maxHealth * .01;
 
@@ -72,12 +80,12 @@ public class NaturalRegenTick extends BukkitRunnable {
                         }
 
                         if(currentHealth > maxHealth){
-                            profileManager.getAnyProfile(companion).setCurrentHealth(maxHealth);
+                            profileManager.getAnyProfile(livingEntity).setCurrentHealth(maxHealth);
                             currentHealth = maxHealth;
                         }
 
                         if(currentHealth < maxHealth){
-                            changeResourceHandler.addHealthToEntity(companion, healthRegenRate, null);
+                            changeResourceHandler.addHealthToEntity(livingEntity, healthRegenRate, null);
                             //Bukkit.getLogger().info(String.valueOf(healthRegenRate));
                         }
 

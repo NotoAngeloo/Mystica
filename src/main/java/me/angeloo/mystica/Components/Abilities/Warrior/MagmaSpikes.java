@@ -125,6 +125,11 @@ public class MagmaSpikes {
                     }
                 }
 
+                if(caster.isDead()){
+                    cancelTask();
+                    return;
+                }
+
                 if(buffAndDebuffManager.getIfInterrupt(caster)){
                     cancelTask();
                     return;

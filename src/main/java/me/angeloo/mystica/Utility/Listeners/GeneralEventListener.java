@@ -3,6 +3,8 @@ package me.angeloo.mystica.Utility.Listeners;
 import com.alessiodp.parties.api.events.bukkit.player.BukkitPartiesPlayerPostJoinEvent;
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
+import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
+import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import me.angeloo.mystica.Components.Inventories.AbilityInventory;
 import me.angeloo.mystica.Components.Inventories.BagInventory;
 import me.angeloo.mystica.Components.Inventories.EquipmentInventory;
@@ -681,11 +683,18 @@ public class GeneralEventListener implements Listener {
         }
 
         if(!profileManager.getCompanions(companionPlayer).isEmpty()){
-            for(LivingEntity companion : profileManager.getCompanions(companionPlayer)){
-                if(MythicBukkit.inst().getAPIHelper().isMythicMob(companion.getUniqueId())){
-                    AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(companion).getEntity();
-                    MythicBukkit.inst().getAPIHelper().getMythicMobInstance(companion).signalMob(abstractEntity, "reset");
+            for(UUID companion : profileManager.getCompanions(companionPlayer)){
+
+                LivingEntity livingEntity = (LivingEntity) Bukkit.getEntity(companion);
+
+                if(livingEntity != null){
+                    if(MythicBukkit.inst().getAPIHelper().isMythicMob(companion)){
+                        AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(livingEntity).getEntity();
+                        MythicBukkit.inst().getAPIHelper().getMythicMobInstance(livingEntity).signalMob(abstractEntity, "reset");
+                    }
                 }
+
+
             }
         }
 
@@ -1540,6 +1549,10 @@ public class GeneralEventListener implements Listener {
 
         Player player = event.getPlayer();
 
+        if(profileManager.getAnyProfile(player).getIfDead()){
+            deathManager.playerNowLive(player, false, null);
+        }
+
         targetManager.setPlayerTarget(player, null);
         combatManager.forceCombatEnd(player);
 
@@ -1567,15 +1580,36 @@ public class GeneralEventListener implements Listener {
 
     }
 
-    @EventHandler
-    public void onCompanionRemoval(EntityDeathEvent event){
+    /*@EventHandler
+    public void onCompanionRemoval(MythicMobDeathEvent event){
 
-        LivingEntity entity = event.getEntity();
+        Bukkit.getLogger().info("mm died");
 
-        if(profileManager.getAnyProfile(entity).fakePlayer()){
-            Player companionPlayer = profileManager.getCompanionsPlayer(entity);
-            profileManager.updateCompanions(companionPlayer);
+        /*LivingEntity livingEntity = (LivingEntity) entity;
+
+        if(profileManager.getAnyProfile(livingEntity).fakePlayer()){
+
         }
+
+    }*/
+
+    @EventHandler
+    public void onCompanionRemoval(MythicMobDespawnEvent event){
+
+
+        Entity entity = event.getMob().getEntity().getBukkitEntity();
+
+        if(!(entity instanceof  LivingEntity)){
+            return;
+        }
+
+        LivingEntity livingEntity = (LivingEntity) entity;
+
+        if(profileManager.getAnyProfile(livingEntity).fakePlayer()){
+            Player companionPlayer = profileManager.getCompanionsPlayer(livingEntity);
+            profileManager.removeCompanion(companionPlayer, livingEntity.getUniqueId());
+        }
+
 
     }
 
@@ -1603,6 +1637,7 @@ public class GeneralEventListener implements Listener {
         mysticaPartyManager.setLeaderPlayer(player, newLeader);
     }
 
+
     @EventHandler
     public void rezPlayer(PlayerInteractEvent event){
 
@@ -1618,8 +1653,10 @@ public class GeneralEventListener implements Listener {
             return;
         }
 
-        if(event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_AIR){
-            event.setCancelled(true);
+        event.setCancelled(true);
+        player.closeInventory();
+
+        if(event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK){
 
             List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMPartyMemberList(player));
 
@@ -1657,7 +1694,7 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
-    public void spectorMove(PlayerMoveEvent event){
+    public void spectatorMove(PlayerMoveEvent event){
 
         Player player = event.getPlayer();
 
@@ -1685,11 +1722,15 @@ public class GeneralEventListener implements Listener {
 
         Entity gravestone = gravestoneManager.getGravestone(player);
 
+        if(gravestone == null){
+            return;
+        }
+
         Location gravestoneLoc = gravestone.getLocation();
         double distance = to.distance(gravestoneLoc);
 
         if (distance > 10) {
-            event.setCancelled(true);
+            player.teleport(gravestoneLoc);
             return;
         }
 

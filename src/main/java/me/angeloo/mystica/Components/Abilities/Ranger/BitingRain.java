@@ -140,6 +140,7 @@ public class BitingRain {
                     Location playerLoc = caster.getLocation();
 
                     ArmorStand armorStand = caster.getWorld().spawn(playerLoc, ArmorStand.class);
+
                     armorStand.setInvisible(true);
                     armorStand.setGravity(false);
                     armorStand.setCollidable(false);

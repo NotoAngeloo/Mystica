@@ -50,8 +50,8 @@ public class ProfileManager {
     private final Map<UUID, NonPlayerProfile> nonPlayerProfiles = new HashMap<>();
 
     private final Map<UUID, Boolean> companionCombatMap = new HashMap<>();
-    private final Map<Player, List<LivingEntity>> companionMap = new HashMap<>();
-    private final Map<LivingEntity, Player> companionsPlayer = new HashMap<>();
+    private final Map<Player, List<UUID>> companionMap = new HashMap<>();
+    private final Map<UUID, Player> companionsPlayer = new HashMap<>();
 
     private final Map<String, Player> playerNameMap = new HashMap<>();
     private final Map<UUID, String> nonPlayerNameMap = new HashMap<>();
@@ -287,6 +287,7 @@ public class ProfileManager {
         }
     }
 
+    //this was livingentity before, careful
     public Profile getAnyProfile(LivingEntity entity){
 
         if(entity instanceof Player){
@@ -883,74 +884,63 @@ public class ProfileManager {
         return resetProcessing.getOrDefault(entity.getUniqueId(), false);
     }
 
-    public void addCompanion(Player player, LivingEntity companion){
-        List<LivingEntity> currentCompanions = getCompanions(player);
+
+    public void addCompanion(Player player, UUID companion){
+        List<UUID> currentCompanions = getCompanions(player);
         currentCompanions.add(companion);
         companionMap.put(player, currentCompanions);
         companionsPlayer.put(companion, player);
+        Bukkit.getLogger().info("Companion " + companion + " added to " + player.getName());
     }
 
-    public List<LivingEntity> getCompanions(Player player){
+    public List<UUID> getCompanions(Player player){
         return companionMap.getOrDefault(player, new ArrayList<>());
     }
 
-    public void updateCompanions(Player player){
 
-        if(companionMap.containsKey(player)) {
-
-            Set<LivingEntity> toRemove = new HashSet<>();
-            for (LivingEntity companion : companionMap.get(player)) {
-                if (companion.isDead()) {
-                    toRemove.add(companion);
-                }
-            }
-
-            for(LivingEntity companion : toRemove){
-                removeCompanion(player, companion);
-                companionsPlayer.remove(companion);
-            }
-        }
-    }
 
     public Player getCompanionsPlayer(LivingEntity companion){
-        return companionsPlayer.getOrDefault(companion, null);
+        return companionsPlayer.getOrDefault(companion.getUniqueId(), null);
     }
 
-    public void removeCompanion(Player player, LivingEntity companion){
+    public void removeCompanion(Player player, UUID companion){
+        List<UUID> currentCompanions = getCompanions(player);
+        currentCompanions.remove(companion);
+        companionMap.put(player, currentCompanions);
+        companionsPlayer.remove(companion);
+        Bukkit.getLogger().info("Companion " + companion + " removed from " + player.getName());
 
-        if(companionMap.containsKey(player)){
-            List<LivingEntity> companions = new ArrayList<>(companionMap.get(player));
-            companions.remove(companion);
-
-            //Bukkit.getLogger().info("removing " + companion.getUniqueId());
-
-            if(companions.isEmpty() && (companionsPlayer.get(companion)==player)){
-                removeCompanions(player);
-                return;
-            }
-
-            companionMap.put(player, companions);
+        if(currentCompanions.isEmpty()){
+            companionMap.remove(player);
         }
-
     }
+
 
     public void removeCompanions(Player player){
-        for(LivingEntity companion : companionMap.get(player)){
+        List<UUID> currentCompanions = getCompanions(player);
+
+        for(UUID companionId : currentCompanions){
+
+            LivingEntity companion = (LivingEntity) Bukkit.getEntity(companionId);
 
             if(companion != null){
                 companion.remove();
+                companionsPlayer.remove(companionId);
+                Bukkit.getLogger().info("Companion " + companion + " removed from " + player.getName());
             }
 
         }
-        //Bukkit.getLogger().info("removing from map");
+
         companionMap.remove(player);
+
     }
 
+
     public void transferCompanionsToLeader(Player player, Player newPlayer){
-        List<LivingEntity> companions = new ArrayList<>(getCompanions(player));
+        List<UUID> companions = new ArrayList<>(getCompanions(player));
 
         if(!companions.isEmpty()){
-            for(LivingEntity companion : companions){
+            for(UUID companion : companions){
                 addCompanion(newPlayer, companion);
                 companionsPlayer.put(companion, newPlayer);
             }

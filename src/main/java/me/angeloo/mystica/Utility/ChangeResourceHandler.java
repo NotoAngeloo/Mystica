@@ -119,9 +119,16 @@ public class ChangeResourceHandler {
 
             //here
             if(!profileManager.getCompanions((Player) damager).isEmpty()){
-                List<LivingEntity> companions = profileManager.getCompanions((Player) damager);
-                for(LivingEntity companion : companions){
-                    Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent(companion, "attack"));
+                List<UUID> companions = profileManager.getCompanions((Player) damager);
+                for(UUID companion : companions){
+
+                    LivingEntity livingEntity = (LivingEntity) Bukkit.getEntity(companion);
+
+                    if(livingEntity != null){
+                        Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent(livingEntity, "attack"));
+                    }
+
+
                 }
             }
         }
@@ -225,16 +232,6 @@ public class ChangeResourceHandler {
                 }
             }
 
-            Entity gravestone;
-
-            try{
-                gravestone = MythicBukkit.inst().getAPIHelper().spawnMythicMob("Gravestone", entity.getLocation());
-                gravestone.setCustomName(entity.getName());
-                gravestoneManager.placeGravestone(gravestone, entity);
-            }
-            catch (InvalidMobTypeException e){
-                throw new RuntimeException(e);
-            }
         }
     }
 
@@ -613,16 +610,6 @@ public class ChangeResourceHandler {
             }
         }
 
-        Entity gravestone;
-
-        try{
-            gravestone = MythicBukkit.inst().getAPIHelper().spawnMythicMob("Gravestone", entity.getLocation());
-            gravestone.setCustomName(entity.getName());
-            gravestoneManager.placeGravestone(gravestone, entity);
-        }
-        catch (InvalidMobTypeException e){
-            throw new RuntimeException(e);
-        }
 
     }
 

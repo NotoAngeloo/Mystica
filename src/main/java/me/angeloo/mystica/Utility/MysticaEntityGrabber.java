@@ -4,6 +4,7 @@ import me.angeloo.mystica.Managers.MysticaPartyManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Managers.TargetManager;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -45,15 +46,19 @@ public class MysticaEntityGrabber {
         liveParty.sort(Comparator.comparingDouble(p -> profileManager.getAnyProfile(p).getCurrentHealth()));
 
         if(!mParty.isEmpty()){
-            return liveParty.get(mParty.size()-1).getUniqueId();
+            return liveParty.get(0).getUniqueId();
         }
 
-        return player.getUniqueId();
+        Bukkit.getLogger().info("no lowest php found");
+
+        return null;
     }
 
     public UUID getRandomEntity(Player player){
 
         List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMPartyMemberList(player));
+
+        //Bukkit.getLogger().info("all " + mParty);
 
         List<LivingEntity> liveParty = new ArrayList<>();
 
@@ -66,11 +71,15 @@ public class MysticaEntityGrabber {
 
         Collections.shuffle(liveParty);
 
+        //Bukkit.getLogger().info("live " + liveParty);
+
         if(!mParty.isEmpty()){
             return liveParty.get(0).getUniqueId();
         }
 
-        return player.getUniqueId();
+        Bukkit.getLogger().info("no random found");
+
+        return null;
     }
 
     public int getValidAmount(Player player){

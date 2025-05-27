@@ -313,7 +313,7 @@ public class DuelistsFrenzy {
             return false;
         }
 
-        return combo.getComboPoints(caster) >= 6;
+        return combo.getComboPoints(caster) >= 5;
     }
 
 }

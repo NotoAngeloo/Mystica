@@ -3,7 +3,6 @@ package me.angeloo.mystica.Utility.Listeners;
 import com.alessiodp.parties.api.events.bukkit.player.BukkitPartiesPlayerPostJoinEvent;
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
-import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import me.angeloo.mystica.Components.Inventories.AbilityInventory;
 import me.angeloo.mystica.Components.Inventories.BagInventory;
@@ -47,6 +46,7 @@ import java.util.*;
 public class GeneralEventListener implements Listener {
 
     private final Mystica main;
+    private final HudManager hudManager;
     private final FakePlayerAiManager fakePlayerAiManager;
     private final DailyData dailyData;
     private final ProfileManager profileManager;
@@ -89,6 +89,7 @@ public class GeneralEventListener implements Listener {
 
     public GeneralEventListener(Mystica main){
         this.main = main;
+        hudManager = main.getHudManager();
         dailyData = main.getDailyData();
         profileManager = main.getProfileManager();
         pathingManager = main.getPathingManager();
@@ -150,6 +151,8 @@ public class GeneralEventListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event){
         Player player = event.getPlayer();
 
+        hudManager.innitHud(player);
+
         if(combatLogs.contains(player.getUniqueId())){
             deathManager.playerNowDead(player);
             combatLogs.remove(player.getUniqueId());
@@ -157,7 +160,7 @@ public class GeneralEventListener implements Listener {
 
         profileManager.getAnyProfile(player);
 
-        player.sendMessage(dailyData.getLevelAnnouncement());
+        //player.sendMessage(dailyData.getLevelAnnouncement());
 
         PluginManager pluginManager = Bukkit.getPluginManager();
         Plugin interactions = pluginManager.getPlugin("interactions");
@@ -1002,6 +1005,15 @@ public class GeneralEventListener implements Listener {
             AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(defender).getEntity();
             MythicBukkit.inst().getAPIHelper().getMythicMobInstance(defender).signalMob(abstractEntity, "damage");
         }
+
+    }
+
+    @EventHandler
+    public void hudUpdate(HudUpdateEvent event){
+
+        Player player = event.getPlayer();
+
+        hudManager.editHudBars(player);
 
     }
 

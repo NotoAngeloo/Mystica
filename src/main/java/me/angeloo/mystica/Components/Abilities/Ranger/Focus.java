@@ -1,10 +1,12 @@
 package me.angeloo.mystica.Components.Abilities.Ranger;
 
 import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,8 +28,9 @@ public class Focus {
     public void loseFocus(LivingEntity caster){
         manaAmount.put(caster.getUniqueId(), 0);
 
-        if(profileManager.getAnyProfile(caster).getIfInCombat()){
-            Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(caster, true));
+        if(caster instanceof Player){
+            Player player = (Player) caster;
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player));
         }
     }
 
@@ -45,6 +48,11 @@ public class Focus {
         }
         manaAmount.put(entity.getUniqueId(), newCurrentMana);
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, true));
+
+        if(entity instanceof Player){
+            Player player = (Player) entity;
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player));
+        }
     }
 
     public int getFocus(LivingEntity livingEntity){

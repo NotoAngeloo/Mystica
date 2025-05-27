@@ -1,21 +1,15 @@
 package me.angeloo.mystica.Managers;
 
-import com.alessiodp.parties.api.Parties;
-import com.alessiodp.parties.api.interfaces.PartiesAPI;
-import com.alessiodp.parties.api.interfaces.Party;
-import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.FakePlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
-import me.angeloo.mystica.CustomEvents.AiSignalEvent;
 import me.angeloo.mystica.CustomEvents.TargetBarShouldUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.PlayerProfile;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
-import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.ProfileFileWriter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -23,6 +17,9 @@ import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
@@ -45,9 +42,13 @@ public class ProfileManager {
     private final ProfileFileWriter profileFileWriter;
     private final PathingManager pathingManager;
 
+
     private final Map<UUID, PlayerProfile> playerProfiles = new HashMap<>();
     private final Map<UUID, FakePlayerProfile> fakePlayerProfileMap = new HashMap<>();
     private final Map<UUID, NonPlayerProfile> nonPlayerProfiles = new HashMap<>();
+
+    private final Map<UUID, BossBar> playerResourceBar = new HashMap<>();
+    private final Map<UUID, BossBar> playerTargetBar = new HashMap<>();
 
     private final Map<UUID, Boolean> companionCombatMap = new HashMap<>();
     private final Map<Player, List<UUID>> companionMap = new HashMap<>();
@@ -917,6 +918,8 @@ public class ProfileManager {
 
 
     public void removeCompanions(Player player){
+
+
         List<UUID> currentCompanions = getCompanions(player);
 
         for(UUID companionId : currentCompanions){
@@ -948,6 +951,30 @@ public class ProfileManager {
             companionMap.remove(player);
 
         }
+    }
+
+    public void setPlayerResourceBar(Player player, BossBar resourceBar){
+        playerResourceBar.put(player.getUniqueId(), resourceBar);
+    }
+
+    public void setPlayerTargetBar(Player player, BossBar targetBar){
+        playerTargetBar.put(player.getUniqueId(), targetBar);
+    }
+
+    public BossBar getPlayerResourceBar(Player player){
+        if(!playerResourceBar.containsKey(player.getUniqueId())){
+            BossBar resourceBar = Bukkit.createBossBar("", BarColor.WHITE, BarStyle.SOLID);
+            setPlayerResourceBar(player, resourceBar);
+        }
+        return playerResourceBar.get(player.getUniqueId());
+    }
+
+    public BossBar getPlayerTargetBar(Player player){
+        if(!playerTargetBar.containsKey(player.getUniqueId())){
+            BossBar targetBar = Bukkit.createBossBar("",BarColor.WHITE,BarStyle.SOLID);
+            setPlayerTargetBar(player, targetBar);
+        }
+        return playerTargetBar.get(player.getUniqueId());
     }
 
     public boolean getIfCompanionInCombat(UUID companion){return companionCombatMap.getOrDefault(companion, false);}

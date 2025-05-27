@@ -25,9 +25,12 @@ public class TargetManager {
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final Map<UUID, LivingEntity> playerTarget = new HashMap<>();
-    private final Map<UUID, BossBar> playerTargetBar = new HashMap<>();
-    private final Map<UUID, BossBar> targetShieldBar = new HashMap<>();
-    private final Map<UUID, BossBar> interruptBar = new HashMap<>();
+    //private final Map<UUID, BossBar> playerTargetBar = new HashMap<>();
+    //private final Map<UUID, BossBar> targetShieldBar = new HashMap<>();
+    //private final Map<UUID, BossBar> interruptBar = new HashMap<>();
+
+    private final Map<UUID, BossBar> entityDataBar = new HashMap<>();
+
     private final ProfileManager profileManager;
 
     private final Map<UUID, UUID> bossTarget = new HashMap<>();
@@ -73,12 +76,13 @@ public class TargetManager {
 
 
         playerTarget.put(player.getUniqueId(), entity);
-        if(playerTargetBar.containsKey(player.getUniqueId())){
+
+        /*if(playerTargetBar.containsKey(player.getUniqueId())){
             removeAllBars(player);
-        }
+        }*/
 
         if(entity != null){
-            playerTargetBar.put(player.getUniqueId(), startTargetBar(player, entity));
+            //playerTargetBar.put(player.getUniqueId(), startTargetBar(player, entity));
 
             //if they are an enemy
             if(pveChecker.pveLogic(entity)){
@@ -282,7 +286,7 @@ public class TargetManager {
 
     private void startInterruptBar(Player player, LivingEntity entity){
 
-        BossBar interruptBar = Bukkit.createBossBar("",BarColor.PURPLE, BarStyle.SOLID);
+        /*BossBar interruptBar = Bukkit.createBossBar("",BarColor.PURPLE, BarStyle.SOLID);
 
         double castMax = bossCastingManager.getCastMax(entity);
         double castAmount = bossCastingManager.getCastPercent(entity);
@@ -295,12 +299,12 @@ public class TargetManager {
         interruptBar.addPlayer(player);
         interruptBar.setVisible(true);
 
-        this.interruptBar.put(player.getUniqueId(), interruptBar);
+        this.interruptBar.put(player.getUniqueId(), interruptBar);*/
     }
 
     private void startShieldBar(Player player, LivingEntity entity){
 
-        BossBar shieldBar = Bukkit.createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
+        /*BossBar shieldBar = Bukkit.createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
         double maxHealth = profileManager.getAnyProfile(entity).getTotalHealth();
         double shieldAmount = buffAndDebuffManager.getGenericShield().getCurrentShieldAmount(entity);
         if(shieldAmount > maxHealth){
@@ -311,12 +315,12 @@ public class TargetManager {
         shieldBar.addPlayer(player);
         shieldBar.setVisible(true);
 
-        targetShieldBar.put(player.getUniqueId(), shieldBar);
+        targetShieldBar.put(player.getUniqueId(), shieldBar);*/
 
     }
 
     public void removeAllBars(Player player){
-        BossBar bossBar = playerTargetBar.get(player.getUniqueId());
+        /*BossBar bossBar = playerTargetBar.get(player.getUniqueId());
         BossBar shieldBar = targetShieldBar.get(player.getUniqueId());
         BossBar interruptBar = this.interruptBar.get(player.getUniqueId());
 
@@ -334,7 +338,7 @@ public class TargetManager {
             interruptBar.removePlayer(player);
             this.interruptBar.remove(player.getUniqueId());
         }
-
+*/
     }
 
     public Map<UUID, LivingEntity> getTargetMap(){
@@ -373,6 +377,8 @@ public class TargetManager {
 
         return bossTarget.getOrDefault(player.getUniqueId(), player.getUniqueId());
     }
+
+
 
 
 }

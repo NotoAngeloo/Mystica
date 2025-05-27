@@ -11,6 +11,7 @@ import me.angeloo.mystica.Components.ProfileComponents.Stats;
 import me.angeloo.mystica.CustomEvents.AiSignalEvent;
 import me.angeloo.mystica.CustomEvents.BoardValueUpdateEvent;
 import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
@@ -31,7 +32,6 @@ public class ChangeResourceHandler {
     private final DailyData dailyData;
     private final AggroManager aggroManager;
     private final ProfileManager profileManager;
-    private final GravestoneManager gravestoneManager;
     private final ProtocolManager protocolManager;
     private final Map<UUID, Long> lastDamaged = new HashMap<>();
 
@@ -51,7 +51,6 @@ public class ChangeResourceHandler {
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         dpsManager = main.getDpsManager();
-        gravestoneManager = main.getGravestoneManager();
     }
 
     public void subtractHealthFromEntity(LivingEntity entity, Double damage, LivingEntity damager){
@@ -290,6 +289,7 @@ public class ChangeResourceHandler {
         player.setHealth(hearts);
 
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(player, false));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player));
 
         lastDamaged.put(player.getUniqueId(), (System.currentTimeMillis()/1000));
     }
@@ -379,6 +379,7 @@ public class ChangeResourceHandler {
         player.setHealth(hearts);
 
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(player, true));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player));
 
     }
 

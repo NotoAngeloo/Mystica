@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Assassin;
 
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
@@ -29,10 +30,10 @@ public class Combo {
 
         int current = getComboPoints(caster);
 
-        int max = 5;
+        int max = 4;
 
         if(profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("duelist")){
-            max = 6;
+            max = 5;
         }
 
         if(current>=max){
@@ -49,6 +50,11 @@ public class Combo {
 
         cooldownDisplayer.displayCooldown(caster, 3);
         cooldownDisplayer.displayCooldown(caster, 4);
+
+        if(caster instanceof Player){
+            Player player = (Player) caster;
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player));
+        }
     }
 
     public int removeAnAmountOfPoints(LivingEntity caster, int amount){
@@ -67,6 +73,11 @@ public class Combo {
 
         cooldownDisplayer.displayCooldown(caster, 3);
         cooldownDisplayer.displayCooldown(caster, 4);
+
+        if(caster instanceof Player){
+            Player player = (Player) caster;
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player));
+        }
 
         return current;
     }

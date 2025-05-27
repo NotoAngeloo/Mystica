@@ -33,7 +33,7 @@ public class StatusDisplayer {
 
     public void displayStatus(Player player) {
 
-        if(!profileManager.getAnyProfile(player).getIfInCombat()){
+        /*if(!profileManager.getAnyProfile(player).getIfInCombat()){
             clearPlayerStatus(player);
             return;
         }
@@ -74,7 +74,7 @@ public class StatusDisplayer {
         statusString.append(leftSide).append(getDebuffClassStatus(player)).append(bigStatus).append(getClassStatus(player)).append(getBonusStatus(player)).append(rightSide);
 
 
-        player.sendTitle(getBigClassStatus(player), String.valueOf(statusString), 0, 200, 0);
+        player.sendTitle(getBigClassStatus(player), String.valueOf(statusString), 0, 200, 0);*/
     }
 
     private void clearPlayerStatus(Player player){

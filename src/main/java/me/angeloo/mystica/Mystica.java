@@ -37,6 +37,8 @@ public final class Mystica extends JavaPlugin{
     private DailyData dailyData;
     private PathingManager pathingManager;
 
+    private HudManager hudManager;
+
     private DisplayWeapons displayWeapons;
     private ClassSetter classSetter;
     private GearReader gearReader;
@@ -135,7 +137,6 @@ public final class Mystica extends JavaPlugin{
         fakePlayerTargetManager = new FakePlayerTargetManager(this);
         targetManager = new TargetManager(this);
 
-
         gravestoneManager = new GravestoneManager();
         dpsManager = new DpsManager(this);
         changeResourceHandler = new ChangeResourceHandler(this);
@@ -147,6 +148,8 @@ public final class Mystica extends JavaPlugin{
         combatManager = abilityManager.getCombatManager();
         deathManager = new DeathManager(this);
         allSkillItems = abilityManager.getAllSkillItems();
+
+        hudManager = new HudManager(this);
 
         fakePlayerAiManager = new FakePlayerAiManager(this);
 
@@ -414,4 +417,7 @@ public final class Mystica extends JavaPlugin{
 
     public AllSkillItems getAllSkillItems(){return allSkillItems;}
 
+    public HudManager getHudManager() {
+        return hudManager;
+    }
 }

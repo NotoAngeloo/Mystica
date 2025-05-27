@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.Abilities.Elementalist;
 
 import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -39,6 +40,11 @@ public class Heat {
         }
         manaAmount.put(caster.getUniqueId(), newCurrentMana);
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(caster, true));
+
+        if(caster instanceof Player){
+            Player player = (Player) caster;
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player));
+        }
     }
 
     public void addHeat(LivingEntity entity, int amount){
@@ -56,6 +62,11 @@ public class Heat {
         }
         manaAmount.put(entity.getUniqueId(), newCurrentMana);
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, true));
+
+        if(entity instanceof Player){
+            Player player = (Player) entity;
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player));
+        }
     }
 
     public int getHeat(LivingEntity livingEntity){

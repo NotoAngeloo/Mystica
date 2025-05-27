@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.Abilities.Mystic;
 
 import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -50,6 +51,11 @@ public class Mana {
         cooldownDisplayer.displayCooldown(caster, 8);
 
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(caster, true));
+
+        if(caster instanceof Player){
+            Player player = (Player) caster;
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player));
+        }
     }
 
     public void addManaToEntity(LivingEntity entity, int amount){
@@ -68,6 +74,11 @@ public class Mana {
         cooldownDisplayer.displayCooldown(entity, 8);
 
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, true));
+
+        if(entity instanceof Player){
+            Player player = (Player) entity;
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player));
+        }
     }
 
     public int getCurrentMana(LivingEntity livingEntity){

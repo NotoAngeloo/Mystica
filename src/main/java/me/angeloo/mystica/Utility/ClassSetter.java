@@ -1,10 +1,12 @@
 package me.angeloo.mystica.Utility;
 
 import me.angeloo.mystica.Components.Profile;
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Managers.ItemManager;
 import me.angeloo.mystica.Managers.EquipmentManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -15,15 +17,11 @@ import java.util.List;
 public class ClassSetter {
 
     private final ProfileManager profileManager;
-    private final EquipmentManager equipmentManager;
-    private final ItemManager itemManager;
     private final DisplayWeapons displayWeapons;
     private final GearReader gearReader;
 
     public ClassSetter(Mystica main){
         profileManager = main.getProfileManager();
-        equipmentManager = new EquipmentManager(main);
-        itemManager = main.getItemManager();
         displayWeapons = main.getDisplayWeapons();
         gearReader = new GearReader(main);
     }
@@ -48,6 +46,8 @@ public class ClassSetter {
 
         displayWeapons.displayArmor(player);
         gearReader.setGearStats(player);
+
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player));
 
     }
 

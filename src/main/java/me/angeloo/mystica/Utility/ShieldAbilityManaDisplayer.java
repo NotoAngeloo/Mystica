@@ -35,7 +35,7 @@ public class ShieldAbilityManaDisplayer {
 
     public void displayPlayerHealthPlusInfo(Player player){
 
-        StringBuilder fullBar = new StringBuilder();
+        /*StringBuilder fullBar = new StringBuilder();
 
         String shieldString = getShieldString(player);
         String manaString = getManaBar(player);
@@ -80,7 +80,7 @@ public class ShieldAbilityManaDisplayer {
             }
         }
 
-        return String.valueOf(shieldBar);
+        return String.valueOf(shieldBar);*/
     }
 
 

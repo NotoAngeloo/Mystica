@@ -34,6 +34,21 @@ public class MysticaDamage implements CommandExecutor {
             return true;
         }
 
+        if(args.length == 2){
+
+            Player player = Bukkit.getPlayer(args[0]);
+            if(player == null){
+                sender.sendMessage("player doesn't exist");
+                return true;
+            }
+
+            double damage = Double.parseDouble(args[1]);
+
+            changeResourceHandler.subtractHealthFromEntity(player, damage, player);
+
+            return true;
+        }
+
 
         if (args.length == 4) {
 

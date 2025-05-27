@@ -69,7 +69,7 @@ public class MysticaPartyManager {
 
             }
 
-            Bukkit.getLogger().info("companions: " + companions);
+            //Bukkit.getLogger().info("companions: " + companions);
         }
 
 

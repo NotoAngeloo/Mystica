@@ -1,11 +1,13 @@
 package me.angeloo.mystica.Components.Abilities.ShadowKnight;
 
 import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,6 +40,10 @@ public class Energy {
         cooldownDisplayer.displayCooldown(caster, 6);
 
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(caster, true));
+        if(caster instanceof Player){
+            Player player = (Player) caster;
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player));
+        }
     }
 
     public void addEnergyToEntity(LivingEntity entity, int amount){
@@ -55,6 +61,10 @@ public class Energy {
         cooldownDisplayer.displayCooldown(entity, 6);
 
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, true));
+        if(entity instanceof Player){
+            Player player = (Player) entity;
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player));
+        }
     }
 
     public int getCurrentEnergy(LivingEntity livingEntity){

@@ -2,6 +2,7 @@ package me.angeloo.mystica.Components.Abilities.Ranger;
 
 import me.angeloo.mystica.Components.Abilities.RangerAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
+import me.angeloo.mystica.CustomEvents.UltimateStatusChageEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.*;
@@ -27,7 +28,6 @@ public class StarVolley {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
@@ -43,7 +43,6 @@ public class StarVolley {
     public StarVolley(Mystica main, AbilityManager manager, RangerAbilities rangerAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
-        shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, manager);
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
@@ -94,7 +93,7 @@ public class StarVolley {
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 if(caster instanceof Player){
-                    shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo((Player) caster);
+                    Bukkit.getServer().getPluginManager().callEvent(new UltimateStatusChageEvent((Player) caster));
                 }
 
 

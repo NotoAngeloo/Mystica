@@ -53,7 +53,7 @@ public class Combo {
 
         if(caster instanceof Player){
             Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource"));
         }
     }
 
@@ -76,7 +76,7 @@ public class Combo {
 
         if(caster instanceof Player){
             Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource"));
         }
 
         return current;

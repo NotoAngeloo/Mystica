@@ -213,6 +213,42 @@ public class AbilityManager {
         }
     }
 
+    public void resetResource(LivingEntity caster){
+
+        Profile playerProfile = profileManager.getAnyProfile(caster);
+        String clazz = playerProfile.getPlayerClass();
+
+        switch (clazz.toLowerCase()) {
+            case "elementalist": {
+                elementalistAbilities.getHeat().reduceHeat(caster, elementalistAbilities.getHeat().getHeat(caster));
+                return;
+            }
+            case "ranger": {
+                rangerAbilities.getFocus().loseFocus(caster);
+                return;
+            }
+            case "mystic": {
+                mysticAbilities.getMana().addManaToEntity(caster, 500);
+                return;
+            }
+            case "shadow knight": {
+                shadowKnightAbilities.getEnergy().addEnergyToEntity(caster, 100);
+                return;
+            }
+            case "paladin": {
+                return;
+            }
+            case "warrior": {
+                warriorAbilities.getRage().subTractRageFromEntity(caster, warriorAbilities.getRage().getCurrentRage(caster));
+                return;
+            }
+            case "assassin": {
+                return;
+            }
+        }
+
+    }
+
     public void incrementResource(LivingEntity caster){
 
         Profile playerProfile = profileManager.getAnyProfile(caster);

@@ -12,7 +12,6 @@ public class AggroManager {
     private final Map<UUID, LivingEntity> creatureHighPriorityTarget = new HashMap<>();
     private final Map<UUID, Long> lastSetAsPriority = new HashMap<>();
     private final Map<LivingEntity, Boolean> blacklist = new HashMap<>();
-    //private final TargetManager targetManager;
 
     public AggroManager(){
     }

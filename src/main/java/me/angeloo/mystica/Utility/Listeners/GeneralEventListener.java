@@ -66,7 +66,6 @@ public class GeneralEventListener implements Listener {
     private final AbilityInventory abilityInventory;
     private final DisplayWeapons displayWeapons;
     private final StatusDisplayer statusDisplayer;
-    private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
     private final GearReader gearReader;
     private final BagInventory bagInventory;
     private final ClassSetter classSetter;
@@ -108,7 +107,6 @@ public class GeneralEventListener implements Listener {
         abilityInventory = main.getAbilityInventory();
         displayWeapons = main.getDisplayWeapons();
         statusDisplayer = new StatusDisplayer(main, abilityManager);
-        shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, abilityManager);
         damageCalculator = main.getDamageCalculator();
         changeResourceHandler = main.getChangeResourceHandler();
         bagInventory = main.getBagInventory();
@@ -177,6 +175,9 @@ public class GeneralEventListener implements Listener {
         }
 
 
+        targetManager.setPlayerTarget(player, null);
+        //buffAndDebuffManager.removeAllBuffsAndDebuffs(player);
+        gearReader.setGearStats(player);
 
         if(!profileManager.getPlayerNameMap().containsKey(player.getName())){
 
@@ -217,12 +218,10 @@ public class GeneralEventListener implements Listener {
                 profileManager.getAnyProfile(player).removeSavedInv();
             }
 
+            changeResourceHandler.healPlayerToFull(player);
         }
 
         profileManager.addToPlayerNameMap(player);
-        targetManager.setPlayerTarget(player, null);
-        buffAndDebuffManager.removeAllBuffsAndDebuffs(player);
-        gearReader.setGearStats(player);
 
 
     }
@@ -256,17 +255,6 @@ public class GeneralEventListener implements Listener {
         }
         profileManager.getAnyProfile(player).getPlayerBag().setItems(itemsMinusTemp);
 
-        for(Map.Entry<UUID, LivingEntity> entry: targetManager.getTargetMap().entrySet()){
-            UUID playerID = entry.getKey();
-            Player thisPlayer = Bukkit.getPlayer(playerID);
-            Entity target = entry.getValue();
-
-            if(target != null && target.equals(player)){
-                assert thisPlayer != null;
-                targetManager.removeAllBars(thisPlayer);
-
-            }
-        }
 
         targetManager.setPlayerTarget(player, null);
 
@@ -615,17 +603,6 @@ public class GeneralEventListener implements Listener {
 
         event.setDroppedExp(0);
 
-        for(Map.Entry<UUID, LivingEntity> entry: targetManager.getTargetMap().entrySet()){
-
-            Player thisPlayer = Bukkit.getPlayer(entry.getKey());
-
-            Entity target = entry.getValue();
-
-            if(target == player){
-                assert thisPlayer != null;
-                targetManager.updateTargetBar(thisPlayer);
-            }
-        }
 
         deathManager.playerNowDead(player);
 
@@ -828,6 +805,36 @@ public class GeneralEventListener implements Listener {
         }
     }
 
+    @EventHandler
+    public void targetTooFar(PlayerMoveEvent event){
+
+        Player player = event.getPlayer();
+
+        if(targetManager.getPlayerTarget(player) == null){
+            return;
+        }
+
+        LivingEntity playerTarget = targetManager.getPlayerTarget(player);
+
+        World playerWorld = player.getWorld();
+        World targetWorld = playerTarget.getWorld();
+        if(playerWorld != targetWorld){
+            targetManager.setPlayerTarget(player, null);
+            return;
+        }
+
+        double distance = playerTarget.getLocation().distance(player.getLocation());
+        if(distance > 35){
+            targetManager.setPlayerTarget(player, null);
+            return;
+        }
+
+        if(playerTarget.isDead()){
+            targetManager.setPlayerTarget(player, null);
+            return;
+        }
+
+    }
 
     @EventHandler
     public void rangerLoseFocus(PlayerMoveEvent event){
@@ -923,6 +930,15 @@ public class GeneralEventListener implements Listener {
                     aggroTick.startAggroTaskFor(defender);
                 }
 
+                List<LivingEntity> attackers = aggroManager.getAttackerList(defender);
+                for(LivingEntity attacker : attackers){
+                    if(!(attacker instanceof Player)){
+                        continue;
+                    }
+                    Player attackerPlayer = (Player) attacker;
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(attackerPlayer, "target"));
+                }
+
             }
 
         }
@@ -937,7 +953,6 @@ public class GeneralEventListener implements Listener {
 
             Player defenderPlayer = (Player) defender;
 
-            shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo(defenderPlayer);
 
             if(!event.getIfPositive()){
 
@@ -953,8 +968,6 @@ public class GeneralEventListener implements Listener {
 
         }
 
-        //targeting bar
-        Bukkit.getServer().getPluginManager().callEvent(new TargetBarShouldUpdateEvent(defender));
 
         if(immortal || immune){
             return;
@@ -1013,27 +1026,28 @@ public class GeneralEventListener implements Listener {
 
         Player player = event.getPlayer();
 
-        hudManager.editHudBars(player);
+        String barType = event.getBarType();
+
+        switch (barType.toLowerCase()){
+            case "resource":{
+                hudManager.editResourceBar(player);
+                return;
+            }
+            case "target":{
+                hudManager.editTargetBar(player);
+                return;
+            }
+        }
+
+
 
     }
 
     @EventHandler
-    public void targetBarUpdate(TargetBarShouldUpdateEvent event){
+    public void ultimateStatusChange(UltimateStatusChageEvent event){
 
-        LivingEntity target = event.getTarget();
-
-        for(Map.Entry<UUID, LivingEntity> entry: targetManager.getTargetMap().entrySet()){
-            UUID playerID = entry.getKey();
-            Player player = Bukkit.getPlayer(playerID);
-            Entity playerTarget = entry.getValue();
-
-            if(playerTarget != null && playerTarget.equals(target)){
-                assert player != null;
-                targetManager.updateTargetBar(player);
-
-            }
-        }
-
+        Player player = event.getPlayer();
+        hudManager.displayUltimate(player);
     }
 
 

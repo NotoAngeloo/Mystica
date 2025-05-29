@@ -2,6 +2,7 @@ package me.angeloo.mystica.Components.Abilities.Assassin;
 
 import me.angeloo.mystica.Components.Abilities.AssassinAbilities;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
+import me.angeloo.mystica.CustomEvents.UltimateStatusChageEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.*;
@@ -29,7 +30,6 @@ public class DuelistsFrenzy {
     private final DamageCalculator damageCalculator;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
-    private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
 
     private final Stealth stealth;
     private final Combo combo;
@@ -40,7 +40,6 @@ public class DuelistsFrenzy {
 
     public DuelistsFrenzy(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
         this.main = main;
-        shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, manager);
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
@@ -92,7 +91,7 @@ public class DuelistsFrenzy {
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 if(caster instanceof Player){
-                    shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo((Player) caster);
+                    Bukkit.getServer().getPluginManager().callEvent(new UltimateStatusChageEvent((Player) caster));
                 }
 
 

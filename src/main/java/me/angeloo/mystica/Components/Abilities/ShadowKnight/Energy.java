@@ -42,7 +42,7 @@ public class Energy {
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(caster, true));
         if(caster instanceof Player){
             Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource"));
         }
     }
 
@@ -63,7 +63,7 @@ public class Energy {
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, true));
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource"));
         }
     }
 

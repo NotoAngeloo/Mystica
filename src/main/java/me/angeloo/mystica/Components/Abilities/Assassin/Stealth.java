@@ -119,20 +119,8 @@ public class Stealth {
 
                     revealAfterTime(caster);
 
-                    for(Map.Entry<UUID, LivingEntity> entry: targetManager.getTargetMap().entrySet()){
-                        UUID playerID = entry.getKey();
-                        Player thisPlayer = Bukkit.getPlayer(playerID);
-                        Entity target = entry.getValue();
+                    //a new way to remove this player from a pvp bar
 
-                        if(target != null && target.equals(caster)){
-                            assert thisPlayer != null;
-
-                            if(pvpManager.pvpLogic(caster, thisPlayer)){
-                                targetManager.removeAllBars(thisPlayer);
-                            }
-
-                        }
-                    }
                     this.cancel();
                 }
                 count ++;

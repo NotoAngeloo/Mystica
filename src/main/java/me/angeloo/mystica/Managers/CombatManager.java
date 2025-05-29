@@ -3,6 +3,7 @@ package me.angeloo.mystica.Managers;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Tasks.CombatTick;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DisplayWeapons;
 import org.bukkit.Bukkit;
@@ -21,8 +22,8 @@ public class CombatManager {
     private final ItemManager itemManager;
     private final AbilityManager abilityManager;
     private final DpsManager dpsManager;
-
     private final CooldownDisplayer cooldownDisplayer;
+    private final CombatTick combatTick;
 
     private final Map<UUID, Long> lastCalledCombat = new HashMap<>();
 
@@ -33,6 +34,7 @@ public class CombatManager {
         itemManager = main.getItemManager();
         dpsManager = main.getDpsManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
+        combatTick = new CombatTick(main, this, manager);
     }
 
 
@@ -83,6 +85,8 @@ public class CombatManager {
                 server.dispatchCommand(server.getConsoleSender(), "interactions stop " + player.getName());
             }*/
 
+
+            combatTick.startCombatTickFor(player);
         }
 
         profileManager.getAnyProfile(player).setIfInCombat(true);

@@ -54,7 +54,7 @@ public class Mana {
 
         if(caster instanceof Player){
             Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource"));
         }
     }
 
@@ -77,7 +77,7 @@ public class Mana {
 
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource"));
         }
     }
 
@@ -98,18 +98,6 @@ public class Mana {
             int currentMana = getCurrentMana(entity);
 
             int manaRegenRate = 50;
-
-            if(entity instanceof Player){
-                if (!profileManager.getAnyProfile(entity).getIfInCombat()) {
-                    manaRegenRate = 150;
-                }
-            }
-            else{
-                if(!profileManager.getIfCompanionInCombat(entity.getUniqueId())){
-                    manaRegenRate = 150;
-                }
-            }
-
 
 
             if (currentMana > maxMana) {

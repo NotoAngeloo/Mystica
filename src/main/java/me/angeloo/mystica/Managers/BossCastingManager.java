@@ -2,10 +2,11 @@ package me.angeloo.mystica.Managers;
 
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
-import me.angeloo.mystica.CustomEvents.TargetBarShouldUpdateEvent;
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -16,6 +17,7 @@ import java.util.UUID;
 public class BossCastingManager {
 
     private final Mystica main;
+    private final AggroManager aggroManager;
 
     private final Map<UUID, BukkitTask> castTaskMap = new HashMap<>();
     private final Map<UUID, Double> castMax = new HashMap<>();
@@ -24,7 +26,7 @@ public class BossCastingManager {
 
     public BossCastingManager(Mystica main){
         this.main = main;
-
+        aggroManager = main.getAggroManager();
     }
 
     public void startCastBar(LivingEntity entity, double speedPerTick, double maxAmount){
@@ -38,7 +40,6 @@ public class BossCastingManager {
 
                 if(getIfShouldInterrupt(entity)){
                     interrupt();
-                    Bukkit.getServer().getPluginManager().callEvent(new TargetBarShouldUpdateEvent(entity));
                     return;
                 }
 
@@ -46,14 +47,21 @@ public class BossCastingManager {
 
                 if(currentPercent >= maxAmount){
                     interrupt_fail();
-                    Bukkit.getServer().getPluginManager().callEvent(new TargetBarShouldUpdateEvent(entity));
                     return;
                 }
 
 
                 castPercent.put(entity.getUniqueId(), currentPercent + speedPerTick);
 
-                Bukkit.getServer().getPluginManager().callEvent(new TargetBarShouldUpdateEvent(entity));
+                // send the data to all nearby players
+                for(LivingEntity enemy : aggroManager.getAttackerList(entity)){
+                    if(!(enemy instanceof Player)){
+                        continue;
+                    }
+                    Player player = (Player) enemy;
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "target"));
+                }
+
             }
 
             private void interrupt_fail(){

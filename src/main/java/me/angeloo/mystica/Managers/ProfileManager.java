@@ -4,7 +4,6 @@ import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.FakePlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
-import me.angeloo.mystica.CustomEvents.TargetBarShouldUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.PlayerProfile;
@@ -823,7 +822,6 @@ public class ProfileManager {
         boss.setAI(false);
         boss.teleport(home);
 
-        Bukkit.getServer().getPluginManager().callEvent(new TargetBarShouldUpdateEvent(boss));
 
         if(MythicBukkit.inst().getAPIHelper().isMythicMob(uuid)){
 

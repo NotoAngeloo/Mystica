@@ -1,28 +1,37 @@
 package me.angeloo.mystica.Managers;
 
+import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Mystica;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class HudManager {
 
     private final ProfileManager profileManager;
+    private final AllSkillItems allSkillItems;
     private final AbilityManager abilityManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final TargetManager targetManager;
+    private final BossCastingManager bossCastingManager;
+
 
     public HudManager(Mystica main){
-
         profileManager = main.getProfileManager();
         abilityManager = main.getAbilityManager();
+        allSkillItems = main.getAllSkillItems();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         targetManager = main.getTargetManager();
-
+        bossCastingManager = main.getBossCastingManager();
     }
 
     public void innitHud(Player player){
@@ -55,14 +64,26 @@ public class HudManager {
 
     }
 
-    public void editHudBars(Player player){
+    public void displayUltimate(Player player){
+
+        StringBuilder hotBar = new StringBuilder();
+
+        String statusString = getUltimateStatus(player);
+
+        hotBar.append(statusString);
+
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(String.valueOf(hotBar)));
+    }
+
+    public void editResourceBar(Player player){
         BossBar resourceBar = profileManager.getPlayerResourceBar(player);
         resourceBar.setTitle(createPlayerDataString(player));
+    }
 
+    public void editTargetBar(Player player){
         BossBar targetBar = profileManager.getPlayerTargetBar(player);
         targetBar.setTitle(createTargetDataString(player));
     }
-
 
 
     private String createEntityDataString(LivingEntity entity){
@@ -107,22 +128,53 @@ public class HudManager {
         StringBuilder icon = new StringBuilder();
 
         if(entity instanceof Player || profileManager.getAnyProfile(entity).fakePlayer()){
-            //TODO:perhaps have purchasable custom icons, of which grab them elsewhere
+            //TODO: if player has cosmetic equipped, eqiup that instead
 
             Profile playerProfile = profileManager.getAnyProfile(entity);
             String playerClass = playerProfile.getPlayerClass();
 
+            //these are default ones
             switch (playerClass.toLowerCase()){
                 case "ranger":{
                     icon.append(("\uE124"));
                     return String.valueOf(icon);
                 }
+                case "mystic":{
+                    icon.append(("\uE125"));
+                    return String.valueOf(icon);
+                }
+                case "paladin":{
+                    icon.append(("\uE126"));
+                    return String.valueOf(icon);
+                }
+                case "assassin":{
+                    icon.append(("\uE129"));
+                    return String.valueOf(icon);
+                }
+                case "warrior":{
+                    icon.append(("\uE12A"));
+                    return String.valueOf(icon);
+                }
+                case "elementalist":{
+                    icon.append(("\uE12B"));
+                    return String.valueOf(icon);
+                }
+                case "shadow knight":{
+                    icon.append(("\uE12C"));
+                    return String.valueOf(icon);
+                }
             }
         }
 
+        if(profileManager.getAnyProfile(entity).getIsPassive()){
+            icon.append(("\uE127"));
+            return String.valueOf(icon);
+        }
+
+
 
         //have a default icon too
-        icon.append(("\uE124"));
+        icon.append(("\uE128"));
 
         return String.valueOf(icon);
     }
@@ -352,7 +404,6 @@ public class HudManager {
         StringBuilder resourceBar = new StringBuilder();
 
 
-        //TODO:if entity is a boss, use interupt bar
 
         if(entity instanceof Player || profileManager.getAnyProfile(entity).fakePlayer()){
             Profile playerProfile = profileManager.getAnyProfile(entity);
@@ -773,11 +824,259 @@ public class HudManager {
                     break;
                 }
             }
+
+            return String.valueOf(resourceBar);
+
+        }
+
+        resourceBar.append("\uF80B\uF809\uF803");
+
+        int amount = 0;
+
+        if(bossCastingManager.bossIsCasting(entity)){
+            double max = bossCastingManager.getCastMax(entity);
+            double current = bossCastingManager.getCastPercent(entity);
+
+            double ratio = current / max;
+
+            amount = (int) Math.ceil(ratio * 20);
+
+            if(amount < 0){
+                amount = 0;
+            }
+
+            if(current <= 0){
+                amount = 0;
+            }
         }
 
 
+        switch (amount){
+            case 20:{
+                resourceBar.append("\uE0E2");
+                break;
+            }
+            case 19:{
+                resourceBar.append("\uE0E3");
+                break;
+            }
+            case 18:{
+                resourceBar.append("\uE0E4");
+                break;
+            }
+            case 17:{
+                resourceBar.append("\uE0E5");
+                break;
+            }
+            case 16:{
+                resourceBar.append("\uE0E6");
+                break;
+            }
+            case 15:{
+                resourceBar.append("\uE0E7");
+                break;
+            }
+            case 14:{
+                resourceBar.append("\uE0E8");
+                break;
+            }
+            case 13:{
+                resourceBar.append("\uE0E9");
+                break;
+            }
+            case 12:{
+                resourceBar.append("\uE0EA");
+                break;
+            }
+            case 11:{
+                resourceBar.append("\uE0EB");
+                break;
+            }
+            case 10:{
+                resourceBar.append("\uE0EC");
+                break;
+            }
+            case 9:{
+                resourceBar.append("\uE0ED");
+                break;
+            }
+            case 8:{
+                resourceBar.append("\uE0EE");
+                break;
+            }
+            case 7:{
+                resourceBar.append("\uE0EF");
+                break;
+            }
+            case 6:{
+                resourceBar.append("\uE0F0");
+                break;
+            }
+            case 5:{
+                resourceBar.append("\uE0F1");
+                break;
+            }
+            case 4:{
+                resourceBar.append("\uE0F2");
+                break;
+            }
+            case 3:{
+                resourceBar.append("\uE0F3");
+                break;
+            }
+            case 2:{
+                resourceBar.append("\uE0F4");
+                break;
+            }
+            case 1:{
+                resourceBar.append("\uE0F5");
+                break;
+            }
+            case 0:{
+                resourceBar.append("\uE0E1");
+                break;
+            }
+        }
+
 
         return String.valueOf(resourceBar);
+    }
+
+    private String getUltimateStatus(Player player){
+        boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
+
+        if(!combatStatus){
+            return " ";
+        }
+
+        if(!allSkillItems.getUltimate(player).hasItemMeta()){
+            return " ";
+        }
+
+        int cooldown = abilityManager.getUltimateCooldown(player);
+
+        if(cooldown <= 0){
+
+            ItemStack ultimateItem = allSkillItems.getUltimate(player);
+
+            if(ultimateItem.getType().equals(Material.AIR)){
+                return " ";
+            }
+
+            String abilityName = ultimateItem.getItemMeta().getDisplayName();
+            abilityName = abilityName.replaceAll("§.", "");
+
+
+            return abilityUnicode(abilityName, player);
+        }
+
+        return String.valueOf(cooldown);
+    }
+
+    private String abilityUnicode(String abilityName, Player player){
+
+        StringBuilder unicode = new StringBuilder();
+
+        switch (abilityName.toLowerCase()){
+
+            case "conjuring force":{
+                unicode.append("\uE043");
+                break;
+            }
+            case "fiery wing":{
+                unicode.append("\uE044");
+                break;
+            }
+            case "wild roar":{
+                unicode.append("\uE045");
+                break;
+            }
+            case "star volley":{
+                unicode.append("\uE040");
+                break;
+            }
+            case "annihilation":{
+
+                if(abilityManager.getShadowKnightAbilities().getAnnihilation().returnWhichItem(player) == 0){
+                    unicode.append("\uE041");
+                }
+                else{
+                    unicode.append("\uE06D");
+                }
+
+
+                break;
+            }
+            case "blood shield":{
+
+                if(abilityManager.getShadowKnightAbilities().getBloodShield().returnWhichItem(player) == 0){
+                    unicode.append("\uE042");
+                }
+                else{
+                    unicode.append("\uE06E");
+                }
+
+                break;
+            }
+            case "arcane missiles":{
+                unicode.append("\uE046");
+                break;
+            }
+            case "enlightenment":{
+
+                if(abilityManager.getMysticAbilities().getEnlightenment().returnWhichItem(player) == 0){
+                    unicode.append("\uE047");
+                }
+                else{
+                    unicode.append("\uE06C");
+                }
+
+                break;
+            }
+            case "duelist's frenzy":{
+
+
+                if(abilityManager.getAssassinAbilities().getDuelistsFrenzy().returnWhichItem(player)==0){
+                    unicode.append("\uE049");
+                }
+                else{
+                    unicode.append("\uE04A");
+                }
+
+
+                break;
+            }
+            case "wicked concoction":{
+                unicode.append("\uE04B");
+                break;
+            }
+            case "gladiator heart":{
+                unicode.append("\uE058");
+                break;
+            }
+            case "death gaze":{
+                unicode.append("\uE059");
+                break;
+            }
+            case "well of light":{
+                unicode.append("\uE067");
+                break;
+            }
+            case "shield of sanctity":{
+                unicode.append("\uE068");
+                break;
+            }
+            case "representative":{
+                unicode.append("\uE069");
+                break;
+            }
+            default:{
+                unicode.append(abilityName);
+                break;
+            }
+        }
+
+        return String.valueOf(unicode);
     }
 
 }

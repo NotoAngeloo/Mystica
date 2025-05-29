@@ -1,10 +1,9 @@
 package me.angeloo.mystica.Components.Abilities.Mystic;
 
 import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
+import me.angeloo.mystica.CustomEvents.UltimateStatusChageEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.ChangeResourceHandler;
-import me.angeloo.mystica.Utility.ShieldAbilityManaDisplayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -26,7 +25,6 @@ public class EvilSpirit {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
     private final CombatManager combatManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final AbilityManager abilityManager;
@@ -36,7 +34,6 @@ public class EvilSpirit {
     public EvilSpirit(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
-        shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, manager);
         combatManager = manager.getCombatManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         abilityManager = manager;
@@ -207,7 +204,7 @@ public class EvilSpirit {
         chaosShards.put(caster.getUniqueId(), current);
         if(caster instanceof Player){
             Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
-            shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo((Player) caster);
+            Bukkit.getServer().getPluginManager().callEvent(new UltimateStatusChageEvent((Player) caster));
         }
 
     }

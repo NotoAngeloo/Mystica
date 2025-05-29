@@ -1,9 +1,9 @@
 package me.angeloo.mystica.Components.Abilities.Elementalist;
 
+import me.angeloo.mystica.CustomEvents.UltimateStatusChageEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.ChangeResourceHandler;
-import me.angeloo.mystica.Utility.ShieldAbilityManaDisplayer;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
@@ -21,7 +21,6 @@ public class ConjuringForce {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
     private final CombatManager combatManager;
     private final PvpManager pvpManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
@@ -32,7 +31,6 @@ public class ConjuringForce {
     public ConjuringForce(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
-        shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, manager);
         combatManager = manager.getCombatManager();
         pvpManager = main.getPvpManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
@@ -74,7 +72,7 @@ public class ConjuringForce {
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
 
                 if(caster instanceof Player){
-                    shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo((Player) caster);
+                    Bukkit.getServer().getPluginManager().callEvent(new UltimateStatusChageEvent((Player) caster));
                 }
 
 

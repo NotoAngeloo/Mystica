@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.Abilities.Mystic;
 
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
+import me.angeloo.mystica.CustomEvents.UltimateStatusChageEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.*;
@@ -24,7 +25,6 @@ public class ArcaneMissiles {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final ShieldAbilityManaDisplayer shieldAbilityManaDisplayer;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
@@ -41,7 +41,6 @@ public class ArcaneMissiles {
         this.main = main;
         profileManager = main.getProfileManager();
         abilityManager = manager;
-        shieldAbilityManaDisplayer = new ShieldAbilityManaDisplayer(main, manager);
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
@@ -90,7 +89,7 @@ public class ArcaneMissiles {
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 if(caster instanceof Player){
-                    shieldAbilityManaDisplayer.displayPlayerHealthPlusInfo((Player) caster);
+                    Bukkit.getServer().getPluginManager().callEvent(new UltimateStatusChageEvent((Player) caster));
                 }
 
             }

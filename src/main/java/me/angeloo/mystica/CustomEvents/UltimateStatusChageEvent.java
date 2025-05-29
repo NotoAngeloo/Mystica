@@ -1,22 +1,22 @@
 package me.angeloo.mystica.CustomEvents;
 
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class TargetBarShouldUpdateEvent extends Event {
+public class UltimateStatusChageEvent extends Event {
 
     public static final HandlerList handlers = new HandlerList();
 
-    private final LivingEntity target;
+    private final Player player;
 
 
-    public TargetBarShouldUpdateEvent(LivingEntity target){
-        this.target = target;
+    public UltimateStatusChageEvent(Player player){
+        this.player = player;
     }
 
-    public LivingEntity getTarget(){
-        return target;
+    public Player getPlayer(){
+        return player;
     }
 
 
@@ -26,5 +26,4 @@ public class TargetBarShouldUpdateEvent extends Event {
     public static HandlerList getHandlerList(){
         return handlers;
     }
-
 }

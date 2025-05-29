@@ -289,7 +289,7 @@ public class ChangeResourceHandler {
         player.setHealth(hearts);
 
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(player, false));
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource"));
 
         lastDamaged.put(player.getUniqueId(), (System.currentTimeMillis()/1000));
     }
@@ -379,7 +379,7 @@ public class ChangeResourceHandler {
         player.setHealth(hearts);
 
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(player, true));
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource"));
 
     }
 
@@ -528,6 +528,7 @@ public class ChangeResourceHandler {
         profileManager.getAnyProfile(player).setCurrentHealth(actualMaxHealth);
         player.setHealth(20);
     }
+
 
     public void killEntityNoMatterWhat(LivingEntity entity){
 

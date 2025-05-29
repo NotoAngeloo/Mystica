@@ -129,9 +129,9 @@ public final class Mystica extends JavaPlugin{
         pvpManager = new PvpManager(this);
         pveChecker = new PveChecker(this);
 
-        bossCastingManager = new BossCastingManager(this);
         stealthTargetBlacklist = new StealthTargetBlacklist();
         aggroManager = new AggroManager();
+        bossCastingManager = new BossCastingManager(this);
         buffAndDebuffManager = new BuffAndDebuffManager(this);
 
         fakePlayerTargetManager = new FakePlayerTargetManager(this);
@@ -146,6 +146,8 @@ public final class Mystica extends JavaPlugin{
 
         abilityManager = new AbilityManager(this);
         combatManager = abilityManager.getCombatManager();
+
+        //combatTick
         deathManager = new DeathManager(this);
         allSkillItems = abilityManager.getAllSkillItems();
 
@@ -226,12 +228,10 @@ public final class Mystica extends JavaPlugin{
 
 
 
-        NaturalRegenTick regenTick = new NaturalRegenTick(this, abilityManager);
-        regenTick.runTaskTimer(this, 0, 40);
+        //NaturalRegenTick regenTick = new NaturalRegenTick(this);
+        //fregenTick.runTaskTimer(this, 0, 40);
         RezTick rezTick = new RezTick(this);
         rezTick.runTaskTimer(this, 0, 20);
-        TargetDistanceTick targetDistanceTick = new TargetDistanceTick(this);
-        targetDistanceTick.runTaskTimer(this, 0, 20);
         DailyTick dailyTick = new DailyTick(this);
         dailyTick.runTaskTimer(this, 0, 1200);
 

@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Managers;
 
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.PveChecker;
 import me.angeloo.mystica.Utility.StealthTargetBlacklist;
@@ -18,27 +19,19 @@ import java.util.*;
 public class TargetManager {
 
     private final MysticaPartyManager mysticaPartyManager;
-    private final BossCastingManager bossCastingManager;
     private final FakePlayerTargetManager fakePlayerTargetManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
     private final StealthTargetBlacklist stealthTargetBlacklist;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final Map<UUID, LivingEntity> playerTarget = new HashMap<>();
-    //private final Map<UUID, BossBar> playerTargetBar = new HashMap<>();
-    //private final Map<UUID, BossBar> targetShieldBar = new HashMap<>();
-    //private final Map<UUID, BossBar> interruptBar = new HashMap<>();
 
-    private final Map<UUID, BossBar> entityDataBar = new HashMap<>();
 
     private final ProfileManager profileManager;
 
     private final Map<UUID, UUID> bossTarget = new HashMap<>();
 
     public TargetManager(Mystica main){
-        bossCastingManager = main.getBossCastingManager();
         fakePlayerTargetManager = main.getFakePlayerTargetManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
         stealthTargetBlacklist = main.getStealthTargetBlacklist();
         pveChecker = main.getPveChecker();
         pvpManager = main.getPvpManager();
@@ -56,41 +49,19 @@ public class TargetManager {
         return playerTarget.get(caster.getUniqueId());
     }
 
-    public void updateTargetBar(Player player){
-
-        LivingEntity target = playerTarget.get(player.getUniqueId());
-
-        if(target == null){
-            return;
-        }
-
-        setPlayerTarget(player, target);
-
-    }
-
     public void setPlayerTarget(Player player, LivingEntity entity){
 
         if(entity instanceof ArmorStand){
             return;
         }
 
-
         playerTarget.put(player.getUniqueId(), entity);
 
-        /*if(playerTargetBar.containsKey(player.getUniqueId())){
-            removeAllBars(player);
-        }*/
-
         if(entity != null){
-            //playerTargetBar.put(player.getUniqueId(), startTargetBar(player, entity));
 
             //if they are an enemy
             if(pveChecker.pveLogic(entity)){
                 setBossTarget(player, entity);
-            }
-
-            if(entity.isDead()){
-                removeAllBars(player);
             }
 
             if(!profileManager.getCompanions(player).isEmpty()){
@@ -108,6 +79,7 @@ public class TargetManager {
             }
         }
 
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "target"));
 
     }
 
@@ -207,82 +179,7 @@ public class TargetManager {
 
     }
 
-    private BossBar startTargetBar(Player player, LivingEntity entity){
 
-        //Bukkit.getLogger().info(entity.getName());
-
-        BossBar bossBar;
-        int level;
-
-        if(entity instanceof Player){
-
-            level = profileManager.getAnyProfile(entity).getStats().getLevel();
-
-            if(pvpManager.pvpLogic(player, (Player) entity)){
-                bossBar = Bukkit.createBossBar(entity.getName() + " (" + level + ")", BarColor.RED, BarStyle.SOLID);
-            }
-            else{
-                bossBar = Bukkit.createBossBar(entity.getName() + " (" + level + ")", BarColor.GREEN, BarStyle.SOLID);
-            }
-
-        }
-        else{
-
-            level = profileManager.getAnyProfile(entity).getStats().getLevel();
-
-            if(pveChecker.pveLogic(entity)){
-                bossBar = Bukkit.createBossBar(entity.getName() + " (" + level + ")", BarColor.RED, BarStyle.SOLID);
-            }
-            else {
-                bossBar = Bukkit.createBossBar(entity.getName() + " (" + level + ")", BarColor.GREEN, BarStyle.SOLID);
-            }
-
-        }
-
-
-        double maxHealth =  profileManager.getAnyProfile(entity).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(entity);
-        double currentHealth = profileManager.getAnyProfile(entity).getCurrentHealth();
-
-        if(maxHealth<currentHealth){
-            maxHealth = currentHealth;
-        }
-
-        bossBar.setProgress(currentHealth/maxHealth);
-
-        //ok this should work
-        if(entity instanceof Player){
-
-            boolean deathStatus = profileManager.getAnyProfile(entity).getIfDead();
-
-            if (deathStatus){
-                bossBar.setProgress(0);
-            }
-        }
-
-        if(!(entity instanceof Player)){
-            if(profileManager.getAnyProfile(entity).fakePlayer()){
-                boolean deathStatus = profileManager.getAnyProfile(entity).getIfDead();
-
-                if (deathStatus){
-                    bossBar.setProgress(0);
-                }
-            }
-        }
-
-        bossBar.addPlayer(player);
-        bossBar.setVisible(true);
-
-        if(buffAndDebuffManager.getGenericShield().getCurrentShieldAmount(entity) > 0){
-            startShieldBar(player, entity);
-        }
-
-        //check if entity is casting a skill
-        if(bossCastingManager.getCastPercent(entity) > 0){
-            startInterruptBar(player, entity);
-        }
-
-        return bossBar;
-    }
 
     private void startInterruptBar(Player player, LivingEntity entity){
 
@@ -302,44 +199,6 @@ public class TargetManager {
         this.interruptBar.put(player.getUniqueId(), interruptBar);*/
     }
 
-    private void startShieldBar(Player player, LivingEntity entity){
-
-        /*BossBar shieldBar = Bukkit.createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
-        double maxHealth = profileManager.getAnyProfile(entity).getTotalHealth();
-        double shieldAmount = buffAndDebuffManager.getGenericShield().getCurrentShieldAmount(entity);
-        if(shieldAmount > maxHealth){
-            shieldAmount = maxHealth;
-        }
-
-        shieldBar.setProgress(shieldAmount/maxHealth);
-        shieldBar.addPlayer(player);
-        shieldBar.setVisible(true);
-
-        targetShieldBar.put(player.getUniqueId(), shieldBar);*/
-
-    }
-
-    public void removeAllBars(Player player){
-        /*BossBar bossBar = playerTargetBar.get(player.getUniqueId());
-        BossBar shieldBar = targetShieldBar.get(player.getUniqueId());
-        BossBar interruptBar = this.interruptBar.get(player.getUniqueId());
-
-        if(bossBar != null){
-            bossBar.removePlayer(player);
-            playerTargetBar.remove(player.getUniqueId());
-        }
-
-        if(shieldBar != null){
-            shieldBar.removePlayer(player);
-            targetShieldBar.remove(player.getUniqueId());
-        }
-
-        if(interruptBar != null){
-            interruptBar.removePlayer(player);
-            this.interruptBar.remove(player.getUniqueId());
-        }
-*/
-    }
 
     public Map<UUID, LivingEntity> getTargetMap(){
         return playerTarget;
@@ -364,17 +223,6 @@ public class TargetManager {
     }
 
     public UUID getBossTarget(Player player){
-
-        /*if(bossTarget.containsKey(player.getUniqueId())){
-            Entity entity = Bukkit.getEntity(bossTarget.get(player.getUniqueId()));
-
-            if(entity == null || entity.isDead()){
-                bossTarget.remove(player.getUniqueId());
-
-                Bukkit.getLogger().info("removing boss target");
-
-            }*/
-
         return bossTarget.getOrDefault(player.getUniqueId(), player.getUniqueId());
     }
 

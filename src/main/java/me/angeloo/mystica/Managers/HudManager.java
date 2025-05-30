@@ -1103,10 +1103,6 @@ public class HudManager {
                 unicode.append("\uE069");
                 break;
             }
-            default:{
-                unicode.append(abilityName);
-                break;
-            }
         }
 
         return String.valueOf(unicode);
@@ -1119,7 +1115,7 @@ public class HudManager {
 
         int percent = iconCalculator.calculate(abilityManager.getPlayerUltimateCooldown(player), abilityManager.getUltimateCooldown(player));
 
-        Bukkit.getLogger().info("percent " + percent);
+        //Bukkit.getLogger().info("percent " + percent);
 
 
         switch (percent){

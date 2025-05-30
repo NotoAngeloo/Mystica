@@ -1,15 +1,11 @@
 package me.angeloo.mystica.Components.Abilities;
 
 import me.angeloo.mystica.Components.Abilities.Ranger.*;
-import me.angeloo.mystica.Components.ClassSkillItems.RangerSkillItems;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class RangerAbilities {
 
@@ -129,14 +125,27 @@ public class RangerAbilities {
         return 0;
     }
 
+    public int getPlayerUltimateCooldown(Player player){
+        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+
+        switch (subclass.toLowerCase()){
+            case "animal tamer":
+                return wildRoar.getPlayerCooldown(player);
+            case "scout":
+                return starVolley.getPlayerCooldown(player);
+        }
+
+        return 0;
+    }
+
     public int getUltimateCooldown(Player player){
         String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
         switch (subclass.toLowerCase()){
             case "animal tamer":
-                return wildRoar.getCooldown(player);
+                return wildRoar.getSkillCooldown();
             case "scout":
-                return starVolley.getCooldown(player);
+                return starVolley.getSkillCooldown();
         }
 
         return 0;

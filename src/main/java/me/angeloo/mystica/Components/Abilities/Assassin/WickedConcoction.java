@@ -87,17 +87,17 @@ public class WickedConcoction {
             cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        abilityReadyInMap.put(caster.getUniqueId(), 20);
+        abilityReadyInMap.put(caster.getUniqueId(), getSkillCooldown());
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(caster) <= 0){
+                if(getPlayerCooldown(caster) <= 0){
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(caster) - 1;
+                int cooldown = getPlayerCooldown(caster) - 1;
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
@@ -239,7 +239,7 @@ public class WickedConcoction {
         return 10;
     }
 
-    public int getCooldown(LivingEntity caster){
+    public int getPlayerCooldown(LivingEntity caster){
 
         int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
@@ -248,6 +248,10 @@ public class WickedConcoction {
         }
 
         return cooldown;
+    }
+
+    public int getSkillCooldown(){
+        return 20;
     }
 
     public void resetCooldown(LivingEntity caster){
@@ -270,7 +274,7 @@ public class WickedConcoction {
         }
 
 
-        return getCooldown(caster) <= 0;
+        return getPlayerCooldown(caster) <= 0;
     }
 
 }

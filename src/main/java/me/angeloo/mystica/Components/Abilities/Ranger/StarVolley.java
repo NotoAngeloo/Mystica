@@ -78,17 +78,17 @@ public class StarVolley {
             cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        abilityReadyInMap.put(caster.getUniqueId(), 45);
+        abilityReadyInMap.put(caster.getUniqueId(), getSkillCooldown());
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(caster) <= 0){
+                if(getPlayerCooldown(caster) <= 0){
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(caster) - 1;
+                int cooldown = getPlayerCooldown(caster) - 1;
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
@@ -201,7 +201,7 @@ public class StarVolley {
 
     public void decreaseCooldown(LivingEntity caster){
 
-        int current = getCooldown(caster);
+        int current = getPlayerCooldown(caster);
         current-=2;
         if(current<0){
             current=0;
@@ -215,7 +215,7 @@ public class StarVolley {
         return focus.calculateFocusMultipliedDamage(caster, 60) + ((int)(skillLevel/3));
     }
 
-    public int getCooldown(LivingEntity caster){
+    public int getPlayerCooldown(LivingEntity caster){
 
         int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
@@ -224,6 +224,10 @@ public class StarVolley {
         }
 
         return cooldown;
+    }
+
+    public int getSkillCooldown(){
+        return 45;
     }
 
     public void resetCooldown(LivingEntity caster){
@@ -255,7 +259,7 @@ public class StarVolley {
             return false;
         }
 
-        if(getCooldown(caster) > 0){
+        if(getPlayerCooldown(caster) > 0){
             return false;
         }
 

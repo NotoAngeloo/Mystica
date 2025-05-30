@@ -123,14 +123,27 @@ public class ShadowKnightAbilities {
         return 0;
     }
 
+    public int getPlayerUltimateCooldown(Player player){
+        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+
+        switch (subclass.toLowerCase()){
+            case "blood":
+                return bloodShield.getPlayerCooldown(player);
+            case "doom":
+                return annihilation.getPlayerCooldown(player);
+        }
+
+        return 0;
+    }
+
     public int getUltimateCooldown(Player player){
         String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
         switch (subclass.toLowerCase()){
             case "blood":
-                return bloodShield.getCooldown(player);
+                return bloodShield.getSkillCooldown();
             case "doom":
-                return annihilation.getCooldown(player);
+                return annihilation.getSkillCooldown();
         }
 
         return 0;

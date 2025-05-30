@@ -34,6 +34,7 @@ public class DuelistsFrenzy {
     private final Stealth stealth;
     private final Combo combo;
 
+
     private final Map<UUID, Boolean> frenzy = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
@@ -76,17 +77,17 @@ public class DuelistsFrenzy {
             cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        abilityReadyInMap.put(caster.getUniqueId(), 30);
+        abilityReadyInMap.put(caster.getUniqueId(), getSkillCooldown());
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(caster) <= 0){
+                if(getPlayerCooldown(caster) <= 0){
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(caster) - 1;
+                int cooldown = getPlayerCooldown(caster) - 1;
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
@@ -237,6 +238,10 @@ public class DuelistsFrenzy {
         return 150 + ((int)(skillLevel/3));
     }
 
+    public int getSkillCooldown(){
+        return 30;
+    }
+
     private void applyFrenzy(LivingEntity caster){
 
         frenzy.put(caster.getUniqueId(), true);
@@ -258,7 +263,7 @@ public class DuelistsFrenzy {
         return frenzy.getOrDefault(caster.getUniqueId(),false);
     }
 
-    public int getCooldown(LivingEntity caster){
+    public int getPlayerCooldown(LivingEntity caster){
         int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
@@ -308,7 +313,7 @@ public class DuelistsFrenzy {
         }
 
 
-        if(getCooldown(caster) > 0){
+        if(getPlayerCooldown(caster) > 0){
             return false;
         }
 

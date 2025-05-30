@@ -123,16 +123,28 @@ public class AssassinAbilities {
         return 0;
     }
 
-
-
     public int getUltimateCooldown(Player player){
         String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
         switch (subclass.toLowerCase()){
             case "duelist":
-                return duelistsFrenzy.getCooldown(player);
+                return duelistsFrenzy.getSkillCooldown();
             case "alchemist":
-                return wickedConcoction.getCooldown(player);
+                return wickedConcoction.getSkillCooldown();
+
+        }
+
+        return 0;
+    }
+
+    public int getPlayerUltimateCooldown(Player player){
+        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+
+        switch (subclass.toLowerCase()){
+            case "duelist":
+                return duelistsFrenzy.getPlayerCooldown(player);
+            case "alchemist":
+                return wickedConcoction.getPlayerCooldown(player);
 
         }
 

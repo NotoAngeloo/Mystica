@@ -221,11 +221,26 @@ public class PaladinAbilities {
 
         switch (subclass.toLowerCase()){
             case "templar":
-                return sanctityShield.getCooldown(player);
+                return sanctityShield.getSkillCooldown();
             case "divine":
-                return representative.getCooldown(player);
+                return representative.getSkillCooldown();
             case "dawn":
-                return lightWell.getCooldown(player);
+                return lightWell.getSkillCooldown();
+        }
+
+        return 0;
+    }
+
+    public int getPlayerUltimateCooldown(Player player){
+        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+
+        switch (subclass.toLowerCase()){
+            case "templar":
+                return sanctityShield.getPlayerCooldown(player);
+            case "divine":
+                return representative.getPlayerCooldown(player);
+            case "dawn":
+                return lightWell.getPlayerCooldown(player);
         }
 
         return 0;

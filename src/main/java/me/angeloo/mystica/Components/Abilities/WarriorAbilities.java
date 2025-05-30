@@ -124,14 +124,28 @@ public class WarriorAbilities {
         return 0;
     }
 
+    public int getPlayerUltimateCooldown(Player player){
+        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+
+        switch (subclass.toLowerCase()){
+            case "gladiator":
+                return gladiatorHeart.getPlayerCooldown(player);
+            case "executioner":
+                return deathGaze.getPlayerCooldown(player);
+
+        }
+
+        return 0;
+    }
+
     public int getUltimateCooldown(Player player){
         String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
         switch (subclass.toLowerCase()){
             case "gladiator":
-                return gladiatorHeart.getCooldown(player);
+                return gladiatorHeart.getSkillCooldown();
             case "executioner":
-                return deathGaze.getCooldown(player);
+                return deathGaze.getSkillCooldown();
 
         }
 

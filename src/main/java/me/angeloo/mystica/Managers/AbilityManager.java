@@ -10,7 +10,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class AbilityManager {
@@ -325,7 +324,7 @@ public class AbilityManager {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        String clazz= playerProfile.getPlayerClass();
+        String clazz = playerProfile.getPlayerClass();
 
         switch (clazz.toLowerCase()){
             case "elementalist":{
@@ -348,6 +347,39 @@ public class AbilityManager {
             }
             case "assassin":{
                 return assassinAbilities.getUltimateCooldown(player);
+            }
+        }
+
+        return 0;
+    }
+
+    public int getPlayerUltimateCooldown(Player player){
+
+        Profile playerProfile = profileManager.getAnyProfile(player);
+
+        String clazz = playerProfile.getPlayerClass();
+
+        switch (clazz.toLowerCase()){
+            case "elementalist":{
+                return elementalistAbilities.getPlayerUltimateCooldown(player);
+            }
+            case "ranger":{
+                return rangerAbilities.getPlayerUltimateCooldown(player);
+            }
+            case "mystic":{
+                return mysticAbilities.getPlayerUltimateCooldown(player);
+            }
+            case "shadow knight":{
+                return shadowKnightAbilities.getPlayerUltimateCooldown(player);
+            }
+            case "paladin":{
+                return paladinAbilities.getPlayerUltimateCooldown(player);
+            }
+            case "warrior":{
+                return warriorAbilities.getPlayerUltimateCooldown(player);
+            }
+            case "assassin":{
+                return assassinAbilities.getPlayerUltimateCooldown(player);
             }
         }
 

@@ -129,10 +129,25 @@ public class ElementalistAbilities {
 
         switch (subclass.toLowerCase()){
             case "pyromancer":{
-                return fieryWing.getCooldown(player);
+                return fieryWing.getSkillCooldown();
             }
             case "conjurer":{
-                return conjuringForce.getCooldown(player);
+                return conjuringForce.getSkillCooldown();
+            }
+        }
+
+        return 0;
+    }
+
+    public int getPlayerUltimateCooldown(Player player){
+        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+
+        switch (subclass.toLowerCase()){
+            case "pyromancer":{
+                return fieryWing.getPlayerCooldown(player);
+            }
+            case "conjurer":{
+                return conjuringForce.getPlayerCooldown(player);
             }
         }
 

@@ -75,17 +75,17 @@ public class ArcaneMissiles {
             cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        abilityReadyInMap.put(caster.getUniqueId(), 15);
+        abilityReadyInMap.put(caster.getUniqueId(), getSkillCooldown());
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(caster) <= 0){
+                if(getPlayerCooldown(caster) <= 0){
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(caster) - 1;
+                int cooldown = getPlayerCooldown(caster) - 1;
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 if(caster instanceof Player){
@@ -362,7 +362,11 @@ public class ArcaneMissiles {
         return 70 + ((int)(skillLevel/3));
     }
 
-    public int getCooldown(LivingEntity caster){
+    public int getSkillCooldown(){
+        return 15;
+    }
+
+    public int getPlayerCooldown(LivingEntity caster){
 
         int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
@@ -406,7 +410,7 @@ public class ArcaneMissiles {
             return false;
         }
 
-        return getCooldown(caster) <= 0;
+        return getPlayerCooldown(caster) <= 0;
     }
 
 }

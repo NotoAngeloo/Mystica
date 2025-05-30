@@ -84,17 +84,17 @@ public class Annihilation {
             cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        abilityReadyInMap.put(caster.getUniqueId(), 3);
+        abilityReadyInMap.put(caster.getUniqueId(), getSkillCooldown());
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(caster) <= 0){
+                if(getPlayerCooldown(caster) <= 0){
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(caster) - 1;
+                int cooldown = getPlayerCooldown(caster) - 1;
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
 
@@ -248,7 +248,7 @@ public class Annihilation {
         return 30;
     }
 
-    public int getCooldown(LivingEntity caster){
+    public int getPlayerCooldown(LivingEntity caster){
         int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
@@ -256,6 +256,10 @@ public class Annihilation {
         }
 
         return cooldown;
+    }
+
+    public int getSkillCooldown(){
+        return 3;
     }
 
     public void resetCooldown(LivingEntity caster){
@@ -287,7 +291,7 @@ public class Annihilation {
             return false;
         }
 
-        if(getCooldown(caster) > 0){
+        if(getPlayerCooldown(caster) > 0){
             return false;
         }
 

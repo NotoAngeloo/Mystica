@@ -229,10 +229,29 @@ public class MysticAbilities {
                 return 0;
             }
             case "arcane master":{
-                return arcaneMissiles.getCooldown(player);
+                return arcaneMissiles.getSkillCooldown();
             }
             case "shepard":{
-                return enlightenment.getCooldown(player);
+                return enlightenment.getSkillCooldown();
+            }
+        }
+
+        return 0;
+    }
+
+    public int getPlayerUltimateCooldown(Player player){
+
+        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+
+        switch (subclass.toLowerCase()){
+            case "chaos":{
+                return 0;
+            }
+            case "arcane master":{
+                return arcaneMissiles.getPlayerCooldown(player);
+            }
+            case "shepard":{
+                return enlightenment.getPlayerCooldown(player);
             }
         }
 

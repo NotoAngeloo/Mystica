@@ -3,6 +3,7 @@ package me.angeloo.mystica.Managers;
 import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.IconCalculator;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -14,6 +15,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class HudManager {
 
@@ -23,6 +25,7 @@ public class HudManager {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final TargetManager targetManager;
     private final BossCastingManager bossCastingManager;
+    private final IconCalculator iconCalculator;
 
 
     public HudManager(Mystica main){
@@ -32,6 +35,7 @@ public class HudManager {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         targetManager = main.getTargetManager();
         bossCastingManager = main.getBossCastingManager();
+        iconCalculator = new IconCalculator();
     }
 
     public void innitHud(Player player){
@@ -943,34 +947,63 @@ public class HudManager {
     }
 
     private String getUltimateStatus(Player player){
+
+        StringBuilder ultimateStatus = new StringBuilder();
+
         boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
 
         if(!combatStatus){
             return " ";
         }
 
+        //+256
+        ultimateStatus.append("\uF82D");
+
+        //-28
+        ultimateStatus.append("\uF809\uF808\uF804");
+
+
+        //move it again, if they have
+        //slot on hud
+        ultimateStatus.append("\uE12D");
+
         if(!allSkillItems.getUltimate(player).hasItemMeta()){
-            return " ";
+            return String.valueOf(ultimateStatus);
         }
 
-        int cooldown = abilityManager.getUltimateCooldown(player);
+        ItemStack ultimateItem = allSkillItems.getUltimate(player);
 
-        if(cooldown <= 0){
-
-            ItemStack ultimateItem = allSkillItems.getUltimate(player);
-
-            if(ultimateItem.getType().equals(Material.AIR)){
-                return " ";
-            }
-
-            String abilityName = ultimateItem.getItemMeta().getDisplayName();
-            abilityName = abilityName.replaceAll("§.", "");
-
-
-            return abilityUnicode(abilityName, player);
+        if(ultimateItem.getType().equals(Material.AIR)){
+            return String.valueOf(ultimateStatus);
         }
 
-        return String.valueOf(cooldown);
+        if(!ultimateItem.hasItemMeta()){
+            return String.valueOf(ultimateStatus);
+        }
+
+        ItemMeta ultimateMeta = ultimateItem.getItemMeta();
+
+        assert ultimateMeta != null;
+        if(!ultimateMeta.hasDisplayName()){
+            return String.valueOf(ultimateStatus);
+        }
+
+
+        //-20
+        ultimateStatus.append("\uF809\uF804");
+
+        String abilityName = ultimateMeta.getDisplayName();
+        abilityName = abilityName.replaceAll("§.", "");
+        ultimateStatus.append(abilityUnicode(abilityName, player));
+
+        //-17
+        ultimateStatus.append("\uF809\uF801");
+
+        //get how much cooldown is left, just here for testing
+        ultimateStatus.append(ultimateCooldown(player));
+
+
+        return String.valueOf(ultimateStatus);
     }
 
     private String abilityUnicode(String abilityName, Player player){
@@ -998,7 +1031,7 @@ public class HudManager {
             case "annihilation":{
 
                 if(abilityManager.getShadowKnightAbilities().getAnnihilation().returnWhichItem(player) == 0){
-                    unicode.append("\uE041");
+                    unicode.append("\uE12E");
                 }
                 else{
                     unicode.append("\uE06D");
@@ -1075,6 +1108,50 @@ public class HudManager {
                 break;
             }
         }
+
+        return String.valueOf(unicode);
+    }
+
+    private String ultimateCooldown(Player player){
+
+        StringBuilder unicode = new StringBuilder();
+
+
+        int percent = iconCalculator.calculate(abilityManager.getPlayerUltimateCooldown(player), abilityManager.getUltimateCooldown(player));
+
+        Bukkit.getLogger().info("percent " + percent);
+
+
+        switch (percent){
+            case 8:{
+                return "\uE12F";
+            }
+            case 7:{
+                return "\uE130";
+            }
+            case 6:{
+                return "\uE131";
+            }
+            case 5:{
+                return "\uE132";
+            }
+            case 4:{
+                return "\uE133";
+            }
+            case 3:{
+                return "\uE134";
+            }
+            case 2:{
+                return "\uE135";
+            }
+            case 1:{
+                return "\uE136";
+            }
+            case 0:{
+                return "\uE137";
+            }
+        }
+
 
         return String.valueOf(unicode);
     }

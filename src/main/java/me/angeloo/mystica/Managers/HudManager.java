@@ -17,6 +17,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import static me.angeloo.mystica.Mystica.assassinColor;
+
 public class HudManager {
 
     private final ProfileManager profileManager;
@@ -54,6 +56,12 @@ public class HudManager {
         profileManager.setPlayerTargetBar(player, targetBar);
 
 
+        BossBar teamBar = Bukkit.createBossBar(createTeamDataString(player), BarColor.WHITE, BarStyle.SOLID);
+        teamBar.addPlayer(player);
+        teamBar.setVisible(true);
+        profileManager.setPlayerTeamBar(player, teamBar);
+
+
         /*BossBar teamBar = Bukkit.createBossBar("Team", BarColor.WHITE, BarStyle.SOLID);
         teamBar.addPlayer(player);
         teamBar.setVisible(true);
@@ -62,9 +70,8 @@ public class HudManager {
         statusBar.addPlayer(player);
         statusBar.setVisible(true);
 
-        BossBar resourceBar = Bukkit.createBossBar(createResourceBars(player), BarColor.WHITE, BarStyle.SOLID);
-        resourceBar.addPlayer(player);
-        resourceBar.setVisible(true);*/
+
+         */
 
     }
 
@@ -83,12 +90,14 @@ public class HudManager {
         BossBar resourceBar = profileManager.getPlayerResourceBar(player);
         resourceBar.setTitle(createPlayerDataString(player));
     }
-
     public void editTargetBar(Player player){
         BossBar targetBar = profileManager.getPlayerTargetBar(player);
         targetBar.setTitle(createTargetDataString(player));
     }
-
+    public void editTeamBar(Player player){
+        BossBar teamBar = profileManager.getPlayerTeamBar(player);
+        teamBar.setTitle(createTeamDataString(player));
+    }
 
     private String createEntityDataString(LivingEntity entity){
 
@@ -182,6 +191,83 @@ public class HudManager {
 
         return String.valueOf(icon);
     }
+
+    private String createTeamDataString(Player player){
+
+        StringBuilder teamData = new StringBuilder();
+
+        //if player not in a team, sill have the bar, but have no data in it
+
+        //can change color via chatcolor good to know
+        //teamData.append(ChatColor.of(assassinColor));
+
+        /*teamData.append(ChatColor.RESET);
+        teamData.append("\uE138");
+
+        teamData.append(" ");
+
+        teamData.append(ChatColor.RESET);
+        teamData.append("\uE139");
+
+        teamData.append(" ");
+
+        teamData.append(ChatColor.RESET);
+        teamData.append("\uE13A");*/
+
+        //-512space
+        teamData.append("\uF80E");
+
+        teamData.append(ChatColor.RESET);
+        teamData.append("\uE138");
+
+        teamData.append(" ");
+
+        teamData.append(ChatColor.RESET);
+        teamData.append("\uE138");
+
+        teamData.append(" ");
+
+        teamData.append(ChatColor.RESET);
+        teamData.append("\uE138");
+
+
+        //-107
+        teamData.append("\uF80B\uF80A\uF808\uF803");
+
+        teamData.append(ChatColor.RESET);
+        teamData.append("\uE139");
+
+        teamData.append(" ");
+
+        teamData.append(ChatColor.RESET);
+        teamData.append("\uE139");
+
+        teamData.append(" ");
+
+        teamData.append(ChatColor.RESET);
+        teamData.append("\uE139");
+
+
+        //-107
+        teamData.append("\uF80B\uF80A\uF808\uF803");
+
+        teamData.append(ChatColor.RESET);
+        teamData.append("\uE13A");
+
+        teamData.append(" ");
+
+        teamData.append(ChatColor.RESET);
+        teamData.append("\uE13A");
+
+        teamData.append(" ");
+
+        teamData.append(ChatColor.RESET);
+        teamData.append("\uE13A");
+
+
+        return String.valueOf(teamData);
+    }
+
 
     private String healthBar(LivingEntity entity){
 

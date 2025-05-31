@@ -48,6 +48,7 @@ public class ProfileManager {
 
     private final Map<UUID, BossBar> playerResourceBar = new HashMap<>();
     private final Map<UUID, BossBar> playerTargetBar = new HashMap<>();
+    private final Map<UUID, BossBar> playerTeamBar = new HashMap<>();
 
     private final Map<UUID, Boolean> companionCombatMap = new HashMap<>();
     private final Map<Player, List<UUID>> companionMap = new HashMap<>();
@@ -959,6 +960,10 @@ public class ProfileManager {
         playerTargetBar.put(player.getUniqueId(), targetBar);
     }
 
+    public void setPlayerTeamBar(Player player, BossBar teamBar){
+        playerTeamBar.put(player.getUniqueId(), teamBar);
+    }
+
     public BossBar getPlayerResourceBar(Player player){
         if(!playerResourceBar.containsKey(player.getUniqueId())){
             BossBar resourceBar = Bukkit.createBossBar("", BarColor.WHITE, BarStyle.SOLID);
@@ -973,6 +978,14 @@ public class ProfileManager {
             setPlayerTargetBar(player, targetBar);
         }
         return playerTargetBar.get(player.getUniqueId());
+    }
+
+    public BossBar getPlayerTeamBar(Player player){
+        if(!playerTeamBar.containsKey(player.getUniqueId())){
+            BossBar teamBar = Bukkit.createBossBar("",BarColor.WHITE,BarStyle.SOLID);
+            setPlayerTeamBar(player, teamBar);
+        }
+        return playerTeamBar.get(player.getUniqueId());
     }
 
     public boolean getIfCompanionInCombat(UUID companion){return companionCombatMap.getOrDefault(companion, false);}

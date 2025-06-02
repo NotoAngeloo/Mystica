@@ -993,4 +993,5 @@ public class ProfileManager {
     public void removeCompanionCombat(UUID companion){companionCombatMap.remove(companion);}
 
 
+
 }

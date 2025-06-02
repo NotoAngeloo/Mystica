@@ -4,7 +4,7 @@ import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.IconCalculator;
-import net.md_5.bungee.api.ChatColor;
+import me.angeloo.mystica.Utility.SkinGrabber;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -16,6 +16,12 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URL;
 
 import static me.angeloo.mystica.Mystica.assassinColor;
 
@@ -29,6 +35,8 @@ public class HudManager {
     private final BossCastingManager bossCastingManager;
     private final IconCalculator iconCalculator;
 
+    private final SkinGrabber skinGrabber;
+
 
     public HudManager(Mystica main){
         profileManager = main.getProfileManager();
@@ -38,6 +46,8 @@ public class HudManager {
         targetManager = main.getTargetManager();
         bossCastingManager = main.getBossCastingManager();
         iconCalculator = new IconCalculator();
+
+        skinGrabber = new SkinGrabber();
     }
 
     public void innitHud(Player player){
@@ -196,23 +206,19 @@ public class HudManager {
 
         StringBuilder teamData = new StringBuilder();
 
+
+        skinGrabber.grabSkin(player);
+
+
+
+
+        /*
+
         //if player not in a team, sill have the bar, but have no data in it
 
         //can change color via chatcolor good to know
         //teamData.append(ChatColor.of(assassinColor));
 
-        /*teamData.append(ChatColor.RESET);
-        teamData.append("\uE138");
-
-        teamData.append(" ");
-
-        teamData.append(ChatColor.RESET);
-        teamData.append("\uE139");
-
-        teamData.append(" ");
-
-        teamData.append(ChatColor.RESET);
-        teamData.append("\uE13A");*/
 
         //-512space
         teamData.append("\uF80E");
@@ -262,11 +268,31 @@ public class HudManager {
         teamData.append(" ");
 
         teamData.append(ChatColor.RESET);
-        teamData.append("\uE13A");
+        teamData.append("\uE13A");*/
 
 
         return String.valueOf(teamData);
     }
+
+    private void innitPlayerFace(Player player){
+
+
+
+
+
+        //GameProfile gameProfile = (CraftPlayer)
+
+        //PlayerProfile playerProfile = Bukkit.getServer().createPlayerProfile(player.getUniqueId());
+
+        //PlayerTextures textures = playerProfile.getTextures();
+
+        //URL skinUrl = textures.getSkin();
+
+
+        //Bukkit.getLogger().info(String.valueOf(skinUrl));
+
+    }
+
 
 
     private String healthBar(LivingEntity entity){

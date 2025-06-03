@@ -891,7 +891,6 @@ public class ProfileManager {
         companionMap.put(player, currentCompanions);
         companionsPlayer.put(companion, player);
         Bukkit.getLogger().info("Companion " + companion + " added to " + player.getName());
-
         Bukkit.getServer().getPluginManager().callEvent(new UpdateMysticaPartyEvent(player));
 
     }

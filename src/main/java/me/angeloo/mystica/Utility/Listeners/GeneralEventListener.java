@@ -968,6 +968,20 @@ public class GeneralEventListener implements Listener {
 
         }
 
+        if(defender instanceof Player || profileManager.getAnyProfile(defender).fakePlayer()){
+
+            List<LivingEntity> mysticaParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(defender));
+
+            for(LivingEntity member : mysticaParty){
+
+                if(member instanceof Player){
+                    Player player = (Player) member;
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "team"));
+                }
+
+            }
+        }
+
 
         if(immortal || immune){
             return;
@@ -1774,6 +1788,15 @@ public class GeneralEventListener implements Listener {
             }
         }
 
+    }
+
+    @EventHandler
+    public void onCompanionSpawn(CompanionSpawnEvent event){
+
+        LivingEntity companion = event.getCompanion();
+
+        double max = profileManager.getAnyProfile(companion).getTotalHealth();
+        changeResourceHandler.addHealthToEntity(companion, max, null);
 
     }
 

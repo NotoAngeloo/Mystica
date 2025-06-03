@@ -19,6 +19,10 @@ public class SkinGrabber {
 
     private final Map<UUID, BufferedImage> skinMap = new HashMap<>();
     private final Map<UUID, String> faceMap = new HashMap<>();
+    private final Map<UUID, String> team0faceMap = new HashMap<>();
+    private final Map<UUID, String> team1faceMap = new HashMap<>();
+    private final Map<UUID, String> team2faceMap = new HashMap<>();
+    private final Map<UUID, String> team3faceMap = new HashMap<>();
 
     public SkinGrabber(){
 
@@ -32,6 +36,7 @@ public class SkinGrabber {
         if(skin == null){
             Bukkit.getLogger().info("skin null");
             //have a default stave skin
+            faceMap.put(player.getUniqueId(), "\uE144");
             return;
         }
 
@@ -99,6 +104,106 @@ public class SkinGrabber {
 
     }
 
+    private void constructTeamFace(Player player, int teamSlot){
+
+        BufferedImage skin = getBufferedImage(player);
+
+        if(skin == null){
+            Bukkit.getLogger().info("skin null");
+            //have a default steve skin
+            faceMap.put(player.getUniqueId(), "\uE144");
+            return;
+        }
+
+        StringBuilder face = new StringBuilder();
+
+        switch (teamSlot){
+
+            case 0:{
+                String currentUnicode = "\uE145";
+
+                for(int y = 0; y<8; y++){
+
+                    switch (y){
+                        case 0:{
+                            currentUnicode = "\uE145";
+                            break;
+                        }
+                        case 1:{
+                            currentUnicode = "\uE146";
+                            break;
+                        }
+                        case 2:{
+                            currentUnicode = "\uE147";
+                            break;
+                        }
+                        case 3:{
+                            currentUnicode = "\uE148";
+                            break;
+                        }
+                        case 4:{
+                            currentUnicode = "\uE149";
+                            break;
+                        }
+                        case 5:{
+                            currentUnicode = "\uE14A";
+                            break;
+                        }
+                        case 6:{
+                            currentUnicode = "\uE14B";
+                            break;
+                        }
+                        case 7:{
+                            currentUnicode = "\uE14C";
+                            break;
+                        }
+
+                    }
+
+                    for(int x = 0; x<8;x++){
+
+                        int rbg = skin.getRGB(8 + x, 8 + y);
+
+                        face.append(ChatColor.of(new Color(rbg)));
+                        face.append(currentUnicode);
+                        face.append(ChatColor.RESET);
+                        //-1
+                        face.append("\uF801");
+                    }
+
+
+                    //-16
+                    face.append("\uF809");
+
+
+                }
+
+                break;
+            }
+
+        }
+
+        switch (teamSlot){
+            case 0:{
+                team0faceMap.put(player.getUniqueId(), String.valueOf(face));
+                return;
+            }
+            case 1:{
+                team1faceMap.put(player.getUniqueId(), String.valueOf(face));
+                return;
+            }
+            case 2:{
+                team2faceMap.put(player.getUniqueId(), String.valueOf(face));
+                return;
+            }
+            case 3:{
+                team3faceMap.put(player.getUniqueId(), String.valueOf(face));
+                return;
+            }
+        }
+
+    }
+
     private URL getProfileUrl(Player player) throws IOException {
         return URI.create("https://sessionserver.mojang.com/session/minecraft/profile/" + player.getUniqueId()).toURL();
     }
@@ -134,6 +239,42 @@ public class SkinGrabber {
         }
 
         return faceMap.get(player.getUniqueId());
+    }
+
+    public String getTeamFace(Player player, int teamSlot){
+
+        switch (teamSlot){
+            case 0:{
+                if(!team0faceMap.containsKey(player.getUniqueId())){
+                    constructTeamFace(player, teamSlot);
+                }
+
+                return team0faceMap.get(player.getUniqueId());
+            }
+            case 1:{
+                if(!team1faceMap.containsKey(player.getUniqueId())){
+                    constructTeamFace(player, teamSlot);
+                }
+
+                return team1faceMap.get(player.getUniqueId());
+            }
+            case 2:{
+                if(!team2faceMap.containsKey(player.getUniqueId())){
+                    constructTeamFace(player, teamSlot);
+                }
+
+                return team2faceMap.get(player.getUniqueId());
+            }
+            case 3:{
+                if(!team3faceMap.containsKey(player.getUniqueId())){
+                    constructTeamFace(player, teamSlot);
+                }
+
+                return team3faceMap.get(player.getUniqueId());
+            }
+        }
+
+        return null;
     }
 
     private BufferedImage requestSkin(Player player) throws IOException{

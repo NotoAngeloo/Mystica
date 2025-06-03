@@ -18,14 +18,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import static me.angeloo.mystica.Mystica.assassinColor;
 
 public class HudManager {
 
@@ -113,17 +108,6 @@ public class HudManager {
         teamBar.setTitle(createTeamDataString(player));
     }
 
-    private String createEntityDataString(LivingEntity entity){
-
-        StringBuilder entityData = new StringBuilder();
-
-        entityData.append(characterIcon(entity));
-        entityData.append(healthBar(entity));
-        entityData.append(resourceBar(entity));
-
-        return String.valueOf(entityData);
-    }
-
     private String createPlayerDataString(Player player){
 
         StringBuilder playerResources = new StringBuilder();
@@ -150,84 +134,6 @@ public class HudManager {
         return String.valueOf(targetData);
     }
 
-    private String characterIcon(LivingEntity entity){
-
-        StringBuilder icon = new StringBuilder();
-
-        if(entity instanceof Player){
-
-            Player player = (Player) entity;
-
-            //default frame, change later
-            icon.append("\uE143");
-
-            //-29
-            icon.append("\uF809\uF808\uF805");
-
-            //for testing rn, put this on icon instead
-
-            icon.append(skinGrabber.getFace(player));
-
-            //+29
-            icon.append("\uF829\uF828\uF825");
-            return String.valueOf(icon);
-        }
-
-        //removed entity instance of player
-        if(profileManager.getAnyProfile(entity).fakePlayer()){
-            //TODO: if player has cosmetic equipped, equip that instead
-
-            Profile playerProfile = profileManager.getAnyProfile(entity);
-            String playerClass = playerProfile.getPlayerClass();
-
-            //change this to companion specific icons
-
-            //these are default ones
-            switch (playerClass.toLowerCase()){
-                case "ranger":{
-                    icon.append(("\uE124"));
-                    return String.valueOf(icon);
-                }
-                case "mystic":{
-                    icon.append(("\uE125"));
-                    return String.valueOf(icon);
-                }
-                case "paladin":{
-                    icon.append(("\uE126"));
-                    return String.valueOf(icon);
-                }
-                case "assassin":{
-                    icon.append(("\uE129"));
-                    return String.valueOf(icon);
-                }
-                case "warrior":{
-                    icon.append(("\uE12A"));
-                    return String.valueOf(icon);
-                }
-                case "elementalist":{
-                    icon.append(("\uE12B"));
-                    return String.valueOf(icon);
-                }
-                case "shadow knight":{
-                    icon.append(("\uE12C"));
-                    return String.valueOf(icon);
-                }
-            }
-        }
-
-        if(profileManager.getAnyProfile(entity).getIsPassive()){
-            icon.append(("\uE127"));
-            return String.valueOf(icon);
-        }
-
-
-
-        //have a default icon too
-        icon.append(("\uE128"));
-
-        return String.valueOf(icon);
-    }
-
     private String createTeamDataString(Player player){
 
 
@@ -247,14 +153,18 @@ public class HudManager {
 
         if(mysticaParty.size() <= 5){
 
+            int slot = 0;
             for(LivingEntity member : mysticaParty){
 
                 if(member == player){
                     continue;
                 }
 
-                teamData.append(createEntityDataString(member));
+                teamData.append(getTeamMemberDataString(member, slot));
 
+                //teamData.append(createEntityDataString(member));
+
+                slot++;
             }
 
             return String.valueOf(teamData);
@@ -326,7 +236,155 @@ public class HudManager {
         return String.valueOf(teamData);
     }
 
+    private String getTeamMemberDataString(LivingEntity entity, int slot){
 
+        StringBuilder entityBar = new StringBuilder();
+
+        //this grabs the frame of the right y value
+        switch (slot){
+            case 0:{
+                entityBar.append("\uE14D");
+                //-29, which is too high now
+                entityBar.append("\uF809\uF808\uF805");
+            }
+        }
+
+        if(entity instanceof Player){
+
+            Player player = (Player) entity;
+
+
+            entityBar.append(skinGrabber.getTeamFace(player, slot));
+
+            //+29
+            entityBar.append("\uF829\uF828\uF825");
+
+
+
+            return String.valueOf(entity);
+        }
+
+        if(profileManager.getAnyProfile(entity).fakePlayer()){
+
+            switch (slot){
+                case 0:{
+                    entityBar.append("\uE14E");
+                    break;
+                }
+            }
+
+
+            //+3
+            entityBar.append("\uF823");
+        }
+
+        //change this to get the right value
+        entityBar.append(teamHealthBar(entity, slot));
+        entityBar.append(resourceBar(entity));
+
+        return String.valueOf(entityBar);
+    }
+
+    private String createEntityDataString(LivingEntity entity){
+
+        StringBuilder entityData = new StringBuilder();
+
+        entityData.append(playerAndTargetIcon(entity));
+        entityData.append(healthBar(entity));
+        entityData.append(resourceBar(entity));
+
+        return String.valueOf(entityData);
+    }
+
+    private String playerAndTargetIcon(LivingEntity entity){
+
+        StringBuilder icon = new StringBuilder();
+
+        if(entity instanceof Player){
+
+            Player player = (Player) entity;
+
+            //default frame, change later
+            icon.append("\uE143");
+
+            //-29
+            icon.append("\uF809\uF808\uF805");
+
+
+            icon.append(skinGrabber.getFace(player));
+
+            //+29
+            icon.append("\uF829\uF828\uF825");
+            return String.valueOf(icon);
+        }
+
+        //removed entity instance of player
+        if(profileManager.getAnyProfile(entity).fakePlayer()){
+            //TODO: if player has cosmetic equipped, equip that instead
+
+            //default frame
+            icon.append("\uE143");
+
+            //-29
+            icon.append("\uF809\uF808\uF805");
+
+            //default face, for testing
+            icon.append("\uE144");
+
+            //+3
+            icon.append("\uF823");
+            return String.valueOf(icon);
+
+            /*Profile playerProfile = profileManager.getAnyProfile(entity);
+            String playerClass = playerProfile.getPlayerClass();
+
+            //change this to companion specific icons
+
+            //these are default ones
+            switch (playerClass.toLowerCase()){
+                case "ranger":{
+                    icon.append(("\uE124"));
+                    return String.valueOf(icon);
+                }
+                case "mystic":{
+                    icon.append(("\uE125"));
+                    return String.valueOf(icon);
+                }
+                case "paladin":{
+                    icon.append(("\uE126"));
+                    return String.valueOf(icon);
+                }
+                case "assassin":{
+                    icon.append(("\uE129"));
+                    return String.valueOf(icon);
+                }
+                case "warrior":{
+                    icon.append(("\uE12A"));
+                    return String.valueOf(icon);
+                }
+                case "elementalist":{
+                    icon.append(("\uE12B"));
+                    return String.valueOf(icon);
+                }
+                case "shadow knight":{
+                    icon.append(("\uE12C"));
+                    return String.valueOf(icon);
+                }
+            }*/
+        }
+
+        if(profileManager.getAnyProfile(entity).getIsPassive()){
+            icon.append(("\uE127"));
+            return String.valueOf(icon);
+        }
+
+
+
+        //have a default icon too
+        icon.append(("\uE128"));
+
+        return String.valueOf(icon);
+    }
 
     private String healthBar(LivingEntity entity){
 
@@ -543,6 +601,232 @@ public class HudManager {
                 break;
             }
         }
+
+
+        return String.valueOf(healthBar);
+    }
+
+    private String teamHealthBar(LivingEntity entity, int slot){
+        StringBuilder healthBar = new StringBuilder();
+
+        Profile playerProfile = profileManager.getAnyProfile(entity);
+        double actualMaxHealth = playerProfile.getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(entity);
+        double actualCurrentHealth = profileManager.getAnyProfile(entity).getCurrentHealth();
+
+        double ratio = actualCurrentHealth / actualMaxHealth;
+
+        int amount = (int) Math.ceil(ratio * 20);
+
+        //Bukkit.getLogger().info("player ratio number " + amount);
+
+        if(amount < 0){
+            amount = 0;
+        }
+
+        if(actualCurrentHealth <= 0){
+            amount = 0;
+        }
+
+        if(amount > 20){
+            amount = 20;
+        }
+
+        switch (slot){
+            case 0:{
+                switch (amount){
+                    case 20:{
+                        healthBar.append("\uE14F");
+                        break;
+                    }
+                    case 19:{
+                        healthBar.append("\uE0B9");
+                        break;
+                    }
+                    case 18:{
+                        healthBar.append("\uE0BA");
+                        break;
+                    }
+                    case 17:{
+                        healthBar.append("\uE0BB");
+                        break;
+                    }
+                    case 16:{
+                        healthBar.append("\uE0BC");
+                        break;
+                    }
+                    case 15:{
+                        healthBar.append("\uE0BD");
+                        break;
+                    }
+                    case 14:{
+                        healthBar.append("\uE0BE");
+                        break;
+                    }
+                    case 13:{
+                        healthBar.append("\uE0BF");
+                        break;
+                    }
+                    case 12:{
+                        healthBar.append("\uE0C0");
+                        break;
+                    }
+                    case 11:{
+                        healthBar.append("\uE0C1");
+                        break;
+                    }
+                    case 10:{
+                        healthBar.append("\uE0C2");
+                        break;
+                    }
+                    case 9:{
+                        healthBar.append("\uE0C3");
+                        break;
+                    }
+                    case 8:{
+                        healthBar.append("\uE0C4");
+                        break;
+                    }
+                    case 7:{
+                        healthBar.append("\uE0C5");
+                        break;
+                    }
+                    case 6:{
+                        healthBar.append("\uE0C6");
+                        break;
+                    }
+                    case 5:{
+                        healthBar.append("\uE0C7");
+                        break;
+                    }
+                    case 4:{
+                        healthBar.append("\uE0C8");
+                        break;
+                    }
+                    case 3:{
+                        healthBar.append("\uE0C9");
+                        break;
+                    }
+                    case 2:{
+                        healthBar.append("\uE0CA");
+                        break;
+                    }
+                    case 1:{
+                        healthBar.append("\uE0CB");
+                        break;
+                    }
+                    case 0:{
+                        healthBar.append("\uE0CC");
+                        break;
+                    }
+                }
+
+                double maxHp = profileManager.getAnyProfile(entity).getTotalHealth();
+                double shield = buffAndDebuffManager.getGenericShield().getCurrentShieldAmount(entity) +
+                        buffAndDebuffManager.getWindWallBuff().getWallHealth(entity);
+                double shieldRatio = shield/ maxHp;
+
+                int shieldAmount = (int) Math.ceil(shieldRatio * 20);
+
+                if(shieldAmount < 0){
+                    shieldAmount = 0;
+                }
+
+                if(shieldAmount > 20){
+                    shieldAmount = 20;
+                }
+
+                if(shieldAmount != 0){
+                    //-83 space
+                    healthBar.append("\uF80B\uF809\uF803");
+                }
+
+                switch (shieldAmount){
+                    case 20:{
+                        healthBar.append("\uE110");
+                        break;
+                    }
+                    case 19:{
+                        healthBar.append("\uE111");
+                        break;
+                    }
+                    case 18:{
+                        healthBar.append("\uE112");
+                        break;
+                    }
+                    case 17:{
+                        healthBar.append("\uE113");
+                        break;
+                    }
+                    case 16:{
+                        healthBar.append("\uE114");
+                        break;
+                    }
+                    case 15:{
+                        healthBar.append("\uE115");
+                        break;
+                    }
+                    case 14:{
+                        healthBar.append("\uE116");
+                        break;
+                    }
+                    case 13:{
+                        healthBar.append("\uE117");
+                        break;
+                    }
+                    case 12:{
+                        healthBar.append("\uE118");
+                        break;
+                    }
+                    case 11:{
+                        healthBar.append("\uE119");
+                        break;
+                    }
+                    case 10:{
+                        healthBar.append("\uE11A");
+                        break;
+                    }
+                    case 9:{
+                        healthBar.append("\uE11B");
+                        break;
+                    }
+                    case 8:{
+                        healthBar.append("\uE11C");
+                        break;
+                    }
+                    case 7:{
+                        healthBar.append("\uE11D");
+                        break;
+                    }
+                    case 6:{
+                        healthBar.append("\uE11E");
+                        break;
+                    }
+                    case 5:{
+                        healthBar.append("\uE11F");
+                        break;
+                    }
+                    case 4:{
+                        healthBar.append("\uE120");
+                        break;
+                    }
+                    case 3:{
+                        healthBar.append("\uE121");
+                        break;
+                    }
+                    case 2:{
+                        healthBar.append("\uE122");
+                        break;
+                    }
+                    case 1:{
+                        healthBar.append("\uE123");
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+
+
 
 
         return String.valueOf(healthBar);

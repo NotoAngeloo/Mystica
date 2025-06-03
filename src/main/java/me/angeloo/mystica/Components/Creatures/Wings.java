@@ -6,6 +6,7 @@ import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import me.angeloo.mystica.Components.FakePlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.Stats;
+import me.angeloo.mystica.CustomEvents.CompanionSpawnEvent;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
@@ -103,6 +104,7 @@ public class Wings {
             profileManager.addCompanion(closestPlayer, entity.getUniqueId());
         }
 
+        Bukkit.getServer().getPluginManager().callEvent(new CompanionSpawnEvent((LivingEntity) entity));
     }
 
 }

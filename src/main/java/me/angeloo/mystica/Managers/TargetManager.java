@@ -172,7 +172,7 @@ public class TargetManager {
 
     public void setTeamTarget(Player player){
 
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMPartyMemberList(player));
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
         mParty.sort(Comparator.comparingDouble(p -> profileManager.getAnyProfile(p).getCurrentHealth()/(double)profileManager.getAnyProfile(p).getTotalHealth()));
         setPlayerTarget(player, mParty.get(0));
 

@@ -22,12 +22,15 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import static me.angeloo.mystica.Mystica.assassinColor;
 
 public class HudManager {
 
     private final ProfileManager profileManager;
+    private final MysticaPartyManager mysticaPartyManager;
     private final AllSkillItems allSkillItems;
     private final AbilityManager abilityManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
@@ -40,6 +43,7 @@ public class HudManager {
 
     public HudManager(Mystica main){
         profileManager = main.getProfileManager();
+        mysticaPartyManager = main.getMysticaPartyManager();
         abilityManager = main.getAbilityManager();
         allSkillItems = main.getAllSkillItems();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
@@ -150,11 +154,33 @@ public class HudManager {
 
         StringBuilder icon = new StringBuilder();
 
-        if(entity instanceof Player || profileManager.getAnyProfile(entity).fakePlayer()){
-            //TODO: if player has cosmetic equipped, eqiup that instead
+        if(entity instanceof Player){
+
+            Player player = (Player) entity;
+
+            //default frame, change later
+            icon.append("\uE143");
+
+            //-29
+            icon.append("\uF809\uF808\uF805");
+
+            //for testing rn, put this on icon instead
+
+            icon.append(skinGrabber.getFace(player));
+
+            //+29
+            icon.append("\uF829\uF828\uF825");
+            return String.valueOf(icon);
+        }
+
+        //removed entity instance of player
+        if(profileManager.getAnyProfile(entity).fakePlayer()){
+            //TODO: if player has cosmetic equipped, equip that instead
 
             Profile playerProfile = profileManager.getAnyProfile(entity);
             String playerClass = playerProfile.getPlayerClass();
+
+            //change this to companion specific icons
 
             //these are default ones
             switch (playerClass.toLowerCase()){
@@ -204,10 +230,36 @@ public class HudManager {
 
     private String createTeamDataString(Player player){
 
+
         StringBuilder teamData = new StringBuilder();
 
 
-        skinGrabber.grabSkin(player);
+        List<LivingEntity> mysticaParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
+
+        if(mysticaParty.size() == 1){
+            return String.valueOf(teamData);
+        }
+
+        //-512space
+        teamData.append("\uF80E");
+
+        //TODO: next step, change the unicodes
+
+        if(mysticaParty.size() <= 5){
+
+            for(LivingEntity member : mysticaParty){
+
+                if(member == player){
+                    continue;
+                }
+
+                teamData.append(createEntityDataString(member));
+
+            }
+
+            return String.valueOf(teamData);
+        }
+
 
 
 
@@ -272,25 +324,6 @@ public class HudManager {
 
 
         return String.valueOf(teamData);
-    }
-
-    private void innitPlayerFace(Player player){
-
-
-
-
-
-        //GameProfile gameProfile = (CraftPlayer)
-
-        //PlayerProfile playerProfile = Bukkit.getServer().createPlayerProfile(player.getUniqueId());
-
-        //PlayerTextures textures = playerProfile.getTextures();
-
-        //URL skinUrl = textures.getSkin();
-
-
-        //Bukkit.getLogger().info(String.valueOf(skinUrl));
-
     }
 
 

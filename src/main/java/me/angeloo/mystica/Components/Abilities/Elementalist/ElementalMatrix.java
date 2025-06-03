@@ -107,7 +107,7 @@ public class ElementalMatrix {
 
         boolean conjurer = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("conjurer");
 
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMPartyMemberList(caster));
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(caster));
 
         for(LivingEntity member : mParty){
 

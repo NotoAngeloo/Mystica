@@ -4,6 +4,7 @@ import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.FakePlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
+import me.angeloo.mystica.CustomEvents.UpdateMysticaPartyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.PlayerProfile;
@@ -288,7 +289,6 @@ public class ProfileManager {
         }
     }
 
-    //this was livingentity before, careful
     public Profile getAnyProfile(LivingEntity entity){
 
         if(entity instanceof Player){
@@ -891,6 +891,9 @@ public class ProfileManager {
         companionMap.put(player, currentCompanions);
         companionsPlayer.put(companion, player);
         Bukkit.getLogger().info("Companion " + companion + " added to " + player.getName());
+
+        Bukkit.getServer().getPluginManager().callEvent(new UpdateMysticaPartyEvent(player));
+
     }
 
     public List<UUID> getCompanions(Player player){
@@ -913,6 +916,8 @@ public class ProfileManager {
         if(currentCompanions.isEmpty()){
             companionMap.remove(player);
         }
+
+        Bukkit.getServer().getPluginManager().callEvent(new UpdateMysticaPartyEvent(player));
     }
 
 
@@ -935,6 +940,8 @@ public class ProfileManager {
 
         companionMap.remove(player);
 
+        Bukkit.getServer().getPluginManager().callEvent(new UpdateMysticaPartyEvent(player));
+
     }
 
 
@@ -950,6 +957,8 @@ public class ProfileManager {
             companionMap.remove(player);
 
         }
+
+        Bukkit.getServer().getPluginManager().callEvent(new UpdateMysticaPartyEvent(player));
     }
 
     public void setPlayerResourceBar(Player player, BossBar resourceBar){

@@ -32,7 +32,7 @@ public class MysticaEntityGrabber {
 
     public UUID getLowestPhp(Player player){
 
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMPartyMemberList(player));
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
 
         List<LivingEntity> liveParty = new ArrayList<>();
 
@@ -56,7 +56,7 @@ public class MysticaEntityGrabber {
 
     public UUID getRandomEntity(Player player){
 
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMPartyMemberList(player));
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
 
         //Bukkit.getLogger().info("all " + mParty);
 
@@ -83,7 +83,7 @@ public class MysticaEntityGrabber {
     }
 
     public int getValidAmount(Player player){
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMPartyMemberList(player));
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
 
         List<LivingEntity> liveParty = new ArrayList<>();
 

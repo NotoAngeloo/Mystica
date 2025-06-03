@@ -16,6 +16,8 @@ public class MysticaPartyManager {
 
     private final ProfileManager profileManager;
 
+    private final Map<UUID, List<LivingEntity>> mysticaPartyMap = new HashMap<>();
+
     private final Map<Player, MysticaParty> mPartyMap = new HashMap<>();
     private final Map<Player, Player> leaderPlayer = new HashMap<>();
 
@@ -23,54 +25,72 @@ public class MysticaPartyManager {
         profileManager = main.getProfileManager();
     }
 
-    public List<LivingEntity> getMPartyMemberList(LivingEntity caster){
-        List<LivingEntity> mParty = new ArrayList<>();
-        //mParty.add(caster);
+    public void removeFromMysticaPartyMap(LivingEntity entity){
+        mysticaPartyMap.remove(entity.getUniqueId());
+    }
 
 
-        Player player;
+    public List<LivingEntity> getMysticaParty(LivingEntity caster){
 
-        if(caster instanceof Player){
-            player = (Player) caster;
-        }
-        else{
-            player = profileManager.getCompanionsPlayer(caster);
+        List<LivingEntity> mParty;
 
-        }
+        if(!mysticaPartyMap.containsKey(caster.getUniqueId())){
+             mParty = new ArrayList<>();
+            //mParty.add(caster);
 
-        Player partyLeader = player;
+            Player player;
 
-        PartiesAPI api = Parties.getApi();
-        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
-        assert partyPlayer != null;
-        if(partyPlayer.isInParty()){
-            Party party = api.getParty(partyPlayer.getPartyId());
-            assert party != null;
-            partyLeader = Bukkit.getPlayer(party.getLeader());
-            for(UUID partyMemberId : party.getMembers()){
-                mParty.add(Bukkit.getPlayer(partyMemberId));
+            if(caster instanceof Player){
+                player = (Player) caster;
             }
-        }
-        else{
-            mParty.add(caster);
-        }
+            else{
+                player = profileManager.getCompanionsPlayer(caster);
 
-        if(!profileManager.getCompanions(partyLeader).isEmpty()){
-            List<UUID> companions = profileManager.getCompanions(player);
+            }
 
-            for(UUID companionId : companions){
-                LivingEntity companion = (LivingEntity) Bukkit.getEntity(companionId);
+            Player partyLeader = player;
 
-                if(companion == null){
-                    continue;
+            PartiesAPI api = Parties.getApi();
+            PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
+            assert partyPlayer != null;
+            if(partyPlayer.isInParty()){
+                Party party = api.getParty(partyPlayer.getPartyId());
+                assert party != null;
+                partyLeader = Bukkit.getPlayer(party.getLeader());
+                for(UUID partyMemberId : party.getMembers()){
+                    mParty.add(Bukkit.getPlayer(partyMemberId));
+                }
+            }
+            else{
+                mParty.add(caster);
+            }
+
+            if(!profileManager.getCompanions(partyLeader).isEmpty()){
+                List<UUID> companions = profileManager.getCompanions(player);
+
+                for(UUID companionId : companions){
+                    LivingEntity companion = (LivingEntity) Bukkit.getEntity(companionId);
+
+                    if(companion == null){
+                        continue;
+                    }
+
+                    mParty.add(companion);
+
                 }
 
-                mParty.add(companion);
-
+                //Bukkit.getLogger().info("companions: " + companions);
             }
 
-            //Bukkit.getLogger().info("companions: " + companions);
+            for(LivingEntity member : mParty){
+                mysticaPartyMap.put(member.getUniqueId(), mParty);
+            }
+
         }
+        else{
+            mParty = mysticaPartyMap.get(caster.getUniqueId());
+        }
+
 
 
         return mParty;

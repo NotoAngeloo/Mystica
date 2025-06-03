@@ -102,7 +102,7 @@ public class ArcaneContract {
         mana.subTractManaFromEntity(caster, getCost());
 
 
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMPartyMemberList(caster));
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(caster));
         for(LivingEntity member : mParty){
             putOnCooldown(member.getUniqueId());
         }

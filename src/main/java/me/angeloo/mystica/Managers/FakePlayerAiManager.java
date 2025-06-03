@@ -308,8 +308,7 @@ public class FakePlayerAiManager {
     private void startShepardRotation(LivingEntity companion){
         MysticAbilities mysticAbilities = abilityManager.getMysticAbilities();
 
-        Player companionPlayer = profileManager.getCompanionsPlayer(companion);
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMPartyMemberList(companion));
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(companion));
 
         BukkitTask task = new BukkitRunnable(){
             @Override

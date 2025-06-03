@@ -687,7 +687,7 @@ public class GeneralEventListener implements Listener {
 
         Set<Player> victors = new HashSet<>();
 
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMPartyMemberList(caster));
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(caster));
         for(LivingEntity member : mParty){
             if(member instanceof Player){
                 changeResourceHandler.addXpToPlayer((Player)member,xpYield/mParty.size());
@@ -1037,6 +1037,10 @@ public class GeneralEventListener implements Listener {
                 hudManager.editTargetBar(player);
                 return;
             }
+            case "team":{
+                hudManager.editTeamBar(player);
+                return;
+            }
         }
 
 
@@ -1226,7 +1230,7 @@ public class GeneralEventListener implements Listener {
 
         World playerWorld = caster.getWorld();
 
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMPartyMemberList(caster));
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(caster));
         for(LivingEntity member : mParty){
             if(member instanceof Player){
                 if(((Player) member).isOnline()){
@@ -1606,18 +1610,6 @@ public class GeneralEventListener implements Listener {
 
     }
 
-    /*@EventHandler
-    public void onCompanionRemoval(MythicMobDeathEvent event){
-
-        Bukkit.getLogger().info("mm died");
-
-        /*LivingEntity livingEntity = (LivingEntity) entity;
-
-        if(profileManager.getAnyProfile(livingEntity).fakePlayer()){
-
-        }
-
-    }*/
 
     @EventHandler
     public void onCompanionRemoval(MythicMobDespawnEvent event){
@@ -1634,6 +1626,7 @@ public class GeneralEventListener implements Listener {
         if(profileManager.getAnyProfile(livingEntity).fakePlayer()){
             Player companionPlayer = profileManager.getCompanionsPlayer(livingEntity);
             profileManager.removeCompanion(companionPlayer, livingEntity.getUniqueId());
+            mysticaPartyManager.removeFromMysticaPartyMap(livingEntity);
         }
 
 
@@ -1684,7 +1677,7 @@ public class GeneralEventListener implements Listener {
 
         if(event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK){
 
-            List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMPartyMemberList(player));
+            List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
 
             for(LivingEntity member : mParty){
 
@@ -1759,6 +1752,28 @@ public class GeneralEventListener implements Listener {
             player.teleport(gravestoneLoc);
             return;
         }
+
+    }
+
+    @EventHandler
+    public void onMPartyUpdate(UpdateMysticaPartyEvent event){
+
+        LivingEntity entity = event.getEntity();
+
+        List<LivingEntity> oldMParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(entity));
+
+        for(LivingEntity member : oldMParty){
+            mysticaPartyManager.removeFromMysticaPartyMap(member);
+        }
+
+        for(LivingEntity member : oldMParty){
+            if(member instanceof Player){
+                Player player = (Player) member;
+                mysticaPartyManager.getMysticaParty(player);
+                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "team"));
+            }
+        }
+
 
     }
 

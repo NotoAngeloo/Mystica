@@ -38,7 +38,7 @@ public class RezTick extends BukkitRunnable {
 
             String rezMessage = "Left Click to Respawn";
 
-            List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMPartyMemberList(player));
+            List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
 
             for(LivingEntity member : mParty){
 

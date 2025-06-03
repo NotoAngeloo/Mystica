@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Utility;
 
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -17,26 +18,85 @@ import java.util.*;
 public class SkinGrabber {
 
     private final Map<UUID, BufferedImage> skinMap = new HashMap<>();
+    private final Map<UUID, String> faceMap = new HashMap<>();
 
     public SkinGrabber(){
 
     }
 
-    public void grabSkin(Player player){
+
+    private void constructFace(Player player){
 
         BufferedImage skin = getBufferedImage(player);
 
         if(skin == null){
             Bukkit.getLogger().info("skin null");
+            //have a default stave skin
             return;
         }
 
+        StringBuilder face = new StringBuilder();
 
-        int rbg = skin.getRGB(8, 8);
+        String currentUnicode = "\uE13B";
 
-        player.sendMessage(new Color(rbg, true) + " test");
+        for(int y = 0; y<8; y++){
 
-        Bukkit.getLogger().info(new Color(rbg, true) + " test");
+            switch (y){
+                case 0:{
+                    currentUnicode = "\uE13B";
+                    break;
+                }
+                case 1:{
+                    currentUnicode = "\uE13C";
+                    break;
+                }
+                case 2:{
+                    currentUnicode = "\uE13D";
+                    break;
+                }
+                case 3:{
+                    currentUnicode = "\uE13E";
+                    break;
+                }
+                case 4:{
+                    currentUnicode = "\uE13F";
+                    break;
+                }
+                case 5:{
+                    currentUnicode = "\uE140";
+                    break;
+                }
+                case 6:{
+                    currentUnicode = "\uE141";
+                    break;
+                }
+                case 7:{
+                    currentUnicode = "\uE142";
+                    break;
+                }
+
+            }
+
+            for(int x = 0; x<8;x++){
+
+                int rbg = skin.getRGB(8 + x, 8 + y);
+
+                face.append(ChatColor.of(new Color(rbg)));
+                face.append(currentUnicode);
+                face.append(ChatColor.RESET);
+                //-1
+                face.append("\uF801");
+            }
+
+
+            //-24
+            face.append("\uF809\uF808");
+
+
+        }
+
+        faceMap.put(player.getUniqueId(), String.valueOf(face));
+
     }
 
     private URL getProfileUrl(Player player) throws IOException {
@@ -65,6 +125,15 @@ public class SkinGrabber {
         }
 
         return skinMap.get(player.getUniqueId());
+    }
+
+    public String getFace(Player player){
+
+        if(!faceMap.containsKey(player.getUniqueId())){
+            constructFace(player);
+        }
+
+        return faceMap.get(player.getUniqueId());
     }
 
     private BufferedImage requestSkin(Player player) throws IOException{

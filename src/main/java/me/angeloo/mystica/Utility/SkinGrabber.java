@@ -172,8 +172,191 @@ public class SkinGrabber {
                     }
 
 
-                    //-16
-                    face.append("\uF809");
+                    //-24
+                    face.append("\uF809\uF808");
+
+
+                }
+
+                break;
+            }
+            case 1:{
+                String currentUnicode = "\uE1FA";
+
+                for(int y = 0; y<8; y++){
+
+                    switch (y){
+                        case 0:{
+                            currentUnicode = "\uE1FA";
+                            break;
+                        }
+                        case 1:{
+                            currentUnicode = "\uE1FB";
+                            break;
+                        }
+                        case 2:{
+                            currentUnicode = "\uE1FC";
+                            break;
+                        }
+                        case 3:{
+                            currentUnicode = "\uE1FD";
+                            break;
+                        }
+                        case 4:{
+                            currentUnicode = "\uE1FE";
+                            break;
+                        }
+                        case 5:{
+                            currentUnicode = "\uE1FF";
+                            break;
+                        }
+                        case 6:{
+                            currentUnicode = "\uE200";
+                            break;
+                        }
+                        case 7:{
+                            currentUnicode = "\uE201";
+                            break;
+                        }
+
+                    }
+
+                    for(int x = 0; x<8;x++){
+
+                        int rbg = skin.getRGB(8 + x, 8 + y);
+
+                        face.append(ChatColor.of(new Color(rbg)));
+                        face.append(currentUnicode);
+                        face.append(ChatColor.RESET);
+                        //-1
+                        face.append("\uF801");
+                    }
+
+
+                    //-24
+                    face.append("\uF809\uF808");
+
+
+                }
+
+                break;
+            }
+            case 2:{
+                String currentUnicode = "\uE202";
+
+                for(int y = 0; y<8; y++){
+
+                    switch (y){
+                        case 0:{
+                            currentUnicode = "\uE202";
+                            break;
+                        }
+                        case 1:{
+                            currentUnicode = "\uE203";
+                            break;
+                        }
+                        case 2:{
+                            currentUnicode = "\uE204";
+                            break;
+                        }
+                        case 3:{
+                            currentUnicode = "\uE205";
+                            break;
+                        }
+                        case 4:{
+                            currentUnicode = "\uE206";
+                            break;
+                        }
+                        case 5:{
+                            currentUnicode = "\uE207";
+                            break;
+                        }
+                        case 6:{
+                            currentUnicode = "\uE208";
+                            break;
+                        }
+                        case 7:{
+                            currentUnicode = "\uE209";
+                            break;
+                        }
+
+                    }
+
+                    for(int x = 0; x<8;x++){
+
+                        int rbg = skin.getRGB(8 + x, 8 + y);
+
+                        face.append(ChatColor.of(new Color(rbg)));
+                        face.append(currentUnicode);
+                        face.append(ChatColor.RESET);
+                        //-1
+                        face.append("\uF801");
+                    }
+
+
+                    //-24
+                    face.append("\uF809\uF808");
+
+
+                }
+
+                break;
+            }
+            case 3:{
+                String currentUnicode = "\uE20A";
+
+                for(int y = 0; y<8; y++){
+
+                    switch (y){
+                        case 0:{
+                            currentUnicode = "\uE20A";
+                            break;
+                        }
+                        case 1:{
+                            currentUnicode = "\uE20B";
+                            break;
+                        }
+                        case 2:{
+                            currentUnicode = "\uE20C";
+                            break;
+                        }
+                        case 3:{
+                            currentUnicode = "\uE20D";
+                            break;
+                        }
+                        case 4:{
+                            currentUnicode = "\uE20E";
+                            break;
+                        }
+                        case 5:{
+                            currentUnicode = "\uE20F";
+                            break;
+                        }
+                        case 6:{
+                            currentUnicode = "\uE210";
+                            break;
+                        }
+                        case 7:{
+                            currentUnicode = "\uE211";
+                            break;
+                        }
+
+                    }
+
+                    for(int x = 0; x<8;x++){
+
+                        int rbg = skin.getRGB(8 + x, 8 + y);
+
+                        face.append(ChatColor.of(new Color(rbg)));
+                        face.append(currentUnicode);
+                        face.append(ChatColor.RESET);
+                        //-1
+                        face.append("\uF801");
+                    }
+
+
+                    //-24
+                    face.append("\uF809\uF808");
 
 
                 }

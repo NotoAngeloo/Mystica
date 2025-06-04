@@ -146,12 +146,15 @@ public class HudManager {
             return String.valueOf(teamData);
         }
 
-        //-512space
-        teamData.append("\uF80E");
 
-        //TODO: next step, change the unicodes
 
         if(mysticaParty.size() <= 5){
+
+            //-512 space
+            teamData.append("\uF80E");
+
+            //-115
+            teamData.append("\uF80B\uF80A\uF809\uF803");
 
             int slot = 0;
             for(LivingEntity member : mysticaParty){
@@ -162,9 +165,14 @@ public class HudManager {
 
                 teamData.append(getTeamMemberDataString(member, slot));
 
-                //teamData.append(createEntityDataString(member));
-
                 slot++;
+
+                if(slot== mysticaParty.size()){
+                    break;
+                }
+
+                //-115
+                teamData.append("\uF80B\uF80A\uF809\uF803");
             }
 
             return String.valueOf(teamData);
@@ -244,10 +252,24 @@ public class HudManager {
         switch (slot){
             case 0:{
                 entityBar.append("\uE14D");
-                //-29, which is too high now
-                entityBar.append("\uF809\uF808\uF805");
+                break;
+            }
+            case 1:{
+                entityBar.append("\uE178");
+                break;
+            }
+            case 2:{
+                entityBar.append("\uE1A3");
+                break;
+            }
+            case 3:{
+                entityBar.append("\uE1CE");
+                break;
             }
         }
+
+        //-29
+        entityBar.append("\uF809\uF808\uF805");
 
         if(entity instanceof Player){
 
@@ -266,21 +288,34 @@ public class HudManager {
 
         if(profileManager.getAnyProfile(entity).fakePlayer()){
 
+            //currently, these are default steve faces
             switch (slot){
                 case 0:{
                     entityBar.append("\uE14E");
                     break;
                 }
+                case 1:{
+                    entityBar.append("\uE179");
+                    break;
+                }
+                case 2:{
+                    entityBar.append("\uE1A4");
+                    break;
+                }
+                case 3:{
+                    entityBar.append("\uE1CF");
+                    break;
+                }
+
             }
 
 
-            //+3
+            //+3 is only because default steve face.
             entityBar.append("\uF823");
         }
 
         //change this to get the right value
         entityBar.append(teamHealthBar(entity, slot));
-        entityBar.append(resourceBar(entity));
 
         return String.valueOf(entityBar);
     }
@@ -612,12 +647,8 @@ public class HudManager {
         Profile playerProfile = profileManager.getAnyProfile(entity);
         double actualMaxHealth = playerProfile.getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(entity);
         double actualCurrentHealth = profileManager.getAnyProfile(entity).getCurrentHealth();
-
         double ratio = actualCurrentHealth / actualMaxHealth;
-
         int amount = (int) Math.ceil(ratio * 20);
-
-        //Bukkit.getLogger().info("player ratio number " + amount);
 
         if(amount < 0){
             amount = 0;
@@ -631,6 +662,21 @@ public class HudManager {
             amount = 20;
         }
 
+        double maxHp = profileManager.getAnyProfile(entity).getTotalHealth();
+        double shield = buffAndDebuffManager.getGenericShield().getCurrentShieldAmount(entity) +
+                buffAndDebuffManager.getWindWallBuff().getWallHealth(entity);
+        double shieldRatio = shield/ maxHp;
+
+        int shieldAmount = (int) Math.ceil(shieldRatio * 20);
+
+        if(shieldAmount < 0){
+            shieldAmount = 0;
+        }
+
+        if(shieldAmount > 20){
+            shieldAmount = 20;
+        }
+
         switch (slot){
             case 0:{
                 switch (amount){
@@ -639,100 +685,85 @@ public class HudManager {
                         break;
                     }
                     case 19:{
-                        healthBar.append("\uE0B9");
+                        healthBar.append("\uE150");
                         break;
                     }
                     case 18:{
-                        healthBar.append("\uE0BA");
+                        healthBar.append("\uE151");
                         break;
                     }
                     case 17:{
-                        healthBar.append("\uE0BB");
+                        healthBar.append("\uE152");
                         break;
                     }
                     case 16:{
-                        healthBar.append("\uE0BC");
+                        healthBar.append("\uE153");
                         break;
                     }
                     case 15:{
-                        healthBar.append("\uE0BD");
+                        healthBar.append("\uE154");
                         break;
                     }
                     case 14:{
-                        healthBar.append("\uE0BE");
+                        healthBar.append("\uE155");
                         break;
                     }
                     case 13:{
-                        healthBar.append("\uE0BF");
+                        healthBar.append("\uE156");
                         break;
                     }
                     case 12:{
-                        healthBar.append("\uE0C0");
+                        healthBar.append("\uE157");
                         break;
                     }
                     case 11:{
-                        healthBar.append("\uE0C1");
+                        healthBar.append("\uE158");
                         break;
                     }
                     case 10:{
-                        healthBar.append("\uE0C2");
+                        healthBar.append("\uE159");
                         break;
                     }
                     case 9:{
-                        healthBar.append("\uE0C3");
+                        healthBar.append("\uE15A");
                         break;
                     }
                     case 8:{
-                        healthBar.append("\uE0C4");
+                        healthBar.append("\uE15B");
                         break;
                     }
                     case 7:{
-                        healthBar.append("\uE0C5");
+                        healthBar.append("\uE15C");
                         break;
                     }
                     case 6:{
-                        healthBar.append("\uE0C6");
+                        healthBar.append("\uE15D");
                         break;
                     }
                     case 5:{
-                        healthBar.append("\uE0C7");
+                        healthBar.append("\uE15E");
                         break;
                     }
                     case 4:{
-                        healthBar.append("\uE0C8");
+                        healthBar.append("\uE15F");
                         break;
                     }
                     case 3:{
-                        healthBar.append("\uE0C9");
+                        healthBar.append("\uE160");
                         break;
                     }
                     case 2:{
-                        healthBar.append("\uE0CA");
+                        healthBar.append("\uE161");
                         break;
                     }
                     case 1:{
-                        healthBar.append("\uE0CB");
+                        healthBar.append("\uE162");
                         break;
                     }
                     case 0:{
-                        healthBar.append("\uE0CC");
+                        healthBar.append("\uE163");
                         break;
                     }
-                }
-
-                double maxHp = profileManager.getAnyProfile(entity).getTotalHealth();
-                double shield = buffAndDebuffManager.getGenericShield().getCurrentShieldAmount(entity) +
-                        buffAndDebuffManager.getWindWallBuff().getWallHealth(entity);
-                double shieldRatio = shield/ maxHp;
-
-                int shieldAmount = (int) Math.ceil(shieldRatio * 20);
-
-                if(shieldAmount < 0){
-                    shieldAmount = 0;
-                }
-
-                if(shieldAmount > 20){
-                    shieldAmount = 20;
                 }
 
                 if(shieldAmount != 0){
@@ -742,83 +773,614 @@ public class HudManager {
 
                 switch (shieldAmount){
                     case 20:{
-                        healthBar.append("\uE110");
+                        healthBar.append("\uE164");
                         break;
                     }
                     case 19:{
-                        healthBar.append("\uE111");
+                        healthBar.append("\uE165");
                         break;
                     }
                     case 18:{
-                        healthBar.append("\uE112");
+                        healthBar.append("\uE166");
                         break;
                     }
                     case 17:{
-                        healthBar.append("\uE113");
+                        healthBar.append("\uE167");
                         break;
                     }
                     case 16:{
-                        healthBar.append("\uE114");
+                        healthBar.append("\uE168");
                         break;
                     }
                     case 15:{
-                        healthBar.append("\uE115");
+                        healthBar.append("\uE169");
                         break;
                     }
                     case 14:{
-                        healthBar.append("\uE116");
+                        healthBar.append("\uE16A");
                         break;
                     }
                     case 13:{
-                        healthBar.append("\uE117");
+                        healthBar.append("\uE16B");
                         break;
                     }
                     case 12:{
-                        healthBar.append("\uE118");
+                        healthBar.append("\uE16C");
                         break;
                     }
                     case 11:{
-                        healthBar.append("\uE119");
+                        healthBar.append("\uE16D");
                         break;
                     }
                     case 10:{
-                        healthBar.append("\uE11A");
+                        healthBar.append("\uE16E");
                         break;
                     }
                     case 9:{
-                        healthBar.append("\uE11B");
+                        healthBar.append("\uE16F");
                         break;
                     }
                     case 8:{
-                        healthBar.append("\uE11C");
+                        healthBar.append("\uE170");
                         break;
                     }
                     case 7:{
-                        healthBar.append("\uE11D");
+                        healthBar.append("\uE171");
                         break;
                     }
                     case 6:{
-                        healthBar.append("\uE11E");
+                        healthBar.append("\uE172");
                         break;
                     }
                     case 5:{
-                        healthBar.append("\uE11F");
+                        healthBar.append("\uE173");
                         break;
                     }
                     case 4:{
-                        healthBar.append("\uE120");
+                        healthBar.append("\uE174");
                         break;
                     }
                     case 3:{
-                        healthBar.append("\uE121");
+                        healthBar.append("\uE175");
                         break;
                     }
                     case 2:{
-                        healthBar.append("\uE122");
+                        healthBar.append("\uE176");
                         break;
                     }
                     case 1:{
-                        healthBar.append("\uE123");
+                        healthBar.append("\uE177");
+                        break;
+                    }
+                }
+                break;
+            }
+            case 1:{
+                switch (amount){
+                    case 20:{
+                        healthBar.append("\uE17A");
+                        break;
+                    }
+                    case 19:{
+                        healthBar.append("\uE17B");
+                        break;
+                    }
+                    case 18:{
+                        healthBar.append("\uE17C");
+                        break;
+                    }
+                    case 17:{
+                        healthBar.append("\uE17D");
+                        break;
+                    }
+                    case 16:{
+                        healthBar.append("\uE17E");
+                        break;
+                    }
+                    case 15:{
+                        healthBar.append("\uE17F");
+                        break;
+                    }
+                    case 14:{
+                        healthBar.append("\uE180");
+                        break;
+                    }
+                    case 13:{
+                        healthBar.append("\uE181");
+                        break;
+                    }
+                    case 12:{
+                        healthBar.append("\uE182");
+                        break;
+                    }
+                    case 11:{
+                        healthBar.append("\uE183");
+                        break;
+                    }
+                    case 10:{
+                        healthBar.append("\uE184");
+                        break;
+                    }
+                    case 9:{
+                        healthBar.append("\uE185");
+                        break;
+                    }
+                    case 8:{
+                        healthBar.append("\uE186");
+                        break;
+                    }
+                    case 7:{
+                        healthBar.append("\uE187");
+                        break;
+                    }
+                    case 6:{
+                        healthBar.append("\uE188");
+                        break;
+                    }
+                    case 5:{
+                        healthBar.append("\uE189");
+                        break;
+                    }
+                    case 4:{
+                        healthBar.append("\uE18A");
+                        break;
+                    }
+                    case 3:{
+                        healthBar.append("\uE18B");
+                        break;
+                    }
+                    case 2:{
+                        healthBar.append("\uE18C");
+                        break;
+                    }
+                    case 1:{
+                        healthBar.append("\uE18D");
+                        break;
+                    }
+                    case 0:{
+                        healthBar.append("\uE18E");
+                        break;
+                    }
+                }
+
+                if(shieldAmount != 0){
+                    //-83 space
+                    healthBar.append("\uF80B\uF809\uF803");
+                }
+
+                switch (shieldAmount){
+                    case 20:{
+                        healthBar.append("\uE18F");
+                        break;
+                    }
+                    case 19:{
+                        healthBar.append("\uE190");
+                        break;
+                    }
+                    case 18:{
+                        healthBar.append("\uE191");
+                        break;
+                    }
+                    case 17:{
+                        healthBar.append("\uE192");
+                        break;
+                    }
+                    case 16:{
+                        healthBar.append("\uE193");
+                        break;
+                    }
+                    case 15:{
+                        healthBar.append("\uE194");
+                        break;
+                    }
+                    case 14:{
+                        healthBar.append("\uE195");
+                        break;
+                    }
+                    case 13:{
+                        healthBar.append("\uE196");
+                        break;
+                    }
+                    case 12:{
+                        healthBar.append("\uE197");
+                        break;
+                    }
+                    case 11:{
+                        healthBar.append("\uE198");
+                        break;
+                    }
+                    case 10:{
+                        healthBar.append("\uE199");
+                        break;
+                    }
+                    case 9:{
+                        healthBar.append("\uE19A");
+                        break;
+                    }
+                    case 8:{
+                        healthBar.append("\uE19B");
+                        break;
+                    }
+                    case 7:{
+                        healthBar.append("\uE19C");
+                        break;
+                    }
+                    case 6:{
+                        healthBar.append("\uE19D");
+                        break;
+                    }
+                    case 5:{
+                        healthBar.append("\uE19E");
+                        break;
+                    }
+                    case 4:{
+                        healthBar.append("\uE19F");
+                        break;
+                    }
+                    case 3:{
+                        healthBar.append("\uE1A0");
+                        break;
+                    }
+                    case 2:{
+                        healthBar.append("\uE1A1");
+                        break;
+                    }
+                    case 1:{
+                        healthBar.append("\uE1A2");
+                        break;
+                    }
+                }
+                break;
+            }
+            case 3:{
+                switch (amount){
+                    case 20:{
+                        healthBar.append("\uE1D0");
+                        break;
+                    }
+                    case 19:{
+                        healthBar.append("\uE1D1");
+                        break;
+                    }
+                    case 18:{
+                        healthBar.append("\uE1D2");
+                        break;
+                    }
+                    case 17:{
+                        healthBar.append("\uE1D3");
+                        break;
+                    }
+                    case 16:{
+                        healthBar.append("\uE1D4");
+                        break;
+                    }
+                    case 15:{
+                        healthBar.append("\uE1D5");
+                        break;
+                    }
+                    case 14:{
+                        healthBar.append("\uE1D6");
+                        break;
+                    }
+                    case 13:{
+                        healthBar.append("\uE1D7");
+                        break;
+                    }
+                    case 12:{
+                        healthBar.append("\uE1D8");
+                        break;
+                    }
+                    case 11:{
+                        healthBar.append("\uE1D9");
+                        break;
+                    }
+                    case 10:{
+                        healthBar.append("\uE1DA");
+                        break;
+                    }
+                    case 9:{
+                        healthBar.append("\uE1DB");
+                        break;
+                    }
+                    case 8:{
+                        healthBar.append("\uE1DC");
+                        break;
+                    }
+                    case 7:{
+                        healthBar.append("\uE1DD");
+                        break;
+                    }
+                    case 6:{
+                        healthBar.append("\uE1DE");
+                        break;
+                    }
+                    case 5:{
+                        healthBar.append("\uE1DF");
+                        break;
+                    }
+                    case 4:{
+                        healthBar.append("\uE1E0");
+                        break;
+                    }
+                    case 3:{
+                        healthBar.append("\uE1E1");
+                        break;
+                    }
+                    case 2:{
+                        healthBar.append("\uE1E2");
+                        break;
+                    }
+                    case 1:{
+                        healthBar.append("\uE1E3");
+                        break;
+                    }
+                    case 0:{
+                        healthBar.append("\uE1E4");
+                        break;
+                    }
+                }
+
+                if(shieldAmount != 0){
+                    //-83 space
+                    healthBar.append("\uF80B\uF809\uF803");
+                }
+
+                switch (shieldAmount){
+                    case 20:{
+                        healthBar.append("\uE1E5");
+                        break;
+                    }
+                    case 19:{
+                        healthBar.append("\uE1E6");
+                        break;
+                    }
+                    case 18:{
+                        healthBar.append("\uE1E7");
+                        break;
+                    }
+                    case 17:{
+                        healthBar.append("\uE1E8");
+                        break;
+                    }
+                    case 16:{
+                        healthBar.append("\uE1E9");
+                        break;
+                    }
+                    case 15:{
+                        healthBar.append("\uE1EA");
+                        break;
+                    }
+                    case 14:{
+                        healthBar.append("\uE1EB");
+                        break;
+                    }
+                    case 13:{
+                        healthBar.append("\uE1EC");
+                        break;
+                    }
+                    case 12:{
+                        healthBar.append("\uE1ED");
+                        break;
+                    }
+                    case 11:{
+                        healthBar.append("\uE1EF");
+                        break;
+                    }
+                    case 10:{
+                        healthBar.append("\uE1F0");
+                        break;
+                    }
+                    case 9:{
+                        healthBar.append("\uE1F1");
+                        break;
+                    }
+                    case 8:{
+                        healthBar.append("\uE1F2");
+                        break;
+                    }
+                    case 7:{
+                        healthBar.append("\uE1F3");
+                        break;
+                    }
+                    case 6:{
+                        healthBar.append("\uE1F4");
+                        break;
+                    }
+                    case 5:{
+                        healthBar.append("\uE1F5");
+                        break;
+                    }
+                    case 4:{
+                        healthBar.append("\uE1F6");
+                        break;
+                    }
+                    case 3:{
+                        healthBar.append("\uE1F7");
+                        break;
+                    }
+                    case 2:{
+                        healthBar.append("\uE1F8");
+                        break;
+                    }
+                    case 1:{
+                        healthBar.append("\uE1F9");
+                        break;
+                    }
+                }
+                break;
+            }
+            case 2:{
+                switch (amount){
+                    case 20:{
+                        healthBar.append("\uE1A5");
+                        break;
+                    }
+                    case 19:{
+                        healthBar.append("\uE1A6");
+                        break;
+                    }
+                    case 18:{
+                        healthBar.append("\uE1A7");
+                        break;
+                    }
+                    case 17:{
+                        healthBar.append("\uE1A8");
+                        break;
+                    }
+                    case 16:{
+                        healthBar.append("\uE1A9");
+                        break;
+                    }
+                    case 15:{
+                        healthBar.append("\uE1AA");
+                        break;
+                    }
+                    case 14:{
+                        healthBar.append("\uE1AB");
+                        break;
+                    }
+                    case 13:{
+                        healthBar.append("\uE1AC");
+                        break;
+                    }
+                    case 12:{
+                        healthBar.append("\uE1AD");
+                        break;
+                    }
+                    case 11:{
+                        healthBar.append("\uE1AE");
+                        break;
+                    }
+                    case 10:{
+                        healthBar.append("\uE1AF");
+                        break;
+                    }
+                    case 9:{
+                        healthBar.append("\uE1B0");
+                        break;
+                    }
+                    case 8:{
+                        healthBar.append("\uE1B1");
+                        break;
+                    }
+                    case 7:{
+                        healthBar.append("\uE1B2");
+                        break;
+                    }
+                    case 6:{
+                        healthBar.append("\uE1B3");
+                        break;
+                    }
+                    case 5:{
+                        healthBar.append("\uE1B4");
+                        break;
+                    }
+                    case 4:{
+                        healthBar.append("\uE1B5");
+                        break;
+                    }
+                    case 3:{
+                        healthBar.append("\uE1B6");
+                        break;
+                    }
+                    case 2:{
+                        healthBar.append("\uE1B7");
+                        break;
+                    }
+                    case 1:{
+                        healthBar.append("\uE1B8");
+                        break;
+                    }
+                    case 0:{
+                        healthBar.append("\uE1B9");
+                        break;
+                    }
+                }
+
+                if(shieldAmount != 0){
+                    //-83 space
+                    healthBar.append("\uF80B\uF809\uF803");
+                }
+
+                switch (shieldAmount){
+                    case 20:{
+                        healthBar.append("\uE1BA");
+                        break;
+                    }
+                    case 19:{
+                        healthBar.append("\uE1BB");
+                        break;
+                    }
+                    case 18:{
+                        healthBar.append("\uE1BC");
+                        break;
+                    }
+                    case 17:{
+                        healthBar.append("\uE1BD");
+                        break;
+                    }
+                    case 16:{
+                        healthBar.append("\uE1BE");
+                        break;
+                    }
+                    case 15:{
+                        healthBar.append("\uE1BF");
+                        break;
+                    }
+                    case 14:{
+                        healthBar.append("\uE1C0");
+                        break;
+                    }
+                    case 13:{
+                        healthBar.append("\uE1C1");
+                        break;
+                    }
+                    case 12:{
+                        healthBar.append("\uE1C2");
+                        break;
+                    }
+                    case 11:{
+                        healthBar.append("\uE1C3");
+                        break;
+                    }
+                    case 10:{
+                        healthBar.append("\uE1C4");
+                        break;
+                    }
+                    case 9:{
+                        healthBar.append("\uE1C5");
+                        break;
+                    }
+                    case 8:{
+                        healthBar.append("\uE1C6");
+                        break;
+                    }
+                    case 7:{
+                        healthBar.append("\uE1C7");
+                        break;
+                    }
+                    case 6:{
+                        healthBar.append("\uE1C8");
+                        break;
+                    }
+                    case 5:{
+                        healthBar.append("\uE1C9");
+                        break;
+                    }
+                    case 4:{
+                        healthBar.append("\uE1CA");
+                        break;
+                    }
+                    case 3:{
+                        healthBar.append("\uE1CB");
+                        break;
+                    }
+                    case 2:{
+                        healthBar.append("\uE1CC");
+                        break;
+                    }
+                    case 1:{
+                        healthBar.append("\uE1CD");
                         break;
                     }
                 }
@@ -1181,27 +1743,27 @@ public class HudManager {
 
                         switch (combo){
                             case 0:{
-                                resourceBar.append("\uE107");
-                                break;
-                            }
-                            case 1:{
                                 resourceBar.append("\uE108");
                                 break;
                             }
-                            case 2:{
+                            case 1:{
                                 resourceBar.append("\uE109");
                                 break;
                             }
-                            case 3:{
+                            case 2:{
                                 resourceBar.append("\uE10A");
                                 break;
                             }
-                            case 4:{
+                            case 3:{
                                 resourceBar.append("\uE10B");
                                 break;
                             }
-                            case 5:{
+                            case 4:{
                                 resourceBar.append("\uE10C");
+                                break;
+                            }
+                            case 5:{
+                                resourceBar.append("\uE008");
                                 break;
                             }
                         }

@@ -5,6 +5,7 @@ import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.IconCalculator;
 import me.angeloo.mystica.Utility.SkinGrabber;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -20,6 +21,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static me.angeloo.mystica.Mystica.*;
 
 
 public class HudManager {
@@ -147,6 +150,7 @@ public class HudManager {
         }
 
 
+        //works, just disabled for testing
 
         if(mysticaParty.size() <= 5){
 
@@ -180,68 +184,83 @@ public class HudManager {
 
 
 
+        StringBuilder offset = new StringBuilder();
 
 
-        /*
-
-        //if player not in a team, sill have the bar, but have no data in it
-
-        //can change color via chatcolor good to know
-        //teamData.append(ChatColor.of(assassinColor));
 
 
-        //-512space
+        //-512 space
         teamData.append("\uF80E");
 
-        teamData.append(ChatColor.RESET);
-        teamData.append("\uE138");
-
-        teamData.append(" ");
-
-        teamData.append(ChatColor.RESET);
-        teamData.append("\uE138");
-
-        teamData.append(" ");
-
-        teamData.append(ChatColor.RESET);
-        teamData.append("\uE138");
+        //-100space
+        teamData.append("\uF80B\uF80A\uF804");
 
 
-        //-107
-        teamData.append("\uF80B\uF80A\uF808\uF803");
+        //loop based on party members
 
-        teamData.append(ChatColor.RESET);
-        teamData.append("\uE139");
+        int slot = 0;
+        for(LivingEntity member : mysticaParty){
 
-        teamData.append(" ");
+            if(member == player){
+                continue;
+            }
 
-        teamData.append(ChatColor.RESET);
-        teamData.append("\uE139");
-
-        teamData.append(" ");
-
-        teamData.append(ChatColor.RESET);
-        teamData.append("\uE139");
+            teamData.append(getSquadMemberDataString(member, slot));
 
 
-        //-107
-        teamData.append("\uF80B\uF80A\uF808\uF803");
+            //-32
+            teamData.append("\uF80A");
 
-        teamData.append(ChatColor.RESET);
-        teamData.append("\uE13A");
+            teamData.append(skinGrabber.getSquadFace(player, slot));
 
-        teamData.append(" ");
+            // +36
+            teamData.append("\uF82A\uF824");
 
-        teamData.append(ChatColor.RESET);
-        teamData.append("\uE13A");
-
-        teamData.append(" ");
-
-        teamData.append(ChatColor.RESET);
-        teamData.append("\uE13A");*/
+            //+36
+            offset.append("\uF82A\uF824");
 
 
-        return String.valueOf(teamData);
+
+            //-64
+            //teamData.append("\uF80B");
+
+
+            /*if(slot == mysticaParty.size()){
+                break;
+            }*/
+
+            slot ++;
+
+            //this code is bad look away
+            if(slot >= 3){
+                //+1
+                offset.append("\uF821");
+            }
+
+            if(slot == 3 || slot == 6){
+
+                //-111
+                teamData.append("\uF80B\uF80A\uF808\uF807");
+
+                //+111
+                //offset.append("\uF82B\uF82A\uF828\uF827");
+
+                //-111
+                offset.append("\uF80B\uF80A\uF808\uF807");
+
+                //append ofdset later
+            }
+
+
+            //+64
+            //teamData.append("\uF82B");
+
+            //move it back if larger that 3
+        }
+
+        offset.append(teamData);
+
+        return String.valueOf(offset);
     }
 
     private String getTeamMemberDataString(LivingEntity entity, int slot){
@@ -316,6 +335,213 @@ public class HudManager {
 
         //change this to get the right value
         entityBar.append(teamHealthBar(entity, slot));
+
+        return String.valueOf(entityBar);
+    }
+
+    private String getSquadMemberDataString(LivingEntity entity, int slot){
+
+        StringBuilder entityBar = new StringBuilder();
+
+        //depending on class
+        String playerClass = profileManager.getAnyProfile(entity).getPlayerClass();
+
+        switch (playerClass.toLowerCase()){
+
+            case "assassin":{
+                entityBar.append(ChatColor.of(assassinColor));
+                break;
+            }
+            case "elementalist":{
+                entityBar.append(ChatColor.of(elementalistColor));
+                break;
+            }
+            case "ranger":{
+                entityBar.append(ChatColor.of(rangerColor));
+                break;
+            }
+            case "paladin":{
+                entityBar.append(ChatColor.of(paladinColor));
+                break;
+            }
+            case "warrior":{
+                entityBar.append(ChatColor.of(warriorColor));
+                break;
+            }
+            case "shadow knight":{
+                entityBar.append(ChatColor.of(shadowKnightColor));
+                break;
+            }
+            case "mystic":{
+                entityBar.append(ChatColor.of(mysticColor));
+                break;
+            }
+            default:{
+                entityBar.append(ChatColor.RESET);
+                break;
+            }
+        }
+
+
+        //depending on health, get a different unicode
+        Profile playerProfile = profileManager.getAnyProfile(entity);
+        double actualMaxHealth = playerProfile.getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(entity);
+        double actualCurrentHealth = profileManager.getAnyProfile(entity).getCurrentHealth();
+        double ratio = actualCurrentHealth / actualMaxHealth;
+        int amount = (int) Math.ceil(ratio * 8);
+
+        if(amount < 0){
+            amount = 0;
+        }
+
+        if(actualCurrentHealth <= 0){
+            amount = 0;
+        }
+
+        if(amount > 8){
+            amount = 8;
+        }
+
+        if(playerProfile.getIfDead()){
+            amount = 0;
+        }
+
+        //slot switch here for height
+        switch (slot){
+            case 0:
+            case 1:
+            case 2:{
+                switch (amount){
+                    case 8:{
+                        entityBar.append("\uE212");
+                        break;
+                    }
+                    case 7:{
+                        entityBar.append("\uE213");
+                        break;
+                    }
+                    case 6:{
+                        entityBar.append("\uE214");
+                        break;
+                    }
+                    case 5:{
+                        entityBar.append("\uE215");
+                        break;
+                    }
+                    case 4:{
+                        entityBar.append("\uE216");
+                        break;
+                    }
+                    case 3:{
+                        entityBar.append("\uE217");
+                        break;
+                    }
+                    case 2:{
+                        entityBar.append("\uE218");
+                        break;
+                    }
+                    case 1:{
+                        entityBar.append("\uE219");
+                        break;
+                    }
+                    case 0:{
+                        entityBar.append("\uE21A");
+                        break;
+                    }
+                }
+                break;
+            }
+            case 3:
+            case 4:
+            case 5:{
+                switch (amount){
+                    case 8:{
+                        entityBar.append("\uE21B");
+                        break;
+                    }
+                    case 7:{
+                        entityBar.append("\uE21C");
+                        break;
+                    }
+                    case 6:{
+                        entityBar.append("\uE21D");
+                        break;
+                    }
+                    case 5:{
+                        entityBar.append("\uE21E");
+                        break;
+                    }
+                    case 4:{
+                        entityBar.append("\uE21F");
+                        break;
+                    }
+                    case 3:{
+                        entityBar.append("\uE220");
+                        break;
+                    }
+                    case 2:{
+                        entityBar.append("\uE221");
+                        break;
+                    }
+                    case 1:{
+                        entityBar.append("\uE222");
+                        break;
+                    }
+                    case 0:{
+                        entityBar.append("\uE223");
+                        break;
+                    }
+                }
+                break;
+            }
+            case 6:
+            case 7:
+            case 8:{
+                switch (amount){
+                    case 8:{
+                        entityBar.append("\uE224");
+                        break;
+                    }
+                    case 7:{
+                        entityBar.append("\uE225");
+                        break;
+                    }
+                    case 6:{
+                        entityBar.append("\uE226");
+                        break;
+                    }
+                    case 5:{
+                        entityBar.append("\uE227");
+                        break;
+                    }
+                    case 4:{
+                        entityBar.append("\uE228");
+                        break;
+                    }
+                    case 3:{
+                        entityBar.append("\uE229");
+                        break;
+                    }
+                    case 2:{
+                        entityBar.append("\uE22A");
+                        break;
+                    }
+                    case 1:{
+                        entityBar.append("\uE22B");
+                        break;
+                    }
+                    case 0:{
+                        entityBar.append("\uE22C");
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+
+
+
+
 
         return String.valueOf(entityBar);
     }
@@ -660,6 +886,10 @@ public class HudManager {
 
         if(amount > 20){
             amount = 20;
+        }
+
+        if(playerProfile.getIfDead()){
+            amount = 0;
         }
 
         double maxHp = profileManager.getAnyProfile(entity).getTotalHealth();

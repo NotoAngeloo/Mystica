@@ -24,6 +24,10 @@ public class SkinGrabber {
     private final Map<UUID, String> team2faceMap = new HashMap<>();
     private final Map<UUID, String> team3faceMap = new HashMap<>();
 
+    private final Map<UUID, String> squad0Face = new HashMap<>();
+    private final Map<UUID, String> squad1Face = new HashMap<>();
+    private final Map<UUID, String> squad2Face = new HashMap<>();
+
     public SkinGrabber(){
 
     }
@@ -102,6 +106,238 @@ public class SkinGrabber {
 
         faceMap.put(player.getUniqueId(), String.valueOf(face));
 
+    }
+
+    private void constructSquadFace(Player player, int squadSlot) {
+
+        BufferedImage skin = getBufferedImage(player);
+
+        if (skin == null) {
+            Bukkit.getLogger().info("skin null");
+            //have a default steve skin
+            faceMap.put(player.getUniqueId(), "\uE144");
+            return;
+        }
+
+        StringBuilder face = new StringBuilder();
+
+        switch (squadSlot) {
+
+            case 0:
+            case 1:
+            case 2:{
+                String currentUnicode = "\uE22C";
+
+                for (int y = 0; y < 8; y++) {
+
+                    switch (y) {
+                        case 0: {
+                            currentUnicode = "\uE22C";
+                            break;
+                        }
+                        case 1: {
+                            currentUnicode = "\uE22D";
+                            break;
+                        }
+                        case 2: {
+                            currentUnicode = "\uE22E";
+                            break;
+                        }
+                        case 3: {
+                            currentUnicode = "\uE22F";
+                            break;
+                        }
+                        case 4: {
+                            currentUnicode = "\uE230";
+                            break;
+                        }
+                        case 5: {
+                            currentUnicode = "\uE231";
+                            break;
+                        }
+                        case 6: {
+                            currentUnicode = "\uE232";
+                            break;
+                        }
+                        case 7: {
+                            currentUnicode = "\uE233";
+                            break;
+                        }
+
+                    }
+
+                    for (int x = 0; x < 8; x++) {
+
+                        int rbg = skin.getRGB(8 + x, 8 + y);
+
+                        face.append(ChatColor.of(new Color(rbg)));
+                        face.append(currentUnicode);
+                        face.append(ChatColor.RESET);
+                        //-1
+                        face.append("\uF801");
+                    }
+
+
+                    //-8
+                    face.append("\uF808");
+
+
+                }
+
+                break;
+            }
+            case 3:
+            case 4:
+            case 5:{
+                String currentUnicode = "\uE234";
+
+                for (int y = 0; y < 8; y++) {
+
+                    switch (y) {
+                        case 0: {
+                            currentUnicode = "\uE234";
+                            break;
+                        }
+                        case 1: {
+                            currentUnicode = "\uE235";
+                            break;
+                        }
+                        case 2: {
+                            currentUnicode = "\uE236";
+                            break;
+                        }
+                        case 3: {
+                            currentUnicode = "\uE237";
+                            break;
+                        }
+                        case 4: {
+                            currentUnicode = "\uE238";
+                            break;
+                        }
+                        case 5: {
+                            currentUnicode = "\uE239";
+                            break;
+                        }
+                        case 6: {
+                            currentUnicode = "\uE23A";
+                            break;
+                        }
+                        case 7: {
+                            currentUnicode = "\uE23B";
+                            break;
+                        }
+
+                    }
+
+                    for (int x = 0; x < 8; x++) {
+
+                        int rbg = skin.getRGB(8 + x, 8 + y);
+
+                        face.append(ChatColor.of(new Color(rbg)));
+                        face.append(currentUnicode);
+                        face.append(ChatColor.RESET);
+                        //-1
+                        face.append("\uF801");
+                    }
+
+
+                    //-8
+                    face.append("\uF808");
+
+
+                }
+
+                break;
+
+            }
+            case 6:
+            case 7:
+            case 8:{
+                String currentUnicode = "\uE23C";
+
+                for (int y = 0; y < 8; y++) {
+
+                    switch (y) {
+                        case 0: {
+                            currentUnicode = "\uE23C";
+                            break;
+                        }
+                        case 1: {
+                            currentUnicode = "\uE23D";
+                            break;
+                        }
+                        case 2: {
+                            currentUnicode = "\uE23E";
+                            break;
+                        }
+                        case 3: {
+                            currentUnicode = "\uE23F";
+                            break;
+                        }
+                        case 4: {
+                            currentUnicode = "\uE240";
+                            break;
+                        }
+                        case 5: {
+                            currentUnicode = "\uE241";
+                            break;
+                        }
+                        case 6: {
+                            currentUnicode = "\uE242";
+                            break;
+                        }
+                        case 7: {
+                            currentUnicode = "\uE243";
+                            break;
+                        }
+
+                    }
+
+                    for (int x = 0; x < 8; x++) {
+
+                        int rbg = skin.getRGB(8 + x, 8 + y);
+
+                        face.append(ChatColor.of(new Color(rbg)));
+                        face.append(currentUnicode);
+                        face.append(ChatColor.RESET);
+                        //-1
+                        face.append("\uF801");
+                    }
+
+
+                    //-8
+                    face.append("\uF808");
+
+
+                }
+
+                break;
+
+            }
+
+        }
+
+        switch (squadSlot){
+            case 0:
+            case 1:
+            case 2:{
+                squad0Face.put(player.getUniqueId(), String.valueOf(face));
+                return;
+            }
+            case 3:
+            case 4:
+            case 5:{
+                squad1Face.put(player.getUniqueId(), String.valueOf(face));
+                return;
+            }
+            case 6:
+            case 7:
+            case 8:{
+                squad2Face.put(player.getUniqueId(), String.valueOf(face));
+                return;
+            }
+
+        }
     }
 
     private void constructTeamFace(Player player, int teamSlot){
@@ -403,6 +639,8 @@ public class SkinGrabber {
 
         if(!skinMap.containsKey(player.getUniqueId())){
 
+            Bukkit.getLogger().info("skin not saved yet, requesting");
+
             try {
                 skinMap.put(player.getUniqueId(), requestSkin(player));
             }
@@ -454,6 +692,42 @@ public class SkinGrabber {
                 }
 
                 return team3faceMap.get(player.getUniqueId());
+            }
+        }
+
+        return null;
+    }
+
+    public String getSquadFace(Player player, int slot){
+
+        switch (slot){
+            case 0:
+            case 1:
+            case 2:{
+                if(!squad0Face.containsKey(player.getUniqueId())){
+                    constructSquadFace(player, slot);
+                }
+                return squad0Face.get(player.getUniqueId());
+            }
+            case 3:
+            case 4:
+            case 5:{
+
+                if(!squad1Face.containsKey(player.getUniqueId())){
+                    constructSquadFace(player, slot);
+                }
+
+                return squad1Face.get(player.getUniqueId());
+            }
+            case 6:
+            case 7:
+            case 8:{
+
+                if(!squad2Face.containsKey(player.getUniqueId())){
+                    constructSquadFace(player, slot);
+                }
+
+                return squad2Face.get(player.getUniqueId());
             }
         }
 

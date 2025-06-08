@@ -1646,6 +1646,7 @@ public class GeneralEventListener implements Listener {
 
     }
 
+
     @EventHandler
     public void companionSignalEvent(AiSignalEvent event){
 

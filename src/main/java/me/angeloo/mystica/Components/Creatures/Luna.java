@@ -98,6 +98,7 @@ public class Luna {
         FakePlayerProfile fakePlayerProfile = new FakePlayerProfile(false, false, stats.getHealth(),  stats, "Ranger", "Animal Tamer");
 
         profileManager.addToFakePlayerProfileMap(uuid, fakePlayerProfile);
+        profileManager.setCompanionFaces(uuid, "luna");
 
         if(theClosestPlayersLeader != null){
             profileManager.addCompanion(closestPlayer, entity.getUniqueId());

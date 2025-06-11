@@ -1641,6 +1641,7 @@ public class GeneralEventListener implements Listener {
             Player companionPlayer = profileManager.getCompanionsPlayer(livingEntity);
             profileManager.removeCompanion(companionPlayer, livingEntity.getUniqueId());
             mysticaPartyManager.removeFromMysticaPartyMap(livingEntity);
+            profileManager.clearCompanionFaces(entity.getUniqueId());
         }
 
 

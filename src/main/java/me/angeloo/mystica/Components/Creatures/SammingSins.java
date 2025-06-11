@@ -102,6 +102,7 @@ public class SammingSins {
         FakePlayerProfile fakePlayerProfile = new FakePlayerProfile(false, false, stats.getHealth(), stats, "Paladin", "Templar");
 
         profileManager.addToFakePlayerProfileMap(uuid, fakePlayerProfile);
+        profileManager.setCompanionFaces(uuid, "salmon");
 
         if(theClosestPlayersLeader != null){
             profileManager.addCompanion(closestPlayer, entity.getUniqueId());

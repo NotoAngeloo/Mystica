@@ -55,6 +55,12 @@ public class ProfileManager {
     private final Map<Player, List<UUID>> companionMap = new HashMap<>();
     private final Map<UUID, Player> companionsPlayer = new HashMap<>();
 
+    private final Map<UUID, String> companionFace = new HashMap<>();
+    private final Map<UUID, String> companionFace0 = new HashMap<>();
+    private final Map<UUID, String> companionFace1 = new HashMap<>();
+    private final Map<UUID, String> companionFace2 = new HashMap<>();
+    private final Map<UUID, String> companionFace3 = new HashMap<>();
+
     private final Map<String, Player> playerNameMap = new HashMap<>();
     private final Map<UUID, String> nonPlayerNameMap = new HashMap<>();
     private final Map<UUID, Location> bossHomes = new HashMap<>();
@@ -1000,6 +1006,91 @@ public class ProfileManager {
     public void setCompanionCombat(UUID companion){companionCombatMap.put(companion, true);}
     public void removeCompanionCombat(UUID companion){companionCombatMap.remove(companion);}
 
+    public void setCompanionFaces(UUID uuid, String companion){
 
+        switch (companion.toLowerCase()){
+            case "salmon":{
+                companionFace.put(uuid, "\uE267");
+                companionFace0.put(uuid, "\uE268");
+                companionFace1.put(uuid, "\uE269");
+                companionFace2.put(uuid, "\uE26A");
+                companionFace3.put(uuid, "\uE26B");
+                return;
+            }
+            case "slippy":{
+                companionFace.put(uuid, "\uE26C");
+                companionFace0.put(uuid, "\uE26D");
+                companionFace1.put(uuid, "\uE26E");
+                companionFace2.put(uuid, "\uE26F");
+                companionFace3.put(uuid, "\uE270");
+                return;
+            }
+            case "wings":{
+                companionFace.put(uuid, "\uE271");
+                companionFace0.put(uuid, "\uE272");
+                companionFace1.put(uuid, "\uE273");
+                companionFace2.put(uuid, "\uE274");
+                companionFace3.put(uuid, "\uE275");
+                return;
+            }
+            case "darwin":{
+                companionFace.put(uuid, "\uE276");
+                companionFace0.put(uuid, "\uE277");
+                companionFace1.put(uuid, "\uE278");
+                companionFace2.put(uuid, "\uE279");
+                companionFace3.put(uuid, "\uE27A");
+                return;
+            }
+        }
+
+    }
+
+    public String getCompanionFace(UUID uuid){
+        return companionFace.getOrDefault(uuid, "\uE144");
+    }
+
+    public String getCompanionTeamFace(UUID uuid, int slot){
+
+        switch (slot){
+            case 0:{
+                if(!companionFace0.containsKey(uuid)){
+                    companionFace0.put(uuid, "\uE14E");
+                }
+
+                return companionFace0.get(uuid);
+            }
+            case 1:{
+                if(!companionFace1.containsKey(uuid)){
+                    companionFace1.put(uuid, "\uE179");
+                }
+
+                return companionFace1.get(uuid);
+            }
+            case 2:{
+                if(!companionFace2.containsKey(uuid)){
+                    companionFace2.put(uuid, "\uE1A4");
+                }
+
+                return companionFace2.get(uuid);
+            }
+            case 3:{
+                if(!companionFace3.containsKey(uuid)){
+                    companionFace3.put(uuid, "\uE1CF");
+                }
+
+                return companionFace3.get(uuid);
+            }
+        }
+
+        return companionFace.getOrDefault(uuid, "\uE144");
+    }
+
+    public void clearCompanionFaces(UUID uuid){
+        companionFace.remove(uuid);
+        companionFace0.remove(uuid);
+        companionFace1.remove(uuid);
+        companionFace2.remove(uuid);
+        companionFace3.remove(uuid);
+    }
 
 }

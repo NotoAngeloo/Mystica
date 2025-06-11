@@ -267,25 +267,181 @@ public class HudManager {
 
         StringBuilder entityBar = new StringBuilder();
 
-        //this grabs the frame of the right y value
-        switch (slot){
-            case 0:{
-                entityBar.append("\uE14D");
+        String playerClass = profileManager.getAnyProfile(entity).getPlayerClass();
+
+        switch (playerClass.toLowerCase()){
+            case "assassin":{
+                switch (slot){
+                    case 0:{
+                        entityBar.append("\uE245");
+                        break;
+                    }
+                    case 1:{
+                        entityBar.append("\uE246");
+                        break;
+                    }
+                    case 2:{
+                        entityBar.append("\uE247");
+                        break;
+                    }
+                    case 3:{
+                        entityBar.append("\uE248");
+                        break;
+                    }
+                }
                 break;
             }
-            case 1:{
-                entityBar.append("\uE178");
+            case "elementalist":{
+                switch (slot){
+                    case 0:{
+                        entityBar.append("\uE24A");
+                        break;
+                    }
+                    case 1:{
+                        entityBar.append("\uE24B");
+                        break;
+                    }
+                    case 2:{
+                        entityBar.append("\uE24C");
+                        break;
+                    }
+                    case 3:{
+                        entityBar.append("\uE24D");
+                        break;
+                    }
+                }
                 break;
             }
-            case 2:{
-                entityBar.append("\uE1A3");
+            case "mystic":{
+                switch (slot){
+                    case 0:{
+                        entityBar.append("\uE24F");
+                        break;
+                    }
+                    case 1:{
+                        entityBar.append("\uE250");
+                        break;
+                    }
+                    case 2:{
+                        entityBar.append("\uE251");
+                        break;
+                    }
+                    case 3:{
+                        entityBar.append("\uE252");
+                        break;
+                    }
+                }
                 break;
             }
-            case 3:{
-                entityBar.append("\uE1CE");
+            case "paladin":{
+                switch (slot){
+                    case 0:{
+                        entityBar.append("\uE254");
+                        break;
+                    }
+                    case 1:{
+                        entityBar.append("\uE255");
+                        break;
+                    }
+                    case 2:{
+                        entityBar.append("\uE256");
+                        break;
+                    }
+                    case 3:{
+                        entityBar.append("\uE257");
+                        break;
+                    }
+                }
+                break;
+            }
+            case "ranger":{
+                switch (slot){
+                    case 0:{
+                        entityBar.append("\uE259");
+                        break;
+                    }
+                    case 1:{
+                        entityBar.append("\uE25A");
+                        break;
+                    }
+                    case 2:{
+                        entityBar.append("\uE25B");
+                        break;
+                    }
+                    case 3:{
+                        entityBar.append("\uE25C");
+                        break;
+                    }
+                }
+                break;
+            }
+            case "shadow knight":{
+                switch (slot){
+                    case 0:{
+                        entityBar.append("\uE25E");
+                        break;
+                    }
+                    case 1:{
+                        entityBar.append("\uE25F");
+                        break;
+                    }
+                    case 2:{
+                        entityBar.append("\uE260");
+                        break;
+                    }
+                    case 3:{
+                        entityBar.append("\uE261");
+                        break;
+                    }
+                }
+                break;
+            }
+            case "warrior":{
+                switch (slot){
+                    case 0:{
+                        entityBar.append("\uE263");
+                        break;
+                    }
+                    case 1:{
+                        entityBar.append("\uE264");
+                        break;
+                    }
+                    case 2:{
+                        entityBar.append("\uE265");
+                        break;
+                    }
+                    case 3:{
+                        entityBar.append("\uE266");
+                        break;
+                    }
+                }
+                break;
+            }
+            default:{
+                switch (slot){
+                    case 0:{
+                        entityBar.append("\uE14D");
+                        break;
+                    }
+                    case 1:{
+                        entityBar.append("\uE178");
+                        break;
+                    }
+                    case 2:{
+                        entityBar.append("\uE1A3");
+                        break;
+                    }
+                    case 3:{
+                        entityBar.append("\uE1CE");
+                        break;
+                    }
+                }
                 break;
             }
         }
+
+
+
 
         //-29
         entityBar.append("\uF809\uF808\uF805");
@@ -307,27 +463,7 @@ public class HudManager {
 
         if(profileManager.getAnyProfile(entity).fakePlayer()){
 
-            //currently, these are default steve faces
-            switch (slot){
-                case 0:{
-                    entityBar.append("\uE14E");
-                    break;
-                }
-                case 1:{
-                    entityBar.append("\uE179");
-                    break;
-                }
-                case 2:{
-                    entityBar.append("\uE1A4");
-                    break;
-                }
-                case 3:{
-                    entityBar.append("\uE1CF");
-                    break;
-                }
-
-            }
-
+            entityBar.append(profileManager.getCompanionTeamFace(entity.getUniqueId(), slot));
 
             //+3 is only because default steve face.
             entityBar.append("\uF823");
@@ -531,7 +667,7 @@ public class HudManager {
                         break;
                     }
                     case 0:{
-                        entityBar.append("\uE22C");
+                        entityBar.append("\uE009");
                         break;
                     }
                 }
@@ -565,8 +701,44 @@ public class HudManager {
 
             Player player = (Player) entity;
 
-            //default frame, change later
-            icon.append("\uE143");
+            String playerClass = profileManager.getAnyProfile(player).getPlayerClass();
+
+            switch (playerClass.toLowerCase()){
+                case "assassin":{
+                    icon.append("\uE244");
+                    break;
+                }
+                case "elementalist":{
+                    icon.append("\uE249");
+                    break;
+                }
+                case "mystic":{
+                    icon.append("\uE24E");
+                    break;
+                }
+                case "paladin":{
+                    icon.append("\uE253");
+                    break;
+                }
+                case "ranger":{
+                    icon.append("\uE258");
+                    break;
+                }
+                case "shadow knight":{
+                    icon.append("\uE25D");
+                    break;
+                }
+                case "warrior":{
+                    icon.append("\uE262");
+                    break;
+                }
+                default:{
+                    icon.append("\uE143");
+                    break;
+                }
+            }
+
+
 
             //-29
             icon.append("\uF809\uF808\uF805");
@@ -579,69 +751,68 @@ public class HudManager {
             return String.valueOf(icon);
         }
 
-        //removed entity instance of player
-        if(profileManager.getAnyProfile(entity).fakePlayer()){
-            //TODO: if player has cosmetic equipped, equip that instead
 
-            //default frame
-            icon.append("\uE143");
+        if(profileManager.getAnyProfile(entity).fakePlayer()){
+
+            String playerClass = profileManager.getAnyProfile(entity).getPlayerClass();
+
+            switch (playerClass.toLowerCase()){
+                case "assassin":{
+                    icon.append("\uE244");
+                    break;
+                }
+                case "elementalist":{
+                    icon.append("\uE249");
+                    break;
+                }
+                case "mystic":{
+                    icon.append("\uE24E");
+                    break;
+                }
+                case "paladin":{
+                    icon.append("\uE253");
+                    break;
+                }
+                case "ranger":{
+                    icon.append("\uE258");
+                    break;
+                }
+                case "shadow knight":{
+                    icon.append("\uE25D");
+                    break;
+                }
+                case "warrior":{
+                    icon.append("\uE262");
+                    break;
+                }
+                default:{
+                    icon.append("\uE143");
+                    break;
+                }
+            }
 
             //-29
             icon.append("\uF809\uF808\uF805");
 
             //default face, for testing
-            icon.append("\uE144");
+            String face = profileManager.getCompanionFace(entity.getUniqueId());
+            icon.append(face);
 
             //+3
             icon.append("\uF823");
             return String.valueOf(icon);
 
-            /*Profile playerProfile = profileManager.getAnyProfile(entity);
-            String playerClass = playerProfile.getPlayerClass();
-
-            //change this to companion specific icons
-
-            //these are default ones
-            switch (playerClass.toLowerCase()){
-                case "ranger":{
-                    icon.append(("\uE124"));
-                    return String.valueOf(icon);
-                }
-                case "mystic":{
-                    icon.append(("\uE125"));
-                    return String.valueOf(icon);
-                }
-                case "paladin":{
-                    icon.append(("\uE126"));
-                    return String.valueOf(icon);
-                }
-                case "assassin":{
-                    icon.append(("\uE129"));
-                    return String.valueOf(icon);
-                }
-                case "warrior":{
-                    icon.append(("\uE12A"));
-                    return String.valueOf(icon);
-                }
-                case "elementalist":{
-                    icon.append(("\uE12B"));
-                    return String.valueOf(icon);
-                }
-                case "shadow knight":{
-                    icon.append(("\uE12C"));
-                    return String.valueOf(icon);
-                }
-            }*/
         }
 
         if(profileManager.getAnyProfile(entity).getIsPassive()){
+            //default npc
             icon.append(("\uE127"));
             return String.valueOf(icon);
         }
 
 
 
-        //have a default icon too
+        //default enemy
         icon.append(("\uE128"));
 
         return String.valueOf(icon);

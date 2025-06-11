@@ -98,6 +98,7 @@ public class Slippy {
         FakePlayerProfile fakePlayerProfile = new FakePlayerProfile(false, false, stats.getHealth(), stats, "Elementalist", "Conjurer");
 
         profileManager.addToFakePlayerProfileMap(uuid, fakePlayerProfile);
+        profileManager.setCompanionFaces(uuid, "slippy");
 
         if (theClosestPlayersLeader != null) {
             profileManager.addCompanion(closestPlayer, entity.getUniqueId());

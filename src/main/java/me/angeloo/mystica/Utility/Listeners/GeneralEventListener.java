@@ -1055,6 +1055,10 @@ public class GeneralEventListener implements Listener {
                 hudManager.editTeamBar(player);
                 return;
             }
+            case "status":{
+                hudManager.editStatusBar(player);
+                return;
+            }
         }
 
 
@@ -1576,7 +1580,8 @@ public class GeneralEventListener implements Listener {
     @EventHandler
     public void StatusChange(StatusUpdateEvent event){
         Player player = event.getPlayer();
-        statusDisplayer.displayStatus(player);
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
+        //statusDisplayer.displayStatus(player);
     }
 
     @EventHandler

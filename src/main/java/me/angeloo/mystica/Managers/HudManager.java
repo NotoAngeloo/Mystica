@@ -74,16 +74,11 @@ public class HudManager {
         profileManager.setPlayerTeamBar(player, teamBar);
 
 
-        /*BossBar teamBar = Bukkit.createBossBar("Team", BarColor.WHITE, BarStyle.SOLID);
-        teamBar.addPlayer(player);
-        teamBar.setVisible(true);
-
-        BossBar statusBar = Bukkit.createBossBar("Status", BarColor.WHITE, BarStyle.SOLID);
+        BossBar statusBar = Bukkit.createBossBar("", BarColor.WHITE, BarStyle.SOLID);
         statusBar.addPlayer(player);
         statusBar.setVisible(true);
+        profileManager.setPlayerStatusBar(player, statusBar);
 
-
-         */
 
     }
 
@@ -109,6 +104,10 @@ public class HudManager {
     public void editTeamBar(Player player){
         BossBar teamBar = profileManager.getPlayerTeamBar(player);
         teamBar.setTitle(createTeamDataString(player));
+    }
+    public void editStatusBar(Player player){
+        BossBar statusBar = profileManager.getPlayerStatusBar(player);
+        statusBar.setTitle(createStatusString(player));
     }
 
     private String createPlayerDataString(Player player){
@@ -150,7 +149,6 @@ public class HudManager {
         }
 
 
-        //works, just disabled for testing
 
         if(mysticaParty.size() <= 5){
 
@@ -187,8 +185,6 @@ public class HudManager {
         StringBuilder offset = new StringBuilder();
 
 
-
-
         //-512 space
         teamData.append("\uF80E");
 
@@ -205,13 +201,19 @@ public class HudManager {
                 continue;
             }
 
-            teamData.append(getSquadMemberDataString(member, slot));
+            if(!(member instanceof Player)){
+                //companions not allowed in squads
+                continue;
+            }
 
+            Player memberPlayer = (Player) member;
+
+            teamData.append(getSquadMemberDataString(member, slot));
 
             //-32
             teamData.append("\uF80A");
 
-            teamData.append(skinGrabber.getSquadFace(player, slot));
+            teamData.append(skinGrabber.getSquadFace(memberPlayer, slot));
 
             // +36
             teamData.append("\uF82A\uF824");
@@ -258,9 +260,69 @@ public class HudManager {
             //move it back if larger that 3
         }
 
+
         offset.append(teamData);
 
         return String.valueOf(offset);
+    }
+
+    private String createStatusString(Player player){
+        StringBuilder status = new StringBuilder();
+
+        if(!profileManager.getAnyProfile(player).getIfInCombat()){
+            return String.valueOf(status);
+        }
+
+        if(profileManager.getAnyProfile(player).getIfDead()){
+            return String.valueOf(status);
+        }
+
+        String playerClass = profileManager.getAnyProfile(player).getPlayerClass();
+        String subClass = profileManager.getAnyProfile(player).getPlayerSubclass();
+
+        switch (playerClass.toLowerCase()){
+            case "elementalist":{
+
+                if(subClass.equalsIgnoreCase("pyromancer")){
+
+                    int inflame = abilityManager.getElementalistAbilities().getFieryWing().getInflame(player);
+
+                    if(inflame > 0){
+                        status.append("\uE000");
+
+                        //-16 this allows for addition data to be places on top, stacks, duration, etc
+                        status.append("\uF809");
+                    }
+
+                    switch (inflame){
+                        case 0:
+                        case 1:{
+                            status.append("\uE008");
+                            break;
+                        }
+                        case 2:{
+                            status.append("\uE009");
+                            break;
+                        }
+                        case 3:{
+                            status.append("\uE00A");
+                            break;
+                        }
+
+                    }
+
+
+                }
+
+            }
+        }
+
+
+        //here for testing
+        status.append("\uE000");
+
+
+        return String.valueOf(status);
     }
 
     private String getTeamMemberDataString(LivingEntity entity, int slot){
@@ -2345,6 +2407,10 @@ public class HudManager {
         boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
 
         if(!combatStatus){
+            return " ";
+        }
+
+        if(profileManager.getAnyProfile(player).getIfDead()){
             return " ";
         }
 

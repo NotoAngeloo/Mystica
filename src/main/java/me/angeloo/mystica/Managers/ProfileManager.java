@@ -50,6 +50,7 @@ public class ProfileManager {
     private final Map<UUID, BossBar> playerResourceBar = new HashMap<>();
     private final Map<UUID, BossBar> playerTargetBar = new HashMap<>();
     private final Map<UUID, BossBar> playerTeamBar = new HashMap<>();
+    private final Map<UUID, BossBar> playerStatusBar = new HashMap<>();
 
     private final Map<UUID, Boolean> companionCombatMap = new HashMap<>();
     private final Map<Player, List<UUID>> companionMap = new HashMap<>();
@@ -905,8 +906,6 @@ public class ProfileManager {
         return companionMap.getOrDefault(player, new ArrayList<>());
     }
 
-
-
     public Player getCompanionsPlayer(LivingEntity companion){
         return companionsPlayer.getOrDefault(companion.getUniqueId(), null);
     }
@@ -924,7 +923,6 @@ public class ProfileManager {
 
         Bukkit.getServer().getPluginManager().callEvent(new UpdateMysticaPartyEvent(player));
     }
-
 
     public void removeCompanions(Player player){
 
@@ -948,7 +946,6 @@ public class ProfileManager {
         Bukkit.getServer().getPluginManager().callEvent(new UpdateMysticaPartyEvent(player));
 
     }
-
 
     public void transferCompanionsToLeader(Player player, Player newPlayer){
         List<UUID> companions = new ArrayList<>(getCompanions(player));
@@ -978,6 +975,10 @@ public class ProfileManager {
         playerTeamBar.put(player.getUniqueId(), teamBar);
     }
 
+    public void setPlayerStatusBar(Player player, BossBar statusBar){
+        playerStatusBar.put(player.getUniqueId(), statusBar);
+    }
+
     public BossBar getPlayerResourceBar(Player player){
         if(!playerResourceBar.containsKey(player.getUniqueId())){
             BossBar resourceBar = Bukkit.createBossBar("", BarColor.WHITE, BarStyle.SOLID);
@@ -1001,6 +1002,15 @@ public class ProfileManager {
         }
         return playerTeamBar.get(player.getUniqueId());
     }
+
+    public BossBar getPlayerStatusBar(Player player){
+        if(!playerStatusBar.containsKey(player.getUniqueId())){
+            BossBar statusBar = Bukkit.createBossBar("",BarColor.WHITE,BarStyle.SOLID);
+            setPlayerStatusBar(player, statusBar);
+        }
+        return playerStatusBar.get(player.getUniqueId());
+    }
+
 
     public boolean getIfCompanionInCombat(UUID companion){return companionCombatMap.getOrDefault(companion, false);}
     public void setCompanionCombat(UUID companion){companionCombatMap.put(companion, true);}

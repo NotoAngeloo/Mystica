@@ -1,7 +1,6 @@
 package me.angeloo.mystica.Components.BuffsAndDebuffs;
 
-import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
-import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -24,7 +23,7 @@ public class WellCrit {
 
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
         }
 
     }
@@ -33,7 +32,7 @@ public class WellCrit {
         active.remove(entity.getUniqueId());
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
         }
     }
 

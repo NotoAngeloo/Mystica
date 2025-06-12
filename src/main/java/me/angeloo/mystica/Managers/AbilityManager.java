@@ -3,7 +3,7 @@ package me.angeloo.mystica.Managers;
 import me.angeloo.mystica.Components.Abilities.*;
 import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Profile;
-import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
@@ -551,7 +551,8 @@ public class AbilityManager {
     public void setCasting(LivingEntity caster, boolean casting){
         castMap.put(caster, casting);
         if(caster instanceof Player){
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+            Player player = (Player) caster;
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
         }
 
     }
@@ -561,8 +562,10 @@ public class AbilityManager {
             return;
         }
 
+        Player player = (Player) caster;
+
         percentCastBar.put(caster, percent);
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "cast"));
     }
     public double getCastPercent(Player player){
         return percentCastBar.getOrDefault(player, 0.0);

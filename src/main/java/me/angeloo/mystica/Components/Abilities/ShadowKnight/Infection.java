@@ -1,7 +1,7 @@
 package me.angeloo.mystica.Components.Abilities.ShadowKnight;
 
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
-import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
@@ -275,7 +275,8 @@ public class Infection {
                 infectionTime.put(caster.getUniqueId(), timeLeft);
 
                 if(caster instanceof Player){
-                    Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+                    Player player = (Player) caster;
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
                 }
 
 
@@ -287,7 +288,8 @@ public class Infection {
                 infectionTarget.remove(caster.getUniqueId());
                 infectionTask.remove(caster.getUniqueId());
                 if(caster instanceof Player){
-                    Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+                    Player player = (Player) caster;
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
                 }
             }
 
@@ -323,7 +325,8 @@ public class Infection {
         }
 
         if(caster instanceof Player){
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+            Player player = (Player) caster;
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
         }
 
         BukkitTask task = new BukkitRunnable(){
@@ -331,7 +334,8 @@ public class Infection {
             public void run(){
                 enhanced.remove(caster.getUniqueId());
                 if(caster instanceof Player){
-                    Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+                    Player player = (Player) caster;
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
                 }
             }
         }.runTaskLater(main, 20*10);

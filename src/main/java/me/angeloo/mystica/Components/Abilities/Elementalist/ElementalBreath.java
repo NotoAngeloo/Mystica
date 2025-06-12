@@ -1,6 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Elementalist;
 
-import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Managers.CombatManager;
@@ -97,7 +97,8 @@ public class ElementalBreath {
 
         buffActiveMap.put(caster.getUniqueId(), getDuration(caster));
         if(caster instanceof Player){
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+            Player player = (Player) caster;
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
         }
 
         new BukkitRunnable(){
@@ -105,7 +106,8 @@ public class ElementalBreath {
             public void run(){
 
                 if(caster instanceof Player){
-                    Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+                    Player player = (Player) caster;
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
                 }
 
                 if(buffActiveMap.get(caster.getUniqueId()) <= 0){

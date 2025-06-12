@@ -1,7 +1,7 @@
 package me.angeloo.mystica.Managers;
 
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
-import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Tasks.CombatTick;
 import me.angeloo.mystica.Utility.CooldownDisplayer;
@@ -91,7 +91,7 @@ public class CombatManager {
 
         profileManager.getAnyProfile(player).setIfInCombat(true);
         lastCalledCombat.put(player.getUniqueId(), System.currentTimeMillis());
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
     }
 
 
@@ -157,7 +157,7 @@ public class CombatManager {
 
         dpsManager.removeDps(player);
         abilityManager.resetAbilityBuffs(player);
-        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
     }
 
 

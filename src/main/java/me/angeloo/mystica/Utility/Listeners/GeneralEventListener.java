@@ -65,7 +65,6 @@ public class GeneralEventListener implements Listener {
     private final EquipmentInventory equipmentInventory;
     private final AbilityInventory abilityInventory;
     private final DisplayWeapons displayWeapons;
-    private final StatusDisplayer statusDisplayer;
     private final GearReader gearReader;
     private final BagInventory bagInventory;
     private final ClassSetter classSetter;
@@ -106,7 +105,6 @@ public class GeneralEventListener implements Listener {
         equipmentInventory = main.getEquipmentInventory();
         abilityInventory = main.getAbilityInventory();
         displayWeapons = main.getDisplayWeapons();
-        statusDisplayer = new StatusDisplayer(main, abilityManager);
         damageCalculator = main.getDamageCalculator();
         changeResourceHandler = main.getChangeResourceHandler();
         bagInventory = main.getBagInventory();
@@ -1059,6 +1057,10 @@ public class GeneralEventListener implements Listener {
                 hudManager.editStatusBar(player);
                 return;
             }
+            case "cast":{
+                hudManager.displayCastBar(player);
+                return;
+            }
         }
 
 
@@ -1575,13 +1577,6 @@ public class GeneralEventListener implements Listener {
             }
         }
 
-    }
-
-    @EventHandler
-    public void StatusChange(StatusUpdateEvent event){
-        Player player = event.getPlayer();
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
-        //statusDisplayer.displayStatus(player);
     }
 
     @EventHandler

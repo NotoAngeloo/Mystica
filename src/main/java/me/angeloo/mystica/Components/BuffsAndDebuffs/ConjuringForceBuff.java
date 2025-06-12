@@ -1,6 +1,6 @@
 package me.angeloo.mystica.Components.BuffsAndDebuffs;
 
-import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -25,7 +25,8 @@ public class ConjuringForceBuff {
             extraDamageMap.put(entity, extraDamageAmount);
 
             if(entity instanceof Player){
-                Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) entity));
+                Player player = (Player) entity;
+                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
             }
 
         }
@@ -37,7 +38,8 @@ public class ConjuringForceBuff {
         extraDamageMap.remove(entity);
 
         if(entity instanceof Player){
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) entity));
+            Player player = (Player) entity;
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
         }
 
     }

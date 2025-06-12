@@ -1,7 +1,7 @@
 package me.angeloo.mystica.Components.BuffsAndDebuffs;
 
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
-import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Managers.AggroManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -29,13 +29,14 @@ public class Hidden {
         caster.setInvisible(true);
 
         if(caster instanceof Player){
-            ((Player)caster).getInventory().setItemInMainHand(null);
-            ((Player)caster).getInventory().setItemInOffHand(null);
-            ((Player)caster).getInventory().setHelmet(null);
-            ((Player)caster).getInventory().setChestplate(null);
-            ((Player)caster).getInventory().setLeggings(null);
-            ((Player)caster).getInventory().setBoots(null);
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+            Player player = (Player) caster;
+            player.getInventory().setItemInMainHand(null);
+            player.getInventory().setItemInOffHand(null);
+            player.getInventory().setHelmet(null);
+            player.getInventory().setChestplate(null);
+            player.getInventory().setLeggings(null);
+            player.getInventory().setBoots(null);
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
         }
 
 
@@ -60,7 +61,8 @@ public class Hidden {
         boolean deathStatus = profileManager.getAnyProfile(caster).getIfDead();
 
         if(caster instanceof Player){
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+            Player player = (Player) caster;
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
         }
 
 

@@ -2,8 +2,8 @@ package me.angeloo.mystica.Components.Abilities.ShadowKnight;
 
 
 import me.angeloo.mystica.Components.Abilities.ShadowKnightAbilities;
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
-import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
@@ -328,7 +328,8 @@ public class SoulReap {
     public void addSoulMark(LivingEntity caster){
 
         if(caster instanceof Player){
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+            Player player = (Player) caster;
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
         }
 
         int stacks = getSoulMarks(caster);
@@ -341,14 +342,16 @@ public class SoulReap {
 
         soulMarks.put(caster.getUniqueId(), stacks);
         if(caster instanceof Player){
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+            Player player = (Player) caster;
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
         }
     }
 
     public void removeSoulMarks(LivingEntity caster){
         soulMarks.put(caster.getUniqueId(), 0);
         if(caster instanceof Player){
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+            Player player = (Player) caster;
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
         }
     }
 

@@ -1,6 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Ranger;
 
-import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Managers.CombatManager;
@@ -91,7 +91,8 @@ public class RallyingCry {
             public void run(){
 
                 if(caster instanceof Player){
-                    Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+                    Player player = (Player) caster;
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
                 }
 
 

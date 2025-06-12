@@ -1,7 +1,7 @@
 package me.angeloo.mystica.Components.Abilities.Paladin;
 
 import me.angeloo.mystica.Components.Abilities.PaladinAbilities;
-import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
@@ -251,14 +251,16 @@ public class MercifulHealing {
     public void queueMoveCast(LivingEntity caster){
 
         if(caster instanceof Player){
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+            Player player = (Player) caster;
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
         }
 
         moveCast.put(caster.getUniqueId(), true);
     }
     public void unQueueMoveCast(LivingEntity caster){
         if(caster instanceof Player){
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+            Player player = (Player) caster;
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
         }
         moveCast.remove(caster.getUniqueId());
     }

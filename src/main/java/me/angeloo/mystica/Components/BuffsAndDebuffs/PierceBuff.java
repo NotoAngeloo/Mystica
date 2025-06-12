@@ -1,6 +1,6 @@
 package me.angeloo.mystica.Components.BuffsAndDebuffs;
 
-import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
@@ -26,7 +26,8 @@ public class PierceBuff {
         buffActiveMap.put(entity.getUniqueId(), getDuration());
 
         if(entity instanceof Player){
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) entity));
+            Player player = (Player) entity;
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
         }
 
 
@@ -35,7 +36,8 @@ public class PierceBuff {
             public void run(){
 
                 if(entity instanceof Player){
-                    Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) entity));
+                    Player player = (Player) entity;
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
                 }
 
 
@@ -49,7 +51,8 @@ public class PierceBuff {
                 buffActiveMap.put(entity.getUniqueId(), left);
 
                 if(entity instanceof Player){
-                    Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) entity));
+                    Player player = (Player) entity;
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
                 }
 
             }
@@ -71,7 +74,7 @@ public class PierceBuff {
 
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
         }
 
     }

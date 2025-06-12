@@ -1,6 +1,6 @@
 package me.angeloo.mystica.Components.BuffsAndDebuffs;
 
-import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -75,7 +75,7 @@ public class ArmorBreak {
 
                 if(entity instanceof Player){
                     Player player = (Player) entity;
-                    Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
                 }
 
                 if(time<= 0){
@@ -105,7 +105,7 @@ public class ArmorBreak {
         timeLeft.remove(entity.getUniqueId());
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
         }
     }
 

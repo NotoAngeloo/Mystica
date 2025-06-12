@@ -1,6 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Mystic;
 
-import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.CustomEvents.UltimateStatusChageEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
@@ -203,7 +203,8 @@ public class EvilSpirit {
 
         chaosShards.put(caster.getUniqueId(), current);
         if(caster instanceof Player){
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+            Player player = (Player) caster;
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
             Bukkit.getServer().getPluginManager().callEvent(new UltimateStatusChageEvent((Player) caster));
         }
 
@@ -212,7 +213,8 @@ public class EvilSpirit {
     public void removeShards(LivingEntity caster){
         chaosShards.put(caster.getUniqueId(), 0);
         if(caster instanceof Player){
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+            Player player = (Player) caster;
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
         }
 
     }

@@ -52,6 +52,8 @@ public class HudManager {
         skinGrabber = new SkinGrabber();
     }
 
+    //TODO: remake cast bar
+
     public void innitHud(Player player){
 
 
@@ -91,6 +93,121 @@ public class HudManager {
         hotBar.append(statusString);
 
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(String.valueOf(hotBar)));
+    }
+
+    public void displayCastBar(Player player){
+
+        if(!abilityManager.getIfCasting(player)){
+            //Bukkit.getLogger().info("player stop casting");
+            player.sendTitle("", "", 0, 1, 0);
+            return;
+        }
+
+        if(abilityManager.getCastPercent(player) == 0){
+            //Bukkit.getLogger().info("player stop casting");
+            player.sendTitle("", "", 0, 1, 0);
+            return;
+        }
+
+        StringBuilder castBar = new StringBuilder();
+
+        double percent =  abilityManager.getCastPercent(player);
+
+        double ratio = percent / 100;
+
+        int amount = (int) Math.ceil(ratio * 20);
+
+        //Bukkit.getLogger().info(String.valueOf(amount));
+
+        switch (amount){
+            case 20:{
+                castBar.append("\uE0CD");
+                break;
+            }
+            case 19:{
+                castBar.append("\uE0CE");
+                break;
+            }
+            case 18:{
+                castBar.append("\uE0CF");
+                break;
+            }
+            case 17:{
+                castBar.append("\uE0D0");
+                break;
+            }
+            case 16:{
+                castBar.append("\uE0D1");
+                break;
+            }
+            case 15:{
+                castBar.append("\uE0D2");
+                break;
+            }
+            case 14:{
+                castBar.append("\uE0D3");
+                break;
+            }
+            case 13:{
+                castBar.append("\uE0D4");
+                break;
+            }
+            case 12:{
+                castBar.append("\uE0D5");
+                break;
+            }
+            case 11:{
+                castBar.append("\uE0D6");
+                break;
+            }
+            case 10:{
+                castBar.append("\uE0D7");
+                break;
+            }
+            case 9:{
+                castBar.append("\uE0D8");
+                break;
+            }
+            case 8:{
+                castBar.append("\uE0D9");
+                break;
+            }
+            case 7:{
+                castBar.append("\uE0DA");
+                break;
+            }
+            case 6:{
+                castBar.append("\uE0DB");
+                break;
+            }
+            case 5:{
+                castBar.append("\uE0DC");
+                break;
+            }
+            case 4:{
+                castBar.append("\uE0DD");
+                break;
+            }
+            case 3:{
+                castBar.append("\uE0DE");
+                break;
+            }
+            case 2:{
+                castBar.append("\uE0DF");
+                break;
+            }
+            case 1:{
+                castBar.append("\uE0E0");
+                break;
+            }
+        }
+
+        //Bukkit.getLogger().info(String.valueOf(percent));
+
+
+
+        player.sendTitle(" ", String.valueOf(castBar), 0, 2, 0);
+
     }
 
     public void editResourceBar(Player player){

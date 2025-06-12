@@ -1,8 +1,8 @@
 package me.angeloo.mystica.Components.Abilities.Assassin;
 
 import me.angeloo.mystica.Components.Abilities.AssassinAbilities;
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
-import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ChangeResourceHandler;
@@ -114,7 +114,8 @@ public class Stealth {
                     stealthTargetBlacklist.add(caster);
                     stealthed.put(caster.getUniqueId(), true);
                     if (caster instanceof Player) {
-                        Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+                        Player player = (Player) caster;
+                        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
                     }
 
                     revealAfterTime(caster);
@@ -172,7 +173,8 @@ public class Stealth {
         stealthTargetBlacklist.remove(caster);
         stealthed.put(caster.getUniqueId(), false);
         if(caster instanceof Player){
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+            Player player = (Player) caster;
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
         }
 
     }
@@ -183,7 +185,8 @@ public class Stealth {
         stealthTargetBlacklist.remove(caster);
         stealthed.put(caster.getUniqueId(), false);
         if(caster instanceof Player){
-            Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) caster));
+            Player player = (Player) caster;
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
         }
 
         abilityReadyInMap.put(caster.getUniqueId(), 30);

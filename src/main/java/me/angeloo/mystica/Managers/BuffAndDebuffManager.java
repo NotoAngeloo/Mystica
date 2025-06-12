@@ -36,7 +36,7 @@ public class BuffAndDebuffManager {
     private final Pulled pulled;
     private final Blocking blocking;
     private final PassThrough passThrough;
-    private final ArmorMelt armorMelt;
+    private final ArmorBreak armorBreak;
     private final BossInterrupt bossInterrupt;
 
     public BuffAndDebuffManager(Mystica main){
@@ -68,7 +68,7 @@ public class BuffAndDebuffManager {
         pulled = new Pulled();
         blocking = new Blocking(main);
         passThrough = new PassThrough();
-        armorMelt = new ArmorMelt(main);
+        armorBreak = new ArmorBreak(main);
         bossInterrupt = new BossInterrupt(main);
     }
 
@@ -101,7 +101,7 @@ public class BuffAndDebuffManager {
     public Pulled getPulled(){return pulled;}
     public Blocking getBlocking(){return blocking;}
     public PassThrough getPassThrough(){return passThrough;}
-    public ArmorMelt getArmorMelt(){return armorMelt;}
+    public ArmorBreak getArmorBreak(){return armorBreak;}
     public Fear getFear(){return fear;}
     public BossInterrupt getBossInterrupt(){return bossInterrupt;}
 
@@ -128,7 +128,7 @@ public class BuffAndDebuffManager {
         concoctionDebuff.removeDebuff(entity);
         pulled.removePull(entity);
         blocking.removeBlocking(entity);
-        armorMelt.removeMelt(entity);
+        armorBreak.removeArmorBreak(entity);
         fear.removeFear(entity);
 
         if(entity instanceof Player){

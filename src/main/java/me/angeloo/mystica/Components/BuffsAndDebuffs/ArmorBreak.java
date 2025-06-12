@@ -4,7 +4,6 @@ import me.angeloo.mystica.CustomEvents.StatusUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -16,18 +15,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class ArmorMelt {
+public class ArmorBreak {
 
     private final Mystica main;
     private final Map<UUID, Integer> stacks = new HashMap<>();
     private final Map<UUID, Integer> timeLeft = new HashMap<>();
     private final Map<UUID, BukkitTask> removeTaskMap = new HashMap<>();
 
-    public ArmorMelt(Mystica main){
+    public ArmorBreak(Mystica main){
         this.main = main;
     }
 
-    public void applyArmorMelt(LivingEntity entity){
+    public void applyArmorBreak(LivingEntity entity){
 
         int stack = getStacks(entity);
 
@@ -58,7 +57,7 @@ public class ArmorMelt {
         }
 
         stacks.put(entity.getUniqueId(), stack);
-        timeLeft.put(entity.getUniqueId(), 10);
+        timeLeft.put(entity.getUniqueId(), getDuration());
 
         if(removeTaskMap.containsKey(entity.getUniqueId())){
             removeTaskMap.get(entity.getUniqueId()).cancel();
@@ -81,7 +80,7 @@ public class ArmorMelt {
 
                 if(time<= 0){
                     this.cancel();
-                    removeMelt(entity);
+                    removeArmorBreak(entity);
                 }
 
 
@@ -101,13 +100,17 @@ public class ArmorMelt {
         return timeLeft.getOrDefault(entity.getUniqueId(), 0);
     }
 
-    public void removeMelt(LivingEntity entity){
+    public void removeArmorBreak(LivingEntity entity){
         stacks.remove(entity.getUniqueId());
         timeLeft.remove(entity.getUniqueId());
         if(entity instanceof Player){
             Player player = (Player) entity;
             Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent(player));
         }
+    }
+
+    public int getDuration(){
+        return 10;
     }
 
 }

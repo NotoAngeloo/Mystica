@@ -216,7 +216,7 @@ public class Infection {
     private void startOrResetInfection(LivingEntity caster, LivingEntity entity){
 
         infectionTarget.put(caster.getUniqueId(), entity);
-        infectionTime.put(caster.getUniqueId(), 11);
+        infectionTime.put(caster.getUniqueId(), getDuration());
 
         if(infectionTask.containsKey(caster.getUniqueId())){
             infectionTask.get(caster.getUniqueId()).cancel();
@@ -413,6 +413,10 @@ public class Infection {
         }
 
         return getCooldown(caster) <= 0;
+    }
+
+    public int getDuration(){
+        return 11;
     }
 
 }

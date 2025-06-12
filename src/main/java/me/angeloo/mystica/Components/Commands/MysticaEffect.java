@@ -124,7 +124,7 @@ public class MysticaEffect implements CommandExecutor {
                     return true;
                 }
                 case "melt":{
-                    buffAndDebuffManager.getArmorMelt().applyArmorMelt(target);
+                    buffAndDebuffManager.getArmorBreak().applyArmorBreak(target);
                     return true;
                 }
                 case "heal_percent":{

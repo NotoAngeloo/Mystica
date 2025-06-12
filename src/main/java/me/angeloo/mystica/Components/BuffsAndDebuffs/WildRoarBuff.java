@@ -34,7 +34,7 @@ public class WildRoarBuff {
             return;
         }
 
-        buffTimeMap.put(entity.getUniqueId(), 11);
+        buffTimeMap.put(entity.getUniqueId(), getDuration());
         multiplierMap.put(entity.getUniqueId(), multiplier);
 
 
@@ -73,6 +73,9 @@ public class WildRoarBuff {
         return buffTimeMap.getOrDefault(entity.getUniqueId(), 0);
     }
 
+    public int getDuration(){
+        return 11;
+    }
 
     public double getMultiplier(LivingEntity entity){
         return multiplierMap.getOrDefault(entity.getUniqueId(), 0.0);

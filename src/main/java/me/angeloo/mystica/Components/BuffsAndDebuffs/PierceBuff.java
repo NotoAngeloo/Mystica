@@ -23,7 +23,7 @@ public class PierceBuff {
     }
 
     public void applyBuff(LivingEntity entity){
-        buffActiveMap.put(entity.getUniqueId(), 11);
+        buffActiveMap.put(entity.getUniqueId(), getDuration());
 
         if(entity instanceof Player){
             Bukkit.getServer().getPluginManager().callEvent(new StatusUpdateEvent((Player) entity));
@@ -62,6 +62,9 @@ public class PierceBuff {
         return buffActiveMap.getOrDefault(entity.getUniqueId(), 0);
     }
 
+    public int getDuration(){
+        return 21;
+    }
 
     public void removeBuff(LivingEntity entity){
         buffActiveMap.remove(entity.getUniqueId());

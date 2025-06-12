@@ -85,7 +85,7 @@ public class RallyingCry {
 
     private void execute(LivingEntity caster){
 
-        buffActiveMap.put(caster.getUniqueId(), 11);
+        buffActiveMap.put(caster.getUniqueId(), getDuration());
         new BukkitRunnable(){
             @Override
             public void run(){
@@ -152,6 +152,10 @@ public class RallyingCry {
 
     public int getIfBuffTime(LivingEntity caster){
         return buffActiveMap.getOrDefault(caster.getUniqueId(), 0);
+    }
+
+    public int getDuration(){
+        return 11;
     }
 
     public int getCooldown(LivingEntity caster){

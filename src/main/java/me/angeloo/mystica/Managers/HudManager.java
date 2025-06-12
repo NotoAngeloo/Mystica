@@ -277,9 +277,17 @@ public class HudManager {
             return String.valueOf(status);
         }
 
+        StringBuilder offset = new StringBuilder();
+
+        //TODO: player status on right, enemy status (bleeds etc) on left
+
         String playerClass = profileManager.getAnyProfile(player).getPlayerClass();
         String subClass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
+        //-128
+        status.append("\uF80C");
+
+        //class specific buffs
         switch (playerClass.toLowerCase()){
             case "elementalist":{
 
@@ -288,41 +296,385 @@ public class HudManager {
                     int inflame = abilityManager.getElementalistAbilities().getFieryWing().getInflame(player);
 
                     if(inflame > 0){
+                        //+16
+                        offset.append("\uF829");
+
                         status.append("\uE000");
-
-                        //-16 this allows for addition data to be places on top, stacks, duration, etc
-                        status.append("\uF809");
+                        status.append(getStackString(inflame));
                     }
-
-                    switch (inflame){
-                        case 0:
-                        case 1:{
-                            status.append("\uE008");
-                            break;
-                        }
-                        case 2:{
-                            status.append("\uE009");
-                            break;
-                        }
-                        case 3:{
-                            status.append("\uE00A");
-                            break;
-                        }
-
-                    }
-
 
                 }
 
+                int breathTime = abilityManager.getElementalistAbilities().getElementalBreath().getIfBuffTime(player);
+                int duration = abilityManager.getElementalistAbilities().getElementalBreath().getDuration(player);
+
+                if(breathTime > 0){
+                    //+16
+                    offset.append("\uF829");
+
+                    status.append("\uE01C");
+
+                    status.append(getDurationString(breathTime, duration));
+                }
+
+                break;
+            }
+            case "ranger":{
+
+                int cry = abilityManager.getRangerAbilities().getRallyingCry().getIfBuffTime(player);
+                int duration = abilityManager.getRangerAbilities().getRallyingCry().getDuration();
+
+                if(cry > 0){
+                    //+16
+                    offset.append("\uF829");
+
+                    status.append("\uE01D");
+
+                    status.append(getDurationString(cry, duration));
+                }
+
+                break;
+            }
+            case "shadow knight":{
+
+                LivingEntity target = targetManager.getPlayerTarget(player);
+
+                if(target != null){
+                    int timeLeft = abilityManager.getShadowKnightAbilities().getInfection().getPlayerInfectionTime(player);
+
+                    if(timeLeft > 0){
+
+                        //+16
+                        offset.append("\uF829");
+
+                        boolean enhanced = abilityManager.getShadowKnightAbilities().getInfection().getIfEnhanced(player);
+
+                        int duration = abilityManager.getShadowKnightAbilities().getInfection().getDuration();
+
+                        if(enhanced){
+                            status.append("\uE021");
+                        }
+                        else{
+                            status.append("\uE020");
+                        }
+
+                        status.append(getDurationString(timeLeft, duration));
+
+                    }
+                }
+
+                if(subClass.equalsIgnoreCase("doom")){
+
+                    int marks = abilityManager.getShadowKnightAbilities().getSoulReap().getSoulMarks(player);
+
+                    switch (marks){
+                        case 1:
+                        case 2:
+                        case 3:
+                        case 4:{
+
+                            //+16
+                            offset.append("\uF829");
+
+                            status.append("\uE01E");
+
+                            status.append(getStackString(marks));
+
+                            break;
+                        }
+                        case 5:{
+
+                            //+16
+                            offset.append("\uF829");
+
+                            status.append("\uE01F");
+
+                            break;
+                        }
+                    }
+                }
+
+                break;
+            }
+            case "mystic":{
+
+                if(abilityManager.getMysticAbilities().getPurifyingBlast().getInstantCast(player)){
+
+                    //+16
+                    offset.append("\uF829");
+
+                    status.append("\uE022");
+                }
+
+                break;
+            }
+            case "assassin":{
+
+                int timeLeft = buffAndDebuffManager.getPierceBuff().getIfBuffTime(player);
+                int max = buffAndDebuffManager.getPierceBuff().getDuration();
+
+                if(timeLeft > 0){
+                    //+16
+                    offset.append("\uF829");
+
+                    status.append("\uE025");
+
+                    status.append(getDurationString(timeLeft, max));
+                }
+
+                if(buffAndDebuffManager.getBladeTempestCrit().getTempestCrit(player) !=0 ){
+                    //+16
+                    offset.append("\uF829");
+
+                    status.append("\uE023");
+                }
+
+                if(abilityManager.getAssassinAbilities().getStealth().getIfStealthed(player)){
+                    //+16
+                    offset.append("\uF829");
+
+                    status.append("\uE024");
+                }
+
+                break;
+            }
+            case "warrior":{
+
+                if(buffAndDebuffManager.getBurningBlessingBuff().getIfHealthBuff(player)){
+
+                    //-16
+                    offset.append("\uF829");
+
+                    status.append("\uE026");
+                }
+
+                break;
+            }
+            case "paladin":{
+
+                if(abilityManager.getPaladinAbilities().getDecision().getDecision(player)){
+
+                    //-16
+                    offset.append("\uF829");
+
+                    status.append("\uE027");
+
+                }
+
+                break;
             }
         }
 
 
-        //here for testing
-        status.append("\uE000");
+        //generic buffs/debuffs
+        if(buffAndDebuffManager.getArmorBreak().getStacks(player) >= 3){
+            int timeLeft = buffAndDebuffManager.getArmorBreak().getTimeLeft(player);
+            int max = buffAndDebuffManager.getArmorBreak().getDuration();
+            int stacks = buffAndDebuffManager.getArmorBreak().getStacks(player);
+            if(timeLeft > 0){
+
+                //-16
+                offset.append("\uF829");
+
+                status.append("\uE028");
+
+                status.append(getDurationString(timeLeft, max));
+                status.append(getStackString(stacks));
+
+            }
+        }
+
+        if(buffAndDebuffManager.getWildRoarBuff().getBuffTime(player) > 0){
+
+            //-16
+            offset.append("\uF829");
+
+            status.append("\uE029");
+
+            int max = buffAndDebuffManager.getWildRoarBuff().getDuration();
+
+            status.append(getDurationString(buffAndDebuffManager.getWildRoarBuff().getBuffTime(player), max));
+        }
+
+        if(buffAndDebuffManager.getConjuringForceBuff().getIfConjForceBuff(player)){
+            //-16
+            offset.append("\uF829");
+
+            status.append("\uE02A");
+        }
+
+        if(buffAndDebuffManager.getWellCrit().getWellCrit(player) == 10){
+            //-16
+            offset.append("\uF829");
+
+            status.append("\uE02B");
+        }
+
+        if(buffAndDebuffManager.getFlamingSigilBuff().getIfAttackBuff(player) || buffAndDebuffManager.getFlamingSigilBuff().getIfHealthBuff(player)){
+            //-16
+            offset.append("\uF829");
+
+            status.append("\uE02C");
+        }
+
+        if(buffAndDebuffManager.getSpeedUp().getIfSpeedUp(player)){
+            //-16
+            offset.append("\uF829");
+
+            status.append("\uE02D");
+        }
+
+        offset.append(status);
+
+        return String.valueOf(offset);
+    }
+
+    private String getStackString(int stacks){
+
+        StringBuilder stacksString = new StringBuilder();
+
+        //-17
+        stacksString.append("\uF809\uF801");
+
+        //because i dont care
+        if(stacks > 20){
+            stacks = 20;
+        }
+
+        switch (stacks){
+            case 0:
+            case 1:{
+                stacksString.append("\uE008");
+                break;
+            }
+            case 2:{
+                stacksString.append("\uE009");
+                break;
+            }
+            case 3:{
+                stacksString.append("\uE00A");
+                break;
+            }
+            case 4:{
+                stacksString.append("\uE00B");
+                break;
+            }
+            case 5:{
+                stacksString.append("\uE00C");
+                break;
+            }
+            case 6:{
+                stacksString.append("\uE00D");
+                break;
+            }
+            case 7:{
+                stacksString.append("\uE00E");
+                break;
+            }
+            case 8:{
+                stacksString.append("\uE00F");
+                break;
+            }
+            case 9:{
+                stacksString.append("\uE010");
+                break;
+            }
+            case 10:{
+                stacksString.append("\uE011");
+                break;
+            }
+            case 11:{
+                stacksString.append("\uE012");
+                break;
+            }
+            case 12:{
+                stacksString.append("\uE013");
+                break;
+            }
+            case 13:{
+                stacksString.append("\uE014");
+                break;
+            }
+            case 14:{
+                stacksString.append("\uE015");
+                break;
+            }
+            case 15:{
+                stacksString.append("\uE016");
+                break;
+            }
+            case 16:{
+                stacksString.append("\uE017");
+                break;
+            }
+            case 17:{
+                stacksString.append("\uE018");
+                break;
+            }
+            case 18:{
+                stacksString.append("\uE019");
+                break;
+            }
+            case 19:{
+                stacksString.append("\uE01A");
+                break;
+            }
+            case 20:{
+                stacksString.append("\uE01B");
+                break;
+            }
+        }
 
 
-        return String.valueOf(status);
+
+        return String.valueOf(stacksString);
+    }
+
+    private String getDurationString(int time, int max){
+
+        StringBuilder durationString = new StringBuilder();
+
+        int icon = iconCalculator.calculate(time, max);
+
+        //-17
+        durationString.append("\uF809\uF801");
+
+        switch (icon){
+            case 8:{
+                durationString.append("\uE008");
+                break;
+            }
+            case 7:{
+                durationString.append("\uE007");
+                break;
+            }
+            case 6:{
+                durationString.append("\uE006");
+                break;
+            }
+            case 5:{
+                durationString.append("\uE005");
+                break;
+            }
+            case 4:{
+                durationString.append("\uE004");
+                break;
+            }
+            case 3:{
+                durationString.append("\uE003");
+                break;
+            }
+            case 2:{
+                durationString.append("\uE002");
+                break;
+            }
+            case 1:{
+                durationString.append("\uE001");
+                break;
+            }
+        }
+
+        return String.valueOf(durationString);
     }
 
     private String getTeamMemberDataString(LivingEntity entity, int slot){

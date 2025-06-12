@@ -4,7 +4,6 @@ import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Components.Profile;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -104,8 +103,8 @@ public class DamageCalculator {
                 damage = (damage * multiplierForCrit)
                         * ((attack) / (defence));
 
-                if(buffAndDebuffManager.getArmorMelt().getStacks(entity) >= 3){
-                    damage += (profileManager.getAnyProfile(entity).getTotalHealth() * ((buffAndDebuffManager.getArmorMelt().getStacks(entity) * 10) * .01));
+                if(buffAndDebuffManager.getArmorBreak().getStacks(entity) >= 3){
+                    damage += (profileManager.getAnyProfile(entity).getTotalHealth() * ((buffAndDebuffManager.getArmorBreak().getStacks(entity) * 10) * .01));
                 }
             }
 
@@ -134,8 +133,8 @@ public class DamageCalculator {
                 damage = (damage * multiplierForCrit)
                         * (attack / defence);
 
-                if(buffAndDebuffManager.getArmorMelt().getStacks(entity) >= 3){
-                    damage += (profileManager.getAnyProfile(entity).getStats().getHealth() * ((buffAndDebuffManager.getArmorMelt().getStacks(entity) * 10) * .01));
+                if(buffAndDebuffManager.getArmorBreak().getStacks(entity) >= 3){
+                    damage += (profileManager.getAnyProfile(entity).getStats().getHealth() * ((buffAndDebuffManager.getArmorBreak().getStacks(entity) * 10) * .01));
                 }
             }
 
@@ -194,8 +193,8 @@ public class DamageCalculator {
             damage = (damage * multiplierForCrit)
                     * (attack / defence);
 
-            if(buffAndDebuffManager.getArmorMelt().getStacks(hitEntity) >= 3){
-                damage += (profileManager.getAnyProfile(hitEntity).getTotalHealth() * ((buffAndDebuffManager.getArmorMelt().getStacks(hitEntity) * 10) * .01));
+            if(buffAndDebuffManager.getArmorBreak().getStacks(hitEntity) >= 3){
+                damage += (profileManager.getAnyProfile(hitEntity).getTotalHealth() * ((buffAndDebuffManager.getArmorBreak().getStacks(hitEntity) * 10) * .01));
             }
 
         }

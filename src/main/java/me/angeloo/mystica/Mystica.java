@@ -7,6 +7,10 @@ import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Commands.*;
 import me.angeloo.mystica.Components.Inventories.*;
 import me.angeloo.mystica.Managers.*;
+import me.angeloo.mystica.NMS.Common.InvalidVersionException;
+import me.angeloo.mystica.NMS.Common.PacketInterface;
+import me.angeloo.mystica.NMS.Common.VersionFactory;
+import me.angeloo.mystica.NMS.NMSVersion;
 import me.angeloo.mystica.Tasks.*;
 import me.angeloo.mystica.Utility.*;
 import me.angeloo.mystica.Utility.Listeners.GeneralEventListener;
@@ -25,6 +29,8 @@ import java.util.ArrayList;
 public final class Mystica extends JavaPlugin{
 
     private static Mystica plugin;
+
+    private PacketInterface packetManager;
 
     private ProtocolManager protocolManager;
 
@@ -92,6 +98,7 @@ public final class Mystica extends JavaPlugin{
     public static Color uncommonColor = new Color(138, 221, 31);
     public static Color rareColor = new Color(57, 164, 179);
 
+
     public static MythicDungeonsService dungeonsApi(){
         return Bukkit.getServer().getServicesManager().load(MythicDungeonsService.class);
     }
@@ -101,7 +108,11 @@ public final class Mystica extends JavaPlugin{
 
         plugin = this;
 
+        this.packetManager = NMSVersion.getCurrentVersion().getVersionFactory().create();
+
+
         protocolManager = ProtocolLibrary.getProtocolManager();
+
 
         pathingManager = new PathingManager(this);
         pathingManager.createOrLoadFolder();
@@ -301,8 +312,6 @@ public final class Mystica extends JavaPlugin{
 
     public static Mystica getPlugin(){return plugin;}
 
-    public ProtocolManager getProtocolManager(){return protocolManager;}
-
     public ProfileManager getProfileManager(){
         return profileManager;
     }
@@ -420,4 +429,6 @@ public final class Mystica extends JavaPlugin{
     public HudManager getHudManager() {
         return hudManager;
     }
+
+    public ProtocolManager getProtocolManager(){return protocolManager;}
 }

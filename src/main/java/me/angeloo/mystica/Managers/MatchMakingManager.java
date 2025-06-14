@@ -369,7 +369,7 @@ public class MatchMakingManager {
 
     private void startQueueTimer(Player player){
 
-        Scoreboard queueTimer = Bukkit.getScoreboardManager().getNewScoreboard();
+        /*Scoreboard queueTimer = Bukkit.getScoreboardManager().getNewScoreboard();
         Objective objective = queueTimer.registerNewObjective("", "dummy", "");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         Score score = objective.getScore("Time in queue:");
@@ -386,7 +386,7 @@ public class MatchMakingManager {
 
         }.runTaskTimer(main, 0, 20);
 
-        taskMap.put(player.getUniqueId(), queueBoard);
+        taskMap.put(player.getUniqueId(), queueBoard);*/
     }
 
 }

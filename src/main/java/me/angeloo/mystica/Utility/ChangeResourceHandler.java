@@ -37,6 +37,7 @@ public class ChangeResourceHandler {
 
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final DpsManager dpsManager;
+    private final DamageIndicator damageIndicator;
 
     private final Map<UUID, BukkitTask> savedTask = new HashMap<>();
     private final Map<UUID, Double> damageSlot = new HashMap<>();
@@ -51,6 +52,7 @@ public class ChangeResourceHandler {
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         dpsManager = main.getDpsManager();
+        damageIndicator = new DamageIndicator(main);
     }
 
     public void subtractHealthFromEntity(LivingEntity entity, Double damage, LivingEntity damager){
@@ -107,6 +109,8 @@ public class ChangeResourceHandler {
         }
 
         if(damager instanceof Player){
+
+            damageIndicator.displayDamage((Player)damager, entity, damage);
 
             //displayDamage((Player) damager, entity, damage);
 
@@ -615,7 +619,7 @@ public class ChangeResourceHandler {
 
     }
 
-    public void displayDamage(Player player, LivingEntity target, double amount){
+    /*public void displayDamage(Player player, LivingEntity target, double amount){
 
         PacketContainer container = new PacketContainer(PacketType.Play.Server.SPAWN_ENTITY);
         container.getIntegers().write(1, 100);
@@ -627,6 +631,6 @@ public class ChangeResourceHandler {
         protocolManager.sendServerPacket(player, container);
 
 
-    }
+    }*/
 
 }

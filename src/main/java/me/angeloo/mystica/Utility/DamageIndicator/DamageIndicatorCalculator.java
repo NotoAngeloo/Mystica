@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Utility.DamageIndicator;
 
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -36,7 +37,91 @@ public class DamageIndicatorCalculator {
 
         StringBuilder damageNumbers = new StringBuilder();
 
-        damageNumbers.append("42069");
+        String damageAsString = String.valueOf(damage);
+
+        if(crit){
+            damageNumbers.append("\uE02E");
+
+            for(char c : damageAsString.toCharArray()){
+
+                switch (c) {
+                    case '0' -> {
+                        damageNumbers.append("\uE039");
+                    }
+                    case '1' -> {
+                        damageNumbers.append("\uE03A");
+                    }
+                    case '2' -> {
+                        damageNumbers.append("\uE03B");
+                    }
+                    case '3' -> {
+                        damageNumbers.append("\uE03C");
+                    }
+                    case '4' -> {
+                        damageNumbers.append("\uE03D");
+                    }
+                    case '5' -> {
+                        damageNumbers.append("\uE03E");
+                    }
+                    case '6' -> {
+                        damageNumbers.append("\uE03F");
+                    }
+                    case '7' -> {
+                        damageNumbers.append("\uE048");
+                    }
+                    case '8' -> {
+                        damageNumbers.append("\uE04C");
+                    }
+                    case '9' -> {
+                        damageNumbers.append("\uE04D");
+                    }
+                }
+
+            }
+        }
+        else{
+            for(char c : damageAsString.toCharArray()){
+
+                switch (c) {
+                    case '0' -> {
+                        damageNumbers.append("\uE02F");
+                    }
+                    case '1' -> {
+                        damageNumbers.append("\uE030");
+                    }
+                    case '2' -> {
+                        damageNumbers.append("\uE031");
+                    }
+                    case '3' -> {
+                        damageNumbers.append("\uE032");
+                    }
+                    case '4' -> {
+                        damageNumbers.append("\uE033");
+                    }
+                    case '5' -> {
+                        damageNumbers.append("\uE034");
+                    }
+                    case '6' -> {
+                        damageNumbers.append("\uE035");
+                    }
+                    case '7' -> {
+                        damageNumbers.append("\uE036");
+                    }
+                    case '8' -> {
+                        damageNumbers.append("\uE037");
+                    }
+                    case '9' -> {
+                        damageNumbers.append("\uE038");
+                    }
+                }
+
+            }
+        }
+
+
+
+
+
 
         return String.valueOf(damageNumbers);
     }

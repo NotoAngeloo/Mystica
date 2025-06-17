@@ -52,8 +52,6 @@ public class HudManager {
         skinGrabber = new SkinGrabber();
     }
 
-    //TODO: remake cast bar
-
     public void innitHud(Player player){
 
 

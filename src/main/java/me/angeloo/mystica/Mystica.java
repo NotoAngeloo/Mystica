@@ -7,9 +7,7 @@ import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Commands.*;
 import me.angeloo.mystica.Components.Inventories.*;
 import me.angeloo.mystica.Managers.*;
-import me.angeloo.mystica.NMS.Common.InvalidVersionException;
 import me.angeloo.mystica.NMS.Common.PacketInterface;
-import me.angeloo.mystica.NMS.Common.VersionFactory;
 import me.angeloo.mystica.NMS.NMSVersion;
 import me.angeloo.mystica.Tasks.*;
 import me.angeloo.mystica.Utility.*;
@@ -99,6 +97,7 @@ public final class Mystica extends JavaPlugin{
 
     public static Color menuColor = new Color(176, 159, 109);
     public static Color levelColor = new Color(0,102,0);
+
 
     public static Color commonColor = new Color(137, 141, 173);
     public static Color uncommonColor = new Color(138, 221, 31);

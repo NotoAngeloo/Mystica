@@ -192,7 +192,7 @@ public class GloryOfPaladins {
         boolean crit = damageCalculator.checkIfCrit(caster, 0);
         double damage = damageCalculator.calculateDamage(caster, livingEntity, "Physical", getSkillDamage(caster), crit);
 
-        changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+        changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
 
         double healAmount = (profileManager.getAnyProfile(caster).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(caster)) * .05;
         //chance to restore

@@ -187,7 +187,7 @@ public class BladeTempest {
                         //pvp logic
                         if(entity instanceof Player){
                             if(pvpManager.pvpLogic(caster, (Player) entity)){
-                                changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                                changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
                                 stealth.stealthBonusCheck(caster, livingEntity);
                                 hit = true;
                                 if(!trigger[0]){
@@ -202,7 +202,7 @@ public class BladeTempest {
 
                         if(pveChecker.pveLogic(livingEntity)){
                             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
-                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
                             stealth.stealthBonusCheck(caster, livingEntity);
                             hit = true;
 

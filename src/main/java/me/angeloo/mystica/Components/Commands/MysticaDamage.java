@@ -44,7 +44,7 @@ public class MysticaDamage implements CommandExecutor {
 
             double damage = Double.parseDouble(args[1]);
 
-            changeResourceHandler.subtractHealthFromEntity(player, damage, player);
+            changeResourceHandler.subtractHealthFromEntity(player, damage, player, false);
 
             return true;
         }
@@ -88,7 +88,7 @@ public class MysticaDamage implements CommandExecutor {
 
                     double damage = damageCalculator.calculateGettingDamaged(target, caster, "physical", amount * skillLevel);
 
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster, false);
                     return true;
                 }
                 case "magical": {
@@ -99,14 +99,14 @@ public class MysticaDamage implements CommandExecutor {
 
                     double damage = damageCalculator.calculateGettingDamaged(target, caster, "magical", amount * skillLevel);
 
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster, false);
                     return true;
                 }
                 case "true":{
 
                     //Bukkit.getLogger().info("test " + target + " " + caster);
 
-                    changeResourceHandler.subtractHealthFromEntity(target, amount, caster);
+                    changeResourceHandler.subtractHealthFromEntity(target, amount, caster, false);
                     return true;
                 }
                 case "percent":{
@@ -117,12 +117,12 @@ public class MysticaDamage implements CommandExecutor {
 
                     double damage = totalHealth * (amount * .01);
 
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster, false);
                     return true;
                 }
                 case "fury":{
                     int level = profileManager.getAnyProfile(caster).getStats().getLevel();
-                    changeResourceHandler.subtractHealthFromEntity(target, amount * level, caster);
+                    changeResourceHandler.subtractHealthFromEntity(target, amount * level, caster, true);
                     return true;
                 }
                 case "all":{

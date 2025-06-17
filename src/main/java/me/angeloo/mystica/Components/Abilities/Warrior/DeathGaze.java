@@ -201,7 +201,7 @@ public class DeathGaze {
                     boolean crit = damageCalculator.checkIfCrit(caster, 0);
                     double damage = (damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit));
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
                     rage.addRageToEntity(caster, 10);
 
                 }

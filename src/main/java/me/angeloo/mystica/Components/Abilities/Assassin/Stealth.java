@@ -217,7 +217,7 @@ public class Stealth {
         double damage = damageCalculator.calculateDamage(caster, victim, "Physical", getSkillDamage(caster), crit);
         combo.addComboPoint(caster);
         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(victim, caster));
-        changeResourceHandler.subtractHealthFromEntity(victim, damage, caster);
+        changeResourceHandler.subtractHealthFromEntity(victim, damage, caster, crit);
     }
 
     public void stealthBonusCheck(LivingEntity caster, LivingEntity entity){

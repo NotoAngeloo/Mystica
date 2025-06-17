@@ -368,11 +368,11 @@ public class ForceOfWill {
                     buffAndDebuffManager.getGenericShield().removeShields(target);
                 }
 
-                changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+                changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
                 if(arcane && crit){
                     double fifteenPercent = (double) profileManager.getAnyProfile(caster).getTotalAttack() * .15;
-                    changeResourceHandler.subtractHealthFromEntity(target, fifteenPercent, caster);
+                    changeResourceHandler.subtractHealthFromEntity(target, fifteenPercent, caster, crit);
                 }
 
 

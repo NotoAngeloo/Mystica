@@ -235,7 +235,7 @@ public class SoulReap {
                     damage = damage + extra;
                     removeSoulMarks(caster);
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
                     buffAndDebuffManager.getBossInterrupt().interrupt(caster, target);
                 }
 

@@ -329,7 +329,7 @@ public class LightSigil {
                     boolean crit = damageCalculator.checkIfCrit(caster, 0);
                     double damage = damageCalculator.calculateDamage(caster, damagedEntity, "Magical", finalSkillDamage, crit);
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(damagedEntity, caster));
-                    changeResourceHandler.subtractHealthFromEntity(damagedEntity, damage, caster);
+                    changeResourceHandler.subtractHealthFromEntity(damagedEntity, damage, caster, crit);
 
                 }
 

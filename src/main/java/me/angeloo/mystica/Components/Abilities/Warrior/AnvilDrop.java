@@ -331,7 +331,7 @@ public class AnvilDrop {
             double damage = damageCalculator.calculateDamage(caster, targetToHit, "Physical", skillDamage, crit);
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
-            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster);
+            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster, crit);
             rage.addRageToEntity(caster, 10);
 
             //also knockup

@@ -325,14 +325,14 @@ public class DivineGuidance {
                     //pvp logic
                     if(entity instanceof Player){
                         if(pvpManager.pvpLogic(caster, (Player) entity)){
-                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
                         }
                         continue;
                     }
 
                     if(pveChecker.pveLogic(livingEntity)){
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
-                        changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                        changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
 
                     }
 

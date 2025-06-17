@@ -214,7 +214,7 @@ public class MagmaSpikes {
                             //pvp logic
                             if(entity instanceof Player){
                                 if(pvpManager.pvpLogic(caster, (Player) entity)){
-                                    changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                                    changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
                                     rage.addRageToEntity(caster, 10);
 
                                     if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
@@ -228,7 +228,7 @@ public class MagmaSpikes {
 
                             if(pveChecker.pveLogic(livingEntity)){
                                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
-                                changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                                changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
                                 rage.addRageToEntity(caster, 10);
 
                                 if(profileManager.getAnyProfile(livingEntity).getIsMovable()){

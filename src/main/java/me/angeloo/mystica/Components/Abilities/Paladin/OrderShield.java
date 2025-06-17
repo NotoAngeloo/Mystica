@@ -139,7 +139,7 @@ public class OrderShield {
 
         double tenPercent = (profileManager.getAnyProfile(caster).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(caster)) * .1;
 
-        changeResourceHandler.subtractHealthFromEntity(caster, tenPercent, caster);
+        changeResourceHandler.subtractHealthFromEntity(caster, tenPercent, caster, false);
         healOverTime(caster, tenPercent/5);
 
         double finalSkillDamage = getSkillDamage(caster);
@@ -192,7 +192,7 @@ public class OrderShield {
 
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
                     buffAndDebuffManager.getBossInterrupt().interrupt(caster, target);
                 }
 

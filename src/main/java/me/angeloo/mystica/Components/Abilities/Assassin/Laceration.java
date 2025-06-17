@@ -148,7 +148,7 @@ public class Laceration {
         boolean crit = damageCalculator.checkIfCrit(caster, 0);
         double damage = damageCalculator.calculateDamage(caster, target, "Physical", getSkillDamage(caster), crit);
         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
-        changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+        changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
         stealth.stealthBonusCheck(caster, target);
         combo.addComboPoint(caster);
 
@@ -184,7 +184,7 @@ public class Laceration {
                 double tickDamage = damageCalculator.calculateDamage(caster, target, "Physical", finalBleedDamage, crit);
 
                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
-                changeResourceHandler.subtractHealthFromEntity(target, tickDamage, caster);
+                changeResourceHandler.subtractHealthFromEntity(target, tickDamage, caster,crit);
 
                 ticks ++;
 

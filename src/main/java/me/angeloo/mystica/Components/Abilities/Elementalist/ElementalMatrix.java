@@ -204,7 +204,7 @@ public class ElementalMatrix {
                     boolean crit = damageCalculator.checkIfCrit(caster, 0);
                     double damage = (damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage / ticks, crit));
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
                 }
 
 
@@ -256,13 +256,13 @@ public class ElementalMatrix {
 
                         //pvp logic
                         if(entity instanceof Player){
-                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
                             continue;
                         }
 
                         if(pveChecker.pveLogic(livingEntity)){
                             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
-                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
                         }
 
                     }

@@ -207,7 +207,7 @@ public class LavaQuake {
                     //pvp logic
                     if(entity instanceof Player){
                         if(pvpManager.pvpLogic(caster, (Player) entity)){
-                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
                             buffAndDebuffManager.getGenericShield().removeShields(livingEntity);
                             rage.addRageToEntity(caster, 10);
                         }
@@ -216,7 +216,7 @@ public class LavaQuake {
 
                     if(pveChecker.pveLogic(livingEntity)){
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
-                        changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                        changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
                         rage.addRageToEntity(caster, 10);
                     }
 

@@ -181,7 +181,7 @@ public class FieryMagma {
                     double damage = damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
                     if(target instanceof Player){
                         buffAndDebuffManager.getGenericShield().removeShields(target);
@@ -254,7 +254,7 @@ public class FieryMagma {
                         double tickDamage = damageCalculator.calculateDamage(caster, target, "Magical", burn, crit);
 
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
-                        changeResourceHandler.subtractHealthFromEntity(target, tickDamage, caster);
+                        changeResourceHandler.subtractHealthFromEntity(target, tickDamage, caster, crit);
 
                         ticks ++;
 
@@ -312,14 +312,14 @@ public class FieryMagma {
                                 //pvp logic
                                 if(entity instanceof Player){
                                     if(pvpManager.pvpLogic(caster, (Player) entity)){
-                                        changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                                        changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit2);
                                     }
                                     continue;
                                 }
 
                                 if(pveChecker.pveLogic(livingEntity)){
                                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
-                                    changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                                    changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit2);
                                 }
 
                             }

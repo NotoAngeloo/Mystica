@@ -261,7 +261,7 @@ public class MysticBasic {
                     double damage = damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
                 }
 
@@ -319,14 +319,14 @@ public class MysticBasic {
                     //pvp logic
                     if(entity instanceof Player){
                         if(pvpManager.pvpLogic(caster, (Player) entity)){
-                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
                         }
                         continue;
                     }
 
                     if(pveChecker.pveLogic(livingEntity)){
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
-                        changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                        changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
                     }
 
                 }
@@ -555,7 +555,7 @@ public class MysticBasic {
                         double damage = damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage, crit);
 
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
-                        changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+                        changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
                     }
 

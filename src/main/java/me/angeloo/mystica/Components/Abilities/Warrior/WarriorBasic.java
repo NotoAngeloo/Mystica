@@ -272,7 +272,7 @@ public class WarriorBasic {
             double damage = damageCalculator.calculateDamage(caster, targetToHit, "Physical", getSkillDamage(caster), crit);
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
-            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster);
+            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster, crit);
             rage.addRageToEntity(caster, 10);
 
         }
@@ -434,7 +434,7 @@ public class WarriorBasic {
             double damage = damageCalculator.calculateDamage(caster, targetToHit, "Physical", getSkillDamage(caster), crit);
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
-            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster);
+            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster, crit);
             rage.addRageToEntity(caster, 10);
         }
 

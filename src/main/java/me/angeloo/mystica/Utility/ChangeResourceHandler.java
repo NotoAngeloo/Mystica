@@ -1,10 +1,7 @@
 package me.angeloo.mystica.Utility;
 
-import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.PacketContainer;
 import io.lumine.mythic.api.adapters.AbstractEntity;
-import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.Stats;
@@ -14,6 +11,7 @@ import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.DamageIndicator.DamageIndicatorCalculator;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.ArmorStand;
@@ -37,7 +35,7 @@ public class ChangeResourceHandler {
 
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final DpsManager dpsManager;
-    private final DamageIndicator damageIndicator;
+    private final DamageIndicatorCalculator damageIndicatorCalculator;
 
     private final Map<UUID, BukkitTask> savedTask = new HashMap<>();
     private final Map<UUID, Double> damageSlot = new HashMap<>();
@@ -52,10 +50,10 @@ public class ChangeResourceHandler {
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         dpsManager = main.getDpsManager();
-        damageIndicator = new DamageIndicator(main);
+        damageIndicatorCalculator = new DamageIndicatorCalculator();
     }
 
-    public void subtractHealthFromEntity(LivingEntity entity, Double damage, LivingEntity damager){
+    public void subtractHealthFromEntity(LivingEntity entity, Double damage, LivingEntity damager, boolean crit){
 
         if(profileManager.getIfResetProcessing(entity)){
             return;
@@ -70,7 +68,7 @@ public class ChangeResourceHandler {
         }
 
         if(buffAndDebuffManager.getPassThrough().getIfPassingToPlayer(entity)){
-            subtractHealthFromEntity(buffAndDebuffManager.getPassThrough().getPassingToCaster(entity), damage, damager);
+            subtractHealthFromEntity(buffAndDebuffManager.getPassThrough().getPassingToCaster(entity), damage, damager, crit);
             return;
         }
 
@@ -81,11 +79,11 @@ public class ChangeResourceHandler {
             }
 
             double reflectedDamage = buffAndDebuffManager.getWindWallBuff().calculateHowMuchDamageIsReflected(entity, damage);
-            subtractHealthFromEntity(damager, reflectedDamage, entity);
+            subtractHealthFromEntity(damager, reflectedDamage, entity, crit);
 
             if(buffAndDebuffManager.getWindWallBuff().getIfOverflow(entity)){
 
-                subtractHealthFromEntity(entity, buffAndDebuffManager.getWindWallBuff().getOverflowAmount(entity), damager);
+                subtractHealthFromEntity(entity, buffAndDebuffManager.getWindWallBuff().getOverflowAmount(entity), damager, crit);
             }
 
             return;
@@ -110,7 +108,7 @@ public class ChangeResourceHandler {
 
         if(damager instanceof Player){
 
-            damageIndicator.displayDamage((Player)damager, entity, damage);
+            damageIndicatorCalculator.displayDamage((Player)damager, entity, damage, crit);
 
             //displayDamage((Player) damager, entity, damage);
 

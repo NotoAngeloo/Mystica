@@ -13,6 +13,7 @@ import me.angeloo.mystica.NMS.Common.VersionFactory;
 import me.angeloo.mystica.NMS.NMSVersion;
 import me.angeloo.mystica.Tasks.*;
 import me.angeloo.mystica.Utility.*;
+import me.angeloo.mystica.Utility.DamageIndicator.DamageIndicatorApi;
 import me.angeloo.mystica.Utility.Listeners.GeneralEventListener;
 import me.angeloo.mystica.Utility.Listeners.InventoryEventListener;
 import me.angeloo.mystica.Utility.Listeners.MMListeners;
@@ -21,10 +22,12 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.List;
 
 public final class Mystica extends JavaPlugin{
 
@@ -83,6 +86,9 @@ public final class Mystica extends JavaPlugin{
 
     private FirstClearManager firstClearManager;
 
+    public static final List<Integer> TASKS_ID = new ArrayList<>();
+    private DamageIndicatorApi api;
+
     public static Color assassinColor = new java.awt.Color(214, 61, 207);
     public static Color elementalistColor = new Color(153, 204, 255);
     public static Color mysticColor = new Color(155, 120, 197);
@@ -109,6 +115,7 @@ public final class Mystica extends JavaPlugin{
         plugin = this;
 
         this.packetManager = NMSVersion.getCurrentVersion().getVersionFactory().create();
+
 
 
         protocolManager = ProtocolLibrary.getProtocolManager();
@@ -270,6 +277,8 @@ public final class Mystica extends JavaPlugin{
             throw new RuntimeException(e);
         }
 
+
+        this.api = new DamageIndicatorApi(this);
     }
 
 
@@ -311,6 +320,10 @@ public final class Mystica extends JavaPlugin{
     }
 
     public static Mystica getPlugin(){return plugin;}
+
+    public static List<Integer> getTasksId() {
+        return TASKS_ID;
+    }
 
     public ProfileManager getProfileManager(){
         return profileManager;
@@ -431,4 +444,9 @@ public final class Mystica extends JavaPlugin{
     }
 
     public ProtocolManager getProtocolManager(){return protocolManager;}
+
+    @NotNull
+    public PacketInterface getPacketInterface(){
+        return packetManager;
+    }
 }

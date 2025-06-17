@@ -390,7 +390,7 @@ public class PaladinBasic {
                     + representative.getAdditionalBonusFromBuff(caster), crit);
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
-            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster);
+            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster, crit);
 
             gloryOfPaladins.procGlory(caster, targetToHit);
 

@@ -165,7 +165,7 @@ public class NoneBasic {
             double damage = damageCalculator.calculateDamage(caster, targetToHit, "Physical", skillDamage, crit);
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
-            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster);
+            changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster, crit);
 
         }
 

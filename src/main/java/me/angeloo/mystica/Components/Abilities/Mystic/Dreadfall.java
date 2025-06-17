@@ -213,7 +213,7 @@ public class Dreadfall {
                         //pvp logic
                         if(entity instanceof Player){
                             if(pvpManager.pvpLogic(caster, (Player) entity)){
-                                changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                                changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
 
                                 if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
                                     Vector velocity = (new Vector(0, .5, 0));
@@ -223,7 +223,7 @@ public class Dreadfall {
 
                                 if(arcane && crit){
                                     double fifteenPercent = (double) profileManager.getAnyProfile(caster).getTotalAttack() * .15;
-                                    changeResourceHandler.subtractHealthFromEntity(target, fifteenPercent, caster);
+                                    changeResourceHandler.subtractHealthFromEntity(target, fifteenPercent, caster, crit);
                                 }
 
                             }
@@ -232,7 +232,7 @@ public class Dreadfall {
 
                         if(pveChecker.pveLogic(livingEntity)){
                             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
-                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                            changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
 
                             if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
                                 Vector velocity = (new Vector(0, .5, 0));
@@ -242,7 +242,7 @@ public class Dreadfall {
 
                             if(arcane && crit){
                                 double fifteenPercent = (double) profileManager.getAnyProfile(caster).getTotalAttack() * .15;
-                                changeResourceHandler.subtractHealthFromEntity(target, fifteenPercent, caster);
+                                changeResourceHandler.subtractHealthFromEntity(target, fifteenPercent, caster, crit);
                             }
 
                         }

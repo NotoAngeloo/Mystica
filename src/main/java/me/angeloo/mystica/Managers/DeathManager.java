@@ -175,7 +175,7 @@ public class DeathManager {
             target.teleport(entityWhoCastSkill.getLocation());
             double halfHealth = ((double) profileManager.getAnyProfile(target).getTotalHealth() / 2);
 
-            changeResourceHandler.subtractHealthFromEntity(target, halfHealth, entityWhoCastSkill);
+            changeResourceHandler.subtractHealthFromEntity(target, halfHealth, null, false);
         }
 
         if(!(target instanceof Player)){

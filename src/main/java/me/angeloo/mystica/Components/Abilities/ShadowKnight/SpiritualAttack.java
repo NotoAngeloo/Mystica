@@ -187,7 +187,7 @@ public class SpiritualAttack {
                     double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
                     if(doom){
                         soulReap.addSoulMark(caster);

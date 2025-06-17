@@ -222,7 +222,7 @@ public class ArcaneMissiles {
                             double damage = damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage, crit);
 
                             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
-                            changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+                            changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
                         }
 
@@ -284,7 +284,7 @@ public class ArcaneMissiles {
                             double damage = damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage, crit);
 
                             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
-                            changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+                            changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
                         }
 

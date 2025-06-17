@@ -233,7 +233,7 @@ public class DragonBreathing {
                             //pvp logic
                             if(entity instanceof Player){
                                 if(pvpManager.pvpLogic(caster, (Player) entity)){
-                                    changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                                    changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
                                     burnTask(livingEntity);
 
                                     if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
@@ -249,7 +249,7 @@ public class DragonBreathing {
 
                             if(pveChecker.pveLogic(livingEntity)){
                                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
-                                changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                                changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
                                 burnTask(livingEntity);
 
                                 if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
@@ -308,7 +308,7 @@ public class DragonBreathing {
                         double tickDamage = damageCalculator.calculateDamage(caster, entity, "Magical", burnDamage, crit);
 
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(entity, caster));
-                        changeResourceHandler.subtractHealthFromEntity(entity, tickDamage, caster);
+                        changeResourceHandler.subtractHealthFromEntity(entity, tickDamage, caster, crit);
 
                         ticks ++;
 

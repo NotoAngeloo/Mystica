@@ -1105,10 +1105,10 @@ public class GeneralEventListener implements Listener {
 
                 damage = 1.0;
                 Double actualDamage = damageCalculator.calculateGettingDamaged(player, attacker, "Physical", damage);
-                changeResourceHandler.subtractHealthFromEntity(player, actualDamage, attacker);
+                changeResourceHandler.subtractHealthFromEntity(player, actualDamage, attacker, false);
             }
             else{
-                changeResourceHandler.subtractHealthFromEntity(player, damage, null);
+                changeResourceHandler.subtractHealthFromEntity(player, damage, null, false);
             }
 
         }

@@ -55,7 +55,7 @@ public class Heat {
 
             //damage entity 10%
             double maxHp = profileManager.getAnyProfile(entity).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(entity);
-            changeResourceHandler.subtractHealthFromEntity(entity, maxHp * .1, null);
+            changeResourceHandler.subtractHealthFromEntity(entity, maxHp * .1, null, false);
             entity.getWorld().spawnParticle(Particle.FLAME, entity.getLocation(), 50, .5, 1, .5, 0);
 
             newCurrentMana = maxMana;

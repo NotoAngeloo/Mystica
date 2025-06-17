@@ -204,7 +204,7 @@ public class Judgement {
 
 
                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
-                changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+                changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
                 if(templar){
                     aggroManager.setAsHighPriorityTarget(target, caster);

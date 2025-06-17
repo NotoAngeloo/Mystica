@@ -206,7 +206,7 @@ public class DivineInfusion {
                                 Player thisPlayer = (Player) livingEntity;
 
                                 if(pvpManager.pvpLogic(caster, (Player) entity)){
-                                    changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                                    changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
                                 }
                                 else{
                                     hitByThisTick.add(thisPlayer);
@@ -216,7 +216,7 @@ public class DivineInfusion {
                             if(!(livingEntity instanceof Player)){
                                 if(pveChecker.pveLogic(livingEntity)){
                                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
-                                    changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster);
+                                    changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
                                 }
                                 else{
                                     hitByThisTick.add(livingEntity);

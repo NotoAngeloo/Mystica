@@ -278,7 +278,7 @@ public class WildSpirit {
                 double damage = damageCalculator.calculateDamage(caster, wolfTarget, "Physical", finalSkillDamage, crit);
 
                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(wolfTarget, caster));
-                changeResourceHandler.subtractHealthFromEntity(wolfTarget, damage, caster);
+                changeResourceHandler.subtractHealthFromEntity(wolfTarget, damage, caster, crit);
             }
 
             private void goToOwner(){

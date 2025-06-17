@@ -266,7 +266,7 @@ public class Infection {
                 boolean crit = damageCalculator.checkIfCrit(caster, 0);
                 double damage = damageCalculator.calculateDamage(caster, entity, "Physical", skillDamage, crit);
                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(entity, caster));
-                changeResourceHandler.subtractHealthFromEntity(entity, damage, caster);
+                changeResourceHandler.subtractHealthFromEntity(entity, damage, caster, crit);
 
                 //Bukkit.getLogger().info("damaging");
 

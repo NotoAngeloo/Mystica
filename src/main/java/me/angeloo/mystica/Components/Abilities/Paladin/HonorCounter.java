@@ -168,7 +168,7 @@ public class HonorCounter {
                     damage = damage + bonus;
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
                     double increment = (2 * Math.PI) / 16; // angle between particles
 

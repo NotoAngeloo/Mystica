@@ -24,7 +24,7 @@ public class PacketsV1_20_3 implements PacketInterface {
     @Override
     public Entity spawnHologram(Player player, Location location, double damage, String format, Plugin plugin) {
         PlayerConnection connection = ((CraftPlayer) player).getHandle().c;
-        EntityArmorStand armorStand = this.createEntity(location, format, false);
+        EntityArmorStand armorStand = this.createEntity(location, format);
 
         int armorStandID = armorStand.aj();
 
@@ -51,9 +51,9 @@ public class PacketsV1_20_3 implements PacketInterface {
     }
 
     @Override
-    public Entity spawnHologram(Location location, double damage, String format, Plugin plugin, boolean gravity) {
+    public Entity spawnHologram(Location location, double damage, String format, Plugin plugin) {
 
-        EntityArmorStand armorStand = this.createEntity(location, format, gravity);
+        EntityArmorStand armorStand = this.createEntity(location, format);
         armorStand.dM().addFreshEntity(armorStand, CreatureSpawnEvent.SpawnReason.CUSTOM);
         return armorStand.getBukkitEntity();
     }
@@ -68,7 +68,7 @@ public class PacketsV1_20_3 implements PacketInterface {
         return "V1.20_R3";
     }
 
-    public EntityArmorStand createEntity(Location location, String format, boolean gravity) {
+    public EntityArmorStand createEntity(Location location, String format) {
         World mcWorld = ((CraftWorld) location.getWorld()).getHandle();
         EntityArmorStand armorStand = new EntityArmorStand(mcWorld, location.getX(), location.getY(), location.getZ());
         armorStand.a(true);
@@ -76,7 +76,7 @@ public class PacketsV1_20_3 implements PacketInterface {
         armorStand.j(true);
         armorStand.b(IChatBaseComponent.a(format));
         armorStand.n(true);
-        armorStand.e(!gravity);
+        armorStand.e(true);
         armorStand.u(true);
 
         return armorStand;

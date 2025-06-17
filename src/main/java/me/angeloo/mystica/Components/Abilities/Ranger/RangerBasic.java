@@ -302,7 +302,7 @@ public class RangerBasic {
                     double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
                 }
 
@@ -399,7 +399,7 @@ public class RangerBasic {
                     double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
-                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster);
+                    changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
                     if(rallyingCry.getIfBuffTime(caster) > 0){
                         if(profileManager.getAnyProfile(target).getIsMovable()){

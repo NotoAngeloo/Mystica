@@ -100,7 +100,7 @@ public class MysticaEffect implements CommandExecutor {
 
                     double percent = profileManager.getAnyProfile(target).getTotalHealth() * ((double)amount/100);
 
-                    changeResourceHandler.subtractHealthFromEntity(target, percent, caster);
+                    changeResourceHandler.subtractHealthFromEntity(target, percent, caster, true);
                     //Bukkit.getLogger().info("crush");
 
                     return true;

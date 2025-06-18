@@ -1,4 +1,4 @@
-package me.angeloo.mystica.Utility;
+package me.angeloo.mystica.Utility.Hud;
 
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;

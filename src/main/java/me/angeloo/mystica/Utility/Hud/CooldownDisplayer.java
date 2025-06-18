@@ -1,4 +1,4 @@
-package me.angeloo.mystica.Utility;
+package me.angeloo.mystica.Utility.Hud;
 
 import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;

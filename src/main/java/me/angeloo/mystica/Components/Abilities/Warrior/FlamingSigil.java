@@ -2,9 +2,8 @@ package me.angeloo.mystica.Components.Abilities.Warrior;
 
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.ChangeResourceHandler;
-import me.angeloo.mystica.Utility.CooldownDisplayer;
-import me.angeloo.mystica.Utility.PveChecker;
+import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
+import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;

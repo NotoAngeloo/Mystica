@@ -1,4 +1,4 @@
-package me.angeloo.mystica.Utility;
+package me.angeloo.mystica.Utility.DamageUtils;
 
 import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Managers.ProfileManager;

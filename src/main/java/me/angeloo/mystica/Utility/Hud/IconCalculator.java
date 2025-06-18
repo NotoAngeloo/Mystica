@@ -1,4 +1,4 @@
-package me.angeloo.mystica.Utility;
+package me.angeloo.mystica.Utility.Hud;
 
 public class IconCalculator {
 

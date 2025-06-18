@@ -2,8 +2,7 @@ package me.angeloo.mystica.Components.Abilities.Ranger;
 
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.ChangeResourceHandler;
-import me.angeloo.mystica.Utility.CooldownDisplayer;
+import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;

@@ -1,9 +1,8 @@
 package me.angeloo.mystica.Managers;
 
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.PveChecker;
-import me.angeloo.mystica.Utility.StealthTargetBlacklist;
-import org.bukkit.Bukkit;
+import me.angeloo.mystica.Utility.Logic.PveChecker;
+import me.angeloo.mystica.Utility.Logic.StealthTargetBlacklist;
 import org.bukkit.entity.*;
 import org.bukkit.util.BoundingBox;
 

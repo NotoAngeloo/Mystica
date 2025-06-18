@@ -4,7 +4,7 @@ import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Tasks.CombatTick;
-import me.angeloo.mystica.Utility.CooldownDisplayer;
+import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DisplayWeapons;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;

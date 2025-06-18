@@ -1,4 +1,4 @@
-package me.angeloo.mystica.Utility;
+package me.angeloo.mystica.Utility.Logic;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;

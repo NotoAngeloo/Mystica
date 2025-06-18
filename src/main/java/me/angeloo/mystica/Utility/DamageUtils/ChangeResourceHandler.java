@@ -1,4 +1,4 @@
-package me.angeloo.mystica.Utility;
+package me.angeloo.mystica.Utility.DamageUtils;
 
 import com.comphenix.protocol.ProtocolManager;
 import io.lumine.mythic.api.adapters.AbstractEntity;
@@ -11,6 +11,7 @@ import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.DailyData;
 import me.angeloo.mystica.Utility.DamageIndicator.DamageIndicatorCalculator;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;

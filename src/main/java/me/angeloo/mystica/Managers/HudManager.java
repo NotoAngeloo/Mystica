@@ -3,8 +3,9 @@ package me.angeloo.mystica.Managers;
 import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.IconCalculator;
-import me.angeloo.mystica.Utility.SkinGrabber;
+import me.angeloo.mystica.Utility.Hud.DpsMeter;
+import me.angeloo.mystica.Utility.Hud.IconCalculator;
+import me.angeloo.mystica.Utility.Hud.SkinGrabber;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -29,6 +30,9 @@ public class HudManager {
 
     private final ProfileManager profileManager;
     private final MysticaPartyManager mysticaPartyManager;
+
+    private final DpsMeter dpsMeter;
+
     private final AllSkillItems allSkillItems;
     private final AbilityManager abilityManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
@@ -47,9 +51,10 @@ public class HudManager {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         targetManager = main.getTargetManager();
         bossCastingManager = main.getBossCastingManager();
-        iconCalculator = new IconCalculator();
 
+        iconCalculator = new IconCalculator();
         skinGrabber = new SkinGrabber();
+        dpsMeter = new DpsMeter(main);
     }
 
     public void innitHud(Player player){
@@ -68,17 +73,21 @@ public class HudManager {
         profileManager.setPlayerTargetBar(player, targetBar);
 
 
+        //team data
         BossBar teamBar = Bukkit.createBossBar(createTeamDataString(player), BarColor.WHITE, BarStyle.SOLID);
         teamBar.addPlayer(player);
         teamBar.setVisible(true);
         profileManager.setPlayerTeamBar(player, teamBar);
 
 
+        //status
         BossBar statusBar = Bukkit.createBossBar("", BarColor.WHITE, BarStyle.SOLID);
         statusBar.addPlayer(player);
         statusBar.setVisible(true);
         profileManager.setPlayerStatusBar(player, statusBar);
 
+        //dpsMeter.innitMeter(player);
+        dpsMeter.updateMeter(player);
 
     }
 

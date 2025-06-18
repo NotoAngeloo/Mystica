@@ -2,12 +2,9 @@ package me.angeloo.mystica.Managers;
 
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.PveChecker;
-import me.angeloo.mystica.Utility.StealthTargetBlacklist;
+import me.angeloo.mystica.Utility.Logic.PveChecker;
+import me.angeloo.mystica.Utility.Logic.StealthTargetBlacklist;
 import org.bukkit.Bukkit;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;

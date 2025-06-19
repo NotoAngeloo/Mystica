@@ -1,32 +1,26 @@
 package me.angeloo.mystica.Managers;
 
-import me.angeloo.mystica.CustomEvents.BoardValueUpdateEvent;
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class DpsManager {
 
-    private final Mystica main;
 
-    private final int dpsTime = 20000;
+    private final MysticaPartyManager mysticaPartyManager;
 
-    private final Map<UUID, Long> lastAdded = new HashMap<>();
+
+    private final Map<UUID, Long> dpsStarted = new HashMap<>();
     private final Map<UUID, Double> totalDamage = new HashMap<>();
-    private final Map<UUID, Integer> totalTime = new HashMap<>();
-    private final Map<UUID, BukkitTask> savedTask = new HashMap<>();
 
 
     public DpsManager(Mystica main){
-        this.main = main;
+        mysticaPartyManager = main.getMysticaPartyManager();
     }
 
     public double getRawDps(LivingEntity entity){
@@ -41,89 +35,69 @@ public class DpsManager {
 
     public int getRoundedDps(LivingEntity entity){
 
-        //Bukkit.getLogger().info("Calculation Result of " + getSaved(player) + " / " + getTime(player));
-        //Bukkit.getLogger().info("Result: " + (int) Math.round(getSaved(player)) / getTime(player));
-        return (int) (Math.round(getSaved(entity) / getTime(entity)));
+        if(!totalDamage.containsKey(entity.getUniqueId())){
+            return 0;
+        }
+
+        return (int) (Math.round(getRawDps(entity)));
     }
 
 
 
     public void addToDamageDealt(LivingEntity entity, double damage){
 
-        double saved = totalDamage.getOrDefault(entity.getUniqueId(), 0.0);
+        getStart(entity);
+
+
+        double saved = getSaved(entity);
         saved = saved + damage;
         totalDamage.put(entity.getUniqueId(), saved);
 
-        startTask(entity);
-        lastAdded.put(entity.getUniqueId(), System.currentTimeMillis());
+        updateDpsMeter(entity);
     }
 
-    private void addTime(LivingEntity entity){
-
-        int time = getTime(entity);
-        time+=1;
-        totalTime.put(entity.getUniqueId(), time);
-
-    }
-
-    private void startTask(LivingEntity entity){
-
-        if(savedTask.containsKey(entity.getUniqueId())){
-            return;
-        }
-
-        BukkitTask task = new BukkitRunnable(){
-            @Override
-            public void run(){
-
-                addTime(entity);
-
-                long currentTime = System.currentTimeMillis();
-                long lastAdded = getLastAdded(entity);
-
-                if(currentTime - lastAdded >= dpsTime){
-                    this.cancel();
-                    removeDps(entity);
-                }
-
-                if(entity instanceof Player){
-                    Bukkit.getServer().getPluginManager().callEvent(new BoardValueUpdateEvent((Player)entity));
-                }
-
-
-
-            }
-        }.runTaskTimer(main, 20, 20);
-
-
-        savedTask.put(entity.getUniqueId(), task);
-    }
-
-    private int getTime(LivingEntity entity){
-        return totalTime.getOrDefault(entity.getUniqueId(), 1);
-    }
 
     private double getSaved(LivingEntity entity){
         return totalDamage.getOrDefault(entity.getUniqueId(), 0.0);
     }
 
-    public void removeDps(LivingEntity entity){
-        if(savedTask.containsKey(entity.getUniqueId())){
-            savedTask.get(entity.getUniqueId()).cancel();
-        }
+    private long getTime(LivingEntity entity){
 
-        savedTask.remove(entity.getUniqueId());
-        totalDamage.remove(entity.getUniqueId());
-        totalTime.remove(entity.getUniqueId());
+        long now = System.currentTimeMillis();
+        long start = getStart(entity);
+
+        //Bukkit.getLogger().info("time in dps: " + ((now - start) / 1000));
+
+        return ((now - start) / 1000) + 1;
     }
 
-    private long getLastAdded(LivingEntity entity){
-
-        if(!lastAdded.containsKey(entity.getUniqueId())){
-            lastAdded.put(entity.getUniqueId(), System.currentTimeMillis());
+    private long getStart(LivingEntity entity){
+        if(!dpsStarted.containsKey(entity.getUniqueId())){
+            dpsStarted.put(entity.getUniqueId(), System.currentTimeMillis());
         }
 
-        return lastAdded.get(entity.getUniqueId());
+        return dpsStarted.get(entity.getUniqueId());
+    }
+
+    public void removeDps(LivingEntity entity){
+        dpsStarted.remove(entity.getUniqueId());
+        totalDamage.remove(entity.getUniqueId());
+    }
+
+
+
+    private void updateDpsMeter(LivingEntity entity){
+
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(entity));
+
+        for(LivingEntity member : mParty){
+            if(member instanceof Player){
+                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player)member, "dps"));
+            }
+        }
+
+
+
     }
 
 }

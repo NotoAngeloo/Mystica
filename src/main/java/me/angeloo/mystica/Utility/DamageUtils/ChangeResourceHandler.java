@@ -6,7 +6,6 @@ import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.Stats;
 import me.angeloo.mystica.CustomEvents.AiSignalEvent;
-import me.angeloo.mystica.CustomEvents.BoardValueUpdateEvent;
 import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Managers.*;
@@ -98,7 +97,6 @@ public class ChangeResourceHandler {
 
         if(entity instanceof Player){
             subtractHealthFromPlayer((Player) entity, damage);
-            Bukkit.getServer().getPluginManager().callEvent(new BoardValueUpdateEvent((Player) entity));
             return;
         }
 
@@ -541,7 +539,6 @@ public class ChangeResourceHandler {
 
         if(entity instanceof Player){
             killPlayerNoMatterWhat((Player) entity);
-            Bukkit.getServer().getPluginManager().callEvent(new BoardValueUpdateEvent((Player) entity));
             return;
         }
 

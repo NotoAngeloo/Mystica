@@ -86,8 +86,8 @@ public class HudManager {
         statusBar.setVisible(true);
         profileManager.setPlayerStatusBar(player, statusBar);
 
-        //dpsMeter.innitMeter(player);
-        dpsMeter.updateMeter(player);
+        dpsMeter.innitMeter(player);
+        //dpsMeter.updateMeter(player);
 
     }
 
@@ -232,6 +232,9 @@ public class HudManager {
     public void editStatusBar(Player player){
         BossBar statusBar = profileManager.getPlayerStatusBar(player);
         statusBar.setTitle(createStatusString(player));
+    }
+    public void editDpsMeter(Player player){
+        dpsMeter.updateMeter(player);
     }
 
     private String createPlayerDataString(Player player){

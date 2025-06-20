@@ -20,8 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static me.angeloo.mystica.Mystica.*;
 
@@ -42,6 +41,7 @@ public class HudManager {
 
     private final SkinGrabber skinGrabber;
 
+    private final Map<UUID, Long> lastDpsBarUpdate = new HashMap<>();
 
     public HudManager(Mystica main){
         profileManager = main.getProfileManager();
@@ -233,8 +233,31 @@ public class HudManager {
         BossBar statusBar = profileManager.getPlayerStatusBar(player);
         statusBar.setTitle(createStatusString(player));
     }
+
     public void editDpsMeter(Player player){
+
+        if(getTime(player) < 1){
+            return;
+        }
+
+        lastDpsBarUpdate.put(player.getUniqueId(), System.currentTimeMillis());
+
         dpsMeter.updateMeter(player);
+    }
+
+    private long getTime(Player player){
+
+        long now = System.currentTimeMillis();
+        long last = getLast(player);
+
+        return ((now-last) / 1000);
+    }
+
+    private long getLast(Player player){
+        if(!lastDpsBarUpdate.containsKey(player.getUniqueId())){
+            lastDpsBarUpdate.put(player.getUniqueId(), System.currentTimeMillis());
+        }
+        return lastDpsBarUpdate.get(player.getUniqueId());
     }
 
     private String createPlayerDataString(Player player){

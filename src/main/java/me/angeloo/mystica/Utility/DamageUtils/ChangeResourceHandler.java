@@ -8,6 +8,7 @@ import me.angeloo.mystica.Components.ProfileComponents.Stats;
 import me.angeloo.mystica.CustomEvents.AiSignalEvent;
 import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
+import me.angeloo.mystica.CustomEvents.MysticaPlayerDeathEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DailyData;
@@ -30,7 +31,6 @@ public class ChangeResourceHandler {
     private final DailyData dailyData;
     private final AggroManager aggroManager;
     private final ProfileManager profileManager;
-    private final ProtocolManager protocolManager;
     private final Map<UUID, Long> lastDamaged = new HashMap<>();
 
     private final BuffAndDebuffManager buffAndDebuffManager;
@@ -46,7 +46,6 @@ public class ChangeResourceHandler {
         this.main = main;
         aggroManager = main.getAggroManager();
         dailyData = main.getDailyData();
-        protocolManager = main.getProtocolManager();
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         dpsManager = main.getDpsManager();
@@ -212,7 +211,7 @@ public class ChangeResourceHandler {
             buffAndDebuffManager.removeAllBuffsAndDebuffs(entity);
             profileManager.getAnyProfile(entity).setIfDead(true);
             profileManager.getAnyProfile(entity).setCurrentHealth(profileManager.getAnyProfile(entity).getTotalHealth());
-            dpsManager.removeDps(entity);
+            //dpsManager.removeDps(entity);
             aggroManager.removeFromAllAttackerLists(entity);
             //fakePlayerAiManager.removeInterrupt(entity);
             entity.setAI(false);
@@ -231,6 +230,8 @@ public class ChangeResourceHandler {
                     MythicBukkit.inst().getAPIHelper().getMythicMobInstance(passenger).signalMob(abstractEntity, "playerdeath");
                 }
             }
+
+            Bukkit.getServer().getPluginManager().callEvent(new MysticaPlayerDeathEvent(entity));
 
         }
     }
@@ -592,7 +593,7 @@ public class ChangeResourceHandler {
         buffAndDebuffManager.removeAllBuffsAndDebuffs(entity);
         profileManager.getAnyProfile(entity).setIfDead(true);
         profileManager.getAnyProfile(entity).setCurrentHealth(profileManager.getAnyProfile(entity).getTotalHealth());
-        dpsManager.removeDps(entity);
+        //dpsManager.removeDps(entity);
         aggroManager.removeFromAllAttackerLists(entity);
         //fakePlayerAiManager.removeInterrupt(entity);
         entity.setAI(false);
@@ -612,6 +613,7 @@ public class ChangeResourceHandler {
             }
         }
 
+        Bukkit.getServer().getPluginManager().callEvent(new MysticaPlayerDeathEvent(entity));
 
     }
 

@@ -1,11 +1,10 @@
 package me.angeloo.mystica.CustomEvents;
 
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class CustomDeathEvent extends Event {
+public class MysticaEnemyDeathEvent extends Event {
 
     public static final HandlerList handlers = new HandlerList();
 
@@ -13,7 +12,7 @@ public class CustomDeathEvent extends Event {
 
     private final LivingEntity entityWhoDied;
 
-    public CustomDeathEvent(LivingEntity playerWhoKilled, LivingEntity entityWhoDied){
+    public MysticaEnemyDeathEvent(LivingEntity playerWhoKilled, LivingEntity entityWhoDied){
         this.playerWhoKilled = playerWhoKilled;
         this.entityWhoDied = entityWhoDied;
     }

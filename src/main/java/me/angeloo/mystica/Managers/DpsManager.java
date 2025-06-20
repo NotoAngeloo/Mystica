@@ -5,13 +5,12 @@ import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 
 public class DpsManager {
 
-
+    private final ProfileManager profileManager;
     private final MysticaPartyManager mysticaPartyManager;
 
 
@@ -20,6 +19,7 @@ public class DpsManager {
 
 
     public DpsManager(Mystica main){
+        profileManager = main.getProfileManager();
         mysticaPartyManager = main.getMysticaPartyManager();
     }
 
@@ -46,8 +46,11 @@ public class DpsManager {
 
     public void addToDamageDealt(LivingEntity entity, double damage){
 
-        getStart(entity);
+        if(profileManager.getAnyProfile(entity).getIfDead()){
+            return;
+        }
 
+        getStart(entity);
 
         double saved = getSaved(entity);
         saved = saved + damage;

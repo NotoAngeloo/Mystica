@@ -4,6 +4,7 @@ import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.CustomEvents.AiSignalEvent;
+import me.angeloo.mystica.CustomEvents.MysticaPlayerDeathEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
@@ -27,7 +28,6 @@ public class DeathManager {
     private final ChangeResourceHandler changeResourceHandler;
     private final AbilityManager abilityManager;
     private final AggroManager aggroManager;
-    private final DpsManager dpsManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final GravestoneManager gravestoneManager;
 
@@ -36,7 +36,6 @@ public class DeathManager {
         changeResourceHandler = main.getChangeResourceHandler();
         abilityManager = main.getAbilityManager();
         aggroManager = main.getAggroManager();
-        dpsManager = main.getDpsManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         gravestoneManager = main.getGravestoneManager();
     }
@@ -98,8 +97,8 @@ public class DeathManager {
         abilityManager.resetAbilityBuffs(player);
         buffAndDebuffManager.removeAllBuffsAndDebuffs(player);
         abilityManager.interruptBasic(player);
-        dpsManager.removeDps(player);
-
+        //dpsManager.removeDps(player);
+        Bukkit.getServer().getPluginManager().callEvent(new MysticaPlayerDeathEvent(player));
     }
 
     public void playerNowLive(LivingEntity target, Boolean bySkill, LivingEntity entityWhoCastSkill){

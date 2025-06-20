@@ -127,8 +127,6 @@ public class CombatManager {
         }
 
 
-        player.getInventory().clear(13);
-
         //player.sendMessage("You are no longer in combat");
 
         //and restore their inventories
@@ -155,7 +153,8 @@ public class CombatManager {
             }
         }
 
-        dpsManager.removeDps(player);
+
+        //dpsManager.removeDps(player);
         abilityManager.resetAbilityBuffs(player);
         Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
     }

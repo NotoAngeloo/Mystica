@@ -57,6 +57,7 @@ public class GeneralEventListener implements Listener {
     private final PathingManager pathingManager;
     private final StealthTargetBlacklist stealthTargetBlacklist;
     private final AggroTick aggroTick;
+    private final DpsManager dpsManager;
     private final AggroManager aggroManager;
     private final PvpManager pvpManager;
     private final ItemManager itemManager;
@@ -98,6 +99,7 @@ public class GeneralEventListener implements Listener {
         fakePlayerAiManager = main.getFakePlayerAiManager();
         stealthTargetBlacklist = main.getStealthTargetBlacklist();
         aggroTick = main.getAggroTick();
+        dpsManager = main.getDpsManager();
         aggroManager = main.getAggroManager();
         pvpManager = main.getPvpManager();
         targetManager = main.getTargetManager();
@@ -626,7 +628,28 @@ public class GeneralEventListener implements Listener {
             return;
         }
 
-        Bukkit.getServer().getPluginManager().callEvent(new CustomDeathEvent(lastCaster, entity));
+        Bukkit.getServer().getPluginManager().callEvent(new MysticaEnemyDeathEvent(lastCaster, entity));
+
+    }
+
+    @EventHandler
+    public void mysticaPlayerDeath(MysticaPlayerDeathEvent event){
+
+        LivingEntity mysticaPlayer = event.getMysticaPlayer();
+
+        //check for team wipe
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(mysticaPlayer));
+
+        for(LivingEntity member : mParty){
+            if(!profileManager.getAnyProfile(member).getIfDead()){
+                return;
+            }
+        }
+
+        //team wipe
+        for(LivingEntity member : mParty){
+            dpsManager.removeDps(member);
+        }
 
     }
 
@@ -650,7 +673,7 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
-    public void customDeathEvent(CustomDeathEvent event){
+    public void customDeathEvent(MysticaEnemyDeathEvent event){
 
         LivingEntity caster = event.getPlayerWhoKilled();
 

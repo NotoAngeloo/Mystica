@@ -6,6 +6,7 @@ depend:
   - ProtocolLib
   - PlaceholderAPI
   - MythicDungeons
+  - TAB
 softdepend:
   - MythicMobs
   - Interactions

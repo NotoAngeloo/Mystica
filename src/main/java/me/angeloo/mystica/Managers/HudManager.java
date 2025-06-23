@@ -3,7 +3,6 @@ package me.angeloo.mystica.Managers;
 import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.Hud.DpsMeter;
 import me.angeloo.mystica.Utility.Hud.IconCalculator;
 import me.angeloo.mystica.Utility.Hud.SkinGrabber;
 import net.md_5.bungee.api.ChatColor;
@@ -30,7 +29,6 @@ public class HudManager {
     private final ProfileManager profileManager;
     private final MysticaPartyManager mysticaPartyManager;
 
-    private final DpsMeter dpsMeter;
 
     private final AllSkillItems allSkillItems;
     private final AbilityManager abilityManager;
@@ -54,7 +52,6 @@ public class HudManager {
 
         iconCalculator = new IconCalculator();
         skinGrabber = new SkinGrabber();
-        dpsMeter = new DpsMeter(main);
     }
 
     public void innitHud(Player player){
@@ -86,8 +83,6 @@ public class HudManager {
         statusBar.setVisible(true);
         profileManager.setPlayerStatusBar(player, statusBar);
 
-        dpsMeter.innitMeter(player);
-        //dpsMeter.updateMeter(player);
 
     }
 
@@ -234,16 +229,6 @@ public class HudManager {
         statusBar.setTitle(createStatusString(player));
     }
 
-    public void editDpsMeter(Player player){
-
-        if(getTime(player) < 1){
-            return;
-        }
-
-        lastDpsBarUpdate.put(player.getUniqueId(), System.currentTimeMillis());
-
-        dpsMeter.updateMeter(player);
-    }
 
     private long getTime(Player player){
 
@@ -266,6 +251,9 @@ public class HudManager {
 
         //-512space
         playerResources.append("\uF80E");
+
+        // +60 space
+        playerResources.append("\uF82A\uF829\uF828\uF824");
 
         playerResources.append(createEntityDataString(player));
 
@@ -305,8 +293,8 @@ public class HudManager {
             //-512 space
             teamData.append("\uF80E");
 
-            //-115
-            teamData.append("\uF80B\uF80A\uF809\uF803");
+            //-100
+            teamData.append("\uF80B\uF80A\uF804");
 
             int slot = 0;
             for(LivingEntity member : mysticaParty){
@@ -323,8 +311,13 @@ public class HudManager {
                     break;
                 }
 
-                //-115
-                teamData.append("\uF80B\uF80A\uF809\uF803");
+                //-92
+                teamData.append("\uF80B\uF809\uF808\uF804");
+
+                if(slot>=2){
+                    //+1
+                    teamData.append("\uF821");
+                }
             }
 
             return String.valueOf(teamData);
@@ -831,184 +824,6 @@ public class HudManager {
 
         StringBuilder entityBar = new StringBuilder();
 
-        String playerClass = profileManager.getAnyProfile(entity).getPlayerClass();
-
-        switch (playerClass.toLowerCase()){
-            case "assassin":{
-                switch (slot){
-                    case 0:{
-                        entityBar.append("\uE245");
-                        break;
-                    }
-                    case 1:{
-                        entityBar.append("\uE246");
-                        break;
-                    }
-                    case 2:{
-                        entityBar.append("\uE247");
-                        break;
-                    }
-                    case 3:{
-                        entityBar.append("\uE248");
-                        break;
-                    }
-                }
-                break;
-            }
-            case "elementalist":{
-                switch (slot){
-                    case 0:{
-                        entityBar.append("\uE24A");
-                        break;
-                    }
-                    case 1:{
-                        entityBar.append("\uE24B");
-                        break;
-                    }
-                    case 2:{
-                        entityBar.append("\uE24C");
-                        break;
-                    }
-                    case 3:{
-                        entityBar.append("\uE24D");
-                        break;
-                    }
-                }
-                break;
-            }
-            case "mystic":{
-                switch (slot){
-                    case 0:{
-                        entityBar.append("\uE24F");
-                        break;
-                    }
-                    case 1:{
-                        entityBar.append("\uE250");
-                        break;
-                    }
-                    case 2:{
-                        entityBar.append("\uE251");
-                        break;
-                    }
-                    case 3:{
-                        entityBar.append("\uE252");
-                        break;
-                    }
-                }
-                break;
-            }
-            case "paladin":{
-                switch (slot){
-                    case 0:{
-                        entityBar.append("\uE254");
-                        break;
-                    }
-                    case 1:{
-                        entityBar.append("\uE255");
-                        break;
-                    }
-                    case 2:{
-                        entityBar.append("\uE256");
-                        break;
-                    }
-                    case 3:{
-                        entityBar.append("\uE257");
-                        break;
-                    }
-                }
-                break;
-            }
-            case "ranger":{
-                switch (slot){
-                    case 0:{
-                        entityBar.append("\uE259");
-                        break;
-                    }
-                    case 1:{
-                        entityBar.append("\uE25A");
-                        break;
-                    }
-                    case 2:{
-                        entityBar.append("\uE25B");
-                        break;
-                    }
-                    case 3:{
-                        entityBar.append("\uE25C");
-                        break;
-                    }
-                }
-                break;
-            }
-            case "shadow knight":{
-                switch (slot){
-                    case 0:{
-                        entityBar.append("\uE25E");
-                        break;
-                    }
-                    case 1:{
-                        entityBar.append("\uE25F");
-                        break;
-                    }
-                    case 2:{
-                        entityBar.append("\uE260");
-                        break;
-                    }
-                    case 3:{
-                        entityBar.append("\uE261");
-                        break;
-                    }
-                }
-                break;
-            }
-            case "warrior":{
-                switch (slot){
-                    case 0:{
-                        entityBar.append("\uE263");
-                        break;
-                    }
-                    case 1:{
-                        entityBar.append("\uE264");
-                        break;
-                    }
-                    case 2:{
-                        entityBar.append("\uE265");
-                        break;
-                    }
-                    case 3:{
-                        entityBar.append("\uE266");
-                        break;
-                    }
-                }
-                break;
-            }
-            default:{
-                switch (slot){
-                    case 0:{
-                        entityBar.append("\uE14D");
-                        break;
-                    }
-                    case 1:{
-                        entityBar.append("\uE178");
-                        break;
-                    }
-                    case 2:{
-                        entityBar.append("\uE1A3");
-                        break;
-                    }
-                    case 3:{
-                        entityBar.append("\uE1CE");
-                        break;
-                    }
-                }
-                break;
-            }
-        }
-
-
-
-
-        //-29
-        entityBar.append("\uF809\uF808\uF805");
 
         if(entity instanceof Player){
 
@@ -1267,51 +1082,57 @@ public class HudManager {
 
             String playerClass = profileManager.getAnyProfile(player).getPlayerClass();
 
+
+            //frame color
             switch (playerClass.toLowerCase()){
                 case "assassin":{
-                    icon.append("\uE244");
+                    icon.append(ChatColor.of(assassinColor));
                     break;
                 }
                 case "elementalist":{
-                    icon.append("\uE249");
+                    icon.append(ChatColor.of(elementalistColor));
                     break;
                 }
                 case "mystic":{
-                    icon.append("\uE24E");
+                    icon.append(ChatColor.of(mysticColor));
                     break;
                 }
                 case "paladin":{
-                    icon.append("\uE253");
+                    icon.append(ChatColor.of(paladinColor));
                     break;
                 }
                 case "ranger":{
-                    icon.append("\uE258");
+                    icon.append(ChatColor.of(rangerColor));
                     break;
                 }
                 case "shadow knight":{
-                    icon.append("\uE25D");
+                    icon.append(ChatColor.of(shadowKnightColor));
                     break;
                 }
                 case "warrior":{
-                    icon.append("\uE262");
-                    break;
-                }
-                default:{
-                    icon.append("\uE143");
+                    icon.append(ChatColor.of(warriorColor));
                     break;
                 }
             }
 
+            //background
+            icon.append("\uE14D");
 
 
-            //-29
-            icon.append("\uF809\uF808\uF805");
+            //-43
+            icon.append("\uF80A\uF808\uF803");
 
+            //frame
+            icon.append(ChatColor.RESET);
+            icon.append("\uE143");
+
+            //-35
+            icon.append("\uF80A\uF803");
 
             icon.append(skinGrabber.getFace(player));
 
-            //+29
-            icon.append("\uF829\uF828\uF825");
+            //+38
+            icon.append("\uF82A\uF826");
             return String.valueOf(icon);
         }
 
@@ -1320,52 +1141,80 @@ public class HudManager {
 
             String playerClass = profileManager.getAnyProfile(entity).getPlayerClass();
 
+
+            //frame color
             switch (playerClass.toLowerCase()){
                 case "assassin":{
-                    icon.append("\uE244");
+                    icon.append(ChatColor.of(assassinColor));
                     break;
                 }
                 case "elementalist":{
-                    icon.append("\uE249");
+                    icon.append(ChatColor.of(elementalistColor));
                     break;
                 }
                 case "mystic":{
-                    icon.append("\uE24E");
+                    icon.append(ChatColor.of(mysticColor));
                     break;
                 }
                 case "paladin":{
-                    icon.append("\uE253");
+                    icon.append(ChatColor.of(paladinColor));
                     break;
                 }
                 case "ranger":{
-                    icon.append("\uE258");
+                    icon.append(ChatColor.of(rangerColor));
                     break;
                 }
                 case "shadow knight":{
-                    icon.append("\uE25D");
+                    icon.append(ChatColor.of(shadowKnightColor));
                     break;
                 }
                 case "warrior":{
-                    icon.append("\uE262");
-                    break;
-                }
-                default:{
-                    icon.append("\uE143");
+                    icon.append(ChatColor.of(warriorColor));
                     break;
                 }
             }
 
-            //-29
-            icon.append("\uF809\uF808\uF805");
+            //background
+            icon.append("\uE14D");
 
-            //default face, for testing
+
+            //-43
+            icon.append("\uF80A\uF808\uF803");
+
+            //frame
+            icon.append(ChatColor.RESET);
+            icon.append("\uE143");
+
+            //-35
+            icon.append("\uF80A\uF803");
+
             String face = profileManager.getCompanionFace(entity.getUniqueId());
             icon.append(face);
 
-            //+3
-            icon.append("\uF823");
+            //+13
+            icon.append("\uF828\uF825");
             return String.valueOf(icon);
 
+        }
+
+        if(profileManager.getIfEntityIsBoss(entity.getUniqueId())){
+
+            //get whichever background specificlly, later
+
+            //default background
+            icon.append("\uE1A3");
+
+            //-43
+            icon.append("\uF80A\uF808\uF803");
+
+            //frame
+            icon.append(ChatColor.RESET);
+            icon.append("\uE178");
+
+            //+4
+            icon.append("\uF824");
+
+            return String.valueOf(icon);
         }
 
         if(profileManager.getAnyProfile(entity).getIsPassive()){
@@ -1373,8 +1222,6 @@ public class HudManager {
             icon.append(("\uE127"));
             return String.valueOf(icon);
         }
-
-
 
         //default enemy
         icon.append(("\uE128"));
@@ -1511,8 +1358,11 @@ public class HudManager {
         }
 
         if(shieldAmount != 0){
-            //-83 space
-            healthBar.append("\uF80B\uF809\uF803");
+            //-128 space
+            healthBar.append("\uF80C");
+
+            //-4 space
+            healthBar.append("\uF804");
         }
 
         switch (shieldAmount){
@@ -2371,8 +2221,11 @@ public class HudManager {
             switch (playerClass.toLowerCase()){
                 case "mystic":{
 
-                    //-83 space
-                    resourceBar.append("\uF80B\uF809\uF803");
+                    //-128 space
+                    resourceBar.append("\uF80C");
+
+                    //-4 space
+                    resourceBar.append("\uF804");
 
                     double maxMana = 500;
                     double currentMana = abilityManager.getMysticAbilities().getMana().getCurrentMana(entity);
@@ -2479,8 +2332,11 @@ public class HudManager {
                     break;
                 }
                 case "warrior":{
-                    //-83 space
-                    resourceBar.append("\uF80B\uF809\uF803");
+                    //-128 space
+                    resourceBar.append("\uF80C");
+
+                    //-4 space
+                    resourceBar.append("\uF804");
 
                     double maxRage = 500;
                     double currentRage = abilityManager.getWarriorAbilities().getRage().getCurrentRage(entity);
@@ -2587,8 +2443,11 @@ public class HudManager {
                     break;
                 }
                 case "shadow knight":{
-                    //-83 space
-                    resourceBar.append("\uF80B\uF809\uF803");
+                    //-128 space
+                    resourceBar.append("\uF80C");
+
+                    //-4 space
+                    resourceBar.append("\uF804");
 
                     double maxEnergy = 100;
                     double currentEnergy = abilityManager.getShadowKnightAbilities().getEnergy().getCurrentEnergy(entity);
@@ -2656,8 +2515,11 @@ public class HudManager {
                 }
                 case "ranger":{
 
-                    //-83 space
-                    resourceBar.append("\uF80B\uF809\uF803");
+                    //-128 space
+                    resourceBar.append("\uF80C");
+
+                    //-4 space
+                    resourceBar.append("\uF804");
 
                     double maxFocus = 10;
                     double currentFocus = abilityManager.getRangerAbilities().getFocus().getFocus(entity);
@@ -2697,8 +2559,11 @@ public class HudManager {
                 }
                 case "assassin":{
 
-                    //-83
-                    resourceBar.append("\uF80B\uF809\uF803");
+                    //-128 space
+                    resourceBar.append("\uF80C");
+
+                    //-4 space
+                    resourceBar.append("\uF804");
 
                     int combo = abilityManager.getAssassinAbilities().getCombo().getComboPoints(entity);
 
@@ -2763,20 +2628,24 @@ public class HudManager {
                 }
                 case "elementalist":{
 
-                    //-83 space
-                    resourceBar.append("\uF80B\uF809\uF803");
+                    //-128 space
+                    resourceBar.append("\uF80C");
+
+                    //-4 space
+                    resourceBar.append("\uF804");
 
                     double currentHeat = abilityManager.getElementalistAbilities().getHeat().getHeat(entity);
 
-                    if(currentHeat < 33){
+                    if(currentHeat < 50){
                         resourceBar.append("\uE10D");
                         return String.valueOf(resourceBar);
                     }
 
-                    if(currentHeat < 66){
+                    if(currentHeat < 90){
                         resourceBar.append("\uE10E");
                         return String.valueOf(resourceBar);
                     }
+
 
                     resourceBar.append("\uE10F");
 
@@ -2789,7 +2658,11 @@ public class HudManager {
 
         }
 
-        resourceBar.append("\uF80B\uF809\uF803");
+        //-128 space
+        resourceBar.append("\uF80C");
+
+        //-4 space
+        resourceBar.append("\uF804");
 
         int amount = 0;
 

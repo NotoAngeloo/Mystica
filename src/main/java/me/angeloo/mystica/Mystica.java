@@ -19,6 +19,8 @@ import me.angeloo.mystica.Utility.Listeners.InventoryEventListener;
 import me.angeloo.mystica.Utility.Listeners.MMListeners;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import me.angeloo.mystica.Utility.Logic.StealthTargetBlacklist;
+import me.neznamy.tab.api.TabAPI;
+import me.neznamy.tab.api.scoreboard.ScoreboardManager;
 import net.playavalon.mythicdungeons.api.MythicDungeonsService;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -107,7 +109,6 @@ public final class Mystica extends JavaPlugin{
     public static Color uncommonColor = new Color(138, 221, 31);
     public static Color rareColor = new Color(57, 164, 179);
 
-
     public static MythicDungeonsService dungeonsApi(){
         return Bukkit.getServer().getServicesManager().load(MythicDungeonsService.class);
     }
@@ -118,7 +119,6 @@ public final class Mystica extends JavaPlugin{
         plugin = this;
 
         this.packetManager = NMSVersion.getCurrentVersion().getVersionFactory().create();
-
 
 
         protocolManager = ProtocolLibrary.getProtocolManager();
@@ -447,6 +447,7 @@ public final class Mystica extends JavaPlugin{
     }
 
     public ProtocolManager getProtocolManager(){return protocolManager;}
+
 
     @NotNull
     public PacketInterface getPacketInterface(){

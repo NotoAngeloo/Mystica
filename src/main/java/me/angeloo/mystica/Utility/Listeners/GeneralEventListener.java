@@ -1087,10 +1087,6 @@ public class GeneralEventListener implements Listener {
                 hudManager.displayCastBar(player);
                 return;
             }
-            case "dps":{
-                hudManager.editDpsMeter(player);
-                return;
-            }
         }
 
 

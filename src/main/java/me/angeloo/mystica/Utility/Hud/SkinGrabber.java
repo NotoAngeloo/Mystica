@@ -408,8 +408,8 @@ public class SkinGrabber {
                     }
 
 
-                    //-24
-                    face.append("\uF809\uF808");
+                    //-16
+                    face.append("\uF809");
 
 
                 }
@@ -469,9 +469,8 @@ public class SkinGrabber {
                     }
 
 
-                    //-24
-                    face.append("\uF809\uF808");
-
+                    //-16
+                    face.append("\uF809");
 
                 }
 
@@ -530,8 +529,8 @@ public class SkinGrabber {
                     }
 
 
-                    //-24
-                    face.append("\uF809\uF808");
+                    //-16
+                    face.append("\uF809");
 
 
                 }
@@ -591,8 +590,8 @@ public class SkinGrabber {
                     }
 
 
-                    //-24
-                    face.append("\uF809\uF808");
+                    //-16
+                    face.append("\uF809");
 
 
                 }

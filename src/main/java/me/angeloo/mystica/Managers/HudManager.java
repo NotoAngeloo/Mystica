@@ -311,13 +311,9 @@ public class HudManager {
                     break;
                 }
 
-                //-92
-                teamData.append("\uF80B\uF809\uF808\uF804");
+                //-87
+                teamData.append("\uF80B\uF809\uF807");
 
-                if(slot>=2){
-                    //+1
-                    teamData.append("\uF821");
-                }
             }
 
             return String.valueOf(teamData);
@@ -421,8 +417,6 @@ public class HudManager {
         }
 
         StringBuilder offset = new StringBuilder();
-
-        //TODO: player status on right, enemy status (bleeds etc) on left
 
         String playerClass = profileManager.getAnyProfile(player).getPlayerClass();
         String subClass = profileManager.getAnyProfile(player).getPlayerSubclass();
@@ -832,17 +826,23 @@ public class HudManager {
 
             entityBar.append(skinGrabber.getTeamFace(player, slot));
 
-            //+29
-            entityBar.append("\uF829\uF828\uF825");
-
-
+            //+16 check this out later
+            entityBar.append("\uF829");
 
             return String.valueOf(entity);
         }
 
         if(profileManager.getAnyProfile(entity).fakePlayer()){
 
+            //entityBar.append(skinGrabber.getTeamFace(profileManager.getCompanionsPlayer(entity), slot));
+
+            //+16
+            //entityBar.append("\uF829");
+
             entityBar.append(profileManager.getCompanionTeamFace(entity.getUniqueId(), slot));
+
+
+
 
             //+3 is only because default steve face.
             entityBar.append("\uF823");
@@ -1582,8 +1582,8 @@ public class HudManager {
                 }
 
                 if(shieldAmount != 0){
-                    //-83 space
-                    healthBar.append("\uF80B\uF809\uF803");
+                    //-67 space
+                    healthBar.append("\uF80B\uF803");
                 }
 
                 switch (shieldAmount){
@@ -1759,8 +1759,8 @@ public class HudManager {
                 }
 
                 if(shieldAmount != 0){
-                    //-83 space
-                    healthBar.append("\uF80B\uF809\uF803");
+                    //-67 space
+                    healthBar.append("\uF80B\uF803");
                 }
 
                 switch (shieldAmount){
@@ -1936,8 +1936,8 @@ public class HudManager {
                 }
 
                 if(shieldAmount != 0){
-                    //-83 space
-                    healthBar.append("\uF80B\uF809\uF803");
+                    //-67 space
+                    healthBar.append("\uF80B\uF803");
                 }
 
                 switch (shieldAmount){
@@ -2113,8 +2113,8 @@ public class HudManager {
                 }
 
                 if(shieldAmount != 0){
-                    //-83 space
-                    healthBar.append("\uF80B\uF809\uF803");
+                    //-67 space
+                    healthBar.append("\uF80B\uF803");
                 }
 
                 switch (shieldAmount){

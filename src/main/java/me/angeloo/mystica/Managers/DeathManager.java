@@ -4,6 +4,7 @@ import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.CustomEvents.AiSignalEvent;
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.CustomEvents.MysticaPlayerDeathEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Components.Profile;
@@ -115,12 +116,10 @@ public class DeathManager {
         if(target instanceof Player){
             ((Player) target).setGameMode(GameMode.SURVIVAL);
             ((Player) target).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(""));
-        }
-
-
-        if(target instanceof Player){
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player) target, "resource", true));
             ((Player)target).getInventory().clear();
         }
+
 
         profileManager.getAnyProfile(target).setIfInCombat(false);
 
@@ -156,6 +155,7 @@ public class DeathManager {
                             livingEntity.teleport(target.getWorld().getSpawnLocation());
                             playerNowLive(livingEntity, false, null);
                             Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent(livingEntity, "reset"));
+                            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player) target, "team", true));
                         }
 
 

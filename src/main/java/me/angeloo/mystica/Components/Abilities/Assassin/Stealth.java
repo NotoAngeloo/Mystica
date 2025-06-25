@@ -114,7 +114,7 @@ public class Stealth {
                     stealthed.put(caster.getUniqueId(), true);
                     if (caster instanceof Player) {
                         Player player = (Player) caster;
-                        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
+                        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
                     }
 
                     revealAfterTime(caster);
@@ -173,7 +173,7 @@ public class Stealth {
         stealthed.put(caster.getUniqueId(), false);
         if(caster instanceof Player){
             Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
         }
 
     }
@@ -185,7 +185,7 @@ public class Stealth {
         stealthed.put(caster.getUniqueId(), false);
         if(caster instanceof Player){
             Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
         }
 
         abilityReadyInMap.put(caster.getUniqueId(), 30);

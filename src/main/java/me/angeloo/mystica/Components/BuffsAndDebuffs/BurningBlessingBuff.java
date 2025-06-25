@@ -37,7 +37,7 @@ public class BurningBlessingBuff {
 
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
         }
 
         if(removeHealthBuffTaskMap.containsKey(entity.getUniqueId())){
@@ -74,7 +74,7 @@ public class BurningBlessingBuff {
         hasHealthMap.remove(entity.getUniqueId());
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
         }
     }
 

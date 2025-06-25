@@ -17,6 +17,7 @@ import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Listeners.GeneralEventListener;
 import me.angeloo.mystica.Utility.Listeners.InventoryEventListener;
 import me.angeloo.mystica.Utility.Listeners.MMListeners;
+import me.angeloo.mystica.Utility.Logic.DamageBoardPlaceholders;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import me.angeloo.mystica.Utility.Logic.StealthTargetBlacklist;
 import me.neznamy.tab.api.TabAPI;
@@ -50,6 +51,7 @@ public final class Mystica extends JavaPlugin{
     private DailyData dailyData;
     private PathingManager pathingManager;
 
+    private DamageBoardPlaceholders damageBoardPlaceholders;
     private HudManager hudManager;
 
     private DisplayWeapons displayWeapons;
@@ -94,9 +96,9 @@ public final class Mystica extends JavaPlugin{
     private DamageIndicatorApi api;
 
     public static Color assassinColor = new java.awt.Color(214, 61, 207);
-    public static Color elementalistColor = new Color(153, 204, 255);
+    public static Color elementalistColor = new Color(52, 151, 219);
     public static Color mysticColor = new Color(155, 120, 197);
-    public static Color paladinColor = new Color(207, 214, 61);
+    public static Color paladinColor = new Color(154, 125, 10);
     public static Color rangerColor = new Color(34, 111, 80);
     public static Color shadowKnightColor = new Color(213, 33, 3);
     public static Color warriorColor = new Color(214, 126, 61);
@@ -168,11 +170,12 @@ public final class Mystica extends JavaPlugin{
         abilityManager = new AbilityManager(this);
         combatManager = abilityManager.getCombatManager();
 
-        //combatTick
         deathManager = new DeathManager(this);
         allSkillItems = abilityManager.getAllSkillItems();
 
+
         hudManager = new HudManager(this);
+        damageBoardPlaceholders = hudManager.getDamageBoardPlaceholders();
 
         fakePlayerAiManager = new FakePlayerAiManager(this);
 
@@ -445,6 +448,7 @@ public final class Mystica extends JavaPlugin{
     public HudManager getHudManager() {
         return hudManager;
     }
+
 
     public ProtocolManager getProtocolManager(){return protocolManager;}
 

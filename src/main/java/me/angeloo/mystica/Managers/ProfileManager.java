@@ -62,6 +62,8 @@ public class ProfileManager {
     private final Map<UUID, String> companionFace2 = new HashMap<>();
     private final Map<UUID, String> companionFace3 = new HashMap<>();
 
+    private final Map<UUID, String> bossIcons = new HashMap<>();
+
     private final Map<String, Player> playerNameMap = new HashMap<>();
     private final Map<UUID, String> nonPlayerNameMap = new HashMap<>();
     private final Map<UUID, Location> bossHomes = new HashMap<>();
@@ -1101,6 +1103,21 @@ public class ProfileManager {
         companionFace1.remove(uuid);
         companionFace2.remove(uuid);
         companionFace3.remove(uuid);
+    }
+
+    public void setBossIcon(UUID uuid, String bossName){
+
+        switch (bossName.toLowerCase()){
+            case "lindwyrm":{
+                bossIcons.put(uuid, "\uE04E");
+                return;
+            }
+        }
+
+    }
+
+    public String getBossIcon(UUID uuid){
+        return bossIcons.getOrDefault(uuid, "\uE1A3");
     }
 
 }

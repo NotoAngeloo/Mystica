@@ -19,9 +19,9 @@ public class CombatManager {
 
     private final Mystica main;
     private final ProfileManager profileManager;
+    private final MysticaPartyManager mysticaPartyManager;
     private final ItemManager itemManager;
     private final AbilityManager abilityManager;
-    private final DpsManager dpsManager;
     private final CooldownDisplayer cooldownDisplayer;
     private final CombatTick combatTick;
 
@@ -30,9 +30,9 @@ public class CombatManager {
     public CombatManager(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
+        mysticaPartyManager = main.getMysticaPartyManager();
         abilityManager = manager;
         itemManager = main.getItemManager();
-        dpsManager = main.getDpsManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         combatTick = new CombatTick(main, this, manager);
     }
@@ -91,7 +91,7 @@ public class CombatManager {
 
         profileManager.getAnyProfile(player).setIfInCombat(true);
         lastCalledCombat.put(player.getUniqueId(), System.currentTimeMillis());
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
     }
 
 
@@ -106,9 +106,32 @@ public class CombatManager {
 
     public boolean canLeaveCombat(Player player){
 
+        //first check mparty
+
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
+
+        for(LivingEntity member : mParty){
+
+            if(member instanceof Player){
+                boolean partyMemberDeathStatus = profileManager.getAnyProfile(member).getIfDead();
+
+                if(partyMemberDeathStatus){
+                    continue;
+                }
+            }
+
+
+            boolean partyMemberCombatStatus = profileManager.getAnyProfile(member).getIfInCombat();
+
+            if(partyMemberCombatStatus){
+                return false;
+            }
+
+
+        }
+
         long currentTime = System.currentTimeMillis();
         long lastCalled = getLastCalledCombat(player);
-
         //Bukkit.getLogger().info(String.valueOf(currentTime - lastCalled));
 
         return currentTime - lastCalled > 10000;
@@ -156,7 +179,7 @@ public class CombatManager {
 
         //dpsManager.removeDps(player);
         abilityManager.resetAbilityBuffs(player);
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", true));
     }
 
 

@@ -48,6 +48,10 @@ public class MysticaPartyManager {
 
             }
 
+            if(player == null){
+                return mParty;
+            }
+
             Player partyLeader = player;
 
             PartiesAPI api = Parties.getApi();

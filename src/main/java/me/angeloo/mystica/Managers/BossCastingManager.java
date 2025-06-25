@@ -59,7 +59,7 @@ public class BossCastingManager {
                         continue;
                     }
                     Player player = (Player) enemy;
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "target"));
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "target", true));
                 }
 
             }

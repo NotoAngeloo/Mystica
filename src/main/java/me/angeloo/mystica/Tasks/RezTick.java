@@ -58,12 +58,6 @@ public class RezTick extends BukkitRunnable {
                     break;
                 }
 
-                if(!(member instanceof Player)){
-                    if(fakePlayerAiManager.getIfRotationRunning(member)){
-                        rezMessage = "Party in Combat";
-                        break;
-                    }
-                }
 
 
             }

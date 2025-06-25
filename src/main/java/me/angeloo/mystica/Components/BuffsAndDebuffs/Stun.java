@@ -36,7 +36,7 @@ public class Stun {
 
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
         }
 
         if(time == 0){
@@ -71,7 +71,7 @@ public class Stun {
         immobile.removeImmobile(entity);
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
         }
     }
 

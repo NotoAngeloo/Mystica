@@ -12,16 +12,20 @@ public class HudUpdateEvent extends Event {
     private final Player player;
 
     private final String barType;
+    private boolean forced;
 
 
 
-    public HudUpdateEvent(Player player, String barType){
+    public HudUpdateEvent(Player player, String barType, boolean forced){
         this.player = player;
         this.barType = barType;
+        this.forced = forced;
     }
 
     public Player getPlayer(){return player;}
     public String getBarType(){return barType;}
+    public boolean getIfForced(){return forced;}
+
     public HandlerList getHandlers() {
         return handlers;
     }

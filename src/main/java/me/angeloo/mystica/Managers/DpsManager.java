@@ -85,6 +85,8 @@ public class DpsManager {
     public void removeDps(LivingEntity entity){
         dpsStarted.remove(entity.getUniqueId());
         totalDamage.remove(entity.getUniqueId());
+
+
     }
 
 
@@ -95,7 +97,7 @@ public class DpsManager {
 
         for(LivingEntity member : mParty){
             if(member instanceof Player){
-                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player)member, "dps"));
+                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player)member, "dps", false));
             }
         }
 

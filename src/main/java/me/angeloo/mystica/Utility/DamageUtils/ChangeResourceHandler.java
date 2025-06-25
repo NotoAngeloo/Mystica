@@ -291,7 +291,7 @@ public class ChangeResourceHandler {
         player.setHealth(hearts);
 
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(player, false));
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource"));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource", false));
 
         lastDamaged.put(player.getUniqueId(), (System.currentTimeMillis()/1000));
     }
@@ -381,7 +381,7 @@ public class ChangeResourceHandler {
         player.setHealth(hearts);
 
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(player, true));
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource"));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource", false));
 
     }
 
@@ -412,15 +412,6 @@ public class ChangeResourceHandler {
         profileManager.getAnyProfile(player).getStats().setLevel(currentLevel);
     }
 
-
-    public Long getLastDamaged(UUID uuid){
-
-        if(!lastDamaged.containsKey(uuid)){
-            lastDamaged.put(uuid, (System.currentTimeMillis() / 1000) - 20);
-        }
-
-        return lastDamaged.get(uuid);
-    }
 
     private void startTask(LivingEntity entity){
 
@@ -617,18 +608,5 @@ public class ChangeResourceHandler {
 
     }
 
-    /*public void displayDamage(Player player, LivingEntity target, double amount){
-
-        PacketContainer container = new PacketContainer(PacketType.Play.Server.SPAWN_ENTITY);
-        container.getIntegers().write(1, 100);
-
-        container.getDoubles().write(0, target.getLocation().getX());
-        container.getDoubles().write(1, target.getLocation().getY() + 1);
-        container.getDoubles().write(2, target.getLocation().getZ());
-
-        protocolManager.sendServerPacket(player, container);
-
-
-    }*/
 
 }

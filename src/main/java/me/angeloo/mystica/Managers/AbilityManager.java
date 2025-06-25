@@ -552,7 +552,7 @@ public class AbilityManager {
         castMap.put(caster, casting);
         if(caster instanceof Player){
             Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
         }
 
     }
@@ -565,7 +565,7 @@ public class AbilityManager {
         Player player = (Player) caster;
 
         percentCastBar.put(caster, percent);
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "cast"));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "cast", false));
     }
     public double getCastPercent(Player player){
         return percentCastBar.getOrDefault(player, 0.0);

@@ -84,16 +84,19 @@ public class CreaturesAndCharactersManager {
             case "Lindwyrm":{
                 theLindwyrm.makeProfile(uuid);
                 profileManager.setBossHome(uuid);
+                profileManager.setBossIcon(uuid, name);
                 break;
             }
             case "WeberBoss":{
                 weberBoss.makeProfile(uuid);
                 profileManager.setBossHome(uuid);
+                profileManager.setBossIcon(uuid, name);
                 break;
             }
             case "CoersicaBoss":{
                 coersicaBoss.makeProfile(uuid);
                 profileManager.setBossHome(uuid);
+                profileManager.setBossIcon(uuid, name);
                 break;
             }
             case "Coersica_Dimension_Rift":{
@@ -107,6 +110,7 @@ public class CreaturesAndCharactersManager {
             case "HoLeeBoss":{
                 hoLeeBoss.makeProfile(uuid);
                 profileManager.setBossHome(uuid);
+                profileManager.setBossIcon(uuid, name);
                 break;
             }
             case "HoLeePikeman":{
@@ -116,6 +120,7 @@ public class CreaturesAndCharactersManager {
             case "CorruptHeart":{
                 corruptHeart.makeProfile(uuid);
                 profileManager.setBossHome(uuid);
+                profileManager.setBossIcon(uuid, name);
                 break;
             }
             case "SafeZone":

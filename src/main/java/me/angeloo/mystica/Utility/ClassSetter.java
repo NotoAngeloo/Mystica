@@ -47,7 +47,7 @@ public class ClassSetter {
         displayWeapons.displayArmor(player);
         gearReader.setGearStats(player);
 
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource"));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource", true));
 
     }
 

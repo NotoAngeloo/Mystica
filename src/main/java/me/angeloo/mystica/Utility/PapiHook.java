@@ -22,7 +22,7 @@ public class PapiHook extends PlaceholderExpansion {
     public PapiHook(Mystica main){
         this.main = main;
         mysticaEntityGrabber = new MysticaEntityGrabber(main);
-        damageBoardPlaceholders = new DamageBoardPlaceholders(main);
+        damageBoardPlaceholders = main.getHudManager().getDamageBoardPlaceholders();
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
     }

@@ -45,7 +45,7 @@ public class Combo {
 
         if(caster instanceof Player){
             Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
         }
 
         cooldownDisplayer.displayCooldown(caster, 3);
@@ -53,7 +53,7 @@ public class Combo {
 
         if(caster instanceof Player){
             Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource"));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource", false));
         }
     }
 
@@ -68,7 +68,7 @@ public class Combo {
 
         if(caster instanceof Player){
             Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
         }
 
 
@@ -77,7 +77,7 @@ public class Combo {
 
         if(caster instanceof Player){
             Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource"));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource", false));
         }
 
         return current;

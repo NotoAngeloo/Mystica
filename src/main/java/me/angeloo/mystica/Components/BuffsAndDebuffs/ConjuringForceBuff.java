@@ -26,7 +26,7 @@ public class ConjuringForceBuff {
 
             if(entity instanceof Player){
                 Player player = (Player) entity;
-                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
+                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
             }
 
         }
@@ -39,7 +39,7 @@ public class ConjuringForceBuff {
 
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
         }
 
     }

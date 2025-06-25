@@ -5,6 +5,7 @@ import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Hud.IconCalculator;
 import me.angeloo.mystica.Utility.Hud.SkinGrabber;
+import me.angeloo.mystica.Utility.Logic.DamageBoardPlaceholders;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -28,6 +29,7 @@ public class HudManager {
 
     private final ProfileManager profileManager;
     private final MysticaPartyManager mysticaPartyManager;
+    private final DamageBoardPlaceholders damageBoardPlaceholders;
 
 
     private final AllSkillItems allSkillItems;
@@ -39,10 +41,14 @@ public class HudManager {
 
     private final SkinGrabber skinGrabber;
 
-    private final Map<UUID, Long> lastDpsBarUpdate = new HashMap<>();
+
+    private final Map<UUID, Long> lastHealthBarUpdate = new HashMap<>();
+    private final Map<UUID, Long> lastTargetBarUpdate = new HashMap<>();
+    private final Map<UUID, Long> lastTeamBarUpdate = new HashMap<>();
 
     public HudManager(Mystica main){
         profileManager = main.getProfileManager();
+        damageBoardPlaceholders = new DamageBoardPlaceholders(main);
         mysticaPartyManager = main.getMysticaPartyManager();
         abilityManager = main.getAbilityManager();
         allSkillItems = main.getAllSkillItems();
@@ -52,6 +58,10 @@ public class HudManager {
 
         iconCalculator = new IconCalculator();
         skinGrabber = new SkinGrabber();
+    }
+
+    public DamageBoardPlaceholders getDamageBoardPlaceholders(){
+        return damageBoardPlaceholders;
     }
 
     public void innitHud(Player player){
@@ -215,14 +225,35 @@ public class HudManager {
     public void editResourceBar(Player player){
         BossBar resourceBar = profileManager.getPlayerResourceBar(player);
         resourceBar.setTitle(createPlayerDataString(player));
+        lastHealthBarUpdate.put(player.getUniqueId(), System.currentTimeMillis());
     }
-    public void editTargetBar(Player player){
+    public void editTargetBar(Player player, boolean force){
+
+        if(!force){
+            if(getTimeSinceTarget(player) < 1){
+                return;
+            }
+        }
+
+
+
         BossBar targetBar = profileManager.getPlayerTargetBar(player);
         targetBar.setTitle(createTargetDataString(player));
+        lastTargetBarUpdate.put(player.getUniqueId(), System.currentTimeMillis());
     }
-    public void editTeamBar(Player player){
+    public void editTeamBar(Player player, boolean force){
+
+        if(!force){
+            if(getTimeSinceTeam(player) < 1){
+                return;
+            }
+        }
+
+
+
         BossBar teamBar = profileManager.getPlayerTeamBar(player);
         teamBar.setTitle(createTeamDataString(player));
+        lastTeamBarUpdate.put(player.getUniqueId(), System.currentTimeMillis());
     }
     public void editStatusBar(Player player){
         BossBar statusBar = profileManager.getPlayerStatusBar(player);
@@ -230,20 +261,38 @@ public class HudManager {
     }
 
 
-    private long getTime(Player player){
+    private long getTimeSinceTeam(Player player){
 
         long now = System.currentTimeMillis();
-        long last = getLast(player);
+
+        long last;
+
+        if(!lastTeamBarUpdate.containsKey(player.getUniqueId())){
+            lastTeamBarUpdate.put(player.getUniqueId(), now);
+        }
+
+        last = lastTeamBarUpdate.get(player.getUniqueId());
+
 
         return ((now-last) / 1000);
     }
 
-    private long getLast(Player player){
-        if(!lastDpsBarUpdate.containsKey(player.getUniqueId())){
-            lastDpsBarUpdate.put(player.getUniqueId(), System.currentTimeMillis());
+    private long getTimeSinceTarget(Player player){
+
+        long now = System.currentTimeMillis();
+
+        long last;
+
+        if(!lastTargetBarUpdate.containsKey(player.getUniqueId())){
+            lastTargetBarUpdate.put(player.getUniqueId(), now);
         }
-        return lastDpsBarUpdate.get(player.getUniqueId());
+
+        last = lastTargetBarUpdate.get(player.getUniqueId());
+
+
+        return ((now-last) / 1000);
     }
+
 
     private String createPlayerDataString(Player player){
 
@@ -1201,8 +1250,7 @@ public class HudManager {
 
             //get whichever background specificlly, later
 
-            //default background
-            icon.append("\uE1A3");
+            icon.append(profileManager.getBossIcon(entity.getUniqueId()));
 
             //-43
             icon.append("\uF80A\uF808\uF803");
@@ -1253,6 +1301,10 @@ public class HudManager {
 
         if(amount > 20){
             amount = 20;
+        }
+
+        if(profileManager.getAnyProfile(entity).getIfDead()){
+            amount = 0;
         }
 
         switch (amount){

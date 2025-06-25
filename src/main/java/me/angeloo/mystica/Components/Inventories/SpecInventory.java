@@ -159,7 +159,7 @@ public class SpecInventory implements Listener {
                 profileManager.getAnyProfile(player).getStats().setLevelStats(profileManager.getAnyProfile(player).getStats().getLevel(),
                         profileManager.getAnyProfile(player).getPlayerClass(), name);
 
-                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource"));
+                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource", true));
                 return;
             }
 

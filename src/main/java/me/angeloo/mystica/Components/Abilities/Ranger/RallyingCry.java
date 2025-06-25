@@ -90,7 +90,7 @@ public class RallyingCry {
 
                 if(caster instanceof Player){
                     Player player = (Player) caster;
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
                 }
 
 

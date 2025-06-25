@@ -86,6 +86,8 @@ public class FakePlayerAiManager {
     private void startTamerRotation(LivingEntity companion){
         RangerAbilities rangerAbilities = abilityManager.getRangerAbilities();
 
+        profileManager.getAnyProfile(companion).setIfInCombat(true);
+
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
@@ -176,6 +178,8 @@ public class FakePlayerAiManager {
     private void startTemplarRotation(LivingEntity companion){
 
         PaladinAbilities paladinAbilities = abilityManager.getPaladinAbilities();
+
+        profileManager.getAnyProfile(companion).setIfInCombat(true);
 
         BukkitTask task = new BukkitRunnable(){
             @Override
@@ -308,6 +312,8 @@ public class FakePlayerAiManager {
     private void startShepardRotation(LivingEntity companion){
         MysticAbilities mysticAbilities = abilityManager.getMysticAbilities();
 
+        profileManager.getAnyProfile(companion).setIfInCombat(true);
+
         List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(companion));
 
         BukkitTask task = new BukkitRunnable(){
@@ -420,6 +426,8 @@ public class FakePlayerAiManager {
 
         WarriorAbilities warriorAbilities = abilityManager.getWarriorAbilities();
 
+        profileManager.getAnyProfile(companion).setIfInCombat(true);
+
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
@@ -531,6 +539,8 @@ public class FakePlayerAiManager {
     private void startConjurerRotation(LivingEntity companion){
 
         ElementalistAbilities elementalistAbilities = abilityManager.getElementalistAbilities();
+
+        profileManager.getAnyProfile(companion).setIfInCombat(true);
 
         BukkitTask task = new BukkitRunnable(){
             @Override
@@ -645,6 +655,7 @@ public class FakePlayerAiManager {
         if(entity instanceof LivingEntity){
             LivingEntity companion = (LivingEntity) entity;
             abilityManager.interruptBasic(companion);
+            profileManager.getAnyProfile(companion).setIfInCombat(false);
         }
         //Bukkit.getLogger().info("rotation stopped");
 
@@ -662,10 +673,6 @@ public class FakePlayerAiManager {
         return cautionMap.getOrDefault(entity.getUniqueId(), false);
     }
 
-    public boolean getIfRotationRunning(LivingEntity companion){
-
-        return aiTaskMap.containsKey(companion.getUniqueId());
-    }
 
 
 }

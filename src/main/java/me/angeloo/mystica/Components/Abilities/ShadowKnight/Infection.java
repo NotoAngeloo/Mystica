@@ -276,7 +276,7 @@ public class Infection {
 
                 if(caster instanceof Player){
                     Player player = (Player) caster;
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
                 }
 
 
@@ -289,7 +289,7 @@ public class Infection {
                 infectionTask.remove(caster.getUniqueId());
                 if(caster instanceof Player){
                     Player player = (Player) caster;
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
                 }
             }
 
@@ -326,7 +326,7 @@ public class Infection {
 
         if(caster instanceof Player){
             Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
         }
 
         BukkitTask task = new BukkitRunnable(){
@@ -335,7 +335,7 @@ public class Infection {
                 enhanced.remove(caster.getUniqueId());
                 if(caster instanceof Player){
                     Player player = (Player) caster;
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status"));
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
                 }
             }
         }.runTaskLater(main, 20*10);

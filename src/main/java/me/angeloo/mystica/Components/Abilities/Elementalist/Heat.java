@@ -43,7 +43,7 @@ public class Heat {
 
         if(caster instanceof Player){
             Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource"));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource", false));
         }
     }
 
@@ -65,7 +65,7 @@ public class Heat {
 
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource"));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource", false));
         }
     }
 

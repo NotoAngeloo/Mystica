@@ -30,7 +30,7 @@ public class Focus {
 
         if(caster instanceof Player){
             Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource"));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource", false));
         }
     }
 
@@ -51,7 +51,7 @@ public class Focus {
 
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource"));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource", false));
         }
     }
 

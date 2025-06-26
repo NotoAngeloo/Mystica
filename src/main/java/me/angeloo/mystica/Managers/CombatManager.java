@@ -112,6 +112,10 @@ public class CombatManager {
 
         for(LivingEntity member : mParty){
 
+            if(member == player){
+                continue;
+            }
+
             if(member instanceof Player){
                 boolean partyMemberDeathStatus = profileManager.getAnyProfile(member).getIfDead();
 

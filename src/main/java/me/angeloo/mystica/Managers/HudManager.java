@@ -6,6 +6,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Hud.IconCalculator;
 import me.angeloo.mystica.Utility.Hud.SkinGrabber;
 import me.angeloo.mystica.Utility.Logic.DamageBoardPlaceholders;
+import me.angeloo.mystica.Utility.Logic.PveChecker;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -20,7 +21,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 import static me.angeloo.mystica.Mystica.*;
 
@@ -42,9 +45,35 @@ public class HudManager {
     private final SkinGrabber skinGrabber;
 
 
-    private final Map<UUID, Long> lastHealthBarUpdate = new HashMap<>();
     private final Map<UUID, Long> lastTargetBarUpdate = new HashMap<>();
     private final Map<UUID, Long> lastTeamBarUpdate = new HashMap<>();
+
+    private final Map<Character, Integer> MINECRAFT_CHAR_WIDTHS = Map.<Character, Integer>ofEntries(
+            Map.entry(' ', 4), Map.entry('!', 2), Map.entry('"', 5), Map.entry('#', 6),
+            Map.entry('$', 6), Map.entry('%', 6), Map.entry('&', 6), Map.entry('\'', 3),
+            Map.entry('(', 5), Map.entry(')', 5), Map.entry('*', 5), Map.entry('+', 6),
+            Map.entry(',', 2), Map.entry('-', 6), Map.entry('.', 2), Map.entry('/', 6),
+            Map.entry('0', 6), Map.entry('1', 6), Map.entry('2', 6), Map.entry('3', 6),
+            Map.entry('4', 6), Map.entry('5', 6), Map.entry('6', 6), Map.entry('7', 6),
+            Map.entry('8', 6), Map.entry('9', 6), Map.entry(':', 2), Map.entry(';', 2),
+            Map.entry('<', 5), Map.entry('=', 6), Map.entry('>', 5), Map.entry('?', 6),
+            Map.entry('@', 7), Map.entry('A', 6), Map.entry('B', 6), Map.entry('C', 6),
+            Map.entry('D', 6), Map.entry('E', 6), Map.entry('F', 6), Map.entry('G', 6),
+            Map.entry('H', 6), Map.entry('I', 4), Map.entry('J', 6), Map.entry('K', 6),
+            Map.entry('L', 6), Map.entry('M', 6), Map.entry('N', 6), Map.entry('O', 6),
+            Map.entry('P', 6), Map.entry('Q', 6), Map.entry('R', 6), Map.entry('S', 6),
+            Map.entry('T', 6), Map.entry('U', 6), Map.entry('V', 6), Map.entry('W', 6),
+            Map.entry('X', 6), Map.entry('Y', 6), Map.entry('Z', 6), Map.entry('[', 4),
+            Map.entry('\\', 6), Map.entry(']', 4), Map.entry('^', 6), Map.entry('_', 6),
+            Map.entry('`', 3), Map.entry('a', 6), Map.entry('b', 6), Map.entry('c', 6),
+            Map.entry('d', 6), Map.entry('e', 6), Map.entry('f', 5), Map.entry('g', 6),
+            Map.entry('h', 6), Map.entry('i', 2), Map.entry('j', 6), Map.entry('k', 5),
+            Map.entry('l', 3), Map.entry('m', 6), Map.entry('n', 6), Map.entry('o', 6),
+            Map.entry('p', 6), Map.entry('q', 6), Map.entry('r', 5), Map.entry('s', 6),
+            Map.entry('t', 4), Map.entry('u', 6), Map.entry('v', 6), Map.entry('w', 6),
+            Map.entry('x', 6), Map.entry('y', 6), Map.entry('z', 6), Map.entry('{', 5),
+            Map.entry('|', 2), Map.entry('}', 5), Map.entry('~', 7)
+    );
 
     public HudManager(Mystica main){
         profileManager = main.getProfileManager();
@@ -225,7 +254,6 @@ public class HudManager {
     public void editResourceBar(Player player){
         BossBar resourceBar = profileManager.getPlayerResourceBar(player);
         resourceBar.setTitle(createPlayerDataString(player));
-        lastHealthBarUpdate.put(player.getUniqueId(), System.currentTimeMillis());
     }
     public void editTargetBar(Player player, boolean force){
 
@@ -304,7 +332,7 @@ public class HudManager {
         // +60 space
         playerResources.append("\uF82A\uF829\uF828\uF824");
 
-        playerResources.append(createEntityDataString(player));
+        playerResources.append(createEntityDataString(player, player));
 
 
         return String.valueOf(playerResources);
@@ -317,7 +345,7 @@ public class HudManager {
 
         if(targetManager.getPlayerTarget(player) != null){
             LivingEntity target = targetManager.getPlayerTarget(player);
-            targetData.append(createEntityDataString(target));
+            targetData.append(createEntityDataString(player, target));
         }
 
         return String.valueOf(targetData);
@@ -1110,15 +1138,33 @@ public class HudManager {
         return String.valueOf(entityBar);
     }
 
-    private String createEntityDataString(LivingEntity entity){
+    private String createEntityDataString(Player barSeer, LivingEntity barEntity){
 
         StringBuilder entityData = new StringBuilder();
 
-        entityData.append(playerAndTargetIcon(entity));
-        entityData.append(healthBar(entity));
-        entityData.append(resourceBar(entity));
+        if(barSeer != barEntity){
+            int width = getPixelWidth(barEntity.getName());
+
+            //+1
+            entityData.append("\uF821".repeat(width));
+
+        }
+
+        entityData.append(playerAndTargetIcon(barEntity));
+        entityData.append(healthBar(barEntity));
+        entityData.append(resourceBar(barEntity));
+        entityData.append(getNameString(barSeer, barEntity));
 
         return String.valueOf(entityData);
+    }
+
+    int getPixelWidth(String text) {
+
+        int width = 0;
+        for (char c : text.toCharArray()) {
+            width += this.MINECRAFT_CHAR_WIDTHS.getOrDefault(c, 0);
+        }
+        return width;
     }
 
     private String playerAndTargetIcon(LivingEntity entity){
@@ -1180,8 +1226,15 @@ public class HudManager {
 
             icon.append(skinGrabber.getFace(player));
 
+            //-10
+            icon.append("\uF808\uF802");
+
+            icon.append(getLevelCircle(profileManager.getAnyProfile(player).getStats().getLevel()));
+
             //+38
             icon.append("\uF82A\uF826");
+
+
             return String.valueOf(icon);
         }
 
@@ -1240,8 +1293,14 @@ public class HudManager {
             String face = profileManager.getCompanionFace(entity.getUniqueId());
             icon.append(face);
 
-            //+13
-            icon.append("\uF828\uF825");
+            //-36
+            icon.append("\uF80A\uF804");
+
+            icon.append(getLevelCircle(profileManager.getAnyProfile(entity).getStats().getLevel()));
+
+            //+40
+            icon.append("\uF82A\uF828");
+
             return String.valueOf(icon);
 
         }
@@ -1259,8 +1318,14 @@ public class HudManager {
             icon.append(ChatColor.RESET);
             icon.append("\uE178");
 
-            //+4
-            icon.append("\uF824");
+            //-46
+            icon.append("\uF80A\uF808\uF806");
+
+            icon.append(getLevelCircle(profileManager.getAnyProfile(entity).getStats().getLevel()));
+
+            //+40
+            icon.append("\uF82A\uF828");
+
 
             return String.valueOf(icon);
         }
@@ -1275,6 +1340,21 @@ public class HudManager {
         icon.append(("\uE128"));
 
         return String.valueOf(icon);
+    }
+
+    private String getLevelCircle(int level){
+        StringBuilder levelCircle = new StringBuilder();
+
+        //level circle
+        levelCircle.append("\uE138");
+
+
+        //-14
+        levelCircle.append("\uF808\uF806");
+
+        levelCircle.append(level);
+
+        return String.valueOf(levelCircle);
     }
 
     private String healthBar(LivingEntity entity){
@@ -2827,6 +2907,22 @@ public class HudManager {
         return String.valueOf(resourceBar);
     }
 
+    private String getNameString(Player player, LivingEntity entity){
+
+        StringBuilder nameString = new StringBuilder();
+
+        if(player == entity){
+            return String.valueOf(nameString);
+        }
+
+        //-128 offset
+        nameString.append("\uF80C" + entity.getName() + "\uF82C");
+
+        //nameString.append(entity.getName());
+
+        return String.valueOf(nameString);
+    }
+
     private String getUltimateStatus(Player player){
 
         StringBuilder ultimateStatus = new StringBuilder();
@@ -2841,11 +2937,11 @@ public class HudManager {
             return " ";
         }
 
-        //+256
-        ultimateStatus.append("\uF82D");
+        //-256
+        ultimateStatus.append("\uF80D");
 
-        //-28
-        ultimateStatus.append("\uF809\uF808\uF804");
+        //+37
+        ultimateStatus.append("\uF82A\uF825");
 
 
         //move it again, if they have

@@ -196,7 +196,7 @@ public class GeneralEventListener implements Listener {
             player.setInvisible(false);
             player.setFireTicks(0);
             player.setVisualFire(false);
-            player.setLevel(profileManager.getAnyProfile(player).getStats().getLevel());
+            player.setLevel(0);
 
             ItemStack[] savedInv = profileManager.getAnyProfile(player).getSavedInv();
 

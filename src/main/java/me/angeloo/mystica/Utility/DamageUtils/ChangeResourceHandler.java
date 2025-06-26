@@ -389,13 +389,14 @@ public class ChangeResourceHandler {
     public void addXpToPlayer(Player player, float amount) {
 
         float currentXp = player.getExp();
-        int currentLevel = player.getLevel();
+        int currentLevel = profileManager.getAnyProfile(player).getStats().getLevel();
+        //int currentLevel = player.getLevel();
 
         // Able to change this later
 
         if (currentLevel >= dailyData.getMaxLevel()) {
             currentLevel = dailyData.getMaxLevel();
-            player.setLevel(currentLevel);
+            //player.setLevel(currentLevel);
             profileManager.getAnyProfile(player).getStats().setLevel(currentLevel);
             return;
         }
@@ -407,7 +408,7 @@ public class ChangeResourceHandler {
             currentXp -= 1.0f;
         }
 
-        player.setLevel(currentLevel);
+        //player.setLevel(currentLevel);
         player.setExp(currentXp);
         profileManager.getAnyProfile(player).getStats().setLevel(currentLevel);
     }

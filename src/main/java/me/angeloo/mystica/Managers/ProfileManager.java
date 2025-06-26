@@ -517,7 +517,7 @@ public class ProfileManager {
         };
         playerProfiles.put(uuid, profile);
 
-        newPlayer.setLevel(1);
+        newPlayer.setLevel(0);
         newPlayer.setExp(0);
 
         AttributeInstance maxHealthAttribute = newPlayer.getAttribute(Attribute.GENERIC_MAX_HEALTH);

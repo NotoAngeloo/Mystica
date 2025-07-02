@@ -19,6 +19,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 
 import java.awt.*;
@@ -29,6 +30,8 @@ import static me.angeloo.mystica.Mystica.*;
 
 
 public class HudManager {
+
+    private final Mystica main;
 
     private final ProfileManager profileManager;
     private final MysticaPartyManager mysticaPartyManager;
@@ -76,6 +79,7 @@ public class HudManager {
     );
 
     public HudManager(Mystica main){
+        this.main = main;
         profileManager = main.getProfileManager();
         damageBoardPlaceholders = new DamageBoardPlaceholders(main);
         mysticaPartyManager = main.getMysticaPartyManager();
@@ -95,165 +99,190 @@ public class HudManager {
 
     public void innitHud(Player player){
 
+        LivingEntity target = targetManager.getPlayerTarget(player);
 
-        //bar 1, player resources
-        BossBar resourceBar = Bukkit.createBossBar(createPlayerDataString(player), BarColor.WHITE, BarStyle.SOLID);
-        resourceBar.addPlayer(player);
-        resourceBar.setVisible(true);
-        profileManager.setPlayerResourceBar(player, resourceBar);
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                //bar 1, player resources
+                BossBar resourceBar = Bukkit.createBossBar(createPlayerDataString(player), BarColor.WHITE, BarStyle.SOLID);
+                resourceBar.addPlayer(player);
+                resourceBar.setVisible(true);
+                profileManager.setPlayerResourceBar(player, resourceBar);
 
-        //bar 2, target bar
-        BossBar targetBar = Bukkit.createBossBar(createTargetDataString(player), BarColor.WHITE, BarStyle.SOLID);
-        targetBar.addPlayer(player);
-        targetBar.setVisible(true);
-        profileManager.setPlayerTargetBar(player, targetBar);
-
-
-        //team data
-        BossBar teamBar = Bukkit.createBossBar(createTeamDataString(player), BarColor.WHITE, BarStyle.SOLID);
-        teamBar.addPlayer(player);
-        teamBar.setVisible(true);
-        profileManager.setPlayerTeamBar(player, teamBar);
+                //bar 2, target bar
+                BossBar targetBar = Bukkit.createBossBar(createTargetDataString(player, target), BarColor.WHITE, BarStyle.SOLID);
+                targetBar.addPlayer(player);
+                targetBar.setVisible(true);
+                profileManager.setPlayerTargetBar(player, targetBar);
 
 
-        //status
-        BossBar statusBar = Bukkit.createBossBar("", BarColor.WHITE, BarStyle.SOLID);
-        statusBar.addPlayer(player);
-        statusBar.setVisible(true);
-        profileManager.setPlayerStatusBar(player, statusBar);
+                //team data
+                BossBar teamBar = Bukkit.createBossBar(createTeamDataString(player), BarColor.WHITE, BarStyle.SOLID);
+                teamBar.addPlayer(player);
+                teamBar.setVisible(true);
+                profileManager.setPlayerTeamBar(player, teamBar);
 
+
+                //status
+                BossBar statusBar = Bukkit.createBossBar("", BarColor.WHITE, BarStyle.SOLID);
+                statusBar.addPlayer(player);
+                statusBar.setVisible(true);
+                profileManager.setPlayerStatusBar(player, statusBar);
+            }
+        }.runTaskAsynchronously(main);
 
     }
 
     public void displayUltimate(Player player){
 
-        StringBuilder hotBar = new StringBuilder();
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                StringBuilder hotBar = new StringBuilder();
 
-        String statusString = getUltimateStatus(player);
+                String statusString = getUltimateStatus(player);
 
-        hotBar.append(statusString);
+                hotBar.append(statusString);
 
-        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(String.valueOf(hotBar)));
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(String.valueOf(hotBar)));
+            }
+        }.runTaskAsynchronously(main);
+
+
     }
 
     public void displayCastBar(Player player){
 
-        if(!abilityManager.getIfCasting(player)){
-            //Bukkit.getLogger().info("player stop casting");
-            player.sendTitle("", "", 0, 1, 0);
-            return;
-        }
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                if(!abilityManager.getIfCasting(player)){
+                    //Bukkit.getLogger().info("player stop casting");
+                    player.sendTitle("", "", 0, 1, 0);
+                    return;
+                }
 
-        if(abilityManager.getCastPercent(player) == 0){
-            //Bukkit.getLogger().info("player stop casting");
-            player.sendTitle("", "", 0, 1, 0);
-            return;
-        }
+                if(abilityManager.getCastPercent(player) == 0){
+                    //Bukkit.getLogger().info("player stop casting");
+                    player.sendTitle("", "", 0, 1, 0);
+                    return;
+                }
 
-        StringBuilder castBar = new StringBuilder();
+                StringBuilder castBar = new StringBuilder();
 
-        double percent =  abilityManager.getCastPercent(player);
+                double percent =  abilityManager.getCastPercent(player);
 
-        double ratio = percent / 100;
+                double ratio = percent / 100;
 
-        int amount = (int) Math.ceil(ratio * 20);
+                int amount = (int) Math.ceil(ratio * 20);
 
-        //Bukkit.getLogger().info(String.valueOf(amount));
+                //Bukkit.getLogger().info(String.valueOf(amount));
 
-        switch (amount){
-            case 20:{
-                castBar.append("\uE0CD");
-                break;
-            }
-            case 19:{
-                castBar.append("\uE0CE");
-                break;
-            }
-            case 18:{
-                castBar.append("\uE0CF");
-                break;
-            }
-            case 17:{
-                castBar.append("\uE0D0");
-                break;
-            }
-            case 16:{
-                castBar.append("\uE0D1");
-                break;
-            }
-            case 15:{
-                castBar.append("\uE0D2");
-                break;
-            }
-            case 14:{
-                castBar.append("\uE0D3");
-                break;
-            }
-            case 13:{
-                castBar.append("\uE0D4");
-                break;
-            }
-            case 12:{
-                castBar.append("\uE0D5");
-                break;
-            }
-            case 11:{
-                castBar.append("\uE0D6");
-                break;
-            }
-            case 10:{
-                castBar.append("\uE0D7");
-                break;
-            }
-            case 9:{
-                castBar.append("\uE0D8");
-                break;
-            }
-            case 8:{
-                castBar.append("\uE0D9");
-                break;
-            }
-            case 7:{
-                castBar.append("\uE0DA");
-                break;
-            }
-            case 6:{
-                castBar.append("\uE0DB");
-                break;
-            }
-            case 5:{
-                castBar.append("\uE0DC");
-                break;
-            }
-            case 4:{
-                castBar.append("\uE0DD");
-                break;
-            }
-            case 3:{
-                castBar.append("\uE0DE");
-                break;
-            }
-            case 2:{
-                castBar.append("\uE0DF");
-                break;
-            }
-            case 1:{
-                castBar.append("\uE0E0");
-                break;
-            }
-        }
+                switch (amount){
+                    case 20:{
+                        castBar.append("\uE0CD");
+                        break;
+                    }
+                    case 19:{
+                        castBar.append("\uE0CE");
+                        break;
+                    }
+                    case 18:{
+                        castBar.append("\uE0CF");
+                        break;
+                    }
+                    case 17:{
+                        castBar.append("\uE0D0");
+                        break;
+                    }
+                    case 16:{
+                        castBar.append("\uE0D1");
+                        break;
+                    }
+                    case 15:{
+                        castBar.append("\uE0D2");
+                        break;
+                    }
+                    case 14:{
+                        castBar.append("\uE0D3");
+                        break;
+                    }
+                    case 13:{
+                        castBar.append("\uE0D4");
+                        break;
+                    }
+                    case 12:{
+                        castBar.append("\uE0D5");
+                        break;
+                    }
+                    case 11:{
+                        castBar.append("\uE0D6");
+                        break;
+                    }
+                    case 10:{
+                        castBar.append("\uE0D7");
+                        break;
+                    }
+                    case 9:{
+                        castBar.append("\uE0D8");
+                        break;
+                    }
+                    case 8:{
+                        castBar.append("\uE0D9");
+                        break;
+                    }
+                    case 7:{
+                        castBar.append("\uE0DA");
+                        break;
+                    }
+                    case 6:{
+                        castBar.append("\uE0DB");
+                        break;
+                    }
+                    case 5:{
+                        castBar.append("\uE0DC");
+                        break;
+                    }
+                    case 4:{
+                        castBar.append("\uE0DD");
+                        break;
+                    }
+                    case 3:{
+                        castBar.append("\uE0DE");
+                        break;
+                    }
+                    case 2:{
+                        castBar.append("\uE0DF");
+                        break;
+                    }
+                    case 1:{
+                        castBar.append("\uE0E0");
+                        break;
+                    }
+                }
 
-        //Bukkit.getLogger().info(String.valueOf(percent));
+                //Bukkit.getLogger().info(String.valueOf(percent));
 
 
 
-        player.sendTitle(" ", String.valueOf(castBar), 0, 2, 0);
+                player.sendTitle(" ", String.valueOf(castBar), 0, 2, 0);
+            }
+        }.runTaskAsynchronously(main);
+
 
     }
 
     public void editResourceBar(Player player){
         BossBar resourceBar = profileManager.getPlayerResourceBar(player);
-        resourceBar.setTitle(createPlayerDataString(player));
+
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                resourceBar.setTitle(createPlayerDataString(player));
+            }
+        }.runTaskAsynchronously(main);
+
     }
     public void editTargetBar(Player player, boolean force){
 
@@ -263,10 +292,18 @@ public class HudManager {
             }
         }
 
-
-
         BossBar targetBar = profileManager.getPlayerTargetBar(player);
-        targetBar.setTitle(createTargetDataString(player));
+
+        LivingEntity target = targetManager.getPlayerTarget(player);
+
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                targetBar.setTitle(createTargetDataString(player, target));
+            }
+        }.runTaskAsynchronously(main);
+
+
         lastTargetBarUpdate.put(player.getUniqueId(), System.currentTimeMillis());
     }
     public void editTeamBar(Player player, boolean force){
@@ -276,16 +313,30 @@ public class HudManager {
                 return;
             }
         }
-
-
-
         BossBar teamBar = profileManager.getPlayerTeamBar(player);
-        teamBar.setTitle(createTeamDataString(player));
+
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                teamBar.setTitle(createTeamDataString(player));
+            }
+        }.runTaskAsynchronously(main);
+
+
         lastTeamBarUpdate.put(player.getUniqueId(), System.currentTimeMillis());
     }
     public void editStatusBar(Player player){
         BossBar statusBar = profileManager.getPlayerStatusBar(player);
-        statusBar.setTitle(createStatusString(player));
+
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+
+                statusBar.setTitle(createStatusString(player));
+            }
+        }.runTaskAsynchronously(main);
+
+
     }
 
 
@@ -339,12 +390,11 @@ public class HudManager {
 
     }
 
-    private String createTargetDataString(Player player){
+    private String createTargetDataString(Player player, LivingEntity target){
 
         StringBuilder targetData = new StringBuilder();
 
-        if(targetManager.getPlayerTarget(player) != null){
-            LivingEntity target = targetManager.getPlayerTarget(player);
+        if(target != null){
             targetData.append(createEntityDataString(player, target));
         }
 

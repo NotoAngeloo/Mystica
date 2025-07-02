@@ -20,12 +20,9 @@ import me.angeloo.mystica.Utility.Listeners.MMListeners;
 import me.angeloo.mystica.Utility.Logic.DamageBoardPlaceholders;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import me.angeloo.mystica.Utility.Logic.StealthTargetBlacklist;
-import me.neznamy.tab.api.TabAPI;
-import me.neznamy.tab.api.scoreboard.ScoreboardManager;
 import net.playavalon.mythicdungeons.api.MythicDungeonsService;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,6 +38,8 @@ public final class Mystica extends JavaPlugin{
     private PacketInterface packetManager;
 
     private ProtocolManager protocolManager;
+
+    private CreaturesAndCharactersManager creaturesAndCharactersManager;
 
     private ProfileManager profileManager;
     private ProfileFileWriter profileFileWriter;
@@ -88,7 +87,6 @@ public final class Mystica extends JavaPlugin{
     private UpgradeInventory upgradeInventory;
     private EquipmentInventory equipmentInventory;
     private MatchmakingInventory matchmakingInventory;
-    private BagInventory bagInventory;
 
     private FirstClearManager firstClearManager;
 
@@ -133,8 +131,10 @@ public final class Mystica extends JavaPlugin{
         dailyData.createOrLoadFolder();
 
         profileFileWriter = new ProfileFileWriter(this);
+
         profileManager = new ProfileManager(this);
         profileManager.loadProfilesFromConfig();
+        creaturesAndCharactersManager = profileManager.getCreaturesAndCharactersManager();
 
         mysticaPartyManager = new MysticaPartyManager(this);
         matchMakingManager = new MatchMakingManager(this);
@@ -153,7 +153,7 @@ public final class Mystica extends JavaPlugin{
         pveChecker = new PveChecker(this);
 
         stealthTargetBlacklist = new StealthTargetBlacklist();
-        aggroManager = new AggroManager();
+        aggroManager = new AggroManager(this);
         bossCastingManager = new BossCastingManager(this);
         buffAndDebuffManager = new BuffAndDebuffManager(this);
 
@@ -182,7 +182,6 @@ public final class Mystica extends JavaPlugin{
         inventoryIndexingManager = new InventoryIndexingManager();
         abilityInventory = new AbilityInventory(this);
         specInventory = abilityInventory.getSpecInventory();
-        bagInventory = new BagInventory(this);
         identifyInventory = new IdentifyInventory(this);
         reforgeInventory = new ReforgeInventory(this);
         refineInventory = new RefineInventory(this);
@@ -199,7 +198,6 @@ public final class Mystica extends JavaPlugin{
         getCommand("MysticaDamage").setExecutor(new MysticaDamage(this));
         getCommand("MysticaEffect").setExecutor(new MysticaEffect(this));
         getCommand("StartFuryTimer").setExecutor(new StartFuryTimer(this));
-        getCommand("Bag").setExecutor(new Bag(this));
         getCommand("Equipment").setExecutor(new Equipment(this));
         getCommand("Trash").setExecutor(new Trash());
         getCommand("ClassSelect").setExecutor(new ClassSelect(this));
@@ -255,9 +253,9 @@ public final class Mystica extends JavaPlugin{
         //NaturalRegenTick regenTick = new NaturalRegenTick(this);
         //fregenTick.runTaskTimer(this, 0, 40);
         RezTick rezTick = new RezTick(this);
-        rezTick.runTaskTimer(this, 0, 20);
+        rezTick.runTaskTimerAsynchronously(this, 0, 20);
         DailyTick dailyTick = new DailyTick(this);
-        dailyTick.runTaskTimer(this, 0, 1200);
+        dailyTick.runTaskTimerAsynchronously(this, 0, 1200);
 
         Bukkit.getLogger().info("Mystica Enabled");
 
@@ -276,7 +274,7 @@ public final class Mystica extends JavaPlugin{
 
 
 
-        CreaturesAndCharactersManager creaturesAndCharactersManager = new CreaturesAndCharactersManager(this);
+
         try {
             creaturesAndCharactersManager.spawnAllNpcs();
         } catch (InvalidMobTypeException e) {
@@ -299,19 +297,9 @@ public final class Mystica extends JavaPlugin{
             if(deathStatus){
                 deathManager.playerNowLive(player, false, null);
             }
-            if(combatStatus){
+            if(combatStatus) {
                 combatManager.forceCombatEnd(player);
             }
-
-            ArrayList<ItemStack> allPlayerItems = profileManager.getAnyProfile(player).getPlayerBag().getItems();
-            ArrayList<ItemStack> itemsMinusTemp = new ArrayList<>();
-            for(ItemStack item : allPlayerItems){
-                if(item.getType() == Material.AIR){
-                    continue;
-                }
-                itemsMinusTemp.add(item);
-            }
-            profileManager.getAnyProfile(player).getPlayerBag().setItems(itemsMinusTemp);
 
             if(player.getWorld().getName().startsWith("tutorial_") && !profileManager.getAnyProfile(player).getMilestones().getMilestone("tutorial")){
                 classSetter.setClass(player, "none");
@@ -397,10 +385,6 @@ public final class Mystica extends JavaPlugin{
 
     public InventoryIndexingManager getInventoryIndexingManager(){
         return inventoryIndexingManager;
-    }
-
-    public BagInventory getBagInventory(){
-        return bagInventory;
     }
 
     public ProfileFileWriter getProfileFileWriter(){

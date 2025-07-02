@@ -20,8 +20,8 @@ public class Wings {
 
     private final ProfileManager profileManager;
 
-    public Wings(Mystica main){
-        profileManager = main.getProfileManager();
+    public Wings(Mystica main, ProfileManager profileManager){
+        this.profileManager = profileManager;
     }
 
     public void makeProfile(UUID uuid){

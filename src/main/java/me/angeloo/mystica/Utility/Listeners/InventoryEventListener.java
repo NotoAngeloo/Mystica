@@ -30,8 +30,6 @@ public class InventoryEventListener implements Listener {
     private final EquipmentManager equipmentManager;
 
     private final InventoryIndexingManager inventoryIndexingManager;
-    private final BagInventory bagInventory;
-    private final BuyInvSlotsInventory buyInvSlotsInventory;
     private final DisplayWeapons displayWeapons;
     private final BossLevelInv bossLevelInv;
     private final Locations locations;
@@ -42,151 +40,13 @@ public class InventoryEventListener implements Listener {
         profileManager = main.getProfileManager();
         equipmentManager = new EquipmentManager(main);
         inventoryIndexingManager = main.getInventoryIndexingManager();
-        bagInventory = main.getBagInventory();
-        buyInvSlotsInventory = new BuyInvSlotsInventory(main);
         displayWeapons = new DisplayWeapons(main);
         bossLevelInv = new BossLevelInv(main);
         locations = new Locations(main);
         customItemConverter = new CustomItemConverter();
     }
 
-    @EventHandler
-    public void setPlayerItemsInBag(InventoryCloseEvent event){
-        if(!event.getView().getTitle().equals(event.getPlayer().getName() + "'s Bag")){
-            return;
-        }
 
-        Player player = (Player) event.getPlayer();
-        Inventory inv = event.getInventory();
-
-        int index = inventoryIndexingManager.getBagIndex(player);
-
-        ArrayList<ItemStack> items = new ArrayList<>();
-        for (int i = 0; i < inv.getSize(); i++) {
-            if (i == 8 || i == 53) {
-                continue; // skip these slots
-            }
-            ItemStack item = inv.getItem(i);
-            if (item != null && !item.getType().equals(Material.AIR)) {
-                items.add(item);
-            }
-            else{
-                //item has to be air or it breaks setting items
-                items.add(new ItemStack(Material.AIR));
-            }
-        }
-        bagInventory.addItemsToPlayerBagByInventoryClose(player, items, index);
-
-    }
-
-    @EventHandler
-    public void playerBagArrows(InventoryClickEvent event){
-        if(!event.getView().getTitle().equals(event.getWhoClicked().getName() + "'s Bag")){
-            return;
-        }
-
-        if(event.getClickedInventory() == null){
-            return;
-        }
-
-        Inventory inv = event.getView().getTopInventory();
-
-        if(event.getClickedInventory() != inv){
-            return;
-        }
-
-        Player player = (Player) event.getWhoClicked();
-
-        int slot = event.getSlot();
-
-        if(slot == 8 || slot == 53){
-            event.setCancelled(true);
-        }
-
-        if(event.getCurrentItem() == null){
-            return;
-        }
-
-        if(!event.getCurrentItem().hasItemMeta()){
-            return;
-        }
-
-
-        int index = inventoryIndexingManager.getBagIndex(player);
-
-        switch (event.getCurrentItem().getItemMeta().getDisplayName()){
-            case "Scroll Up":{
-                if(index == 0){
-                    return;
-                }
-                index--;
-                player.openInventory(bagInventory.openBagInventory(player, index));
-                inventoryIndexingManager.setBagIndex(player, index);
-                break;
-            }
-            case "Scroll Down": {
-                //scroll down, if in range
-                int range = profileManager.getAnyProfile(player).getPlayerBag().getNumUnlocks();
-                if(range <= index){
-                    player.openInventory(buyInvSlotsInventory.openBuyInv(player));
-                    return;
-                }
-
-                index++;
-                player.openInventory(bagInventory.openBagInventory(player, index));
-                inventoryIndexingManager.setBagIndex(player, index);
-                break;
-            }
-        }
-    }
-
-
-    @EventHandler
-    public void buyMoreSlots(InventoryClickEvent event){
-        if(!event.getView().getTitle().equals("Purchase More Space?")){
-            return;
-        }
-        event.setCancelled(true);
-
-        if(event.getClickedInventory() == null){
-            return;
-        }
-
-        if(event.getInventory().getItem(event.getSlot()) == null){
-            return;
-        }
-
-        ItemStack item = event.getCurrentItem();
-
-        if(item == null){
-            return;
-        }
-
-        Player player = (Player) event.getWhoClicked();
-        int index = inventoryIndexingManager.getBagIndex(player);
-
-        int numLocks = profileManager.getAnyProfile(player).getPlayerBag().getNumUnlocks();
-        int price = (20 + (20 * numLocks));
-
-        if(item.getItemMeta().getDisplayName().equalsIgnoreCase("Buy")){
-
-            int bal = profileManager.getAnyProfile(player).getBal().getBal();
-
-            if(bal < price){
-                player.sendMessage("You cannot afford");
-                return;
-            }
-
-            player.sendMessage("Purchase Successful");
-            profileManager.getAnyProfile(player).getBal().setBal(bal - price);
-            profileManager.getAnyProfile(player).getPlayerBag().setNumUnlocks(numLocks + 1);
-            player.openInventory(buyInvSlotsInventory.openBuyInv(player));
-        }
-
-        if(event.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase("Cancel")){
-            player.openInventory(bagInventory.openBagInventory(player, index));
-        }
-    }
 
 
     @EventHandler

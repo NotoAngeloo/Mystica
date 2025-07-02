@@ -1,11 +1,11 @@
 package me.angeloo.mystica.Components;
 
-import me.angeloo.mystica.Components.ProfileComponents.Bal;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.Components.ProfileComponents.Stats;
 
 public abstract class NonPlayerProfile implements Profile{
 
+    private boolean ifDead;
     private double currentHealth;
     private Stats stats;
     private final Boolean isMovable;
@@ -14,7 +14,8 @@ public abstract class NonPlayerProfile implements Profile{
     private final Boolean object;
     private final Yield yield;
 
-    public NonPlayerProfile(double currentHealth, Stats stats, Boolean isMovable, Boolean immortality,Boolean passive, Boolean object, Yield yield) {
+    public NonPlayerProfile(boolean ifDead, double currentHealth, Stats stats, Boolean isMovable, Boolean immortality, Boolean passive, Boolean object, Yield yield) {
+        this.ifDead = ifDead;
         this.currentHealth = currentHealth;
         this.stats = stats;
         this.isMovable = isMovable;
@@ -53,6 +54,13 @@ public abstract class NonPlayerProfile implements Profile{
     @Override
     public Yield getYield(){return yield;}
 
-    public abstract Bal getBal();
+    @Override
+    public Boolean getIfDead(){return ifDead;}
+
+
+    @Override
+    public void setIfDead(Boolean ifDead) {
+        this.ifDead = ifDead;
+    }
 
 }

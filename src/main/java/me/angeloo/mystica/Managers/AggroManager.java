@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Managers;
 
+import me.angeloo.mystica.Mystica;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -7,13 +8,15 @@ import java.util.*;
 
 public class AggroManager {
 
+    private final ProfileManager profileManager;
     private final Map<UUID, List<LivingEntity>> creatureListOfAttackers = new HashMap<>();
     private final Map<UUID, LivingEntity> lastPlayerWhoHit = new HashMap<>();
     private final Map<UUID, LivingEntity> creatureHighPriorityTarget = new HashMap<>();
     private final Map<UUID, Long> lastSetAsPriority = new HashMap<>();
     private final Map<LivingEntity, Boolean> blacklist = new HashMap<>();
 
-    public AggroManager(){
+    public AggroManager(Mystica main){
+        profileManager = main.getProfileManager();
     }
 
     public void addAttacker(LivingEntity entity, LivingEntity attacker){
@@ -60,6 +63,19 @@ public class AggroManager {
             creatureListOfAttackers.put(entity.getUniqueId(), new ArrayList<>());
         }
         return creatureListOfAttackers.get(entity.getUniqueId());
+    }
+
+    public List<LivingEntity> getAliveAttackers(LivingEntity entity){
+
+        List<LivingEntity> liveAttackers = new ArrayList<>();
+
+        for(LivingEntity attacker : getAttackerList(entity)){
+            if(!profileManager.getAnyProfile(attacker).getIfDead()){
+                liveAttackers.add(attacker);
+            }
+        }
+
+        return liveAttackers;
     }
 
     public void clearAttackerList(LivingEntity entity){

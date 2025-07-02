@@ -18,9 +18,9 @@ public class NewPlayerNpc {
     private final Mystica main;
     private final ProfileManager profileManager;
 
-    public NewPlayerNpc(Mystica main){
+    public NewPlayerNpc(Mystica main, ProfileManager profileManager){
         this.main = main;
-        profileManager = main.getProfileManager();
+        this.profileManager = profileManager;
     }
 
     public void spawn() throws InvalidMobTypeException {

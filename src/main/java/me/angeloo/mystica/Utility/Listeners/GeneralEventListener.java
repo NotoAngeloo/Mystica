@@ -5,7 +5,6 @@ import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import me.angeloo.mystica.Components.Inventories.AbilityInventory;
-import me.angeloo.mystica.Components.Inventories.BagInventory;
 import me.angeloo.mystica.Components.Inventories.EquipmentInventory;
 import me.angeloo.mystica.Components.Items.PathToolItem;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
@@ -70,7 +69,6 @@ public class GeneralEventListener implements Listener {
     private final AbilityInventory abilityInventory;
     private final DisplayWeapons displayWeapons;
     private final GearReader gearReader;
-    private final BagInventory bagInventory;
     private final ClassSetter classSetter;
     private final Locations locations;
     private final GravestoneManager gravestoneManager;
@@ -112,7 +110,6 @@ public class GeneralEventListener implements Listener {
         displayWeapons = main.getDisplayWeapons();
         damageCalculator = main.getDamageCalculator();
         changeResourceHandler = main.getChangeResourceHandler();
-        bagInventory = main.getBagInventory();
         gearReader = new GearReader(main);
         classSetter = new ClassSetter(main);
         firstClearManager = main.getFirstClearManager();
@@ -247,16 +244,6 @@ public class GeneralEventListener implements Listener {
         }
 
         targetManager.getPlayerTarget(player);
-
-        ArrayList<ItemStack> allPlayerItems = profileManager.getAnyProfile(player).getPlayerBag().getItems();
-        ArrayList<ItemStack> itemsMinusTemp = new ArrayList<>();
-        for(ItemStack item : allPlayerItems){
-            if(item.getType() == Material.AIR){
-                continue;
-            }
-            itemsMinusTemp.add(item);
-        }
-        profileManager.getAnyProfile(player).getPlayerBag().setItems(itemsMinusTemp);
 
 
         targetManager.setPlayerTarget(player, null);
@@ -651,7 +638,7 @@ public class GeneralEventListener implements Listener {
             dpsManager.removeDps(member);
 
             if(member instanceof Player){
-                hudManager.getDamageBoardPlaceholders().clearPlaceholders((Player) mysticaPlayer);
+                hudManager.getDamageBoardPlaceholders().clearPlaceholders((Player) member);
             }
 
 
@@ -721,7 +708,6 @@ public class GeneralEventListener implements Listener {
         for(LivingEntity member : mParty){
             if(member instanceof Player){
                 changeResourceHandler.addXpToPlayer((Player)member,xpYield/mParty.size());
-                bagInventory.addItemsToPlayerBagByPickup((Player)member,itemDrops);
                 victors.add((Player)member);
             }
         }

@@ -25,8 +25,8 @@ public class TheLindwyrm {
 
     private final ProfileManager profileManager;
 
-    public TheLindwyrm(Mystica main){
-        profileManager = main.getProfileManager();
+    public TheLindwyrm(Mystica main, ProfileManager profileManager){
+        this.profileManager = profileManager;
     }
 
     public void makeProfile(UUID uuid){
@@ -99,24 +99,7 @@ public class TheLindwyrm {
         float xpYield = 1.5f;
 
         Yield yield = new Yield(xpYield, dropItems(level));
-        NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(hp, stats, isMovable, immortal, passive, object, yield) {
-
-            @Override
-            public Bal getBal() {
-                return null;
-            }
-
-            @Override
-            public Boolean getIfDead() {
-
-                Entity entity = Bukkit.getEntity(uuid);
-
-                if(entity != null){
-                    return entity.isDead();
-                }
-
-                return true;
-            }
+        NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(false, hp, stats, isMovable, immortal, passive, object, yield) {
 
             @Override
             public Boolean getIfInCombat() {
@@ -209,11 +192,6 @@ public class TheLindwyrm {
             @Override
             public void removeSavedInv() {
 
-            }
-
-            @Override
-            public PlayerBag getPlayerBag() {
-                return null;
             }
 
             @Override

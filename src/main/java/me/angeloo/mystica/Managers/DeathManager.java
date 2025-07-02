@@ -61,7 +61,7 @@ public class DeathManager {
 
         profileManager.getAnyProfile(player).setIfDead(true);
 
-        aggroManager.removeFromAllAttackerLists(player);
+        //aggroManager.removeFromAllAttackerLists(player);
 
         player.sendMessage("You have died");
 

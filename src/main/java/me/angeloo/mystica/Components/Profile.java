@@ -20,7 +20,6 @@ public interface Profile {
     void setLevelStats(int level, String subclass);
 
     Stats getStats();
-    Bal getBal();
     StatsFromGear getGearStats();
     void setStats(Stats stats);
     void setGearStats(StatsFromGear statsFromGear);
@@ -41,7 +40,6 @@ public interface Profile {
     void setSavedInv(ItemStack[] inv);
     void removeSavedInv();
 
-    PlayerBag getPlayerBag();
     PlayerEquipment getPlayerEquipment();
 
     PlayerBossLevel getPlayerBossLevel();

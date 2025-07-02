@@ -26,8 +26,8 @@ public class HoLeeBoss {
 
     private final ProfileManager profileManager;
 
-    public HoLeeBoss(Mystica main){
-        profileManager = main.getProfileManager();
+    public HoLeeBoss(Mystica main, ProfileManager profileManager){
+        this.profileManager = profileManager;
     }
 
     public void makeProfile(UUID uuid){
@@ -100,27 +100,15 @@ public class HoLeeBoss {
         float xpYield = 3f;
 
         Yield yield = new Yield(xpYield, dropItems(level));
-        NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(hp, stats, isMovable, immortal, passive, object, yield) {
+        NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(false, hp, stats, isMovable, immortal, passive, object, yield) {
 
-            @Override
-            public Bal getBal() {
-                return null;
-            }
-
-            @Override
-            public Boolean getIfDead() {
-                return false;
-            }
 
             @Override
             public Boolean getIfInCombat() {
                 return false;
             }
 
-            @Override
-            public void setIfDead(Boolean ifDead) {
 
-            }
 
             @Override
             public void setIfInCombat(Boolean ifInCombat) {
@@ -205,10 +193,6 @@ public class HoLeeBoss {
 
             }
 
-            @Override
-            public PlayerBag getPlayerBag() {
-                return null;
-            }
 
             @Override
             public PlayerEquipment getPlayerEquipment() {
@@ -292,33 +276,12 @@ public class HoLeeBoss {
         float xpYield = 0f;
 
         Yield yield = new Yield(xpYield, new ArrayList<>());
-        NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(hp, stats, isMovable, immortal, passive, object, yield) {
+        NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(false, hp, stats, isMovable, immortal, passive, object, yield) {
 
-            @Override
-            public Bal getBal() {
-                return null;
-            }
-
-            @Override
-            public Boolean getIfDead() {
-
-                Entity entity = Bukkit.getEntity(uuid);
-
-                if(entity != null){
-                    return entity.isDead();
-                }
-
-                return true;
-            }
 
             @Override
             public Boolean getIfInCombat() {
                 return false;
-            }
-
-            @Override
-            public void setIfDead(Boolean ifDead) {
-
             }
 
             @Override
@@ -404,10 +367,6 @@ public class HoLeeBoss {
 
             }
 
-            @Override
-            public PlayerBag getPlayerBag() {
-                return null;
-            }
 
             @Override
             public PlayerEquipment getPlayerEquipment() {

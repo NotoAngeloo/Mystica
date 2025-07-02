@@ -28,8 +28,6 @@ public abstract class PlayerProfile implements Profile{
 
     private final Milestones milestones;
 
-    private final Bal bal;
-
     public PlayerProfile(
             Boolean ifDead,
             Boolean ifInCombat,
@@ -50,9 +48,7 @@ public abstract class PlayerProfile implements Profile{
             EquipSkills equipSkills,
 
             PlayerBossLevel playerBossLevel,
-            Milestones milestones,
-
-            Bal bal
+            Milestones milestones
 
    ) {
 
@@ -80,7 +76,6 @@ public abstract class PlayerProfile implements Profile{
 
         this.milestones = milestones;
 
-        this.bal = bal;
     }
 
     @Override
@@ -151,8 +146,6 @@ public abstract class PlayerProfile implements Profile{
         savedInv = new ItemStack[41];
     }
     @Override
-    public PlayerBag getPlayerBag(){return playerBag;}
-    @Override
     public PlayerEquipment getPlayerEquipment(){return playerEquipment;}
     @Override
     public Skill_Level getSkillLevels(){return skillLevel;}
@@ -162,8 +155,6 @@ public abstract class PlayerProfile implements Profile{
     public PlayerBossLevel getPlayerBossLevel(){return playerBossLevel;}
     @Override
     public Milestones getMilestones(){return milestones;}
-    @Override
-    public Bal getBal(){return bal;}
 
     public int getTotalHealth(){
         return stats.getHealth() + statsFromGear.getHealth();

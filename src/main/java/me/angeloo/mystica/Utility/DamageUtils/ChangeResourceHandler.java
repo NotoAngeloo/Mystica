@@ -212,7 +212,7 @@ public class ChangeResourceHandler {
             profileManager.getAnyProfile(entity).setIfDead(true);
             profileManager.getAnyProfile(entity).setCurrentHealth(profileManager.getAnyProfile(entity).getTotalHealth());
             //dpsManager.removeDps(entity);
-            aggroManager.removeFromAllAttackerLists(entity);
+            //aggroManager.removeFromAllAttackerLists(entity);
             //fakePlayerAiManager.removeInterrupt(entity);
             entity.setAI(false);
             if(MythicBukkit.inst().getAPIHelper().isMythicMob(entity.getUniqueId())){
@@ -586,7 +586,7 @@ public class ChangeResourceHandler {
         profileManager.getAnyProfile(entity).setIfDead(true);
         profileManager.getAnyProfile(entity).setCurrentHealth(profileManager.getAnyProfile(entity).getTotalHealth());
         //dpsManager.removeDps(entity);
-        aggroManager.removeFromAllAttackerLists(entity);
+        //aggroManager.removeFromAllAttackerLists(entity);
         //fakePlayerAiManager.removeInterrupt(entity);
         entity.setAI(false);
         if(MythicBukkit.inst().getAPIHelper().isMythicMob(entity.getUniqueId())){

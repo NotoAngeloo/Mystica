@@ -18,9 +18,9 @@ public class ArchbishopNpc {
     private final Mystica main;
     private final ProfileManager profileManager;
 
-    public ArchbishopNpc(Mystica main){
+    public ArchbishopNpc(Mystica main, ProfileManager profileManager){
         this.main = main;
-        profileManager = main.getProfileManager();
+        this.profileManager = profileManager;
     }
 
     public void spawn() throws InvalidMobTypeException {

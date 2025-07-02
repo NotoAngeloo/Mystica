@@ -52,7 +52,7 @@ public class AggroTick {
                 assert targetedEntity != null;
                 Bukkit.getLogger().info(targetedEntity.getName());*/
 
-                List<LivingEntity> originalAttackerList = aggroManager.getAttackerList(entity);
+                List<LivingEntity> originalAttackerList = aggroManager.getAliveAttackers(entity);
 
                 List<LivingEntity> attackers = new ArrayList<>();
 
@@ -134,7 +134,6 @@ public class AggroTick {
                     LivingEntity targetedPlayer = ((Creature)entity).getTarget();
 
                     if(targetedPlayer.isDead()){
-                        aggroManager.removeFromAllAttackerLists(targetedPlayer);
                         ((Creature) entity).setTarget(null);
                     }
 
@@ -154,18 +153,17 @@ public class AggroTick {
                     }
                     else{
 
-                        if(profileManager.resetBoss(entity.getUniqueId())){
+                        this.cancel();
+                        aggroManager.clearAttackerList(entity);
+                        aggroManager.clearLastPlayer(entity);
+                        aggroManager.removeHighPriorityTarget(entity.getUniqueId());
+                        aggroTasks.remove(entity);
 
-                            //Bukkit.getLogger().info("should reset");
+                        Bukkit.getScheduler().runTask(main, () -> {
+                            profileManager.resetBoss(entity.getUniqueId());
+                        });
 
-                            this.cancel();
 
-                            aggroManager.clearAttackerList(entity);
-                            aggroManager.clearLastPlayer(entity);
-                            aggroManager.removeHighPriorityTarget(entity.getUniqueId());
-
-                            aggroTasks.remove(entity);
-                        }
 
                     }
 
@@ -173,7 +171,9 @@ public class AggroTick {
 
             }
 
-        }.runTaskTimer(main, 0, 20);
+        }.runTaskTimerAsynchronously(main, 0, 20);
+
+        //.runTaskTimer(main, 0, 20);
 
         aggroTasks.put(entity, aggroTask);
 

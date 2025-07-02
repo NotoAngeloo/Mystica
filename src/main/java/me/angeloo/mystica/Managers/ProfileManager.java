@@ -42,6 +42,7 @@ public class ProfileManager {
     private final ProfileFileWriter profileFileWriter;
     private final PathingManager pathingManager;
 
+    private final CreaturesAndCharactersManager creaturesAndCharactersManager;
 
     private final Map<UUID, PlayerProfile> playerProfiles = new HashMap<>();
     private final Map<UUID, FakePlayerProfile> fakePlayerProfileMap = new HashMap<>();
@@ -72,6 +73,10 @@ public class ProfileManager {
 
     public ProfileManager(Mystica main) {
         this.main = main;
+
+        creaturesAndCharactersManager = new CreaturesAndCharactersManager(main, this);
+
+
         File dataFolder = main.getDataFolder();
         String subfolderName = "playerdata"; // Subfolder name
         File subfolder = new File(dataFolder, subfolderName); // Path to the subfolder
@@ -94,7 +99,6 @@ public class ProfileManager {
 
             ItemStack[] savedInv = profile.getSavedInv();
 
-            PlayerBag playerBag = profile.getPlayerBag();
             PlayerEquipment playerEquipment = profile.getPlayerEquipment();
 
             Skill_Level skillLevel = profile.getSkillLevels();
@@ -115,9 +119,6 @@ public class ProfileManager {
 
             config.set(id + ".savedInv", savedInv);
 
-            //bag
-            config.set(id + ".bag", playerBag.getItems());
-            config.set(id + ".bagUnlocks", playerBag.getNumUnlocks());
 
             config.set(id + ".equipment", playerEquipment.getEquipment());
 
@@ -170,9 +171,6 @@ public class ProfileManager {
 
                     YamlConfiguration config = profileFileWriter.createOrLoadProfileFile(id);
 
-                    //player points
-                    int bal = config.getInt(id + ".points.bal");
-                    Bal points = new Bal(bal);
 
                     String playerClass = config.getString(id + ".class");
                     String playerSubclass = config.getString(id + ".subclass");
@@ -249,8 +247,7 @@ public class ProfileManager {
                             skillLevel,
                             equipSkills,
                             playerBossLevel,
-                            milestones,
-                            points) {
+                            milestones) {
 
                         @Override
                         public Boolean getIsPassive() {
@@ -303,8 +300,6 @@ public class ProfileManager {
         if(entity instanceof Player){
             return getPlayerProfile(entity.getUniqueId());
         }
-
-        CreaturesAndCharactersManager creaturesAndCharactersManager = new CreaturesAndCharactersManager(main);
 
         //check if its fake player as well
         if(nonPlayerProfiles.get(entity.getUniqueId()) == null && fakePlayerProfileMap.get(entity.getUniqueId()) == null){
@@ -370,7 +365,6 @@ public class ProfileManager {
 
         Milestones milestones = new Milestones(new HashMap<>());
 
-        Bal bal = new Bal(0);
 
         return new PlayerProfile(false, false, currentHealth,
                 stats,
@@ -383,8 +377,7 @@ public class ProfileManager {
                 skillLevel,
                 equipSkills,
                 playerBossLevel,
-                milestones,
-                bal) {
+                milestones) {
 
 
             @Override
@@ -461,8 +454,6 @@ public class ProfileManager {
 
         Milestones milestones = new Milestones(new HashMap<>());
 
-        Bal bal = new Bal(0);
-
         PlayerProfile profile = new PlayerProfile(false, false, currentHealth,
                 stats,
                 gearStats,
@@ -474,8 +465,7 @@ public class ProfileManager {
                 skillLevel,
                 equipSkills,
                 playerBossLevel,
-                milestones,
-                bal) {
+                milestones) {
 
 
             @Override
@@ -562,7 +552,7 @@ public class ProfileManager {
                 playerProfiles.remove(player.getUniqueId());
                 playerNameMap.remove(player.getName());
             }
-        }.runTaskLater(main, 5);
+        }.runTaskLaterAsynchronously(main, 5);
 
     }
 
@@ -570,11 +560,7 @@ public class ProfileManager {
         Stats stats = new Stats(1,1,1,1,1,0);
         double currentHealth = 1;
         Yield yield = new Yield(0, null);
-        NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(currentHealth, stats, true, false, false, false, yield) {
-            @Override
-            public Bal getBal() {
-                return null;
-            }
+        NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(false, currentHealth, stats, true, false, false, false, yield) {
 
             @Override
             public Boolean getIfDead() {
@@ -682,11 +668,6 @@ public class ProfileManager {
             }
 
             @Override
-            public PlayerBag getPlayerBag() {
-                return null;
-            }
-
-            @Override
             public PlayerEquipment getPlayerEquipment() {
                 return null;
             }
@@ -781,27 +762,30 @@ public class ProfileManager {
                 if(count>=time){
 
                     //Bukkit.getLogger().info("fury timer for " + uuid);
-
-                    if(MythicBukkit.inst().getAPIHelper().isMythicMob(uuid)){
-                        AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(Bukkit.getEntity(uuid)).getEntity();
-                        MythicBukkit.inst().getAPIHelper().getMythicMobInstance(Bukkit.getEntity(uuid)).signalMob(abstractEntity, "fury");
-                    }
                     this.cancel();
+                    Bukkit.getScheduler().runTask(main, ()->{
+                        if(MythicBukkit.inst().getAPIHelper().isMythicMob(uuid)){
+                            AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(Bukkit.getEntity(uuid)).getEntity();
+                            MythicBukkit.inst().getAPIHelper().getMythicMobInstance(Bukkit.getEntity(uuid)).signalMob(abstractEntity, "fury");
+                        }
+                    });
                     return;
                 }
 
                 count++;
             }
-        }.runTaskTimer(main, 20, 20);
+        }.runTaskTimerAsynchronously(main, 20, 20);
 
         furyTasks.put(uuid, furyTask);
 
     }
 
-    public boolean resetBoss(UUID uuid){
+    public void resetBoss(UUID uuid){
 
-        if(!bossHomes.containsKey(uuid)){
-            return false;
+        boolean isBoss = bossHomes.containsKey(uuid);
+
+        if(!isBoss){
+            return;
         }
 
         //Bukkit.getLogger().info("reseting boss");
@@ -828,7 +812,6 @@ public class ProfileManager {
         assert maxHealthAttribute != null;
         boss.setHealth(maxHealthAttribute.getBaseValue());
 
-
         boss.setAI(false);
         boss.teleport(home);
 
@@ -853,29 +836,21 @@ public class ProfileManager {
 
                     LivingEntity boss = (LivingEntity) entity;
 
-
-                    AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(boss).getEntity();
-
-                    if(abstractEntity == null){
-                        this.cancel();
-                        return;
-                    }
-
                     if(home.getWorld() == null){
                         this.cancel();
                         return;
                     }
 
+                    AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(boss).getEntity();
                     boss.teleport(home);
                     MythicBukkit.inst().getAPIHelper().getMythicMobInstance(boss).signalMob(abstractEntity, "reset");
 
-                }
-            }.runTaskTimer(main, 0, 1);
 
+                }
+            }.runTaskTimer(main, 0, 2);
 
         }
 
-        return true;
     }
 
     private void processReset(LivingEntity entity){
@@ -886,7 +861,7 @@ public class ProfileManager {
             public void run(){
                 resetProcessing.remove(entity.getUniqueId());
             }
-        }.runTaskLater(main, 80);
+        }.runTaskLaterAsynchronously(main, 80);
     }
 
     public boolean getIfResetProcessing(LivingEntity entity){
@@ -1120,4 +1095,5 @@ public class ProfileManager {
         return bossIcons.getOrDefault(uuid, "\uE1A3");
     }
 
+    public CreaturesAndCharactersManager getCreaturesAndCharactersManager(){return creaturesAndCharactersManager;}
 }

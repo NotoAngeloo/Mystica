@@ -76,11 +76,6 @@ public class FakePlayerProfile implements Profile {
     }
 
     @Override
-    public Bal getBal() {
-        return null;
-    }
-
-    @Override
     public StatsFromGear getGearStats() {
         return null;
     }
@@ -146,10 +141,6 @@ public class FakePlayerProfile implements Profile {
     public void removeSavedInv(){
     }
 
-    @Override
-    public PlayerBag getPlayerBag() {
-        return null;
-    }
 
     @Override
     public PlayerEquipment getPlayerEquipment() {

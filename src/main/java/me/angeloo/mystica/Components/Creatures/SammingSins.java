@@ -19,8 +19,8 @@ public class SammingSins {
 
     private final ProfileManager profileManager;
 
-    public SammingSins(Mystica main){
-        profileManager = main.getProfileManager();
+    public SammingSins(Mystica main, ProfileManager profileManager){
+        this.profileManager = profileManager;
     }
 
     public void makeProfile(UUID uuid){

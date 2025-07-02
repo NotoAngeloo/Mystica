@@ -94,21 +94,13 @@ public class SpectralSteed {
         Stats stats = new Stats(profileManager.getAnyProfile(caster).getStats().getLevel(), 1,  1,  1, 1, 1);
         Yield yield = new Yield(0, new ArrayList<>());
 
-        NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(1,stats,false,true, true, true, yield) {
-            @Override
-            public Boolean getIfDead() {
-                return null;
-            }
+        NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(false, 1,stats,false,true, true, true, yield) {
 
             @Override
             public Boolean getIfInCombat() {
                 return null;
             }
 
-            @Override
-            public void setIfDead(Boolean ifDead) {
-
-            }
 
             @Override
             public void setIfInCombat(Boolean ifInCombat) {
@@ -126,10 +118,6 @@ public class SpectralSteed {
                 return null;
             }
 
-            @Override
-            public Bal getBal() {
-                return null;
-            }
 
             @Override
             public void setGearStats(StatsFromGear statsFromGear) {
@@ -195,11 +183,6 @@ public class SpectralSteed {
             @Override
             public void removeSavedInv() {
 
-            }
-
-            @Override
-            public PlayerBag getPlayerBag() {
-                return null;
             }
 
             @Override

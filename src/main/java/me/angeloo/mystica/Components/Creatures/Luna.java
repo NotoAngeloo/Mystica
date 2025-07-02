@@ -20,8 +20,8 @@ public class Luna {
 
     private final ProfileManager profileManager;
 
-    public Luna(Mystica main){
-        profileManager = main.getProfileManager();
+    public Luna(Mystica main, ProfileManager profileManager){
+        this.profileManager = profileManager;
     }
 
     public void makeProfile(UUID uuid){

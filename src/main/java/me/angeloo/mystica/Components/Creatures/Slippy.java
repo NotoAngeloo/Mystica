@@ -20,8 +20,8 @@ public class Slippy {
 
     private final ProfileManager profileManager;
 
-    public Slippy(Mystica main){
-        profileManager = main.getProfileManager();
+    public Slippy(Mystica main, ProfileManager profileManager){
+        this.profileManager = profileManager;
     }
 
     public void makeProfile(UUID uuid) {

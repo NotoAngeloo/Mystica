@@ -28,9 +28,6 @@ public class CreaturesAndCharactersManager {
     private final TheLindwyrm theLindwyrm;
     private final CorruptHeart corruptHeart;
     private final WeberBoss weberBoss;
-    private final BetaTester betaTester;
-    private final Dummy dummy;
-    private final MadDummy madDummy;
     private final NewPlayerNpc newPlayerNpc;
     private final ArchbishopNpc archbishopNpc;
     private final HansNpc hansNpc;
@@ -45,27 +42,26 @@ public class CreaturesAndCharactersManager {
     private final Darwin darwin;
     private final Slippy slippy;
 
-    public CreaturesAndCharactersManager(Mystica main){
+    public CreaturesAndCharactersManager(Mystica main, ProfileManager profileManager){
         this.main = main;
-        profileManager = main.getProfileManager();
-        theLindwyrm = new TheLindwyrm(main);
-        corruptHeart = new CorruptHeart(main);
-        weberBoss = new WeberBoss(main);
-        betaTester = new BetaTester(main);
-        dummy = new Dummy(main);
-        madDummy = new MadDummy(main);
-        newPlayerNpc = new NewPlayerNpc(main);
-        archbishopNpc = new ArchbishopNpc(main);
-        hansNpc = new HansNpc(main);
-        hoLeeNpc = new HoLeeNpc(main);
-        captainNpc = new CaptainNpc(main);
-        hoLeeBoss = new HoLeeBoss(main);
-        coersicaBoss = new CoersicaBoss(main);
-        sammingSins = new SammingSins(main);
-        luna = new Luna(main);
-        wings = new Wings(main);
-        darwin = new Darwin(main);
-        slippy = new Slippy(main);
+        this.profileManager = profileManager;
+
+
+        theLindwyrm = new TheLindwyrm(main, profileManager);
+        corruptHeart = new CorruptHeart(main, profileManager);
+        weberBoss = new WeberBoss(main, profileManager);
+        newPlayerNpc = new NewPlayerNpc(main, profileManager);
+        archbishopNpc = new ArchbishopNpc(main, profileManager);
+        hansNpc = new HansNpc(main, profileManager);
+        hoLeeNpc = new HoLeeNpc(main, profileManager);
+        captainNpc = new CaptainNpc(main, profileManager);
+        hoLeeBoss = new HoLeeBoss(main, profileManager);
+        coersicaBoss = new CoersicaBoss(main, profileManager);
+        sammingSins = new SammingSins(main, profileManager);
+        luna = new Luna(main, profileManager);
+        wings = new Wings(main, profileManager);
+        darwin = new Darwin(main, profileManager);
+        slippy = new Slippy(main, profileManager);
     }
 
     public void spawnAllNpcs() throws InvalidMobTypeException {
@@ -138,19 +134,6 @@ public class CreaturesAndCharactersManager {
                 makeImmortalObjectProfile(uuid);
                 break;
             }
-            case "BetaTester":{
-                betaTester.makeProfile(uuid);
-                break;
-            }
-            case "Dummy":{
-                dummy.makeProfile(uuid);
-                break;
-            }
-            case "MadDummy":{
-                madDummy.makeProfile(uuid);
-                profileManager.setBossHome(uuid);
-                break;
-            }
             case "FastTravelNpc":
             case "HoLeeNpc":
             case "CaptainNpc":
@@ -196,23 +179,8 @@ public class CreaturesAndCharactersManager {
         Boolean object = false;
         Boolean passive = true;
         Yield yield = new Yield(0.0f, null);
-        NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(10, stats, isMovable, immortal, passive, object, yield) {
-            @Override
-            public Bal getBal() {
-                return null;
-            }
+        NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(false, 10, stats, isMovable, immortal, passive, object, yield) {
 
-            @Override
-            public Boolean getIfDead() {
-
-                Entity entity = Bukkit.getEntity(uuid);
-
-                if(entity != null){
-                    return entity.isDead();
-                }
-
-                return true;
-            }
 
             @Override
             public Boolean getIfInCombat() {
@@ -337,11 +305,6 @@ public class CreaturesAndCharactersManager {
             }
 
             @Override
-            public PlayerBag getPlayerBag() {
-                return null;
-            }
-
-            @Override
             public PlayerEquipment getPlayerEquipment() {
                 return null;
             }
@@ -357,28 +320,14 @@ public class CreaturesAndCharactersManager {
 
     private void makeImmortalObjectProfile(UUID uuid){
         Stats stats = new Stats(1,1,1,10,10,0);
+        boolean isDead = false;
         Boolean isMovable = false;
         Boolean immortal = true;
         Boolean object = true;
         Boolean passive = true;
         Yield yield = new Yield(0.0f, null);
-        NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(10, stats, isMovable, immortal, passive, object, yield) {
-            @Override
-            public Bal getBal() {
-                return null;
-            }
+        NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(isDead, 10, stats, isMovable, immortal, passive, object, yield) {
 
-            @Override
-            public Boolean getIfDead() {
-
-                Entity entity = Bukkit.getEntity(uuid);
-
-                if(entity != null){
-                    return entity.isDead();
-                }
-
-                return null;
-            }
 
             @Override
             public Boolean getIfInCombat() {
@@ -456,11 +405,6 @@ public class CreaturesAndCharactersManager {
             @Override
             public void setPlayerSubclass(String playerSubclass) {
 
-            }
-
-            @Override
-            public PlayerBag getPlayerBag() {
-                return null;
             }
 
             @Override

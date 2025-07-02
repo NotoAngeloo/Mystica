@@ -48,50 +48,59 @@ public class CombatTick {
                     return;
                 }
 
-                abilityManager.incrementResource(player);
-                Bukkit.getServer().getPluginManager().callEvent(new UltimateStatusChageEvent(player));
 
-                if(!profileManager.getCompanions(player).isEmpty()){
-                    List<UUID> companions = profileManager.getCompanions(player);
-                    for(UUID companion : companions){
-                        LivingEntity livingEntity = (LivingEntity) Bukkit.getEntity(companion);
+                Bukkit.getScheduler().runTask(main, () -> {
+                    abilityManager.incrementResource(player);
+                    Bukkit.getServer().getPluginManager().callEvent(new UltimateStatusChageEvent(player));
+                    if(!profileManager.getCompanions(player).isEmpty()){
+                        List<UUID> companions = profileManager.getCompanions(player);
+                        for(UUID companion : companions){
+                            LivingEntity livingEntity = (LivingEntity) Bukkit.getEntity(companion);
 
-                        if(livingEntity == null) {
-                            continue;
+                            if(livingEntity == null) {
+                                continue;
+                            }
+
+                            abilityManager.incrementResource(livingEntity);
+
+
+
                         }
-
-                        abilityManager.incrementResource(livingEntity);
-
                     }
-                }
+                });
+
 
             }
 
             private void endCombatTick(){
-                changeResourceHandler.healPlayerToFull(player);
-                combatManager.forceCombatEnd(player);
-                abilityManager.resetResource(player);
 
-                if(!profileManager.getCompanions(player).isEmpty()){
-                    List<UUID> companions = profileManager.getCompanions(player);
-                    for(UUID companion : companions){
-                        LivingEntity livingEntity = (LivingEntity) Bukkit.getEntity(companion);
+                Bukkit.getScheduler().runTask(main, () ->{
+                    changeResourceHandler.healPlayerToFull(player);
+                    combatManager.forceCombatEnd(player);
+                    abilityManager.resetResource(player);
 
-                        if(livingEntity == null) {
-                            continue;
+                    if(!profileManager.getCompanions(player).isEmpty()){
+                        List<UUID> companions = profileManager.getCompanions(player);
+                        for(UUID companion : companions){
+                            LivingEntity livingEntity = (LivingEntity) Bukkit.getEntity(companion);
+
+                            if(livingEntity == null) {
+                                continue;
+                            }
+
+                            double max = profileManager.getAnyProfile(livingEntity).getTotalHealth();
+
+                            changeResourceHandler.addHealthToEntity(livingEntity, max, null);
+                            abilityManager.resetResource(livingEntity);
                         }
-
-                        double max = profileManager.getAnyProfile(livingEntity).getTotalHealth();
-
-                        changeResourceHandler.addHealthToEntity(livingEntity, max, null);
-                        abilityManager.resetResource(livingEntity);
                     }
-                }
+                });
+
 
                 combatTasks.remove(player.getUniqueId());
             }
 
-        }.runTaskTimer(main, 0, 40);
+        }.runTaskTimerAsynchronously(main, 0, 40);
 
         combatTasks.put(player.getUniqueId(), combatTask);
 

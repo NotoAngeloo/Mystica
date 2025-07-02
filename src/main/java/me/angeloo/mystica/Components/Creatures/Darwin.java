@@ -20,8 +20,8 @@ public class Darwin {
 
     private final ProfileManager profileManager;
 
-    public Darwin(Mystica main){
-        profileManager = main.getProfileManager();
+    public Darwin(Mystica main, ProfileManager profileManager){
+        this.profileManager = profileManager;
     }
 
     public void makeProfile(UUID uuid){

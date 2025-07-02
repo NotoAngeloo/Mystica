@@ -91,7 +91,7 @@ public class CombatManager {
 
         profileManager.getAnyProfile(player).setIfInCombat(true);
         lastCalledCombat.put(player.getUniqueId(), System.currentTimeMillis());
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+        //Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
     }
 
 

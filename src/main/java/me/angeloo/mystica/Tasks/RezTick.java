@@ -1,6 +1,5 @@
 package me.angeloo.mystica.Tasks;
 
-import me.angeloo.mystica.Managers.FakePlayerAiManager;
 import me.angeloo.mystica.Managers.MysticaPartyManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -18,12 +17,10 @@ public class RezTick extends BukkitRunnable {
 
     private final ProfileManager profileManager;
     private final MysticaPartyManager mysticaPartyManager;
-    private final FakePlayerAiManager fakePlayerAiManager;
 
     public RezTick(Mystica main){
         profileManager = main.getProfileManager();
         mysticaPartyManager = main.getMysticaPartyManager();
-        fakePlayerAiManager = main.getFakePlayerAiManager();
     }
 
     @Override

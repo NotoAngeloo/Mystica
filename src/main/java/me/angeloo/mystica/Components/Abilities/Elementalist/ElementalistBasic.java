@@ -93,7 +93,9 @@ public class ElementalistBasic {
             @Override
             public void run(){
 
-                if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)) == null){
+                LivingEntity target = targetManager.getPlayerTarget(caster);
+
+                if(target == null || target.isDead()){
                     this.cancel();
                     stopBasicRunning(caster);
                     return;
@@ -115,7 +117,7 @@ public class ElementalistBasic {
 
                 targetManager.setTargetToNearestValid(caster, totalRange);
 
-                LivingEntity target = targetManager.getPlayerTarget(caster);
+                target = targetManager.getPlayerTarget(caster);
 
                 if(target == null){
                     stopBasicRunning(caster);

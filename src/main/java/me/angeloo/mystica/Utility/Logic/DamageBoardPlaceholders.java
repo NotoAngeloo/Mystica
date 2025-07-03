@@ -7,11 +7,13 @@ import me.angeloo.mystica.Utility.Hud.DpsBar;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
 public class DamageBoardPlaceholders {
 
+    private final Mystica main;
     private final MysticaPartyManager mysticaPartyManager;
     private final DpsManager dpsManager;
     private final DpsBar dpsBar;
@@ -35,6 +37,7 @@ public class DamageBoardPlaceholders {
     private final Map<UUID, String> dps5 = new HashMap<>();
 
     public DamageBoardPlaceholders(Mystica main){
+        this.main = main;
         mysticaPartyManager = main.getMysticaPartyManager();
         dpsManager = main.getDpsManager();
         dpsBar = new DpsBar(main);
@@ -72,107 +75,107 @@ public class DamageBoardPlaceholders {
 
     public void updateDamageBoardValues(Player player){
 
-        if(timeSinceUpdate(player) < 1){
-            return;
-        }
-
         List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
 
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                if(mParty.size() < 1){
 
-        if(mParty.size() < 1){
+                    damageBar1.put(player.getUniqueId(), " ");
+                    damageBar2.put(player.getUniqueId(), " ");
+                    damageBar2.put(player.getUniqueId(), " ");
+                    damageBar2.put(player.getUniqueId(), " ");
+                    damageBar2.put(player.getUniqueId(), " ");
 
-            damageBar1.put(player.getUniqueId(), " ");
-            damageBar2.put(player.getUniqueId(), " ");
-            damageBar2.put(player.getUniqueId(), " ");
-            damageBar2.put(player.getUniqueId(), " ");
-            damageBar2.put(player.getUniqueId(), " ");
+                    damagePlayer1.put(player.getUniqueId(), " ");
+                    damagePlayer2.put(player.getUniqueId(), " ");
+                    damagePlayer3.put(player.getUniqueId(), " ");
+                    damagePlayer4.put(player.getUniqueId(), " ");
+                    damagePlayer5.put(player.getUniqueId(), " ");
 
-            damagePlayer1.put(player.getUniqueId(), " ");
-            damagePlayer2.put(player.getUniqueId(), " ");
-            damagePlayer3.put(player.getUniqueId(), " ");
-            damagePlayer4.put(player.getUniqueId(), " ");
-            damagePlayer5.put(player.getUniqueId(), " ");
+                    dps1.put(player.getUniqueId(), " ");
+                    dps2.put(player.getUniqueId(), " ");
+                    dps3.put(player.getUniqueId(), " ");
+                    dps4.put(player.getUniqueId(), " ");
+                    dps5.put(player.getUniqueId(), " ");
 
-            dps1.put(player.getUniqueId(), " ");
-            dps2.put(player.getUniqueId(), " ");
-            dps3.put(player.getUniqueId(), " ");
-            dps4.put(player.getUniqueId(), " ");
-            dps5.put(player.getUniqueId(), " ");
+                    return;
+                }
 
-            return;
-        }
+                mParty.sort(Comparator.comparingInt(dpsManager::getRoundedDps).reversed());
 
-        mParty.sort(Comparator.comparingInt(dpsManager::getRoundedDps).reversed());
+                if(mParty.size() > 0){
+                    double damage1 = dpsManager.getRoundedDps(mParty.get(0));
+                    if(damage1 == 0){
+                        damageBar1.put(player.getUniqueId(), " ");
+                        damagePlayer1.put(player.getUniqueId(), " ");
+                        dps1.put(player.getUniqueId(), " ");
+                    }
+                    else{
+                        damageBar1.put(player.getUniqueId(), dpsBar.getBar(mParty.get(0), dpsManager.getRoundedDps(mParty.get(0)), dpsManager.getRoundedDps(mParty.get(0))));
+                        damagePlayer1.put(player.getUniqueId(), mParty.get(0).getName());
+                        dps1.put(player.getUniqueId(), String.valueOf(dpsManager.getRoundedDps(mParty.get(0))));
+                    }
+                }
 
-        if(mParty.size() > 0){
-            double damage1 = dpsManager.getRoundedDps(mParty.get(0));
-            if(damage1 == 0){
-                damageBar1.put(player.getUniqueId(), " ");
-                damagePlayer1.put(player.getUniqueId(), " ");
-                dps1.put(player.getUniqueId(), " ");
+                if(mParty.size() > 1){
+                    double damage2 = dpsManager.getRoundedDps(mParty.get(1));
+                    if(damage2 == 0){
+                        damageBar2.put(player.getUniqueId(), " ");
+                        damagePlayer2.put(player.getUniqueId(), " ");
+                        dps2.put(player.getUniqueId(), " ");
+                    }
+                    else{
+                        damageBar2.put(player.getUniqueId(), dpsBar.getBar(mParty.get(1), dpsManager.getRoundedDps(mParty.get(0)), dpsManager.getRoundedDps(mParty.get(1))));
+                        damagePlayer2.put(player.getUniqueId(), mParty.get(1).getName());
+                        dps2.put(player.getUniqueId(), String.valueOf(dpsManager.getRoundedDps(mParty.get(1))));
+                    }
+                }
+
+                if(mParty.size() > 2){
+                    double damage3 = dpsManager.getRoundedDps(mParty.get(2));
+                    if(damage3 == 0){
+                        damageBar3.put(player.getUniqueId(), " ");
+                        damagePlayer3.put(player.getUniqueId(), " ");
+                        dps3.put(player.getUniqueId(), " ");
+                    }
+                    else{
+                        damageBar3.put(player.getUniqueId(), dpsBar.getBar(mParty.get(2), dpsManager.getRoundedDps(mParty.get(0)), dpsManager.getRoundedDps(mParty.get(2))));
+                        damagePlayer3.put(player.getUniqueId(), mParty.get(2).getName());
+                        dps3.put(player.getUniqueId(), String.valueOf(dpsManager.getRoundedDps(mParty.get(2))));
+                    }
+                }
+
+                if(mParty.size() > 3){
+                    double damage4 = dpsManager.getRoundedDps(mParty.get(3));
+                    if(damage4 == 0){
+                        damageBar4.put(player.getUniqueId(), " ");
+                        damagePlayer4.put(player.getUniqueId(), " ");
+                        dps4.put(player.getUniqueId(), " ");
+                    }
+                    else{
+                        damageBar4.put(player.getUniqueId(), dpsBar.getBar(mParty.get(3), dpsManager.getRoundedDps(mParty.get(0)), dpsManager.getRoundedDps(mParty.get(3))));
+                        damagePlayer4.put(player.getUniqueId(), mParty.get(3).getName());
+                        dps4.put(player.getUniqueId(), String.valueOf(dpsManager.getRoundedDps(mParty.get(3))));
+                    }
+                }
+
+                if(mParty.size()>4){
+                    double damage5 = dpsManager.getRoundedDps(mParty.get(4));
+                    if(damage5 == 0){
+                        damageBar5.put(player.getUniqueId(), " ");
+                        damagePlayer5.put(player.getUniqueId(), " ");
+                        dps5.put(player.getUniqueId(), " ");
+                    }
+                    else{
+                        damageBar5.put(player.getUniqueId(), dpsBar.getBar(mParty.get(4), dpsManager.getRoundedDps(mParty.get(0)), dpsManager.getRoundedDps(mParty.get(4))));
+                        damagePlayer5.put(player.getUniqueId(), mParty.get(4).getName());
+                        dps5.put(player.getUniqueId(), String.valueOf(dpsManager.getRoundedDps(mParty.get(4))));
+                    }
+                }
             }
-            else{
-                damageBar1.put(player.getUniqueId(), dpsBar.getBar(mParty.get(0), dpsManager.getRoundedDps(mParty.get(0)), dpsManager.getRoundedDps(mParty.get(0))));
-                damagePlayer1.put(player.getUniqueId(), mParty.get(0).getName());
-                dps1.put(player.getUniqueId(), String.valueOf(dpsManager.getRoundedDps(mParty.get(0))));
-            }
-        }
-
-        if(mParty.size() > 1){
-            double damage2 = dpsManager.getRoundedDps(mParty.get(1));
-            if(damage2 == 0){
-                damageBar2.put(player.getUniqueId(), " ");
-                damagePlayer2.put(player.getUniqueId(), " ");
-                dps2.put(player.getUniqueId(), " ");
-            }
-            else{
-                damageBar2.put(player.getUniqueId(), dpsBar.getBar(mParty.get(1), dpsManager.getRoundedDps(mParty.get(0)), dpsManager.getRoundedDps(mParty.get(1))));
-                damagePlayer2.put(player.getUniqueId(), mParty.get(1).getName());
-                dps2.put(player.getUniqueId(), String.valueOf(dpsManager.getRoundedDps(mParty.get(1))));
-            }
-        }
-
-        if(mParty.size() > 2){
-            double damage3 = dpsManager.getRoundedDps(mParty.get(2));
-            if(damage3 == 0){
-                damageBar3.put(player.getUniqueId(), " ");
-                damagePlayer3.put(player.getUniqueId(), " ");
-                dps3.put(player.getUniqueId(), " ");
-            }
-            else{
-                damageBar3.put(player.getUniqueId(), dpsBar.getBar(mParty.get(2), dpsManager.getRoundedDps(mParty.get(0)), dpsManager.getRoundedDps(mParty.get(2))));
-                damagePlayer3.put(player.getUniqueId(), mParty.get(2).getName());
-                dps3.put(player.getUniqueId(), String.valueOf(dpsManager.getRoundedDps(mParty.get(2))));
-            }
-        }
-
-        if(mParty.size() > 3){
-            double damage4 = dpsManager.getRoundedDps(mParty.get(3));
-            if(damage4 == 0){
-                damageBar4.put(player.getUniqueId(), " ");
-                damagePlayer4.put(player.getUniqueId(), " ");
-                dps4.put(player.getUniqueId(), " ");
-            }
-            else{
-                damageBar4.put(player.getUniqueId(), dpsBar.getBar(mParty.get(3), dpsManager.getRoundedDps(mParty.get(0)), dpsManager.getRoundedDps(mParty.get(3))));
-                damagePlayer4.put(player.getUniqueId(), mParty.get(3).getName());
-                dps4.put(player.getUniqueId(), String.valueOf(dpsManager.getRoundedDps(mParty.get(3))));
-            }
-        }
-
-        if(mParty.size()>4){
-            double damage5 = dpsManager.getRoundedDps(mParty.get(4));
-            if(damage5 == 0){
-                damageBar5.put(player.getUniqueId(), " ");
-                damagePlayer5.put(player.getUniqueId(), " ");
-                dps5.put(player.getUniqueId(), " ");
-            }
-            else{
-                damageBar5.put(player.getUniqueId(), dpsBar.getBar(mParty.get(4), dpsManager.getRoundedDps(mParty.get(0)), dpsManager.getRoundedDps(mParty.get(4))));
-                damagePlayer5.put(player.getUniqueId(), mParty.get(4).getName());
-                dps5.put(player.getUniqueId(), String.valueOf(dpsManager.getRoundedDps(mParty.get(4))));
-            }
-        }
+        }.runTaskAsynchronously(main);
 
 
     }

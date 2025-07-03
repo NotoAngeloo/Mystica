@@ -98,7 +98,7 @@ public class ElementalMatrix {
                 cooldownDisplayer.displayCooldown(caster, 8);
 
             }
-        }.runTaskTimer(main, 0,20);
+        }.runTaskTimerAsynchronously(main, 0,20);
         cooldownTask.put(caster.getUniqueId(), task);
 
     }

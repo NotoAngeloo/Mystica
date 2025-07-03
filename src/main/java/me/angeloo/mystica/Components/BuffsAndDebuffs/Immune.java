@@ -51,7 +51,7 @@ public class Immune {
 
                 count++;
             }
-        }.runTaskTimer(main, 0, 1);
+        }.runTaskTimerAsynchronously(main, 0, 1);
 
         removeImmobileTaskMap.put(entity.getUniqueId(), task);
     }
@@ -63,8 +63,11 @@ public class Immune {
     public void removeImmune(LivingEntity entity){
         immobileMap.remove(entity.getUniqueId());
         if(entity instanceof Player){
-            Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+            Bukkit.getScheduler().runTask(main,()->{
+                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player)entity, "status", false));
+            });
+
+
         }
 
     }

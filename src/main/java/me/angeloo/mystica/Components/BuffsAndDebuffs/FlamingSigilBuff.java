@@ -60,7 +60,7 @@ public class FlamingSigilBuff {
 
                 count++;
             }
-        }.runTaskTimer(main, 0, 20);
+        }.runTaskTimerAsynchronously(main, 0, 20);
 
         removeAttackBuffTaskMap.put(entity.getUniqueId(), task);
     }
@@ -77,8 +77,10 @@ public class FlamingSigilBuff {
         hasAttackMap.remove(entity.getUniqueId());
         attackAmountMap.remove(entity.getUniqueId());
         if(entity instanceof Player){
-            Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+            Bukkit.getScheduler().runTask(main,()->{
+                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player)entity, "status", false));
+            });
+
         }
     }
 

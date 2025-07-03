@@ -129,7 +129,7 @@ public class Warp {
 
 
             }
-        }.runTaskTimer(main, 0,20);
+        }.runTaskTimerAsynchronously(main, 0,20);
         cooldownTask.put(caster.getUniqueId(), task);
 
     }

@@ -54,7 +54,7 @@ public class Haste {
 
                 count++;
             }
-        }.runTaskTimer(main, 0, 1);
+        }.runTaskTimerAsynchronously(main, 0, 1);
 
 
         removeHasteTaskMap.put(entity.getUniqueId(), task);
@@ -68,8 +68,9 @@ public class Haste {
         hasteLevel.remove(entity.getUniqueId());
 
         if(entity instanceof Player){
-            Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+            Bukkit.getScheduler().runTask(main,()->{
+                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player)entity, "status", false));
+            });
         }
 
     }

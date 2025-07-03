@@ -34,7 +34,6 @@ public class BuffAndDebuffManager {
     private final BladeTempestCrit bladeTempestCrit;
     private final ConcoctionDebuff concoctionDebuff;
     private final Pulled pulled;
-    private final Blocking blocking;
     private final PassThrough passThrough;
     private final ArmorBreak armorBreak;
     private final BossInterrupt bossInterrupt;
@@ -66,7 +65,6 @@ public class BuffAndDebuffManager {
         bladeTempestCrit = new BladeTempestCrit(main);
         concoctionDebuff = new ConcoctionDebuff(main);
         pulled = new Pulled();
-        blocking = new Blocking(main);
         passThrough = new PassThrough();
         armorBreak = new ArmorBreak(main);
         bossInterrupt = new BossInterrupt(main);
@@ -99,7 +97,6 @@ public class BuffAndDebuffManager {
     public BladeTempestCrit getBladeTempestCrit(){return bladeTempestCrit;}
     public ConcoctionDebuff getConcoctionDebuff(){return concoctionDebuff;}
     public Pulled getPulled(){return pulled;}
-    public Blocking getBlocking(){return blocking;}
     public PassThrough getPassThrough(){return passThrough;}
     public ArmorBreak getArmorBreak(){return armorBreak;}
     public Fear getFear(){return fear;}
@@ -127,7 +124,6 @@ public class BuffAndDebuffManager {
         bladeTempestCrit.removeBonus(entity);
         concoctionDebuff.removeDebuff(entity);
         pulled.removePull(entity);
-        blocking.removeBlocking(entity);
         armorBreak.removeArmorBreak(entity);
         fear.removeFear(entity);
 

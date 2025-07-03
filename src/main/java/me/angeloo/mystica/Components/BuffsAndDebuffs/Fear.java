@@ -65,7 +65,7 @@ public class Fear {
 
                 count++;
             }
-        }.runTaskTimer(main, 0, 1);
+        }.runTaskTimerAsynchronously(main, 0, 1);
 
         removeFearTaskMap.put(entity.getUniqueId(), task);
     }
@@ -77,8 +77,9 @@ public class Fear {
     public void removeFear(LivingEntity entity){
         fearMap.remove(entity.getUniqueId());
         if(entity instanceof Player){
-            Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+            Bukkit.getScheduler().runTask(main,()->{
+                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player)entity, "status", false));
+            });
         }
     }
 

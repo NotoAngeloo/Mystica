@@ -54,13 +54,18 @@ public class BossCastingManager {
                 castPercent.put(entity.getUniqueId(), currentPercent + speedPerTick);
 
                 // send the data to all nearby players
-                for(LivingEntity enemy : aggroManager.getAttackerList(entity)){
-                    if(!(enemy instanceof Player)){
-                        continue;
+
+                Bukkit.getScheduler().runTask(main,()->{
+                    for(LivingEntity enemy : aggroManager.getAttackerList(entity)){
+                        if(!(enemy instanceof Player)){
+                            continue;
+                        }
+                        Player player = (Player) enemy;
+                        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "target", true));
                     }
-                    Player player = (Player) enemy;
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "target", true));
-                }
+                });
+
+
 
             }
 
@@ -70,10 +75,15 @@ public class BossCastingManager {
                 shouldInterrupt.remove(entity.getUniqueId());
                 castMax.remove(entity.getUniqueId());
                 castTaskMap.remove(entity.getUniqueId());
-                if(MythicBukkit.inst().getAPIHelper().isMythicMob(entity)){
-                    AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).getEntity();
-                    MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).signalMob(abstractEntity, "interrupt_failed");
-                }
+
+                Bukkit.getScheduler().runTask(main,()->{
+                    if(MythicBukkit.inst().getAPIHelper().isMythicMob(entity)){
+                        AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).getEntity();
+                        MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).signalMob(abstractEntity, "interrupt_failed");
+                    }
+                });
+
+
             }
 
             private void interrupt(){
@@ -82,15 +92,20 @@ public class BossCastingManager {
                 shouldInterrupt.remove(entity.getUniqueId());
                 castMax.remove(entity.getUniqueId());
                 castTaskMap.remove(entity.getUniqueId());
-                if(MythicBukkit.inst().getAPIHelper().isMythicMob(entity)){
-                    AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).getEntity();
-                    MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).signalMob(abstractEntity, "interrupted");
-                }
+
+                Bukkit.getScheduler().runTask(main, ()->{
+                    if(MythicBukkit.inst().getAPIHelper().isMythicMob(entity)){
+                        AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).getEntity();
+                        MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).signalMob(abstractEntity, "interrupted");
+                    }
+                });
+
+
             }
 
 
 
-        }.runTaskTimer(main, 0,1);
+        }.runTaskTimerAsynchronously(main, 0,1);
         castTaskMap.put(entity.getUniqueId(), task);
 
     }

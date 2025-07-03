@@ -40,8 +40,20 @@ public class PvpManager {
 
     public boolean pvpLogic(LivingEntity player, Player otherPlayer){
 
+        if(player == null){
+            return false;
+        }
+
+        if(otherPlayer == null){
+            return false;
+        }
+
         if(profileManager.getAnyProfile(player).fakePlayer()){
             player = profileManager.getCompanionsPlayer(player);
+        }
+
+        if(player == null){
+            return false;
         }
 
         if(player == otherPlayer){

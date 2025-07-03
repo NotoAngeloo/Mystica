@@ -95,7 +95,7 @@ public class ReigningSword {
                 cooldownDisplayer.displayCooldown(caster, 3);
 
             }
-        }.runTaskTimer(main, 0,20);
+        }.runTaskTimerAsynchronously(main, 0,20);
         cooldownTask.put(caster.getUniqueId(), task);
 
     }

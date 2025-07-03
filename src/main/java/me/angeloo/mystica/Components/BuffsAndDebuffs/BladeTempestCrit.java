@@ -48,7 +48,7 @@ public class BladeTempestCrit {
 
                 count++;
             }
-        }.runTaskTimer(main, 0, 20);
+        }.runTaskTimerAsynchronously(main, 0, 20);
 
         removeBuffTaskMap.put(entity.getUniqueId(), task);
 

@@ -88,7 +88,7 @@ public class PathingManager {
 
     public void calculatePath(Player player, Location destination){
 
-        List<Location> paths = this.paths;
+        /*List<Location> paths = this.paths;
         List<Location> calculatedPath = new ArrayList<>();
 
         if(paths.size() == 0){
@@ -277,7 +277,7 @@ public class PathingManager {
         playerPaths.put(player.getUniqueId(), calculatedPath);
         destinations.put(player.getUniqueId(), destination);
         startPathDisplayTask(player);
-
+        */
     }
 
 

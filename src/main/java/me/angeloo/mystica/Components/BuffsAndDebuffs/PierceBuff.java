@@ -36,8 +36,10 @@ public class PierceBuff {
             public void run(){
 
                 if(entity instanceof Player){
-                    Player player = (Player) entity;
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+                    Bukkit.getScheduler().runTask(main, ()->{
+                        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player) entity, "status", false));
+                    });
+
                 }
 
 
@@ -51,12 +53,14 @@ public class PierceBuff {
                 buffActiveMap.put(entity.getUniqueId(), left);
 
                 if(entity instanceof Player){
-                    Player player = (Player) entity;
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+                    Bukkit.getScheduler().runTask(main,()->{
+                        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player) entity, "status", false));
+                    });
+
                 }
 
             }
-        }.runTaskTimer(main, 0, 20);
+        }.runTaskTimerAsynchronously(main, 0, 20);
 
     }
 

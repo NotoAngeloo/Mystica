@@ -98,11 +98,14 @@ public class DeathGaze {
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
 
                 if(caster instanceof Player){
-                    Bukkit.getServer().getPluginManager().callEvent(new UltimateStatusChageEvent((Player) caster));
+                    Bukkit.getScheduler().runTask(main,()->{
+                        Bukkit.getServer().getPluginManager().callEvent(new UltimateStatusChageEvent((Player) caster));
+                    });
+
                 }
 
             }
-        }.runTaskTimer(main, 0,20);
+        }.runTaskTimerAsynchronously(main, 0,20);
         cooldownTask.put(caster.getUniqueId(), task);
 
     }

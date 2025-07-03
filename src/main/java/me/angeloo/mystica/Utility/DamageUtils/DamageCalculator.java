@@ -151,9 +151,6 @@ public class DamageCalculator {
         damage = damage * buffAndDebuffManager.getTotalDamageMultipliers(damager, entity);
         damage = damage + buffAndDebuffManager.getTotalDamageAddition(damager, entity);
 
-        if(buffAndDebuffManager.getBlocking().getIfBlocking(entity)){
-            damage*=.5;
-        }
 
         return damage;
     }
@@ -210,9 +207,6 @@ public class DamageCalculator {
 
         damage = damage * buffAndDebuffManager.getTotalDamageMultipliers(entity, hitEntity);
 
-        if(buffAndDebuffManager.getBlocking().getIfBlocking(hitEntity)){
-            damage*=.5;
-        }
 
         return damage;
     }

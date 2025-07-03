@@ -192,7 +192,7 @@ public class ArcaneContract {
                     cooldownDisplayer.displayCooldown((LivingEntity) entity, 7);
                 }
             }
-        }.runTaskTimer(main, 0,20);
+        }.runTaskTimerAsynchronously(main, 0,20);
     }
 
     public int getCost(){

@@ -56,7 +56,7 @@ public class BurningBlessingBuff {
 
                 count++;
             }
-        }.runTaskTimer(main, 0, 20);
+        }.runTaskTimerAsynchronously(main, 0, 20);
 
         removeHealthBuffTaskMap.put(entity.getUniqueId(), task);
     }
@@ -73,8 +73,10 @@ public class BurningBlessingBuff {
         healthAmountMap.remove(entity.getUniqueId());
         hasHealthMap.remove(entity.getUniqueId());
         if(entity instanceof Player){
-            Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+            Bukkit.getScheduler().runTask(main,()->{
+                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player)entity, "status", false));
+            });
+
         }
     }
 

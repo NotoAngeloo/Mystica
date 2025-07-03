@@ -35,8 +35,6 @@ import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.inventory.*;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -160,7 +158,7 @@ public class GeneralEventListener implements Listener {
 
         //player.sendMessage(dailyData.getLevelAnnouncement());
 
-        PluginManager pluginManager = Bukkit.getPluginManager();
+        /*PluginManager pluginManager = Bukkit.getPluginManager();
         Plugin interactions = pluginManager.getPlugin("interactions");
         Server server = Bukkit.getServer();
         if(interactions != null && interactions.isEnabled()){
@@ -172,7 +170,7 @@ public class GeneralEventListener implements Listener {
                 }
             }.runTaskLater(main, 5);
 
-        }
+        }*/
 
 
         targetManager.setPlayerTarget(player, null);
@@ -1648,10 +1646,12 @@ public class GeneralEventListener implements Listener {
 
 
     @EventHandler
-    public void onCompanionRemoval(MythicMobDespawnEvent event){
+    public void onMMRemoval(MythicMobDespawnEvent event){
 
 
         Entity entity = event.getMob().getEntity().getBukkitEntity();
+
+        fakePlayerAiManager.stopAiTask(entity.getUniqueId());
 
         if(!(entity instanceof  LivingEntity)){
             return;
@@ -1659,13 +1659,15 @@ public class GeneralEventListener implements Listener {
 
         LivingEntity livingEntity = (LivingEntity) entity;
 
+        profileManager.getAnyProfile(livingEntity).setIfDead(true);
+
         if(profileManager.getAnyProfile(livingEntity).fakePlayer()){
             Player companionPlayer = profileManager.getCompanionsPlayer(livingEntity);
             profileManager.removeCompanion(companionPlayer, livingEntity.getUniqueId());
             mysticaPartyManager.removeFromMysticaPartyMap(livingEntity);
             profileManager.clearCompanionFaces(entity.getUniqueId());
-        }
 
+        }
 
     }
 

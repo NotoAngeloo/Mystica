@@ -87,7 +87,7 @@ public class GloryOfPaladins {
                 cooldownDisplayer.displayCooldown(caster, 6);
 
             }
-        }.runTaskTimer(main, 0,20);
+        }.runTaskTimerAsynchronously(main, 0,20);
         cooldownTask.put(caster.getUniqueId(), task);
 
     }

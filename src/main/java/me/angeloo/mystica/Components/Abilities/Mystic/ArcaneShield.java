@@ -109,7 +109,7 @@ public class ArcaneShield {
                 cooldownDisplayer.displayCooldown(caster, 1);
 
             }
-        }.runTaskTimer(main, 0,20);
+        }.runTaskTimerAsynchronously(main, 0,20);
         cooldownTask.put(caster.getUniqueId(), task);
 
     }
@@ -232,9 +232,15 @@ public class ArcaneShield {
     }
 
     public boolean usable(LivingEntity caster, LivingEntity target){
+
+        if(caster == null){
+            return false;
+        }
+
         if(target != null){
 
             if(target instanceof Player){
+
                 if(pvpManager.pvpLogic(caster, (Player) target)){
                     target = caster;
                 }
@@ -247,6 +253,10 @@ public class ArcaneShield {
 
         if(target == null){
             target = caster;
+        }
+
+        if(caster.getLocation().getWorld() != target.getLocation().getWorld()){
+            return false;
         }
 
         double distance = caster.getLocation().distance(target.getLocation());

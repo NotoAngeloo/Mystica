@@ -51,7 +51,7 @@ public class Silence {
 
                 count++;
             }
-        }.runTaskTimer(main, 0, 1);
+        }.runTaskTimerAsynchronously(main, 0, 1);
 
         removeSilenceTaskMap.put(entity.getUniqueId(), task);
     }
@@ -63,8 +63,8 @@ public class Silence {
     public void removeSilence(LivingEntity entity){
         silenceMap.remove(entity.getUniqueId());
         if(entity instanceof Player){
-            Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player)entity, "status", false));
         }
     }
 

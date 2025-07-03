@@ -92,12 +92,6 @@ public class FakePlayerAiManager {
             @Override
             public void run(){
 
-                //Bukkit.getLogger().info("ranger");
-
-                if(companion.isDead()){
-                    stopAiTask(companion.getUniqueId());
-                    return;
-                }
 
                 if(profileManager.getAnyProfile(companion).getIfDead()){
                     stopAiTask(companion.getUniqueId());
@@ -108,68 +102,120 @@ public class FakePlayerAiManager {
 
                 LivingEntity target = fakePlayerTargetManager.getTarget(companion);
 
-                if(target.isDead()){
+                if(profileManager.getAnyProfile(target).getIfDead()){
                     stopAiTask(companion.getUniqueId());
                     return;
                 }
 
 
                 if(rangerAbilities.getWildRoar().usable(companion)){
-                    rangerAbilities.getWildRoar().use(companion);
+
+                    Bukkit.getScheduler().runTask(main,()->{
+                        rangerAbilities.getWildRoar().use(companion);
+                    });
+
+
                     return;
                 }
 
                 if(rangerAbilities.getShadowCrows().usable(companion, target)){
-                    rangerAbilities.getShadowCrows().use(companion);
+
+                    Bukkit.getScheduler().runTask(main,()->{
+                        rangerAbilities.getShadowCrows().use(companion);
+                    });
+
+
                     return;
                 }
 
                 if(rangerAbilities.getWildSpirit().usable(companion)){
-                    rangerAbilities.getWildSpirit().sendSignal(companion);
+
+                    Bukkit.getScheduler().runTask(main,()->{
+                        rangerAbilities.getWildSpirit().sendSignal(companion);
+                    });
+
                     return;
                 }
 
                 if(rangerAbilities.getRallyingCry().getIfBuffTime(companion)>0){
                     if(rangerAbilities.getBlessedArrow().usable(companion, target)){
-                        rangerAbilities.getBlessedArrow().use(companion);
+
+                        Bukkit.getScheduler().runTask(main,()->{
+                            rangerAbilities.getBlessedArrow().use(companion);
+                        });
+
+
                         return;
                     }
 
-                    rangerAbilities.getRangerBasic().useBasic(companion);
+                    Bukkit.getScheduler().runTask(main,()->{
+                        rangerAbilities.getRangerBasic().useBasic(companion);
+                    });
+
+
                     return;
                 }
 
                 if(rangerAbilities.getRelentless().usable(companion, target)){
-                    rangerAbilities.getRelentless().use(companion);
+
+                    Bukkit.getScheduler().runTask(main,()->{
+                        rangerAbilities.getRelentless().use(companion);
+                    });
+
+
                     return;
                 }
 
                 if(rangerAbilities.getRazorWind().usable(companion, target)){
-                    rangerAbilities.getRazorWind().use(companion);
+
+                    Bukkit.getScheduler().runTask(main,()->{
+                        rangerAbilities.getRazorWind().use(companion);
+                    });
+
+
                     return;
                 }
 
 
                 if(rangerAbilities.getRallyingCry().usable(companion)){
-                    rangerAbilities.getRallyingCry().use(companion);
+
+                    Bukkit.getScheduler().runTask(main,()->{
+                        rangerAbilities.getRallyingCry().use(companion);
+                    });
+
+
                     return;
                 }
 
                 if(rangerAbilities.getBlessedArrow().usable(companion, target)){
-                    rangerAbilities.getBlessedArrow().use(companion);
+
+                    Bukkit.getScheduler().runTask(main,()->{
+                        rangerAbilities.getBlessedArrow().use(companion);
+                    });
+
+
                     return;
                 }
 
 
                 if(rangerAbilities.getBitingRain().usable(companion, target)){
-                    rangerAbilities.getBitingRain().use(companion);
+
+                    Bukkit.getScheduler().runTask(main,()->{
+                        rangerAbilities.getBitingRain().use(companion);
+                    });
+
+
                 }
 
-                rangerAbilities.getRangerBasic().useBasic(companion);
+                Bukkit.getScheduler().runTask(main,()->{
+                    rangerAbilities.getRangerBasic().useBasic(companion);
+                });
+
+
 
 
             }
-        }.runTaskTimer(main, 0, 10);
+        }.runTaskTimerAsynchronously(main, 0, 10);
 
         aiTaskMap.put(companion.getUniqueId(), task);
         profileManager.setCompanionCombat(companion.getUniqueId());
@@ -185,12 +231,6 @@ public class FakePlayerAiManager {
             @Override
             public void run(){
 
-                //Bukkit.getLogger().info("paladin");
-
-                if(companion.isDead()){
-                    stopAiTask(companion.getUniqueId());
-                    return;
-                }
 
                 if(profileManager.getAnyProfile(companion).getIfDead()){
                     stopAiTask(companion.getUniqueId());
@@ -201,7 +241,7 @@ public class FakePlayerAiManager {
 
                 LivingEntity target = fakePlayerTargetManager.getTarget(companion);
 
-                if(target.isDead()){
+                if(profileManager.getAnyProfile(target).getIfDead()){
                     stopAiTask(companion.getUniqueId());
                     return;
                 }
@@ -213,9 +253,13 @@ public class FakePlayerAiManager {
                 int healthPercent = (int) Math.round((profileManager.getAnyProfile(companion).getCurrentHealth() / (double) profileManager.getAnyProfile(companion).getTotalHealth()) * 100);
 
                 if(healthPercent <=50){
-
                     if(paladinAbilities.getSanctityShield().usable(companion)){
-                        paladinAbilities.getSanctityShield().use(companion);
+
+                        Bukkit.getScheduler().runTask(main,()->{
+                            paladinAbilities.getSanctityShield().use(companion);
+                        });
+
+
                         return;
                     }
 
@@ -224,8 +268,11 @@ public class FakePlayerAiManager {
                 if(paladinAbilities.getJudgement().usable(companion)){
 
                     //maybe later check hp to see if needed to heal
+                    Bukkit.getScheduler().runTask(main,()->{
+                        paladinAbilities.getJudgement().use(companion);
+                    });
 
-                    paladinAbilities.getJudgement().use(companion);
+
                     return;
                 }
 
@@ -233,7 +280,12 @@ public class FakePlayerAiManager {
 
                 if (distance >= 10) {
                     if (paladinAbilities.getOrderShield().usable(companion, target)) {
-                        paladinAbilities.getOrderShield().use(companion);
+
+                        Bukkit.getScheduler().runTask(main,()->{
+                            paladinAbilities.getOrderShield().use(companion);
+                        });
+
+
                         return;
                     }
                 }
@@ -241,28 +293,45 @@ public class FakePlayerAiManager {
 
                 if(!getIfCautious(companion)){
                     if(paladinAbilities.getGloryOfPaladins().usable(companion)){
-                        paladinAbilities.getGloryOfPaladins().use(companion);
+
+                        Bukkit.getScheduler().runTask(main,()->{
+                            paladinAbilities.getGloryOfPaladins().use(companion);
+                        });
+
+
                     }
                 }
 
 
 
                 if (paladinAbilities.getTorahSword().usable(companion, target)) {
-                    paladinAbilities.getTorahSword().use(companion);
+
+                    Bukkit.getScheduler().runTask(main,()->{
+                        paladinAbilities.getTorahSword().use(companion);
+                    });
+
+
                     return;
                 }
 
 
                 if(!getIfCautious(companion)){
                     if(paladinAbilities.getReigningSword().usable(companion)){
-                        paladinAbilities.getReigningSword().use(companion);
+
+                        Bukkit.getScheduler().runTask(main,()->{
+                            paladinAbilities.getReigningSword().use(companion);
+                        });
+
                         return;
                     }
                 }
                 else{
                     if(paladinAbilities.getReigningSword().usable(companion)){
                         if(healthPercent<=50){
-                            paladinAbilities.getReigningSword().use(companion);
+                            Bukkit.getScheduler().runTask(main,()->{
+                                paladinAbilities.getReigningSword().use(companion);
+                            });
+
                             return;
                         }
                     }
@@ -270,14 +339,20 @@ public class FakePlayerAiManager {
 
                 if(healthPercent<=50){
                     if(paladinAbilities.getDivineGuidance().usable(companion)){
-                        paladinAbilities.getDivineGuidance().use(companion);
+                        Bukkit.getScheduler().runTask(main,()->{
+                            paladinAbilities.getDivineGuidance().use(companion);
+                        });
+
                         return;
                     }
                 }
                 else{
                     if(distance<=5){
                         if(paladinAbilities.getDivineGuidance().usable(companion)){
-                            paladinAbilities.getDivineGuidance().use(companion);
+                            Bukkit.getScheduler().runTask(main,()->{
+                                paladinAbilities.getDivineGuidance().use(companion);
+                            });
+
                             return;
                         }
                     }
@@ -286,7 +361,10 @@ public class FakePlayerAiManager {
                 if(!getIfCautious(companion)){
                     if(distance<=8){
                         if(paladinAbilities.getDuranceOfTruth().usable(companion)){
-                            paladinAbilities.getDuranceOfTruth().use(companion);
+                            Bukkit.getScheduler().runTask(main,()->{
+                                paladinAbilities.getDuranceOfTruth().use(companion);
+                            });
+
                             return;
                         }
                     }
@@ -296,13 +374,16 @@ public class FakePlayerAiManager {
 
                 if(!getIfCautious(companion)){
                     if(distance<5){
-                        paladinAbilities.getPaladinBasic().useBasic(companion);
+                        Bukkit.getScheduler().runTask(main,()->{
+                            paladinAbilities.getPaladinBasic().useBasic(companion);
+                        });
+
                     }
                 }
 
 
             }
-        }.runTaskTimer(main, 0, 10);
+        }.runTaskTimerAsynchronously(main, 0, 10);
 
         aiTaskMap.put(companion.getUniqueId(), task);
         profileManager.setCompanionCombat(companion.getUniqueId());
@@ -322,10 +403,6 @@ public class FakePlayerAiManager {
 
                 //Bukkit.getLogger().info("mystic");
 
-                if(companion.isDead()){
-                    stopAiTask(companion.getUniqueId());
-                    return;
-                }
 
                 if(profileManager.getAnyProfile(companion).getIfDead()){
                     stopAiTask(companion.getUniqueId());
@@ -360,13 +437,23 @@ public class FakePlayerAiManager {
 
                 if(averagePhp <= 75){
                     if(mysticAbilities.getEnlightenment().usable(companion)){
-                        mysticAbilities.getEnlightenment().use(companion);
+
+                        Bukkit.getScheduler().runTask(main,()->{
+                            mysticAbilities.getEnlightenment().use(companion);
+                        });
+
+
                         return;
                     }
 
                     if(mysticAbilities.getPurifyingBlast().getInstantCast(companion)){
                         if(mysticAbilities.getPurifyingBlast().usable(companion)){
-                            mysticAbilities.getPurifyingBlast().use(companion);
+
+                            Bukkit.getScheduler().runTask(main,()->{
+                                mysticAbilities.getPurifyingBlast().use(companion);
+                            });
+
+
                             return;
                         }
                     }
@@ -374,32 +461,49 @@ public class FakePlayerAiManager {
 
                 if(averagePhp <= 50){
                     if(mysticAbilities.getAurora().usable(companion, lowest)){
-                        fakePlayerTargetManager.setFakePlayerTarget(companion, lowest);
 
-                        if(fakePlayerTargetManager.getTarget(companion) == companion){
-                            fakePlayerTargetManager.setFakePlayerTarget(companion, null);
-                        }
-                        mysticAbilities.getAurora().use(companion);
+                        Bukkit.getScheduler().runTask(main,()->{
+                            fakePlayerTargetManager.setFakePlayerTarget(companion, lowest);
+
+                            if(fakePlayerTargetManager.getTarget(companion) == companion){
+                                fakePlayerTargetManager.setFakePlayerTarget(companion, null);
+                            }
+                            mysticAbilities.getAurora().use(companion);
+                        });
+
+
                         return;
                     }
 
                 }
 
                 if(lowestHealthPercent<=50){
-                    fakePlayerTargetManager.setFakePlayerTarget(companion, lowest);
 
-                    if(fakePlayerTargetManager.getTarget(companion) == companion){
-                        fakePlayerTargetManager.setFakePlayerTarget(companion, null);
-                    }
-                    if(mysticAbilities.getArcaneShield().usable(companion, lowest)){
-                        mysticAbilities.getArcaneShield().use(companion);
-                        return;
-                    }
+                    Bukkit.getScheduler().runTask(main,()->{
+
+                        fakePlayerTargetManager.setFakePlayerTarget(companion, lowest);
+
+                        if(fakePlayerTargetManager.getTarget(companion) == companion){
+                            fakePlayerTargetManager.setFakePlayerTarget(companion, null);
+                        }
+
+                        if(mysticAbilities.getArcaneShield().usable(companion, lowest)){
+                            mysticAbilities.getArcaneShield().use(companion);
+                        }
+
+                    });
+
+
                 }
 
                 if(averagePhp <= 75){
                     if(mysticAbilities.getLightSigil().usable(companion)){
-                        mysticAbilities.getLightSigil().use(companion);
+
+                        Bukkit.getScheduler().runTask(main,()->{
+                            mysticAbilities.getLightSigil().use(companion);
+                        });
+
+
                         return;
                     }
                 }
@@ -411,12 +515,15 @@ public class FakePlayerAiManager {
                     fakePlayerTargetManager.setFakePlayerTarget(companion, null);
                 }
 
-                mysticAbilities.getMysticBasic().useBasic(companion);
+                Bukkit.getScheduler().runTask(main,()->{
+                    mysticAbilities.getMysticBasic().useBasic(companion);
+                });
+
 
                 fakePlayerTargetManager.setFakePlayerTarget(companion, lowest);
 
             }
-        }.runTaskTimer(main, 0, 10);
+        }.runTaskTimerAsynchronously(main, 0, 10);
 
         aiTaskMap.put(companion.getUniqueId(), task);
         profileManager.setCompanionCombat(companion.getUniqueId());
@@ -434,10 +541,6 @@ public class FakePlayerAiManager {
 
                 //Bukkit.getLogger().info("warrior");
 
-                if(companion.isDead()){
-                    stopAiTask(companion.getUniqueId());
-                    return;
-                }
 
                 if(profileManager.getAnyProfile(companion).getIfDead()){
                     stopAiTask(companion.getUniqueId());
@@ -448,7 +551,7 @@ public class FakePlayerAiManager {
 
                 LivingEntity target = fakePlayerTargetManager.getTarget(companion);
 
-                if(target.isDead()){
+                if(profileManager.getAnyProfile(target).getIfDead()){
                     stopAiTask(companion.getUniqueId());
                     return;
                 }
@@ -470,8 +573,12 @@ public class FakePlayerAiManager {
 
                         if(distance<5){
                             //Bukkit.getLogger().info("Skill cast");
-                            warriorAbilities.getMeteorCrater().use(companion);
-                            removeInterrupt(companion);
+
+                            Bukkit.getScheduler().runTask(main,()->{
+                                warriorAbilities.getMeteorCrater().use(companion);
+                                removeInterrupt(companion);
+                            });
+
                             return;
                         }
 
@@ -481,18 +588,32 @@ public class FakePlayerAiManager {
 
 
                 if(warriorAbilities.getFlamingSigil().usable(companion)){
-                    warriorAbilities.getFlamingSigil().use(companion);
+
+                    Bukkit.getScheduler().runTask(main,()->{
+                        warriorAbilities.getFlamingSigil().use(companion);
+                    });
+
                     return;
                 }
 
                 if(distance<8){
                     if(warriorAbilities.getTempestRage().usable(companion)){
-                        warriorAbilities.getTempestRage().use(companion);
+
+                        Bukkit.getScheduler().runTask(main,()->{
+                            warriorAbilities.getTempestRage().use(companion);
+                        });
+
+
                         return;
                     }
 
                     if(warriorAbilities.getLavaQuake().usable(companion)){
-                        warriorAbilities.getLavaQuake().use(companion);
+
+                        Bukkit.getScheduler().runTask(main,()->{
+                            warriorAbilities.getLavaQuake().use(companion);
+                        });
+
+
                         return;
                     }
                 }
@@ -500,7 +621,12 @@ public class FakePlayerAiManager {
                 if(!getIfCautious(companion)){
                     if(distance<5){
                         if(warriorAbilities.getMagmaSpikes().usable(companion)){
-                            warriorAbilities.getMagmaSpikes().use(companion);
+
+                            Bukkit.getScheduler().runTask(main,()->{
+                                warriorAbilities.getMagmaSpikes().use(companion);
+                            });
+
+
                             return;
                         }
                     }
@@ -509,7 +635,12 @@ public class FakePlayerAiManager {
 
                 if(!getIfCautious(companion)){
                     if(warriorAbilities.getDeathGaze().usable(companion, target)){
-                        warriorAbilities.getDeathGaze().use(companion);
+
+                        Bukkit.getScheduler().runTask(main,()->{
+                            warriorAbilities.getDeathGaze().use(companion);
+                        });
+
+
                     }
                 }
 
@@ -517,7 +648,12 @@ public class FakePlayerAiManager {
                 if(!getIfCautious(companion)){
                     if(distance>=8 && distance < 15){
                         if(warriorAbilities.getAnvilDrop().usable(companion)){
-                            warriorAbilities.getAnvilDrop().use(companion);
+
+                            Bukkit.getScheduler().runTask(main,()->{
+                                warriorAbilities.getAnvilDrop().use(companion);
+                            });
+
+
                             return;
                         }
                     }
@@ -525,12 +661,17 @@ public class FakePlayerAiManager {
 
                 if(!getIfCautious(companion)){
                     if(distance<5){
-                        warriorAbilities.getWarriorBasic().useBasic(companion);
+
+                        Bukkit.getScheduler().runTask(main,()->{
+                            warriorAbilities.getWarriorBasic().useBasic(companion);
+                        });
+
+
                     }
                 }
 
             }
-        }.runTaskTimer(main, 0, 10);
+        }.runTaskTimerAsynchronously(main, 0, 10);
 
         aiTaskMap.put(companion.getUniqueId(), task);
         profileManager.setCompanionCombat(companion.getUniqueId());
@@ -548,11 +689,6 @@ public class FakePlayerAiManager {
 
                 //Bukkit.getLogger().info("elementalist");
 
-                if(companion.isDead()){
-                    stopAiTask(companion.getUniqueId());
-                    return;
-                }
-
                 if(profileManager.getAnyProfile(companion).getIfDead()){
                     stopAiTask(companion.getUniqueId());
                     return;
@@ -562,7 +698,7 @@ public class FakePlayerAiManager {
 
                 LivingEntity target = fakePlayerTargetManager.getTarget(companion);
 
-                if(target.isDead()){
+                if(profileManager.getAnyProfile(target).getIfDead()){
                     stopAiTask(companion.getUniqueId());
                     return;
                 }
@@ -572,73 +708,122 @@ public class FakePlayerAiManager {
 
                 int healthPercent = (int) Math.round((profileManager.getAnyProfile(companion).getCurrentHealth() / (double) profileManager.getAnyProfile(companion).getTotalHealth()) * 100);
 
-                double distance = target.getLocation().distance(companion.getLocation());
+                if(elementalistAbilities.getConjuringForce().usable(companion)){
 
-                if(distance <=10){
-                    if(elementalistAbilities.getConjuringForce().usable(companion)){
+                    Bukkit.getScheduler().runTask(main,()->{
                         elementalistAbilities.getConjuringForce().use(companion);
-                        return;
-                    }
+                    });
+
+
+                    return;
                 }
 
-
                 if(elementalistAbilities.getElementalBreath().usable(companion)){
-                    elementalistAbilities.getElementalBreath().use(companion);
+
+                    Bukkit.getScheduler().runTask(main,()->{
+                        elementalistAbilities.getElementalBreath().use(companion);
+                    });
+
+
                     return;
                 }
 
                 if(elementalistAbilities.getElemental_matrix().usable(companion, target)){
-                    elementalistAbilities.getElemental_matrix().use(companion);
+
+                    Bukkit.getScheduler().runTask(main,()->{
+                        elementalistAbilities.getElemental_matrix().use(companion);
+                    });
+
+
                     return;
                 }
 
                 if(elementalistAbilities.getIceBolt().usable(companion, target)){
-                    elementalistAbilities.getIceBolt().use(companion);
+
+                    Bukkit.getScheduler().runTask(main,()->{
+                        elementalistAbilities.getIceBolt().use(companion);
+                    });
+
+
                     return;
                 }
 
                 if(elementalistAbilities.getElementalBreath().getIfBuffTime(companion) > 0){
                     if(elementalistAbilities.getDescendingInferno().usable(companion, target)){
-                        elementalistAbilities.getDescendingInferno().use(companion);
+
+                        Bukkit.getScheduler().runTask(main,()->{
+                            elementalistAbilities.getDescendingInferno().use(companion);
+                        });
+
+
                         return;
                     }
                 }
 
                 if(heat < 95){
                     if(elementalistAbilities.getDescendingInferno().usable(companion, target)){
-                        elementalistAbilities.getDescendingInferno().use(companion);
+
+                        Bukkit.getScheduler().runTask(main,()->{
+                            elementalistAbilities.getDescendingInferno().use(companion);
+                        });
+
+
                         return;
                     }
 
                     if(elementalistAbilities.getFieryMagma().usable(companion, target)){
-                        elementalistAbilities.getFieryMagma().use(companion);
+
+                        Bukkit.getScheduler().runTask(main,()->{
+                            elementalistAbilities.getFieryMagma().use(companion);
+                        });
+
+
                         return;
                     }
                 }
 
                 if(heat < 85){
                     if(elementalistAbilities.getDragonBreathing().usable(companion, target)){
-                        elementalistAbilities.getDragonBreathing().use(companion);
+
+                        Bukkit.getScheduler().runTask(main,()->{
+                            elementalistAbilities.getDragonBreathing().use(companion);
+                        });
+
+
                         return;
                     }
                 }
 
                 if(elementalistAbilities.getWindWall().usable(companion)){
                     if(healthPercent<=50){
-                        elementalistAbilities.getWindWall().use(companion);
+
+
+                        Bukkit.getScheduler().runTask(main,()->{
+                            elementalistAbilities.getWindWall().use(companion);
+                        });
+
                         return;
                     }
                 }
 
                 if(elementalistAbilities.getConjuringForce().usable(companion)){
-                    elementalistAbilities.getConjuringForce().use(companion);
+
+                    Bukkit.getScheduler().runTask(main,()->{
+                        elementalistAbilities.getConjuringForce().use(companion);
+                    });
+
+
                     return;
                 }
 
-                elementalistAbilities.getElementalistBasic().use(companion);
+                Bukkit.getScheduler().runTask(main,()->{
+                    elementalistAbilities.getElementalistBasic().use(companion);
+                });
+
+
 
             }
-        }.runTaskTimer(main, 0, 10);
+        }.runTaskTimerAsynchronously(main, 0, 10);
 
         aiTaskMap.put(companion.getUniqueId(), task);
         profileManager.setCompanionCombat(companion.getUniqueId());

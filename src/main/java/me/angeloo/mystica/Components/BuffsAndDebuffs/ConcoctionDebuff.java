@@ -40,7 +40,7 @@ public class ConcoctionDebuff {
             public void run(){
                 removeDebuff(entity);
             }
-        }.runTaskLater(main, 15*20);
+        }.runTaskLaterAsynchronously(main, 15*20);
 
         removeDebuffTaskMap.put(entity.getUniqueId(), task);
     }
@@ -61,8 +61,10 @@ public class ConcoctionDebuff {
         hasDebuff.remove(entity.getUniqueId());
 
         if(entity instanceof Player){
-            Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+            Bukkit.getScheduler().runTask(main,()->{
+                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player)entity, "status", false));
+            });
+
         }
 
     }

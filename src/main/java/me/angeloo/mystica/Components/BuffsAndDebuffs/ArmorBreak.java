@@ -74,8 +74,10 @@ public class ArmorBreak {
                 timeLeft.put(entity.getUniqueId(), time);
 
                 if(entity instanceof Player){
-                    Player player = (Player) entity;
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+                    Bukkit.getScheduler().runTask(main, ()->{
+                        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player)entity, "status", false));
+                    });
+
                 }
 
                 if(time<= 0){
@@ -85,7 +87,7 @@ public class ArmorBreak {
 
 
             }
-        }.runTaskTimer(main, 20, 20);
+        }.runTaskTimerAsynchronously(main, 20, 20);
 
 
         removeTaskMap.put(entity.getUniqueId(), task);

@@ -48,6 +48,10 @@ public class Consolation {
 
     private void startTask(LivingEntity caster){
 
+        if(!(caster instanceof Player)){
+            return;
+        }
+
         if(taskMap.containsKey(caster.getUniqueId())){
             taskMap.get(caster.getUniqueId()).cancel();
         }
@@ -64,9 +68,7 @@ public class Consolation {
 
                         for(double i=2; i<5;i+=.3){
 
-                            if(caster instanceof Player){
-                                ((Player)caster).spawnParticle(Particle.WAX_OFF, target.getLocation().add(0,i,0), 1,0, 0, 0, 0);
-                            }
+                            ((Player) caster).spawnParticle(Particle.WAX_OFF, target.getLocation().add(0, i, 0), 1, 0, 0, 0, 0);
 
 
                         }

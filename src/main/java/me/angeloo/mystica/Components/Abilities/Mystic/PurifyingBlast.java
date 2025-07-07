@@ -9,6 +9,7 @@ import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -160,8 +161,8 @@ public class PurifyingBlast {
 
     private void blastTask(LivingEntity caster){
 
-        boolean arcane = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("arcane master");
-        boolean shepard = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("shepard");
+        boolean arcane = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Arcane);
+        boolean shepard = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Shepard);
 
         if(getInstantCast(caster)){
             unQueueInstantCast(caster);

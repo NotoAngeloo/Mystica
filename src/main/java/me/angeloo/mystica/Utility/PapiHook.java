@@ -56,7 +56,7 @@ public class PapiHook extends PlaceholderExpansion {
                     return String.valueOf(mysticaEntityGrabber.getLowestPhp(player));
                 }
                 case "class":{
-                    return profileManager.getAnyProfile(player).getPlayerClass();
+                    return profileManager.getAnyProfile(player).getPlayerClass().toString();
                 }
                 case "amount":{
                     return String.valueOf(mysticaEntityGrabber.getValidAmount(player));

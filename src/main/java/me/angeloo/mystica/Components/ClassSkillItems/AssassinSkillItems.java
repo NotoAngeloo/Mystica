@@ -6,6 +6,7 @@ import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ItemManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.SubClass;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -137,10 +138,10 @@ public class AssassinSkillItems {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
         int level = playerProfile.getStats().getLevel();
-        String subClass = playerProfile.getPlayerSubclass();
+        SubClass subClass = playerProfile.getPlayerSubclass();
 
-        switch(subClass.toLowerCase()){
-            case "duelist":{
+        switch(subClass){
+            case Duelist:{
                 return getItem(12,
                         ChatColor.of(assassinColor) + "Duelist's Frenzy",
                         ChatColor.of(levelColor) + "Level " + level,
@@ -153,7 +154,7 @@ public class AssassinSkillItems {
                         ChatColor.of(Color.WHITE) + "a combo point.",
                         ChatColor.of(Color.WHITE) + "Requires 6 Combo Points");
             }
-            case "alchemist":{
+            case Alchemist:{
                 return getItem(14,
                         ChatColor.of(assassinColor) + "Wicked Concoction",
                         ChatColor.of(levelColor) + "Level " + level,

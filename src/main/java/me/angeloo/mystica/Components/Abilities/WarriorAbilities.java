@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.Abilities.Warrior.*;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -81,14 +82,14 @@ public class WarriorAbilities {
 
     public void useWarriorUltimate(LivingEntity caster){
 
-        String subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
-        switch (subclass.toLowerCase()){
-            case "gladiator":{
+        switch (subclass){
+            case Gladiator:{
                 gladiatorHeart.use(caster);
                 return;
             }
-            case "executioner":{
+            case Executioner:{
                 deathGaze.use(caster);
                 return;
             }
@@ -125,12 +126,12 @@ public class WarriorAbilities {
     }
 
     public int getPlayerUltimateCooldown(Player player){
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
-        switch (subclass.toLowerCase()){
-            case "gladiator":
+        switch (subclass){
+            case Gladiator:
                 return gladiatorHeart.getPlayerCooldown(player);
-            case "executioner":
+            case Executioner:
                 return deathGaze.getPlayerCooldown(player);
 
         }
@@ -139,12 +140,12 @@ public class WarriorAbilities {
     }
 
     public int getUltimateCooldown(Player player){
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
-        switch (subclass.toLowerCase()){
-            case "gladiator":
+        switch (subclass){
+            case Gladiator:
                 return gladiatorHeart.getSkillCooldown();
-            case "executioner":
+            case Executioner:
                 return deathGaze.getSkillCooldown();
 
         }

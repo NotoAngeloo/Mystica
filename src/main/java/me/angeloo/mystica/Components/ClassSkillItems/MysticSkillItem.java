@@ -6,6 +6,7 @@ import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ItemManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.SubClass;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -42,9 +43,9 @@ public class MysticSkillItem {
         Profile playerProfile = profileManager.getAnyProfile(player);
         Skill_Level skillLevel = playerProfile.getSkillLevels();
 
-        String subclass = playerProfile.getPlayerSubclass();
+        SubClass subclass = playerProfile.getPlayerSubclass();
 
-        if(subclass.equalsIgnoreCase("chaos")){
+        if(subclass.equals(SubClass.Chaos)){
 
             switch (number){
 
@@ -240,10 +241,10 @@ public class MysticSkillItem {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
         int level = playerProfile.getStats().getLevel();
-        String subClass = playerProfile.getPlayerSubclass();
+        SubClass subClass = playerProfile.getPlayerSubclass();
 
-        switch (subClass.toLowerCase()){
-            case "chaos":{
+        switch (subClass){
+            case Chaos:{
                 return getItem(0,
                         ChatColor.of(mysticColor) + "Evil Spirit",
                         ChatColor.of(levelColor) + "Level " + level,
@@ -257,7 +258,7 @@ public class MysticSkillItem {
                         ChatColor.of(Color.WHITE) + "this skill is able to be cast");
             }
 
-            case "arcane master":{
+            case Arcane:{
                 return getItem(9,
                         ChatColor.of(mysticColor) + "Arcane Missiles",
                         ChatColor.of(levelColor) + "Level " + level,
@@ -268,7 +269,7 @@ public class MysticSkillItem {
                         ChatColor.of(Color.WHITE) + "your enemy");
             }
 
-            case "shepard":{
+            case Shepard:{
                 return getItem(10,
                         ChatColor.of(mysticColor) + "Enlightenment",
                         ChatColor.of(levelColor) + "Level " + level,

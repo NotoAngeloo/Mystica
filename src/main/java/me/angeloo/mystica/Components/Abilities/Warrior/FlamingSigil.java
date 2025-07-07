@@ -4,6 +4,7 @@ import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -87,8 +88,8 @@ public class FlamingSigil {
 
     private void execute(LivingEntity caster){
 
-        boolean executioner = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("executioner");
-        boolean gladiator = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("gladiator");
+        boolean executioner = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Executioner);
+        boolean gladiator = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Gladiator);
 
 
 

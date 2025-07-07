@@ -8,6 +8,7 @@ import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -62,7 +63,7 @@ public class ForceOfWill {
         }
 
 
-        boolean shepard = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("shepard");
+        boolean shepard = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Shepard);
 
         if(shepard){
             LivingEntity target = targetManager.getPlayerTarget(caster);
@@ -279,7 +280,7 @@ public class ForceOfWill {
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        boolean arcane = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("arcane master");
+        boolean arcane = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Shepard);
 
         abilityManager.setCasting(caster, true);
         double castTime = 4;
@@ -449,7 +450,7 @@ public class ForceOfWill {
 
 
         //check shepardlogic
-        if(profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("shepard")){
+        if(profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Shepard)){
             return mana.getCurrentMana(caster) >= getCost();
         }
 

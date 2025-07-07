@@ -9,6 +9,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -60,13 +61,13 @@ public class MysticBasic {
 
     public void useBasic(LivingEntity caster){
 
-        String subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
         if(getIfBasicRunning(caster)){
             return;
         }
 
-        if(subclass.equalsIgnoreCase("chaos")){
+        if(subclass.equals(SubClass.Chaos)){
             executeBasicChaos(caster);
             return;
         }
@@ -414,7 +415,7 @@ public class MysticBasic {
 
         LivingEntity target;
 
-        boolean shepard = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("shepard");
+        boolean shepard = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Shepard);
 
         boolean healing = false;
 

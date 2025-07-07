@@ -6,6 +6,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -120,7 +121,7 @@ public class ArcaneShield {
         targetList.add(target);
 
 
-        boolean shepard = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("shepard");
+        boolean shepard = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Shepard);
 
         if(shepard){
 

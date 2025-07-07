@@ -9,6 +9,8 @@ import me.angeloo.mystica.Managers.CombatManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
+import me.angeloo.mystica.Utility.PlayerClass;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -151,22 +153,22 @@ public class SpectralSteed {
             }
 
             @Override
-            public String getPlayerClass() {
+            public PlayerClass getPlayerClass() {
                 return null;
             }
 
             @Override
-            public void setPlayerClass(String playerClass) {
+            public void setPlayerClass(PlayerClass playerClass) {
 
             }
 
             @Override
-            public String getPlayerSubclass() {
+            public SubClass getPlayerSubclass() {
                 return null;
             }
 
             @Override
-            public void setPlayerSubclass(String playerSubclass) {
+            public void setPlayerSubclass(SubClass playerSubclass) {
 
             }
 

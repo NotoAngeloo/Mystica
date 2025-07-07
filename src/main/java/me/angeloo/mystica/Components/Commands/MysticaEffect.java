@@ -5,6 +5,7 @@ import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Managers.TargetManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -80,15 +81,15 @@ public class MysticaEffect implements CommandExecutor {
 
                     int crushThreshold = 100 + (10 * bossLevel-1);
 
-                    String subclass = profileManager.getAnyProfile(target).getPlayerSubclass();
+                    SubClass subclass = profileManager.getAnyProfile(target).getPlayerSubclass();
 
-                    if(subclass.equalsIgnoreCase("gladiator")
-                            || subclass.equalsIgnoreCase("templar")
-                            || subclass.equalsIgnoreCase("blood")){
+                    if(subclass.equals(SubClass.Gladiator)
+                            || subclass.equals(SubClass.Templar)
+                            || subclass.equals(SubClass.Blood)){
                         crushThreshold -= 100;
                     }
 
-                    if(subclass.equalsIgnoreCase("executioner")){
+                    if(subclass.equals(SubClass.Executioner)){
                         crushThreshold -= 50;
                     }
 

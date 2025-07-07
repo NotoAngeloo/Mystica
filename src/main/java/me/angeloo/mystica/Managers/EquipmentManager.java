@@ -2,17 +2,14 @@ package me.angeloo.mystica.Managers;
 
 import me.angeloo.mystica.Components.ClassEquipment.*;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.PlayerClass;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -238,10 +235,10 @@ public class EquipmentManager {
             gearType = new Random().nextInt(5);
         }
 
-        String clazz = profileManager.getAnyProfile(player).getPlayerClass();
+        PlayerClass clazz = profileManager.getAnyProfile(player).getPlayerClass();
 
-        switch (clazz.toLowerCase()) {
-            case "assassin": {
+        switch (clazz) {
+            case Assassin: {
                 switch (gearType) {
                     case 0: {
                         baseGear = assassinEquipment.getBaseWeapon(level);
@@ -266,7 +263,7 @@ public class EquipmentManager {
                 }
                 break;
             }
-            case "elementalist": {
+            case Elementalist: {
                 switch (gearType) {
                     case 0: {
                         baseGear = elementalistEquipment.getBaseWeapon(level);
@@ -291,7 +288,7 @@ public class EquipmentManager {
                 }
                 break;
             }
-            case "mystic": {
+            case Mystic: {
                 switch (gearType) {
                     case 0: {
                         baseGear = mysticEquipment.getBaseWeapon(level);
@@ -316,7 +313,7 @@ public class EquipmentManager {
                 }
                 break;
             }
-            case "paladin": {
+            case Paladin: {
                 switch (gearType) {
                     case 0: {
                         baseGear = paladinEquipment.getBaseWeapon(level);
@@ -341,7 +338,7 @@ public class EquipmentManager {
                 }
                 break;
             }
-            case "ranger": {
+            case Ranger: {
                 switch (gearType) {
                     case 0: {
                         baseGear = rangerEquipment.getBaseWeapon(level);
@@ -366,7 +363,7 @@ public class EquipmentManager {
                 }
                 break;
             }
-            case "shadow knight": {
+            case Shadow_Knight: {
                 switch (gearType) {
                     case 0: {
                         baseGear = shadowKnightEquipment.getBaseWeapon(level);
@@ -391,7 +388,7 @@ public class EquipmentManager {
                 }
                 break;
             }
-            case "warrior": {
+            case Warrior: {
                 switch (gearType) {
                     case 0: {
                         baseGear = warriorEquipment.getBaseWeapon(level);

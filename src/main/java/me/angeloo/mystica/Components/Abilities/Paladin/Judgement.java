@@ -8,6 +8,7 @@ import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -119,7 +120,7 @@ public class Judgement {
 
     private void execute(LivingEntity caster, LivingEntity target){
 
-        boolean templar = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("templar");
+        boolean templar = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Templar);
 
         Location start = target.getLocation();
 
@@ -248,7 +249,7 @@ public class Judgement {
 
     public void resetCooldownDawn(LivingEntity caster){
 
-        boolean dawn = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("dawn");
+        boolean dawn = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Dawn);
 
         if(!dawn){
             return;

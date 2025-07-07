@@ -4,6 +4,7 @@ import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -60,9 +61,9 @@ public class Warp {
         Location playerLoc = caster.getEyeLocation();
         Location newLoc = playerLoc.clone();
 
-        String subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
-        if(subclass.equalsIgnoreCase("chaos")){
+        if(subclass.equals(SubClass.Chaos)){
             caster.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, playerLoc, 50, .5, 1, .5, 0);
         }
         else{
@@ -105,7 +106,7 @@ public class Warp {
             public void run(){
 
                 if(getCooldown(caster) <= 0){
-                    if(subclass.equalsIgnoreCase("chaos")){
+                    if(subclass.equals(SubClass.Chaos)){
                         cooldownDisplayer.displayCooldown(caster,4);
                     }
                     else{
@@ -120,7 +121,7 @@ public class Warp {
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
 
-                if(subclass.equalsIgnoreCase("chaos")){
+                if(subclass.equals(SubClass.Chaos)){
                     cooldownDisplayer.displayCooldown(caster,4);
                 }
                 else{

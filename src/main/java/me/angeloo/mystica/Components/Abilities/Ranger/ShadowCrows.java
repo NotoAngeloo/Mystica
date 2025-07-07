@@ -8,6 +8,7 @@ import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -108,8 +109,8 @@ public class ShadowCrows {
 
     private void execute(LivingEntity caster){
 
-        boolean scout = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("scout");
-        boolean tamer = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("animal tamer");
+        boolean scout = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Scout);
+        boolean tamer = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Tamer);
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
@@ -274,9 +275,9 @@ public class ShadowCrows {
     }
 
     private int subclassCritBonus(LivingEntity caster){
-        String subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
-        if(subclass.equalsIgnoreCase("animal tamer")){
+        if(subclass.equals(SubClass.Tamer)){
             return 15;
         }
 

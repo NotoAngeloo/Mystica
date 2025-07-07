@@ -6,6 +6,7 @@ import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ItemManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.SubClass;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -131,10 +132,10 @@ public class RangerSkillItems {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
         int level = playerProfile.getStats().getLevel();
-        String subClass = playerProfile.getPlayerSubclass();
+        SubClass subClass = playerProfile.getPlayerSubclass();
 
-        switch(subClass.toLowerCase()){
-            case "scout":{
+        switch(subClass){
+            case Scout:{
                 return getItem(9,
                         ChatColor.of(rangerColor) + "Star Volley",
                         ChatColor.of(levelColor) + "Level " + level,
@@ -144,7 +145,7 @@ public class RangerSkillItems {
                         ChatColor.of(Color.WHITE) + "Landing a crit with any skill",
                         ChatColor.of(Color.WHITE) + "decreases this skills cooldown");
             }
-            case "animal tamer":{
+            case Tamer:{
                 return getItem(10,
                         ChatColor.of(rangerColor) + "Wild Roar",
                         ChatColor.of(levelColor) + "Level " + level,

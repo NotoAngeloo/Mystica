@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.Abilities.Mystic.*;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -64,9 +65,9 @@ public class MysticAbilities {
             return;
         }
 
-        String subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
-        if(subclass.equalsIgnoreCase("chaos")){
+        if(subclass.equals(SubClass.Chaos)){
 
             switch (abilityNumber){
                 case 1:{
@@ -148,18 +149,18 @@ public class MysticAbilities {
             return;
         }
 
-        String subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
-        switch (subclass.toLowerCase()){
-            case "chaos":{
+        switch (subclass){
+            case Chaos:{
                 evilSpirit.use(caster);
                 return;
             }
-            case "arcane master":{
+            case Arcane:{
                 arcaneMissiles.use(caster);
                 return;
             }
-            case "shepard":{
+            case Shepard:{
                 enlightenment.use(caster);
                 return;
             }
@@ -173,9 +174,9 @@ public class MysticAbilities {
 
     public int getAbilityCooldown(Player player, int abilityNumber){
 
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
-        if(subclass.equalsIgnoreCase("chaos")){
+        if(subclass.equals(SubClass.Chaos)){
 
             switch (abilityNumber){
                 case 1:
@@ -222,16 +223,16 @@ public class MysticAbilities {
 
     public int getUltimateCooldown(Player player){
 
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
-        switch (subclass.toLowerCase()){
-            case "chaos":{
+        switch (subclass){
+            case Chaos:{
                 return 0;
             }
-            case "arcane master":{
+            case Arcane:{
                 return arcaneMissiles.getSkillCooldown();
             }
-            case "shepard":{
+            case Shepard:{
                 return enlightenment.getSkillCooldown();
             }
         }
@@ -241,16 +242,16 @@ public class MysticAbilities {
 
     public int getPlayerUltimateCooldown(Player player){
 
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
-        switch (subclass.toLowerCase()){
-            case "chaos":{
+        switch (subclass){
+            case Chaos:{
                 return 0;
             }
-            case "arcane master":{
+            case Arcane:{
                 return arcaneMissiles.getPlayerCooldown(player);
             }
-            case "shepard":{
+            case Shepard:{
                 return enlightenment.getPlayerCooldown(player);
             }
         }

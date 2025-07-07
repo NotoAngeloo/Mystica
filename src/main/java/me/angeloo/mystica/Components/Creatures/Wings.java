@@ -9,6 +9,8 @@ import me.angeloo.mystica.Components.ProfileComponents.Stats;
 import me.angeloo.mystica.CustomEvents.CompanionSpawnEvent;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.PlayerClass;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -96,7 +98,7 @@ public class Wings {
         Stats stats = new Stats(level, attack, health, defence, magic_defence, crit);
 
 
-        FakePlayerProfile fakePlayerProfile = new FakePlayerProfile(false, false, stats.getHealth(), stats, "Mystic", "Shepard");
+        FakePlayerProfile fakePlayerProfile = new FakePlayerProfile(false, false, stats, PlayerClass.Mystic, SubClass.Shepard);
 
         profileManager.addToFakePlayerProfileMap(uuid, fakePlayerProfile);
         profileManager.setCompanionFaces(uuid, "wings");

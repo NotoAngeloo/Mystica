@@ -5,6 +5,7 @@ import me.angeloo.mystica.Components.Abilities.ShadowKnight.*;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -81,14 +82,14 @@ public class ShadowKnightAbilities {
 
     public void useShadowKnightUltimate(LivingEntity caster){
 
-        String subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
-        switch (subclass.toLowerCase()){
-            case "blood":{
+        switch (subclass){
+            case Blood:{
                 bloodShield.use(caster);
                 return;
             }
-            case "doom":{
+            case Doom:{
                 annihilation.use(caster);
                 return;
             }
@@ -124,12 +125,12 @@ public class ShadowKnightAbilities {
     }
 
     public int getPlayerUltimateCooldown(Player player){
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
-        switch (subclass.toLowerCase()){
-            case "blood":
+        switch (subclass){
+            case Blood:
                 return bloodShield.getPlayerCooldown(player);
-            case "doom":
+            case Doom:
                 return annihilation.getPlayerCooldown(player);
         }
 
@@ -137,12 +138,12 @@ public class ShadowKnightAbilities {
     }
 
     public int getUltimateCooldown(Player player){
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
-        switch (subclass.toLowerCase()){
-            case "blood":
+        switch (subclass){
+            case Blood:
                 return bloodShield.getSkillCooldown();
-            case "doom":
+            case Doom:
                 return annihilation.getSkillCooldown();
         }
 

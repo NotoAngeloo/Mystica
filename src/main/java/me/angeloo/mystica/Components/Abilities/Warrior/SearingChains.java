@@ -8,6 +8,7 @@ import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -475,7 +476,7 @@ public class SearingChains {
 
     public void tryToDecreaseCooldown(LivingEntity caster){
 
-        if(!profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("gladiator")){
+        if(!profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Gladiator)){
             return;
         }
 

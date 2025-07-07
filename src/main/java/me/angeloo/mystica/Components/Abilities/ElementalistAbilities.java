@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.Abilities.Elementalist.*;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -77,14 +78,14 @@ public class ElementalistAbilities {
 
     public void useElementalistUltimate(LivingEntity caster){
 
-        String subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
-        switch (subclass.toLowerCase()){
-            case "pyromancer":{
+        switch (subclass){
+            case Pyromancer:{
                 fieryWing.use(caster);
                 return;
             }
-            case "conjurer":{
+            case Conjurer:{
                 conjuringForce.use(caster);
                 return;
             }
@@ -125,13 +126,13 @@ public class ElementalistAbilities {
 
 
     public int getUltimateCooldown(Player player){
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
-        switch (subclass.toLowerCase()){
-            case "pyromancer":{
+        switch (subclass){
+            case Pyromancer:{
                 return fieryWing.getSkillCooldown();
             }
-            case "conjurer":{
+            case Conjurer:{
                 return conjuringForce.getSkillCooldown();
             }
         }
@@ -140,13 +141,13 @@ public class ElementalistAbilities {
     }
 
     public int getPlayerUltimateCooldown(Player player){
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
-        switch (subclass.toLowerCase()){
-            case "pyromancer":{
+        switch (subclass){
+            case Pyromancer:{
                 return fieryWing.getPlayerCooldown(player);
             }
-            case "conjurer":{
+            case Conjurer:{
                 return conjuringForce.getPlayerCooldown(player);
             }
         }

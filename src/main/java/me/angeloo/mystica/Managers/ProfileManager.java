@@ -10,7 +10,9 @@ import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.PlayerProfile;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
+import me.angeloo.mystica.Utility.PlayerClass;
 import me.angeloo.mystica.Utility.ProfileFileWriter;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Server;
@@ -94,8 +96,8 @@ public class ProfileManager {
             Profile profile = playerProfiles.get(uuid);
             Stats stats = profile.getStats();
 
-            String playerClass = profile.getPlayerClass();
-            String playerSubclass = profile.getPlayerSubclass();
+            PlayerClass playerClass = profile.getPlayerClass();
+            SubClass playerSubclass = profile.getPlayerSubclass();
 
             ItemStack[] savedInv = profile.getSavedInv();
 
@@ -114,8 +116,8 @@ public class ProfileManager {
 
             config.set(id + ".stats.level", stats.getLevel());
 
-            config.set(id + ".class", playerClass);
-            config.set(id + ".subclass", playerSubclass);
+            config.set(id + ".class", playerClass.toString());
+            config.set(id + ".subclass", playerSubclass.toString());
 
             config.set(id + ".savedInv", savedInv);
 
@@ -172,15 +174,13 @@ public class ProfileManager {
                     YamlConfiguration config = profileFileWriter.createOrLoadProfileFile(id);
 
 
-                    String playerClass = config.getString(id + ".class");
-                    String playerSubclass = config.getString(id + ".subclass");
+                    PlayerClass playerClass = PlayerClass.valueOf(config.getString(id + ".class"));
+                    SubClass playerSubclass = SubClass.valueOf(config.getString(id + ".subclass"));
 
                     //stats
                     int level = config.getInt(id + ".stats.level");
 
                     Stats stats = new Stats(level,50,100,50,50, 1);
-                    assert playerClass != null;
-                    assert playerSubclass != null;
                     stats.setLevelStats(level, playerClass, playerSubclass);
 
                     int hp = stats.getHealth();
@@ -369,8 +369,8 @@ public class ProfileManager {
         return new PlayerProfile(false, false, currentHealth,
                 stats,
                 gearStats,
-                "none",
-                "none",
+                PlayerClass.NONE,
+                SubClass.NONE,
                 new ItemStack[41],
                 playerBag,
                 playerEquipment,
@@ -457,8 +457,8 @@ public class ProfileManager {
         PlayerProfile profile = new PlayerProfile(false, false, currentHealth,
                 stats,
                 gearStats,
-                "none",
-                "none",
+                PlayerClass.NONE,
+                SubClass.NONE,
                 new ItemStack[41],
                 playerBag,
                 playerEquipment,
@@ -633,22 +633,22 @@ public class ProfileManager {
             }
 
             @Override
-            public String getPlayerClass() {
-                return "None";
+            public PlayerClass getPlayerClass() {
+                return PlayerClass.NONE;
             }
 
             @Override
-            public void setPlayerClass(String playerClass) {
+            public void setPlayerClass(PlayerClass playerClass) {
 
             }
 
             @Override
-            public String getPlayerSubclass() {
-                return "none";
+            public SubClass getPlayerSubclass() {
+                return SubClass.NONE;
             }
 
             @Override
-            public void setPlayerSubclass(String playerSubclass) {
+            public void setPlayerSubclass(SubClass playerSubclass) {
 
             }
 

@@ -1,6 +1,5 @@
 package me.angeloo.mystica.Utility.DamageUtils;
 
-import com.comphenix.protocol.ProtocolManager;
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.Profile;
@@ -13,6 +12,7 @@ import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DailyData;
 import me.angeloo.mystica.Utility.DamageIndicator.DamageIndicatorCalculator;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.ArmorStand;
@@ -187,7 +187,7 @@ public class ChangeResourceHandler {
             return;
         }
 
-        if(profileManager.getAnyProfile(entity).getPlayerSubclass().equalsIgnoreCase("divine")){
+        if(profileManager.getAnyProfile(entity).getPlayerSubclass().equals(SubClass.Divine)){
             addToSlot(entity, damage);
             startTask(entity);
         }
@@ -246,7 +246,7 @@ public class ChangeResourceHandler {
             return;
         }
 
-        if(profileManager.getAnyProfile(player).getPlayerSubclass().equalsIgnoreCase("divine")){
+        if(profileManager.getAnyProfile(player).getPlayerSubclass().equals(SubClass.Divine)){
             addToSlot(player, damage);
             startTask(player);
         }

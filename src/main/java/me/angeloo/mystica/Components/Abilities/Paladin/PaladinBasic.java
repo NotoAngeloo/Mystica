@@ -9,6 +9,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -180,7 +181,7 @@ public class PaladinBasic {
 
     private void executeBasic(LivingEntity caster){
 
-        String subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
         basicRunning.put(caster.getUniqueId(), null);
         BukkitTask task = new BukkitRunnable(){
@@ -201,7 +202,7 @@ public class PaladinBasic {
 
                 purity.skillListAdd(caster, 0);
 
-                if(subclass.equalsIgnoreCase("divine")){
+                if(subclass.equals(SubClass.Divine)){
 
                     if(targetManager.getPlayerTarget(caster) == null){
                         healTarget(caster, caster);

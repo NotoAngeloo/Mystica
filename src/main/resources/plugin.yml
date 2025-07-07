@@ -15,9 +15,6 @@ commands:
   Trash:
     description: allows players to throw away items
     usage: /Trash
-  Bag:
-    description: opens the players bag
-    usage: /Bag
   Equipment:
     description: opens equipment
     usage: /Equipment

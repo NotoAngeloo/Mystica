@@ -2,6 +2,8 @@ package me.angeloo.mystica.Components;
 
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
+import me.angeloo.mystica.Utility.PlayerClass;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -16,8 +18,8 @@ public class FakePlayerProfile implements Profile {
 
     private Stats stats;
 
-    private String playerClass;
-    private String playerSubclass;
+    private PlayerClass playerClass;
+    private SubClass playerSubclass;
 
     private ItemStack[] savedInv;
 
@@ -25,11 +27,10 @@ public class FakePlayerProfile implements Profile {
             Boolean ifDead,
             Boolean ifInCombat,
 
-            double currentHealth,
             Stats stats,
 
-            String playerClass,
-            String playerSubclass
+            PlayerClass playerClass,
+            SubClass playerSubclass
 
 
     ) {
@@ -118,17 +119,17 @@ public class FakePlayerProfile implements Profile {
     }
 
     @Override
-    public String getPlayerClass(){
+    public PlayerClass getPlayerClass(){
         return playerClass;
     }
     @Override
-    public void setPlayerClass(String playerClass){
+    public void setPlayerClass(PlayerClass playerClass){
         this.playerClass = playerClass;
     }
     @Override
-    public String getPlayerSubclass(){return playerSubclass;}
+    public SubClass getPlayerSubclass(){return playerSubclass;}
     @Override
-    public void setPlayerSubclass(String subclass){
+    public void setPlayerSubclass(SubClass subclass){
         this.playerSubclass = subclass;
     }
     @Override

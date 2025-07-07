@@ -2,6 +2,8 @@ package me.angeloo.mystica.Components.Inventories;
 
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.PlayerClass;
+import me.angeloo.mystica.Utility.SubClass;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -34,8 +36,8 @@ public class CompanionInventory implements Listener {
     public Inventory openCompanionInventory(Player player){
         Inventory inv = Bukkit.createInventory(null, 9*6, "test");
 
-        String clazz = profileManager.getAnyProfile(player).getPlayerClass();
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        PlayerClass clazz = profileManager.getAnyProfile(player).getPlayerClass();
+        SubClass subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
         return inv;
     }

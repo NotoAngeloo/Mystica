@@ -1,5 +1,8 @@
 package me.angeloo.mystica.Components.ProfileComponents;
 
+import me.angeloo.mystica.Utility.PlayerClass;
+import me.angeloo.mystica.Utility.SubClass;
+
 public class Stats {
 
     private int Level;
@@ -46,7 +49,7 @@ public class Stats {
 
 
 
-    public void setLevelStats(int level, String playerClass, String subclass){
+    public void setLevelStats(int level, PlayerClass playerClass, SubClass subclass){
 
         //base
         int attack = 50;
@@ -55,20 +58,20 @@ public class Stats {
         int magic_defence = 50;
         int crit = 1;
 
-        switch (playerClass.toLowerCase()){
-            case "assassin":{
+        switch (playerClass){
+            case Assassin:{
                 attack+=(level*2);
                 health+=(level*15);
                 defence+=(level);
                 magic_defence+=(level);
 
-                switch (subclass.toLowerCase()){
-                    case "duelist":{
+                switch (subclass){
+                    case Duelist:{
                         attack+=level;
                         crit+=10;
                         break;
                     }
-                    case "alchemist":{
+                    case Alchemist:{
                         health+=(level*15);
                         break;
                     }
@@ -77,20 +80,20 @@ public class Stats {
 
                 break;
             }
-            case "elementalist":{
+            case Elementalist:{
 
                 attack+=(level*2);
                 health+=(level*15);
                 defence+=(level);
                 magic_defence+=(level);
 
-                switch (subclass.toLowerCase()){
-                    case "pyromancer":{
+                switch (subclass){
+                    case Pyromancer:{
                         attack+=level;
                         crit+=10;
                         break;
                     }
-                    case "conjurer":{
+                    case Conjurer:{
                         health+=(level*15);
                         break;
                     }
@@ -98,21 +101,21 @@ public class Stats {
 
                 break;
             }
-            case "mystic":{
+            case Mystic:{
 
                 attack+=(level*2);
                 health+=(level*15);
                 defence+=(level);
                 magic_defence+=(level);
 
-                switch (subclass.toLowerCase()){
-                    case "arcane master":
-                    case "chaos":{
+                switch (subclass){
+                    case Arcane:
+                    case Chaos:{
                         attack+=level;
                         crit+=10;
                         break;
                     }
-                    case "shepard":{
+                    case Shepard:{
                         health+=(level*15);
                         break;
                     }
@@ -120,24 +123,24 @@ public class Stats {
 
                 break;
             }
-            case "paladin":{
+            case Paladin:{
 
                 attack+=(level*2);
                 health+=(level*15);
                 defence+=(level);
                 magic_defence+=(level);
 
-                switch (subclass.toLowerCase()){
-                    case "dawn": {
+                switch (subclass){
+                    case Dawn: {
                         attack+=level;
                         crit+=10;
                         break;
                     }
-                    case "divine":{
+                    case Divine:{
                         health+=(level*15);
                         break;
                     }
-                    case "templar":{
+                    case Templar:{
                         attack-=(level);
                         health+=(level*15);
                         defence+=(level);
@@ -148,19 +151,19 @@ public class Stats {
 
                 break;
             }
-            case "ranger":{
+            case Ranger:{
                 attack+=(level*2);
                 health+=(level*15);
                 defence+=(level);
                 magic_defence+=(level);
 
-                switch (subclass.toLowerCase()){
-                    case "scout":{
+                switch (subclass){
+                    case Scout:{
                         attack+=level;
                         crit+=10;
                         break;
                     }
-                    case "animal tamer":{
+                    case Tamer:{
                         health+=(level*15);
                         break;
                     }
@@ -169,19 +172,19 @@ public class Stats {
 
                 break;
             }
-            case "shadow knight":{
+            case Shadow_Knight:{
                 attack+=(level*2);
                 health+=(level*15);
                 defence+=(level);
                 magic_defence+=(level);
 
-                switch (subclass.toLowerCase()){
-                    case "doom": {
+                switch (subclass){
+                    case Doom: {
                         attack+=level;
                         crit+=10;
                         break;
                     }
-                    case "blood":{
+                    case Blood:{
                         attack-=(level);
                         health+=(level*15);
                         defence+=(level);
@@ -192,20 +195,20 @@ public class Stats {
 
                 break;
             }
-            case "warrior":{
+            case Warrior:{
 
                 attack+=(level*2);
                 health+=(level*15);
                 defence+=(level);
                 magic_defence+=(level);
 
-                switch (subclass.toLowerCase()){
-                    case "executioner": {
+                switch (subclass){
+                    case Executioner: {
                         attack+=level;
                         crit+=10;
                         break;
                     }
-                    case "gladiator":{
+                    case Gladiator:{
                         attack-=(level);
                         health+=(level*15);
                         defence+=(level);
@@ -216,7 +219,7 @@ public class Stats {
 
                 break;
             }
-            case "none":{
+            case NONE:{
                 attack+=(level*2);
                 health+=(level*15);
                 defence+=(level);

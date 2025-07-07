@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.Abilities.Assassin.*;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -80,14 +81,14 @@ public class AssassinAbilities {
 
     public void useAssassinUltimate(LivingEntity caster){
 
-        String subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
-        switch (subclass.toLowerCase()){
-            case "duelist":{
+        switch (subclass){
+            case Duelist:{
                 duelistsFrenzy.use(caster);
                 return;
             }
-            case "alchemist":{
+            case Alchemist:{
                 wickedConcoction.use(caster);
                 return;
             }
@@ -124,12 +125,12 @@ public class AssassinAbilities {
     }
 
     public int getUltimateCooldown(Player player){
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
-        switch (subclass.toLowerCase()){
-            case "duelist":
+        switch (subclass){
+            case Duelist:
                 return duelistsFrenzy.getSkillCooldown();
-            case "alchemist":
+            case Alchemist:
                 return wickedConcoction.getSkillCooldown();
 
         }
@@ -138,12 +139,12 @@ public class AssassinAbilities {
     }
 
     public int getPlayerUltimateCooldown(Player player){
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
-        switch (subclass.toLowerCase()){
-            case "duelist":
+        switch (subclass){
+            case Duelist:
                 return duelistsFrenzy.getPlayerCooldown(player);
-            case "alchemist":
+            case Alchemist:
                 return wickedConcoction.getPlayerCooldown(player);
 
         }

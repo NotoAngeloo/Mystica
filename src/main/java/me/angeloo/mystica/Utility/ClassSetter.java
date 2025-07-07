@@ -26,22 +26,22 @@ public class ClassSetter {
         gearReader = new GearReader(main);
     }
 
-    public void setClass(Player player, String clazz){
+    public void setClass(Player player, PlayerClass playerClass){
 
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        if(playerProfile.getPlayerClass().equalsIgnoreCase(clazz)){
+        if(playerProfile.getPlayerClass().equals(playerClass)){
             player.sendMessage("you are already this class");
             return;
         }
 
 
-        playerProfile.setPlayerClass(clazz);
+        playerProfile.setPlayerClass(playerClass);
 
-        playerProfile.setPlayerSubclass("none");
-        profileManager.getAnyProfile(player).getStats().setLevelStats(profileManager.getAnyProfile(player).getStats().getLevel(), clazz, "none");
-        player.sendMessage("You are now a(n) " + clazz);
+        playerProfile.setPlayerSubclass(SubClass.NONE);
+        profileManager.getAnyProfile(player).getStats().setLevelStats(profileManager.getAnyProfile(player).getStats().getLevel(), playerClass, SubClass.NONE);
+        player.sendMessage("You are now a(n) " + playerClass.name());
 
 
         displayWeapons.displayArmor(player);

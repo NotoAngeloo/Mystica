@@ -6,6 +6,7 @@ import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ItemManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.SubClass;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -137,10 +138,10 @@ public class WarriorSkillItems {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
         int level = playerProfile.getStats().getLevel();
-        String subClass = playerProfile.getPlayerSubclass();
+        SubClass subClass = playerProfile.getPlayerSubclass();
 
-        switch(subClass.toLowerCase()){
-            case "gladiator":{
+        switch(subClass){
+            case Gladiator:{
                 return getItem(Material.ORANGE_DYE, 9,
                         ChatColor.of(warriorColor) + "Gladiator Heart",
                         ChatColor.of(levelColor) + "Level " + level,
@@ -150,7 +151,7 @@ public class WarriorSkillItems {
                         ChatColor.of(Color.WHITE) + "5 seconds. While active",
                         ChatColor.of(Color.WHITE) + "increase your damage resistance");
             }
-            case "executioner":{
+            case Executioner:{
                 return getItem(Material.ORANGE_DYE, 10,
                         ChatColor.of(warriorColor) + "Death Gaze",
                         ChatColor.of(levelColor) + "Level " + level,

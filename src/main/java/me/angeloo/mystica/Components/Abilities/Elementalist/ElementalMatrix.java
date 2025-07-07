@@ -7,6 +7,7 @@ import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -105,7 +106,7 @@ public class ElementalMatrix {
 
     private void execute(LivingEntity caster){
 
-        boolean conjurer = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("conjurer");
+        boolean conjurer = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Conjurer);
 
         List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(caster));
 

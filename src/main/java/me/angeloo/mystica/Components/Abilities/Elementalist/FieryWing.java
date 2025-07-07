@@ -9,6 +9,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -277,7 +278,7 @@ public class FieryWing {
 
     public void addInflame(LivingEntity caster){
 
-        boolean pyromancer = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("pyromancer");
+        boolean pyromancer = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Pyromancer);
 
         if(!pyromancer){
             return;

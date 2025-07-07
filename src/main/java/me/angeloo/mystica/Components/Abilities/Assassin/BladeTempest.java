@@ -8,6 +8,7 @@ import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -100,7 +101,7 @@ public class BladeTempest {
 
     private void execute(LivingEntity caster){
 
-        boolean duelist = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("duelist");
+        boolean duelist = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Duelist);
 
         if(duelist){
             buffAndDebuffManager.getBladeTempestCrit().applyBonus(caster);

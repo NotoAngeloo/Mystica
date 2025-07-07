@@ -5,12 +5,15 @@ import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import io.lumine.mythic.bukkit.MythicBukkit;
+import io.lumine.mythic.bukkit.utils.lib.jooq.impl.QOM;
 import me.angeloo.mystica.Components.Items.UnidentifiedWeapon;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.PlayerClass;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -159,22 +162,22 @@ public class HoLeeBoss {
             }
 
             @Override
-            public String getPlayerClass() {
+            public PlayerClass getPlayerClass() {
                 return null;
             }
 
             @Override
-            public void setPlayerClass(String playerClass) {
+            public void setPlayerClass(PlayerClass playerClass) {
 
             }
 
             @Override
-            public String getPlayerSubclass() {
+            public SubClass getPlayerSubclass() {
                 return null;
             }
 
             @Override
-            public void setPlayerSubclass(String playerSubclass) {
+            public void setPlayerSubclass(SubClass playerSubclass) {
 
             }
 
@@ -333,22 +336,22 @@ public class HoLeeBoss {
             }
 
             @Override
-            public String getPlayerClass() {
+            public PlayerClass getPlayerClass() {
                 return null;
             }
 
             @Override
-            public void setPlayerClass(String playerClass) {
+            public void setPlayerClass(PlayerClass playerClass) {
 
             }
 
             @Override
-            public String getPlayerSubclass() {
+            public SubClass getPlayerSubclass() {
                 return null;
             }
 
             @Override
-            public void setPlayerSubclass(String playerSubclass) {
+            public void setPlayerSubclass(SubClass playerSubclass) {
 
             }
 

@@ -5,6 +5,8 @@ import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.PlayerClass;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -68,38 +70,38 @@ public class AbilityManager {
 
         Profile playerProfile = profileManager.getAnyProfile(caster);
 
-        String clazz = playerProfile.getPlayerClass();
+        PlayerClass clazz = playerProfile.getPlayerClass();
 
-        switch (clazz.toLowerCase()){
-            case "elementalist":{
+        switch (clazz){
+            case Elementalist:{
                 elementalistAbilities.useElementalistAbility(caster, abilityNumber);
                 return;
             }
-            case "ranger":{
+            case Ranger:{
                 rangerAbilities.useRangerAbility(caster, abilityNumber);
                 return;
             }
-            case "mystic":{
+            case Mystic:{
                 mysticAbilities.useMysticAbility(caster, abilityNumber);
                 return;
             }
-            case "shadow knight":{
+            case Shadow_Knight:{
                 shadowKnightAbilities.useShadowKnightAbility(caster, abilityNumber);
                 return;
             }
-            case "paladin":{
+            case Paladin:{
                 paladinAbilities.usePaladinAbility(caster, abilityNumber);
                 return;
             }
-            case "warrior":{
+            case Warrior:{
                 warriorAbilities.useWarriorAbility(caster, abilityNumber);
                 return;
             }
-            case "assassin":{
+            case Assassin:{
                 assassinAbilities.useAssassinAbility(caster, abilityNumber);
                 return;
             }
-            case "none":{
+            case NONE:{
                 noneAbilities.useNoneAbility(caster, abilityNumber);
                 return;
             }
@@ -126,38 +128,38 @@ public class AbilityManager {
 
         Profile playerProfile = profileManager.getAnyProfile(caster);
 
-        String clazz = playerProfile.getPlayerClass();
+        PlayerClass clazz = playerProfile.getPlayerClass();
 
-        switch (clazz.toLowerCase()){
-            case "elementalist":{
+        switch (clazz){
+            case Elementalist:{
                 elementalistAbilities.useElementalistBasic(caster);
                 return;
             }
-            case "ranger":{
+            case Ranger:{
                 rangerAbilities.useRangerBasic(caster);
                 return;
             }
-            case "mystic":{
+            case Mystic:{
                 mysticAbilities.useMysticBasic(caster);
                 return;
             }
-            case "shadow knight":{
+            case Shadow_Knight:{
                 shadowKnightAbilities.useShadowKnightBasic(caster);
                 return;
             }
-            case "paladin":{
+            case Paladin:{
                 paladinAbilities.usePaladinBasic(caster);
                 return;
             }
-            case "warrior":{
+            case Warrior:{
                 warriorAbilities.useWarriorBasic(caster);
                 return;
             }
-            case "assassin":{
+            case Assassin:{
                 assassinAbilities.useAssassinBasic(caster);
                 return;
             }
-            case "none":{
+            case NONE:{
                 noneAbilities.useNoneBasic(caster);
                 return;
             }
@@ -178,34 +180,34 @@ public class AbilityManager {
 
         Profile playerProfile = profileManager.getAnyProfile(caster);
 
-        String clazz = playerProfile.getPlayerClass();
+        PlayerClass clazz = playerProfile.getPlayerClass();
 
-        switch (clazz.toLowerCase()){
-            case "elementalist":{
+        switch (clazz){
+            case Elementalist:{
                 elementalistAbilities.useElementalistUltimate(caster);
                 return;
             }
-            case "ranger":{
+            case Ranger:{
                 rangerAbilities.useRangerUltimate(caster);
                 return;
             }
-            case "mystic":{
+            case Mystic:{
                 mysticAbilities.useMysticUltimate(caster);
                 return;
             }
-            case "shadow knight":{
+            case Shadow_Knight:{
                 shadowKnightAbilities.useShadowKnightUltimate(caster);
                 return;
             }
-            case "paladin":{
+            case Paladin:{
                 paladinAbilities.usePaladinUltimate(caster);
                 return;
             }
-            case "warrior":{
+            case Warrior:{
                 warriorAbilities.useWarriorUltimate(caster);
                 return;
             }
-            case "assassin":{
+            case Assassin:{
                 assassinAbilities.useAssassinUltimate(caster);
                 return;
             }
@@ -215,33 +217,33 @@ public class AbilityManager {
     public void resetResource(LivingEntity caster){
 
         Profile playerProfile = profileManager.getAnyProfile(caster);
-        String clazz = playerProfile.getPlayerClass();
+        PlayerClass clazz = playerProfile.getPlayerClass();
 
-        switch (clazz.toLowerCase()) {
-            case "elementalist": {
+        switch (clazz) {
+            case Elementalist: {
                 elementalistAbilities.getHeat().reduceHeat(caster, elementalistAbilities.getHeat().getHeat(caster));
                 return;
             }
-            case "ranger": {
+            case Ranger: {
                 rangerAbilities.getFocus().loseFocus(caster);
                 return;
             }
-            case "mystic": {
+            case Mystic: {
                 mysticAbilities.getMana().addManaToEntity(caster, 500);
                 return;
             }
-            case "shadow knight": {
+            case Shadow_Knight: {
                 shadowKnightAbilities.getEnergy().addEnergyToEntity(caster, 100);
                 return;
             }
-            case "paladin": {
+            case Paladin: {
                 return;
             }
-            case "warrior": {
+            case Warrior: {
                 warriorAbilities.getRage().subTractRageFromEntity(caster, warriorAbilities.getRage().getCurrentRage(caster));
                 return;
             }
-            case "assassin": {
+            case Assassin: {
                 return;
             }
         }
@@ -251,34 +253,33 @@ public class AbilityManager {
     public void incrementResource(LivingEntity caster){
 
         Profile playerProfile = profileManager.getAnyProfile(caster);
+        PlayerClass clazz = playerProfile.getPlayerClass();
 
-        String clazz = playerProfile.getPlayerClass();
-
-        switch (clazz.toLowerCase()) {
-            case "elementalist": {
+        switch (clazz) {
+            case Elementalist: {
                 elementalistAbilities.getHeat().loseHeatNaturally(caster);
                 return;
             }
-            case "ranger": {
+            case Ranger: {
                 rangerAbilities.getFocus().regenFocusNaturally(caster);
                 return;
             }
-            case "mystic": {
+            case Mystic: {
                 mysticAbilities.getMana().regenManaNaturally(caster);
                 return;
             }
-            case "shadow knight": {
+            case Shadow_Knight: {
                 shadowKnightAbilities.getEnergy().regenEnergyNaturally(caster);
                 return;
             }
-            case "paladin": {
+            case Paladin: {
                 return;
             }
-            case "warrior": {
+            case Warrior: {
                 warriorAbilities.getRage().loseRageNaturally(caster);
                 return;
             }
-            case "assassin": {
+            case Assassin: {
                 return;
             }
         }
@@ -288,31 +289,31 @@ public class AbilityManager {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        String clazz = playerProfile.getPlayerClass();
+        PlayerClass clazz = playerProfile.getPlayerClass();
 
-        switch (clazz.toLowerCase()){
-            case "elementalist":{
+        switch (clazz){
+            case Elementalist:{
                 return elementalistAbilities.getAbilityCooldown(player, abilityNumber);
             }
-            case "ranger":{
+            case Ranger:{
                 return rangerAbilities.getAbilityCooldown(player, abilityNumber);
             }
-            case "mystic":{
+            case Mystic:{
                 return mysticAbilities.getAbilityCooldown(player, abilityNumber);
             }
-            case "shadow knight":{
+            case Shadow_Knight:{
                 return shadowKnightAbilities.getAbilityCooldown(player, abilityNumber);
             }
-            case "paladin":{
+            case Paladin:{
                 return paladinAbilities.getAbilityCooldown(player, abilityNumber);
             }
-            case "warrior":{
+            case Warrior:{
                 return warriorAbilities.getAbilityCooldown(player, abilityNumber);
             }
-            case "assassin":{
+            case Assassin:{
                 return assassinAbilities.getAbilityCooldown(player, abilityNumber);
             }
-            case "none":{
+            case NONE:{
                 return noneAbilities.getAbilityCooldown(player, abilityNumber);
             }
         }
@@ -324,28 +325,28 @@ public class AbilityManager {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        String clazz = playerProfile.getPlayerClass();
+        PlayerClass clazz = playerProfile.getPlayerClass();
 
-        switch (clazz.toLowerCase()){
-            case "elementalist":{
+        switch (clazz){
+            case Elementalist:{
                 return elementalistAbilities.getUltimateCooldown(player);
             }
-            case "ranger":{
+            case Ranger:{
                 return rangerAbilities.getUltimateCooldown(player);
             }
-            case "mystic":{
+            case Mystic:{
                 return mysticAbilities.getUltimateCooldown(player);
             }
-            case "shadow knight":{
+            case Shadow_Knight:{
                 return shadowKnightAbilities.getUltimateCooldown(player);
             }
-            case "paladin":{
+            case Paladin:{
                 return paladinAbilities.getUltimateCooldown(player);
             }
-            case "warrior":{
+            case Warrior:{
                 return warriorAbilities.getUltimateCooldown(player);
             }
-            case "assassin":{
+            case Assassin:{
                 return assassinAbilities.getUltimateCooldown(player);
             }
         }
@@ -357,28 +358,28 @@ public class AbilityManager {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        String clazz = playerProfile.getPlayerClass();
+        PlayerClass clazz = playerProfile.getPlayerClass();
 
-        switch (clazz.toLowerCase()){
-            case "elementalist":{
+        switch (clazz){
+            case Elementalist:{
                 return elementalistAbilities.getPlayerUltimateCooldown(player);
             }
-            case "ranger":{
+            case Ranger:{
                 return rangerAbilities.getPlayerUltimateCooldown(player);
             }
-            case "mystic":{
+            case Mystic:{
                 return mysticAbilities.getPlayerUltimateCooldown(player);
             }
-            case "shadow knight":{
+            case Shadow_Knight:{
                 return shadowKnightAbilities.getPlayerUltimateCooldown(player);
             }
-            case "paladin":{
+            case Paladin:{
                 return paladinAbilities.getPlayerUltimateCooldown(player);
             }
-            case "warrior":{
+            case Warrior:{
                 return warriorAbilities.getPlayerUltimateCooldown(player);
             }
-            case "assassin":{
+            case Assassin:{
                 return assassinAbilities.getPlayerUltimateCooldown(player);
             }
         }
@@ -390,19 +391,18 @@ public class AbilityManager {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        String clazz = playerProfile.getPlayerClass();
+        PlayerClass clazz = playerProfile.getPlayerClass();
+        SubClass subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
-
-        switch (clazz.toLowerCase()){
-            case "elementalist":
-            case "paladin":
-            case "ranger":{
+        switch (clazz){
+            case Elementalist:
+            case Paladin:
+            case Ranger:{
 
                 return 0;
             }
-            case "shadow knight":{
+            case Shadow_Knight:{
 
                 if(abilityNumber == 2){
                     return shadowKnightAbilities.getSpiritualAttack().returnWhichItem(player);
@@ -422,11 +422,11 @@ public class AbilityManager {
 
                 if(abilityNumber == -1){
 
-                    if(subclass.equalsIgnoreCase("blood")){
+                    if(subclass.equals(SubClass.Blood)){
                         return shadowKnightAbilities.getBloodShield().returnWhichItem(player);
                     }
 
-                    if(subclass.equalsIgnoreCase("doom")){
+                    if(subclass.equals(SubClass.Doom)){
                         return shadowKnightAbilities.getAnnihilation().returnWhichItem(player);
                     }
 
@@ -435,7 +435,7 @@ public class AbilityManager {
                 return 0;
             }
 
-            case "warrior": {
+            case Warrior: {
 
                 if(abilityNumber == 4){
                     return warriorAbilities.getMeteorCrater().returnWhichItem(player);
@@ -443,9 +443,9 @@ public class AbilityManager {
 
                 return 0;
             }
-            case "mystic":{
+            case Mystic:{
 
-                if(subclass.equalsIgnoreCase("chaos")){
+                if(subclass.equals(SubClass.Chaos)){
 
                     if(abilityNumber==-1){
                         return mysticAbilities.getChaosMysticModelData(player);
@@ -454,7 +454,7 @@ public class AbilityManager {
 
                 }
 
-                if(!subclass.equalsIgnoreCase("chaos")){
+                if(!subclass.equals(SubClass.Chaos)){
 
                     if(abilityNumber == 1){
                         return mysticAbilities.getArcaneShield().returnWhichItem(player);
@@ -476,7 +476,7 @@ public class AbilityManager {
                         return mysticAbilities.getLightSigil().returnWhichItem(player);
                     }
 
-                    if(subclass.equalsIgnoreCase("shepard")){
+                    if(subclass.equals(SubClass.Shepard)){
                         if(abilityNumber == -1){
                             return mysticAbilities.getEnlightenment().returnWhichItem(player);
                         }
@@ -488,7 +488,7 @@ public class AbilityManager {
 
                 return 0;
             }
-            case "assassin":{
+            case Assassin:{
 
 
                 if(abilityNumber==3){
@@ -505,7 +505,7 @@ public class AbilityManager {
 
                 if(abilityNumber==-1){
 
-                    if(subclass.equalsIgnoreCase("duelist")){
+                    if(subclass.equals(SubClass.Duelist)){
                         return assassinAbilities.getDuelistsFrenzy().returnWhichItem(player);
                     }
 

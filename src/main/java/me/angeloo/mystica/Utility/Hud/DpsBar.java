@@ -2,8 +2,8 @@ package me.angeloo.mystica.Utility.Hud;
 
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.PlayerClass;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 
 import static me.angeloo.mystica.Mystica.*;
@@ -20,34 +20,34 @@ public class DpsBar {
 
         StringBuilder bar = new StringBuilder();
 
-        String playerClass = profileManager.getAnyProfile(entity).getPlayerClass();
+        PlayerClass playerClass = profileManager.getAnyProfile(entity).getPlayerClass();
 
-        switch (playerClass.toLowerCase()){
-            case "assassin":{
+        switch (playerClass){
+            case Assassin:{
                 bar.append(ChatColor.of(assassinColor));
                 break;
             }
-            case "elementalist":{
+            case Elementalist:{
                 bar.append(ChatColor.of(elementalistColor));
                 break;
             }
-            case "mystic":{
+            case Mystic:{
                 bar.append(ChatColor.of(mysticColor));
                 break;
             }
-            case "paladin":{
+            case Paladin:{
                 bar.append(ChatColor.of(paladinColor));
                 break;
             }
-            case "ranger":{
+            case Ranger:{
                 bar.append(ChatColor.of(rangerColor));
                 break;
             }
-            case "shadow knight":{
+            case Shadow_Knight:{
                 bar.append(ChatColor.of(shadowKnightColor));
                 break;
             }
-            case "warrior":{
+            case Warrior:{
                 bar.append(ChatColor.of(warriorColor));
                 break;
             }

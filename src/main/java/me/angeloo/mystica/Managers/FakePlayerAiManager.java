@@ -5,18 +5,11 @@ import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.Abilities.*;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.Vector;
 
-import java.nio.file.LinkOption;
 import java.util.*;
 
 
@@ -56,24 +49,24 @@ public class FakePlayerAiManager {
                 return;
             }
 
-            switch (profileManager.getAnyProfile(companion).getPlayerClass().toLowerCase()){
-                case "paladin":{
+            switch (profileManager.getAnyProfile(companion).getPlayerClass()){
+                case Paladin:{
                     startTemplarRotation(companion);
                     break;
                 }
-                case "ranger":{
+                case Ranger:{
                     startTamerRotation(companion);
                     break;
                 }
-                case "mystic":{
+                case Mystic:{
                     startShepardRotation(companion);
                     break;
                 }
-                case "warrior":{
+                case Warrior:{
                     startExecutionerRotation(companion);
                     break;
                 }
-                case "elementalist":{
+                case Elementalist:{
                     startConjurerRotation(companion);
                     break;
                 }

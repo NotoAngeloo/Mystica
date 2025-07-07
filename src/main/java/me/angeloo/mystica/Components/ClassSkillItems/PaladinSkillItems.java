@@ -6,6 +6,7 @@ import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ItemManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.SubClass;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -41,9 +42,9 @@ public class PaladinSkillItems {
         Profile playerProfile = profileManager.getAnyProfile(player);
         Skill_Level skillLevel = playerProfile.getSkillLevels();
 
-        String subclass = playerProfile.getPlayerSubclass();
+        SubClass subclass = playerProfile.getPlayerSubclass();
 
-        if(subclass.equalsIgnoreCase("divine")){
+        if(subclass.equals(SubClass.Divine)){
             switch(number){
 
                 case 1:{
@@ -241,10 +242,10 @@ public class PaladinSkillItems {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
         int level = playerProfile.getStats().getLevel();
-        String subClass = playerProfile.getPlayerSubclass();
+        SubClass subClass = playerProfile.getPlayerSubclass();
 
-        switch(subClass.toLowerCase()){
-            case "templar":{
+        switch(subClass){
+            case Templar:{
                 return getItem(Material.YELLOW_DYE, 9,
                         ChatColor.of(paladinColor) + "Shield of Sanctity",
                         ChatColor.of(levelColor) + "Level " + level,
@@ -254,7 +255,7 @@ public class PaladinSkillItems {
                         ChatColor.of(Color.WHITE) + "5 seconds. While active,",
                         ChatColor.of(Color.WHITE) + "restore your health.");
             }
-            case "divine":{
+            case Divine:{
                 return getItem(Material.YELLOW_DYE, 19,
                         ChatColor.of(paladinColor) + "Representative",
                         ChatColor.of(levelColor) + "Level " + level,
@@ -266,7 +267,7 @@ public class PaladinSkillItems {
                         ChatColor.of(Color.WHITE) + "for 10 seconds. This skill is",
                         ChatColor.of(Color.WHITE) + "unaffected by haste");
             }
-            case "dawn":{
+            case Dawn:{
                 return getItem(Material.YELLOW_DYE, 10,
                         ChatColor.of(paladinColor) + "Well of Light",
                         ChatColor.of(levelColor) + "Level " + level,

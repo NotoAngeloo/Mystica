@@ -8,6 +8,7 @@ import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -102,7 +103,7 @@ public class ReigningSword {
 
     private void execute(LivingEntity caster){
 
-        boolean templar = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("templar");
+        boolean templar = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Templar);
 
         Vector direction = caster.getLocation().getDirection().setY(0).normalize();
 

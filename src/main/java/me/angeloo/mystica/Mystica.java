@@ -302,7 +302,7 @@ public final class Mystica extends JavaPlugin{
             }
 
             if(player.getWorld().getName().startsWith("tutorial_") && !profileManager.getAnyProfile(player).getMilestones().getMilestone("tutorial")){
-                classSetter.setClass(player, "none");
+                classSetter.setClass(player, PlayerClass.NONE);
             }
 
         }

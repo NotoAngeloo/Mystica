@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.Abilities.Ranger.*;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -81,14 +82,14 @@ public class RangerAbilities {
     public void useRangerUltimate(LivingEntity caster
     ){
 
-        String subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
-        switch (subclass.toLowerCase()){
-            case "animal tamer":{
+        switch (subclass){
+            case Tamer:{
                 wildRoar.use(caster);
                 return;
             }
-            case "scout":{
+            case Scout:{
                 starVolley.use(caster);
                 return;
             }
@@ -126,12 +127,12 @@ public class RangerAbilities {
     }
 
     public int getPlayerUltimateCooldown(Player player){
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
-        switch (subclass.toLowerCase()){
-            case "animal tamer":
+        switch (subclass){
+            case Tamer:
                 return wildRoar.getPlayerCooldown(player);
-            case "scout":
+            case Scout:
                 return starVolley.getPlayerCooldown(player);
         }
 
@@ -139,12 +140,12 @@ public class RangerAbilities {
     }
 
     public int getUltimateCooldown(Player player){
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
-        switch (subclass.toLowerCase()){
-            case "animal tamer":
+        switch (subclass){
+            case Tamer:
                 return wildRoar.getSkillCooldown();
-            case "scout":
+            case Scout:
                 return starVolley.getSkillCooldown();
         }
 

@@ -30,10 +30,10 @@ public class FakePlayerTargetManager {
         //first check the class
 
         //maybe make this subclass in the future, easy enough to change
-        switch (profileManager.getAnyProfile(entity).getPlayerClass().toLowerCase()){
-            case "elementalist":
-            case "warrior":
-            case "ranger":{
+        switch (profileManager.getAnyProfile(entity).getPlayerClass()){
+            case Elementalist:
+            case Warrior:
+            case Ranger:{
 
                 if(target == null){
                     break;
@@ -45,7 +45,7 @@ public class FakePlayerTargetManager {
 
                 break;
             }
-            case "paladin":{
+            case Paladin:{
 
                 if(targetMap.containsKey(entity.getUniqueId())){
 

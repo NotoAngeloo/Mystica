@@ -8,6 +8,7 @@ import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -118,7 +119,7 @@ public class DescendingInferno {
 
         heat.addHeat(caster, 5);
 
-        boolean conjurer = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("conjurer");
+        boolean conjurer = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Conjurer);
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 

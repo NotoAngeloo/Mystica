@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.Abilities.Paladin.*;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -70,9 +71,9 @@ public class PaladinAbilities {
 
     public void usePaladinAbility(LivingEntity caster, int abilityNumber){
 
-        String subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
-        if(subclass.equalsIgnoreCase("divine")){
+        if(subclass.equals(SubClass.Divine)){
             switch (abilityNumber){
                 case 1:{
                     decreeHonor.use(caster);
@@ -147,18 +148,18 @@ public class PaladinAbilities {
 
     public void usePaladinUltimate(LivingEntity caster){
 
-        String subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
-        switch (subclass.toLowerCase()){
-            case "templar":{
+        switch (subclass){
+            case Templar:{
                 sanctityShield.use(caster);
                 return;
             }
-            case "divine":{
+            case Divine:{
                 representative.use(caster);
                 return;
             }
-            case "dawn":{
+            case Dawn:{
                 lightWell.use(caster);
                 return;
             }
@@ -171,9 +172,9 @@ public class PaladinAbilities {
 
     public int getAbilityCooldown(Player player, int abilityNumber){
 
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
-        if(subclass.equalsIgnoreCase("divine")){
+        if(subclass.equals(SubClass.Divine)){
             switch (abilityNumber){
                 case 1:
                     return decreeHonor.getCooldown(player);
@@ -217,14 +218,14 @@ public class PaladinAbilities {
     }
 
     public int getUltimateCooldown(Player player){
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
-        switch (subclass.toLowerCase()){
-            case "templar":
+        switch (subclass){
+            case Templar:
                 return sanctityShield.getSkillCooldown();
-            case "divine":
+            case Divine:
                 return representative.getSkillCooldown();
-            case "dawn":
+            case Dawn:
                 return lightWell.getSkillCooldown();
         }
 
@@ -232,14 +233,14 @@ public class PaladinAbilities {
     }
 
     public int getPlayerUltimateCooldown(Player player){
-        String subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        SubClass subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
-        switch (subclass.toLowerCase()){
-            case "templar":
+        switch (subclass){
+            case Templar:
                 return sanctityShield.getPlayerCooldown(player);
-            case "divine":
+            case Divine:
                 return representative.getPlayerCooldown(player);
-            case "dawn":
+            case Dawn:
                 return lightWell.getPlayerCooldown(player);
         }
 

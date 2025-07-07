@@ -3,19 +3,16 @@ package me.angeloo.mystica.Components.Inventories;
 import me.angeloo.mystica.Managers.InventoryIndexingManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ClassSetter;
+import me.angeloo.mystica.Utility.PlayerClass;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -150,44 +147,44 @@ public class ClassSelectInventory implements Listener {
 
                     case ("\uF809\uF808\uF804\uE06F" + "\uF801\uE070\uF821" +  "\uF82A\uF826\uF825\uF80D\uE071" + "\uF801\uE072"):
                     {
-                        classSetter.setClass(player, "Assassin");
+                        classSetter.setClass(player, PlayerClass.NONE);
                         player.closeInventory();
                         return;
 
                     }
                     case ("\uF809\uF808\uF804\uE073" + "\uF801\uE074\uF821" +  "\uF82A\uF826\uF825\uF80D\uE075" + "\uF801\uE076"):
                     {
-                        classSetter.setClass(player, "Elementalist");
+                        classSetter.setClass(player, PlayerClass.Elementalist);
                         player.closeInventory();
                         return;
                     }
                     case ("\uF809\uF808\uF804\uE077" + "\uF801\uE078\uF821" +  "\uF82A\uF826\uF825\uF80D\uE079" + "\uF801\uE07A"):
                     {
-                        classSetter.setClass(player, "Mystic");
+                        classSetter.setClass(player, PlayerClass.Mystic);
                         player.closeInventory();
                         return;
                     }
                     case ("\uF809\uF808\uF804\uE07B" + "\uF801\uE07C\uF821" +  "\uF82A\uF826\uF825\uF80D\uE07D" + "\uF801\uE07E"):
                     {
-                        classSetter.setClass(player, "Paladin");
+                        classSetter.setClass(player, PlayerClass.Paladin);
                         player.closeInventory();
                         return;
                     }
                     case ("\uF809\uF808\uF804\uE07F" + "\uF801\uE080\uF821" +  "\uF82A\uF826\uF825\uF80D\uE081" + "\uF801\uE082"):
                     {
-                        classSetter.setClass(player, "Ranger");
+                        classSetter.setClass(player, PlayerClass.Ranger);
                         player.closeInventory();
                         return;
                     }
                     case ("\uF809\uF808\uF804\uE083" + "\uF801\uE084\uF821" +  "\uF82A\uF826\uF825\uF80D\uE085" + "\uF801\uE086"):
                     {
-                        classSetter.setClass(player, "Shadow Knight");
+                        classSetter.setClass(player, PlayerClass.Shadow_Knight);
                         player.closeInventory();
                         return;
                     }
                     case ("\uF809\uF808\uF804\uE087" + "\uF801\uE088\uF821" +  "\uF82A\uF826\uF825\uF80D\uE089" + "\uF801\uE08A"):
                     {
-                        classSetter.setClass(player, "warrior");
+                        classSetter.setClass(player, PlayerClass.Warrior);
                         player.closeInventory();
                         return;
                     }

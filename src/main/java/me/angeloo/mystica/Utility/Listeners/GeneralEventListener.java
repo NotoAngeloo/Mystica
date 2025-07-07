@@ -249,7 +249,7 @@ public class GeneralEventListener implements Listener {
         if(player.getWorld().getName().startsWith("tutorial_")){
             //remove class
             if(!profileManager.getAnyProfile(player).getMilestones().getMilestone("tutorial")){
-                classSetter.setClass(player, "none");
+                classSetter.setClass(player, PlayerClass.NONE);
             }
         }
     }
@@ -854,7 +854,7 @@ public class GeneralEventListener implements Listener {
     public void rangerLoseFocus(PlayerMoveEvent event){
         Player player = event.getPlayer();
 
-        if(!profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("ranger")){
+        if(!profileManager.getAnyProfile(player).getPlayerClass().equals(PlayerClass.Ranger)){
             return;
         }
 
@@ -1023,7 +1023,7 @@ public class GeneralEventListener implements Listener {
                 abilityManager.getWarriorAbilities().getSearingChains().tryToDecreaseCooldown(defender);
                 abilityManager.getAssassinAbilities().getStealth().stealthBonusCheck(defender, null);
 
-                if(profileManager.getAnyProfile(defender).getPlayerClass().equalsIgnoreCase("warrior")){
+                if(profileManager.getAnyProfile(defender).getPlayerClass().equals(PlayerClass.Warrior)){
                     abilityManager.getWarriorAbilities().getRage().addRageToEntity(defender, 10);
                 }
 

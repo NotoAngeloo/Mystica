@@ -7,6 +7,7 @@ import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.GearReader;
+import me.angeloo.mystica.Utility.PlayerClass;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -212,10 +213,10 @@ public class EquipmentInventory implements Listener {
                 }
 
                 //check the class of the equipment
-                String playerClass = profileManager.getAnyProfile(player).getPlayerClass();
+                PlayerClass playerClass = profileManager.getAnyProfile(player).getPlayerClass();
                 String equipmentClass = equipmentManager.getEquipmentClass(item);
 
-                if(!equipmentClass.equalsIgnoreCase(playerClass)){
+                if(!equipmentClass.equalsIgnoreCase(playerClass.toString())){
                     return;
                 }
 

@@ -4,6 +4,7 @@ import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Components.Profile;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -54,8 +55,8 @@ public class DamageCalculator {
 
 
 
-        if(profileManager.getAnyProfile(healer).getPlayerSubclass().equalsIgnoreCase("shepard")
-        || profileManager.getAnyProfile(healer).getPlayerSubclass().equalsIgnoreCase("divine")){
+        if(profileManager.getAnyProfile(healer).getPlayerSubclass().equals(SubClass.Shepard)
+        || profileManager.getAnyProfile(healer).getPlayerSubclass().equals(SubClass.Divine)){
             multiplierForHealerBonus = 1.2;
         }
 

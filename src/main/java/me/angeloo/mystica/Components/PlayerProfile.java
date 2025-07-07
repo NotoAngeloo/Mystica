@@ -1,6 +1,8 @@
 package me.angeloo.mystica.Components;
 
 import me.angeloo.mystica.Components.ProfileComponents.*;
+import me.angeloo.mystica.Utility.PlayerClass;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class PlayerProfile implements Profile{
@@ -13,8 +15,8 @@ public abstract class PlayerProfile implements Profile{
     private Stats stats;
     private StatsFromGear statsFromGear;
 
-    private String playerClass;
-    private String playerSubclass;
+    private PlayerClass playerClass;
+    private SubClass playerSubclass;
 
     private ItemStack[] savedInv;
 
@@ -37,8 +39,8 @@ public abstract class PlayerProfile implements Profile{
             Stats stats,
             StatsFromGear statsFromGear,
 
-            String playerClass,
-            String playerSubclass,
+            PlayerClass playerClass,
+            SubClass playerSubclass,
             ItemStack[] savedInv,
 
             PlayerBag playerbag,
@@ -122,17 +124,17 @@ public abstract class PlayerProfile implements Profile{
         this.statsFromGear = gearStats;
     }
     @Override
-    public String getPlayerClass(){
+    public PlayerClass getPlayerClass(){
         return playerClass;
     }
     @Override
-    public void setPlayerClass(String playerClass){
+    public void setPlayerClass(PlayerClass playerClass){
         this.playerClass = playerClass;
     }
     @Override
-    public String getPlayerSubclass(){return playerSubclass;}
+    public SubClass getPlayerSubclass(){return playerSubclass;}
     @Override
-    public void setPlayerSubclass(String subclass){
+    public void setPlayerSubclass(SubClass subclass){
         this.playerSubclass = subclass;
     }
     @Override

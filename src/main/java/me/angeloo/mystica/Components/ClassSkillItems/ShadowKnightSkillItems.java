@@ -6,6 +6,7 @@ import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ItemManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.SubClass;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -144,10 +145,10 @@ public class ShadowKnightSkillItems {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
         int level = playerProfile.getStats().getLevel();
-        String subClass = playerProfile.getPlayerSubclass();
+        SubClass subClass = playerProfile.getPlayerSubclass();
 
-        switch(subClass.toLowerCase()){
-            case "blood":{
+        switch(subClass){
+            case Blood:{
                 return getItem(9,
                         ChatColor.of(shadowKnightColor) + "Blood Shield",
                         ChatColor.of(levelColor) + "Level " + level,
@@ -161,7 +162,7 @@ public class ShadowKnightSkillItems {
                                 ChatColor.of(Color.WHITE) + "increases the",
                         ChatColor.of(Color.WHITE) + "duration by 3 seconds");
             }
-            case "doom":{
+            case Doom:{
                 return getItem(10,
                         ChatColor.of(shadowKnightColor) + "Annihilation",
                         ChatColor.of(levelColor) + "Level " + level,

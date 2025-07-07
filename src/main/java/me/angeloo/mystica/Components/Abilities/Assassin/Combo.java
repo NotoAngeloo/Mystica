@@ -5,6 +5,7 @@ import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -31,7 +32,7 @@ public class Combo {
 
         int max = 4;
 
-        if(profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("duelist")){
+        if(profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Duelist)){
             max = 5;
         }
 

@@ -1,9 +1,11 @@
 package me.angeloo.mystica.Components.Commands;
 
+import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.Managers.ItemManager;
+import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,9 +15,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class MysticaItem implements CommandExecutor {
 
+    private final ProfileManager profileManager;
     private final ItemManager itemManager;
 
     public MysticaItem(Mystica main){
+        profileManager = main.getProfileManager();
         itemManager = main.getItemManager();
     }
 
@@ -31,17 +35,21 @@ public class MysticaItem implements CommandExecutor {
 
             Player player = (Player) sender;
 
-            player.getInventory().addItem(itemManager.getUnidentifiedWeapon().getUnidentifiedT1Weapon(1));
-            player.getInventory().addItem(itemManager.getUnidentifiedWeapon().getUnidentifiedT2Weapon(1));
-            player.getInventory().addItem(itemManager.getUnidentifiedWeapon().getUnidentifiedT3Weapon(1));
 
-            player.getInventory().addItem(itemManager.getUnidentifiedWeapon().getUnidentifiedT1Weapon(2));
-            player.getInventory().addItem(itemManager.getUnidentifiedWeapon().getUnidentifiedT1Weapon(3));
+            MysticaEquipment equipmentT1 = new MysticaEquipment(MysticaEquipment.EquipmentSlot.WEAPON, profileManager.getAnyProfile(player).getPlayerClass(), 1);
+            MysticaEquipment equipmentT2 = new MysticaEquipment(MysticaEquipment.EquipmentSlot.WEAPON, profileManager.getAnyProfile(player).getPlayerClass(), 1,
+                    MysticaEquipment.StatType.Attack, MysticaEquipment.StatType.Defense);
+            MysticaEquipment equipmentT3 = new MysticaEquipment(MysticaEquipment.EquipmentSlot.WEAPON, profileManager.getAnyProfile(player).getPlayerClass(), 1,
+                    MysticaEquipment.StatType.Attack, MysticaEquipment.StatType.Defense,
+                    Pair.of(1,1),
+                    Pair.of(2,2)
+            );
 
-            player.getInventory().addItem(itemManager.getUnidentifiedHelmet().getUnidentifiedT1Helmet(1));
-            player.getInventory().addItem(itemManager.getUnidentifiedChestplate().getUnidentifiedT1Chestplate(1));
-            player.getInventory().addItem(itemManager.getUnidentifiedLeggings().getUnidentifiedT1Leggings(1));
-            player.getInventory().addItem(itemManager.getUnidentifiedBoots().getUnidentifiedT1Boots(1));
+            player.getInventory().addItem(equipmentT1.build());
+            player.getInventory().addItem(equipmentT2.build());
+            player.getInventory().addItem(equipmentT3.build());
+
+
 
             return true;
         }

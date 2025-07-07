@@ -8,6 +8,7 @@ import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -108,7 +109,7 @@ public class Laceration {
 
     private void execute(LivingEntity caster){
 
-        boolean alchemist = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("alchemist");
+        boolean alchemist = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Alchemist);
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 

@@ -8,6 +8,7 @@ import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
@@ -109,7 +110,7 @@ public class Bloodsucker {
 
     private void execute(LivingEntity caster){
 
-        boolean blood = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("blood");
+        boolean blood = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Blood);
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
@@ -247,7 +248,7 @@ public class Bloodsucker {
     public double getHealPercent(LivingEntity caster){
         double healAmount = (profileManager.getAnyProfile(caster).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(caster)) * .05;
 
-        if(profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("blood")){
+        if(profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Blood)){
             healAmount =  healAmount + (profileManager.getAnyProfile(caster).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(caster)) * .1;
         }
 

@@ -6,7 +6,8 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Hud.IconCalculator;
 import me.angeloo.mystica.Utility.Hud.SkinGrabber;
 import me.angeloo.mystica.Utility.Logic.DamageBoardPlaceholders;
-import me.angeloo.mystica.Utility.Logic.PveChecker;
+import me.angeloo.mystica.Utility.PlayerClass;
+import me.angeloo.mystica.Utility.SubClass;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -22,7 +23,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -545,17 +545,17 @@ public class HudManager {
 
         StringBuilder offset = new StringBuilder();
 
-        String playerClass = profileManager.getAnyProfile(player).getPlayerClass();
-        String subClass = profileManager.getAnyProfile(player).getPlayerSubclass();
+        PlayerClass playerClass = profileManager.getAnyProfile(player).getPlayerClass();
+        SubClass subClass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
         //-128
         status.append("\uF80C");
 
         //class specific buffs
-        switch (playerClass.toLowerCase()){
-            case "elementalist":{
+        switch (playerClass){
+            case Elementalist:{
 
-                if(subClass.equalsIgnoreCase("pyromancer")){
+                if(subClass.equals(SubClass.Pyromancer)){
 
                     int inflame = abilityManager.getElementalistAbilities().getFieryWing().getInflame(player);
 
@@ -583,7 +583,7 @@ public class HudManager {
 
                 break;
             }
-            case "ranger":{
+            case Ranger:{
 
                 int cry = abilityManager.getRangerAbilities().getRallyingCry().getIfBuffTime(player);
                 int duration = abilityManager.getRangerAbilities().getRallyingCry().getDuration();
@@ -599,7 +599,7 @@ public class HudManager {
 
                 break;
             }
-            case "shadow knight":{
+            case Shadow_Knight:{
 
                 LivingEntity target = targetManager.getPlayerTarget(player);
 
@@ -627,7 +627,7 @@ public class HudManager {
                     }
                 }
 
-                if(subClass.equalsIgnoreCase("doom")){
+                if(subClass.equals(SubClass.Doom)){
 
                     int marks = abilityManager.getShadowKnightAbilities().getSoulReap().getSoulMarks(player);
 
@@ -660,7 +660,7 @@ public class HudManager {
 
                 break;
             }
-            case "mystic":{
+            case Mystic:{
 
                 if(abilityManager.getMysticAbilities().getPurifyingBlast().getInstantCast(player)){
 
@@ -672,7 +672,7 @@ public class HudManager {
 
                 break;
             }
-            case "assassin":{
+            case Assassin:{
 
                 int timeLeft = buffAndDebuffManager.getPierceBuff().getIfBuffTime(player);
                 int max = buffAndDebuffManager.getPierceBuff().getDuration();
@@ -702,7 +702,7 @@ public class HudManager {
 
                 break;
             }
-            case "warrior":{
+            case Warrior:{
 
                 if(buffAndDebuffManager.getBurningBlessingBuff().getIfHealthBuff(player)){
 
@@ -714,7 +714,7 @@ public class HudManager {
 
                 break;
             }
-            case "paladin":{
+            case Paladin:{
 
                 if(abilityManager.getPaladinAbilities().getDecision().getDecision(player)){
 
@@ -986,35 +986,35 @@ public class HudManager {
         StringBuilder entityBar = new StringBuilder();
 
         //depending on class
-        String playerClass = profileManager.getAnyProfile(entity).getPlayerClass();
+        PlayerClass playerClass = profileManager.getAnyProfile(entity).getPlayerClass();
 
-        switch (playerClass.toLowerCase()){
+        switch (playerClass){
 
-            case "assassin":{
+            case Assassin:{
                 entityBar.append(ChatColor.of(assassinColor));
                 break;
             }
-            case "elementalist":{
+            case Elementalist:{
                 entityBar.append(ChatColor.of(elementalistColor));
                 break;
             }
-            case "ranger":{
+            case Ranger:{
                 entityBar.append(ChatColor.of(rangerColor));
                 break;
             }
-            case "paladin":{
+            case Paladin:{
                 entityBar.append(ChatColor.of(paladinColor));
                 break;
             }
-            case "warrior":{
+            case Warrior:{
                 entityBar.append(ChatColor.of(warriorColor));
                 break;
             }
-            case "shadow knight":{
+            case Shadow_Knight:{
                 entityBar.append(ChatColor.of(shadowKnightColor));
                 break;
             }
-            case "mystic":{
+            case Mystic:{
                 entityBar.append(ChatColor.of(mysticColor));
                 break;
             }
@@ -1225,36 +1225,36 @@ public class HudManager {
 
             Player player = (Player) entity;
 
-            String playerClass = profileManager.getAnyProfile(player).getPlayerClass();
+            PlayerClass playerClass = profileManager.getAnyProfile(player).getPlayerClass();
 
 
             //frame color
-            switch (playerClass.toLowerCase()){
-                case "assassin":{
+            switch (playerClass){
+                case Assassin:{
                     icon.append(ChatColor.of(assassinColor));
                     break;
                 }
-                case "elementalist":{
+                case Elementalist:{
                     icon.append(ChatColor.of(elementalistColor));
                     break;
                 }
-                case "mystic":{
+                case Mystic:{
                     icon.append(ChatColor.of(mysticColor));
                     break;
                 }
-                case "paladin":{
+                case Paladin:{
                     icon.append(ChatColor.of(paladinColor));
                     break;
                 }
-                case "ranger":{
+                case Ranger:{
                     icon.append(ChatColor.of(rangerColor));
                     break;
                 }
-                case "shadow knight":{
+                case Shadow_Knight:{
                     icon.append(ChatColor.of(shadowKnightColor));
                     break;
                 }
-                case "warrior":{
+                case Warrior:{
                     icon.append(ChatColor.of(warriorColor));
                     break;
                 }
@@ -1279,7 +1279,7 @@ public class HudManager {
             //-10
             icon.append("\uF808\uF802");
 
-            icon.append(getLevelCircle(profileManager.getAnyProfile(player).getStats().getLevel()));
+            icon.append(profileManager.getAnyProfile(player).getStats().getLevel());
 
             //+38
             icon.append("\uF82A\uF826");
@@ -1291,36 +1291,36 @@ public class HudManager {
 
         if(profileManager.getAnyProfile(entity).fakePlayer()){
 
-            String playerClass = profileManager.getAnyProfile(entity).getPlayerClass();
+            PlayerClass playerClass = profileManager.getAnyProfile(entity).getPlayerClass();
 
 
             //frame color
-            switch (playerClass.toLowerCase()){
-                case "assassin":{
+            switch (playerClass){
+                case Assassin:{
                     icon.append(ChatColor.of(assassinColor));
                     break;
                 }
-                case "elementalist":{
+                case Elementalist:{
                     icon.append(ChatColor.of(elementalistColor));
                     break;
                 }
-                case "mystic":{
+                case Mystic:{
                     icon.append(ChatColor.of(mysticColor));
                     break;
                 }
-                case "paladin":{
+                case Paladin:{
                     icon.append(ChatColor.of(paladinColor));
                     break;
                 }
-                case "ranger":{
+                case Ranger:{
                     icon.append(ChatColor.of(rangerColor));
                     break;
                 }
-                case "shadow knight":{
+                case Shadow_Knight:{
                     icon.append(ChatColor.of(shadowKnightColor));
                     break;
                 }
-                case "warrior":{
+                case Warrior:{
                     icon.append(ChatColor.of(warriorColor));
                     break;
                 }
@@ -1346,7 +1346,7 @@ public class HudManager {
             //-36
             icon.append("\uF80A\uF804");
 
-            icon.append(getLevelCircle(profileManager.getAnyProfile(entity).getStats().getLevel()));
+            icon.append(profileManager.getAnyProfile(entity).getStats().getLevel());
 
             //+40
             icon.append("\uF82A\uF828");
@@ -1371,7 +1371,7 @@ public class HudManager {
             //-46
             icon.append("\uF80A\uF808\uF806");
 
-            icon.append(getLevelCircle(profileManager.getAnyProfile(entity).getStats().getLevel()));
+            icon.append(profileManager.getAnyProfile(entity).getStats().getLevel());
 
             //+40
             icon.append("\uF82A\uF828");
@@ -1392,20 +1392,7 @@ public class HudManager {
         return String.valueOf(icon);
     }
 
-    private String getLevelCircle(int level){
-        StringBuilder levelCircle = new StringBuilder();
 
-        //level circle
-        levelCircle.append("\uE138");
-
-
-        //-14
-        levelCircle.append("\uF808\uF806");
-
-        levelCircle.append(level);
-
-        return String.valueOf(levelCircle);
-    }
 
     private String healthBar(LivingEntity entity){
 
@@ -2399,9 +2386,9 @@ public class HudManager {
 
         if(entity instanceof Player || profileManager.getAnyProfile(entity).fakePlayer()){
             Profile playerProfile = profileManager.getAnyProfile(entity);
-            String playerClass = playerProfile.getPlayerClass();
-            switch (playerClass.toLowerCase()){
-                case "mystic":{
+            PlayerClass playerClass = playerProfile.getPlayerClass();
+            switch (playerClass){
+                case Mystic:{
 
                     //-128 space
                     resourceBar.append("\uF80C");
@@ -2513,7 +2500,7 @@ public class HudManager {
 
                     break;
                 }
-                case "warrior":{
+                case Warrior:{
                     //-128 space
                     resourceBar.append("\uF80C");
 
@@ -2624,7 +2611,7 @@ public class HudManager {
 
                     break;
                 }
-                case "shadow knight":{
+                case Shadow_Knight:{
                     //-128 space
                     resourceBar.append("\uF80C");
 
@@ -2695,7 +2682,7 @@ public class HudManager {
 
                     break;
                 }
-                case "ranger":{
+                case Ranger:{
 
                     //-128 space
                     resourceBar.append("\uF80C");
@@ -2739,7 +2726,7 @@ public class HudManager {
 
                     break;
                 }
-                case "assassin":{
+                case Assassin:{
 
                     //-128 space
                     resourceBar.append("\uF80C");
@@ -2749,7 +2736,7 @@ public class HudManager {
 
                     int combo = abilityManager.getAssassinAbilities().getCombo().getComboPoints(entity);
 
-                    if(profileManager.getAnyProfile(entity).getPlayerSubclass().equalsIgnoreCase("duelist")){
+                    if(profileManager.getAnyProfile(entity).getPlayerSubclass().equals(SubClass.Duelist)){
 
 
 
@@ -2808,7 +2795,7 @@ public class HudManager {
 
                     break;
                 }
-                case "elementalist":{
+                case Elementalist:{
 
                     //-128 space
                     resourceBar.append("\uF80C");

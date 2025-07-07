@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.PlayerClass;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -39,31 +40,31 @@ public class AllSkillItems {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        String clazz= playerProfile.getPlayerClass();
+        PlayerClass playerClass = playerProfile.getPlayerClass();
 
-        switch (clazz.toLowerCase()){
-            case "elementalist":{
+        switch (playerClass){
+            case Elementalist:{
                 return elementalistSkillItems.getSkill(skillNumber, player);
             }
-            case "ranger":{
+            case Ranger:{
                 return rangerSkillItems.getSkill(skillNumber, player);
             }
-            case "mystic":{
+            case Mystic:{
                 return mysticSkillItem.getSkill(skillNumber, player);
             }
-            case "shadow knight":{
+            case Shadow_Knight:{
                 return shadowKnightSkillItems.getSkill(skillNumber, player);
             }
-            case "paladin":{
+            case Paladin:{
                 return paladinSkillItems.getSkill(skillNumber, player);
             }
-            case "warrior":{
+            case Warrior:{
                 return warriorSkillItems.getSkill(skillNumber, player);
             }
-            case "assassin":{
+            case Assassin:{
                 return assassinSkillItems.getSkill(skillNumber, player);
             }
-            case "none":{
+            case NONE:{
                 return noneSkillItems.getSkill(skillNumber, player);
             }
         }
@@ -75,28 +76,28 @@ public class AllSkillItems {
     public ItemStack getUltimate(Player player){
 
         Profile playerProfile = profileManager.getAnyProfile(player);
-        String clazz = playerProfile.getPlayerClass();
+        PlayerClass clazz = playerProfile.getPlayerClass();
 
-        switch (clazz.toLowerCase()){
-            case "elementalist":{
+        switch (clazz){
+            case Elementalist:{
                 return elementalistSkillItems.getUltimate(player);
             }
-            case "ranger":{
+            case Ranger:{
                 return rangerSkillItems.getUltimate(player);
             }
-            case "mystic":{
+            case Mystic:{
                 return mysticSkillItem.getUltimate(player);
             }
-            case "shadow knight":{
+            case Shadow_Knight:{
                 return shadowKnightSkillItems.getUltimate(player);
             }
-            case "paladin":{
+            case Paladin:{
                 return paladinSkillItems.getUltimate(player);
             }
-            case "warrior":{
+            case Warrior:{
                 return warriorSkillItems.getUltimate(player);
             }
-            case "assassin":{
+            case Assassin:{
                 return assassinSkillItems.getUltimate(player);
             }
         }
@@ -106,28 +107,28 @@ public class AllSkillItems {
 
     public ItemStack getBasic(Player player){
         Profile playerProfile = profileManager.getAnyProfile(player);
-        String clazz = playerProfile.getPlayerClass();
+        PlayerClass clazz = playerProfile.getPlayerClass();
 
-        switch (clazz.toLowerCase()){
-            case "elementalist":{
+        switch (clazz){
+            case Elementalist:{
                 return elementalistSkillItems.getBasic(player);
             }
-            case "ranger":{
+            case Ranger:{
                 return rangerSkillItems.getBasic(player);
             }
-            case "mystic":{
+            case Mystic:{
                 return mysticSkillItem.getBasic(player);
             }
-            case "shadow knight":{
+            case Shadow_Knight:{
                 return shadowKnightSkillItems.getBasic(player);
             }
-            case "paladin":{
+            case Paladin:{
                 return paladinSkillItems.getBasic(player);
             }
-            case "warrior":{
+            case Warrior:{
                 return warriorSkillItems.getBasic(player);
             }
-            case "assassin":{
+            case Assassin:{
                 return assassinSkillItems.getBasic(player);
             }
         }

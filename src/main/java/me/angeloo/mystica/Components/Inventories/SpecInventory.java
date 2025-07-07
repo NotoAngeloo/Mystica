@@ -5,26 +5,22 @@ import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Managers.ItemManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.DisplayWeapons;
+import me.angeloo.mystica.Utility.PlayerClass;
+import me.angeloo.mystica.Utility.SubClass;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import static me.angeloo.mystica.Mystica.*;
 
@@ -45,8 +41,8 @@ public class SpecInventory implements Listener {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        String clazz = playerProfile.getPlayerClass();
-        String subClass = playerProfile.getPlayerSubclass();
+        PlayerClass playerClass = playerProfile.getPlayerClass();
+        SubClass subClass = playerProfile.getPlayerSubclass();
 
         //inv.setItem(27, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
 
@@ -61,19 +57,19 @@ public class SpecInventory implements Listener {
 
         inv.setItem(40, getSubclassItem(subClass));
 
-        switch (clazz.toLowerCase()){
-            case "elementalist":{
+        switch (playerClass){
+            case Elementalist:{
                 inv.setItem(9, getPyromancerItem());
                 //inv.setItem(13, getCryomancerItem());
                 inv.setItem(18, getConjurerItem());
                 break;
             }
-            case "ranger":{
+            case Ranger:{
                 inv.setItem(9, getScoutItem());
                 inv.setItem(18, getTamerItem());
                 break;
             }
-            case "mystic":{
+            case Mystic:{
                 inv.setItem(9, getShepardItem());
                 //chaos is a secret subclass
                 if(profileManager.getAnyProfile(player).getMilestones().getMilestone("chaos")){
@@ -83,12 +79,12 @@ public class SpecInventory implements Listener {
                 inv.setItem(18, getArcaneItem());
                 break;
             }
-            case "shadow knight":{
+            case Shadow_Knight:{
                 inv.setItem(9, getBloodItem());
                 inv.setItem(18, getDoomItem());
                 break;
             }
-            case "paladin":{
+            case Paladin:{
                 inv.setItem(9, getTemplarItem());
                 //secret
                 if(profileManager.getAnyProfile(player).getMilestones().getMilestone("divine")){
@@ -98,12 +94,12 @@ public class SpecInventory implements Listener {
                 inv.setItem(18, getDawnItem());
                 break;
             }
-            case "warrior":{
+            case Warrior:{
                 inv.setItem(9, getGladiatorItem());
                 inv.setItem(18, getExecutionerItem());
                 break;
             }
-            case "assassin":{
+            case Assassin:{
                 inv.setItem(9, getDuelistItem());
                 inv.setItem(18, getAlchemistItem());
                 break;
@@ -150,14 +146,16 @@ public class SpecInventory implements Listener {
                     return;
                 }
 
-                String name = meta.getDisplayName();
+                //TODO: change this to account for enum instead of string
+
+                /*String name = meta.getDisplayName();
 
                 name = name.replaceAll("§.", "");
 
                 profileManager.getAnyProfile(player).setPlayerSubclass(name);
                 player.openInventory(openSpecInventory(player));
                 profileManager.getAnyProfile(player).getStats().setLevelStats(profileManager.getAnyProfile(player).getStats().getLevel(),
-                        profileManager.getAnyProfile(player).getPlayerClass(), name);
+                        profileManager.getAnyProfile(player).getPlayerClass(), name);*/
 
                 Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource", true));
                 return;
@@ -175,42 +173,42 @@ public class SpecInventory implements Listener {
     }
 
 
-    private ItemStack getSubclassItem(String subclass){
+    private ItemStack getSubclassItem(SubClass subclass){
 
-        switch (subclass.toLowerCase()){
-            case "pyromancer":
+        switch (subclass){
+            case Pyromancer:
                 return getPyromancerItem();
-            case "conjurer":
+            case Conjurer:
                 return getConjurerItem();
             /*case "cryomancer":
                 return getCryomancerItem();*/
-            case "scout":
+            case Scout:
                 return getScoutItem();
-            case "animal tamer":
+            case Tamer:
                 return getTamerItem();
-            case "chaos":
+            case Chaos:
                 return getChaosItem();
-            case "arcane master":
+            case Arcane:
                 return getArcaneItem();
-            case "shepard":
+            case Shepard:
                 return getShepardItem();
-            case "doom":
+            case Doom:
                 return getDoomItem();
-            case "blood":
+            case Blood:
                 return getBloodItem();
-            case "templar":
+            case Templar:
                 return getTemplarItem();
-            case "divine":
+            case Divine:
                 return getDivineItem();
-            case "dawn":
+            case Dawn:
                 return getDawnItem();
-            case "gladiator":
+            case Gladiator:
                 return getGladiatorItem();
-            case "executioner":
+            case Executioner:
                 return getExecutionerItem();
-            case "duelist":
+            case Duelist:
                 return getDuelistItem();
-            case "alchemist":
+            case Alchemist:
                 return getAlchemistItem();
         }
         return new ItemStack(Material.AIR);

@@ -8,6 +8,7 @@ import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -108,7 +109,7 @@ public class SpiritualAttack {
 
     private void execute(LivingEntity caster){
 
-        boolean doom = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("doom");
+        boolean doom = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Doom);
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 

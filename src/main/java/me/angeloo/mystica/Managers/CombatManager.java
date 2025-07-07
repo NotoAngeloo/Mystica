@@ -6,6 +6,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Tasks.CombatTick;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DisplayWeapons;
+import me.angeloo.mystica.Utility.PlayerClass;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -149,7 +150,7 @@ public class CombatManager {
 
         profileManager.getAnyProfile(player).setIfInCombat(false);
 
-        if(profileManager.getAnyProfile(player).getPlayerClass().equalsIgnoreCase("paladin")){
+        if(profileManager.getAnyProfile(player).getPlayerClass().equals(PlayerClass.Paladin)){
             abilityManager.getPaladinAbilities().getPurity().resetPurity(player);
         }
 

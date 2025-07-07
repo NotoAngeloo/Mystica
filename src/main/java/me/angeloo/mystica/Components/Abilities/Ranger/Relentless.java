@@ -8,6 +8,7 @@ import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -113,7 +114,7 @@ public class Relentless {
 
     private void execute(LivingEntity caster){
 
-        boolean scout = profileManager.getAnyProfile(caster).getPlayerSubclass().equalsIgnoreCase("scout");
+        boolean scout = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Scout);
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 

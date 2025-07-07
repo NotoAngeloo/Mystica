@@ -2,6 +2,8 @@ package me.angeloo.mystica.Components;
 
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
+import me.angeloo.mystica.Utility.PlayerClass;
+import me.angeloo.mystica.Utility.SubClass;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -31,10 +33,10 @@ public interface Profile {
     int getTotalMagicDefense();
     int getTotalCrit();
 
-    String getPlayerClass();
-    void setPlayerClass(String playerClass);
-    String getPlayerSubclass();
-    void setPlayerSubclass(String playerSubclass);
+    PlayerClass getPlayerClass();
+    void setPlayerClass(PlayerClass playerClass);
+    SubClass getPlayerSubclass();
+    void setPlayerSubclass(SubClass subclass);
 
     ItemStack[] getSavedInv();
     void setSavedInv(ItemStack[] inv);

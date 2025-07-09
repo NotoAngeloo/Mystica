@@ -2,6 +2,7 @@ package me.angeloo.mystica.Components.Inventories;
 
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Managers.EquipmentManager;
+import me.angeloo.mystica.Managers.CustomInventoryManager;
 import me.angeloo.mystica.Managers.ItemManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -27,6 +28,7 @@ import java.util.List;
 public class EquipmentInventory implements Listener {
 
     private final ProfileManager profileManager;
+    private final CustomInventoryManager customInventoryManager;
     private final ItemManager itemManager;
     private final EquipmentManager equipmentManager;
     private final GearReader gearReader;
@@ -34,6 +36,7 @@ public class EquipmentInventory implements Listener {
 
     public EquipmentInventory(Mystica main) {
         profileManager = main.getProfileManager();
+        customInventoryManager = main.getInventoryIndexingManager();
         gearReader = main.getGearReader();
         displayWeapons = new DisplayWeapons(main);
         itemManager = main.getItemManager();
@@ -41,10 +44,14 @@ public class EquipmentInventory implements Listener {
     }
 
 
-    public Inventory openEquipmentInventory(Player player) {
+    public void openEquipmentInventory(Player player) {
         PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
-        Inventory inv = Bukkit.createInventory(null, 9*6, ChatColor.WHITE + "\uF807" + "\uE066");
+        String title = ChatColor.WHITE + "\uF807" + "\uE066";
+
+        title = customInventoryManager.addBagPng(title);
+
+        Inventory inv = Bukkit.createInventory(null, 9*6, title);
 
         inv.setItem(18, playerEquipment.getWeapon());
 
@@ -150,7 +157,10 @@ public class EquipmentInventory implements Listener {
 
 
 
-        return inv;
+        player.openInventory(inv);
+
+        profileManager.getAnyProfile(player).getMysticaBagCollection().getBag(customInventoryManager.getBagIndex(player)).displayBagItems(player);
+
     }
 
     private List<String> statStringDivider(int stat){
@@ -240,7 +250,7 @@ public class EquipmentInventory implements Listener {
                         playerEquipment.setWeapon(item);
                         player.getInventory().remove(item);
                         gearReader.setGearStats(player);
-                        player.openInventory(openEquipmentInventory(player));
+                        openEquipmentInventory(player);
                         displayWeapons.displayArmor(player);
                         return;
                     }
@@ -255,7 +265,7 @@ public class EquipmentInventory implements Listener {
                         playerEquipment.setHelmet(item);
                         player.getInventory().remove(item);
                         gearReader.setGearStats(player);
-                        player.openInventory(openEquipmentInventory(player));
+                        openEquipmentInventory(player);
                         displayWeapons.displayArmor(player);
                         return;
 
@@ -271,7 +281,7 @@ public class EquipmentInventory implements Listener {
                         playerEquipment.setChestPlate(item);
                         player.getInventory().remove(item);
                         gearReader.setGearStats(player);
-                        player.openInventory(openEquipmentInventory(player));
+                        openEquipmentInventory(player);
                         displayWeapons.displayArmor(player);
                         return;
 
@@ -287,7 +297,7 @@ public class EquipmentInventory implements Listener {
                         playerEquipment.setLeggings(item);
                         player.getInventory().remove(item);
                         gearReader.setGearStats(player);
-                        player.openInventory(openEquipmentInventory(player));
+                        openEquipmentInventory(player);
                         displayWeapons.displayArmor(player);
                         return;
 
@@ -303,7 +313,7 @@ public class EquipmentInventory implements Listener {
                         playerEquipment.setBoots(item);
                         player.getInventory().remove(item);
                         gearReader.setGearStats(player);
-                        player.openInventory(openEquipmentInventory(player));
+                        openEquipmentInventory(player);
                         displayWeapons.displayArmor(player);
                         return;
 
@@ -338,7 +348,7 @@ public class EquipmentInventory implements Listener {
                         topInv.setItem(18, null);
                         playerEquipment.setWeapon(null);
                         gearReader.setGearStats(player);
-                        player.openInventory(openEquipmentInventory(player));
+                        openEquipmentInventory(player);
                         displayWeapons.displayArmor(player);
                         return;
                     }
@@ -347,7 +357,7 @@ public class EquipmentInventory implements Listener {
                         topInv.setItem(10, null);
                         playerEquipment.setHelmet(null);
                         gearReader.setGearStats(player);
-                        player.openInventory(openEquipmentInventory(player));
+                        openEquipmentInventory(player);
                         displayWeapons.displayArmor(player);
                         return;
                     }
@@ -356,7 +366,7 @@ public class EquipmentInventory implements Listener {
                         topInv.setItem(19, null);
                         playerEquipment.setChestPlate(null);
                         gearReader.setGearStats(player);
-                        player.openInventory(openEquipmentInventory(player));
+                        openEquipmentInventory(player);
                         displayWeapons.displayArmor(player);
                         return;
                     }
@@ -365,7 +375,7 @@ public class EquipmentInventory implements Listener {
                         topInv.setItem(28, null);
                         playerEquipment.setLeggings(null);
                         gearReader.setGearStats(player);
-                        player.openInventory(openEquipmentInventory(player));
+                        openEquipmentInventory(player);
                         displayWeapons.displayArmor(player);
                         return;
                     }
@@ -374,7 +384,7 @@ public class EquipmentInventory implements Listener {
                         topInv.setItem(37, null);
                         playerEquipment.setBoots(null);
                         gearReader.setGearStats(player);
-                        player.openInventory(openEquipmentInventory(player));
+                        openEquipmentInventory(player);
                         displayWeapons.displayArmor(player);
                         return;
                     }

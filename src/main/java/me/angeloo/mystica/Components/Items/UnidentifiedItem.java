@@ -1,0 +1,102 @@
+package me.angeloo.mystica.Components.Items;
+
+import me.angeloo.mystica.Utility.EquipmentSlot;
+import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Material;
+
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static me.angeloo.mystica.Mystica.*;
+
+public class UnidentifiedItem extends MysticaItem{
+
+
+    private final EquipmentSlot equipmentSlot;
+    private final int level;
+    private final int tier;
+
+    public UnidentifiedItem(EquipmentSlot equipmentSlot, int level, int tier){
+        this.equipmentSlot = equipmentSlot;
+        this.level = level;
+        this.tier = tier;
+    }
+
+    @Override
+    public ItemStack build() {
+        ItemStack item = new ItemStack(Material.IRON_INGOT);
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        List<String> lores = new ArrayList<>();
+
+        Color color = commonColor;
+
+        switch (this.tier) {
+            case 1 -> {
+            }
+            case 2 -> {
+                color = uncommonColor;
+            }
+            case 3 -> {
+                color = rareColor;
+            }
+        }
+
+        switch (this.equipmentSlot){
+            case WEAPON -> {
+                meta.setDisplayName(ChatColor.of(color) + "Unidentified Weapon");
+            }
+            case HEAD -> {
+                meta.setDisplayName(ChatColor.of(color) + "Unidentified Helmet");
+            }
+            case CHEST -> {
+                meta.setDisplayName(ChatColor.of(color) + "Unidentified Chestplate");
+            }
+            case LEGS -> {
+                meta.setDisplayName(ChatColor.of(color) + "Unidentified Leggings");
+            }
+            case BOOTS -> {
+                meta.setDisplayName(ChatColor.of(color) + "Unidentified Boots");
+            }
+        }
+
+        lores.add(ChatColor.of(menuColor) + "Level: " + level);
+        lores.add(ChatColor.of(menuColor) + "Tier: " + tier);
+
+        if(tier==1){
+            meta.setLore(lores);
+            item.setItemMeta(meta);
+            return item;
+        }
+
+        lores.add(ChatColor.of(menuColor) + "Bonus Attribute (Random)");
+        lores.add(ChatColor.of(uncommonColor) + "Attack");
+        lores.add(ChatColor.of(uncommonColor) + "Health");
+        lores.add(ChatColor.of(uncommonColor) + "Defense");
+        lores.add(ChatColor.of(uncommonColor) + "Magic Defense");
+        lores.add(ChatColor.of(uncommonColor) + "Crit");
+
+        if(tier==2){
+            meta.setLore(lores);
+            item.setItemMeta(meta);
+            return item;
+        }
+
+        lores.add(ChatColor.of(menuColor) + "Special Attribute");
+        lores.add(ChatColor.of(rareColor) + "2x Skill Level 1-5");
+
+        meta.setLore(lores);
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    @Override
+    public Map<String, Object> serialize() {
+        return null;
+    }
+}

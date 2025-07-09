@@ -52,7 +52,6 @@ public class CombatManager {
         if (!combatStatus){
             //player.sendMessage("You are now in combat");
 
-            profileManager.getAnyProfile(player).setSavedInv(player.getInventory().getContents());
             player.getInventory().clear();
 
             DisplayWeapons displayWeapons = new DisplayWeapons(main);
@@ -165,20 +164,6 @@ public class CombatManager {
 
             player.getInventory().clear();
 
-            ItemStack[] savedInv = profileManager.getAnyProfile(player).getSavedInv();
-
-            boolean allNull = true;
-            for(ItemStack item : savedInv){
-                if(item != null){
-                    allNull = false;
-                    break;
-                }
-            }
-
-            if(!allNull){
-                player.getInventory().setContents(savedInv);
-                profileManager.getAnyProfile(player).removeSavedInv();
-            }
         }
 
 

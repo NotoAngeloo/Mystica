@@ -48,13 +48,7 @@ public class DeathManager {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
 
-        if(!combatStatus){
-
-            profileManager.getAnyProfile(player).setSavedInv(player.getInventory().getContents());
-
-        }
 
         player.getInventory().clear();
         player.setGameMode(GameMode.SPECTATOR);
@@ -123,20 +117,6 @@ public class DeathManager {
 
         profileManager.getAnyProfile(target).setIfInCombat(false);
 
-        if(target instanceof Player){
-            ItemStack[] savedInv = profileManager.getAnyProfile(target).getSavedInv();
-            boolean allNull = true;
-            for(ItemStack item : savedInv){
-                if(item != null){
-                    allNull = false;
-                    break;
-                }
-            }
-            if(!allNull){
-                ((Player)target).getInventory().setContents(savedInv);
-                profileManager.getAnyProfile(target).removeSavedInv();
-            }
-        }
 
 
         if(!bySkill){

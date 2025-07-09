@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components;
 
+import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.Utility.PlayerClass;
@@ -38,9 +39,7 @@ public interface Profile {
     SubClass getPlayerSubclass();
     void setPlayerSubclass(SubClass subclass);
 
-    ItemStack[] getSavedInv();
-    void setSavedInv(ItemStack[] inv);
-    void removeSavedInv();
+    MysticaBagCollection getMysticaBagCollection();
 
     PlayerEquipment getPlayerEquipment();
 

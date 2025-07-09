@@ -6,13 +6,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class InventoryIndexingManager {
+public class CustomInventoryManager {
 
     private final Map<UUID, Integer> bagIndex = new HashMap<>();
     private final Map<UUID, Integer> classIndex = new HashMap<>();
     private final Map<UUID, Integer> questIndex = new HashMap<>();
 
-    public InventoryIndexingManager(){
+    public CustomInventoryManager(){
     }
 
     public int getBagIndex(Player player){
@@ -28,16 +28,7 @@ public class InventoryIndexingManager {
         bagIndex.put(player.getUniqueId(), index);
     }
 
-    public int getQuestIndex(Player player){
 
-        if(!questIndex.containsKey(player.getUniqueId())){
-            questIndex.put(player.getUniqueId(), 0);
-        }
-
-        return questIndex.get(player.getUniqueId());
-    }
-
-    public void setQuestIndex(Player player, Integer index){questIndex.put(player.getUniqueId(), index);}
 
     public int getClassIndex(Player player){
 
@@ -51,6 +42,26 @@ public class InventoryIndexingManager {
 
     public void setClassIndex(Player player, Integer index){
         classIndex.put(player.getUniqueId(), index);
+    }
+
+    public String addBagPng(String originalTitle){
+
+        StringBuilder newTitle = new StringBuilder();
+
+        newTitle.append(originalTitle);
+
+
+        //negative space before this
+
+        //-256
+        newTitle.append("\uF80D");
+
+        //+78
+        newTitle.append("\uF82B\uF828\uF826");
+
+        newTitle.append("\uE05C");
+
+        return String.valueOf(newTitle);
     }
 
 

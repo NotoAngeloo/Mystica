@@ -3,6 +3,8 @@ package me.angeloo.mystica.Managers;
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.FakePlayerProfile;
+import me.angeloo.mystica.Components.Inventories.Storage.MysticaBag;
+import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.CustomEvents.UpdateMysticaPartyEvent;
 import me.angeloo.mystica.Mystica;
@@ -99,11 +101,8 @@ public class ProfileManager {
             PlayerClass playerClass = profile.getPlayerClass();
             SubClass playerSubclass = profile.getPlayerSubclass();
 
-            ItemStack[] savedInv = profile.getSavedInv();
-
             PlayerEquipment playerEquipment = profile.getPlayerEquipment();
 
-            Skill_Level skillLevel = profile.getSkillLevels();
             EquipSkills equipSkills = profile.getEquipSkills();
 
             PlayerBossLevel playerBossLevel = profile.getPlayerBossLevel();
@@ -119,19 +118,9 @@ public class ProfileManager {
             config.set(id + ".class", playerClass.toString());
             config.set(id + ".subclass", playerSubclass.toString());
 
-            config.set(id + ".savedInv", savedInv);
-
 
             config.set(id + ".equipment", playerEquipment.getEquipment());
 
-            config.set(id + ".skill_level.skill1_bonus", skillLevel.getSkill_1_Level_Bonus());
-            config.set(id + ".skill_level.skill2_bonus", skillLevel.getSkill_2_Level_Bonus());
-            config.set(id + ".skill_level.skill3_bonus", skillLevel.getSkill_3_Level_Bonus());
-            config.set(id + ".skill_level.skill4_bonus", skillLevel.getSkill_4_Level_Bonus());
-            config.set(id + ".skill_level.skill5_bonus", skillLevel.getSkill_5_Level_Bonus());
-            config.set(id + ".skill_level.skill6_bonus", skillLevel.getSkill_6_Level_Bonus());
-            config.set(id + ".skill_level.skill7_bonus", skillLevel.getSkill_7_Level_Bonus());
-            config.set(id + ".skill_level.skill8_bonus", skillLevel.getSkill_8_Level_Bonus());
 
             config.set(id + ".skill_slots.0", equipSkills.getAnySlot()[0]);
             config.set(id + ".skill_slots.1", equipSkills.getAnySlot()[1]);
@@ -185,11 +174,14 @@ public class ProfileManager {
 
                     int hp = stats.getHealth();
 
-                    ItemStack[] savedInv = ((List<ItemStack>) config.get(id + ".savedInv")).toArray(new ItemStack[41]);
 
-                    ArrayList<ItemStack> items = (ArrayList<ItemStack>) config.getList(id + ".bag", new ArrayList<ItemStack>());
+                    /*ArrayList<ItemStack> items = (ArrayList<ItemStack>) config.getList(id + ".bag", new ArrayList<ItemStack>());
                     int bagUnlocks = config.getInt(id + ".bagUnlocks");
-                    PlayerBag playerBag = new PlayerBag(items, bagUnlocks);
+                    PlayerBag playerBag = new PlayerBag(items, bagUnlocks);*/
+
+
+                    MysticaBagCollection mysticaBagCollection = new MysticaBagCollection(new ArrayList<>());
+                    mysticaBagCollection.addBag();
 
                     //equipment
                     ItemStack[] equipment = ((List<ItemStack>) config.get(id + ".equipment")).toArray(new ItemStack[5]);
@@ -197,14 +189,6 @@ public class ProfileManager {
 
                     StatsFromGear gearStats = new StatsFromGear(0,  0,  0, 0, 0);
 
-                    int skill1_bonus = config.getInt(id + ".skill_level.skill1_bonus");
-                    int skill2_bonus = config.getInt(id + ".skill_level.skill2_bonus");
-                    int skill3_bonus = config.getInt(id + ".skill_level.skill3_bonus");
-                    int skill4_bonus = config.getInt(id + ".skill_level.skill4_bonus");
-                    int skill5_bonus = config.getInt(id + ".skill_level.skill5_bonus");
-                    int skill6_bonus = config.getInt(id + ".skill_level.skill6_bonus");
-                    int skill7_bonus = config.getInt(id + ".skill_level.skill7_bonus");
-                    int skill8_bonus = config.getInt(id + ".skill_level.skill8_bonus");
 
                     //instead of this, get every individual skill
                     int[]slots = new int[8];
@@ -218,9 +202,6 @@ public class ProfileManager {
                     slots[7] = config.getInt(id + ".skill_slots.7");
 
                     EquipSkills equipSkills = new EquipSkills(slots);
-
-                    Skill_Level skillLevel = new Skill_Level(
-                            skill1_bonus, skill2_bonus, skill3_bonus, skill4_bonus, skill5_bonus, skill6_bonus, skill7_bonus, skill8_bonus);
 
                     int bossLevel = config.getInt(id + ".boss_level");
 
@@ -241,10 +222,9 @@ public class ProfileManager {
                             gearStats,
                             playerClass,
                             playerSubclass,
-                            savedInv,
-                            playerBag,
+                            mysticaBagCollection,
                             playerEquipment,
-                            skillLevel,
+                            new Skill_Level(0,0,0,0,0,0,0,0),
                             equipSkills,
                             playerBossLevel,
                             milestones) {
@@ -343,11 +323,12 @@ public class ProfileManager {
 
         int currentHealth = 1;
 
-        PlayerBag playerBag = new PlayerBag(new ArrayList<>(), 0);
-        PlayerEquipment playerEquipment = new PlayerEquipment(new ItemStack[5]);
 
-        Skill_Level skillLevel = new Skill_Level(
-                0,0,0,0,0,0,0,0);
+        MysticaBagCollection mysticaBagCollection = new MysticaBagCollection(new ArrayList<>());
+        mysticaBagCollection.addBag();
+
+
+        PlayerEquipment playerEquipment = new PlayerEquipment(new ItemStack[5]);
 
         int[] defaultSkillSlots = new int[8];
         defaultSkillSlots[0] = 1;
@@ -371,10 +352,9 @@ public class ProfileManager {
                 gearStats,
                 PlayerClass.NONE,
                 SubClass.NONE,
-                new ItemStack[41],
-                playerBag,
+                mysticaBagCollection,
                 playerEquipment,
-                skillLevel,
+                new Skill_Level(0,0,0,0,0,0,0,0),
                 equipSkills,
                 playerBossLevel,
                 milestones) {
@@ -432,7 +412,8 @@ public class ProfileManager {
 
         int currentHealth = 20;
 
-        PlayerBag playerBag = new PlayerBag(new ArrayList<>(), 0);
+        MysticaBagCollection mysticaBagCollection = new MysticaBagCollection(new ArrayList<>());
+        mysticaBagCollection.addBag();
         PlayerEquipment playerEquipment = new PlayerEquipment(new ItemStack[5]);
 
         Skill_Level skillLevel = new Skill_Level(
@@ -459,8 +440,7 @@ public class ProfileManager {
                 gearStats,
                 PlayerClass.NONE,
                 SubClass.NONE,
-                new ItemStack[41],
-                playerBag,
+                mysticaBagCollection,
                 playerEquipment,
                 skillLevel,
                 equipSkills,
@@ -653,18 +633,8 @@ public class ProfileManager {
             }
 
             @Override
-            public ItemStack[] getSavedInv() {
-                return new ItemStack[0];
-            }
-
-            @Override
-            public void setSavedInv(ItemStack[] inv) {
-
-            }
-
-            @Override
-            public void removeSavedInv() {
-
+            public MysticaBagCollection getMysticaBagCollection() {
+                return null;
             }
 
             @Override

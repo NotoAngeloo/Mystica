@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components;
 
+import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.Utility.PlayerClass;
@@ -132,14 +133,10 @@ public class FakePlayerProfile implements Profile {
     public void setPlayerSubclass(SubClass subclass){
         this.playerSubclass = subclass;
     }
+
     @Override
-    public ItemStack[] getSavedInv(){return savedInv;}
-    @Override
-    public void setSavedInv(ItemStack[] inv){
-        this.savedInv = inv;
-    }
-    @Override
-    public void removeSavedInv(){
+    public MysticaBagCollection getMysticaBagCollection() {
+        return null;
     }
 
 

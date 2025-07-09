@@ -22,11 +22,6 @@ public class ItemManager {
 
     private final List<Material> equipmentTypes;
 
-    private final UnidentifiedHelmet unidentifiedHelmet;
-    private final UnidentifiedChestplate unidentifiedChestplate;
-    private final UnidentifiedLeggings unidentifiedLeggings;
-    private final UnidentifiedBoots unidentifiedBoots;
-    private final UnidentifiedWeapon unidentifiedWeapon;
 
     private final SoulStone soulStone;
 
@@ -40,11 +35,6 @@ public class ItemManager {
     private final WarriorEquipment warriorEquipment;
 
     public ItemManager(){
-        unidentifiedHelmet = new UnidentifiedHelmet(this);
-        unidentifiedChestplate = new UnidentifiedChestplate(this);
-        unidentifiedLeggings = new UnidentifiedLeggings(this);
-        unidentifiedBoots = new UnidentifiedBoots(this);
-        unidentifiedWeapon =new UnidentifiedWeapon(this);
 
         soulStone = new SoulStone(this);
 
@@ -444,19 +434,6 @@ public class ItemManager {
         return ChatColor.of(Color.WHITE) +tooltip.toString();
     }
 
-    public UnidentifiedHelmet getUnidentifiedHelmet(){return unidentifiedHelmet;}
-    public UnidentifiedChestplate getUnidentifiedChestplate() {
-        return unidentifiedChestplate;
-    }
-    public UnidentifiedLeggings getUnidentifiedLeggings() {
-        return unidentifiedLeggings;
-    }
-    public UnidentifiedBoots getUnidentifiedBoots() {
-        return unidentifiedBoots;
-    }
-    public UnidentifiedWeapon getUnidentifiedWeapon() {
-        return unidentifiedWeapon;
-    }
 
     public SoulStone getSoulStone(){return soulStone;}
 

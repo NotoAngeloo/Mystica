@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.ShadowKnight;
 
+import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
@@ -173,18 +174,8 @@ public class SpectralSteed {
             }
 
             @Override
-            public ItemStack[] getSavedInv() {
-                return new ItemStack[0];
-            }
-
-            @Override
-            public void setSavedInv(ItemStack[] inv) {
-
-            }
-
-            @Override
-            public void removeSavedInv() {
-
+            public MysticaBagCollection getMysticaBagCollection() {
+                return null;
             }
 
             @Override

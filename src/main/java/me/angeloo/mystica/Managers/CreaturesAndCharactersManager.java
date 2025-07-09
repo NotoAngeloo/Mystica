@@ -3,6 +3,7 @@ package me.angeloo.mystica.Managers;
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.Creatures.*;
+import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
@@ -292,18 +293,8 @@ public class CreaturesAndCharactersManager {
 
 
             @Override
-            public ItemStack[] getSavedInv() {
-                return new ItemStack[0];
-            }
-
-            @Override
-            public void setSavedInv(ItemStack[] inv) {
-
-            }
-
-            @Override
-            public void removeSavedInv() {
-
+            public MysticaBagCollection getMysticaBagCollection() {
+                return null;
             }
 
             @Override
@@ -446,18 +437,8 @@ public class CreaturesAndCharactersManager {
 
 
             @Override
-            public ItemStack[] getSavedInv() {
-                return new ItemStack[0];
-            }
-
-            @Override
-            public void setSavedInv(ItemStack[] inv) {
-
-            }
-
-            @Override
-            public void removeSavedInv() {
-
+            public MysticaBagCollection getMysticaBagCollection() {
+                return null;
             }
         };
         profileManager.addToNonPlayerProfiles(uuid, nonPlayerProfile);

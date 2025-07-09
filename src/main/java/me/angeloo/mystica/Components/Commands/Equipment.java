@@ -35,7 +35,8 @@ public class Equipment implements CommandExecutor {
             return true;
         }
 
-        player.openInventory(equipmentInventory.openEquipmentInventory(player));
+        equipmentInventory.openEquipmentInventory(player);
+
 
         return true;
     }

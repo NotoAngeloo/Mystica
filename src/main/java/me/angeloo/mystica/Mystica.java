@@ -73,12 +73,12 @@ public final class Mystica extends JavaPlugin{
     private BossCastingManager bossCastingManager;
     private AbilityManager abilityManager;
     private DeathManager deathManager;
-    private InventoryIndexingManager inventoryIndexingManager;
+    private CustomInventoryManager customInventoryManager;
     private PveChecker pveChecker;
     private DamageCalculator damageCalculator;
     private ChangeResourceHandler changeResourceHandler;
     private Locations locations;
-
+    
     private AbilityInventory abilityInventory;
     private SpecInventory specInventory;
     private IdentifyInventory identifyInventory;
@@ -179,7 +179,7 @@ public final class Mystica extends JavaPlugin{
 
         fakePlayerAiManager = new FakePlayerAiManager(this);
 
-        inventoryIndexingManager = new InventoryIndexingManager();
+        customInventoryManager = new CustomInventoryManager();
         abilityInventory = new AbilityInventory(this);
         specInventory = abilityInventory.getSpecInventory();
         identifyInventory = new IdentifyInventory(this);
@@ -383,8 +383,8 @@ public final class Mystica extends JavaPlugin{
         return pveChecker;
     }
 
-    public InventoryIndexingManager getInventoryIndexingManager(){
-        return inventoryIndexingManager;
+    public CustomInventoryManager getInventoryIndexingManager(){
+        return customInventoryManager;
     }
 
     public ProfileFileWriter getProfileFileWriter(){

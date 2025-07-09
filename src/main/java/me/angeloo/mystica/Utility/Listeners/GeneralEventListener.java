@@ -193,28 +193,6 @@ public class GeneralEventListener implements Listener {
             player.setVisualFire(false);
             player.setLevel(0);
 
-            ItemStack[] savedInv = profileManager.getAnyProfile(player).getSavedInv();
-
-            boolean allNull = true;
-            for(ItemStack item : savedInv){
-                if(item != null){
-                    allNull = false;
-                    break;
-                }
-            }
-
-            boolean hasBadItem = false;
-
-            PlayerInventory playerInventory = player.getInventory();
-
-            if(playerInventory.contains(Material.BARRIER)){
-                hasBadItem = true;
-            }
-
-            if(!allNull || hasBadItem){
-                player.getInventory().setContents(savedInv);
-                profileManager.getAnyProfile(player).removeSavedInv();
-            }
 
             changeResourceHandler.healPlayerToFull(player);
         }
@@ -410,7 +388,7 @@ public class GeneralEventListener implements Listener {
             }
 
             event.setCancelled(true);
-            player.openInventory(equipmentInventory.openEquipmentInventory(player));
+            equipmentInventory.openEquipmentInventory(player);
             displayWeapons.displayArmor(player);
         }
 
@@ -486,7 +464,7 @@ public class GeneralEventListener implements Listener {
             ItemStack tempItem = item.clone();
             event.setCancelled(true);
             player.setItemOnCursor(null);
-            player.openInventory(equipmentInventory.openEquipmentInventory(player));
+            equipmentInventory.openEquipmentInventory(player);
             player.getInventory().addItem(tempItem);
         }
     }
@@ -509,7 +487,7 @@ public class GeneralEventListener implements Listener {
             player.setItemOnCursor(null);
             displayWeapons.displayArmor(player);
 
-            player.openInventory(equipmentInventory.openEquipmentInventory(player));
+            equipmentInventory.openEquipmentInventory(player);
             player.getInventory().addItem(tempItem);
             return;
         }
@@ -539,7 +517,7 @@ public class GeneralEventListener implements Listener {
                     player.getInventory().setLeggings(null);
                     player.getInventory().setBoots(null);
 
-                    player.openInventory(equipmentInventory.openEquipmentInventory(player));
+                    equipmentInventory.openEquipmentInventory(player);
                     player.getInventory().addItem(tempItem);
                 }
             }

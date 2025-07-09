@@ -1,12 +1,12 @@
 package me.angeloo.mystica.Components.Items;
 
 import me.angeloo.mystica.Utility.PlayerClass;
+import me.angeloo.mystica.Utility.EquipmentSlot;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -24,14 +24,6 @@ public class MysticaEquipment extends MysticaItem{
         Defense,
         Magic_Defense,
         Crit
-    }
-
-    public enum EquipmentSlot{
-        HEAD,
-        CHEST,
-        LEGS,
-        BOOTS,
-        WEAPON
     }
 
     //cosmetics later

@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components;
 
+import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Utility.PlayerClass;
 import me.angeloo.mystica.Utility.SubClass;
@@ -18,9 +19,7 @@ public abstract class PlayerProfile implements Profile{
     private PlayerClass playerClass;
     private SubClass playerSubclass;
 
-    private ItemStack[] savedInv;
-
-    private final PlayerBag playerBag;
+    private final MysticaBagCollection mysticaBagCollection;
     private final PlayerEquipment playerEquipment;
 
     private final Skill_Level skillLevel;
@@ -41,9 +40,8 @@ public abstract class PlayerProfile implements Profile{
 
             PlayerClass playerClass,
             SubClass playerSubclass,
-            ItemStack[] savedInv,
 
-            PlayerBag playerbag,
+            MysticaBagCollection mysticaBagCollection,
             PlayerEquipment playerEquipment,
 
             Skill_Level skillLevel,
@@ -66,9 +64,8 @@ public abstract class PlayerProfile implements Profile{
         this.playerClass = playerClass;
         this.playerSubclass = playerSubclass;
 
-        this.savedInv = savedInv;
 
-        this.playerBag = playerbag;
+        this.mysticaBagCollection = mysticaBagCollection;
         this.playerEquipment = playerEquipment;
 
         this.skillLevel = skillLevel;
@@ -138,14 +135,8 @@ public abstract class PlayerProfile implements Profile{
         this.playerSubclass = subclass;
     }
     @Override
-    public ItemStack[] getSavedInv(){return savedInv;}
-    @Override
-    public void setSavedInv(ItemStack[] inv){
-        this.savedInv = inv;
-    }
-    @Override
-    public void removeSavedInv(){
-        savedInv = new ItemStack[41];
+    public MysticaBagCollection getMysticaBagCollection(){
+        return mysticaBagCollection;
     }
     @Override
     public PlayerEquipment getPlayerEquipment(){return playerEquipment;}

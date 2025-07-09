@@ -1,6 +1,6 @@
 package me.angeloo.mystica.Components.Inventories;
 
-import me.angeloo.mystica.Managers.InventoryIndexingManager;
+import me.angeloo.mystica.Managers.CustomInventoryManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ClassSetter;
 import me.angeloo.mystica.Utility.PlayerClass;
@@ -19,12 +19,12 @@ import java.util.List;
 public class ClassSelectInventory implements Listener {
 
     private final Mystica main;
-    private final InventoryIndexingManager inventoryIndexingManager;
+    private final CustomInventoryManager customInventoryManager;
     private final ClassSetter classSetter;
 
     public ClassSelectInventory(Mystica main){
         this.main = main;
-        inventoryIndexingManager = main.getInventoryIndexingManager();
+        customInventoryManager = main.getInventoryIndexingManager();
         classSetter = main.getClassSetter();
     }
 
@@ -196,7 +196,7 @@ public class ClassSelectInventory implements Listener {
 
 
 
-            int index = inventoryIndexingManager.getClassIndex(player);
+            int index = customInventoryManager.getClassIndex(player);
 
             if(slot == 45){
                 index++;
@@ -214,7 +214,7 @@ public class ClassSelectInventory implements Listener {
                 index = 0;
             }
 
-            inventoryIndexingManager.setClassIndex(player, index);
+            customInventoryManager.setClassIndex(player, index);
 
             player.openInventory(new ClassSelectInventory(main).openClassSelect(index));
         }

@@ -1,9 +1,11 @@
 package me.angeloo.mystica.Components.Commands;
 
 import me.angeloo.mystica.Components.Items.MysticaEquipment;
+import me.angeloo.mystica.Components.Items.UnidentifiedItem;
 import me.angeloo.mystica.Managers.ItemManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.EquipmentSlot;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -36,10 +38,10 @@ public class MysticaItem implements CommandExecutor {
             Player player = (Player) sender;
 
 
-            MysticaEquipment equipmentT1 = new MysticaEquipment(MysticaEquipment.EquipmentSlot.WEAPON, profileManager.getAnyProfile(player).getPlayerClass(), 1);
-            MysticaEquipment equipmentT2 = new MysticaEquipment(MysticaEquipment.EquipmentSlot.WEAPON, profileManager.getAnyProfile(player).getPlayerClass(), 1,
+            /*MysticaEquipment equipmentT1 = new MysticaEquipment(EquipmentSlot.WEAPON, profileManager.getAnyProfile(player).getPlayerClass(), 1);
+            MysticaEquipment equipmentT2 = new MysticaEquipment(EquipmentSlot.WEAPON, profileManager.getAnyProfile(player).getPlayerClass(), 1,
                     MysticaEquipment.StatType.Attack, MysticaEquipment.StatType.Defense);
-            MysticaEquipment equipmentT3 = new MysticaEquipment(MysticaEquipment.EquipmentSlot.WEAPON, profileManager.getAnyProfile(player).getPlayerClass(), 1,
+            MysticaEquipment equipmentT3 = new MysticaEquipment(EquipmentSlot.WEAPON, profileManager.getAnyProfile(player).getPlayerClass(), 1,
                     MysticaEquipment.StatType.Attack, MysticaEquipment.StatType.Defense,
                     Pair.of(1,1),
                     Pair.of(2,2)
@@ -47,9 +49,14 @@ public class MysticaItem implements CommandExecutor {
 
             player.getInventory().addItem(equipmentT1.build());
             player.getInventory().addItem(equipmentT2.build());
-            player.getInventory().addItem(equipmentT3.build());
+            player.getInventory().addItem(equipmentT3.build());*/
 
 
+            /*player.getInventory().addItem(new UnidentifiedItem(EquipmentSlot.WEAPON, 1, 1).build());
+            player.getInventory().addItem(new UnidentifiedItem(EquipmentSlot.WEAPON, 1, 2).build());
+            player.getInventory().addItem(new UnidentifiedItem(EquipmentSlot.WEAPON, 1, 3).build());*/
+
+            profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new UnidentifiedItem(EquipmentSlot.WEAPON, 1, 1));
 
             return true;
         }

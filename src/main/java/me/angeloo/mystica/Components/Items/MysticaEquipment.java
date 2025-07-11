@@ -1,15 +1,21 @@
 package me.angeloo.mystica.Components.Items;
 
+import com.google.gson.Gson;
+import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.PlayerClass;
 import me.angeloo.mystica.Utility.EquipmentSlot;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang3.tuple.Pair;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
 
@@ -29,12 +35,16 @@ public class MysticaEquipment extends MysticaItem{
     //cosmetics later
 
     private final EquipmentSlot equipmentSlot;
-    private PlayerClass playerClass;
-    private int level;
+    private final PlayerClass playerClass;
+    private final int level;
     private StatType highStat;
     private StatType lowStat;
-    private Pair<Integer, Integer> skillOne;
-    private Pair<Integer, Integer> skillTwo;
+
+    private List<Integer> skillOne;
+    private List<Integer> skillTwo;
+
+    //private Pair<Integer, Integer> skillOne;
+    //private Pair<Integer, Integer> skillTwo;
 
     //Tier 1
     public MysticaEquipment(EquipmentSlot equipmentSlot, PlayerClass playerClass, int level){
@@ -54,7 +64,7 @@ public class MysticaEquipment extends MysticaItem{
     }
 
     //Tier 3
-    public MysticaEquipment(EquipmentSlot equipmentSlot, PlayerClass playerClass,int level,StatType highStat,StatType lowStat,Pair<Integer,Integer> skillOne,Pair<Integer,Integer> skillTwo){
+    public MysticaEquipment(EquipmentSlot equipmentSlot, PlayerClass playerClass,int level,StatType highStat,StatType lowStat,List<Integer> skillOne,List<Integer> skillTwo){
         this.equipmentSlot = equipmentSlot;
         this.playerClass = playerClass;
         this.level = level;
@@ -319,7 +329,15 @@ public class MysticaEquipment extends MysticaItem{
             }
         }
 
+        NamespacedKey key = new NamespacedKey(Mystica.getPlugin(), "equipment_data");
+        Gson gson = new Gson();
+        String json = gson.toJson(this);
+        meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, json);
+
+        //Bukkit.getLogger().info(json);
+
         if(this.highStat == null){
+
             meta.setLore(lores);
             item.setItemMeta(meta);
             return item;
@@ -334,8 +352,11 @@ public class MysticaEquipment extends MysticaItem{
             return item;
         }
 
-        lores.add(ChatColor.of(rareColor) + "Skill " + this.skillOne.getKey() + " + " + this.skillOne.getValue());
-        lores.add(ChatColor.of(rareColor) + "Skill " + this.skillTwo.getKey() + " + " + this.skillTwo.getValue());
+        lores.add(ChatColor.of(rareColor) + "Skill " + this.skillOne.get(0) + " + " + this.skillOne.get(1));
+        lores.add(ChatColor.of(rareColor) + "Skill " + this.skillTwo.get(0) + " + " + this.skillTwo.get(1));
+
+        //lores.add(ChatColor.of(rareColor) + "Skill " + this.skillOne.getKey() + " + " + this.skillOne.getValue());
+        //lores.add(ChatColor.of(rareColor) + "Skill " + this.skillTwo.getKey() + " + " + this.skillTwo.getValue());
 
         meta.setLore(lores);
         item.setItemMeta(meta);
@@ -348,10 +369,24 @@ public class MysticaEquipment extends MysticaItem{
         map.put("slot",equipmentSlot.name());
         map.put("class",playerClass.name());
         map.put("level",level);
-        map.put("highstat",highStat.name());
-        map.put("lowstat",lowStat.name());
-        map.put("skill_roll_1", skillOne);
-        map.put("skill_roll_2", skillTwo);
+
+        if(highStat != null){
+            map.put("highstat",highStat.name());
+        }
+
+        if(lowStat != null){
+            map.put("lowstat",lowStat.name());
+        }
+
+        if(skillOne != null){
+            map.put("skill_roll_1", skillOne);
+        }
+
+        if(skillTwo != null){
+            map.put("skill_roll_2", skillTwo);
+        }
+
+
         return map;
     }
 
@@ -434,6 +469,17 @@ public class MysticaEquipment extends MysticaItem{
         return 10;
     }
 
+    public int getLevel(){
+        return this.level;
+    }
+
+    public EquipmentSlot getEquipmentSlot(){
+        return this.equipmentSlot;
+    }
+
+    public PlayerClass getPlayerClass(){
+        return this.playerClass;
+    }
 
     /*public EquipmentSlot getEquipmentSlot(){
         return equipmentSlot;

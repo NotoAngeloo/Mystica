@@ -32,15 +32,28 @@ public class DisplayWeapons {
         player.getInventory().setLeggings(null);
         player.getInventory().setBoots(null);
 
-        player.getInventory().setHelmet(playerEquipment.getHelmet());
-        player.getInventory().setChestplate(playerEquipment.getChestPlate());
-        player.getInventory().setLeggings(playerEquipment.getLeggings());
-        player.getInventory().setBoots(playerEquipment.getBoots());
+        if(playerEquipment.getHelmet() != null){
+            player.getInventory().setHelmet(playerEquipment.getHelmet().build());
+        }
+
+        if(playerEquipment.getChestPlate() != null){
+            player.getInventory().setChestplate(playerEquipment.getChestPlate().build());
+        }
+
+        if(playerEquipment.getLeggings() != null){
+            player.getInventory().setLeggings(playerEquipment.getLeggings().build());
+        }
+
+        if(playerEquipment.getBoots() != null){
+            player.getInventory().setBoots(playerEquipment.getBoots().build());
+        }
+
+
 
         ItemStack displayedWeapon = itemManager.getNoneEquipment().getBaseWeapon();
 
         if(playerEquipment.getWeapon() != null){
-            displayedWeapon = playerEquipment.getWeapon().clone();
+            displayedWeapon = playerEquipment.getWeapon().build();
             ItemMeta meta = displayedWeapon.getItemMeta();
             assert meta != null;
             int displayModel = meta.getCustomModelData();

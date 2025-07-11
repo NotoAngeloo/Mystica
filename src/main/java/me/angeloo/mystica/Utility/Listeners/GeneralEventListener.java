@@ -374,18 +374,9 @@ public class GeneralEventListener implements Listener {
             return;
         }
 
-        ItemStack itemInMain = player.getInventory().getItemInMainHand();
         boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
 
         if (!combatStatus) {
-
-
-            List<Material> validEquipment = itemManager.getEquipmentTypes();
-            Material itemType = itemInMain.getType();
-
-            if(!validEquipment.contains(itemType)){
-                return;
-            }
 
             event.setCancelled(true);
             equipmentInventory.openEquipmentInventory(player);

@@ -124,7 +124,7 @@ public class Soulcrack {
         ItemStack offhand = weapon.clone();
 
         if(caster instanceof Player){
-            weapon = profileManager.getAnyProfile(caster).getPlayerEquipment().getWeapon();
+            weapon = profileManager.getAnyProfile(caster).getPlayerEquipment().getWeapon().build();
             ItemMeta offhandItemMeta = offhand.getItemMeta();
             offhandItemMeta.setCustomModelData(weapon.getItemMeta().getCustomModelData() + 1);
             offhand.setItemMeta(offhandItemMeta);

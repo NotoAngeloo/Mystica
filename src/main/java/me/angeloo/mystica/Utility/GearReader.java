@@ -40,11 +40,35 @@ public class GearReader {
 
         PlayerEquipment equipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
-        ItemStack weapon = equipment.getWeapon();
-        ItemStack helmet = equipment.getHelmet();
-        ItemStack chestPlate = equipment.getChestPlate();
-        ItemStack leggings = equipment.getLeggings();
-        ItemStack boots = equipment.getBoots();
+        ItemStack weapon = null;
+        if(equipment.getWeapon() != null){
+            weapon = equipment.getWeapon().build();
+        }
+
+
+        ItemStack helmet = null;
+        if(equipment.getHelmet() != null){
+            helmet = equipment.getHelmet().build();
+        }
+
+        ItemStack chestPlate = null;
+
+        if(equipment.getChestPlate() != null){
+            chestPlate = equipment.getChestPlate().build();
+        }
+
+        ItemStack leggings = null;
+
+        if(equipment.getLeggings() != null){
+            leggings = equipment.getLeggings().build();
+        }
+
+        ItemStack boots = null;
+
+        if(equipment.getBoots() != null){
+            boots = equipment.getBoots().build();
+        }
+
 
         String[] valid = {"attack","health","defense","magic defense","crit","skill \\d+"};
         String regex = ".*?((?i:" + String.join("|", valid) + ")\\s*\\+\\s*(\\d+)).*";

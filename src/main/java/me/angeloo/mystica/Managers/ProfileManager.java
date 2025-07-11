@@ -5,6 +5,8 @@ import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.FakePlayerProfile;
 import me.angeloo.mystica.Components.Inventories.Storage.MysticaBag;
 import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
+import me.angeloo.mystica.Components.Items.MysticaEquipment;
+import me.angeloo.mystica.Components.Items.MysticaItem;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.CustomEvents.UpdateMysticaPartyEvent;
 import me.angeloo.mystica.Mystica;
@@ -12,6 +14,7 @@ import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.PlayerProfile;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
+import me.angeloo.mystica.Utility.EquipmentSlot;
 import me.angeloo.mystica.Utility.PlayerClass;
 import me.angeloo.mystica.Utility.ProfileFileWriter;
 import me.angeloo.mystica.Utility.SubClass;
@@ -109,6 +112,8 @@ public class ProfileManager {
 
             String playername = Bukkit.getOfflinePlayer(uuid).getName();
 
+            MysticaBagCollection collection = profile.getMysticaBagCollection();
+
             YamlConfiguration config = profileFileWriter.createOrLoadProfileFile(uuid);
 
             config.set(id + ".name", playername);
@@ -118,8 +123,43 @@ public class ProfileManager {
             config.set(id + ".class", playerClass.toString());
             config.set(id + ".subclass", playerSubclass.toString());
 
+            for(MysticaItem equipment : playerEquipment.getEquipment()){
 
-            config.set(id + ".equipment", playerEquipment.getEquipment());
+                if(equipment == null){
+                    continue;
+                }
+
+                Map<String, Object> equipmentData = equipment.serialize();
+
+                config.createSection(id + ".equipment." + equipmentData.get("slot"));
+
+                //config.set(id + ".equipment." + equipmentData.get("slot"), equipmentData.get("slot"));
+
+                config.set(id + ".equipment." + equipmentData.get("slot") + ".class", equipmentData.get("class"));
+                config.set(id + ".equipment." + equipmentData.get("slot") + ".level", equipmentData.get("level"));
+
+
+                if(equipmentData.containsKey("highstat")){
+                    config.set(id + ".equipment." + equipmentData.get("slot") + ".highstat", equipmentData.get("highstat"));
+                }
+
+                if(equipmentData.containsKey("lowstat")){
+                    config.set(id + ".equipment." + equipmentData.get("slot") + ".lowstat", equipmentData.get("lowstat"));
+                }
+
+
+                if(equipmentData.containsKey("skill_roll_1")){
+                    config.set(id + ".equipment." + equipmentData.get("slot") + ".skill_roll_1", equipmentData.get("skill_roll_1"));
+                }
+
+                if(equipmentData.containsKey("skill_roll_2")){
+                    config.set(id + ".equipment." + equipmentData.get("slot") + ".skill_roll_2", equipmentData.get("skill_roll_2"));
+                }
+
+
+
+            }
+            //config.set(id + ".equipment", playerEquipment.getEquipment());
 
 
             config.set(id + ".skill_slots.0", equipSkills.getAnySlot()[0]);
@@ -136,6 +176,16 @@ public class ProfileManager {
             for(Map.Entry<String, Boolean> entry : profile.getMilestones().getAllMilestones().entrySet()){
                 config.set(id + ".milestones." + entry.getKey(), entry.getValue());
             }
+
+            /*for (MysticaBag bag : collection.getBags()){
+                for (MysticaItem mysticaItem : bag.getBag()){
+
+                    Map<String, Object> serialized = mysticaItem.serialize();
+
+
+                }
+            }*/
+
 
             profileFileWriter.saveProfileFile(uuid, config);
         }
@@ -184,8 +234,151 @@ public class ProfileManager {
                     mysticaBagCollection.addBag();
 
                     //equipment
-                    ItemStack[] equipment = ((List<ItemStack>) config.get(id + ".equipment")).toArray(new ItemStack[5]);
-                    PlayerEquipment playerEquipment = new PlayerEquipment(equipment);
+                    //ItemStack[] equipment = ((List<ItemStack>) config.get(id + ".equipment")).toArray(new ItemStack[5]);
+                    PlayerEquipment playerEquipment = new PlayerEquipment(new MysticaItem[5]);
+
+
+                    ConfigurationSection equipmentSection = config.getConfigurationSection(id + ".equipment");
+                    if(equipmentSection != null){
+                        for(String gearPiece : equipmentSection.getKeys(false)){
+                            EquipmentSlot equipmentSlot = EquipmentSlot.valueOf(gearPiece);
+                            PlayerClass equipmentClass = PlayerClass.valueOf(config.getString(id + ".equipment." + gearPiece + ".class"));
+                            int gearlevel = config.getInt(id + ".equipment." + gearPiece + ".level");
+
+
+                            MysticaEquipment.StatType highstat = null;
+                            MysticaEquipment.StatType lowstat = null;
+
+                            //i wonder what happens if they don't have
+                            if(config.contains(id + ".equipment." + gearPiece + ".highstat")){
+                                highstat = MysticaEquipment.StatType.valueOf(config.getString(id + ".equipment." + gearPiece + ".highstat"));
+                            }
+
+                            if(config.contains(id + ".equipment." + gearPiece + ".lowstat")){
+                                lowstat = MysticaEquipment.StatType.valueOf(config.getString(id + ".equipment." + gearPiece + ".lowstat"));
+                            }
+
+                            if(highstat == null){
+                                MysticaEquipment equipment = new MysticaEquipment(equipmentSlot, equipmentClass, gearlevel);
+
+                                switch (equipmentSlot){
+                                    case WEAPON -> {
+                                        playerEquipment.setWeapon(equipment);
+                                    }
+                                    case HEAD -> {
+                                        playerEquipment.setHelmet(equipment);
+                                    }
+                                    case CHEST -> {
+                                        playerEquipment.setChestPlate(equipment);
+                                    }
+                                    case LEGS -> {
+                                        playerEquipment.setLeggings(equipment);
+                                    }
+                                    case BOOTS -> {
+                                        playerEquipment.setBoots(equipment);
+                                    }
+                                }
+
+                                continue;
+                            }
+
+                            ArrayList<Integer> skillOne = null;
+                            ArrayList<Integer> skillTwo = null;
+
+                            if(config.contains(id + ".equipment." + gearPiece + ".skill_roll_1")){
+                                skillOne = (ArrayList<Integer>) config.getList(id + ".equipment." + gearPiece + ".skill_roll_1");
+                            }
+
+                            if(config.contains(id + ".equipment." + gearPiece + ".skill_roll_2")){
+                                skillTwo = (ArrayList<Integer>) config.getList(id + ".equipment." + gearPiece + ".skill_roll_2");
+                            }
+
+
+
+                            if(skillOne == null){
+                                MysticaEquipment equipment = new MysticaEquipment(equipmentSlot, equipmentClass, gearlevel, highstat, lowstat);
+
+                                switch (equipmentSlot){
+                                    case WEAPON -> {
+                                        playerEquipment.setWeapon(equipment);
+                                    }
+                                    case HEAD -> {
+                                        playerEquipment.setHelmet(equipment);
+                                    }
+                                    case CHEST -> {
+                                        playerEquipment.setChestPlate(equipment);
+                                    }
+                                    case LEGS -> {
+                                        playerEquipment.setLeggings(equipment);
+                                    }
+                                    case BOOTS -> {
+                                        playerEquipment.setBoots(equipment);
+                                    }
+                                }
+
+                                continue;
+                            }
+
+
+                            MysticaEquipment equipment = new MysticaEquipment(equipmentSlot, equipmentClass, gearlevel, highstat, lowstat, skillOne, skillTwo);
+
+                            switch (equipmentSlot){
+                                case WEAPON -> {
+                                    playerEquipment.setWeapon(equipment);
+                                }
+                                case HEAD -> {
+                                    playerEquipment.setHelmet(equipment);
+                                }
+                                case CHEST -> {
+                                    playerEquipment.setChestPlate(equipment);
+                                }
+                                case LEGS -> {
+                                    playerEquipment.setLeggings(equipment);
+                                }
+                                case BOOTS -> {
+                                    playerEquipment.setBoots(equipment);
+                                }
+                            }
+                        }
+                    }
+
+
+
+                    /*for(MysticaItem equipment : playerEquipment.getEquipment()){
+
+                        if(equipment == null){
+                            continue;
+                        }
+
+                        Map<String, Object> equipmentData = equipment.serialize();
+
+                        config.set(id + ".equipment", equipmentData.get("slot"));
+
+                        config.set(id + ".equipment." + equipmentData.get("slot") + ".class", equipmentData.get("class"));
+                        config.set(id + ".equipment." + equipmentData.get("slot") + ".level", equipmentData.get("level"));
+
+
+                        if(equipmentData.containsKey("highstat")){
+                            config.set(id + ".equipment." + equipmentData.get("slot") + ".highstat", equipmentData.get("highstat"));
+                        }
+
+                        if(equipmentData.containsKey("lowstat")){
+                            config.set(id + ".equipment." + equipmentData.get("slot") + ".lowstat", equipmentData.get("lowstat"));
+                        }
+
+
+                        if(equipmentData.containsKey("skill_roll_1")){
+                            config.set(id + ".equipment." + equipmentData.get("slot") + ".skill_roll_1", equipmentData.get("skill_roll_1"));
+                        }
+
+                        if(equipmentData.containsKey("skill_roll_2")){
+                            config.set(id + ".equipment." + equipmentData.get("slot") + ".skill_roll_2", equipmentData.get("skill_roll_2"));
+                        }
+
+
+
+                    }*/
+
 
                     StatsFromGear gearStats = new StatsFromGear(0,  0,  0, 0, 0);
 
@@ -328,7 +521,7 @@ public class ProfileManager {
         mysticaBagCollection.addBag();
 
 
-        PlayerEquipment playerEquipment = new PlayerEquipment(new ItemStack[5]);
+        PlayerEquipment playerEquipment = new PlayerEquipment(new MysticaItem[5]);
 
         int[] defaultSkillSlots = new int[8];
         defaultSkillSlots[0] = 1;
@@ -414,7 +607,7 @@ public class ProfileManager {
 
         MysticaBagCollection mysticaBagCollection = new MysticaBagCollection(new ArrayList<>());
         mysticaBagCollection.addBag();
-        PlayerEquipment playerEquipment = new PlayerEquipment(new ItemStack[5]);
+        PlayerEquipment playerEquipment = new PlayerEquipment(new MysticaItem[5]);
 
         Skill_Level skillLevel = new Skill_Level(
                 0,0,0,0,0,0,0,0);

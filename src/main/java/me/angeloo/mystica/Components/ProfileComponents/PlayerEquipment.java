@@ -1,59 +1,60 @@
 package me.angeloo.mystica.Components.ProfileComponents;
 
+import me.angeloo.mystica.Components.Items.MysticaItem;
 import org.bukkit.inventory.ItemStack;
 
 public class PlayerEquipment {
 
-    private ItemStack[] Equipment;
+    private MysticaItem[] equipment;
 
-    public PlayerEquipment(ItemStack[] equipment) {
-        Equipment = equipment;
+    public PlayerEquipment(MysticaItem[] equipment) {
+        this.equipment = equipment;
     }
 
-    public ItemStack[] getEquipment() {
-        return Equipment;
+    public MysticaItem[] getEquipment() {
+        return equipment;
     }
 
-    public void setEquipment(ItemStack[] equipment) {
-        Equipment = equipment;
+    public void setEquipment(MysticaItem[] equipment) {
+        this.equipment = equipment;
     }
 
-    public ItemStack getWeapon(){
-        return Equipment[0];
+    public MysticaItem getWeapon(){
+        return equipment[0];
     }
 
-    public ItemStack getHelmet(){
-        return Equipment[1];
+    public MysticaItem getHelmet(){
+        return equipment[1];
     }
 
-    public ItemStack getChestPlate(){
-        return Equipment[2];
+    public MysticaItem getChestPlate(){
+        return equipment[2];
     }
 
-    public ItemStack getLeggings(){
-        return Equipment[3];
+    public MysticaItem getLeggings(){
+        return equipment[3];
     }
 
-    public ItemStack getBoots(){return Equipment[4];}
+    public MysticaItem getBoots(){return equipment[4];}
 
-    public void setWeapon(ItemStack weapon){
-        Equipment[0] = weapon;
+    public void setWeapon(MysticaItem weapon){
+        equipment[0] = weapon;
     }
 
-    public void setHelmet(ItemStack helmet){
-        Equipment[1] = helmet;
+    public void setHelmet(MysticaItem helmet){
+        equipment[1] = helmet;
     }
 
-    public void setChestPlate(ItemStack chestPlate){
-        Equipment[2] = chestPlate;
+    public void setChestPlate(MysticaItem chestPlate){
+        equipment[2] = chestPlate;
     }
 
-    public void setLeggings(ItemStack leggings){
-        Equipment[3] = leggings;
+    public void setLeggings(MysticaItem leggings){
+        equipment[3] = leggings;
     }
 
-    public void setBoots(ItemStack boots){
-        Equipment[4] = boots;
+    public void setBoots(MysticaItem boots){
+        equipment[4] = boots;
     }
 
 }

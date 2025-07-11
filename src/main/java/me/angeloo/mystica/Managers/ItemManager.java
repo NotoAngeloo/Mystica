@@ -20,7 +20,7 @@ import java.util.UUID;
 
 public class ItemManager {
 
-    private final List<Material> equipmentTypes;
+    //private final List<Material> equipmentTypes;
 
 
     private final SoulStone soulStone;
@@ -47,7 +47,7 @@ public class ItemManager {
         shadowKnightEquipment = new ShadowKnightEquipment(this);
         warriorEquipment = new WarriorEquipment(this);
 
-        equipmentTypes = new ArrayList<>();
+        /*equipmentTypes = new ArrayList<>();
         equipmentTypes.add(Material.STICK);
         equipmentTypes.add(Material.FLINT);
         equipmentTypes.add(Material.BLAZE_ROD);
@@ -61,10 +61,10 @@ public class ItemManager {
         equipmentTypes.add(Material.CHAINMAIL_LEGGINGS);
         equipmentTypes.add(Material.CHAINMAIL_BOOTS);
         //i forgot what this last one is
-        //equipmentTypes.add(Material.IRON_NUGGET);
+        //equipmentTypes.add(Material.IRON_NUGGET);*/
     }
 
-    public List<Material> getEquipmentTypes(){return equipmentTypes;}
+    //public List<Material> getEquipmentTypes(){return equipmentTypes;}
 
     public ItemStack getItem(Material material, int modelData, String name, String ... lore){
 

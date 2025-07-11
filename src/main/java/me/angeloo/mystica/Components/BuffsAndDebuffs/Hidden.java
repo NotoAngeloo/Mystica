@@ -96,8 +96,8 @@ public class Hidden {
         PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
         if(playerEquipment.getWeapon() != null){
-            player.getInventory().setItemInMainHand(playerEquipment.getWeapon());
-            ItemStack offhand = playerEquipment.getWeapon().clone();
+            player.getInventory().setItemInMainHand(playerEquipment.getWeapon().build());
+            ItemStack offhand = playerEquipment.getWeapon().build();
             ItemMeta offhandItemMeta = offhand.getItemMeta();
             offhandItemMeta.setCustomModelData(offhand.getItemMeta().getCustomModelData() + 1);
             offhand.setItemMeta(offhandItemMeta);

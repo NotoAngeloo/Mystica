@@ -39,6 +39,10 @@ public class MysticaBagCollection {
         return bags.get(0);
     }
 
+    public List<MysticaBag> getBags(){
+        return this.bags;
+    }
+
     public int getMysticaBagAmount(){
         return bags.size();
     }

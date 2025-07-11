@@ -62,7 +62,7 @@ public class CombatManager {
             PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
             if(playerEquipment.getWeapon() != null){
-                ItemStack weapon = playerEquipment.getWeapon();
+                ItemStack weapon = playerEquipment.getWeapon().build();
                 ItemStack offhand = weapon.clone();
                 ItemMeta offhandMeta = offhand.getItemMeta();
                 offhandMeta.setCustomModelData(weapon.getItemMeta().getCustomModelData() + 1);

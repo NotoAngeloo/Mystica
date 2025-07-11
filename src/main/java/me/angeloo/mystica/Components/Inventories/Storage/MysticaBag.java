@@ -70,6 +70,10 @@ public class MysticaBag {
         return bag.size() >= 27;
     }
 
+    public List<MysticaItem> getBag(){
+        return this.bag;
+    }
+
 
 
 }

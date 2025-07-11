@@ -228,8 +228,8 @@ public class Representative {
         }
 
         if(caster instanceof Player){
-            PlayerEquipment playerEquipment = profileManager.getAnyProfile((Player)caster).getPlayerEquipment();
-            ((Player)caster).getInventory().setHelmet(playerEquipment.getHelmet());
+            PlayerEquipment playerEquipment = profileManager.getAnyProfile(caster).getPlayerEquipment();
+            ((Player)caster).getInventory().setHelmet(playerEquipment.getHelmet().build());
         }
 
 

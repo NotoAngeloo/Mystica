@@ -1,5 +1,7 @@
 package me.angeloo.mystica.Components.Inventories;
 
+import com.google.gson.Gson;
+import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Managers.EquipmentManager;
 import me.angeloo.mystica.Managers.CustomInventoryManager;
@@ -7,10 +9,12 @@ import me.angeloo.mystica.Managers.ItemManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DisplayWeapons;
+import me.angeloo.mystica.Utility.EquipmentSlot;
 import me.angeloo.mystica.Utility.GearReader;
 import me.angeloo.mystica.Utility.PlayerClass;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,6 +23,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,7 +36,6 @@ public class EquipmentInventory implements Listener {
     private final ProfileManager profileManager;
     private final CustomInventoryManager customInventoryManager;
     private final ItemManager itemManager;
-    private final EquipmentManager equipmentManager;
     private final GearReader gearReader;
     private final DisplayWeapons displayWeapons;
 
@@ -40,7 +45,6 @@ public class EquipmentInventory implements Listener {
         gearReader = main.getGearReader();
         displayWeapons = new DisplayWeapons(main);
         itemManager = main.getItemManager();
-        equipmentManager = main.getEquipmentManager();
     }
 
 
@@ -53,13 +57,25 @@ public class EquipmentInventory implements Listener {
 
         Inventory inv = Bukkit.createInventory(null, 9*6, title);
 
-        inv.setItem(18, playerEquipment.getWeapon());
+        if(playerEquipment.getWeapon() != null){
+            inv.setItem(18, playerEquipment.getWeapon().build());
+        }
 
-        inv.setItem(10, playerEquipment.getHelmet());
-        inv.setItem(19, playerEquipment.getChestPlate());
-        inv.setItem(28, playerEquipment.getLeggings());
-        inv.setItem(37, playerEquipment.getBoots());
+        if(playerEquipment.getHelmet() != null){
+            inv.setItem(10, playerEquipment.getHelmet().build());
+        }
 
+        if(playerEquipment.getChestPlate() != null){
+            inv.setItem(19, playerEquipment.getChestPlate().build());
+        }
+
+        if(playerEquipment.getLeggings() != null){
+            inv.setItem(28, playerEquipment.getLeggings().build());
+        }
+
+        if(playerEquipment.getBoots() != null){
+            inv.setItem(37, playerEquipment.getBoots().build());
+        }
         
         //health
         int health = profileManager.getAnyProfile(player).getTotalHealth();
@@ -218,105 +234,150 @@ public class EquipmentInventory implements Listener {
                 }
 
 
-                if(!itemManager.getEquipmentTypes().contains(item.getType())){
+                NamespacedKey key = new NamespacedKey(Mystica.getPlugin(), "equipment_data");
+                if(!item.getItemMeta().getPersistentDataContainer().has(key, PersistentDataType.STRING) ){
                     return;
                 }
+
+                String json = meta.getPersistentDataContainer().get(key, PersistentDataType.STRING);
+
+                Gson gson = new Gson();
+                MysticaEquipment mysticaEquipment = gson.fromJson(json, MysticaEquipment.class);
+
+                //Bukkit.getLogger().info(String.valueOf(mysticaEquipment.getEquipmentSlot()));
+
 
                 //check the class of the equipment
                 PlayerClass playerClass = profileManager.getAnyProfile(player).getPlayerClass();
-                String equipmentClass = equipmentManager.getEquipmentClass(item);
+                PlayerClass equipmentClass = mysticaEquipment.getPlayerClass();
 
-                if(!equipmentClass.equalsIgnoreCase(playerClass.toString())){
+                if(playerClass != equipmentClass){
                     return;
                 }
 
-                //check where it belongs
-                int gearType = equipmentManager.getGearType(item);
+                EquipmentSlot slot = mysticaEquipment.getEquipmentSlot();
 
-                if(gearType == -1){
-                    return;
-                }
 
-                switch (gearType){
-                    case 0:{
-
+                switch (slot){
+                    case WEAPON:{
                         ItemStack oldWeapon = topInv.getItem(18);
 
                         if(oldWeapon != null){
-                            //Bukkit.getLogger().info(String.valueOf(oldWeapon));
-                            player.getInventory().addItem(oldWeapon);
+                            ItemMeta oldMeta = oldWeapon.getItemMeta();
+                            assert oldMeta != null;
+                            PersistentDataContainer persistentDataContainer = oldMeta.getPersistentDataContainer();
+                            String oldJson = persistentDataContainer.get(key, PersistentDataType.STRING);
+                            MysticaEquipment oldEquipment = gson.fromJson(oldJson, MysticaEquipment.class);
+
+                            //add this to bag
                         }
 
-                        playerEquipment.setWeapon(item);
-                        player.getInventory().remove(item);
+                        //remove new item from bag
+                        //player.getInventory().remove(item);
+
+                        //equip the new thing
+                        playerEquipment.setWeapon(mysticaEquipment);
+
                         gearReader.setGearStats(player);
                         openEquipmentInventory(player);
                         displayWeapons.displayArmor(player);
                         return;
                     }
-                    case 1:{
-
+                    case HEAD:{
                         ItemStack oldHelmet = topInv.getItem(10);
 
                         if(oldHelmet != null){
-                            player.getInventory().addItem(oldHelmet);
+                            ItemMeta oldMeta = oldHelmet.getItemMeta();
+                            assert oldMeta != null;
+                            PersistentDataContainer persistentDataContainer = oldMeta.getPersistentDataContainer();
+                            String oldJson = persistentDataContainer.get(key, PersistentDataType.STRING);
+                            MysticaEquipment oldEquipment = gson.fromJson(oldJson, MysticaEquipment.class);
+
+                            //add this to bag
                         }
 
-                        playerEquipment.setHelmet(item);
-                        player.getInventory().remove(item);
+                        //remove new item from bag
+                        //player.getInventory().remove(item);
+
+                        //equip the new thing
+                        playerEquipment.setHelmet(mysticaEquipment);
+
                         gearReader.setGearStats(player);
                         openEquipmentInventory(player);
                         displayWeapons.displayArmor(player);
                         return;
-
                     }
-                    case 2:{
-
+                    case CHEST:{
                         ItemStack oldChestPlate = topInv.getItem(19);
 
                         if(oldChestPlate != null){
-                            player.getInventory().addItem(oldChestPlate);
+                            ItemMeta oldMeta = oldChestPlate.getItemMeta();
+                            assert oldMeta != null;
+                            PersistentDataContainer persistentDataContainer = oldMeta.getPersistentDataContainer();
+                            String oldJson = persistentDataContainer.get(key, PersistentDataType.STRING);
+                            MysticaEquipment oldEquipment = gson.fromJson(oldJson, MysticaEquipment.class);
+
+                            //add this to bag
                         }
 
-                        playerEquipment.setChestPlate(item);
-                        player.getInventory().remove(item);
+                        //remove new item from bag
+                        //player.getInventory().remove(item);
+
+                        //equip the new thing
+                        playerEquipment.setChestPlate(mysticaEquipment);
+
                         gearReader.setGearStats(player);
                         openEquipmentInventory(player);
                         displayWeapons.displayArmor(player);
                         return;
-
                     }
-                    case 3:{
-
+                    case LEGS:{
                         ItemStack oldLeggings = topInv.getItem(28);
 
                         if(oldLeggings != null){
-                            player.getInventory().addItem(oldLeggings);
+                            ItemMeta oldMeta = oldLeggings.getItemMeta();
+                            assert oldMeta != null;
+                            PersistentDataContainer persistentDataContainer = oldMeta.getPersistentDataContainer();
+                            String oldJson = persistentDataContainer.get(key, PersistentDataType.STRING);
+                            MysticaEquipment oldEquipment = gson.fromJson(oldJson, MysticaEquipment.class);
+
+                            //add this to bag
                         }
 
-                        playerEquipment.setLeggings(item);
-                        player.getInventory().remove(item);
+                        //remove new item from bag
+                        //player.getInventory().remove(item);
+
+                        //equip the new thing
+                        playerEquipment.setLeggings(mysticaEquipment);
+
                         gearReader.setGearStats(player);
                         openEquipmentInventory(player);
                         displayWeapons.displayArmor(player);
                         return;
-
                     }
-                    case 4:{
-
+                    case BOOTS:{
                         ItemStack oldBoots = topInv.getItem(37);
 
                         if(oldBoots != null){
-                            player.getInventory().addItem(oldBoots);
+                            ItemMeta oldMeta = oldBoots.getItemMeta();
+                            assert oldMeta != null;
+                            PersistentDataContainer persistentDataContainer = oldMeta.getPersistentDataContainer();
+                            String oldJson = persistentDataContainer.get(key, PersistentDataType.STRING);
+                            MysticaEquipment oldEquipment = gson.fromJson(oldJson, MysticaEquipment.class);
+
+                            //add this to bag
                         }
 
-                        playerEquipment.setBoots(item);
-                        player.getInventory().remove(item);
+                        //remove new item from bag
+                        //player.getInventory().remove(item);
+
+                        //equip the new thing
+                        playerEquipment.setBoots(mysticaEquipment);
+
                         gearReader.setGearStats(player);
                         openEquipmentInventory(player);
                         displayWeapons.displayArmor(player);
                         return;
-
                     }
                 }
 
@@ -344,48 +405,28 @@ public class EquipmentInventory implements Listener {
 
                 switch (event.getSlot()){
                     case 18:{
-                        player.getInventory().addItem(item);
-                        topInv.setItem(18, null);
-                        playerEquipment.setWeapon(null);
-                        gearReader.setGearStats(player);
-                        openEquipmentInventory(player);
-                        displayWeapons.displayArmor(player);
+
                         return;
                     }
                     case 10:{
-                        player.getInventory().addItem(item);
-                        topInv.setItem(10, null);
-                        playerEquipment.setHelmet(null);
-                        gearReader.setGearStats(player);
-                        openEquipmentInventory(player);
-                        displayWeapons.displayArmor(player);
+
                         return;
                     }
                     case 19:{
-                        player.getInventory().addItem(item);
-                        topInv.setItem(19, null);
-                        playerEquipment.setChestPlate(null);
-                        gearReader.setGearStats(player);
-                        openEquipmentInventory(player);
-                        displayWeapons.displayArmor(player);
+
                         return;
                     }
                     case 28:{
-                        player.getInventory().addItem(item);
-                        topInv.setItem(28, null);
-                        playerEquipment.setLeggings(null);
-                        gearReader.setGearStats(player);
-                        openEquipmentInventory(player);
-                        displayWeapons.displayArmor(player);
+
                         return;
                     }
                     case 37:{
-                        player.getInventory().addItem(item);
+                        /*player.getInventory().addItem(item);
                         topInv.setItem(37, null);
                         playerEquipment.setBoots(null);
                         gearReader.setGearStats(player);
                         openEquipmentInventory(player);
-                        displayWeapons.displayArmor(player);
+                        displayWeapons.displayArmor(player);*/
                         return;
                     }
                 }

@@ -15,6 +15,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class MysticaItem implements CommandExecutor {
 
     private final ProfileManager profileManager;
@@ -56,7 +58,20 @@ public class MysticaItem implements CommandExecutor {
             player.getInventory().addItem(new UnidentifiedItem(EquipmentSlot.WEAPON, 1, 2).build());
             player.getInventory().addItem(new UnidentifiedItem(EquipmentSlot.WEAPON, 1, 3).build());*/
 
-            profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new UnidentifiedItem(EquipmentSlot.WEAPON, 1, 1));
+            //profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new UnidentifiedItem(EquipmentSlot.WEAPON, 1, 1));
+
+            //profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new MysticaEquipment(EquipmentSlot.WEAPON,
+                    //profileManager.getAnyProfile(player).getPlayerClass(), 1));
+
+            profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new MysticaEquipment(EquipmentSlot.WEAPON,
+                    profileManager.getAnyProfile(player).getPlayerClass(), 1, MysticaEquipment.StatType.Attack, MysticaEquipment.StatType.Crit,
+                    List.of(1, 1), List.of(2, 2)));
+
+            profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new MysticaEquipment(EquipmentSlot.HEAD,
+                    profileManager.getAnyProfile(player).getPlayerClass(), 1, MysticaEquipment.StatType.Attack, MysticaEquipment.StatType.Crit));
+
+            profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new MysticaEquipment(EquipmentSlot.CHEST,
+                    profileManager.getAnyProfile(player).getPlayerClass(), 1));
 
             return true;
         }

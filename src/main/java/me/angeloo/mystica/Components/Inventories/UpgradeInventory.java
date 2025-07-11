@@ -128,9 +128,9 @@ public class UpgradeInventory implements Listener {
                 }
 
 
-                if(!itemManager.getEquipmentTypes().contains(item.getType())){
+                /*if(!itemManager.getEquipmentTypes().contains(item.getType())){
                     return;
-                }
+                }*/
 
                 //Bukkit.getLogger().info(name);
 

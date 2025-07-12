@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.Commands;
 
 import me.angeloo.mystica.Components.Items.MysticaEquipment;
+import me.angeloo.mystica.Components.Items.SoulStone;
 import me.angeloo.mystica.Components.Items.UnidentifiedItem;
 import me.angeloo.mystica.Managers.ItemManager;
 import me.angeloo.mystica.Managers.ProfileManager;
@@ -72,6 +73,9 @@ public class MysticaItem implements CommandExecutor {
 
             profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new MysticaEquipment(EquipmentSlot.CHEST,
                     profileManager.getAnyProfile(player).getPlayerClass(), 1));
+
+            profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new SoulStone());
+            profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new UnidentifiedItem(EquipmentSlot.WEAPON, 1, 1));
 
             return true;
         }

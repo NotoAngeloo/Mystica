@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Inventories;
 
+import me.angeloo.mystica.Components.Items.SoulStone;
 import me.angeloo.mystica.Managers.EquipmentManager;
 import me.angeloo.mystica.Managers.ItemManager;
 import me.angeloo.mystica.Mystica;
@@ -27,7 +28,7 @@ public class IdentifyInventory implements Listener {
     public IdentifyInventory(Mystica main){
         equipmentManager = main.getEquipmentManager();
         ItemManager manager = main.getItemManager();
-        exampleStone = manager.getSoulStone().getSoulStone();
+        exampleStone = new SoulStone().build();
     }
 
     //have the identify button show up, only when proper materials put in

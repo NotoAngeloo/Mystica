@@ -9,6 +9,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,16 @@ public class UnidentifiedItem extends MysticaItem{
         this.equipmentSlot = equipmentSlot;
         this.level = level;
         this.tier = tier;
+    }
+
+    @Override
+    public MysticaItemType type() {
+        return MysticaItemType.UNIDENTIFIED;
+    }
+
+    @Override
+    public String identifier() {
+        return "Unidentified " + equipmentSlot.name();
     }
 
     @Override
@@ -97,6 +108,22 @@ public class UnidentifiedItem extends MysticaItem{
 
     @Override
     public Map<String, Object> serialize() {
-        return null;
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("level", this.level);
+        map.put("tier", this.tier);
+        map.put("slot",this.equipmentSlot.name());
+        map.put("type",type().name());
+
+        return map;
+    }
+
+    public static UnidentifiedItem deserialize(Map<String, Object> map){
+
+        EquipmentSlot slot = EquipmentSlot.valueOf((String)map.get("slot"));
+        int level = (int) map.get("level");
+        int tier = (int) map.get("tier");
+
+        return new UnidentifiedItem(slot,level,tier);
     }
 }

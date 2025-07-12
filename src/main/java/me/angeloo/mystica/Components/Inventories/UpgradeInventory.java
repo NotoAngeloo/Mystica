@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Inventories;
 
+import me.angeloo.mystica.Components.Items.SoulStone;
 import me.angeloo.mystica.Managers.EquipmentManager;
 import me.angeloo.mystica.Managers.ItemManager;
 import me.angeloo.mystica.Mystica;
@@ -30,7 +31,7 @@ public class UpgradeInventory implements Listener {
         itemManager = main.getItemManager();
         equipmentManager = main.getEquipmentManager();
 
-        exampleStone = itemManager.getSoulStone().getSoulStone();
+        exampleStone = new SoulStone().build();
     }
 
     public Inventory openUpgradeInventory(Player player){

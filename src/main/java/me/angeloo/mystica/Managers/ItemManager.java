@@ -23,7 +23,6 @@ public class ItemManager {
     //private final List<Material> equipmentTypes;
 
 
-    private final SoulStone soulStone;
 
     private final AssassinEquipment assassinEquipment;
     private final ElementalistEquipment elementalistEquipment;
@@ -36,7 +35,6 @@ public class ItemManager {
 
     public ItemManager(){
 
-        soulStone = new SoulStone(this);
 
         assassinEquipment = new AssassinEquipment(this);
         elementalistEquipment = new ElementalistEquipment(this);
@@ -434,8 +432,6 @@ public class ItemManager {
         return ChatColor.of(Color.WHITE) +tooltip.toString();
     }
 
-
-    public SoulStone getSoulStone(){return soulStone;}
 
     public AssassinEquipment getAssassinEquipment() {
         return assassinEquipment;

@@ -76,6 +76,16 @@ public class MysticaEquipment extends MysticaItem{
 
 
     @Override
+    public MysticaItemType type() {
+        return MysticaItemType.EQUIPMENT;
+    }
+
+    @Override
+    public String identifier() {
+        return this.equipmentSlot.name();
+    }
+
+    @Override
     public ItemStack build(){
 
 
@@ -369,6 +379,7 @@ public class MysticaEquipment extends MysticaItem{
         map.put("slot",equipmentSlot.name());
         map.put("class",playerClass.name());
         map.put("level",level);
+        map.put("type",type().name());
 
         if(highStat != null){
             map.put("highstat",highStat.name());
@@ -388,6 +399,46 @@ public class MysticaEquipment extends MysticaItem{
 
 
         return map;
+    }
+
+    public static MysticaEquipment deserialize(Map<String, Object> map){
+
+        EquipmentSlot slot = EquipmentSlot.valueOf((String)map.get("slot"));
+        PlayerClass playerClass = PlayerClass.valueOf((String) map.get("class"));
+        int level = (int) map.get("level");
+        StatType highstat = null;
+        StatType lowstat = null;
+        List<Integer> skillOne = null;
+        List<Integer> skillTwo = null;
+
+
+        if(map.containsKey("highstat")){
+            highstat = StatType.valueOf((String) map.get("highstat"));
+        }
+
+        if(map.containsKey("lowstat")){
+            lowstat = StatType.valueOf((String) map.get("lowstat"));
+        }
+
+        if(map.containsKey("skill_roll_1")){
+            skillOne = (List<Integer>) map.get("skill_roll_1");
+        }
+
+        if(map.containsKey("skill_roll_2")){
+            skillTwo = (List<Integer>) map.get("skill_roll_2");
+
+        }
+
+        if(highstat == null){
+            return new MysticaEquipment(slot,playerClass,level);
+        }
+
+        if(skillOne == null){
+            return new MysticaEquipment(slot,playerClass,level,highstat,lowstat);
+        }
+
+
+        return new MysticaEquipment(slot,playerClass,level,highstat,lowstat,skillOne,skillTwo);
     }
 
 
@@ -462,6 +513,8 @@ public class MysticaEquipment extends MysticaItem{
         level--;
         return 10 * (1 + level);
     }
+
+
     private int getLowCrit(){
         return 5;
     }
@@ -481,28 +534,4 @@ public class MysticaEquipment extends MysticaItem{
         return this.playerClass;
     }
 
-    /*public EquipmentSlot getEquipmentSlot(){
-        return equipmentSlot;
-    }
-
-    public PlayerClass getPlayerClass() {
-        return playerClass;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public StatType getHighStat() {
-        return highStat;
-    }
-    public StatType getLowStat() {
-        return lowStat;
-    }
-
-    public Pair<Integer, Integer> getSkillOne(){
-        return skillOne;
-    }
-
-    public Pair<Integer, Integer> getSkillTwo(){return skillTwo;}*/
 }

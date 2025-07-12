@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Commands;
 
+import me.angeloo.mystica.Components.Items.SoulStone;
 import me.angeloo.mystica.Managers.ItemManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -53,7 +54,7 @@ public class GiveSoulStone implements CommandExecutor {
         int amount = Integer.parseInt(args[1]);
 
         boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
-        ItemStack stone = itemManager.getSoulStone().getSoulStone();
+        ItemStack stone = new SoulStone().build();
 
         if(!combatStatus){
             for(int i = 0; i < amount; i++){

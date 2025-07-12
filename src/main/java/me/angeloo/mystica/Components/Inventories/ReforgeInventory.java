@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Inventories;
 
+import me.angeloo.mystica.Components.Items.SoulStone;
 import me.angeloo.mystica.Managers.EquipmentManager;
 import me.angeloo.mystica.Managers.ItemManager;
 import me.angeloo.mystica.Mystica;
@@ -28,7 +29,7 @@ public class ReforgeInventory implements Listener {
     public ReforgeInventory(Mystica main){
         equipmentManager = new EquipmentManager(main);
         ItemManager manager = main.getItemManager();
-        exampleStone = manager.getSoulStone().getSoulStone();
+        exampleStone = new SoulStone().build();
     }
 
     public Inventory openReforgeInventory(Player player){

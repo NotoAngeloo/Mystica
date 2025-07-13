@@ -4,15 +4,14 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class BagItem extends MysticaItem{
 
 
     @Override
-    public MysticaItemType type() {
-        return MysticaItemType.OTHER;
+    public MysticaItemFormat format() {
+        return MysticaItemFormat.OTHER;
     }
 
     @Override

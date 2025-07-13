@@ -7,7 +7,7 @@ import java.util.Map;
 
 public abstract class MysticaItem {
 
-    public abstract MysticaItemType type();
+    public abstract MysticaItemFormat format();
 
     public abstract String identifier();
 
@@ -16,15 +16,32 @@ public abstract class MysticaItem {
     public abstract Map<String, Object> serialize();
 
     public static MysticaItem deserialize(Map<String, Object> map) {
-        MysticaItemType type = MysticaItemType.valueOf((String) map.get("type"));
 
-        switch (type) {
+        if(!map.containsKey("format")){
+
+            String itemName = (String) map.get("name");
+
+            switch (itemName){
+                case "Soul Stone":{
+                    return new SoulStone();
+                }
+                case "Bag":{
+                    return new BagItem();
+                }
+            }
+
+        }
+
+        MysticaItemFormat format = MysticaItemFormat.valueOf((String) map.get("format"));
+
+
+        switch (format) {
             case EQUIPMENT:
                 return MysticaEquipment.deserialize(map);
             case UNIDENTIFIED:
                 return UnidentifiedItem.deserialize(map);
             default:
-                throw new IllegalArgumentException("Unknown item type: " + type);
+                throw new IllegalArgumentException("Unknown item format: " + format);
         }
     }
 

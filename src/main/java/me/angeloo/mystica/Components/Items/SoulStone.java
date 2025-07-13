@@ -1,6 +1,5 @@
 package me.angeloo.mystica.Components.Items;
 
-import me.angeloo.mystica.Managers.ItemManager;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -9,7 +8,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,8 +22,8 @@ public class SoulStone extends MysticaItem{
 
 
     @Override
-    public MysticaItemType type() {
-        return MysticaItemType.OTHER;
+    public MysticaItemFormat format() {
+        return MysticaItemFormat.OTHER;
     }
 
     @Override

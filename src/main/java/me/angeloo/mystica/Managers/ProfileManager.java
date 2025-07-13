@@ -318,7 +318,30 @@ public class ProfileManager {
 
                                 MysticaBag bag = mysticaBagCollection.getBag(Integer.parseInt(bagNumber));
 
+                                for(String item : bagSection.getKeys(false)){
+                                    ConfigurationSection itemSection = bagSection.getConfigurationSection(item);
+
+                                    if(itemSection == null){
+                                        continue;
+                                    }
+
+                                    Map<String, Object> itemData = new HashMap<>();
+                                    for(String itemKey : itemSection.getKeys(false)){
+                                        itemData.put(itemKey, itemSection.get(itemKey));
+                                    }
+
+                                    itemData.put("name", itemSection.getName());
+
+
+                                    MysticaItem mysticaItem = MysticaItem.deserialize(itemData);
+
+                                    bag.addItem(mysticaItem);
+
+                                }
+
                                 //add items from config to this
+
+
 
                             }
                         }

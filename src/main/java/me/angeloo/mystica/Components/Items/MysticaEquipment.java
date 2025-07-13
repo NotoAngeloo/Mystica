@@ -5,8 +5,6 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.PlayerClass;
 import me.angeloo.mystica.Utility.EquipmentSlot;
 import net.md_5.bungee.api.ChatColor;
-import org.apache.commons.lang3.tuple.Pair;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -14,7 +12,6 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
@@ -76,8 +73,8 @@ public class MysticaEquipment extends MysticaItem{
 
 
     @Override
-    public MysticaItemType type() {
-        return MysticaItemType.EQUIPMENT;
+    public MysticaItemFormat format() {
+        return MysticaItemFormat.EQUIPMENT;
     }
 
     @Override
@@ -379,7 +376,7 @@ public class MysticaEquipment extends MysticaItem{
         map.put("slot",equipmentSlot.name());
         map.put("class",playerClass.name());
         map.put("level",level);
-        map.put("type",type().name());
+        map.put("format", format().name());
 
         if(highStat != null){
             map.put("highstat",highStat.name());

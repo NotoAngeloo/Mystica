@@ -29,8 +29,8 @@ public class UnidentifiedItem extends MysticaItem{
     }
 
     @Override
-    public MysticaItemType type() {
-        return MysticaItemType.UNIDENTIFIED;
+    public MysticaItemFormat format() {
+        return MysticaItemFormat.UNIDENTIFIED;
     }
 
     @Override
@@ -113,7 +113,7 @@ public class UnidentifiedItem extends MysticaItem{
         map.put("level", this.level);
         map.put("tier", this.tier);
         map.put("slot",this.equipmentSlot.name());
-        map.put("type",type().name());
+        map.put("format", format().name());
 
         return map;
     }

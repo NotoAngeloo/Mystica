@@ -4,6 +4,7 @@ public enum MysticaItemFormat {
 
     EQUIPMENT,
     UNIDENTIFIED,
+    STACKABLE,
     OTHER
 
 }

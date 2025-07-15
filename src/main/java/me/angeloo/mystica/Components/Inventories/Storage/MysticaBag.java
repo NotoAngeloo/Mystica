@@ -1,7 +1,10 @@
 package me.angeloo.mystica.Components.Inventories.Storage;
 
+import com.google.gson.Gson;
 import me.angeloo.mystica.Components.Items.BagItem;
+import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.Components.Items.MysticaItem;
+import me.angeloo.mystica.Components.Items.MysticaItemFormat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -11,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MysticaBag {
 
@@ -35,13 +39,12 @@ public class MysticaBag {
     public void displayBagItems(Player player){
 
 
-
         //depending on bag unlocks, give a bag in bottom
 
         for(int i = 0; i<8;i++){
 
             if(collection.getMysticaBagAmount()-1 >= i){
-                player.getInventory().setItem(i, new BagItem().build());
+                player.getInventory().setItem(i, new BagItem(1).build());
                 continue;
             }
 
@@ -74,6 +77,29 @@ public class MysticaBag {
         return this.bag;
     }
 
+    public void removeFromBag(MysticaItem item){
+
+        Map<String, Object> itemData = item.serialize();
+
+
+        for(MysticaItem bagItem : bag){
+
+            Map<String, Object> bagItemData = bagItem.serialize();
+
+            if(bagItemData == null){
+                continue;
+            }
+
+            if(bagItemData.equals(itemData)){
+                bag.remove(bagItem);
+                break;
+            }
+
+
+        }
+
+
+    }
 
 
 }

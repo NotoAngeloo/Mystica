@@ -7,7 +7,6 @@ import me.angeloo.mystica.Managers.CustomInventoryManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.*;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -36,7 +35,7 @@ public class InventoryEventListener implements Listener {
         this.main = main;
         profileManager = main.getProfileManager();
         equipmentManager = new EquipmentManager(main);
-        customInventoryManager = main.getInventoryIndexingManager();
+        customInventoryManager = main.getInventoryManager();
         displayWeapons = new DisplayWeapons(main);
         bossLevelInv = new BossLevelInv(main);
         locations = new Locations(main);

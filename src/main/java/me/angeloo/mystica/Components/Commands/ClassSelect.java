@@ -19,7 +19,7 @@ public class ClassSelect implements CommandExecutor {
 
     public ClassSelect(Mystica main){
         classSelectInventory = new ClassSelectInventory(main);
-        customInventoryManager = main.getInventoryIndexingManager();
+        customInventoryManager = main.getInventoryManager();
     }
 
     //figure out how to check player status before doing so, dont want them opening a dungeon

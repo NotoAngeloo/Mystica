@@ -330,7 +330,7 @@ public class ProfileManager {
                                         itemData.put(itemKey, itemSection.get(itemKey));
                                     }
 
-                                    itemData.put("name", itemSection.getName());
+                                    itemData.put("identifier", itemSection.getName());
 
 
                                     MysticaItem mysticaItem = MysticaItem.deserialize(itemData);

@@ -1,11 +1,15 @@
 package me.angeloo.mystica.Components.Items;
 
+import com.google.gson.Gson;
+import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.EquipmentSlot;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -79,6 +83,11 @@ public class UnidentifiedItem extends MysticaItem{
         lores.add(ChatColor.of(menuColor) + "Level: " + level);
         lores.add(ChatColor.of(menuColor) + "Tier: " + tier);
 
+        NamespacedKey key = new NamespacedKey(Mystica.getPlugin(), "unidentified_data");
+        Gson gson = new Gson();
+        String json = gson.toJson(this);
+        meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, json);
+
         if(tier==1){
             meta.setLore(lores);
             item.setItemMeta(meta);
@@ -100,6 +109,8 @@ public class UnidentifiedItem extends MysticaItem{
 
         lores.add(ChatColor.of(menuColor) + "Special Attribute");
         lores.add(ChatColor.of(rareColor) + "2x Skill Level 1-5");
+
+
 
         meta.setLore(lores);
         item.setItemMeta(meta);

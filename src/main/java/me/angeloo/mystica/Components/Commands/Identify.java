@@ -35,7 +35,7 @@ public class Identify implements CommandExecutor {
             //ItemStack equipment = player.getInventory().getItemInMainHand();
             //player.getInventory().addItem(equipmentManager.identify(player, equipment));
 
-            player.openInventory(identifyInventory.openIdentifyInventory(player));
+            identifyInventory.openIdentifyInventory(player);
 
             return true;
         }
@@ -53,7 +53,7 @@ public class Identify implements CommandExecutor {
                 sender.sendMessage("player not online");
                 return true;
             }
-            player.openInventory(identifyInventory.openIdentifyInventory(player));
+            identifyInventory.openIdentifyInventory(player);
             return true;
         }
 

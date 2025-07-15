@@ -8,22 +8,18 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static me.angeloo.mystica.Mystica.uncommonColor;
 
 
-public class SoulStone extends MysticaItem{
-
-    public SoulStone(){
-
-    }
+public class SoulStone extends StackableItem{
 
 
-    @Override
-    public MysticaItemFormat format() {
-        return MysticaItemFormat.OTHER;
+    public SoulStone(int amount) {
+        super(amount);
     }
 
     @Override
@@ -31,27 +27,37 @@ public class SoulStone extends MysticaItem{
         return "Soul Stone";
     }
 
+
+
     @Override
-    public ItemStack build() {
+    public Material getBaseMaterial(){
+        return Material.LAPIS_LAZULI;
+    }
 
-        ItemStack item = new ItemStack(Material.LAPIS_LAZULI);
-        ItemMeta meta = item.getItemMeta();
-
-        assert meta != null;
-        meta.setDisplayName(ChatColor.of(uncommonColor) + "Soul Stone");
-
+    @Override
+    public List<String> getLore() {
         List<String> lores = new ArrayList<>();
         lores.add(ChatColor.of(Color.WHITE) + "Made from condensed mana force");
         lores.add("");
         lores.add(ChatColor.of(Color.WHITE) + "A useful material for enhancing equipment");
-        meta.setLore(lores);
-        item.setItemMeta(meta);
-
-        return item;
+        return lores;
     }
 
     @Override
-    public Map<String, Object> serialize() {
-        return null;
+    public String getDisplayName() {
+        return ChatColor.of(uncommonColor) + "Soul Stone";
     }
+
+    @Override
+    public int getCustomModelData() {
+        return 0;
+    }
+
+
+    public static SoulStone deserialize(Map<String, Object> data){
+        int amount = (int) data.getOrDefault("amount", 1);
+        return new SoulStone(amount);
+    }
+
+
 }

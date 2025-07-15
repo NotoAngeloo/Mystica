@@ -40,8 +40,6 @@ public class MysticaEquipment extends MysticaItem{
     private List<Integer> skillOne;
     private List<Integer> skillTwo;
 
-    //private Pair<Integer, Integer> skillOne;
-    //private Pair<Integer, Integer> skillTwo;
 
     //Tier 1
     public MysticaEquipment(EquipmentSlot equipmentSlot, PlayerClass playerClass, int level){
@@ -69,6 +67,99 @@ public class MysticaEquipment extends MysticaItem{
         this.lowStat = lowStat;
         this.skillOne = skillOne;
         this.skillTwo = skillTwo;
+    }
+
+    //generate a completely random one
+    public MysticaEquipment(EquipmentSlot equipmentSlot, PlayerClass playerClass, int level, int tier){
+
+        this.equipmentSlot = equipmentSlot;
+        this.playerClass = playerClass;
+        this.level = level;
+
+        if(tier == 1){
+            return;
+        }
+
+        List<StatType> availableStats = new ArrayList<>();
+        availableStats.add(StatType.Attack);
+        availableStats.add(StatType.Health);
+        availableStats.add(StatType.Defense);
+        availableStats.add(StatType.Magic_Defense);
+        availableStats.add(StatType.Crit);
+        Collections.shuffle(availableStats);
+
+        this.highStat = availableStats.get(0);
+        this.lowStat = availableStats.get(1);
+
+        if(tier == 2){
+            return;
+        }
+
+        int statAmount = new Random().nextInt(5) + 1;
+        int statAmount2 = new Random().nextInt(5) + 1;
+        int skillNumber = new Random().nextInt(8) + 1;
+        int skillNumber2 = new Random().nextInt(8) + 1;
+
+        this.skillOne = List.of(skillNumber, statAmount);
+        this.skillTwo = List.of(skillNumber2, statAmount2);
+    }
+
+    //generate one with random stat types
+    public MysticaEquipment(EquipmentSlot equipmentSlot, PlayerClass playerClass, int level, int tier, List<Integer> skillOne, List<Integer> skillTwo){
+
+        this.equipmentSlot = equipmentSlot;
+        this.playerClass = playerClass;
+        this.level = level;
+
+        if(tier == 1){
+            return;
+        }
+
+        List<StatType> availableStats = new ArrayList<>();
+        availableStats.add(StatType.Attack);
+        availableStats.add(StatType.Health);
+        availableStats.add(StatType.Defense);
+        availableStats.add(StatType.Magic_Defense);
+        availableStats.add(StatType.Crit);
+        Collections.shuffle(availableStats);
+
+        this.highStat = availableStats.get(0);
+        this.lowStat = availableStats.get(1);
+
+        if(tier == 2){
+            return;
+        }
+
+
+        this.skillOne = skillOne;
+        this.skillTwo = skillTwo;
+    }
+
+    //generate one with random skill levels
+    public MysticaEquipment(EquipmentSlot equipmentSlot, PlayerClass playerClass, int level, int tier, StatType highStat, StatType lowStat){
+
+        this.equipmentSlot = equipmentSlot;
+        this.playerClass = playerClass;
+        this.level = level;
+
+        if(tier == 1){
+            return;
+        }
+
+        this.highStat = highStat;
+        this.lowStat = lowStat;
+
+        if(tier == 2){
+            return;
+        }
+
+        int statAmount = new Random().nextInt(5) + 1;
+        int statAmount2 = new Random().nextInt(5) + 1;
+        int skillNumber = new Random().nextInt(8) + 1;
+        int skillNumber2 = new Random().nextInt(8) + 1;
+
+        this.skillOne = List.of(skillNumber, statAmount);
+        this.skillTwo = List.of(skillNumber2, statAmount2);
     }
 
 
@@ -350,8 +441,8 @@ public class MysticaEquipment extends MysticaItem{
             return item;
         }
 
-        lores.add(ChatColor.of(uncommonColor) + this.highStat.toString().replaceAll("_","") + " + " + getHighStatAmount(this.highStat, level));
-        lores.add(ChatColor.of(uncommonColor) + this.lowStat.toString().replaceAll("_","") + " + " + getLowStatAmount(this.lowStat, level));
+        lores.add(ChatColor.of(uncommonColor) + this.highStat.toString().replaceAll("_"," ") + " + " + getHighStatAmount(this.highStat, level));
+        lores.add(ChatColor.of(uncommonColor) + this.lowStat.toString().replaceAll("_"," ") + " + " + getLowStatAmount(this.lowStat, level));
 
         if(this.skillOne == null){
             meta.setLore(lores);
@@ -522,6 +613,20 @@ public class MysticaEquipment extends MysticaItem{
     public int getLevel(){
         return this.level;
     }
+    public int getTier(){
+
+        int tier = 1;
+
+        if(highStat != null){
+            tier = 2;
+        }
+
+        if(skillOne != null){
+            tier = 3;
+        }
+
+        return tier;
+    }
 
     public EquipmentSlot getEquipmentSlot(){
         return this.equipmentSlot;
@@ -530,5 +635,6 @@ public class MysticaEquipment extends MysticaItem{
     public PlayerClass getPlayerClass(){
         return this.playerClass;
     }
+
 
 }

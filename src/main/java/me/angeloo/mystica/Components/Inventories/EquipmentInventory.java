@@ -1,9 +1,9 @@
 package me.angeloo.mystica.Components.Inventories;
 
 import com.google.gson.Gson;
+import me.angeloo.mystica.Components.Inventories.Storage.MysticaBag;
 import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
-import me.angeloo.mystica.Managers.EquipmentManager;
 import me.angeloo.mystica.Managers.CustomInventoryManager;
 import me.angeloo.mystica.Managers.ItemManager;
 import me.angeloo.mystica.Managers.ProfileManager;
@@ -41,7 +41,7 @@ public class EquipmentInventory implements Listener {
 
     public EquipmentInventory(Mystica main) {
         profileManager = main.getProfileManager();
-        customInventoryManager = main.getInventoryIndexingManager();
+        customInventoryManager = main.getInventoryManager();
         gearReader = main.getGearReader();
         displayWeapons = new DisplayWeapons(main);
         itemManager = main.getItemManager();
@@ -213,6 +213,7 @@ public class EquipmentInventory implements Listener {
             Inventory bottomInv = event.getView().getBottomInventory();
 
             PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
+            MysticaBag currentBag = profileManager.getAnyProfile(player).getMysticaBagCollection().getBag(customInventoryManager.getBagIndex(player));
 
             if(event.getClickedInventory() == bottomInv){
 
@@ -234,6 +235,7 @@ public class EquipmentInventory implements Listener {
                 }
 
 
+                //is a mystica item
                 NamespacedKey key = new NamespacedKey(Mystica.getPlugin(), "equipment_data");
                 if(!item.getItemMeta().getPersistentDataContainer().has(key, PersistentDataType.STRING) ){
                     return;
@@ -243,8 +245,6 @@ public class EquipmentInventory implements Listener {
 
                 Gson gson = new Gson();
                 MysticaEquipment mysticaEquipment = gson.fromJson(json, MysticaEquipment.class);
-
-                //Bukkit.getLogger().info(String.valueOf(mysticaEquipment.getEquipmentSlot()));
 
 
                 //check the class of the equipment
@@ -256,7 +256,6 @@ public class EquipmentInventory implements Listener {
                 }
 
                 EquipmentSlot slot = mysticaEquipment.getEquipmentSlot();
-
 
                 switch (slot){
                     case WEAPON:{
@@ -270,10 +269,12 @@ public class EquipmentInventory implements Listener {
                             MysticaEquipment oldEquipment = gson.fromJson(oldJson, MysticaEquipment.class);
 
                             //add this to bag
+                            currentBag.addItem(oldEquipment);
+
                         }
 
                         //remove new item from bag
-                        //player.getInventory().remove(item);
+                        currentBag.removeFromBag(mysticaEquipment);
 
                         //equip the new thing
                         playerEquipment.setWeapon(mysticaEquipment);
@@ -294,10 +295,12 @@ public class EquipmentInventory implements Listener {
                             MysticaEquipment oldEquipment = gson.fromJson(oldJson, MysticaEquipment.class);
 
                             //add this to bag
+                            currentBag.addItem(oldEquipment);
+
                         }
 
                         //remove new item from bag
-                        //player.getInventory().remove(item);
+                        currentBag.removeFromBag(mysticaEquipment);
 
                         //equip the new thing
                         playerEquipment.setHelmet(mysticaEquipment);
@@ -318,10 +321,12 @@ public class EquipmentInventory implements Listener {
                             MysticaEquipment oldEquipment = gson.fromJson(oldJson, MysticaEquipment.class);
 
                             //add this to bag
+                            currentBag.addItem(oldEquipment);
+
                         }
 
                         //remove new item from bag
-                        //player.getInventory().remove(item);
+                        currentBag.removeFromBag(mysticaEquipment);
 
                         //equip the new thing
                         playerEquipment.setChestPlate(mysticaEquipment);
@@ -342,10 +347,12 @@ public class EquipmentInventory implements Listener {
                             MysticaEquipment oldEquipment = gson.fromJson(oldJson, MysticaEquipment.class);
 
                             //add this to bag
+                            currentBag.addItem(oldEquipment);
+
                         }
 
                         //remove new item from bag
-                        //player.getInventory().remove(item);
+                        currentBag.removeFromBag(mysticaEquipment);
 
                         //equip the new thing
                         playerEquipment.setLeggings(mysticaEquipment);
@@ -366,10 +373,12 @@ public class EquipmentInventory implements Listener {
                             MysticaEquipment oldEquipment = gson.fromJson(oldJson, MysticaEquipment.class);
 
                             //add this to bag
+                            currentBag.addItem(oldEquipment);
+
                         }
 
                         //remove new item from bag
-                        //player.getInventory().remove(item);
+                        currentBag.removeFromBag(mysticaEquipment);
 
                         //equip the new thing
                         playerEquipment.setBoots(mysticaEquipment);
@@ -399,35 +408,56 @@ public class EquipmentInventory implements Listener {
                 ItemMeta meta = item.getItemMeta();
 
                 assert meta != null;
-                if(!meta.hasDisplayName()){
+                NamespacedKey key = new NamespacedKey(Mystica.getPlugin(), "equipment_data");
+                if(!item.getItemMeta().getPersistentDataContainer().has(key, PersistentDataType.STRING) ){
                     return;
                 }
 
+                String json = meta.getPersistentDataContainer().get(key, PersistentDataType.STRING);
+
+                Gson gson = new Gson();
+                MysticaEquipment mysticaEquipment = gson.fromJson(json, MysticaEquipment.class);
+
+
                 switch (event.getSlot()){
                     case 18:{
-
+                        playerEquipment.setWeapon(null);
+                        currentBag.addItem(mysticaEquipment);
+                        gearReader.setGearStats(player);
+                        displayWeapons.displayArmor(player);
+                        openEquipmentInventory(player);
                         return;
                     }
                     case 10:{
-
+                        playerEquipment.setHelmet(null);
+                        currentBag.addItem(mysticaEquipment);
+                        gearReader.setGearStats(player);
+                        displayWeapons.displayArmor(player);
+                        openEquipmentInventory(player);
                         return;
                     }
                     case 19:{
-
+                        playerEquipment.setChestPlate(null);
+                        currentBag.addItem(mysticaEquipment);
+                        gearReader.setGearStats(player);
+                        displayWeapons.displayArmor(player);
+                        openEquipmentInventory(player);
                         return;
                     }
                     case 28:{
-
+                        playerEquipment.setLeggings(null);
+                        currentBag.addItem(mysticaEquipment);
+                        gearReader.setGearStats(player);
+                        displayWeapons.displayArmor(player);
+                        openEquipmentInventory(player);
                         return;
                     }
                     case 37:{
-                        /*player.getInventory().addItem(item);
-                        topInv.setItem(37, null);
                         playerEquipment.setBoots(null);
+                        currentBag.addItem(mysticaEquipment);
                         gearReader.setGearStats(player);
+                        displayWeapons.displayArmor(player);
                         openEquipmentInventory(player);
-                        displayWeapons.displayArmor(player);*/
-                        return;
                     }
                 }
 

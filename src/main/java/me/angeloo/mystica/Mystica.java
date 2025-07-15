@@ -6,6 +6,9 @@ import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Commands.*;
 import me.angeloo.mystica.Components.Inventories.*;
+import me.angeloo.mystica.Components.Items.BagItem;
+import me.angeloo.mystica.Components.Items.SoulStone;
+import me.angeloo.mystica.Components.Items.StackableItemRegistry;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.NMS.Common.PacketInterface;
 import me.angeloo.mystica.NMS.NMSVersion;
@@ -36,8 +39,6 @@ public final class Mystica extends JavaPlugin{
     private static Mystica plugin;
 
     private PacketInterface packetManager;
-
-    private ProtocolManager protocolManager;
 
     private CreaturesAndCharactersManager creaturesAndCharactersManager;
 
@@ -120,8 +121,8 @@ public final class Mystica extends JavaPlugin{
 
         this.packetManager = NMSVersion.getCurrentVersion().getVersionFactory().create();
 
-
-        protocolManager = ProtocolLibrary.getProtocolManager();
+        StackableItemRegistry.register("SOUL STONE", SoulStone::deserialize);
+        StackableItemRegistry.register("BAG", BagItem::deserialize);
 
 
         pathingManager = new PathingManager(this);
@@ -218,7 +219,6 @@ public final class Mystica extends JavaPlugin{
         getCommand("SavePaths").setExecutor(new SavePaths(this));
         getCommand("Cosmetic").setExecutor(new Cosmetic(this));
         getCommand("BossLevel").setExecutor(new BossLevel(this));
-        getCommand("GiveSoulStone").setExecutor(new GiveSoulStone(this));
         getCommand("HitValidCheck").setExecutor(new HitValidCheck(this));
         getCommand("SetCaution").setExecutor(new SetCaution(this));
         getCommand("SignalNearbyNpc").setExecutor(new SignalNearbyNpc());
@@ -383,7 +383,7 @@ public final class Mystica extends JavaPlugin{
         return pveChecker;
     }
 
-    public CustomInventoryManager getInventoryIndexingManager(){
+    public CustomInventoryManager getInventoryManager(){
         return customInventoryManager;
     }
 
@@ -433,8 +433,6 @@ public final class Mystica extends JavaPlugin{
         return hudManager;
     }
 
-
-    public ProtocolManager getProtocolManager(){return protocolManager;}
 
 
     @NotNull

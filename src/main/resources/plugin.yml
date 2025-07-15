@@ -3,7 +3,6 @@ version: '${project.version}'
 main: me.angeloo.mystica.Mystica
 depend:
   - Parties
-  - ProtocolLib
   - PlaceholderAPI
   - MythicDungeons
   - TAB
@@ -107,10 +106,6 @@ commands:
   BossLevel:
     description: lets mms open boss level inv
     usage: /BossLevel
-    permission: developer
-  GiveSoulStone:
-    description: lets devs give soulstones
-    usage: /GiveSoulStone <player> <amount>
     permission: developer
   MysticaQuest:
     description: opens quest books

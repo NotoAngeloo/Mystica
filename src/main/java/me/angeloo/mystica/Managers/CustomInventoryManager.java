@@ -10,7 +10,6 @@ public class CustomInventoryManager {
 
     private final Map<UUID, Integer> bagIndex = new HashMap<>();
     private final Map<UUID, Integer> classIndex = new HashMap<>();
-    private final Map<UUID, Integer> questIndex = new HashMap<>();
 
     public CustomInventoryManager(){
     }

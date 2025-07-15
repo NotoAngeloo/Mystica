@@ -17,21 +17,6 @@ public abstract class MysticaItem {
 
     public static MysticaItem deserialize(Map<String, Object> map) {
 
-        if(!map.containsKey("format")){
-
-            String itemName = (String) map.get("name");
-
-            switch (itemName){
-                case "Soul Stone":{
-                    return new SoulStone();
-                }
-                case "Bag":{
-                    return new BagItem();
-                }
-            }
-
-        }
-
         MysticaItemFormat format = MysticaItemFormat.valueOf((String) map.get("format"));
 
 
@@ -40,6 +25,8 @@ public abstract class MysticaItem {
                 return MysticaEquipment.deserialize(map);
             case UNIDENTIFIED:
                 return UnidentifiedItem.deserialize(map);
+            case STACKABLE:
+                return StackableItemRegistry.deserialize(map);
             default:
                 throw new IllegalArgumentException("Unknown item format: " + format);
         }

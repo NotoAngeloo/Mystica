@@ -24,7 +24,7 @@ public class ClassSelectInventory implements Listener {
 
     public ClassSelectInventory(Mystica main){
         this.main = main;
-        customInventoryManager = main.getInventoryIndexingManager();
+        customInventoryManager = main.getInventoryManager();
         classSetter = main.getClassSetter();
     }
 

@@ -1,10 +1,7 @@
 package me.angeloo.mystica.Components.Inventories.Storage;
 
 import com.google.gson.Gson;
-import me.angeloo.mystica.Components.Items.BagItem;
-import me.angeloo.mystica.Components.Items.MysticaEquipment;
-import me.angeloo.mystica.Components.Items.MysticaItem;
-import me.angeloo.mystica.Components.Items.MysticaItemFormat;
+import me.angeloo.mystica.Components.Items.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -64,7 +61,41 @@ public class MysticaBag {
     }
 
     public void addItem(MysticaItem mysticaItem){
+
+        //check if stackable first
+        if(mysticaItem.format().equals(MysticaItemFormat.STACKABLE)){
+
+            Map<String, Object> data = mysticaItem.serialize();
+            int addAmount = (int) data.getOrDefault("amount", 0);
+
+            //check if player has already
+            MysticaItem alreadyItem = null;
+            for(MysticaItem bagItem : bag){
+
+                if(bagItem.identifier().equals(mysticaItem.identifier())){
+                    alreadyItem = bagItem;
+                    break;
+                }
+
+            }
+
+            if(alreadyItem == null){
+                bag.add(mysticaItem);
+                return;
+            }
+
+            Map<String, Object> alreadyData = alreadyItem.serialize();
+            int alreadyAmount = (int) alreadyData.getOrDefault("amount", 0);
+
+            if(alreadyItem instanceof StackableItem stackableItem){
+                stackableItem.setAmount(alreadyAmount + addAmount);
+            }
+
+            return;
+        }
+
         bag.add(mysticaItem);
+
     }
 
 

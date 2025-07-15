@@ -17,7 +17,7 @@ public class StackableItemRegistry {
         Function<Map<String, Object>, StackableItem> deserializer = registry.get(identifier.toUpperCase());
 
         if(deserializer == null){
-            throw new IllegalArgumentException("Unknown stackable item identifier");
+            throw new IllegalArgumentException("Unknown stackable item identifier: " + identifier);
         }
 
         return deserializer.apply(data);

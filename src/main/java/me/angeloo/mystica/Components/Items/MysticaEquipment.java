@@ -569,7 +569,6 @@ public class MysticaEquipment extends MysticaItem{
         }
         return 0;
     }
-
     public int getLowStatAmount(StatType statType, int level){
         switch (statType) {
             case Attack, Defense, Magic_Defense -> {
@@ -584,6 +583,7 @@ public class MysticaEquipment extends MysticaItem{
         }
         return 0;
     }
+
 
     private int getLowAttackOrDefense(int level){
         level--;
@@ -634,6 +634,14 @@ public class MysticaEquipment extends MysticaItem{
 
     public PlayerClass getPlayerClass(){
         return this.playerClass;
+    }
+
+    public List<Integer> getSkillOne(){
+        return skillOne;
+    }
+
+    public List<Integer> getSkillTwo(){
+        return skillTwo;
     }
 
 

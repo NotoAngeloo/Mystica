@@ -32,7 +32,7 @@ public class Reforge implements CommandExecutor {
 
             Player player = (Player) sender;
 
-            player.openInventory(reforgeInventory.openReforgeInventory(player));
+            reforgeInventory.openReforgeInventory(player);
 
             return true;
         }
@@ -51,7 +51,7 @@ public class Reforge implements CommandExecutor {
                 return true;
             }
 
-            player.openInventory(reforgeInventory.openReforgeInventory(player));
+            reforgeInventory.openReforgeInventory(player);
             return true;
         }
 

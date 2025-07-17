@@ -108,12 +108,12 @@ public class MysticaBag {
         return this.bag;
     }
 
-    public void removeFromBag(MysticaItem item){
+    public boolean removeFromBag(MysticaItem item){
 
         Map<String, Object> itemData = item.serialize();
 
-
         for(MysticaItem bagItem : bag){
+
 
             Map<String, Object> bagItemData = bagItem.serialize();
 
@@ -123,13 +123,62 @@ public class MysticaBag {
 
             if(bagItemData.equals(itemData)){
                 bag.remove(bagItem);
-                break;
+                return true;
+            }
+
+        }
+
+        return false;
+    }
+
+    public int removeAnAmountOfStackables(StackableItem item, int toRemove){
+
+        int successfullyRemoved = 0;
+
+
+        for(MysticaItem bagItem : bag){
+
+            if(bagItem instanceof StackableItem stackableItem){
+
+                if(item.identifier().equals(bagItem.identifier())){
+                    int current = stackableItem.getAmount();
+
+                    if(current <= toRemove){
+                        bag.remove(bagItem);
+                        successfullyRemoved += current;
+                        return successfullyRemoved;
+                    }
+
+                    stackableItem.setAmount(current-toRemove);
+                    return toRemove;
+                }
+
+            }
+
+        }
+
+        return successfullyRemoved;
+    }
+
+
+    public int getSoulStoneAmount(){
+
+        int amount = 0;
+
+        for(MysticaItem item : bag){
+
+            if(item instanceof StackableItem stackableItem){
+                if(!item.identifier().equalsIgnoreCase("soul stone")){
+                    continue;
+                }
+
+                amount += stackableItem.getAmount();
             }
 
 
         }
 
-
+        return amount;
     }
 
 

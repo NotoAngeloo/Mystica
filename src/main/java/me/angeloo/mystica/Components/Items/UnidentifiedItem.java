@@ -137,4 +137,14 @@ public class UnidentifiedItem extends MysticaItem{
 
         return new UnidentifiedItem(slot,level,tier);
     }
+
+    public int getLevel(){
+        return level;
+    }
+
+    public int getTier(){
+        return tier;
+    }
+
+    public EquipmentSlot getEquipmentSlot(){return equipmentSlot;}
 }

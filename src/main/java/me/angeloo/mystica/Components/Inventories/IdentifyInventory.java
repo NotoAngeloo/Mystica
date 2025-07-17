@@ -2,7 +2,10 @@ package me.angeloo.mystica.Components.Inventories;
 
 import com.google.gson.Gson;
 import me.angeloo.mystica.Components.Inventories.Storage.MysticaBag;
+import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.Items.MysticaEquipment;
+import me.angeloo.mystica.Components.Items.MysticaItem;
+import me.angeloo.mystica.Components.Items.SoulStone;
 import me.angeloo.mystica.Components.Items.UnidentifiedItem;
 import me.angeloo.mystica.Managers.CustomInventoryManager;
 import me.angeloo.mystica.Managers.ProfileManager;
@@ -18,6 +21,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class IdentifyInventory implements Listener {
 
@@ -63,7 +69,10 @@ public class IdentifyInventory implements Listener {
         Inventory topInv = event.getView().getTopInventory();
         Inventory bottomInv = event.getView().getBottomInventory();
 
-        MysticaBag currentBag = profileManager.getAnyProfile(player).getMysticaBagCollection().getBag(inventoryManager.getBagIndex(player));
+        int slot = event.getSlot();
+
+        MysticaBagCollection collection = profileManager.getAnyProfile(player).getMysticaBagCollection();
+        MysticaBag currentBag = collection.getBag(inventoryManager.getBagIndex(player));
 
         if(event.getClickedInventory() == bottomInv){
 
@@ -99,17 +108,94 @@ public class IdentifyInventory implements Listener {
 
             topInv.setItem(20, item);
 
+            int cost = getRequired(unidentifiedItem);
+
+            SoulStone soulStone = new SoulStone(cost);
+
+            topInv.setItem(24, soulStone.build());
+
             return;
+        }
+
+        if(event.getClickedInventory() == topInv){
+
+            List<Integer> identifySlots = new ArrayList<>();
+            identifySlots.add(53);
+            identifySlots.add(52);
+            identifySlots.add(51);
+
+
+            if(identifySlots.contains(slot)){
+
+                //check if has enough
+
+                if(topInv.getItem(20) == null){
+                    return;
+                }
+
+                ItemStack item = topInv.getItem(20);
+
+                assert item != null;
+                ItemMeta meta = item.getItemMeta();
+
+                assert meta != null;
+                if(!meta.hasDisplayName()){
+                    return;
+                }
+
+                //is unidentified item
+                NamespacedKey key = new NamespacedKey(Mystica.getPlugin(), "unidentified_data");
+                if(!item.getItemMeta().getPersistentDataContainer().has(key, PersistentDataType.STRING) ){
+                    return;
+                }
+
+                String json = meta.getPersistentDataContainer().get(key, PersistentDataType.STRING);
+
+                Gson gson = new Gson();
+                UnidentifiedItem unidentifiedItem = gson.fromJson(json, UnidentifiedItem.class);
+
+                int required = getRequired(unidentifiedItem);
+
+                int amount = profileManager.getAnyProfile(player).getMysticaBagCollection().getSoulStoneAmount();
+
+                if(required > amount){
+
+                    //player doesn't have enough
+
+                    return;
+                }
+
+                //remove blueprint and stones from bag
+                collection.removeItemsFromMultipleBags(unidentifiedItem);
+                collection.removeItemsFromMultipleBags(new SoulStone(required));
+
+                MysticaEquipment newItem = new MysticaEquipment(
+                        unidentifiedItem.getEquipmentSlot(),
+                        profileManager.getAnyProfile(player).getPlayerClass(),
+                        unidentifiedItem.getLevel(),
+                        unidentifiedItem.getTier());
+
+                currentBag.addItem(newItem);
+
+                openIdentifyInventory(player);
+            }
+
+
         }
 
     }
 
 
 
-    private int getRequired(MysticaEquipment equipment){
+    private int getRequired(UnidentifiedItem item){
 
-        int level = equipment.getLevel();
-        int tier = equipment.getTier();
+        int tier = item.getTier();
+
+        if(tier == 1){
+            return 0;
+        }
+
+        int level = item.getLevel();
 
         return level * ((tier * 3) - 2);
     }

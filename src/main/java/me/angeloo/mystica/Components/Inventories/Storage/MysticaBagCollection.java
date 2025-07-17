@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.Inventories.Storage;
 
 import me.angeloo.mystica.Components.Items.MysticaItem;
+import me.angeloo.mystica.Components.Items.StackableItem;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -78,6 +79,50 @@ public class MysticaBagCollection {
 
 
         }
+    }
+
+    public void removeItemsFromMultipleBags(MysticaItem item){
+
+        if(item instanceof StackableItem stackableItem){
+
+            int amountToRemove = stackableItem.getAmount();
+
+            for(MysticaBag bag : bags){
+
+                int removed = bag.removeAnAmountOfStackables(stackableItem, amountToRemove);
+
+                amountToRemove -= removed;
+
+                if(amountToRemove == 0){
+                    break;
+                }
+
+            }
+
+            return;
+        }
+
+        for(MysticaBag bag : bags){
+
+            if(bag.removeFromBag(item)){
+                break;
+            }
+
+        }
+
+    }
+
+    public int getSoulStoneAmount(){
+
+        int amount = 0;
+
+        for(MysticaBag bag : getBags()){
+
+            amount += bag.getSoulStoneAmount();
+
+        }
+
+        return amount;
     }
 
 }

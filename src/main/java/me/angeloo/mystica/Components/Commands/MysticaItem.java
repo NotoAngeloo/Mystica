@@ -72,6 +72,7 @@ public class MysticaItem implements CommandExecutor {
             profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new UnidentifiedItem(EquipmentSlot.WEAPON, 1, 2));
             profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new UnidentifiedItem(EquipmentSlot.WEAPON, 1, 3));
 
+
             return true;
         }
 

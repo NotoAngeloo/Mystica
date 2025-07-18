@@ -127,13 +127,13 @@ public class ReforgeInventory implements Listener {
 
         if(event.getClickedInventory() == topInv){
 
-            List<Integer> identifySlots = new ArrayList<>();
-            identifySlots.add(53);
-            identifySlots.add(52);
-            identifySlots.add(51);
+            List<Integer> reforgeSlots = new ArrayList<>();
+            reforgeSlots.add(53);
+            reforgeSlots.add(52);
+            reforgeSlots.add(51);
 
 
-            if(identifySlots.contains(slot)){
+            if(reforgeSlots.contains(slot)){
 
                 //check if has enough
 

@@ -160,11 +160,21 @@ public class ProfileManager {
                 config.set(id + ".milestones." + entry.getKey(), entry.getValue());
             }
 
+
+
             for(int i = 0; i<collection.getMysticaBagAmount(); i++){
                 MysticaBag bag = collection.getBag(i);
+
                 config.createSection(id + ".bag." + i);
 
+                List<Map<String, Object>> serializedItems = new ArrayList<>();
                 for(MysticaItem item : bag.getBag()){
+                    serializedItems.add(item.serialize());
+                }
+
+                config.set(id + ".bag." + i, serializedItems);
+
+                /*for(MysticaItem item : bag.getBag()){
 
                     config.createSection(id + ".bag." + i + "." + item.identifier());
 
@@ -179,11 +189,10 @@ public class ProfileManager {
                     }
 
 
-                }
+                }*/
 
 
             }
-
 
             profileFileWriter.saveProfileFile(uuid, config);
         }
@@ -307,44 +316,31 @@ public class ProfileManager {
                     //depending on the bags, add items???
                     ConfigurationSection allBagsSection = config.getConfigurationSection(id + ".bag");
                     if(allBagsSection != null){
+
                         for(String bagNumber : allBagsSection.getKeys(false)){
-                            ConfigurationSection bagSection = config.getConfigurationSection(id + ".bag" + "." + bagNumber);
-                            if(bagSection != null){
-                                //check the number
 
-                                if(Integer.parseInt(bagNumber) > mysticaBagCollection.getMysticaBagAmount()-1){
-                                    mysticaBagCollection.addBag();
-                                }
-
-                                MysticaBag bag = mysticaBagCollection.getBag(Integer.parseInt(bagNumber));
-
-                                for(String item : bagSection.getKeys(false)){
-                                    ConfigurationSection itemSection = bagSection.getConfigurationSection(item);
-
-                                    if(itemSection == null){
-                                        continue;
-                                    }
-
-                                    Map<String, Object> itemData = new HashMap<>();
-                                    for(String itemKey : itemSection.getKeys(false)){
-                                        itemData.put(itemKey, itemSection.get(itemKey));
-                                    }
-
-                                    itemData.put("identifier", itemSection.getName());
-
-
-                                    MysticaItem mysticaItem = MysticaItem.deserialize(itemData);
-
-                                    bag.addItem(mysticaItem);
-
-                                }
-
-                                //add items from config to this
-
-
-
+                            if(Integer.parseInt(bagNumber) > mysticaBagCollection.getMysticaBagAmount()-1){
+                                mysticaBagCollection.addBag();
                             }
+
+                            MysticaBag bag = mysticaBagCollection.getBag(Integer.parseInt(bagNumber));
+
+                            List<Map<?,?>> serializedItems = config.getMapList(id + ".bag." + bagNumber);
+
+
+                            for(Map<?,?> map : serializedItems){
+                                Map<String, Object> data = new HashMap<>();
+                                for(Map.Entry<?,?> entry :  map.entrySet()){
+                                    data.put(entry.getKey().toString(), entry.getValue());
+                                }
+
+                                MysticaItem item = MysticaItem.deserialize(data);
+
+                                bag.addItem(item);
+                            }
+
                         }
+
 
                     }
 

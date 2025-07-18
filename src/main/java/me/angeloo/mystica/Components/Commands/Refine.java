@@ -34,7 +34,7 @@ public class Refine implements CommandExecutor {
             Player player = (Player) sender;
 
 
-            player.openInventory(refineInventory.openRefineInventory(player));
+            refineInventory.openRefineInventory(player);
 
             return true;
         }

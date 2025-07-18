@@ -464,6 +464,7 @@ public class MysticaEquipment extends MysticaItem{
     @Override
     public Map<String, Object> serialize(){
         Map<String, Object> map = new HashMap<>();
+        map.put("identifier",identifier());
         map.put("slot",equipmentSlot.name());
         map.put("class",playerClass.name());
         map.put("level",level);
@@ -634,6 +635,14 @@ public class MysticaEquipment extends MysticaItem{
 
     public PlayerClass getPlayerClass(){
         return this.playerClass;
+    }
+
+    public StatType getHighStat(){
+        return this.highStat;
+    }
+
+    public StatType getLowStat(){
+        return this.lowStat;
     }
 
     public List<Integer> getSkillOne(){

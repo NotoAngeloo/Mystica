@@ -121,6 +121,7 @@ public class UnidentifiedItem extends MysticaItem{
     public Map<String, Object> serialize() {
         Map<String, Object> map = new HashMap<>();
 
+        map.put("identifier",identifier());
         map.put("level", this.level);
         map.put("tier", this.tier);
         map.put("slot",this.equipmentSlot.name());
@@ -130,6 +131,7 @@ public class UnidentifiedItem extends MysticaItem{
     }
 
     public static UnidentifiedItem deserialize(Map<String, Object> map){
+
 
         EquipmentSlot slot = EquipmentSlot.valueOf((String)map.get("slot"));
         int level = (int) map.get("level");

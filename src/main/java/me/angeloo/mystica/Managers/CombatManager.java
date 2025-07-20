@@ -6,6 +6,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Tasks.CombatTick;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DisplayWeapons;
+import me.angeloo.mystica.Utility.InventoryItemGetter;
 import me.angeloo.mystica.Utility.PlayerClass;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
@@ -19,9 +20,9 @@ import java.util.*;
 public class CombatManager {
 
     private final Mystica main;
+    private final DisplayWeapons displayWeapons;
     private final ProfileManager profileManager;
     private final MysticaPartyManager mysticaPartyManager;
-    private final ItemManager itemManager;
     private final AbilityManager abilityManager;
     private final CooldownDisplayer cooldownDisplayer;
     private final CombatTick combatTick;
@@ -31,9 +32,9 @@ public class CombatManager {
     public CombatManager(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
+        displayWeapons = main.getDisplayWeapons();
         mysticaPartyManager = main.getMysticaPartyManager();
         abilityManager = manager;
-        itemManager = main.getItemManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         combatTick = new CombatTick(main, this, manager);
     }
@@ -41,11 +42,9 @@ public class CombatManager {
 
     public void startCombatTimer(LivingEntity caster){
 
-        if(!(caster instanceof Player)){
+        if(!(caster instanceof Player player)){
             return;
         }
-
-        Player player = (Player) caster;
 
         boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
 
@@ -54,7 +53,6 @@ public class CombatManager {
 
             player.getInventory().clear();
 
-            DisplayWeapons displayWeapons = new DisplayWeapons(main);
             displayWeapons.displayArmor(player);
 
             player.getInventory().setHeldItemSlot(8);
@@ -65,13 +63,14 @@ public class CombatManager {
                 ItemStack weapon = playerEquipment.getWeapon().build();
                 ItemStack offhand = weapon.clone();
                 ItemMeta offhandMeta = offhand.getItemMeta();
-                offhandMeta.setCustomModelData(weapon.getItemMeta().getCustomModelData() + 1);
+                assert offhandMeta != null;
+                offhandMeta.setCustomModelData(offhand.getItemMeta().getCustomModelData() + 1);
                 offhand.setItemMeta(offhandMeta);
                 player.getInventory().setItemInMainHand(weapon);
                 player.getInventory().setItemInOffHand(offhand);
             }
             else{
-                player.getInventory().setItemInMainHand(itemManager.getNoneEquipment().getBaseWeapon());
+                //player.getInventory().setItemInMainHand(inventoryItemGetter.getNoneEquipment().getBaseWeapon());
             }
 
 

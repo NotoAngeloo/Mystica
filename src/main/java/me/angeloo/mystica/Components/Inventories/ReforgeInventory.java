@@ -5,15 +5,11 @@ import me.angeloo.mystica.Components.Inventories.Storage.MysticaBag;
 import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.Components.Items.SoulStone;
-import me.angeloo.mystica.Components.Items.UnidentifiedItem;
 import me.angeloo.mystica.Managers.CustomInventoryManager;
-import me.angeloo.mystica.Managers.EquipmentManager;
-import me.angeloo.mystica.Managers.ItemManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,8 +22,6 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static me.angeloo.mystica.Mystica.uncommonColor;
 
 public class ReforgeInventory implements Listener {
 

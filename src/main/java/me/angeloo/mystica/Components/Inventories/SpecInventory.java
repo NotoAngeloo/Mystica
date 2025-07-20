@@ -2,7 +2,7 @@ package me.angeloo.mystica.Components.Inventories;
 
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
-import me.angeloo.mystica.Managers.ItemManager;
+import me.angeloo.mystica.Utility.InventoryItemGetter;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.PlayerClass;
@@ -27,12 +27,12 @@ import static me.angeloo.mystica.Mystica.*;
 public class SpecInventory implements Listener {
 
     private final ProfileManager profileManager;
-    private final ItemManager itemManager;
+    private final InventoryItemGetter inventoryItemGetter;
     private final AbilityInventory abilityInventory;
 
     public SpecInventory(Mystica main, AbilityInventory abilityInventory){
         profileManager = main.getProfileManager();
-        itemManager = main.getItemManager();
+        inventoryItemGetter = main.getItemGetter();
         this.abilityInventory = abilityInventory;
     }
 
@@ -215,7 +215,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getPyromancerItem(){
-        return itemManager.getItem(Material.CYAN_DYE, 9,
+        return inventoryItemGetter.getItem(Material.CYAN_DYE, 9,
                 ChatColor.of(elementalistColor) + "Pyromancer",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -235,7 +235,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getConjurerItem(){
-        return itemManager.getItem(Material.CYAN_DYE, 10,
+        return inventoryItemGetter.getItem(Material.CYAN_DYE, 10,
                 ChatColor.of(elementalistColor) + "Conjurer",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -257,7 +257,7 @@ public class SpecInventory implements Listener {
 
 
     private ItemStack getScoutItem(){
-        return itemManager.getItem(Material.LIME_DYE, 9,
+        return inventoryItemGetter.getItem(Material.LIME_DYE, 9,
                 ChatColor.of(rangerColor) + "Scout",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -279,7 +279,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getTamerItem(){
-        return itemManager.getItem(Material.LIME_DYE, 10,
+        return inventoryItemGetter.getItem(Material.LIME_DYE, 10,
                 ChatColor.of(rangerColor) + "Animal Tamer",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -300,7 +300,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getChaosItem(){
-        return itemManager.getItem(Material.ENDER_EYE, 0,
+        return inventoryItemGetter.getItem(Material.ENDER_EYE, 0,
                 ChatColor.of(mysticColor) + "Chaos",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -324,7 +324,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getArcaneItem(){
-        return itemManager.getItem(Material.PURPLE_DYE, 9,
+        return inventoryItemGetter.getItem(Material.PURPLE_DYE, 9,
                 ChatColor.of(mysticColor) + "Arcane Master",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -348,7 +348,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getShepardItem(){
-        return itemManager.getItem(Material.PURPLE_DYE, 10,
+        return inventoryItemGetter.getItem(Material.PURPLE_DYE, 10,
                 ChatColor.of(mysticColor) + "Shepard",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -379,7 +379,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getBloodItem(){
-        return itemManager.getItem(Material.RED_DYE, 9,
+        return inventoryItemGetter.getItem(Material.RED_DYE, 9,
                 ChatColor.of(shadowKnightColor) + "Blood",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -410,7 +410,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getDoomItem(){
-        return itemManager.getItem(Material.RED_DYE, 10,
+        return inventoryItemGetter.getItem(Material.RED_DYE, 10,
                 ChatColor.of(shadowKnightColor) + "Doom",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -437,7 +437,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getTemplarItem(){
-        return itemManager.getItem(Material.YELLOW_DYE, 9,
+        return inventoryItemGetter.getItem(Material.YELLOW_DYE, 9,
                 ChatColor.of(paladinColor) + "Templar",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -461,7 +461,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getDivineItem(){
-        return itemManager.getItem(Material.YELLOW_DYE, 19,
+        return inventoryItemGetter.getItem(Material.YELLOW_DYE, 19,
                 ChatColor.of(paladinColor) + "Divine",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -484,7 +484,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getDawnItem(){
-        return itemManager.getItem(Material.YELLOW_DYE, 10,
+        return inventoryItemGetter.getItem(Material.YELLOW_DYE, 10,
                 ChatColor.of(paladinColor) + "Dawn",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -511,7 +511,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getExecutionerItem(){
-        return itemManager.getItem(Material.ORANGE_DYE, 10,
+        return inventoryItemGetter.getItem(Material.ORANGE_DYE, 10,
                 ChatColor.of(warriorColor) + "Executioner",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -537,7 +537,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getGladiatorItem(){
-        return itemManager.getItem(Material.ORANGE_DYE, 9,
+        return inventoryItemGetter.getItem(Material.ORANGE_DYE, 9,
                 ChatColor.of(warriorColor) + "Gladiator",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -560,7 +560,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getDuelistItem(){
-        return itemManager.getItem(Material.PINK_DYE, 12,
+        return inventoryItemGetter.getItem(Material.PINK_DYE, 12,
                 ChatColor.of(assassinColor) + "Duelist",
                 "",
                 ChatColor.of(levelColor) + "Each level",
@@ -585,7 +585,7 @@ public class SpecInventory implements Listener {
     }
 
     private ItemStack getAlchemistItem(){
-        return itemManager.getItem(Material.PINK_DYE, 14,
+        return inventoryItemGetter.getItem(Material.PINK_DYE, 14,
                 ChatColor.of(assassinColor) + "Alchemist",
                 "",
                 ChatColor.of(levelColor) + "Each level",

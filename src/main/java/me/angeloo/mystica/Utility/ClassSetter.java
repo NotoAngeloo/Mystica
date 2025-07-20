@@ -2,17 +2,14 @@ package me.angeloo.mystica.Utility;
 
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
-import me.angeloo.mystica.Managers.ItemManager;
-import me.angeloo.mystica.Managers.EquipmentManager;
+
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.List;
+import org.bukkit.entity.Player;
+
+
 
 public class ClassSetter {
 

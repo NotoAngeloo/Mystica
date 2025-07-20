@@ -67,10 +67,6 @@ commands:
     description: allows testing of upgrade mechanic
     usage: /Upgrade
     permission: developer
-  Generate:
-    description: allows testing of generate mechanic
-    usage: /Generate
-    permission: developer
   Identify:
     description: allows testing of identify mechanic
     usage: /Identify
@@ -98,10 +94,6 @@ commands:
   DisplayPath:
     description: lets server display a path for the player
     usage: /DisplayPath <Player> <x> <y> <z>
-    permission: developer
-  Cosmetic:
-    description: lets dev test cosmetics
-    usage: /Cosmetic
     permission: developer
   BossLevel:
     description: lets mms open boss level inv

@@ -6,8 +6,6 @@ import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.Components.Items.SoulStone;
 import me.angeloo.mystica.Managers.CustomInventoryManager;
-import me.angeloo.mystica.Managers.EquipmentManager;
-import me.angeloo.mystica.Managers.ItemManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import net.md_5.bungee.api.ChatColor;

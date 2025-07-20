@@ -1,13 +1,16 @@
 package me.angeloo.mystica.Components.Abilities.Assassin;
 
 import me.angeloo.mystica.Components.Abilities.AssassinAbilities;
+import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.EquipmentSlot;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
+import me.angeloo.mystica.Utility.PlayerClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -27,8 +30,9 @@ public class FlyingBlade {
 
     private final Mystica main;
 
+    private final MysticaEquipment weapon;
+
     private final ProfileManager profileManager;
-    private final ItemManager itemManager;
     private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
@@ -46,7 +50,6 @@ public class FlyingBlade {
     public FlyingBlade(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
-        itemManager = main.getItemManager();
         combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
@@ -56,6 +59,7 @@ public class FlyingBlade {
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         stealth = assassinAbilities.getStealth();
+        this.weapon = new MysticaEquipment(EquipmentSlot.WEAPON, PlayerClass.Assassin, 1);
     }
 
     private final double range = 15;
@@ -123,7 +127,7 @@ public class FlyingBlade {
         armorStand.setInvulnerable(true);
         armorStand.setMarker(true);
         EntityEquipment entityEquipment = armorStand.getEquipment();
-        ItemStack weapon = itemManager.getAssassinEquipment().getBaseWeapon(1);
+        ItemStack weapon = this.weapon.build();
         assert entityEquipment != null;
         entityEquipment.setHelmet(weapon);
         armorStand.teleport(start);

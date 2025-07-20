@@ -1,7 +1,6 @@
 package me.angeloo.mystica.Components.Commands;
 
 import me.angeloo.mystica.Components.Inventories.UpgradeInventory;
-import me.angeloo.mystica.Managers.EquipmentManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -14,11 +13,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class Upgrade implements CommandExecutor {
 
-    private final EquipmentManager equipmentManager;
     private final UpgradeInventory upgradeInventory;
 
     public Upgrade(Mystica main){
-        equipmentManager = main.getEquipmentManager();
         upgradeInventory = main.getUpgradeInventory();
     }
 

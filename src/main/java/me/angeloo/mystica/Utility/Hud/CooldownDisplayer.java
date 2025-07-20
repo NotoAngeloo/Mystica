@@ -59,11 +59,9 @@ public class CooldownDisplayer {
 
     public void displayCooldown(LivingEntity caster, int abilityNumber){
 
-        if(!(caster instanceof Player)){
+        if(!(caster instanceof Player player)){
             return;
         }
-
-        Player player = (Player) caster;
 
         boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
         boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();

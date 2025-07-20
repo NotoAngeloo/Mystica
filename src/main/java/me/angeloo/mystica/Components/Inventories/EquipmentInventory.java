@@ -5,7 +5,7 @@ import me.angeloo.mystica.Components.Inventories.Storage.MysticaBag;
 import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Managers.CustomInventoryManager;
-import me.angeloo.mystica.Managers.ItemManager;
+import me.angeloo.mystica.Utility.InventoryItemGetter;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DisplayWeapons;
@@ -34,17 +34,17 @@ import java.util.List;
 public class EquipmentInventory implements Listener {
 
     private final ProfileManager profileManager;
-    private final CustomInventoryManager customInventoryManager;
-    private final ItemManager itemManager;
-    private final GearReader gearReader;
     private final DisplayWeapons displayWeapons;
+    private final CustomInventoryManager customInventoryManager;
+    private final InventoryItemGetter inventoryItemGetter;
+    private final GearReader gearReader;
 
     public EquipmentInventory(Mystica main) {
         profileManager = main.getProfileManager();
         customInventoryManager = main.getInventoryManager();
         gearReader = main.getGearReader();
-        displayWeapons = new DisplayWeapons(main);
-        itemManager = main.getItemManager();
+        displayWeapons = main.getDisplayWeapons();
+        inventoryItemGetter = main.getItemGetter();
     }
 
 
@@ -84,15 +84,15 @@ public class EquipmentInventory implements Listener {
         Collections.reverse(healthStatStrings);
 
         if(healthStatStrings.size() >= 3){
-            inv.setItem(6, itemManager.getNumberItem(healthStatStrings.get(2), health));
+            inv.setItem(6, inventoryItemGetter.getNumberItem(healthStatStrings.get(2), health));
         }
 
         if(healthStatStrings.size() >= 2){
-            inv.setItem(7, itemManager.getNumberItem(healthStatStrings.get(1), health));
+            inv.setItem(7, inventoryItemGetter.getNumberItem(healthStatStrings.get(1), health));
         }
 
         if(healthStatStrings.size() >= 1){
-            inv.setItem(8, itemManager.getNumberItem(healthStatStrings.get(0), health));
+            inv.setItem(8, inventoryItemGetter.getNumberItem(healthStatStrings.get(0), health));
         }
 
 
@@ -104,15 +104,15 @@ public class EquipmentInventory implements Listener {
         Collections.reverse(attackStatStrings);
 
         if(attackStatStrings.size() >= 3){
-            inv.setItem(15, itemManager.getNumberItem(attackStatStrings.get(2), attack));
+            inv.setItem(15, inventoryItemGetter.getNumberItem(attackStatStrings.get(2), attack));
         }
 
         if(attackStatStrings.size() >= 2){
-            inv.setItem(16, itemManager.getNumberItem(attackStatStrings.get(1), attack));
+            inv.setItem(16, inventoryItemGetter.getNumberItem(attackStatStrings.get(1), attack));
         }
 
         if(attackStatStrings.size() >= 1){
-            inv.setItem(17, itemManager.getNumberItem(attackStatStrings.get(0), attack));
+            inv.setItem(17, inventoryItemGetter.getNumberItem(attackStatStrings.get(0), attack));
         }
 
         //defense
@@ -122,15 +122,15 @@ public class EquipmentInventory implements Listener {
         Collections.reverse(defenseStatStrings);
 
         if(defenseStatStrings.size() >= 3){
-            inv.setItem(24, itemManager.getNumberItem(defenseStatStrings.get(2), defense));
+            inv.setItem(24, inventoryItemGetter.getNumberItem(defenseStatStrings.get(2), defense));
         }
 
         if(defenseStatStrings.size() >= 2){
-            inv.setItem(25, itemManager.getNumberItem(defenseStatStrings.get(1), defense));
+            inv.setItem(25, inventoryItemGetter.getNumberItem(defenseStatStrings.get(1), defense));
         }
 
         if(defenseStatStrings.size() >= 1){
-            inv.setItem(26, itemManager.getNumberItem(defenseStatStrings.get(0), defense));
+            inv.setItem(26, inventoryItemGetter.getNumberItem(defenseStatStrings.get(0), defense));
         }
 
 
@@ -141,15 +141,15 @@ public class EquipmentInventory implements Listener {
         Collections.reverse(magicStatStrings);
 
         if(magicStatStrings.size() >= 3){
-            inv.setItem(33, itemManager.getNumberItem(magicStatStrings.get(2), magic));
+            inv.setItem(33, inventoryItemGetter.getNumberItem(magicStatStrings.get(2), magic));
         }
 
         if(magicStatStrings.size() >= 2){
-            inv.setItem(34, itemManager.getNumberItem(magicStatStrings.get(1), magic));
+            inv.setItem(34, inventoryItemGetter.getNumberItem(magicStatStrings.get(1), magic));
         }
 
         if(magicStatStrings.size() >= 1){
-            inv.setItem(35, itemManager.getNumberItem(magicStatStrings.get(0), magic));
+            inv.setItem(35, inventoryItemGetter.getNumberItem(magicStatStrings.get(0), magic));
         }
 
 
@@ -160,15 +160,15 @@ public class EquipmentInventory implements Listener {
         Collections.reverse(critStatStrings);
 
         if(critStatStrings.size() >= 3){
-            inv.setItem(42, itemManager.getNumberItem(critStatStrings.get(2), crit));
+            inv.setItem(42, inventoryItemGetter.getNumberItem(critStatStrings.get(2), crit));
         }
 
         if(critStatStrings.size() >= 2){
-            inv.setItem(43, itemManager.getNumberItem(critStatStrings.get(1), crit));
+            inv.setItem(43, inventoryItemGetter.getNumberItem(critStatStrings.get(1), crit));
         }
 
         if(critStatStrings.size() >= 1){
-            inv.setItem(44, itemManager.getNumberItem(critStatStrings.get(0), crit));
+            inv.setItem(44, inventoryItemGetter.getNumberItem(critStatStrings.get(0), crit));
         }
 
 

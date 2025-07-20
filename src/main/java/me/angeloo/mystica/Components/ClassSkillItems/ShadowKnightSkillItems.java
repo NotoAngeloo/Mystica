@@ -1,18 +1,20 @@
 package me.angeloo.mystica.Components.ClassSkillItems;
 
+import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.Skill_Level;
 import me.angeloo.mystica.Managers.AbilityManager;
-import me.angeloo.mystica.Managers.ItemManager;
+import me.angeloo.mystica.Utility.EquipmentSlot;
+import me.angeloo.mystica.Utility.InventoryItemGetter;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.PlayerClass;
 import me.angeloo.mystica.Utility.SubClass;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -27,14 +29,16 @@ import static me.angeloo.mystica.Mystica.*;
 
 public class ShadowKnightSkillItems {
 
+    private final MysticaEquipment weapon;
     private final ProfileManager profileManager;
     private final AbilityManager abilityManager;
-    private final ItemManager itemManager;
+    private final InventoryItemGetter itemGetter;
 
     public ShadowKnightSkillItems(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
         abilityManager = manager;
-        itemManager = main.getItemManager();
+        itemGetter = main.getItemGetter();
+        weapon = new MysticaEquipment(EquipmentSlot.WEAPON, PlayerClass.Shadow_Knight, 1);
     }
 
     public ItemStack getSkill(int number, Player player){
@@ -46,7 +50,7 @@ public class ShadowKnightSkillItems {
         switch(number){
 
             case 1:{
-                return getItem(1,
+                return itemGetter.getItem(Material.RED_DYE, 1,
                         ChatColor.of(shadowKnightColor) + "Infection",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_1_Level_Bonus()),
                         ChatColor.of(shadowKnightColor) + String.valueOf(abilityManager.getShadowKnightAbilities().getInfection().getSkillDamage(player)) + " power",
@@ -55,7 +59,7 @@ public class ShadowKnightSkillItems {
                         ChatColor.of(Color.WHITE) + "target for continuous damage");
             }
             case 2:{
-                return getItem(2,
+                return itemGetter.getItem(Material.RED_DYE,2,
                         ChatColor.of(shadowKnightColor) + "Spiritual Attack",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_2_Level_Bonus()),
                         ChatColor.of(shadowKnightColor) + String.valueOf(abilityManager.getShadowKnightAbilities().getSpiritualAttack().getSkillDamage(player)) + " power",
@@ -65,7 +69,7 @@ public class ShadowKnightSkillItems {
                         ChatColor.of(Color.WHITE) + "ally to strike your target from above");
             }
             case 3:{
-                return getItem(3,
+                return itemGetter.getItem(Material.RED_DYE,3,
                         ChatColor.of(shadowKnightColor) + "Burial Ground",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_3_Level_Bonus()),
                         ChatColor.of(shadowKnightColor) + String.valueOf(abilityManager.getShadowKnightAbilities().getBurialGround().getHealPercent(player)) + "% healed",
@@ -77,7 +81,7 @@ public class ShadowKnightSkillItems {
                         ChatColor.of(Color.WHITE) + "over time.");
             }
             case 4:{
-                return getItem(4,
+                return itemGetter.getItem(Material.RED_DYE,4,
                         ChatColor.of(shadowKnightColor) + "Bloodsucker",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_4_Level_Bonus()),
                         ChatColor.of(shadowKnightColor) + String.valueOf(abilityManager.getShadowKnightAbilities().getBloodsucker().getSkillDamage(player)) + " power",
@@ -88,7 +92,7 @@ public class ShadowKnightSkillItems {
                         ChatColor.of(Color.WHITE) + "to restore your own health.");
             }
             case 5:{
-                return getItem(5,
+                return itemGetter.getItem(Material.RED_DYE,5,
                         ChatColor.of(shadowKnightColor) + "Soul Reap",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_5_Level_Bonus()),
                         ChatColor.of(shadowKnightColor) + String.valueOf(abilityManager.getShadowKnightAbilities().getSoulReap().getSkillDamage(player)) + " power + modifiers",
@@ -101,7 +105,7 @@ public class ShadowKnightSkillItems {
                         ChatColor.of(Color.WHITE) + "increased by 30%");
             }
             case 6:{
-                return getItem(6,
+                return itemGetter.getItem(Material.RED_DYE,6,
                         ChatColor.of(shadowKnightColor) + "Shadow Grip",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_6_Level_Bonus()),
                         ChatColor.of(shadowKnightColor) + String.valueOf(abilityManager.getShadowKnightAbilities().getShadowGrip().getSkillDamage(player)) + " power",
@@ -114,7 +118,7 @@ public class ShadowKnightSkillItems {
                         ChatColor.of(Color.WHITE) + "you");
             }
             case 7:{
-                return getItem(7,
+                return itemGetter.getItem(Material.RED_DYE,7,
                         ChatColor.of(shadowKnightColor) + "Spectral Steed",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_7_Level_Bonus()),
                         "",
@@ -125,7 +129,7 @@ public class ShadowKnightSkillItems {
                         ChatColor.of(Color.WHITE) + "may use abilities while mounted");
             }
             case 8:{
-                return getItem(8,
+                return itemGetter.getItem(Material.RED_DYE,8,
                         ChatColor.of(shadowKnightColor) + "Soulcrack",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_8_Level_Bonus()),
                         ChatColor.of(shadowKnightColor) + String.valueOf(abilityManager.getShadowKnightAbilities().getSoulcrack().getSkillDamage(player)) + " power",
@@ -149,7 +153,7 @@ public class ShadowKnightSkillItems {
 
         switch(subClass){
             case Blood:{
-                return getItem(9,
+                return itemGetter.getItem(Material.RED_DYE,9,
                         ChatColor.of(shadowKnightColor) + "Blood Shield",
                         ChatColor.of(levelColor) + "Level " + level,
                         ChatColor.of(Color.RED) + String.valueOf(abilityManager.getShadowKnightAbilities().getBloodShield().getCost()) + " energy",
@@ -163,7 +167,7 @@ public class ShadowKnightSkillItems {
                         ChatColor.of(Color.WHITE) + "duration by 3 seconds");
             }
             case Doom:{
-                return getItem(10,
+                return itemGetter.getItem(Material.RED_DYE,10,
                         ChatColor.of(shadowKnightColor) + "Annihilation",
                         ChatColor.of(levelColor) + "Level " + level,
                         ChatColor.of(shadowKnightColor) + String.valueOf(abilityManager.getShadowKnightAbilities().getAnnihilation().getSkillDamage(player)) + " power",
@@ -184,7 +188,7 @@ public class ShadowKnightSkillItems {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        ItemStack basicItem = itemManager.getShadowKnightEquipment().getBaseWeapon(1);
+        ItemStack basicItem = weapon.build();
 
         ItemMeta basicMeta = basicItem.getItemMeta();
         List<String> basicLore = new ArrayList<>();
@@ -193,6 +197,7 @@ public class ShadowKnightSkillItems {
         basicLore.add(ChatColor.of(levelColor) + "Level "  + level);
         basicLore.add(ChatColor.of(shadowKnightColor) + String.valueOf(abilityManager.getShadowKnightAbilities().getShadowKnightBasic().getSkillDamage(player)) + " power");
 
+        assert basicMeta != null;
         basicMeta.setLore(basicLore);
         basicItem.setItemMeta(basicMeta);
 
@@ -200,26 +205,5 @@ public class ShadowKnightSkillItems {
         return basicItem;
     }
 
-    private ItemStack getItem(int modelData, String name, String ... lore) {
 
-        AttributeModifier zeroer = new AttributeModifier(UUID.randomUUID(), "generic.attackDamage",
-                0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND);
-
-        ItemStack item = new ItemStack(Material.RED_DYE);
-
-        ItemMeta meta = item.getItemMeta();
-        assert meta != null;
-        meta.setDisplayName(name);
-
-        List<String> lores = new ArrayList<>(Arrays.asList(lore));
-
-        meta.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE, zeroer);
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-
-        meta.setLore(lores);
-        meta.setCustomModelData(modelData);
-
-        item.setItemMeta(meta);
-        return item;
-    }
 }

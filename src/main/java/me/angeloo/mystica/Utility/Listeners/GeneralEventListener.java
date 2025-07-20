@@ -57,7 +57,7 @@ public class GeneralEventListener implements Listener {
     private final DpsManager dpsManager;
     private final AggroManager aggroManager;
     private final PvpManager pvpManager;
-    private final ItemManager itemManager;
+    private final InventoryItemGetter inventoryItemGetter;
     private final TargetManager targetManager;
     private final CombatManager combatManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
@@ -91,7 +91,7 @@ public class GeneralEventListener implements Listener {
         dailyData = main.getDailyData();
         profileManager = main.getProfileManager();
         pathingManager = main.getPathingManager();
-        itemManager = main.getItemManager();
+        inventoryItemGetter = main.getItemGetter();
         fakePlayerAiManager = main.getFakePlayerAiManager();
         stealthTargetBlacklist = main.getStealthTargetBlacklist();
         aggroTick = main.getAggroTick();
@@ -365,25 +365,6 @@ public class GeneralEventListener implements Listener {
 
     }
 
-    @EventHandler
-    public void noEquipArmor(PlayerInteractEvent event) {
-
-        Player player = event.getPlayer();
-
-        if(player.getGameMode().equals(GameMode.CREATIVE)){
-            return;
-        }
-
-        boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
-
-        if (!combatStatus) {
-
-            event.setCancelled(true);
-            equipmentInventory.openEquipmentInventory(player);
-            displayWeapons.displayArmor(player);
-        }
-
-    }
 
     @EventHandler
     public void noPlaceBlocks(BlockPlaceEvent event){

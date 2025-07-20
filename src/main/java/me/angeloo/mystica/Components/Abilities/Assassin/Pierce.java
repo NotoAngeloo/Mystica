@@ -1,13 +1,17 @@
 package me.angeloo.mystica.Components.Abilities.Assassin;
 
 import me.angeloo.mystica.Components.Abilities.AssassinAbilities;
+import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.EquipmentSlot;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.InventoryItemGetter;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
+import me.angeloo.mystica.Utility.PlayerClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -26,8 +30,9 @@ import java.util.UUID;
 
 public class Pierce {
 
+    private final MysticaEquipment weapon;
     private final Mystica main;
-    private final ItemManager itemManager;
+    private final InventoryItemGetter inventoryItemGetter;
     private final ProfileManager profileManager;
     private final TargetManager targetManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
@@ -46,7 +51,7 @@ public class Pierce {
 
     public Pierce(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
         this.main = main;
-        itemManager = main.getItemManager();
+        inventoryItemGetter = main.getItemGetter();
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
@@ -58,6 +63,7 @@ public class Pierce {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         combo = assassinAbilities.getCombo();
         stealth = assassinAbilities.getStealth();
+        weapon = new MysticaEquipment(EquipmentSlot.WEAPON, PlayerClass.Assassin, 1);
     }
 
     private final double range = 4;
@@ -120,7 +126,7 @@ public class Pierce {
 
         Location start = caster.getLocation().clone();
 
-        ItemStack weapon = itemManager.getAssassinEquipment().getBaseWeapon(1);
+        ItemStack weapon = this.weapon.build();
 
         ArmorStand stand = caster.getWorld().spawn(start.clone().subtract(0,10,0), ArmorStand.class);
         stand.setInvisible(true);

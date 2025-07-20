@@ -1,7 +1,5 @@
 package me.angeloo.mystica;
 
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Commands.*;
@@ -57,8 +55,7 @@ public final class Mystica extends JavaPlugin{
     private DisplayWeapons displayWeapons;
     private ClassSetter classSetter;
     private GearReader gearReader;
-    private EquipmentManager equipmentManager;
-    private ItemManager itemManager;
+    private InventoryItemGetter inventoryItemGetter;
     private AllSkillItems allSkillItems;
     private StealthTargetBlacklist stealthTargetBlacklist;
     private FakePlayerTargetManager fakePlayerTargetManager;
@@ -144,8 +141,7 @@ public final class Mystica extends JavaPlugin{
         locations = new Locations(this);
         locations.initializeLocationals();
 
-        itemManager = new ItemManager();
-        equipmentManager = new EquipmentManager(this);
+        inventoryItemGetter = new InventoryItemGetter();
         displayWeapons = new DisplayWeapons(this);
 
         gearReader = new GearReader(this);
@@ -208,7 +204,6 @@ public final class Mystica extends JavaPlugin{
         getCommand("Reforge").setExecutor(new Reforge(this));
         getCommand("Refine").setExecutor(new Refine(this));
         getCommand("Upgrade").setExecutor(new Upgrade(this));
-        getCommand("Generate").setExecutor(new Generate(this));
         getCommand("Identify").setExecutor(new Identify(this));
         getCommand("ManualSave").setExecutor(new ManualSave(this));
         getCommand("DeleteProfile").setExecutor(new DeleteProfile(this));
@@ -217,7 +212,6 @@ public final class Mystica extends JavaPlugin{
         getCommand("PathTool").setExecutor(new PathTool());
         getCommand("DisplayPath").setExecutor(new DisplayPath(this));
         getCommand("SavePaths").setExecutor(new SavePaths(this));
-        getCommand("Cosmetic").setExecutor(new Cosmetic(this));
         getCommand("BossLevel").setExecutor(new BossLevel(this));
         getCommand("HitValidCheck").setExecutor(new HitValidCheck(this));
         getCommand("SetCaution").setExecutor(new SetCaution(this));
@@ -407,9 +401,8 @@ public final class Mystica extends JavaPlugin{
 
     public MatchMakingManager getMatchMakingManager(){return matchMakingManager;}
 
-    public ItemManager getItemManager(){return itemManager;}
+    public InventoryItemGetter getItemGetter(){return inventoryItemGetter;}
 
-    public EquipmentManager getEquipmentManager(){return equipmentManager;}
 
     public IdentifyInventory getIdentifyInventory(){return identifyInventory;}
 

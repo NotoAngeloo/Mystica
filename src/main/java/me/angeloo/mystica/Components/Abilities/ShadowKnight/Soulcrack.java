@@ -1,13 +1,16 @@
 package me.angeloo.mystica.Components.Abilities.ShadowKnight;
 
 import me.angeloo.mystica.Components.Abilities.ShadowKnightAbilities;
+import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.EquipmentSlot;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
+import me.angeloo.mystica.Utility.PlayerClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -30,7 +33,6 @@ import java.util.UUID;
 public class Soulcrack {
 
     private final Mystica main;
-    private final ItemManager itemManager;
     private final AbilityManager abilityManager;
     private final ProfileManager profileManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
@@ -41,6 +43,8 @@ public class Soulcrack {
     private final DamageCalculator damageCalculator;
     private final CooldownDisplayer cooldownDisplayer;
 
+    private final MysticaEquipment weapon;
+
     private final Energy energy;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
@@ -49,7 +53,6 @@ public class Soulcrack {
     public Soulcrack(Mystica main, AbilityManager manager, ShadowKnightAbilities shadowKnightAbilities){
         this.main = main;
         abilityManager = manager;
-        itemManager = main.getItemManager();
         profileManager = main.getProfileManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         combatManager = manager.getCombatManager();
@@ -59,6 +62,7 @@ public class Soulcrack {
         damageCalculator = main.getDamageCalculator();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         energy = shadowKnightAbilities.getEnergy();
+        this.weapon = new MysticaEquipment(EquipmentSlot.WEAPON, PlayerClass.Shadow_Knight, 1);
     }
 
     public void use(LivingEntity caster){
@@ -120,13 +124,14 @@ public class Soulcrack {
 
         EntityEquipment entityEquipment = armorStand.getEquipment();
 
-        ItemStack weapon = itemManager.getShadowKnightEquipment().getBaseWeapon(1);
+        ItemStack weapon = this.weapon.build();
         ItemStack offhand = weapon.clone();
 
         if(caster instanceof Player){
             weapon = profileManager.getAnyProfile(caster).getPlayerEquipment().getWeapon().build();
             ItemMeta offhandItemMeta = offhand.getItemMeta();
-            offhandItemMeta.setCustomModelData(weapon.getItemMeta().getCustomModelData() + 1);
+            assert offhandItemMeta != null;
+            offhandItemMeta.setCustomModelData(offhandItemMeta.getCustomModelData() + 1);
             offhand.setItemMeta(offhandItemMeta);
         }
 

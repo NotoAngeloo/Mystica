@@ -1,7 +1,6 @@
 package me.angeloo.mystica.Components.Commands;
 
 import me.angeloo.mystica.Components.Inventories.IdentifyInventory;
-import me.angeloo.mystica.Managers.EquipmentManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -12,12 +11,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class Identify implements CommandExecutor {
 
-    private final EquipmentManager equipmentManager;
     private final IdentifyInventory identifyInventory;
 
     public Identify(Mystica main){
         identifyInventory = main.getIdentifyInventory();
-        equipmentManager = main.getEquipmentManager();
     }
 
     @Override

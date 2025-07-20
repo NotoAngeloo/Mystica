@@ -219,6 +219,8 @@ public class MysticaEquipment extends MysticaItem{
                     case Paladin -> {
                         material = Material.IRON_SWORD;
                     }
+                    case NONE -> {
+                    }
                 }
             }
         }

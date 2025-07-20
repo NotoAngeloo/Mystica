@@ -15,11 +15,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class Hidden {
 
     private final Mystica main;
+    private final DisplayWeapons displayWeapons;
     private final ProfileManager profileManager;
     private final AggroManager aggroManager;
 
     public Hidden(Mystica main){
         this.main = main;
+        displayWeapons = main.getDisplayWeapons();
         profileManager = main.getProfileManager();
         aggroManager = main.getAggroManager();
     }
@@ -77,7 +79,6 @@ public class Hidden {
 
                 showWeapons((Player) caster);
 
-                DisplayWeapons displayWeapons  = new DisplayWeapons(main);
                 displayWeapons.displayArmor((Player) caster);
             }
 

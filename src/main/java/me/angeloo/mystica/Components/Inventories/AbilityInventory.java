@@ -2,7 +2,7 @@ package me.angeloo.mystica.Components.Inventories;
 
 import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
-import me.angeloo.mystica.Managers.ItemManager;
+import me.angeloo.mystica.Utility.InventoryItemGetter;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
@@ -14,23 +14,21 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 public class AbilityInventory implements Listener {
 
     private final ProfileManager profileManager;
     private final AllSkillItems allSkillItems;
-    private final ItemManager itemManager;
+    private final InventoryItemGetter inventoryItemGetter;
     private final SpecInventory specInventory;
 
     public AbilityInventory(Mystica main){
         profileManager = main.getProfileManager();
         allSkillItems = main.getAllSkillItems();
-        itemManager = main.getItemManager();
+        inventoryItemGetter = main.getItemGetter();
         specInventory = new SpecInventory(main, this);
     }
 
@@ -56,13 +54,13 @@ public class AbilityInventory implements Listener {
 
             if(selectedSlot >=0 && selectedSlot<=8){
 
-                selector = itemManager.getItem(Material.DIAMOND, 1, " ");
+                selector = inventoryItemGetter.getItem(Material.DIAMOND, 1, " ");
 
                 inv.setItem(selectedSlot, selector);
             }
 
             if(selectedSlot>=9 && selectedSlot <=16){
-                selector = itemManager.getItem(Material.DIAMOND, 2, " ");
+                selector = inventoryItemGetter.getItem(Material.DIAMOND, 2, " ");
                 inv.setItem(selectedSlot + 9, selector);
             }
 

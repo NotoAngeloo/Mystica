@@ -2,7 +2,6 @@ package me.angeloo.mystica.Utility.Listeners;
 
 
 import me.angeloo.mystica.Components.Inventories.*;
-import me.angeloo.mystica.Managers.EquipmentManager;
 import me.angeloo.mystica.Managers.CustomInventoryManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -23,7 +22,6 @@ public class InventoryEventListener implements Listener {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final EquipmentManager equipmentManager;
 
     private final CustomInventoryManager customInventoryManager;
     private final DisplayWeapons displayWeapons;
@@ -34,9 +32,8 @@ public class InventoryEventListener implements Listener {
     public InventoryEventListener(Mystica main){
         this.main = main;
         profileManager = main.getProfileManager();
-        equipmentManager = new EquipmentManager(main);
         customInventoryManager = main.getInventoryManager();
-        displayWeapons = new DisplayWeapons(main);
+        displayWeapons = main.getDisplayWeapons();
         bossLevelInv = new BossLevelInv(main);
         locations = new Locations(main);
         customItemConverter = new CustomItemConverter();

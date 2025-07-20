@@ -1,7 +1,6 @@
 package me.angeloo.mystica.Components.Commands;
 
 import me.angeloo.mystica.Components.Inventories.ReforgeInventory;
-import me.angeloo.mystica.Managers.EquipmentManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

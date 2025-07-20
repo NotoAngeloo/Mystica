@@ -1,26 +1,21 @@
 package me.angeloo.mystica.Utility;
 
+import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
-import me.angeloo.mystica.Managers.ItemManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
-
 public class DisplayWeapons {
 
+    private final MysticaEquipment none;
     private final ProfileManager profileManager;
-    private final ItemManager itemManager;
 
     public DisplayWeapons(Mystica main){
         profileManager = main.getProfileManager();
-        itemManager = main.getItemManager();
+        none = new MysticaEquipment(EquipmentSlot.WEAPON, PlayerClass.NONE, 1);
     }
 
     public void displayArmor(Player player){
@@ -49,8 +44,7 @@ public class DisplayWeapons {
         }
 
 
-
-        ItemStack displayedWeapon = itemManager.getNoneEquipment().getBaseWeapon();
+        ItemStack displayedWeapon = none.build();
 
         if(playerEquipment.getWeapon() != null){
             displayedWeapon = playerEquipment.getWeapon().build();

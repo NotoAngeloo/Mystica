@@ -1,31 +1,26 @@
 package me.angeloo.mystica.Components.Commands;
 
-import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.Components.Items.SoulStone;
 import me.angeloo.mystica.Components.Items.UnidentifiedItem;
-import me.angeloo.mystica.Managers.ItemManager;
+import me.angeloo.mystica.Utility.InventoryItemGetter;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.EquipmentSlot;
-import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 public class MysticaItem implements CommandExecutor {
 
     private final ProfileManager profileManager;
-    private final ItemManager itemManager;
+    private final InventoryItemGetter inventoryItemGetter;
 
     public MysticaItem(Mystica main){
         profileManager = main.getProfileManager();
-        itemManager = main.getItemManager();
+        inventoryItemGetter = main.getItemGetter();
     }
 
     @Override
@@ -66,7 +61,7 @@ public class MysticaItem implements CommandExecutor {
 
 
 
-            profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new SoulStone(1));
+            profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new SoulStone(36));
 
             profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new UnidentifiedItem(EquipmentSlot.WEAPON, 1, 1));
             profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new UnidentifiedItem(EquipmentSlot.WEAPON, 1, 2));

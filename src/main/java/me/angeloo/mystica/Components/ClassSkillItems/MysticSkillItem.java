@@ -1,18 +1,20 @@
 package me.angeloo.mystica.Components.ClassSkillItems;
 
+import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.Skill_Level;
 import me.angeloo.mystica.Managers.AbilityManager;
-import me.angeloo.mystica.Managers.ItemManager;
+import me.angeloo.mystica.Utility.EquipmentSlot;
+import me.angeloo.mystica.Utility.InventoryItemGetter;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.PlayerClass;
 import me.angeloo.mystica.Utility.SubClass;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -28,14 +30,16 @@ import static me.angeloo.mystica.Mystica.levelColor;
 
 public class MysticSkillItem {
 
+    private final MysticaEquipment weapon;
     private final ProfileManager profileManager;
-    private final ItemManager itemManager;
+    private final InventoryItemGetter itemGetter;
     private final AbilityManager abilityManager;
 
     public MysticSkillItem(Mystica main, AbilityManager manager){
+        weapon = new MysticaEquipment(EquipmentSlot.WEAPON, PlayerClass.Mystic, 1);
         profileManager = main.getProfileManager();
         abilityManager = manager;
-        itemManager = main.getItemManager();
+        itemGetter = main.getItemGetter();
     }
 
     public ItemStack getSkill(int number, Player player){
@@ -50,7 +54,7 @@ public class MysticSkillItem {
             switch (number){
 
                 case 1:{
-                    return getItem(0,
+                    return itemGetter.getItem(Material.PURPLE_DYE, 0,
                             ChatColor.of(mysticColor) + "Chaos Void",
                             ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_1_Level_Bonus()),
                             "",
@@ -60,7 +64,7 @@ public class MysticSkillItem {
                 }
 
                 case 2:{
-                    return getItem(0,
+                    return itemGetter.getItem(Material.PURPLE_DYE,0,
                             ChatColor.of(mysticColor) + "Plague Curse",
                             ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_2_Level_Bonus()),
                             ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getPlagueCurse().getSkillDamage(player)) + " power",
@@ -72,7 +76,7 @@ public class MysticSkillItem {
                 }
 
                 case 3:{
-                    return getItem(0,
+                    return itemGetter.getItem(Material.PURPLE_DYE,0,
                             ChatColor.of(mysticColor) + "Shadow of Darkness",
                             ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_3_Level_Bonus()),
                             ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getShadowOfDarkness().getSkillDamage(player)) + " damage + (2 x shards)",
@@ -85,7 +89,7 @@ public class MysticSkillItem {
                 }
 
                 case 4:{
-                    return getItem(0,
+                    return itemGetter.getItem(Material.PURPLE_DYE,0,
                             ChatColor.of(mysticColor) + "Flickering Chaos",
                             ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_4_Level_Bonus()),
                             "",
@@ -94,7 +98,7 @@ public class MysticSkillItem {
                 }
 
                 case 5:{
-                    return getItem(0,
+                    return itemGetter.getItem(Material.PURPLE_DYE,0,
                             ChatColor.of(mysticColor) + "Spiritual Descent",
                             ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_5_Level_Bonus()),
                             ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getSpiritualDescent().getSkillDamage(player)) + " damage x 8",
@@ -105,7 +109,7 @@ public class MysticSkillItem {
                 }
 
                 case 6: {
-                    return getItem(0,
+                    return itemGetter.getItem(Material.PURPLE_DYE,0,
                             ChatColor.of(mysticColor) + "Chaos Lash",
                             ChatColor.of(new Color(0, 102, 0)) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_6_Level_Bonus()),
                             ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getChaosLash().getSkillDamage(player)) + " power",
@@ -117,7 +121,7 @@ public class MysticSkillItem {
                 }
 
                 case 7: {
-                    return getItem(0,
+                    return itemGetter.getItem(Material.PURPLE_DYE,0,
                             ChatColor.of(mysticColor) + "Cursing Voice",
                             ChatColor.of(new Color(0, 102, 0)) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_7_Level_Bonus()),
                             "",
@@ -126,7 +130,7 @@ public class MysticSkillItem {
                 }
 
                 case 8: {
-                    return getItem(0,
+                    return itemGetter.getItem(Material.PURPLE_DYE,0,
                             ChatColor.of(mysticColor) + "Health Absorb",
                             ChatColor.of(new Color(0, 102, 0)) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_8_Level_Bonus()),
                             ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getHealthAbsorb().getSkillDamage(player)) + " power",
@@ -142,7 +146,7 @@ public class MysticSkillItem {
         switch (number){
 
             case 1:{
-                return getItem(1,
+                return itemGetter.getItem(Material.PURPLE_DYE,1,
                         ChatColor.of(mysticColor) + "Arcane Shield",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_1_Level_Bonus()),
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getMysticAbilities().getArcaneShield().getCost()) + " mana",
@@ -153,7 +157,7 @@ public class MysticSkillItem {
             }
 
             case 2:{
-                return getItem(2,
+                return itemGetter.getItem(Material.PURPLE_DYE,2,
                         ChatColor.of(mysticColor) + "Purifying Blast",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_2_Level_Bonus()),
                         ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getPurifyingBlast().getSkillDamage(player)) + " power",
@@ -166,7 +170,7 @@ public class MysticSkillItem {
             }
 
             case 3:{
-                return getItem(3,
+                return itemGetter.getItem(Material.PURPLE_DYE,3,
                         ChatColor.of(mysticColor) + "Force of Will",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_3_Level_Bonus()),
                         ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getForceOfWill().getSkillDamage(player)) + " power",
@@ -177,7 +181,7 @@ public class MysticSkillItem {
             }
 
             case 4:{
-                return getItem(4,
+                return itemGetter.getItem(Material.PURPLE_DYE,4,
                         ChatColor.of(mysticColor) + "Dreadfall",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_4_Level_Bonus()),
                         ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getDreadfall().getSkillDamage(player)) + " power",
@@ -187,7 +191,7 @@ public class MysticSkillItem {
             }
 
             case 5:{
-                return getItem(5,
+                return itemGetter.getItem(Material.PURPLE_DYE,5,
                         ChatColor.of(mysticColor) + "Void Walk",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_5_Level_Bonus()),
                         "",
@@ -196,7 +200,7 @@ public class MysticSkillItem {
             }
 
             case 6:{
-                return getItem(6,
+                return itemGetter.getItem(Material.PURPLE_DYE,6,
                         ChatColor.of(mysticColor) + "Aurora",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_6_Level_Bonus()),
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getMysticAbilities().getAurora().getCost()) + " mana",
@@ -207,7 +211,7 @@ public class MysticSkillItem {
             }
 
             case 7:{
-                return getItem(7,
+                return itemGetter.getItem(Material.PURPLE_DYE,7,
                         ChatColor.of(mysticColor) + "Arcane Contract",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_7_Level_Bonus()),
                         ChatColor.of(Color.BLUE) + String.valueOf(abilityManager.getMysticAbilities().getArcaneContract().getCost()) + " mana",
@@ -218,7 +222,7 @@ public class MysticSkillItem {
             }
 
             case 8:{
-                return getItem(8,
+                return itemGetter.getItem(Material.PURPLE_DYE,8,
                         ChatColor.of(mysticColor) + "Light Sigil",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_8_Level_Bonus()),
                         ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getLightSigil().getSkillDamage(player)) + " power",
@@ -245,7 +249,7 @@ public class MysticSkillItem {
 
         switch (subClass){
             case Chaos:{
-                return getItem(0,
+                return itemGetter.getItem(Material.PURPLE_DYE,0,
                         ChatColor.of(mysticColor) + "Evil Spirit",
                         ChatColor.of(levelColor) + "Level " + level,
                         ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getMysticBasic().getEvilSpiritDamage(player)) + " power",
@@ -259,7 +263,7 @@ public class MysticSkillItem {
             }
 
             case Arcane:{
-                return getItem(9,
+                return itemGetter.getItem(Material.PURPLE_DYE,9,
                         ChatColor.of(mysticColor) + "Arcane Missiles",
                         ChatColor.of(levelColor) + "Level " + level,
                         ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getArcaneMissiles().getSkillDamage(player)) + " power",
@@ -270,7 +274,7 @@ public class MysticSkillItem {
             }
 
             case Shepard:{
-                return getItem(10,
+                return itemGetter.getItem(Material.PURPLE_DYE,10,
                         ChatColor.of(mysticColor) + "Enlightenment",
                         ChatColor.of(levelColor) + "Level " + level,
                         ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getEnlightenment().getHealPercent(player)) + " heal power",
@@ -292,7 +296,7 @@ public class MysticSkillItem {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        ItemStack basicItem = itemManager.getMysticEquipment().getBaseWeapon(1);
+        ItemStack basicItem = weapon.build();
 
         ItemMeta basicMeta = basicItem.getItemMeta();
         List<String> basicLore = new ArrayList<>();
@@ -301,6 +305,7 @@ public class MysticSkillItem {
         basicLore.add(ChatColor.of(levelColor) + "Level "  + level);
         basicLore.add(ChatColor.of(mysticColor) + String.valueOf(abilityManager.getMysticAbilities().getMysticBasic().getSkillDamage(player)) + " power");
 
+        assert basicMeta != null;
         basicMeta.setLore(basicLore);
         basicItem.setItemMeta(basicMeta);
 
@@ -308,27 +313,6 @@ public class MysticSkillItem {
         return basicItem;
     }
 
-    private ItemStack getItem(int modelData, String name, String ... lore) {
 
-        AttributeModifier zeroer = new AttributeModifier(UUID.randomUUID(), "generic.attackDamage",
-                0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND);
-
-        ItemStack item = new ItemStack(Material.PURPLE_DYE);
-
-        ItemMeta meta = item.getItemMeta();
-        assert meta != null;
-        meta.setDisplayName(name);
-
-        List<String> lores = new ArrayList<>(Arrays.asList(lore));
-
-        meta.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE, zeroer);
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-
-        meta.setLore(lores);
-        meta.setCustomModelData(modelData);
-
-        item.setItemMeta(meta);
-        return item;
-    }
 
 }

@@ -34,6 +34,7 @@ public class MysticaEquipment extends MysticaItem{
     private final EquipmentSlot equipmentSlot;
     private final PlayerClass playerClass;
     private final int level;
+
     private StatType highStat;
     private StatType lowStat;
 

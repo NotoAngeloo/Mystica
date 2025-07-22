@@ -2,8 +2,8 @@ package me.angeloo.mystica.Components.Inventories;
 
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.PlayerClass;
-import me.angeloo.mystica.Utility.SubClass;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
+import me.angeloo.mystica.Utility.Enums.SubClass;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -17,12 +17,9 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import static me.angeloo.mystica.Mystica.assassinColor;
 
 
 public class CompanionInventory implements Listener {

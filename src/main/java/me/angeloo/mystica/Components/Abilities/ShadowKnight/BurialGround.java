@@ -8,7 +8,7 @@ import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
-import me.angeloo.mystica.Utility.SubClass;
+import me.angeloo.mystica.Utility.Enums.SubClass;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;

@@ -134,7 +134,7 @@ public class InventoryEventListener implements Listener {
                 }
 
 
-                //this loop find the slot that selected item is in in the mysticabag
+                //this loop finds the slot that selected item is in the mysticabag
                 for(int i = 0; i< 26; i++){
 
                     ItemStack invItem = bottomInv.getItem(i+9);

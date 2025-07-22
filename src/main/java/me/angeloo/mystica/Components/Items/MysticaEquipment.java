@@ -2,7 +2,7 @@ package me.angeloo.mystica.Components.Items;
 
 import com.google.gson.Gson;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.PlayerClass;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.EquipmentSlot;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;

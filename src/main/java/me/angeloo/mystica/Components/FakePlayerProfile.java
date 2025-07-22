@@ -3,8 +3,8 @@ package me.angeloo.mystica.Components;
 import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
-import me.angeloo.mystica.Utility.PlayerClass;
-import me.angeloo.mystica.Utility.SubClass;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
+import me.angeloo.mystica.Utility.Enums.SubClass;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 

@@ -11,7 +11,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.EquipmentSlot;
 import me.angeloo.mystica.Utility.GearReader;
-import me.angeloo.mystica.Utility.PlayerClass;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;

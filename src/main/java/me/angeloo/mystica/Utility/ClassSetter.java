@@ -5,6 +5,8 @@ import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
+import me.angeloo.mystica.Utility.Enums.SubClass;
 import org.bukkit.Bukkit;
 
 import org.bukkit.entity.Player;

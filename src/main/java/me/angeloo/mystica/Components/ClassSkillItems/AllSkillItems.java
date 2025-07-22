@@ -4,7 +4,7 @@ import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.PlayerClass;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

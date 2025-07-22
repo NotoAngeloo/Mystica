@@ -3,7 +3,7 @@ package me.angeloo.mystica.Components.Inventories;
 import me.angeloo.mystica.Managers.CustomInventoryManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ClassSetter;
-import me.angeloo.mystica.Utility.PlayerClass;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 

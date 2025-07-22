@@ -11,7 +11,7 @@ import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.InventoryItemGetter;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
-import me.angeloo.mystica.Utility.PlayerClass;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;

@@ -126,9 +126,9 @@ commands:
     description: lets mm know when specific skills should be used
     usage: /CompanionNeedsToInterrupt <caster.uuid> <true/false>
     permission: developer
-  Matchmaking:
-    description: opens matchmaking for player
-    usage: /Matchmaking <player> <dungeon>
+  DungeonSelect:
+    description: opens dungeon select for player
+    usage: /DungeonSelect <player>
     permission: developer
   MysticaItem:
     description: allows devs to get unidentified items

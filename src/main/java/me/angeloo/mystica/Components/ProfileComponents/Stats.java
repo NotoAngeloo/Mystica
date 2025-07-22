@@ -1,7 +1,7 @@
 package me.angeloo.mystica.Components.ProfileComponents;
 
-import me.angeloo.mystica.Utility.PlayerClass;
-import me.angeloo.mystica.Utility.SubClass;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
+import me.angeloo.mystica.Utility.Enums.SubClass;
 
 public class Stats {
 

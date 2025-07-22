@@ -2,7 +2,7 @@ package me.angeloo.mystica.Utility.Hud;
 
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.PlayerClass;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.LivingEntity;
 

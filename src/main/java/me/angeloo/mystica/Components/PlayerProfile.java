@@ -2,9 +2,8 @@ package me.angeloo.mystica.Components;
 
 import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.ProfileComponents.*;
-import me.angeloo.mystica.Utility.PlayerClass;
-import me.angeloo.mystica.Utility.SubClass;
-import org.bukkit.inventory.ItemStack;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
+import me.angeloo.mystica.Utility.Enums.SubClass;
 
 public abstract class PlayerProfile implements Profile{
 

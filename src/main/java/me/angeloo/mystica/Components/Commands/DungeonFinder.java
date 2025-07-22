@@ -1,28 +1,27 @@
 package me.angeloo.mystica.Components.Commands;
 
+import me.angeloo.mystica.Components.Inventories.DungeonSelect;
 import me.angeloo.mystica.Components.Inventories.MatchmakingInventory;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class Matchmaking implements CommandExecutor {
+public class DungeonFinder implements CommandExecutor {
 
-    private final MatchmakingInventory matchmakingInventory;
+    private final DungeonSelect dungeonSelect;
 
-    public Matchmaking(Mystica main){
-        matchmakingInventory = main.getMatchmakingInventory();
+    public DungeonFinder(Mystica main){
+        dungeonSelect = main.getDungeonSelect();
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
 
-        if(args.length == 1){
+        if(args.length == 0){
 
             if(!(sender instanceof Player)){
                 sender.sendMessage("only players");
@@ -31,12 +30,12 @@ public class Matchmaking implements CommandExecutor {
 
             Player player = (Player) sender;
 
-            player.openInventory(matchmakingInventory.openDungeonEnter(args[0]));
+            dungeonSelect.openDungeonSelect(player);
 
             return true;
         }
 
-        if(args.length == 2){
+        if(args.length == 1){
 
             Player player = Bukkit.getPlayer(args[0]);
 
@@ -50,7 +49,7 @@ public class Matchmaking implements CommandExecutor {
                 return true;
             }
 
-            player.openInventory(matchmakingInventory.openDungeonEnter(args[1]));
+            dungeonSelect.openDungeonSelect(player);
             return true;
         }
 

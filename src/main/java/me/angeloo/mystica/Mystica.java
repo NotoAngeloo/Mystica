@@ -15,6 +15,7 @@ import me.angeloo.mystica.Utility.*;
 import me.angeloo.mystica.Utility.DamageIndicator.DamageIndicatorApi;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Listeners.GeneralEventListener;
 import me.angeloo.mystica.Utility.Listeners.InventoryEventListener;
 import me.angeloo.mystica.Utility.Listeners.MMListeners;
@@ -44,7 +45,6 @@ public final class Mystica extends JavaPlugin{
     private ProfileFileWriter profileFileWriter;
 
     private MysticaPartyManager mysticaPartyManager;
-    private MatchMakingManager matchMakingManager;
 
     private DailyData dailyData;
     private PathingManager pathingManager;
@@ -84,7 +84,7 @@ public final class Mystica extends JavaPlugin{
     private RefineInventory refineInventory;
     private UpgradeInventory upgradeInventory;
     private EquipmentInventory equipmentInventory;
-    private MatchmakingInventory matchmakingInventory;
+    private DungeonSelect dungeonSelect;
 
     private FirstClearManager firstClearManager;
 
@@ -135,8 +135,6 @@ public final class Mystica extends JavaPlugin{
         creaturesAndCharactersManager = profileManager.getCreaturesAndCharactersManager();
 
         mysticaPartyManager = new MysticaPartyManager(this);
-        matchMakingManager = new MatchMakingManager(this);
-        matchmakingInventory = matchMakingManager.getMatchmakingInventory();
 
         locations = new Locations(this);
         locations.initializeLocationals();
@@ -184,6 +182,7 @@ public final class Mystica extends JavaPlugin{
         refineInventory = new RefineInventory(this);
         upgradeInventory = new UpgradeInventory(this);
         equipmentInventory = new EquipmentInventory(this);
+        dungeonSelect = new DungeonSelect(this);
 
         firstClearManager = new FirstClearManager(this);
         firstClearManager.createOrLoadFolder();
@@ -219,12 +218,12 @@ public final class Mystica extends JavaPlugin{
         getCommand("StopCompanionRotation").setExecutor(new StopCompanionRotation(this));
         getCommand("DisplayInterruptBar").setExecutor(new DisplayInterruptBar(this));
         getCommand("CompanionNeedsToInterrupt").setExecutor(new CompanionNeedsToInterrupt(this));
-        getCommand("Matchmaking").setExecutor(new Matchmaking(this));
+        getCommand("DungeonSelect").setExecutor(new DungeonFinder(this));
         getCommand("MysticaItem").setExecutor(new MysticaItem(this));
 
 
         this.getServer().getPluginManager().registerEvents(new ClassSelectInventory(this), this);
-        this.getServer().getPluginManager().registerEvents(matchmakingInventory, this);
+        this.getServer().getPluginManager().registerEvents(dungeonSelect, this);
 
 
         //SpecInventory specInventory = abilityInventory.getSpecInventory();
@@ -396,11 +395,10 @@ public final class Mystica extends JavaPlugin{
 
     public BossCastingManager getBossCastingManager(){return bossCastingManager;}
 
-    public MatchmakingInventory getMatchmakingInventory(){return matchmakingInventory;}
+    public DungeonSelect getDungeonSelect(){return dungeonSelect;}
 
     public MysticaPartyManager getMysticaPartyManager(){return mysticaPartyManager;}
 
-    public MatchMakingManager getMatchMakingManager(){return matchMakingManager;}
 
     public InventoryItemGetter getItemGetter(){return inventoryItemGetter;}
 

@@ -2,10 +2,18 @@ package me.angeloo.mystica.Utility.Listeners;
 
 
 import me.angeloo.mystica.Components.Inventories.*;
+import me.angeloo.mystica.Components.Inventories.Storage.MysticaBag;
+import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
+import me.angeloo.mystica.Components.Items.StackableItem;
+import me.angeloo.mystica.Components.Items.StackableItemRegistry;
 import me.angeloo.mystica.Managers.CustomInventoryManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.*;
+import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,9 +21,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class InventoryEventListener implements Listener {
 
@@ -23,22 +32,109 @@ public class InventoryEventListener implements Listener {
 
     private final ProfileManager profileManager;
 
-    private final CustomInventoryManager customInventoryManager;
-    private final DisplayWeapons displayWeapons;
-    private final BossLevelInv bossLevelInv;
-    private final Locations locations;
-    private final CustomItemConverter customItemConverter;
+    private final CustomInventoryManager inventoryManager;
+
 
     public InventoryEventListener(Mystica main){
         this.main = main;
         profileManager = main.getProfileManager();
-        customInventoryManager = main.getInventoryManager();
-        displayWeapons = main.getDisplayWeapons();
-        bossLevelInv = new BossLevelInv(main);
-        locations = new Locations(main);
-        customItemConverter = new CustomItemConverter();
+        inventoryManager = main.getInventoryManager();
     }
 
+    @EventHandler
+    public void bagClicks(InventoryClickEvent event){
+
+        //the bag png
+        if(!event.getView().getTitle().contains("\uE05C")){
+            return;
+        }
+
+        event.setCancelled(true);
+
+        //if player clicks an item, move it to the top inventory with options to dismantle or move
+
+        Player player = (Player) event.getWhoClicked();
+
+        Inventory topInv = event.getView().getTopInventory();
+        Inventory bottomInv = event.getView().getBottomInventory();
+
+        int slot = event.getSlot();
+
+        MysticaBagCollection collection = profileManager.getAnyProfile(player).getMysticaBagCollection();
+        MysticaBag currentBag = collection.getBag(inventoryManager.getBagIndex(player));
+
+        if(event.getClickedInventory() == bottomInv){
+
+            ItemStack item = event.getCurrentItem();
+
+            if(item == null){
+                return;
+            }
+
+            topInv.setItem(22, item);
+
+            //-7, title, +7
+            String newTitle = ChatColor.WHITE + "\uF807" + "\uE05D" + "\uF827";
+
+            newTitle = inventoryManager.addBagPng(newTitle);
+
+            event.getView().setTitle(newTitle);
+            return;
+        }
+
+        if(event.getClickedInventory() == topInv){
+
+            ItemStack actionItem = topInv.getItem(22);
+
+            if(actionItem == null){
+                return;
+            }
+
+            ItemMeta meta = actionItem.getItemMeta();
+
+            if(meta == null){
+                return;
+            }
+
+            if(meta.getPersistentDataContainer().isEmpty()){
+                return;
+            }
+
+            List<Integer> discardSlots = new ArrayList<>();
+            discardSlots.add(53);
+            discardSlots.add(52);
+            discardSlots.add(51);
+
+            if(discardSlots.contains(slot)){
+
+                Set<NamespacedKey> keys = meta.getPersistentDataContainer().getKeys();
+
+                if(keys.contains(NamespacedKey.fromString( "mystica:stackable_data"))){
+                    //remove x amount from current bag
+                    //use the registry
+
+                    String name = actionItem.getItemMeta().getDisplayName();
+                    name = name.replaceAll("§.", "");
+
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("identifier", name);
+                    data.put("amount", actionItem.getAmount());
+
+                    StackableItem stackable = StackableItemRegistry.deserialize(data);
+
+                    currentBag.removeAnAmountOfStackables(stackable, actionItem.getAmount());
+
+                    profileManager.getAnyProfile(player).getMysticaBagCollection().openMysticaBag(player, inventoryManager.getBagIndex(player));
+                    return;
+                }
+
+                Bukkit.getLogger().info(String.valueOf(keys));
+
+
+
+            }
+        }
+    }
 
     @EventHandler
     public void menuClick(InventoryClickEvent event){
@@ -117,55 +213,6 @@ public class InventoryEventListener implements Listener {
         event.setCancelled(true);
 
     }
-
-
-    /*@EventHandler
-    public void onBossInvClick(InventoryClickEvent event){
-        if(!event.getView().getTitle().equals("Change Boss Level")) {
-            return;
-        }
-        event.setCancelled(true);
-
-        Player player = (Player) event.getWhoClicked();
-
-        if(event.getClickedInventory() == null){
-            return;
-        }
-
-        if(event.getClickedInventory().getHolder() instanceof Player){
-            //no player inv stuff
-            return;
-        }
-
-        if(event.getInventory().getItem(event.getSlot()) == null){
-            return;
-        }
-
-        if(!event.getClick().isLeftClick() && !event.getClick().isRightClick()){
-            //only left clicks allowed in this fine establishment
-            return;
-        }
-
-        int level = profileManager.getAnyProfile(player).getPlayerBossLevel().getBossLevel();
-
-        switch ((event.getCurrentItem().getItemMeta().getDisplayName())) {
-            case "Decrease":{
-                if(level <=1){
-                    player.sendMessage("You cannot go any lower");
-                    break;
-                }
-                profileManager.getAnyProfile(player).getPlayerBossLevel().setBossLevel(level - 1);
-                break;
-            }
-            case "Increase":{
-                profileManager.getAnyProfile(player).getPlayerBossLevel().setBossLevel(level + 1);
-                break;
-            }
-        }
-
-        player.openInventory(bossLevelInv.openBossLevelInv(player));
-    }*/
-
 
 
 }

@@ -244,6 +244,7 @@ public final class Mystica extends JavaPlugin{
 
 
 
+
         //NaturalRegenTick regenTick = new NaturalRegenTick(this);
         //fregenTick.runTaskTimer(this, 0, 40);
         RezTick rezTick = new RezTick(this);

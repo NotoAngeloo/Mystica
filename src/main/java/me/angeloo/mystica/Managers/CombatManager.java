@@ -19,7 +19,6 @@ import java.util.*;
 
 public class CombatManager {
 
-    private final Mystica main;
     private final DisplayWeapons displayWeapons;
     private final ProfileManager profileManager;
     private final MysticaPartyManager mysticaPartyManager;
@@ -30,7 +29,6 @@ public class CombatManager {
     private final Map<UUID, Long> lastCalledCombat = new HashMap<>();
 
     public CombatManager(Mystica main, AbilityManager manager){
-        this.main = main;
         profileManager = main.getProfileManager();
         displayWeapons = main.getDisplayWeapons();
         mysticaPartyManager = main.getMysticaPartyManager();

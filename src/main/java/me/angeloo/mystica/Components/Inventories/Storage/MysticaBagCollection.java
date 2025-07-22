@@ -1,11 +1,11 @@
 package me.angeloo.mystica.Components.Inventories.Storage;
 
+import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.Components.Items.MysticaItem;
 import me.angeloo.mystica.Components.Items.StackableItem;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.FormattableFlags;
 import java.util.List;
 
 public class MysticaBagCollection {
@@ -123,6 +123,17 @@ public class MysticaBagCollection {
         }
 
         return amount;
+    }
+
+    public List<MysticaEquipment> getBagEquipment(){
+
+        List<MysticaEquipment> allEquipment = new ArrayList<>();
+
+        for(MysticaBag bag : bags){
+            allEquipment.addAll(bag.getEquipment());
+        }
+
+        return allEquipment;
     }
 
 }

@@ -181,5 +181,18 @@ public class MysticaBag {
         return amount;
     }
 
+    public List<MysticaEquipment> getEquipment(){
+
+        List<MysticaEquipment> equipment = new ArrayList<>();
+
+        for(MysticaItem item : bag){
+            if(item instanceof MysticaEquipment valid){
+                equipment.add(valid);
+            }
+        }
+
+        return equipment;
+    }
+
 
 }

@@ -4,6 +4,7 @@ package me.angeloo.mystica.Utility.Listeners;
 import me.angeloo.mystica.Components.Inventories.*;
 import me.angeloo.mystica.Components.Inventories.Storage.MysticaBag;
 import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
+import me.angeloo.mystica.Components.Items.MysticaItem;
 import me.angeloo.mystica.Components.Items.StackableItem;
 import me.angeloo.mystica.Components.Items.StackableItemRegistry;
 import me.angeloo.mystica.Managers.CustomInventoryManager;
@@ -64,6 +65,10 @@ public class InventoryEventListener implements Listener {
         MysticaBag currentBag = collection.getBag(inventoryManager.getBagIndex(player));
 
         if(event.getClickedInventory() == bottomInv){
+
+            if(slot < 9){
+                return;
+            }
 
             ItemStack item = event.getCurrentItem();
 
@@ -128,10 +133,23 @@ public class InventoryEventListener implements Listener {
                     return;
                 }
 
-                Bukkit.getLogger().info(String.valueOf(keys));
 
+                //this loop find the slot that selected item is in in the mysticabag
+                for(int i = 0; i< 26; i++){
 
+                    ItemStack invItem = bottomInv.getItem(i+9);
 
+                    if(invItem == null){
+                        continue;
+                    }
+
+                    if(invItem.equals(actionItem)){
+                        MysticaItem bagItem = currentBag.getBag().get(i);
+                        currentBag.removeFromBag(bagItem);
+                        profileManager.getAnyProfile(player).getMysticaBagCollection().openMysticaBag(player, inventoryManager.getBagIndex(player));
+                        break;
+                    }
+                }
             }
         }
     }

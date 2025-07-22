@@ -64,11 +64,11 @@ public class MysticaItem implements CommandExecutor {
 
             profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new SoulStone(66));
 
-            //profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new UnidentifiedItem(EquipmentSlot.WEAPON, 1, 1));
+            profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new UnidentifiedItem(EquipmentSlot.WEAPON, 1, 1));
             //profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new UnidentifiedItem(EquipmentSlot.WEAPON, 1, 2));
             //profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new UnidentifiedItem(EquipmentSlot.WEAPON, 1, 3));
 
-            //profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new MysticaEquipment(EquipmentSlot.WEAPON, profileManager.getAnyProfile(player).getPlayerClass(), 2));
+            profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new MysticaEquipment(EquipmentSlot.WEAPON, profileManager.getAnyProfile(player).getPlayerClass(), 2));
 
             return true;
         }

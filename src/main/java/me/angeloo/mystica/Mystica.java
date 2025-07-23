@@ -72,6 +72,8 @@ public final class Mystica extends JavaPlugin{
     private AbilityManager abilityManager;
     private DeathManager deathManager;
     private CustomInventoryManager customInventoryManager;
+    private MatchMakingManager matchMakingManager;
+
     private PveChecker pveChecker;
     private DamageCalculator damageCalculator;
     private ChangeResourceHandler changeResourceHandler;
@@ -159,7 +161,6 @@ public final class Mystica extends JavaPlugin{
         dpsManager = new DpsManager(this);
         changeResourceHandler = new ChangeResourceHandler(this);
 
-
         damageCalculator = new DamageCalculator(this);
 
         abilityManager = new AbilityManager(this);
@@ -182,6 +183,7 @@ public final class Mystica extends JavaPlugin{
         refineInventory = new RefineInventory(this);
         upgradeInventory = new UpgradeInventory(this);
         equipmentInventory = new EquipmentInventory(this);
+        matchMakingManager = new MatchMakingManager(this);
         dungeonSelect = new DungeonSelect(this);
 
         firstClearManager = new FirstClearManager(this);
@@ -399,6 +401,7 @@ public final class Mystica extends JavaPlugin{
 
     public MysticaPartyManager getMysticaPartyManager(){return mysticaPartyManager;}
 
+    public MatchMakingManager getMatchMakingManager(){return matchMakingManager;}
 
     public InventoryItemGetter getItemGetter(){return inventoryItemGetter;}
 

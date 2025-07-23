@@ -1,7 +1,6 @@
 package me.angeloo.mystica.Components.Commands;
 
 import me.angeloo.mystica.Components.Inventories.DungeonSelect;
-import me.angeloo.mystica.Components.Inventories.MatchmakingInventory;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

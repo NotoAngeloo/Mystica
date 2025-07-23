@@ -1,6 +1,8 @@
 package me.angeloo.mystica.Components.Inventories;
 
 import me.angeloo.mystica.Managers.CustomInventoryManager;
+import me.angeloo.mystica.Managers.MatchMakingManager;
+import me.angeloo.mystica.Managers.MysticaPartyManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import net.md_5.bungee.api.ChatColor;
@@ -18,10 +20,14 @@ public class DungeonSelect implements Listener {
 
     private final ProfileManager profileManager;
     private final CustomInventoryManager customInventoryManager;
+    private final MysticaPartyManager mysticaPartyManager;
+    private final MatchMakingManager matchMakingManager;
 
     public DungeonSelect(Mystica main){
         profileManager = main.getProfileManager();
         customInventoryManager = main.getInventoryManager();
+        mysticaPartyManager = main.getMysticaPartyManager();
+        matchMakingManager = main.getMatchMakingManager();
     }
 
     public void openDungeonSelect(Player player){
@@ -116,15 +122,30 @@ public class DungeonSelect implements Listener {
                 return;
             }
 
+            if(mysticaPartyManager.getMPartyLeader(player) != player){
+                return;
+            }
+
             List<Integer> matchSlots = new ArrayList<>();
             matchSlots.add(3);
             matchSlots.add(4);
             matchSlots.add(5);
 
+            if(matchSlots.contains(slot)){
+
+
+                return;
+            }
+
             List<Integer> botSlots = new ArrayList<>();
             botSlots.add(5);
             botSlots.add(7);
             botSlots.add(8);
+
+            if(botSlots.contains(slot)){
+                matchMakingManager.fillWithBots(player);
+                return;
+            }
 
         }
     }

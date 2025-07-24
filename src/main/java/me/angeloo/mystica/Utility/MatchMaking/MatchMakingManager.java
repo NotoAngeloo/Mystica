@@ -1,8 +1,12 @@
-package me.angeloo.mystica.Managers;
+package me.angeloo.mystica.Utility.MatchMaking;
 
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import io.lumine.mythic.bukkit.MythicBukkit;
+import me.angeloo.mystica.Managers.CustomInventoryManager;
+import me.angeloo.mystica.Managers.MysticaPartyManager;
+import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.Enums.Dungeon;
 import me.angeloo.mystica.Utility.Enums.Role;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import org.bukkit.Bukkit;
@@ -21,12 +25,90 @@ public class MatchMakingManager {
     private final CustomInventoryManager customInventoryManager;
     private final MysticaPartyManager mysticaPartyManager;
 
+    private final Map<Dungeon, MatchMaker> dungeonQueues = new EnumMap<>(Dungeon.class);
+    private final Map<UUID, Dungeon> playerQueueMap = new HashMap<>();
 
     public MatchMakingManager(Mystica main){
         this.main = main;
         profileManager = main.getProfileManager();
         customInventoryManager = main.getInventoryManager();
         mysticaPartyManager = main.getMysticaPartyManager();
+
+        for(Dungeon dungeon : Dungeon.values()){
+            dungeonQueues.put(dungeon, new MatchMaker());
+        }
+    }
+
+    public void matchMake(Player player){
+
+        Player leaderPlayer = mysticaPartyManager.getLeaderPlayer(player);
+
+        if(player != leaderPlayer){
+            return;
+        }
+
+        Dungeon dungeon;
+
+        switch (customInventoryManager.getDungeonIndex(player)) {
+            case 0 -> {
+                dungeon = Dungeon.Heart_of_Corruption;
+            }
+            case 1 -> {
+                dungeon = Dungeon.Acolyte_of_Chaos;
+            }
+            case 2 -> {
+                dungeon = Dungeon.Cave_of_Lindwyrm;
+            }
+            case 3 -> {
+                dungeon = Dungeon.Curse_of_Shadow;
+            }
+            default -> {
+                return;
+            }
+        }
+
+        MatchMaker matchMaker = dungeonQueues.get(dungeon);
+
+        if(matchMaker == null){
+            Bukkit.getLogger().info("queue for " + dungeon.name() + " doesn't exist");
+            return;
+        }
+
+
+        List<MatchMakingPlayer> mPlayers = new ArrayList<>();
+        for(LivingEntity entity : mysticaPartyManager.getMysticaParty(leaderPlayer)){
+
+            if(playerQueueMap.containsKey(entity.getUniqueId())){
+                Dungeon previousDungeon = playerQueueMap.get(entity.getUniqueId());
+                MatchMaker previousMatchMaker =  dungeonQueues.get(previousDungeon);
+
+                if(previousMatchMaker != null){
+                    previousMatchMaker.removePlayerFromQueue(entity.getUniqueId());
+                }
+
+            }
+
+            playerQueueMap.put(entity.getUniqueId(), dungeon);
+            Role role = getRole(entity);
+            mPlayers.add(new MatchMakingPlayer(entity.getUniqueId(), role));
+        }
+
+        MatchMakingParty mParty = new MatchMakingParty(mPlayers);
+
+        dungeonQueues.get(dungeon).addToQueue(mParty);
+
+
+    }
+
+    //find instances in which to use this. ie: player leaves party.
+    public void removePlayerFromAllQueues(UUID playerId) {
+        Dungeon dungeon = playerQueueMap.remove(playerId);
+        if (dungeon != null) {
+            MatchMaker matchmaker = dungeonQueues.get(dungeon);
+            if (matchmaker != null) {
+                matchmaker.removePlayerFromQueue(playerId);
+            }
+        }
     }
 
 
@@ -43,17 +125,17 @@ public class MatchMakingManager {
         //does sending the leader send all others?
         switch (customInventoryManager.getDungeonIndex(player)) {
             case 0 -> {
-                Mystica.dungeonsApi().initiateDungeonForPlayer(player, "Heart_of_Corruption");
+                Mystica.dungeonsApi().initiateDungeonForPlayer(player, Dungeon.Heart_of_Corruption.name());
                 dungeonRequiresInterrupt = true;
             }
             case 1 -> {
-                Mystica.dungeonsApi().initiateDungeonForPlayer(player, "Acolyte_of_Chaos");
+                Mystica.dungeonsApi().initiateDungeonForPlayer(player, Dungeon.Acolyte_of_Chaos.name());
             }
             case 2 -> {
-                Mystica.dungeonsApi().initiateDungeonForPlayer(player, "Cave_of_Lindwyrm");
+                Mystica.dungeonsApi().initiateDungeonForPlayer(player, Dungeon.Cave_of_Lindwyrm.name());
             }
             case 3 -> {
-                Mystica.dungeonsApi().initiateDungeonForPlayer(player, "Curse_of_Shadow");
+                Mystica.dungeonsApi().initiateDungeonForPlayer(player, Dungeon.Curse_of_Shadow.name());
             }
         }
 
@@ -75,7 +157,10 @@ public class MatchMakingManager {
         dpsCompanionNames.add("Darwin");
         dpsCompanionNames.add("Luna");
         dpsCompanionNames.add("Slippy");
-        Collections.shuffle(dpsCompanionNames);
+
+        if(!dungeonRequiresInterrupt){
+            Collections.shuffle(dpsCompanionNames);
+        }
 
         boolean finalTank = tank;
         boolean finalHeal = healer;
@@ -163,6 +248,7 @@ public class MatchMakingManager {
 
 
     }
+
 
     private Role getRole(LivingEntity partyMember){
 

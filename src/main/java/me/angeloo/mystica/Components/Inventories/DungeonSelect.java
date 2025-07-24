@@ -1,7 +1,7 @@
 package me.angeloo.mystica.Components.Inventories;
 
 import me.angeloo.mystica.Managers.CustomInventoryManager;
-import me.angeloo.mystica.Managers.MatchMakingManager;
+import me.angeloo.mystica.Utility.MatchMaking.MatchMakingManager;
 import me.angeloo.mystica.Managers.MysticaPartyManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -132,8 +132,7 @@ public class DungeonSelect implements Listener {
             matchSlots.add(5);
 
             if(matchSlots.contains(slot)){
-
-
+                matchMakingManager.matchMake(player);
                 return;
             }
 

@@ -45,113 +45,116 @@ public class InventoryEventListener implements Listener {
     @EventHandler
     public void bagClicks(InventoryClickEvent event){
 
-        //the bag png
-        if(!event.getView().getTitle().contains("\uE05C")){
-            return;
-        }
+        if(event.getView().getTitle().equalsIgnoreCase(org.bukkit.ChatColor.WHITE + "\uF808" + "\uE05C")
+        || event.getView().getTitle().equalsIgnoreCase(ChatColor.WHITE + "\uF807" + "\uE05D" + "\uF827" + "\uF80D" + "\uF82B\uF828\uF826" + "\uE05C")){
 
-        event.setCancelled(true);
+            event.setCancelled(true);
 
-        //if player clicks an item, move it to the top inventory with options to dismantle or move
+            //if player clicks an item, move it to the top inventory with options to dismantle or move
 
-        Player player = (Player) event.getWhoClicked();
+            Player player = (Player) event.getWhoClicked();
 
-        Inventory topInv = event.getView().getTopInventory();
-        Inventory bottomInv = event.getView().getBottomInventory();
+            Inventory topInv = event.getView().getTopInventory();
+            Inventory bottomInv = event.getView().getBottomInventory();
 
-        int slot = event.getSlot();
+            int slot = event.getSlot();
 
-        MysticaBagCollection collection = profileManager.getAnyProfile(player).getMysticaBagCollection();
-        MysticaBag currentBag = collection.getBag(inventoryManager.getBagIndex(player));
+            MysticaBagCollection collection = profileManager.getAnyProfile(player).getMysticaBagCollection();
+            MysticaBag currentBag = collection.getBag(inventoryManager.getBagIndex(player));
 
-        if(event.getClickedInventory() == bottomInv){
+            if(event.getClickedInventory() == bottomInv){
 
-            if(slot < 9){
-                return;
-            }
-
-            ItemStack item = event.getCurrentItem();
-
-            if(item == null){
-                return;
-            }
-
-            topInv.setItem(22, item);
-
-            //-7, title, +7
-            String newTitle = ChatColor.WHITE + "\uF807" + "\uE05D" + "\uF827";
-
-            newTitle = inventoryManager.addBagPng(newTitle);
-
-            event.getView().setTitle(newTitle);
-            return;
-        }
-
-        if(event.getClickedInventory() == topInv){
-
-            ItemStack actionItem = topInv.getItem(22);
-
-            if(actionItem == null){
-                return;
-            }
-
-            ItemMeta meta = actionItem.getItemMeta();
-
-            if(meta == null){
-                return;
-            }
-
-            if(meta.getPersistentDataContainer().isEmpty()){
-                return;
-            }
-
-            List<Integer> discardSlots = new ArrayList<>();
-            discardSlots.add(53);
-            discardSlots.add(52);
-            discardSlots.add(51);
-
-            if(discardSlots.contains(slot)){
-
-                Set<NamespacedKey> keys = meta.getPersistentDataContainer().getKeys();
-
-                if(keys.contains(NamespacedKey.fromString( "mystica:stackable_data"))){
-                    //remove x amount from current bag
-                    //use the registry
-
-                    String name = actionItem.getItemMeta().getDisplayName();
-                    name = name.replaceAll("§.", "");
-
-                    Map<String, Object> data = new HashMap<>();
-                    data.put("identifier", name);
-                    data.put("amount", actionItem.getAmount());
-
-                    StackableItem stackable = StackableItemRegistry.deserialize(data);
-
-                    currentBag.removeAnAmountOfStackables(stackable, actionItem.getAmount());
-
-                    profileManager.getAnyProfile(player).getMysticaBagCollection().openMysticaBag(player, inventoryManager.getBagIndex(player));
+                if(slot < 9){
                     return;
                 }
 
+                ItemStack item = event.getCurrentItem();
 
-                //this loop finds the slot that selected item is in the mysticabag
-                for(int i = 0; i< 26; i++){
+                if(item == null){
+                    return;
+                }
 
-                    ItemStack invItem = bottomInv.getItem(i+9);
+                topInv.setItem(22, item);
 
-                    if(invItem == null){
-                        continue;
+                //-7, title, +7
+                String newTitle = ChatColor.WHITE + "\uF807" + "\uE05D" + "\uF827";
+
+                newTitle = inventoryManager.addBagPng(newTitle);
+
+                event.getView().setTitle(newTitle);
+                return;
+            }
+
+            if(event.getClickedInventory() == topInv){
+
+                ItemStack actionItem = topInv.getItem(22);
+
+                if(actionItem == null){
+                    return;
+                }
+
+                ItemMeta meta = actionItem.getItemMeta();
+
+                if(meta == null){
+                    return;
+                }
+
+                if(meta.getPersistentDataContainer().isEmpty()){
+                    return;
+                }
+
+                List<Integer> discardSlots = new ArrayList<>();
+                discardSlots.add(53);
+                discardSlots.add(52);
+                discardSlots.add(51);
+
+                if(discardSlots.contains(slot)){
+
+                    Set<NamespacedKey> keys = meta.getPersistentDataContainer().getKeys();
+
+                    if(keys.contains(NamespacedKey.fromString( "mystica:stackable_data"))){
+                        //remove x amount from current bag
+                        //use the registry
+
+                        String name = actionItem.getItemMeta().getDisplayName();
+                        name = name.replaceAll("§.", "");
+
+                        Map<String, Object> data = new HashMap<>();
+                        data.put("identifier", name);
+                        data.put("amount", actionItem.getAmount());
+
+                        StackableItem stackable = StackableItemRegistry.deserialize(data);
+
+                        currentBag.removeAnAmountOfStackables(stackable, actionItem.getAmount());
+
+                        profileManager.getAnyProfile(player).getMysticaBagCollection().openMysticaBag(player, inventoryManager.getBagIndex(player));
+                        return;
                     }
 
-                    if(invItem.equals(actionItem)){
-                        MysticaItem bagItem = currentBag.getBag().get(i);
-                        currentBag.removeFromBag(bagItem);
-                        profileManager.getAnyProfile(player).getMysticaBagCollection().openMysticaBag(player, inventoryManager.getBagIndex(player));
-                        break;
+
+                    //this loop finds the slot that selected item is in the mysticabag
+                    for(int i = 0; i< 26; i++){
+
+                        ItemStack invItem = bottomInv.getItem(i+9);
+
+                        if(invItem == null){
+                            continue;
+                        }
+
+                        if(invItem.equals(actionItem)){
+                            MysticaItem bagItem = currentBag.getBag().get(i);
+                            currentBag.removeFromBag(bagItem);
+                            profileManager.getAnyProfile(player).getMysticaBagCollection().openMysticaBag(player, inventoryManager.getBagIndex(player));
+                            break;
+                        }
                     }
                 }
             }
         }
+
+
+
+
     }
 
     @EventHandler

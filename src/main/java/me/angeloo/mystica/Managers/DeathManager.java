@@ -9,6 +9,7 @@ import me.angeloo.mystica.CustomEvents.MysticaPlayerDeathEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.Enums.BarType;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -110,7 +111,7 @@ public class DeathManager {
         if(target instanceof Player){
             ((Player) target).setGameMode(GameMode.SURVIVAL);
             ((Player) target).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(""));
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player) target, "resource", true));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player) target, BarType.Resource, true));
             ((Player)target).getInventory().clear();
         }
 
@@ -135,7 +136,7 @@ public class DeathManager {
                             livingEntity.teleport(target.getWorld().getSpawnLocation());
                             playerNowLive(livingEntity, false, null);
                             Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent(livingEntity, "reset"));
-                            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player) target, "team", true));
+                            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player) target, BarType.Team, true));
                         }
 
 

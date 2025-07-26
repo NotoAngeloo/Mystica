@@ -4,6 +4,7 @@ import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.Enums.BarType;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -61,7 +62,7 @@ public class BossCastingManager {
                             continue;
                         }
                         Player player = (Player) enemy;
-                        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "target", true));
+                        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Target, true));
                     }
                 });
 

@@ -1,6 +1,8 @@
 package me.angeloo.mystica.CustomEvents;
 
 
+import me.angeloo.mystica.Utility.Enums.BarType;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -11,19 +13,19 @@ public class HudUpdateEvent extends Event {
 
     private final Player player;
 
-    private final String barType;
+    private final BarType barType;
     private boolean forced;
 
 
 
-    public HudUpdateEvent(Player player, String barType, boolean forced){
+    public HudUpdateEvent(Player player, BarType barType, boolean forced){
         this.player = player;
         this.barType = barType;
         this.forced = forced;
     }
 
     public Player getPlayer(){return player;}
-    public String getBarType(){return barType;}
+    public BarType getBarType(){return barType;}
     public boolean getIfForced(){return forced;}
 
     public HandlerList getHandlers() {

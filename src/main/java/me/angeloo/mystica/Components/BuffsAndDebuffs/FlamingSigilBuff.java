@@ -2,6 +2,7 @@ package me.angeloo.mystica.Components.BuffsAndDebuffs;
 
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.Enums.BarType;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -41,7 +42,7 @@ public class FlamingSigilBuff {
 
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
         }
 
         if(removeAttackBuffTaskMap.containsKey(entity.getUniqueId())){
@@ -78,7 +79,7 @@ public class FlamingSigilBuff {
         attackAmountMap.remove(entity.getUniqueId());
         if(entity instanceof Player){
             Bukkit.getScheduler().runTask(main,()->{
-                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player)entity, "status", false));
+                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player)entity, BarType.Status, false));
             });
 
         }
@@ -97,7 +98,7 @@ public class FlamingSigilBuff {
 
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
         }
 
         if(removeHealthBuffTaskMap.containsKey(entity.getUniqueId())){
@@ -134,7 +135,7 @@ public class FlamingSigilBuff {
         healthAmountMap.remove(entity.getUniqueId());
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
         }
     }
 

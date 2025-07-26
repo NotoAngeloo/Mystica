@@ -5,6 +5,7 @@ import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import org.bukkit.Bukkit;
@@ -552,7 +553,7 @@ public class AbilityManager {
         castMap.put(caster, casting);
         if(caster instanceof Player){
             Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
         }
 
     }
@@ -565,7 +566,7 @@ public class AbilityManager {
         Player player = (Player) caster;
 
         percentCastBar.put(caster, percent);
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "cast", false));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Cast, false));
     }
     public double getCastPercent(Player player){
         return percentCastBar.getOrDefault(player, 0.0);

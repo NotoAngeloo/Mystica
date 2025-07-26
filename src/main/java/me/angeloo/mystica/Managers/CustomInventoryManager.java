@@ -1,5 +1,9 @@
 package me.angeloo.mystica.Managers;
 
+import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.Enums.Role;
+import me.angeloo.mystica.Utility.Enums.SubClass;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -8,11 +12,15 @@ import java.util.UUID;
 
 public class CustomInventoryManager {
 
+    private final ProfileManager profileManager;
     private final Map<UUID, Integer> bagIndex = new HashMap<>();
     private final Map<UUID, Integer> classIndex = new HashMap<>();
     private final Map<UUID, Integer> dungeonIndex = new HashMap<>();
+    private final Map<UUID, Integer> partyIndex = new HashMap<>();
+    private final Map<UUID, Role> roleFilter= new HashMap<>();
 
-    public CustomInventoryManager(){
+    public CustomInventoryManager(Mystica main){
+        profileManager = main.getProfileManager();
     }
 
     public int getBagIndex(Player player){
@@ -26,21 +34,6 @@ public class CustomInventoryManager {
 
     public void setBagIndex(Player player, Integer index){
         bagIndex.put(player.getUniqueId(), index);
-    }
-
-
-    public int getClassIndex(Player player){
-
-        if(!classIndex.containsKey(player.getUniqueId())){
-            classIndex.put(player.getUniqueId(), 0);
-        }
-
-        return classIndex.get(player.getUniqueId());
-    }
-
-
-    public void setClassIndex(Player player, Integer index){
-        classIndex.put(player.getUniqueId(), index);
     }
 
     public String addBagPng(String originalTitle){
@@ -62,6 +55,21 @@ public class CustomInventoryManager {
 
         return String.valueOf(newTitle);
     }
+
+    public int getClassIndex(Player player){
+
+        if(!classIndex.containsKey(player.getUniqueId())){
+            classIndex.put(player.getUniqueId(), 0);
+        }
+
+        return classIndex.get(player.getUniqueId());
+    }
+
+
+    public void setClassIndex(Player player, Integer index){
+        classIndex.put(player.getUniqueId(), index);
+    }
+
 
     public int getDungeonIndex(Player player){
 
@@ -93,6 +101,43 @@ public class CustomInventoryManager {
 
     public void setDungeonIndex(Player player, Integer index){
         dungeonIndex.put(player.getUniqueId(), index);
+    }
+
+    public int getPartyIndex(Player player){
+        if(!partyIndex.containsKey(player.getUniqueId())){
+            partyIndex.put(player.getUniqueId(), 0);
+        }
+        return partyIndex.get(player.getUniqueId());
+    }
+
+    public void setPartyIndex(Player player, Integer index){
+        partyIndex.put(player.getUniqueId(), index);
+    }
+
+    public Role getRoleFilter(Player player){
+        return roleFilter.getOrDefault(player.getUniqueId(), Role.None);
+    }
+
+    public void setRoleFilter(Player player, Role role){
+        roleFilter.put(player.getUniqueId(), role);
+    }
+
+    public Role getRole(LivingEntity partyMember){
+
+        SubClass subClass = profileManager.getAnyProfile(partyMember).getPlayerSubclass();
+
+        switch (subClass){
+            case Shepard, Divine -> {
+                return Role.Healer;
+            }
+            case Gladiator, Blood, Templar ->{
+                return Role.Tank;
+            }
+            default -> {
+                return Role.Damage;
+            }
+        }
+
     }
 
 }

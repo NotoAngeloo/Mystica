@@ -12,6 +12,7 @@ import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DailyData;
 import me.angeloo.mystica.Utility.DamageIndicator.DamageIndicatorCalculator;
+import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
@@ -291,7 +292,7 @@ public class ChangeResourceHandler {
         player.setHealth(hearts);
 
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(player, false));
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource", false));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource, false));
 
         lastDamaged.put(player.getUniqueId(), (System.currentTimeMillis()/1000));
     }
@@ -381,7 +382,7 @@ public class ChangeResourceHandler {
         player.setHealth(hearts);
 
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(player, true));
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource", false));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource, false));
 
     }
 

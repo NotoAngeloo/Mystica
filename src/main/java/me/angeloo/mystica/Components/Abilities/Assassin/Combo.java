@@ -4,6 +4,7 @@ import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import org.bukkit.Bukkit;
@@ -46,7 +47,7 @@ public class Combo {
 
         if(caster instanceof Player){
             Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
         }
 
         cooldownDisplayer.displayCooldown(caster, 3);
@@ -54,7 +55,7 @@ public class Combo {
 
         if(caster instanceof Player){
             Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource", false));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource, false));
         }
     }
 
@@ -69,7 +70,7 @@ public class Combo {
 
         if(caster instanceof Player){
             Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
         }
 
 
@@ -78,7 +79,7 @@ public class Combo {
 
         if(caster instanceof Player){
             Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource", false));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource, false));
         }
 
         return current;

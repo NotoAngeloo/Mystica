@@ -38,9 +38,8 @@ public class SkinGrabber {
         BufferedImage skin = getBufferedImage(player);
 
         if(skin == null){
-            Bukkit.getLogger().info("skin null");
-            //have a default stave skin
-            faceMap.put(player.getUniqueId(), "\uE144");
+            //-25 to not mess up alignment
+            faceMap.put(player.getUniqueId(), "\uE144" + "\uF809\uF808\uF801");
             return;
         }
 
@@ -50,40 +49,31 @@ public class SkinGrabber {
 
         for(int y = 0; y<8; y++){
 
-            switch (y){
-                case 0:{
+            switch (y) {
+                case 0 -> {
                     currentUnicode = "\uE13B";
-                    break;
                 }
-                case 1:{
+                case 1 -> {
                     currentUnicode = "\uE13C";
-                    break;
                 }
-                case 2:{
+                case 2 -> {
                     currentUnicode = "\uE13D";
-                    break;
                 }
-                case 3:{
+                case 3 -> {
                     currentUnicode = "\uE13E";
-                    break;
                 }
-                case 4:{
+                case 4 -> {
                     currentUnicode = "\uE13F";
-                    break;
                 }
-                case 5:{
+                case 5 -> {
                     currentUnicode = "\uE140";
-                    break;
                 }
-                case 6:{
+                case 6 -> {
                     currentUnicode = "\uE141";
-                    break;
                 }
-                case 7:{
+                case 7 -> {
                     currentUnicode = "\uE142";
-                    break;
                 }
-
             }
 
             for(int x = 0; x<8;x++){
@@ -112,58 +102,46 @@ public class SkinGrabber {
 
         BufferedImage skin = getBufferedImage(player);
 
+        //test alignment this when i have more than a handful of testers
         if (skin == null) {
-            Bukkit.getLogger().info("skin null");
-            //have a default steve skin
-            faceMap.put(player.getUniqueId(), "\uE144");
+            //have a default steve skin of different ascents
+            //squad0Face.put(player.getUniqueId(), )
             return;
         }
 
         StringBuilder face = new StringBuilder();
 
         switch (squadSlot) {
-
-            case 0:
-            case 1:
-            case 2:{
+            case 0, 1, 2 -> {
                 String currentUnicode = "\uE22C";
 
                 for (int y = 0; y < 8; y++) {
 
                     switch (y) {
-                        case 0: {
+                        case 0 -> {
                             currentUnicode = "\uE22C";
-                            break;
                         }
-                        case 1: {
+                        case 1 -> {
                             currentUnicode = "\uE22D";
-                            break;
                         }
-                        case 2: {
+                        case 2 -> {
                             currentUnicode = "\uE22E";
-                            break;
                         }
-                        case 3: {
+                        case 3 -> {
                             currentUnicode = "\uE22F";
-                            break;
                         }
-                        case 4: {
+                        case 4 -> {
                             currentUnicode = "\uE230";
-                            break;
                         }
-                        case 5: {
+                        case 5 -> {
                             currentUnicode = "\uE231";
-                            break;
                         }
-                        case 6: {
+                        case 6 -> {
                             currentUnicode = "\uE232";
-                            break;
                         }
-                        case 7: {
+                        case 7 -> {
                             currentUnicode = "\uE233";
-                            break;
                         }
-
                     }
 
                     for (int x = 0; x < 8; x++) {
@@ -184,49 +162,37 @@ public class SkinGrabber {
 
                 }
 
-                break;
             }
-            case 3:
-            case 4:
-            case 5:{
+            case 3, 4, 5 -> {
                 String currentUnicode = "\uE234";
 
                 for (int y = 0; y < 8; y++) {
 
                     switch (y) {
-                        case 0: {
+                        case 0 -> {
                             currentUnicode = "\uE234";
-                            break;
                         }
-                        case 1: {
+                        case 1 -> {
                             currentUnicode = "\uE235";
-                            break;
                         }
-                        case 2: {
+                        case 2 -> {
                             currentUnicode = "\uE236";
-                            break;
                         }
-                        case 3: {
+                        case 3 -> {
                             currentUnicode = "\uE237";
-                            break;
                         }
-                        case 4: {
+                        case 4 -> {
                             currentUnicode = "\uE238";
-                            break;
                         }
-                        case 5: {
+                        case 5 -> {
                             currentUnicode = "\uE239";
-                            break;
                         }
-                        case 6: {
+                        case 6 -> {
                             currentUnicode = "\uE23A";
-                            break;
                         }
-                        case 7: {
+                        case 7 -> {
                             currentUnicode = "\uE23B";
-                            break;
                         }
-
                     }
 
                     for (int x = 0; x < 8; x++) {
@@ -247,50 +213,37 @@ public class SkinGrabber {
 
                 }
 
-                break;
-
             }
-            case 6:
-            case 7:
-            case 8:{
+            case 6, 7, 8 -> {
                 String currentUnicode = "\uE23C";
 
                 for (int y = 0; y < 8; y++) {
 
                     switch (y) {
-                        case 0: {
+                        case 0 -> {
                             currentUnicode = "\uE23C";
-                            break;
                         }
-                        case 1: {
+                        case 1 -> {
                             currentUnicode = "\uE23D";
-                            break;
                         }
-                        case 2: {
+                        case 2 -> {
                             currentUnicode = "\uE23E";
-                            break;
                         }
-                        case 3: {
+                        case 3 -> {
                             currentUnicode = "\uE23F";
-                            break;
                         }
-                        case 4: {
+                        case 4 -> {
                             currentUnicode = "\uE240";
-                            break;
                         }
-                        case 5: {
+                        case 5 -> {
                             currentUnicode = "\uE241";
-                            break;
                         }
-                        case 6: {
+                        case 6 -> {
                             currentUnicode = "\uE242";
-                            break;
                         }
-                        case 7: {
+                        case 7 -> {
                             currentUnicode = "\uE243";
-                            break;
                         }
-
                     }
 
                     for (int x = 0; x < 8; x++) {
@@ -311,32 +264,22 @@ public class SkinGrabber {
 
                 }
 
-                break;
-
             }
-
         }
 
-        switch (squadSlot){
-            case 0:
-            case 1:
-            case 2:{
+        switch (squadSlot) {
+            case 0, 1, 2 -> {
                 squad0Face.put(player.getUniqueId(), String.valueOf(face));
                 return;
             }
-            case 3:
-            case 4:
-            case 5:{
+            case 3, 4, 5 -> {
                 squad1Face.put(player.getUniqueId(), String.valueOf(face));
                 return;
             }
-            case 6:
-            case 7:
-            case 8:{
+            case 6, 7, 8 -> {
                 squad2Face.put(player.getUniqueId(), String.valueOf(face));
                 return;
             }
-
         }
     }
 
@@ -345,58 +288,51 @@ public class SkinGrabber {
         BufferedImage skin = getBufferedImage(player);
 
         if(skin == null){
-            Bukkit.getLogger().info("skin null");
-            //have a default steve skin
-            faceMap.put(player.getUniqueId(), "\uE144");
+            //have a default steve skin of different ascents
+            //-16 not not mess with alignment
+            team0faceMap.put(player.getUniqueId(), "\uE14E" + "\uF809");
+            team1faceMap.put(player.getUniqueId(), "\uE179" + "\uF809");
+            team2faceMap.put(player.getUniqueId(), "\uE1A4" + "\uF809");
+            team3faceMap.put(player.getUniqueId(), "\uE1CF" + "\uF809");
             return;
         }
 
         StringBuilder face = new StringBuilder();
 
-        switch (teamSlot){
-
-            case 0:{
+        switch (teamSlot) {
+            case 0 -> {
                 String currentUnicode = "\uE145";
 
-                for(int y = 0; y<8; y++){
+                for (int y = 0; y < 8; y++) {
 
-                    switch (y){
-                        case 0:{
+                    switch (y) {
+                        case 0 -> {
                             currentUnicode = "\uE145";
-                            break;
                         }
-                        case 1:{
+                        case 1 -> {
                             currentUnicode = "\uE146";
-                            break;
                         }
-                        case 2:{
+                        case 2 -> {
                             currentUnicode = "\uE147";
-                            break;
                         }
-                        case 3:{
+                        case 3 -> {
                             currentUnicode = "\uE148";
-                            break;
                         }
-                        case 4:{
+                        case 4 -> {
                             currentUnicode = "\uE149";
-                            break;
                         }
-                        case 5:{
+                        case 5 -> {
                             currentUnicode = "\uE14A";
-                            break;
                         }
-                        case 6:{
+                        case 6 -> {
                             currentUnicode = "\uE14B";
-                            break;
                         }
-                        case 7:{
+                        case 7 -> {
                             currentUnicode = "\uE14C";
-                            break;
                         }
-
                     }
 
-                    for(int x = 0; x<8;x++){
+                    for (int x = 0; x < 8; x++) {
 
                         int rbg = skin.getRGB(8 + x, 8 + y);
 
@@ -414,50 +350,40 @@ public class SkinGrabber {
 
                 }
 
-                break;
             }
-            case 1:{
+            case 1 -> {
                 String currentUnicode = "\uE1FA";
 
-                for(int y = 0; y<8; y++){
+                for (int y = 0; y < 8; y++) {
 
-                    switch (y){
-                        case 0:{
+                    switch (y) {
+                        case 0 -> {
                             currentUnicode = "\uE1FA";
-                            break;
                         }
-                        case 1:{
+                        case 1 -> {
                             currentUnicode = "\uE1FB";
-                            break;
                         }
-                        case 2:{
+                        case 2 -> {
                             currentUnicode = "\uE1FC";
-                            break;
                         }
-                        case 3:{
+                        case 3 -> {
                             currentUnicode = "\uE1FD";
-                            break;
                         }
-                        case 4:{
+                        case 4 -> {
                             currentUnicode = "\uE1FE";
-                            break;
                         }
-                        case 5:{
+                        case 5 -> {
                             currentUnicode = "\uE1FF";
-                            break;
                         }
-                        case 6:{
+                        case 6 -> {
                             currentUnicode = "\uE200";
-                            break;
                         }
-                        case 7:{
+                        case 7 -> {
                             currentUnicode = "\uE201";
-                            break;
                         }
-
                     }
 
-                    for(int x = 0; x<8;x++){
+                    for (int x = 0; x < 8; x++) {
 
                         int rbg = skin.getRGB(8 + x, 8 + y);
 
@@ -474,50 +400,40 @@ public class SkinGrabber {
 
                 }
 
-                break;
             }
-            case 2:{
+            case 2 -> {
                 String currentUnicode = "\uE202";
 
-                for(int y = 0; y<8; y++){
+                for (int y = 0; y < 8; y++) {
 
-                    switch (y){
-                        case 0:{
+                    switch (y) {
+                        case 0 -> {
                             currentUnicode = "\uE202";
-                            break;
                         }
-                        case 1:{
+                        case 1 -> {
                             currentUnicode = "\uE203";
-                            break;
                         }
-                        case 2:{
+                        case 2 -> {
                             currentUnicode = "\uE204";
-                            break;
                         }
-                        case 3:{
+                        case 3 -> {
                             currentUnicode = "\uE205";
-                            break;
                         }
-                        case 4:{
+                        case 4 -> {
                             currentUnicode = "\uE206";
-                            break;
                         }
-                        case 5:{
+                        case 5 -> {
                             currentUnicode = "\uE207";
-                            break;
                         }
-                        case 6:{
+                        case 6 -> {
                             currentUnicode = "\uE208";
-                            break;
                         }
-                        case 7:{
+                        case 7 -> {
                             currentUnicode = "\uE209";
-                            break;
                         }
-
                     }
 
-                    for(int x = 0; x<8;x++){
+                    for (int x = 0; x < 8; x++) {
 
                         int rbg = skin.getRGB(8 + x, 8 + y);
 
@@ -535,50 +451,40 @@ public class SkinGrabber {
 
                 }
 
-                break;
             }
-            case 3:{
+            case 3 -> {
                 String currentUnicode = "\uE20A";
 
-                for(int y = 0; y<8; y++){
+                for (int y = 0; y < 8; y++) {
 
-                    switch (y){
-                        case 0:{
+                    switch (y) {
+                        case 0 -> {
                             currentUnicode = "\uE20A";
-                            break;
                         }
-                        case 1:{
+                        case 1 -> {
                             currentUnicode = "\uE20B";
-                            break;
                         }
-                        case 2:{
+                        case 2 -> {
                             currentUnicode = "\uE20C";
-                            break;
                         }
-                        case 3:{
+                        case 3 -> {
                             currentUnicode = "\uE20D";
-                            break;
                         }
-                        case 4:{
+                        case 4 -> {
                             currentUnicode = "\uE20E";
-                            break;
                         }
-                        case 5:{
+                        case 5 -> {
                             currentUnicode = "\uE20F";
-                            break;
                         }
-                        case 6:{
+                        case 6 -> {
                             currentUnicode = "\uE210";
-                            break;
                         }
-                        case 7:{
+                        case 7 -> {
                             currentUnicode = "\uE211";
-                            break;
                         }
-
                     }
 
-                    for(int x = 0; x<8;x++){
+                    for (int x = 0; x < 8; x++) {
 
                         int rbg = skin.getRGB(8 + x, 8 + y);
 
@@ -596,25 +502,23 @@ public class SkinGrabber {
 
                 }
 
-                break;
             }
-
         }
 
-        switch (teamSlot){
-            case 0:{
+        switch (teamSlot) {
+            case 0 -> {
                 team0faceMap.put(player.getUniqueId(), String.valueOf(face));
                 return;
             }
-            case 1:{
+            case 1 -> {
                 team1faceMap.put(player.getUniqueId(), String.valueOf(face));
                 return;
             }
-            case 2:{
+            case 2 -> {
                 team2faceMap.put(player.getUniqueId(), String.valueOf(face));
                 return;
             }
-            case 3:{
+            case 3 -> {
                 team3faceMap.put(player.getUniqueId(), String.valueOf(face));
                 return;
             }
@@ -635,6 +539,24 @@ public class SkinGrabber {
     }
 
     private BufferedImage getBufferedImage(Player player){
+
+
+        if(skinMap.containsKey(player.getUniqueId())){
+
+            if(skinMap.get(player.getUniqueId()) == null){
+
+                Bukkit.getLogger().info("skin was null, trying again");
+
+                try {
+                    skinMap.put(player.getUniqueId(), requestSkin(player));
+                }
+                catch (IOException e){
+                    skinMap.put(player.getUniqueId(), null);
+                }
+
+            }
+
+        }
 
         if(!skinMap.containsKey(player.getUniqueId())){
 
@@ -663,30 +585,30 @@ public class SkinGrabber {
 
     public String getTeamFace(Player player, int teamSlot){
 
-        switch (teamSlot){
-            case 0:{
-                if(!team0faceMap.containsKey(player.getUniqueId())){
+        switch (teamSlot) {
+            case 0 -> {
+                if (!team0faceMap.containsKey(player.getUniqueId())) {
                     constructTeamFace(player, teamSlot);
                 }
 
                 return team0faceMap.get(player.getUniqueId());
             }
-            case 1:{
-                if(!team1faceMap.containsKey(player.getUniqueId())){
+            case 1 -> {
+                if (!team1faceMap.containsKey(player.getUniqueId())) {
                     constructTeamFace(player, teamSlot);
                 }
 
                 return team1faceMap.get(player.getUniqueId());
             }
-            case 2:{
-                if(!team2faceMap.containsKey(player.getUniqueId())){
+            case 2 -> {
+                if (!team2faceMap.containsKey(player.getUniqueId())) {
                     constructTeamFace(player, teamSlot);
                 }
 
                 return team2faceMap.get(player.getUniqueId());
             }
-            case 3:{
-                if(!team3faceMap.containsKey(player.getUniqueId())){
+            case 3 -> {
+                if (!team3faceMap.containsKey(player.getUniqueId())) {
                     constructTeamFace(player, teamSlot);
                 }
 
@@ -699,30 +621,24 @@ public class SkinGrabber {
 
     public String getSquadFace(Player player, int slot){
 
-        switch (slot){
-            case 0:
-            case 1:
-            case 2:{
-                if(!squad0Face.containsKey(player.getUniqueId())){
+        switch (slot) {
+            case 0, 1, 2 -> {
+                if (!squad0Face.containsKey(player.getUniqueId())) {
                     constructSquadFace(player, slot);
                 }
                 return squad0Face.get(player.getUniqueId());
             }
-            case 3:
-            case 4:
-            case 5:{
+            case 3, 4, 5 -> {
 
-                if(!squad1Face.containsKey(player.getUniqueId())){
+                if (!squad1Face.containsKey(player.getUniqueId())) {
                     constructSquadFace(player, slot);
                 }
 
                 return squad1Face.get(player.getUniqueId());
             }
-            case 6:
-            case 7:
-            case 8:{
+            case 6, 7, 8 -> {
 
-                if(!squad2Face.containsKey(player.getUniqueId())){
+                if (!squad2Face.containsKey(player.getUniqueId())) {
                     constructSquadFace(player, slot);
                 }
 
@@ -735,14 +651,17 @@ public class SkinGrabber {
 
     private BufferedImage requestSkin(Player player) throws IOException{
 
+
         URL profileUrl = getProfileUrl(player);
+
+        //Bukkit.getLogger().info("profile url: " + profileUrl);
 
         HttpURLConnection connection = getConnection(profileUrl);;
 
         connection.setRequestMethod("GET");
 
-
         if(connection.getResponseCode() != 200){
+            Bukkit.getLogger().info("response code not 200, returning null");
             return null;
         }
 
@@ -759,6 +678,9 @@ public class SkinGrabber {
         String value = first.get("value").getAsString();
 
 
+        //Bukkit.getLogger().info("properties: " + properties);
+        //Bukkit.getLogger().info("value: " + value);
+
         byte[] decodedBytes = Base64.getDecoder().decode(value);
         String decoded = new String(decodedBytes);
 
@@ -769,6 +691,7 @@ public class SkinGrabber {
 
         URL skinUrl = getSkinUrl(skinUrlString);
 
+        //Bukkit.getLogger().info("skin url: " + skinUrl);
 
         return ImageIO.read(skinUrl);
     }

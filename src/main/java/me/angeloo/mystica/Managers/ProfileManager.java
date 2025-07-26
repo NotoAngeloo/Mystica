@@ -970,7 +970,7 @@ public class ProfileManager {
         currentCompanions.add(companion);
         companionMap.put(player, currentCompanions);
         companionsPlayer.put(companion, player);
-        Bukkit.getLogger().info("Companion " + companion + " added to " + player.getName());
+        //Bukkit.getLogger().info("Companion " + companion + " added to " + player.getName());
         Bukkit.getServer().getPluginManager().callEvent(new UpdateMysticaPartyEvent(player));
 
     }
@@ -988,7 +988,7 @@ public class ProfileManager {
         currentCompanions.remove(companion);
         companionMap.put(player, currentCompanions);
         companionsPlayer.remove(companion);
-        Bukkit.getLogger().info("Companion " + companion + " removed from " + player.getName());
+        //Bukkit.getLogger().info("Companion " + companion + " removed from " + player.getName());
 
         if(currentCompanions.isEmpty()){
             companionMap.remove(player);
@@ -1009,7 +1009,7 @@ public class ProfileManager {
             if(companion != null){
                 companion.remove();
                 companionsPlayer.remove(companionId);
-                Bukkit.getLogger().info("Companion " + companion + " removed from " + player.getName());
+                //Bukkit.getLogger().info("Companion " + companion + " removed from " + player.getName());
             }
 
         }
@@ -1033,7 +1033,7 @@ public class ProfileManager {
 
         }
 
-        Bukkit.getServer().getPluginManager().callEvent(new UpdateMysticaPartyEvent(player));
+        Bukkit.getScheduler().runTask(main, () -> Bukkit.getServer().getPluginManager().callEvent(new UpdateMysticaPartyEvent(player)));
     }
 
     public void setPlayerResourceBar(Player player, BossBar resourceBar){

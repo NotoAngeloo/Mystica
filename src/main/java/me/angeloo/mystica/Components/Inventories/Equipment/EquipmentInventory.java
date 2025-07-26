@@ -1,4 +1,4 @@
-package me.angeloo.mystica.Components.Inventories;
+package me.angeloo.mystica.Components.Inventories.Equipment;
 
 import com.google.gson.Gson;
 import me.angeloo.mystica.Components.Inventories.Storage.MysticaBag;

@@ -89,7 +89,7 @@ public class MatchMakingManager {
             }
 
             playerQueueMap.put(entity.getUniqueId(), dungeon);
-            Role role = getRole(entity);
+            Role role = customInventoryManager.getRole(entity);
             mPlayers.add(new MatchMakingPlayer(entity.getUniqueId(), role));
         }
 
@@ -144,11 +144,11 @@ public class MatchMakingManager {
         boolean healer = false;
 
         for (Player member : partyPlayers){
-            if(getRole(member).equals(Role.Tank)){
+            if(customInventoryManager.getRole(member).equals(Role.Tank)){
                 tank = true;
             }
 
-            if(getRole(member).equals(Role.Healer)){
+            if(customInventoryManager.getRole(member).equals(Role.Healer)){
                 healer = true;
             }
         }
@@ -242,7 +242,7 @@ public class MatchMakingManager {
 
                 this.cancel();
 
-                Bukkit.getLogger().info(String.valueOf(mysticaPartyManager.getMysticaParty(leaderPlayer)));
+                //Bukkit.getLogger().info(String.valueOf(mysticaPartyManager.getMysticaParty(leaderPlayer)));
             }
         }.runTaskTimer(main, 0, 20);
 
@@ -250,22 +250,6 @@ public class MatchMakingManager {
     }
 
 
-    private Role getRole(LivingEntity partyMember){
 
-        SubClass subClass = profileManager.getAnyProfile(partyMember).getPlayerSubclass();
-
-        switch (subClass){
-            case Shepard, Divine -> {
-                return Role.Healer;
-            }
-            case Gladiator, Blood, Templar ->{
-                return Role.Tank;
-            }
-            default -> {
-                return Role.Damage;
-            }
-        }
-
-    }
 
 }

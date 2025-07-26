@@ -414,8 +414,9 @@ public class HudManager {
         }
 
 
-
         if(mysticaParty.size() <= 5){
+
+            //temp comment out to see full thing
 
             //-512 space
             teamData.append("\uF80E");
@@ -430,7 +431,10 @@ public class HudManager {
                     continue;
                 }
 
+
+                //teamData.append(getTeamMemberDataString(player, slot));
                 teamData.append(getTeamMemberDataString(member, slot));
+
 
                 slot++;
 
@@ -467,12 +471,10 @@ public class HudManager {
                 continue;
             }
 
-            if(!(member instanceof Player)){
+            if(!(member instanceof Player memberPlayer)){
                 //companions not allowed in squads
                 continue;
             }
-
-            Player memberPlayer = (Player) member;
 
             teamData.append(getSquadMemberDataString(member, slot));
 
@@ -552,14 +554,14 @@ public class HudManager {
         status.append("\uF80C");
 
         //class specific buffs
-        switch (playerClass){
-            case Elementalist:{
+        switch (playerClass) {
+            case Elementalist -> {
 
-                if(subClass.equals(SubClass.Pyromancer)){
+                if (subClass.equals(SubClass.Pyromancer)) {
 
                     int inflame = abilityManager.getElementalistAbilities().getFieryWing().getInflame(player);
 
-                    if(inflame > 0){
+                    if (inflame > 0) {
                         //+16
                         offset.append("\uF829");
 
@@ -572,7 +574,7 @@ public class HudManager {
                 int breathTime = abilityManager.getElementalistAbilities().getElementalBreath().getIfBuffTime(player);
                 int duration = abilityManager.getElementalistAbilities().getElementalBreath().getDuration(player);
 
-                if(breathTime > 0){
+                if (breathTime > 0) {
                     //+16
                     offset.append("\uF829");
 
@@ -581,14 +583,13 @@ public class HudManager {
                     status.append(getDurationString(breathTime, duration));
                 }
 
-                break;
             }
-            case Ranger:{
+            case Ranger -> {
 
                 int cry = abilityManager.getRangerAbilities().getRallyingCry().getIfBuffTime(player);
                 int duration = abilityManager.getRangerAbilities().getRallyingCry().getDuration();
 
-                if(cry > 0){
+                if (cry > 0) {
                     //+16
                     offset.append("\uF829");
 
@@ -597,16 +598,15 @@ public class HudManager {
                     status.append(getDurationString(cry, duration));
                 }
 
-                break;
             }
-            case Shadow_Knight:{
+            case Shadow_Knight -> {
 
                 LivingEntity target = targetManager.getPlayerTarget(player);
 
-                if(target != null){
+                if (target != null) {
                     int timeLeft = abilityManager.getShadowKnightAbilities().getInfection().getPlayerInfectionTime(player);
 
-                    if(timeLeft > 0){
+                    if (timeLeft > 0) {
 
                         //+16
                         offset.append("\uF829");
@@ -615,10 +615,9 @@ public class HudManager {
 
                         int duration = abilityManager.getShadowKnightAbilities().getInfection().getDuration();
 
-                        if(enhanced){
+                        if (enhanced) {
                             status.append("\uE021");
-                        }
-                        else{
+                        } else {
                             status.append("\uE020");
                         }
 
@@ -627,15 +626,12 @@ public class HudManager {
                     }
                 }
 
-                if(subClass.equals(SubClass.Doom)){
+                if (subClass.equals(SubClass.Doom)) {
 
                     int marks = abilityManager.getShadowKnightAbilities().getSoulReap().getSoulMarks(player);
 
-                    switch (marks){
-                        case 1:
-                        case 2:
-                        case 3:
-                        case 4:{
+                    switch (marks) {
+                        case 1, 2, 3, 4 -> {
 
                             //+16
                             offset.append("\uF829");
@@ -644,25 +640,22 @@ public class HudManager {
 
                             status.append(getStackString(marks));
 
-                            break;
                         }
-                        case 5:{
+                        case 5 -> {
 
                             //+16
                             offset.append("\uF829");
 
                             status.append("\uE01F");
 
-                            break;
                         }
                     }
                 }
 
-                break;
             }
-            case Mystic:{
+            case Mystic -> {
 
-                if(abilityManager.getMysticAbilities().getPurifyingBlast().getInstantCast(player)){
+                if (abilityManager.getMysticAbilities().getPurifyingBlast().getInstantCast(player)) {
 
                     //+16
                     offset.append("\uF829");
@@ -670,14 +663,13 @@ public class HudManager {
                     status.append("\uE022");
                 }
 
-                break;
             }
-            case Assassin:{
+            case Assassin -> {
 
                 int timeLeft = buffAndDebuffManager.getPierceBuff().getIfBuffTime(player);
                 int max = buffAndDebuffManager.getPierceBuff().getDuration();
 
-                if(timeLeft > 0){
+                if (timeLeft > 0) {
                     //+16
                     offset.append("\uF829");
 
@@ -686,25 +678,24 @@ public class HudManager {
                     status.append(getDurationString(timeLeft, max));
                 }
 
-                if(buffAndDebuffManager.getBladeTempestCrit().getTempestCrit(player) !=0 ){
+                if (buffAndDebuffManager.getBladeTempestCrit().getTempestCrit(player) != 0) {
                     //+16
                     offset.append("\uF829");
 
                     status.append("\uE023");
                 }
 
-                if(abilityManager.getAssassinAbilities().getStealth().getIfStealthed(player)){
+                if (abilityManager.getAssassinAbilities().getStealth().getIfStealthed(player)) {
                     //+16
                     offset.append("\uF829");
 
                     status.append("\uE024");
                 }
 
-                break;
             }
-            case Warrior:{
+            case Warrior -> {
 
-                if(buffAndDebuffManager.getBurningBlessingBuff().getIfHealthBuff(player)){
+                if (buffAndDebuffManager.getBurningBlessingBuff().getIfHealthBuff(player)) {
 
                     //-16
                     offset.append("\uF829");
@@ -712,11 +703,10 @@ public class HudManager {
                     status.append("\uE026");
                 }
 
-                break;
             }
-            case Paladin:{
+            case Paladin -> {
 
-                if(abilityManager.getPaladinAbilities().getDecision().getDecision(player)){
+                if (abilityManager.getPaladinAbilities().getDecision().getDecision(player)) {
 
                     //-16
                     offset.append("\uF829");
@@ -725,7 +715,6 @@ public class HudManager {
 
                 }
 
-                break;
             }
         }
 
@@ -805,87 +794,66 @@ public class HudManager {
             stacks = 20;
         }
 
-        switch (stacks){
-            case 0:
-            case 1:{
+        switch (stacks) {
+            case 0, 1 -> {
                 stacksString.append("\uE008");
-                break;
             }
-            case 2:{
+            case 2 -> {
                 stacksString.append("\uE009");
-                break;
             }
-            case 3:{
+            case 3 -> {
                 stacksString.append("\uE00A");
-                break;
             }
-            case 4:{
+            case 4 -> {
                 stacksString.append("\uE00B");
-                break;
             }
-            case 5:{
+            case 5 -> {
                 stacksString.append("\uE00C");
-                break;
             }
-            case 6:{
+            case 6 -> {
                 stacksString.append("\uE00D");
-                break;
             }
-            case 7:{
+            case 7 -> {
                 stacksString.append("\uE00E");
-                break;
             }
-            case 8:{
+            case 8 -> {
                 stacksString.append("\uE00F");
-                break;
             }
-            case 9:{
+            case 9 -> {
                 stacksString.append("\uE010");
-                break;
             }
-            case 10:{
+            case 10 -> {
                 stacksString.append("\uE011");
-                break;
             }
-            case 11:{
+            case 11 -> {
                 stacksString.append("\uE012");
-                break;
             }
-            case 12:{
+            case 12 -> {
                 stacksString.append("\uE013");
-                break;
             }
-            case 13:{
+            case 13 -> {
                 stacksString.append("\uE014");
-                break;
             }
-            case 14:{
+            case 14 -> {
                 stacksString.append("\uE015");
-                break;
             }
-            case 15:{
+            case 15 -> {
                 stacksString.append("\uE016");
-                break;
             }
-            case 16:{
+            case 16 -> {
                 stacksString.append("\uE017");
-                break;
             }
-            case 17:{
+            case 17 -> {
                 stacksString.append("\uE018");
-                break;
             }
-            case 18:{
+            case 18 -> {
                 stacksString.append("\uE019");
-                break;
             }
-            case 19:{
+            case 19 -> {
                 stacksString.append("\uE01A");
-                break;
             }
-            case 20:{
+            case 20 -> {
                 stacksString.append("\uE01B");
-                break;
             }
         }
 
@@ -903,38 +871,30 @@ public class HudManager {
         //-17
         durationString.append("\uF809\uF801");
 
-        switch (icon){
-            case 8:{
+        switch (icon) {
+            case 8 -> {
                 durationString.append("\uE008");
-                break;
             }
-            case 7:{
+            case 7 -> {
                 durationString.append("\uE007");
-                break;
             }
-            case 6:{
+            case 6 -> {
                 durationString.append("\uE006");
-                break;
             }
-            case 5:{
+            case 5 -> {
                 durationString.append("\uE005");
-                break;
             }
-            case 4:{
+            case 4 -> {
                 durationString.append("\uE004");
-                break;
             }
-            case 3:{
+            case 3 -> {
                 durationString.append("\uE003");
-                break;
             }
-            case 2:{
+            case 2 -> {
                 durationString.append("\uE002");
-                break;
             }
-            case 1:{
+            case 1 -> {
                 durationString.append("\uE001");
-                break;
             }
         }
 
@@ -946,28 +906,22 @@ public class HudManager {
         StringBuilder entityBar = new StringBuilder();
 
 
-        if(entity instanceof Player){
-
-            Player player = (Player) entity;
+        if(entity instanceof Player player){
 
 
             entityBar.append(skinGrabber.getTeamFace(player, slot));
 
-            //+16 check this out later
-            entityBar.append("\uF829");
-
-            return String.valueOf(entity);
+            //+19, 16 for face, 3 for offset
+            entityBar.append("\uF829\uF823");
         }
 
         if(profileManager.getAnyProfile(entity).fakePlayer()){
 
-            //entityBar.append(skinGrabber.getTeamFace(profileManager.getCompanionsPlayer(entity), slot));
 
             //+16
             //entityBar.append("\uF829");
 
             entityBar.append(profileManager.getCompanionTeamFace(entity.getUniqueId(), slot));
-
 
 
 
@@ -988,39 +942,30 @@ public class HudManager {
         //depending on class
         PlayerClass playerClass = profileManager.getAnyProfile(entity).getPlayerClass();
 
-        switch (playerClass){
-
-            case Assassin:{
+        switch (playerClass) {
+            case Assassin -> {
                 entityBar.append(ChatColor.of(assassinColor));
-                break;
             }
-            case Elementalist:{
+            case Elementalist -> {
                 entityBar.append(ChatColor.of(elementalistColor));
-                break;
             }
-            case Ranger:{
+            case Ranger -> {
                 entityBar.append(ChatColor.of(rangerColor));
-                break;
             }
-            case Paladin:{
+            case Paladin -> {
                 entityBar.append(ChatColor.of(paladinColor));
-                break;
             }
-            case Warrior:{
+            case Warrior -> {
                 entityBar.append(ChatColor.of(warriorColor));
-                break;
             }
-            case Shadow_Knight:{
+            case Shadow_Knight -> {
                 entityBar.append(ChatColor.of(shadowKnightColor));
-                break;
             }
-            case Mystic:{
+            case Mystic -> {
                 entityBar.append(ChatColor.of(mysticColor));
-                break;
             }
-            default:{
+            default -> {
                 entityBar.append(ChatColor.RESET);
-                break;
             }
         }
 
@@ -1049,135 +994,99 @@ public class HudManager {
         }
 
         //slot switch here for height
-        switch (slot){
-            case 0:
-            case 1:
-            case 2:{
-                switch (amount){
-                    case 8:{
+        switch (slot) {
+            case 0, 1, 2 -> {
+                switch (amount) {
+                    case 8 -> {
                         entityBar.append("\uE212");
-                        break;
                     }
-                    case 7:{
+                    case 7 -> {
                         entityBar.append("\uE213");
-                        break;
                     }
-                    case 6:{
+                    case 6 -> {
                         entityBar.append("\uE214");
-                        break;
                     }
-                    case 5:{
+                    case 5 -> {
                         entityBar.append("\uE215");
-                        break;
                     }
-                    case 4:{
+                    case 4 -> {
                         entityBar.append("\uE216");
-                        break;
                     }
-                    case 3:{
+                    case 3 -> {
                         entityBar.append("\uE217");
-                        break;
                     }
-                    case 2:{
+                    case 2 -> {
                         entityBar.append("\uE218");
-                        break;
                     }
-                    case 1:{
+                    case 1 -> {
                         entityBar.append("\uE219");
-                        break;
                     }
-                    case 0:{
+                    case 0 -> {
                         entityBar.append("\uE21A");
-                        break;
                     }
                 }
-                break;
             }
-            case 3:
-            case 4:
-            case 5:{
-                switch (amount){
-                    case 8:{
+            case 3, 4, 5 -> {
+                switch (amount) {
+                    case 8 -> {
                         entityBar.append("\uE21B");
-                        break;
                     }
-                    case 7:{
+                    case 7 -> {
                         entityBar.append("\uE21C");
-                        break;
                     }
-                    case 6:{
+                    case 6 -> {
                         entityBar.append("\uE21D");
-                        break;
                     }
-                    case 5:{
+                    case 5 -> {
                         entityBar.append("\uE21E");
-                        break;
                     }
-                    case 4:{
+                    case 4 -> {
                         entityBar.append("\uE21F");
-                        break;
                     }
-                    case 3:{
+                    case 3 -> {
                         entityBar.append("\uE220");
-                        break;
                     }
-                    case 2:{
+                    case 2 -> {
                         entityBar.append("\uE221");
-                        break;
                     }
-                    case 1:{
+                    case 1 -> {
                         entityBar.append("\uE222");
-                        break;
                     }
-                    case 0:{
+                    case 0 -> {
                         entityBar.append("\uE223");
-                        break;
                     }
                 }
-                break;
             }
-            case 6:
-            case 7:
-            case 8:{
-                switch (amount){
-                    case 8:{
+            case 6, 7, 8 -> {
+                switch (amount) {
+                    case 8 -> {
                         entityBar.append("\uE224");
-                        break;
                     }
-                    case 7:{
+                    case 7 -> {
                         entityBar.append("\uE225");
-                        break;
                     }
-                    case 6:{
+                    case 6 -> {
                         entityBar.append("\uE226");
-                        break;
                     }
-                    case 5:{
+                    case 5 -> {
                         entityBar.append("\uE227");
-                        break;
                     }
-                    case 4:{
+                    case 4 -> {
                         entityBar.append("\uE228");
-                        break;
                     }
-                    case 3:{
+                    case 3 -> {
                         entityBar.append("\uE229");
-                        break;
                     }
-                    case 2:{
+                    case 2 -> {
                         entityBar.append("\uE22A");
-                        break;
                     }
-                    case 1:{
+                    case 1 -> {
                         entityBar.append("\uE22B");
-                        break;
                     }
-                    case 0:{
+                    case 0 -> {
                         entityBar.append("\uE009");
-                        break;
                     }
                 }
-                break;
             }
         }
 
@@ -1221,42 +1130,33 @@ public class HudManager {
 
         StringBuilder icon = new StringBuilder();
 
-        if(entity instanceof Player){
-
-            Player player = (Player) entity;
+        if(entity instanceof Player player){
 
             PlayerClass playerClass = profileManager.getAnyProfile(player).getPlayerClass();
 
 
             //frame color
-            switch (playerClass){
-                case Assassin:{
+            switch (playerClass) {
+                case Assassin -> {
                     icon.append(ChatColor.of(assassinColor));
-                    break;
                 }
-                case Elementalist:{
+                case Elementalist -> {
                     icon.append(ChatColor.of(elementalistColor));
-                    break;
                 }
-                case Mystic:{
+                case Mystic -> {
                     icon.append(ChatColor.of(mysticColor));
-                    break;
                 }
-                case Paladin:{
+                case Paladin -> {
                     icon.append(ChatColor.of(paladinColor));
-                    break;
                 }
-                case Ranger:{
+                case Ranger -> {
                     icon.append(ChatColor.of(rangerColor));
-                    break;
                 }
-                case Shadow_Knight:{
+                case Shadow_Knight -> {
                     icon.append(ChatColor.of(shadowKnightColor));
-                    break;
                 }
-                case Warrior:{
+                case Warrior -> {
                     icon.append(ChatColor.of(warriorColor));
-                    break;
                 }
             }
 

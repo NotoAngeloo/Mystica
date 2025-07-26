@@ -4,6 +4,7 @@ import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.CustomEvents.UltimateStatusChageEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.Enums.BarType;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -204,7 +205,7 @@ public class EvilSpirit {
         chaosShards.put(caster.getUniqueId(), current);
         if(caster instanceof Player){
             Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
             Bukkit.getServer().getPluginManager().callEvent(new UltimateStatusChageEvent((Player) caster));
         }
 
@@ -214,7 +215,7 @@ public class EvilSpirit {
         chaosShards.put(caster.getUniqueId(), 0);
         if(caster instanceof Player){
             Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
         }
 
     }

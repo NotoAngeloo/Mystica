@@ -6,6 +6,7 @@ import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Managers.CombatManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -97,7 +98,7 @@ public class ElementalBreath {
         buffActiveMap.put(caster.getUniqueId(), getDuration(caster));
         if(caster instanceof Player){
             Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
         }
 
         new BukkitRunnable(){
@@ -106,7 +107,7 @@ public class ElementalBreath {
 
                 if(caster instanceof Player){
                     Player player = (Player) caster;
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
                 }
 
                 if(buffActiveMap.get(caster.getUniqueId()) <= 0){

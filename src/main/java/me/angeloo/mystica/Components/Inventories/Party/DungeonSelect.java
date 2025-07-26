@@ -1,4 +1,4 @@
-package me.angeloo.mystica.Components.Inventories;
+package me.angeloo.mystica.Components.Inventories.Party;
 
 import me.angeloo.mystica.Managers.CustomInventoryManager;
 import me.angeloo.mystica.Utility.MatchMaking.MatchMakingManager;

@@ -1,16 +1,12 @@
 package me.angeloo.mystica.Components.Commands;
 
-import me.angeloo.mystica.Components.Inventories.UpgradeInventory;
+import me.angeloo.mystica.Components.Inventories.Equipment.UpgradeInventory;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class Upgrade implements CommandExecutor {

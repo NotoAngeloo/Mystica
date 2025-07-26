@@ -5,6 +5,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
@@ -276,7 +277,7 @@ public class Infection {
 
                 if(caster instanceof Player){
                     Player player = (Player) caster;
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
                 }
 
 
@@ -289,7 +290,7 @@ public class Infection {
                 infectionTask.remove(caster.getUniqueId());
                 if(caster instanceof Player){
                     Player player = (Player) caster;
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
                 }
             }
 
@@ -326,7 +327,7 @@ public class Infection {
 
         if(caster instanceof Player){
             Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
         }
 
         BukkitTask task = new BukkitRunnable(){
@@ -335,7 +336,7 @@ public class Infection {
                 enhanced.remove(caster.getUniqueId());
                 if(caster instanceof Player){
                     Player player = (Player) caster;
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
                 }
             }
         }.runTaskLater(main, 20*10);

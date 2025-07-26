@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Tasks.CombatTick;
+import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
@@ -165,7 +166,7 @@ public class CombatManager {
 
         //dpsManager.removeDps(player);
         abilityManager.resetAbilityBuffs(player);
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", true));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, true));
     }
 
 

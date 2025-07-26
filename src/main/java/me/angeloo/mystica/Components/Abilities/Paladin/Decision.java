@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.Abilities.Paladin;
 
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
+import me.angeloo.mystica.Utility.Enums.BarType;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -20,7 +21,7 @@ public class Decision {
     public void applyDecision(LivingEntity entity){
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
         }
 
         decisionMap.put(entity.getUniqueId(), true);
@@ -33,7 +34,7 @@ public class Decision {
     public void removeDecision(LivingEntity entity){
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
         }
 
         decisionMap.remove(entity.getUniqueId());

@@ -4,6 +4,7 @@ public enum Role {
 
     Tank,
     Healer,
-    Damage
+    Damage,
+    None
 
 }

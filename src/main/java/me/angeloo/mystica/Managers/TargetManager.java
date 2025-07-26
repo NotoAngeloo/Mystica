@@ -2,6 +2,7 @@ package me.angeloo.mystica.Managers;
 
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import me.angeloo.mystica.Utility.Logic.StealthTargetBlacklist;
 import org.bukkit.Bukkit;
@@ -76,7 +77,7 @@ public class TargetManager {
             }
         }
 
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "target", true));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Target, true));
 
     }
 

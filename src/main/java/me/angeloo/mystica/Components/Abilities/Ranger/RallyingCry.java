@@ -5,6 +5,7 @@ import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Managers.CombatManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -90,7 +91,7 @@ public class RallyingCry {
 
                 if(caster instanceof Player){
                     Player player = (Player) caster;
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "status", false));
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
                 }
 
 

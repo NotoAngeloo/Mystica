@@ -1,11 +1,14 @@
 package me.angeloo.mystica.Utility.Listeners;
 
+import com.alessiodp.parties.api.Parties;
 import com.alessiodp.parties.api.events.bukkit.player.BukkitPartiesPlayerPostJoinEvent;
+import com.alessiodp.parties.api.interfaces.Party;
+import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import me.angeloo.mystica.Components.Inventories.AbilityInventory;
-import me.angeloo.mystica.Components.Inventories.EquipmentInventory;
+import me.angeloo.mystica.Components.Inventories.Equipment.EquipmentInventory;
 import me.angeloo.mystica.Components.Items.PathToolItem;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
@@ -16,6 +19,7 @@ import me.angeloo.mystica.Tasks.AggroTick;
 import me.angeloo.mystica.Utility.*;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Logic.StealthTargetBlacklist;
 import net.md_5.bungee.api.ChatColor;
@@ -43,6 +47,8 @@ import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+
+import static me.angeloo.mystica.Utility.Enums.BarType.*;
 
 public class GeneralEventListener implements Listener {
 
@@ -86,7 +92,7 @@ public class GeneralEventListener implements Listener {
     private final Map<UUID, Location> previousLocations = new HashMap<>();
     private final Set<UUID> combatLogs = new HashSet<>();
 
-    public GeneralEventListener(Mystica main){
+    public GeneralEventListener(Mystica main) {
         this.main = main;
         hudManager = main.getHudManager();
         dailyData = main.getDailyData();
@@ -118,16 +124,16 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
-    public void onPluginDisable(PluginDisableEvent event){
-        for(Player player : Bukkit.getOnlinePlayers()){
+    public void onPluginDisable(PluginDisableEvent event) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
             player.closeInventory();
         }
 
         for (World world : Bukkit.getWorlds()) {
             for (Entity entity : world.getEntities()) {
 
-                if(entity instanceof LivingEntity){
-                    if(entity instanceof Player){
+                if (entity instanceof LivingEntity) {
+                    if (entity instanceof Player) {
                         continue;
                     }
 
@@ -135,7 +141,7 @@ public class GeneralEventListener implements Listener {
                 }
 
 
-                if(entity.getType() == EntityType.TEXT_DISPLAY){
+                if (entity.getType() == EntityType.TEXT_DISPLAY) {
                     entity.remove();
                 }
             }
@@ -145,12 +151,12 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event){
+    public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
         hudManager.innitHud(player);
 
-        if(combatLogs.contains(player.getUniqueId())){
+        if (combatLogs.contains(player.getUniqueId())) {
             deathManager.playerNowDead(player);
             combatLogs.remove(player.getUniqueId());
         }
@@ -178,12 +184,12 @@ public class GeneralEventListener implements Listener {
         //buffAndDebuffManager.removeAllBuffsAndDebuffs(player);
         gearReader.setGearStats(player);
 
-        if(!profileManager.getPlayerNameMap().containsKey(player.getName())){
+        if (!profileManager.getPlayerNameMap().containsKey(player.getName())) {
 
             AttributeInstance maxHealthAttribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
             assert maxHealthAttribute != null;
 
-            if(maxHealthAttribute.getBaseValue() != 20){
+            if (maxHealthAttribute.getBaseValue() != 20) {
                 maxHealthAttribute.setBaseValue(20);
             }
 
@@ -204,17 +210,32 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerLeave(PlayerQuitEvent event){
+    public void onPlayerLeave(PlayerQuitEvent event) {
 
         Player player = event.getPlayer();
 
+        if (Parties.getApi().isPlayerInParty(player.getUniqueId())) {
+            Party party = Parties.getApi().getPartyOfPlayer(player.getUniqueId());
+            PartyPlayer partyPlayer = Parties.getApi().getPartyPlayer(player.getUniqueId());
+            assert party != null;
+            assert partyPlayer != null;
+            party.removeMember(partyPlayer);
+        }
 
+        //remove them from mpartymap???? did it fix randomly???
+
+        /*List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
+
+        //Bukkit.getLogger().info("mparty: " + mParty);*/
+
+        mysticaPartyManager.updateMysticaParty(player);
+        //also do it for the team
 
         boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
         boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
 
-        if(combatStatus){
-            if(!deathStatus){
+        if (combatStatus) {
+            if (!deathStatus) {
                 combatLogs.add(player.getUniqueId());
                 //deathManager.playerNowDead(player);
             }
@@ -225,9 +246,9 @@ public class GeneralEventListener implements Listener {
 
         targetManager.setPlayerTarget(player, null);
 
-        if(player.getWorld().getName().startsWith("tutorial_")){
+        if (player.getWorld().getName().startsWith("tutorial_")) {
             //remove class
-            if(!profileManager.getAnyProfile(player).getMilestones().getMilestone("tutorial")){
+            if (!profileManager.getAnyProfile(player).getMilestones().getMilestone("tutorial")) {
                 classSetter.setClass(player, PlayerClass.NONE);
             }
         }
@@ -235,18 +256,18 @@ public class GeneralEventListener implements Listener {
 
     //maybe ill make items to be added to a bag, when implemented. just to stop items being deleted when combat end
     @EventHandler
-    public void noItemPickup(EntityPickupItemEvent event){
-        if(event.getEntity() instanceof Player){
+    public void noItemPickup(EntityPickupItemEvent event) {
+        if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
 
             boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
             boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
 
-            if(combatStatus){
+            if (combatStatus) {
                 event.setCancelled(true);
             }
 
-            if(deathStatus){
+            if (deathStatus) {
                 event.setCancelled(true);
             }
         }
@@ -254,24 +275,24 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
-    public void noBreakBlocks(BlockBreakEvent event){
-        Player player =  event.getPlayer();
+    public void noBreakBlocks(BlockBreakEvent event) {
+        Player player = event.getPlayer();
 
-        if(player.getGameMode() == GameMode.CREATIVE && player.isOp() && !profileManager.getAnyProfile(player).getIfDead()){
+        if (player.getGameMode() == GameMode.CREATIVE && player.isOp() && !profileManager.getAnyProfile(player).getIfDead()) {
             return;
         }
         event.setCancelled(true);
     }
 
     @EventHandler
-    public void displayPathsWithTool(PlayerToggleSneakEvent event){
+    public void displayPathsWithTool(PlayerToggleSneakEvent event) {
         Player player = event.getPlayer();
 
-        if(!player.isOp()){
+        if (!player.isOp()) {
             return;
         }
 
-        if(player.getGameMode() != GameMode.CREATIVE) {
+        if (player.getGameMode() != GameMode.CREATIVE) {
             return;
         }
 
@@ -279,7 +300,7 @@ public class GeneralEventListener implements Listener {
 
         ItemStack pathTool = new CustomItemConverter().convert(new PathToolItem(), 1);
 
-        if(!item.isSimilar(pathTool)){
+        if (!item.isSimilar(pathTool)) {
             return;
         }
 
@@ -287,15 +308,15 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
-    public void onPathTool(PlayerInteractEvent event){
+    public void onPathTool(PlayerInteractEvent event) {
 
         Player player = event.getPlayer();
 
-        if(!player.isOp()){
+        if (!player.isOp()) {
             return;
         }
 
-        if(player.getGameMode() != GameMode.CREATIVE) {
+        if (player.getGameMode() != GameMode.CREATIVE) {
             return;
         }
 
@@ -303,14 +324,14 @@ public class GeneralEventListener implements Listener {
 
         ItemStack pathTool = new CustomItemConverter().convert(new PathToolItem(), 1);
 
-        if(!item.isSimilar(pathTool)){
+        if (!item.isSimilar(pathTool)) {
             return;
         }
 
         event.setCancelled(true);
 
         //depending on click add to list
-        if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Block block = event.getClickedBlock();
             assert block != null;
             Location location = block.getLocation();
@@ -319,7 +340,7 @@ public class GeneralEventListener implements Listener {
             return;
         }
 
-        if(event.getAction() == Action.LEFT_CLICK_BLOCK){
+        if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
             Block block = event.getClickedBlock();
             assert block != null;
             Location location = block.getLocation();
@@ -335,7 +356,7 @@ public class GeneralEventListener implements Listener {
 
         Player player = event.getPlayer();
 
-        if(player.getGameMode() == GameMode.CREATIVE){
+        if (player.getGameMode() == GameMode.CREATIVE) {
             return;
         }
 
@@ -343,19 +364,19 @@ public class GeneralEventListener implements Listener {
             event.setCancelled(true);
         }
 
-        if(player.getInventory().getItemInMainHand().getType().equals(Material.BOW) || player.getInventory().getItemInOffHand().getType().equals(Material.BOW)){
+        if (player.getInventory().getItemInMainHand().getType().equals(Material.BOW) || player.getInventory().getItemInOffHand().getType().equals(Material.BOW)) {
             event.setCancelled(true);
         }
 
-        if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             //figure out allows here
 
             Block block = event.getClickedBlock();
-            if(block != null){
+            if (block != null) {
                 Material blockType = block.getType();
 
                 //maybe have a list later
-                if(blockType == Material.DARK_OAK_SIGN){
+                if (blockType == Material.DARK_OAK_SIGN) {
                     return;
                 }
             }
@@ -368,17 +389,17 @@ public class GeneralEventListener implements Listener {
 
 
     @EventHandler
-    public void noPlaceBlocks(BlockPlaceEvent event){
+    public void noPlaceBlocks(BlockPlaceEvent event) {
         Player player = event.getPlayer();
 
-        if(player.getGameMode() == GameMode.CREATIVE){
+        if (player.getGameMode() == GameMode.CREATIVE) {
             return;
         }
         event.setCancelled(true);
     }
 
     @EventHandler
-    public void menuClick(InventoryClickEvent event){
+    public void menuClick(InventoryClickEvent event) {
         Inventory clickedInv = event.getClickedInventory();
         if (clickedInv == null) {
             return;
@@ -386,11 +407,11 @@ public class GeneralEventListener implements Listener {
 
         String title = event.getView().getTitle();
 
-        if(!title.equalsIgnoreCase("crafting")){
+        if (!title.equalsIgnoreCase("crafting")) {
             return;
         }
 
-        if(clickedInv.getType() == InventoryType.PLAYER){
+        if (clickedInv.getType() == InventoryType.PLAYER) {
             return;
         }
 
@@ -401,37 +422,37 @@ public class GeneralEventListener implements Listener {
 
 
     @EventHandler
-    public void noOffHandEquip(InventoryClickEvent event){
+    public void noOffHandEquip(InventoryClickEvent event) {
         Inventory clickedInv = event.getClickedInventory();
         if (clickedInv == null) {
             return;
         }
 
-        if(clickedInv.getType() != InventoryType.PLAYER){
+        if (clickedInv.getType() != InventoryType.PLAYER) {
             return;
         }
 
         String title = event.getView().getTitle();
 
-        if(!title.equalsIgnoreCase("crafting")){
+        if (!title.equalsIgnoreCase("crafting")) {
             return;
         }
 
         Player player = (Player) event.getWhoClicked();
 
-        if(player.getGameMode().equals(GameMode.CREATIVE)){
+        if (player.getGameMode().equals(GameMode.CREATIVE)) {
             return;
         }
 
-        if(event.getClick().equals(ClickType.SWAP_OFFHAND)){
+        if (event.getClick().equals(ClickType.SWAP_OFFHAND)) {
             event.setCancelled(true);
         }
 
-        if(event.getSlotType() != InventoryType.SlotType.QUICKBAR){
+        if (event.getSlotType() != InventoryType.SlotType.QUICKBAR) {
             return;
         }
 
-        if(event.getSlot() == 40){
+        if (event.getSlot() == 40) {
             event.setCancelled(true);
             ItemStack item = player.getItemOnCursor();
             ItemStack tempItem = item.clone();
@@ -443,7 +464,7 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
-    public void noArmorEquip(InventoryClickEvent event){
+    public void noArmorEquip(InventoryClickEvent event) {
 
         Inventory clickedInv = event.getClickedInventory();
         if (clickedInv == null) {
@@ -451,7 +472,7 @@ public class GeneralEventListener implements Listener {
         }
         Player player = (Player) event.getWhoClicked();
 
-        if(event.getSlotType() == InventoryType.SlotType.ARMOR){
+        if (event.getSlotType() == InventoryType.SlotType.ARMOR) {
             ItemStack item = player.getItemOnCursor();
 
             event.setCancelled(true);
@@ -465,16 +486,16 @@ public class GeneralEventListener implements Listener {
             return;
         }
 
-        if(clickedInv.getType() == InventoryType.PLAYER){
+        if (clickedInv.getType() == InventoryType.PLAYER) {
 
             String title = event.getView().getTitle();
 
-            if(!title.equalsIgnoreCase("crafting")){
+            if (!title.equalsIgnoreCase("crafting")) {
                 return;
             }
 
             ClickType clickType = event.getClick();
-            if(clickType.isShiftClick()){
+            if (clickType.isShiftClick()) {
                 ItemStack item = event.getCurrentItem();
                 assert item != null;
                 if (item.getType().name().endsWith("_HELMET") ||
@@ -499,17 +520,17 @@ public class GeneralEventListener implements Listener {
 
 
     @EventHandler
-    public void noOpenInvCombatOrDead(InventoryOpenEvent event){
+    public void noOpenInvCombatOrDead(InventoryOpenEvent event) {
         Player player = (Player) event.getPlayer();
 
         boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
         boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
 
-        if(!combatStatus){
+        if (!combatStatus) {
             return;
         }
 
-        if(!deathStatus){
+        if (!deathStatus) {
             return;
         }
         event.setCancelled(true);
@@ -518,11 +539,11 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
-    public void noCombatInvInteraction(InventoryClickEvent event){
+    public void noCombatInvInteraction(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
 
         boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
-        if(!combatStatus){
+        if (!combatStatus) {
             return;
         }
         event.setCancelled(true);
@@ -532,7 +553,7 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerDeath(PlayerDeathEvent event){
+    public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
 
         event.setKeepInventory(true);
@@ -548,19 +569,19 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
-    public void normalEntityDeathDeath(EntityDeathEvent event){
+    public void normalEntityDeathDeath(EntityDeathEvent event) {
         event.getDrops().clear();
         event.setDroppedExp(0);
 
         LivingEntity entity = event.getEntity();
 
-        if(entity instanceof Player){
+        if (entity instanceof Player) {
             return;
         }
 
         LivingEntity lastCaster = aggroManager.getLastPlayer(entity);
 
-        if(lastCaster == null){
+        if (lastCaster == null) {
             return;
         }
 
@@ -569,24 +590,24 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
-    public void mysticaPlayerDeath(MysticaPlayerDeathEvent event){
+    public void mysticaPlayerDeath(MysticaPlayerDeathEvent event) {
 
         LivingEntity mysticaPlayer = event.getMysticaPlayer();
 
         //check for team wipe
         List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(mysticaPlayer));
 
-        for(LivingEntity member : mParty){
-            if(!profileManager.getAnyProfile(member).getIfDead()){
+        for (LivingEntity member : mParty) {
+            if (!profileManager.getAnyProfile(member).getIfDead()) {
                 return;
             }
         }
 
         //team wipe
-        for(LivingEntity member : mParty){
+        for (LivingEntity member : mParty) {
             dpsManager.removeDps(member);
 
-            if(member instanceof Player){
+            if (member instanceof Player) {
                 hudManager.getDamageBoardPlaceholders().clearPlaceholders((Player) member);
             }
 
@@ -596,12 +617,12 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
-    public void onLevelup(PlayerLevelChangeEvent event){
+    public void onLevelup(PlayerLevelChangeEvent event) {
         Player player = event.getPlayer();
 
         int newLevel = event.getNewLevel();
 
-        if (newLevel > dailyData.getMaxLevel()){
+        if (newLevel > dailyData.getMaxLevel()) {
             newLevel = dailyData.getMaxLevel();
             player.setLevel(newLevel);
         }
@@ -615,26 +636,25 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
-    public void customDeathEvent(MysticaEnemyDeathEvent event){
+    public void customDeathEvent(MysticaEnemyDeathEvent event) {
 
         LivingEntity caster = event.getPlayerWhoKilled();
 
         Player companionPlayer;
 
-        if(caster instanceof Player){
+        if (caster instanceof Player) {
             companionPlayer = (Player) caster;
-        }
-        else{
+        } else {
             companionPlayer = profileManager.getCompanionsPlayer(caster);
         }
 
-        if(!profileManager.getCompanions(companionPlayer).isEmpty()){
-            for(UUID companion : profileManager.getCompanions(companionPlayer)){
+        if (!profileManager.getCompanions(companionPlayer).isEmpty()) {
+            for (UUID companion : profileManager.getCompanions(companionPlayer)) {
 
                 LivingEntity livingEntity = (LivingEntity) Bukkit.getEntity(companion);
 
-                if(livingEntity != null){
-                    if(MythicBukkit.inst().getAPIHelper().isMythicMob(companion)){
+                if (livingEntity != null) {
+                    if (MythicBukkit.inst().getAPIHelper().isMythicMob(companion)) {
                         AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(livingEntity).getEntity();
                         MythicBukkit.inst().getAPIHelper().getMythicMobInstance(livingEntity).signalMob(abstractEntity, "reset");
                     }
@@ -654,25 +674,25 @@ public class GeneralEventListener implements Listener {
         Set<Player> victors = new HashSet<>();
 
         List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(caster));
-        for(LivingEntity member : mParty){
-            if(member instanceof Player){
-                changeResourceHandler.addXpToPlayer((Player)member,xpYield/mParty.size());
-                victors.add((Player)member);
+        for (LivingEntity member : mParty) {
+            if (member instanceof Player) {
+                changeResourceHandler.addXpToPlayer((Player) member, xpYield / mParty.size());
+                victors.add((Player) member);
             }
         }
 
         //check bosshomes
-        if(profileManager.getIfEntityIsBoss(entity.getUniqueId())){
+        if (profileManager.getIfEntityIsBoss(entity.getUniqueId())) {
 
             //check if mm too
-            if(MythicBukkit.inst().getAPIHelper().isMythicMob(entity.getUniqueId())){
+            if (MythicBukkit.inst().getAPIHelper().isMythicMob(entity.getUniqueId())) {
                 String bossType = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).getMobType();
                 String bossName = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).getDisplayName();
 
                 int level = profileManager.getAnyProfile(entity).getStats().getLevel();
 
                 //check if the boss has been cleared at this level yet
-                if(!firstClearManager.getIfBossHasBeenClearedAtThisLevel(bossType, level)){
+                if (!firstClearManager.getIfBossHasBeenClearedAtThisLevel(bossType, level)) {
 
                     //build a string
                     StringBuilder announcement = new StringBuilder();
@@ -680,7 +700,7 @@ public class GeneralEventListener implements Listener {
                     announcement.append(ChatColor.of(new java.awt.Color(127, 0, 255))).append("Server First Clear!\n");
                     announcement.append(ChatColor.RESET).append("Congratulations to ");
 
-                    for(Player victor : victors){
+                    for (Player victor : victors) {
                         announcement.append(ChatColor.of(new java.awt.Color(0, 102, 204)));
                         announcement.append(victor.getName()).append(" ");
                     }
@@ -706,7 +726,6 @@ public class GeneralEventListener implements Listener {
             }
 
 
-
         }
 
         profileManager.getAnyProfile(entity).getVoidsOnDeath(victors);
@@ -719,11 +738,11 @@ public class GeneralEventListener implements Listener {
 
         Player player = event.getPlayer();
 
-        if(!player.isSneaking()){
+        if (!player.isSneaking()) {
             return;
         }
 
-        if(player.getGameMode() != GameMode.SURVIVAL){
+        if (player.getGameMode() != GameMode.SURVIVAL) {
             return;
         }
 
@@ -732,32 +751,31 @@ public class GeneralEventListener implements Listener {
             boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
 
             //make sure not in combat
-            if(combatStatus){
+            if (combatStatus) {
                 return;
             }
 
             UUID uuid = player.getUniqueId();
-            if(countdownTasks.containsKey(uuid)){
+            if (countdownTasks.containsKey(uuid)) {
                 countdownTasks.get(uuid).cancel();
             }
 
-            BukkitTask task = new BukkitRunnable(){
+            BukkitTask task = new BukkitRunnable() {
                 private int secondsLeft = 3;
 
                 @Override
-                public void run(){
+                public void run() {
 
-                    if(player.isSneaking()){
-                        if (secondsLeft > 0){
+                    if (player.isSneaking()) {
+                        if (secondsLeft > 0) {
                             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("Starting Combat in " + secondsLeft));
-                            secondsLeft --;
-                        }
-                        else{
+                            secondsLeft--;
+                        } else {
                             this.cancel();
                             combatManager.startCombatTimer(player);
 
                         }
-                    }else{
+                    } else {
                         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("Cancelled combat"));
                         this.cancel();
                     }
@@ -771,11 +789,13 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
-    public void targetTooFar(PlayerMoveEvent event){
+    public void targetTooFar(PlayerMoveEvent event) {
 
         Player player = event.getPlayer();
 
-        if(targetManager.getPlayerTarget(player) == null){
+        player.setSaturation(1);
+
+        if (targetManager.getPlayerTarget(player) == null) {
             return;
         }
 
@@ -783,18 +803,18 @@ public class GeneralEventListener implements Listener {
 
         World playerWorld = player.getWorld();
         World targetWorld = playerTarget.getWorld();
-        if(playerWorld != targetWorld){
+        if (playerWorld != targetWorld) {
             targetManager.setPlayerTarget(player, null);
             return;
         }
 
         double distance = playerTarget.getLocation().distance(player.getLocation());
-        if(distance > 35){
+        if (distance > 35) {
             targetManager.setPlayerTarget(player, null);
             return;
         }
 
-        if(playerTarget.isDead()){
+        if (playerTarget.isDead()) {
             targetManager.setPlayerTarget(player, null);
             return;
         }
@@ -802,10 +822,10 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
-    public void rangerLoseFocus(PlayerMoveEvent event){
+    public void rangerLoseFocus(PlayerMoveEvent event) {
         Player player = event.getPlayer();
 
-        if(!profileManager.getAnyProfile(player).getPlayerClass().equals(PlayerClass.Ranger)){
+        if (!profileManager.getAnyProfile(player).getPlayerClass().equals(PlayerClass.Ranger)) {
             return;
         }
 
@@ -819,20 +839,19 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
-    public void noImmobile(PlayerMoveEvent event){
+    public void noImmobile(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-
 
 
         boolean immobile = buffAndDebuffManager.getImmobile().getImmobile(player);
 
-        if(!immobile){
+        if (!immobile) {
             return;
         }
 
-        Block block = player.getLocation().subtract(0,.1,0).getBlock();
+        Block block = player.getLocation().subtract(0, .1, 0).getBlock();
 
-        if(block.getType() == Material.AIR){
+        if (block.getType() == Material.AIR) {
             return;
         }
 
@@ -847,11 +866,11 @@ public class GeneralEventListener implements Listener {
 
 
     @EventHandler
-    public void noTakeArmorstand(PlayerArmorStandManipulateEvent event){
+    public void noTakeArmorstand(PlayerArmorStandManipulateEvent event) {
         Player player = event.getPlayer();
 
 
-        if(player.getGameMode() == GameMode.CREATIVE && !profileManager.getAnyProfile(player).getIfDead()){
+        if (player.getGameMode() == GameMode.CREATIVE && !profileManager.getAnyProfile(player).getIfDead()) {
             return;
         }
 
@@ -860,70 +879,70 @@ public class GeneralEventListener implements Listener {
 
 
     @EventHandler
-    public void whenHealthChanged(HealthChangeEvent event){
+    public void whenHealthChanged(HealthChangeEvent event) {
         LivingEntity defender = event.getEntity();
 
-        if(defender instanceof ArmorStand){
+        if (defender instanceof ArmorStand) {
             return;
         }
 
-        if(defender instanceof ItemFrame){
+        if (defender instanceof ItemFrame) {
             return;
         }
 
         boolean immortal = false;
         boolean immune = buffAndDebuffManager.getImmune().getImmune(defender);
 
-        if(!(defender instanceof Player)){
+        if (!(defender instanceof Player)) {
 
-            if(!profileManager.getAnyProfile(defender).fakePlayer()){
+            if (!profileManager.getAnyProfile(defender).fakePlayer()) {
                 immortal = profileManager.getAnyProfile(defender).getImmortality();
 
-                if(defender.isDead()){
+                if (defender.isDead()) {
                     return;
                 }
 
-                if(profileManager.getAnyProfile(defender).getIfObject()){
+                if (profileManager.getAnyProfile(defender).getIfObject()) {
                     return;
                 }
 
-                if(profileManager.getIfResetProcessing(defender)){
+                if (profileManager.getIfResetProcessing(defender)) {
                     return;
                 }
 
-                if(!event.getIfPositive()){
+                if (!event.getIfPositive()) {
                     aggroTick.startAggroTaskFor(defender);
                 }
 
                 List<LivingEntity> attackers = aggroManager.getAttackerList(defender);
-                for(LivingEntity attacker : attackers){
-                    if(!(attacker instanceof Player)){
+                for (LivingEntity attacker : attackers) {
+                    if (!(attacker instanceof Player)) {
                         continue;
                     }
                     Player attackerPlayer = (Player) attacker;
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(attackerPlayer, "target", false));
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(attackerPlayer, Target, false));
                 }
 
             }
 
         }
 
-        if(defender instanceof Player){
+        if (defender instanceof Player) {
 
             boolean deathStatus = profileManager.getAnyProfile(defender).getIfDead();
 
-            if(deathStatus){
+            if (deathStatus) {
                 return;
             }
 
             Player defenderPlayer = (Player) defender;
 
 
-            if(!event.getIfPositive()){
+            if (!event.getIfPositive()) {
 
                 InventoryView openInv = defenderPlayer.getOpenInventory();
 
-                if(!openInv.getTitle().equalsIgnoreCase("crafting")){
+                if (!openInv.getTitle().equalsIgnoreCase("crafting")) {
                     defenderPlayer.closeInventory();
                 }
 
@@ -933,38 +952,38 @@ public class GeneralEventListener implements Listener {
 
         }
 
-        if(defender instanceof Player || profileManager.getAnyProfile(defender).fakePlayer()){
+        if (defender instanceof Player || profileManager.getAnyProfile(defender).fakePlayer()) {
 
             List<LivingEntity> mysticaParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(defender));
 
-            for(LivingEntity member : mysticaParty){
+            for (LivingEntity member : mysticaParty) {
 
-                if(member instanceof Player){
+                if (member instanceof Player) {
                     Player player = (Player) member;
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "team", false));
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, Team, false));
                 }
 
             }
         }
 
 
-        if(immortal || immune){
+        if (immortal || immune) {
             return;
         }
 
-        if(!event.getIfPositive()){
+        if (!event.getIfPositive()) {
 
 
-            if(damageSoundCooldown.get(defender.getUniqueId()) == null){
+            if (damageSoundCooldown.get(defender.getUniqueId()) == null) {
                 damageSoundCooldown.put(defender.getUniqueId(), (System.currentTimeMillis() / 1000) - 1);
             }
 
             long currentTime = System.currentTimeMillis() / 1000;
 
-            if((defender instanceof Player) || profileManager.getAnyProfile(defender).fakePlayer()){
+            if ((defender instanceof Player) || profileManager.getAnyProfile(defender).fakePlayer()) {
 
-                if(defender instanceof Player){
-                    if(currentTime - damageSoundCooldown.get(defender.getUniqueId()) > 0.5){
+                if (defender instanceof Player) {
+                    if (currentTime - damageSoundCooldown.get(defender.getUniqueId()) > 0.5) {
 
                         ((Player) defender).playSound(defender, Sound.ENTITY_PLAYER_HURT, 1, 1);
                         damageSoundCooldown.put(defender.getUniqueId(), (System.currentTimeMillis() / 1000));
@@ -974,7 +993,7 @@ public class GeneralEventListener implements Listener {
                 abilityManager.getWarriorAbilities().getSearingChains().tryToDecreaseCooldown(defender);
                 abilityManager.getAssassinAbilities().getStealth().stealthBonusCheck(defender, null);
 
-                if(profileManager.getAnyProfile(defender).getPlayerClass().equals(PlayerClass.Warrior)){
+                if (profileManager.getAnyProfile(defender).getPlayerClass().equals(PlayerClass.Warrior)) {
                     abilityManager.getWarriorAbilities().getRage().addRageToEntity(defender, 10);
                 }
 
@@ -985,15 +1004,14 @@ public class GeneralEventListener implements Listener {
 
         }
 
-        if(!profileManager.getAnyProfile(defender).fakePlayer()){
-            if(!defender.hasAI()){
+        if (!profileManager.getAnyProfile(defender).fakePlayer()) {
+            if (!defender.hasAI()) {
                 defender.setAI(true);
             }
         }
 
 
-
-        if(MythicBukkit.inst().getAPIHelper().isMythicMob(defender.getUniqueId())){
+        if (MythicBukkit.inst().getAPIHelper().isMythicMob(defender.getUniqueId())) {
             AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(defender).getEntity();
             MythicBukkit.inst().getAPIHelper().getMythicMobInstance(defender).signalMob(abstractEntity, "damage");
         }
@@ -1001,42 +1019,46 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
-    public void hudUpdate(HudUpdateEvent event){
+    public void hudUpdate(HudUpdateEvent event) {
 
         Player player = event.getPlayer();
-        String barType = event.getBarType();
+        BarType barType = event.getBarType();
         boolean forced = event.getIfForced();
 
-        switch (barType.toLowerCase()){
-            case "resource":{
+        switch (barType) {
+
+            case Resource -> {
                 hudManager.editResourceBar(player);
                 return;
             }
-            case "target":{
+
+            case Target -> {
                 hudManager.editTargetBar(player, forced);
                 return;
             }
-            case "team":{
+            case Team -> {
                 hudManager.editTeamBar(player, forced);
                 return;
             }
-            case "status":{
+            case Status -> {
                 hudManager.editStatusBar(player);
                 return;
             }
-            case "cast":{
+            case Cast -> {
                 hudManager.displayCastBar(player);
                 return;
             }
-            case "dps":{
+            case Dps -> {
                 hudManager.getDamageBoardPlaceholders().updateDamageBoardValues(player);
                 return;
             }
         }
 
 
-
     }
+
+
+
 
     @EventHandler
     public void ultimateStatusChange(UltimateStatusChageEvent event){
@@ -1643,8 +1665,9 @@ public class GeneralEventListener implements Listener {
 
         Player player = Bukkit.getPlayer(event.getPartyPlayer().getPartyId());
         Player newLeader = Bukkit.getPlayer(event.getParty().getLeader());
-        profileManager.transferCompanionsToLeader(player, newLeader);
-        mysticaPartyManager.setLeaderPlayer(player, newLeader);
+
+        Bukkit.getScheduler().runTask(main, () -> profileManager.transferCompanionsToLeader(player, newLeader));
+
     }
 
 
@@ -1739,6 +1762,8 @@ public class GeneralEventListener implements Listener {
 
     }
 
+
+
     @EventHandler
     public void onMPartyUpdate(UpdateMysticaPartyEvent event){
 
@@ -1747,15 +1772,18 @@ public class GeneralEventListener implements Listener {
         List<LivingEntity> oldMParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(entity));
 
         for(LivingEntity member : oldMParty){
-            mysticaPartyManager.removeFromMysticaPartyMap(member);
+            mysticaPartyManager.updateMysticaParty(member);
         }
 
         for(LivingEntity member : oldMParty){
-            if(member instanceof Player){
-                Player player = (Player) member;
-                mysticaPartyManager.getMysticaParty(player);
-                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "team", true));
-                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "dps", true));
+
+            if(member == null){
+                continue;
+            }
+
+            if(member instanceof Player player){
+                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, Team, true));
+                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, Dps, true));
             }
         }
 
@@ -1771,7 +1799,7 @@ public class GeneralEventListener implements Listener {
 
         Player player = profileManager.getCompanionsPlayer(companion);
 
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "team", true));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, Team, true));
 
     }
 

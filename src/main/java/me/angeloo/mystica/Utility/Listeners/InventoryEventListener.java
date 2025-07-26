@@ -1,7 +1,7 @@
 package me.angeloo.mystica.Utility.Listeners;
 
 
-import me.angeloo.mystica.Components.Inventories.*;
+import me.angeloo.mystica.Components.Inventories.Party.PartyInventory;
 import me.angeloo.mystica.Components.Inventories.Storage.MysticaBag;
 import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.Items.MysticaItem;
@@ -10,11 +10,8 @@ import me.angeloo.mystica.Components.Items.StackableItemRegistry;
 import me.angeloo.mystica.Managers.CustomInventoryManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.*;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,14 +29,14 @@ public class InventoryEventListener implements Listener {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-
     private final CustomInventoryManager inventoryManager;
-
+    private final PartyInventory partyInventory;
 
     public InventoryEventListener(Mystica main){
         this.main = main;
         profileManager = main.getProfileManager();
         inventoryManager = main.getInventoryManager();
+        partyInventory = main.getPartyInventory();
     }
 
     @EventHandler
@@ -185,6 +182,13 @@ public class InventoryEventListener implements Listener {
 
             return;
         }
+
+        if(event.getSlot() == 4){
+            partyInventory.openPartyInventory(player);
+            return;
+        }
+
+        //Bukkit.getLogger().info(String.valueOf(event.getSlot()));
 
     }
 

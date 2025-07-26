@@ -5,6 +5,7 @@ import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import org.bukkit.Bukkit;
@@ -46,7 +47,7 @@ public class ClassSetter {
         displayWeapons.displayArmor(player);
         gearReader.setGearStats(player);
 
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource", true));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource, true));
 
     }
 

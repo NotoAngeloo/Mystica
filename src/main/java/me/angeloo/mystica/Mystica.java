@@ -1,9 +1,16 @@
 package me.angeloo.mystica;
 
+import com.alessiodp.parties.api.Parties;
+import com.alessiodp.parties.api.interfaces.Party;
+import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Commands.*;
 import me.angeloo.mystica.Components.Inventories.*;
+import me.angeloo.mystica.Components.Inventories.Equipment.*;
+import me.angeloo.mystica.Components.Inventories.Party.DungeonSelect;
+import me.angeloo.mystica.Components.Inventories.Party.InvitedInventory;
+import me.angeloo.mystica.Components.Inventories.Party.PartyInventory;
 import me.angeloo.mystica.Components.Items.BagItem;
 import me.angeloo.mystica.Components.Items.SoulStone;
 import me.angeloo.mystica.Components.Items.StackableItemRegistry;
@@ -88,6 +95,8 @@ public final class Mystica extends JavaPlugin{
     private UpgradeInventory upgradeInventory;
     private EquipmentInventory equipmentInventory;
     private DungeonSelect dungeonSelect;
+    private InvitedInventory invitedInventory;
+    private PartyInventory partyInventory;
 
     private FirstClearManager firstClearManager;
 
@@ -176,7 +185,7 @@ public final class Mystica extends JavaPlugin{
 
         fakePlayerAiManager = new FakePlayerAiManager(this);
 
-        customInventoryManager = new CustomInventoryManager();
+        customInventoryManager = new CustomInventoryManager(this);
         abilityInventory = new AbilityInventory(this);
         specInventory = abilityInventory.getSpecInventory();
         identifyInventory = new IdentifyInventory(this);
@@ -186,6 +195,8 @@ public final class Mystica extends JavaPlugin{
         equipmentInventory = new EquipmentInventory(this);
         matchMakingManager = new MatchMakingManager(this);
         dungeonSelect = new DungeonSelect(this);
+        invitedInventory = new InvitedInventory(this);
+        partyInventory = new PartyInventory(this);
 
         firstClearManager = new FirstClearManager(this);
         firstClearManager.createOrLoadFolder();
@@ -239,6 +250,8 @@ public final class Mystica extends JavaPlugin{
         this.getServer().getPluginManager().registerEvents(refineInventory, this);
         this.getServer().getPluginManager().registerEvents(upgradeInventory, this);
         this.getServer().getPluginManager().registerEvents(equipmentInventory, this);
+        this.getServer().getPluginManager().registerEvents(partyInventory, this);
+        this.getServer().getPluginManager().registerEvents(invitedInventory, this);
 
         this.getServer().getPluginManager().registerEvents(new InventoryEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new GeneralEventListener(this), this);
@@ -286,7 +299,21 @@ public final class Mystica extends JavaPlugin{
     @Override
     public void onDisable() {
 
+
         for (Player player : Bukkit.getOnlinePlayers()){
+
+            if(Parties.getApi().isPlayerInParty(player.getUniqueId())){
+                Party party = Parties.getApi().getParty(player.getUniqueId());
+
+                if(party != null){
+                    PartyPlayer partyPlayer = Parties.getApi().getPartyPlayer(player.getUniqueId());
+                    assert partyPlayer != null;
+                    party.removeMember(partyPlayer);
+                }
+
+            }
+
+            player.getInventory().clear();
 
             boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
             boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
@@ -400,12 +427,15 @@ public final class Mystica extends JavaPlugin{
 
     public DungeonSelect getDungeonSelect(){return dungeonSelect;}
 
+    public PartyInventory getPartyInventory(){return partyInventory;}
+
+    public InvitedInventory getInvitedInventory(){return invitedInventory;}
+
     public MysticaPartyManager getMysticaPartyManager(){return mysticaPartyManager;}
 
     public MatchMakingManager getMatchMakingManager(){return matchMakingManager;}
 
     public InventoryItemGetter getItemGetter(){return inventoryItemGetter;}
-
 
     public IdentifyInventory getIdentifyInventory(){return identifyInventory;}
 
@@ -428,7 +458,6 @@ public final class Mystica extends JavaPlugin{
     public HudManager getHudManager() {
         return hudManager;
     }
-
 
 
     @NotNull

@@ -1,4 +1,4 @@
-package me.angeloo.mystica.Components.Inventories;
+package me.angeloo.mystica.Components.Inventories.Equipment;
 
 import com.google.gson.Gson;
 import me.angeloo.mystica.Components.Inventories.Storage.MysticaBag;
@@ -23,20 +23,20 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RefineInventory implements Listener {
+public class ReforgeInventory implements Listener {
 
     private final ProfileManager profileManager;
     private final CustomInventoryManager inventoryManager;
 
 
-    public RefineInventory(Mystica main){
+    public ReforgeInventory(Mystica main){
         profileManager = main.getProfileManager();
         inventoryManager = main.getInventoryManager();
     }
 
-    public void openRefineInventory(Player player){
+    public void openReforgeInventory(Player player){
 
-        String title = ChatColor.WHITE + "\uF807" + "\uE0B4" + "\uF828";
+        String title = ChatColor.WHITE + "\uF807" + "\uE0B1" + "\uF828";
 
 
         title = inventoryManager.addBagPng(title);
@@ -49,10 +49,17 @@ public class RefineInventory implements Listener {
         profileManager.getAnyProfile(player).getMysticaBagCollection().getBag(inventoryManager.getBagIndex(player)).displayBagItems(player);
     }
 
-    @EventHandler
-    public void  refineClicks(InventoryClickEvent event){
 
-        if(!event.getView().getTitle().contains("\uE0B4")){
+
+    private int getRequired(MysticaEquipment equipment){
+
+        return equipment.getTier() * 2;
+    }
+
+    @EventHandler
+    public void reforgeClick(InventoryClickEvent event){
+
+        if(!event.getView().getTitle().contains("\uE0B1")){
             return;
         }
 
@@ -98,10 +105,6 @@ public class RefineInventory implements Listener {
             Gson gson = new Gson();
             MysticaEquipment equipment = gson.fromJson(json, MysticaEquipment.class);
 
-            if(equipment.getSkillOne() == null){
-                return;
-            }
-
             topInv.setItem(24, null);
 
             topInv.setItem(20, item);
@@ -118,13 +121,13 @@ public class RefineInventory implements Listener {
 
         if(event.getClickedInventory() == topInv){
 
-            List<Integer> refineSlots = new ArrayList<>();
-            refineSlots.add(53);
-            refineSlots.add(52);
-            refineSlots.add(51);
+            List<Integer> reforgeSlots = new ArrayList<>();
+            reforgeSlots.add(53);
+            reforgeSlots.add(52);
+            reforgeSlots.add(51);
 
 
-            if(refineSlots.contains(slot)){
+            if(reforgeSlots.contains(slot)){
 
                 //check if has enough
 
@@ -164,17 +167,17 @@ public class RefineInventory implements Listener {
                     return;
                 }
 
-                MysticaEquipment refined = new MysticaEquipment(
+                MysticaEquipment reforged = new MysticaEquipment(
                         equipment.getEquipmentSlot(),
                         equipment.getPlayerClass(),
                         equipment.getLevel(),
                         equipment.getTier(),
-                        equipment.getHighStat(),
-                        equipment.getLowStat()
+                        equipment.getSkillOne(),
+                        equipment.getSkillTwo()
 
                 );
 
-                topInv.setItem(24, refined.build());
+                topInv.setItem(24, reforged.build());
 
                 //subtract items from bag
                 collection.removeItemsFromMultipleBags(new SoulStone(required));
@@ -236,18 +239,10 @@ public class RefineInventory implements Listener {
                 collection.removeItemsFromMultipleBags(oldEquipment);
 
                 currentBag.addItem(equipment);
-                openRefineInventory(player);
+                openReforgeInventory(player);
             }
 
         }
-
-    }
-
-    private int getRequired(MysticaEquipment equipment){
-
-        int tier = equipment.getTier();
-
-        return tier * 2;
 
     }
 

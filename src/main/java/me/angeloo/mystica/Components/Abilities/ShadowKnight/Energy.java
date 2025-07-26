@@ -4,6 +4,7 @@ import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
@@ -42,7 +43,7 @@ public class Energy {
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(caster, true));
         if(caster instanceof Player){
             Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource", false));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource, false));
         }
     }
 
@@ -63,7 +64,7 @@ public class Energy {
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, true));
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource", false));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource, false));
         }
     }
 

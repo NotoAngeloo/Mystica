@@ -2,6 +2,7 @@ package me.angeloo.mystica.Components.Inventories;
 
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
+import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.InventoryItemGetter;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -157,7 +158,7 @@ public class SpecInventory implements Listener {
                 profileManager.getAnyProfile(player).getStats().setLevelStats(profileManager.getAnyProfile(player).getStats().getLevel(),
                         profileManager.getAnyProfile(player).getPlayerClass(), name);*/
 
-                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, "resource", true));
+                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource, true));
                 return;
             }
 

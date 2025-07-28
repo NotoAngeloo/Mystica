@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.Commands;
 
 import me.angeloo.mystica.Components.Items.MysticaEquipment;
+import me.angeloo.mystica.Components.Items.MysticalCrystal;
 import me.angeloo.mystica.Components.Items.SoulStone;
 import me.angeloo.mystica.Components.Items.UnidentifiedItem;
 import me.angeloo.mystica.Utility.InventoryItemGetter;
@@ -17,11 +18,9 @@ import org.jetbrains.annotations.NotNull;
 public class MysticaItem implements CommandExecutor {
 
     private final ProfileManager profileManager;
-    private final InventoryItemGetter inventoryItemGetter;
 
     public MysticaItem(Mystica main){
         profileManager = main.getProfileManager();
-        inventoryItemGetter = main.getItemGetter();
     }
 
     @Override
@@ -63,12 +62,12 @@ public class MysticaItem implements CommandExecutor {
 
 
             profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new SoulStone(66));
+            profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new MysticalCrystal(1));
 
-            profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new UnidentifiedItem(EquipmentSlot.WEAPON, 1, 1));
+            //profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new UnidentifiedItem(EquipmentSlot.WEAPON, 1, 1));
             //profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new UnidentifiedItem(EquipmentSlot.WEAPON, 1, 2));
             //profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new UnidentifiedItem(EquipmentSlot.WEAPON, 1, 3));
-
-            profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new MysticaEquipment(EquipmentSlot.WEAPON, profileManager.getAnyProfile(player).getPlayerClass(), 2));
+            //profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(new MysticaEquipment(EquipmentSlot.WEAPON, profileManager.getAnyProfile(player).getPlayerClass(), 2));
 
             return true;
         }

@@ -48,6 +48,12 @@ public abstract class StackableItem extends MysticaItem{
             return item;
         }
 
+        int amount = this.amount;
+
+        if(amount > 64){
+            amount = 64;
+        }
+
         item.setAmount(amount);
 
         meta.setDisplayName(getDisplayName());

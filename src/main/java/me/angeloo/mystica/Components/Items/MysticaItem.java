@@ -13,6 +13,8 @@ public abstract class MysticaItem {
 
     public abstract ItemStack build();
 
+    public abstract boolean questItem();
+
     public abstract Map<String, Object> serialize();
 
     public static MysticaItem deserialize(Map<String, Object> map) {
@@ -20,16 +22,12 @@ public abstract class MysticaItem {
         MysticaItemFormat format = MysticaItemFormat.valueOf((String) map.get("format"));
 
 
-        switch (format) {
-            case EQUIPMENT:
-                return MysticaEquipment.deserialize(map);
-            case UNIDENTIFIED:
-                return UnidentifiedItem.deserialize(map);
-            case STACKABLE:
-                return StackableItemRegistry.deserialize(map);
-            default:
-                throw new IllegalArgumentException("Unknown item format: " + format);
-        }
+        return switch (format) {
+            case EQUIPMENT -> MysticaEquipment.deserialize(map);
+            case UNIDENTIFIED -> UnidentifiedItem.deserialize(map);
+            case STACKABLE -> StackableItemRegistry.deserialize(map);
+            default -> throw new IllegalArgumentException("Unknown item format: " + format);
+        };
     }
 
 

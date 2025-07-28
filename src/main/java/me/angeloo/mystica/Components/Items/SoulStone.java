@@ -27,6 +27,10 @@ public class SoulStone extends StackableItem{
         return "Soul Stone";
     }
 
+    @Override
+    public boolean questItem() {
+        return false;
+    }
 
 
     @Override
@@ -40,6 +44,8 @@ public class SoulStone extends StackableItem{
         lores.add(ChatColor.of(Color.WHITE) + "Made from condensed mana force");
         lores.add("");
         lores.add(ChatColor.of(Color.WHITE) + "A useful material for enhancing equipment");
+        lores.add("");
+        lores.add(ChatColor.of(uncommonColor) + "(" + amount + ")");
         return lores;
     }
 

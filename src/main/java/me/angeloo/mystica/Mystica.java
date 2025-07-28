@@ -12,6 +12,7 @@ import me.angeloo.mystica.Components.Inventories.Party.DungeonSelect;
 import me.angeloo.mystica.Components.Inventories.Party.InvitedInventory;
 import me.angeloo.mystica.Components.Inventories.Party.PartyInventory;
 import me.angeloo.mystica.Components.Items.BagItem;
+import me.angeloo.mystica.Components.Items.MysticalCrystal;
 import me.angeloo.mystica.Components.Items.SoulStone;
 import me.angeloo.mystica.Components.Items.StackableItemRegistry;
 import me.angeloo.mystica.Managers.*;
@@ -118,6 +119,7 @@ public final class Mystica extends JavaPlugin{
     public static Color commonColor = new Color(137, 141, 173);
     public static Color uncommonColor = new Color(138, 221, 31);
     public static Color rareColor = new Color(57, 164, 179);
+    public static Color epicColor = new Color(72, 18, 143);
 
     public static MythicDungeonsService dungeonsApi(){
         return Bukkit.getServer().getServicesManager().load(MythicDungeonsService.class);
@@ -132,6 +134,7 @@ public final class Mystica extends JavaPlugin{
 
         StackableItemRegistry.register("SOUL STONE", SoulStone::deserialize);
         StackableItemRegistry.register("BAG", BagItem::deserialize);
+        StackableItemRegistry.register("MYSTICAL CRYSTAL", MysticalCrystal::deserialize);
 
 
         pathingManager = new PathingManager(this);
@@ -234,6 +237,7 @@ public final class Mystica extends JavaPlugin{
         getCommand("CompanionNeedsToInterrupt").setExecutor(new CompanionNeedsToInterrupt(this));
         getCommand("DungeonSelect").setExecutor(new DungeonFinder(this));
         getCommand("MysticaItem").setExecutor(new MysticaItem(this));
+        getCommand("StarterKit").setExecutor(new StarterKit(this));
 
 
         this.getServer().getPluginManager().registerEvents(new ClassSelectInventory(this), this);
@@ -302,7 +306,7 @@ public final class Mystica extends JavaPlugin{
 
         for (Player player : Bukkit.getOnlinePlayers()){
 
-            if(Parties.getApi().isPlayerInParty(player.getUniqueId())){
+            if(mysticaPartyManager.inPParty(player)){
                 Party party = Parties.getApi().getParty(player.getUniqueId());
 
                 if(party != null){

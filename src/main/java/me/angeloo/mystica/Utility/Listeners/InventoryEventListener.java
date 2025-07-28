@@ -107,6 +107,29 @@ public class InventoryEventListener implements Listener {
 
                 if(discardSlots.contains(slot)){
 
+                    ItemStack invItem;
+                    MysticaItem bagItem = null;
+
+                    for(int i = 0; i< 26; i++){
+
+                        invItem = bottomInv.getItem(i+9);
+
+                        if(invItem == null){
+                            continue;
+                        }
+
+                        if(invItem.equals(actionItem)){
+                            bagItem = currentBag.getBag().get(i);
+
+                            if(bagItem.questItem()){
+                                player.sendMessage("cannot discard this item");
+                                return;
+                            }
+
+                            break;
+                        }
+                    }
+
                     Set<NamespacedKey> keys = meta.getPersistentDataContainer().getKeys();
 
                     if(keys.contains(NamespacedKey.fromString( "mystica:stackable_data"))){
@@ -128,9 +151,15 @@ public class InventoryEventListener implements Listener {
                         return;
                     }
 
+                    if(bagItem == null){
+                        return;
+                    }
+
+                    currentBag.removeFromBag(bagItem);
+                    profileManager.getAnyProfile(player).getMysticaBagCollection().openMysticaBag(player, inventoryManager.getBagIndex(player));
 
                     //this loop finds the slot that selected item is in the mysticabag
-                    for(int i = 0; i< 26; i++){
+                    /*for(int i = 0; i< 26; i++){
 
                         ItemStack invItem = bottomInv.getItem(i+9);
 
@@ -144,7 +173,7 @@ public class InventoryEventListener implements Listener {
                             profileManager.getAnyProfile(player).getMysticaBagCollection().openMysticaBag(player, inventoryManager.getBagIndex(player));
                             break;
                         }
-                    }
+                    }*/
                 }
             }
         }

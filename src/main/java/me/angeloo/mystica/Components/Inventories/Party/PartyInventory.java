@@ -8,7 +8,6 @@ import me.angeloo.mystica.Utility.Enums.Role;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,7 +21,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 
 import static me.angeloo.mystica.Mystica.*;
 
@@ -71,8 +69,14 @@ public class PartyInventory implements Listener {
             teamSquadPng = "\uE08D";
         }
 
+        if(!partyManager.inPParty(player)){
+            teamSquadPng = "";
+        }
+
         //-7, png, +8, -265, +78, png
         String title = ChatColor.WHITE + "\uF807" + sortByPng + "\uF828" + "\uF80D" + "\uF82B\uF828\uF826" + teamSquadPng;
+
+        //make different buttons depending if leader or not in a party or whatnot. put on seperate png
 
         Inventory inv = Bukkit.createInventory(null, 9*6, title);
 
@@ -95,6 +99,12 @@ public class PartyInventory implements Listener {
                         continue;
                     }
 
+                    if(partyManager.inPParty(online)){
+
+                        //check if party can merge, later
+
+                        continue;
+                    }
 
                     if (slot >= 45) {
                         break;
@@ -109,7 +119,7 @@ public class PartyInventory implements Listener {
 
 
 
-                    inv.setItem(slot, headGetter(online, false));
+                    inv.setItem(slot, inviteHead(online));
                     slot++;
                 }
 
@@ -138,7 +148,7 @@ public class PartyInventory implements Listener {
                     }
 
 
-                    inv.setItem(slot, headGetter(online, false));
+                    inv.setItem(slot, inviteHead(online));
                     slot++;
                 }
 
@@ -151,10 +161,13 @@ public class PartyInventory implements Listener {
 
         player.openInventory(inv);
 
+        if(!partyManager.inPParty(player)){
+            return;
+        }
 
         Player leaderPlayer = partyManager.getLeaderPlayer(player);
 
-        player.getInventory().setItem(13, headGetter(leaderPlayer, true));
+        player.getInventory().setItem(13, teamHead(leaderPlayer, player));
 
         //depending on size, put members in places of inventory
 
@@ -168,7 +181,7 @@ public class PartyInventory implements Listener {
                 }
 
                 if(member instanceof Player mPlayer){
-                    player.getInventory().setItem(slot, headGetter(mPlayer, true));
+                    player.getInventory().setItem(slot, teamHead(mPlayer, player));
 
                 }
 
@@ -186,7 +199,7 @@ public class PartyInventory implements Listener {
                 }
 
                 if(member instanceof Player mPlayer){
-                    player.getInventory().setItem(slot, headGetter(mPlayer, true));
+                    player.getInventory().setItem(slot, teamHead(mPlayer, player));
 
                 }
 
@@ -197,7 +210,7 @@ public class PartyInventory implements Listener {
 
     }
 
-    private ItemStack headGetter(Player player, boolean inPartyAlready){
+    private ItemStack inviteHead(Player player){
 
         ItemStack head = new ItemStack(Material.PLAYER_HEAD);
 
@@ -242,10 +255,74 @@ public class PartyInventory implements Listener {
 
         lores.add(ChatColor.of(menuColor) + "Role: " + inventoryManager.getRole(player));
 
-        if(!inPartyAlready){
-            lores.add("");
-            lores.add(ChatColor.of(menuColor) + "Click to invite");
+        lores.add("");
+        lores.add(ChatColor.of(menuColor) + "Click to invite");
+
+
+        meta.setLore(lores);
+
+        head.setItemMeta(meta);
+
+        return head;
+    }
+
+    private ItemStack teamHead(Player player, Player mePlayer){
+
+        ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+
+        SkullMeta meta = (SkullMeta) head.getItemMeta();
+        assert meta != null;
+
+        meta.setOwningPlayer(player);
+
+        meta.setDisplayName(player.getName());
+
+        List<String> lores = new ArrayList<>();
+
+        Color classColor = Color.WHITE;
+
+        switch (profileManager.getAnyProfile(player).getPlayerClass()){
+
+            case Ranger -> {
+                classColor = rangerColor;
+            }
+            case Warrior ->{
+                classColor = warriorColor;
+            }
+            case Paladin -> {
+                classColor = paladinColor;
+            }
+            case Shadow_Knight -> {
+                classColor = shadowKnightColor;
+            }
+            case Elementalist -> {
+                classColor = elementalistColor;
+            }
+            case Mystic -> {
+                classColor = mysticColor;
+            }
+            case Assassin -> {
+                classColor = assassinColor;
+            }
+
         }
+
+        lores.add(ChatColor.of(classColor) + profileManager.getAnyProfile(player).getPlayerClass().name());
+
+        lores.add(ChatColor.of(menuColor) + "Role: " + inventoryManager.getRole(player));
+
+        if(player == mePlayer){
+            lores.add("");
+            lores.add(ChatColor.of(menuColor) + "Click to leave");
+        }else {
+            if(partyManager.getLeaderPlayer(player) == player){
+                lores.add("");
+                lores.add(ChatColor.of(menuColor) + "Click to remove");
+            }
+        }
+
+
+
 
 
         meta.setLore(lores);
@@ -392,6 +469,13 @@ public class PartyInventory implements Listener {
 
                 assert invitePlayer != null;
                 invitedInventory.sendInviteInventory(invitePlayer, player);
+
+
+                return;
+            }
+
+            if(event.getClickedInventory() == bottomInv){
+
 
 
             }

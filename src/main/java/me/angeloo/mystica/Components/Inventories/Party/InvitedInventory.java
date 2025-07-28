@@ -152,6 +152,11 @@ public class InvitedInventory implements Listener {
                     return;
                 }
 
+                if(mysticaPartyManager.inPParty(player)){
+                    //check size
+                    return;
+                }
+
                 player.closeInventory();
 
                 Bukkit.getScheduler().runTask(main, () -> mysticaPartyManager.joinParty(player, inviter));

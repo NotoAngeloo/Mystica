@@ -2,55 +2,56 @@ package me.angeloo.mystica.Components.Items;
 
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static me.angeloo.mystica.Mystica.rareColor;
-import static me.angeloo.mystica.Mystica.uncommonColor;
+import static me.angeloo.mystica.Mystica.epicColor;
 
-public class BagItem extends StackableItem{
+public class MysticalCrystal extends StackableItem{
 
-
-    public BagItem(int amount) {
+    public MysticalCrystal(int amount){
         super(amount);
     }
 
     @Override
     public String identifier() {
-        return "Bag";
+        return "Mystical Crystal";
     }
 
     @Override
     public boolean questItem() {
-        return false;
+        return true;
     }
 
 
     @Override
     public Material getBaseMaterial(){
-        return Material.LEATHER;
+        return Material.AMETHYST_SHARD;
     }
 
     @Override
     public List<String> getLore() {
         List<String> lores = new ArrayList<>();
+        lores.add(ChatColor.of(Color.WHITE) + "You feel a great energy emminating");
+        lores.add((Color.WHITE) +"from within");
+        lores.add("");
+        lores.add("Bring this to Gaellaman");
+        lores.add("");
+        lores.add(ChatColor.of(epicColor) + "(" + amount + ")");
         return lores;
     }
 
     @Override
     public String getDisplayName() {
-        return ChatColor.of(rareColor) + "Bag";
+        return ChatColor.of(epicColor) + "Mystical Crystal";
     }
 
     @Override
     public int getCustomModelData() {
-        return 1;
+        return 0;
     }
 
 
@@ -58,4 +59,5 @@ public class BagItem extends StackableItem{
         int amount = (int) data.getOrDefault("amount", 1);
         return new SoulStone(amount);
     }
+
 }

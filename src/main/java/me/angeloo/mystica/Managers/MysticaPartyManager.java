@@ -218,7 +218,7 @@ public class MysticaPartyManager {
 
         PartiesAPI api = Parties.getApi();
 
-        if(!api.isPlayerInParty(inviter.getUniqueId())){
+        if(!inPParty(inviter)){
             //create a new party
             PartyPlayer partyInviter = api.getPartyPlayer(inviter.getUniqueId());
             api.createParty("", partyInviter);
@@ -244,6 +244,10 @@ public class MysticaPartyManager {
 
         updateMysticaParty(player);
 
+    }
+
+    public boolean inPParty(Player player){
+        return  Parties.getApi().isPlayerInParty(player.getUniqueId());
     }
 
 }

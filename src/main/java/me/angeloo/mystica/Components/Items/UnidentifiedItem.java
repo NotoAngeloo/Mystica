@@ -118,6 +118,11 @@ public class UnidentifiedItem extends MysticaItem{
     }
 
     @Override
+    public boolean questItem() {
+        return false;
+    }
+
+    @Override
     public Map<String, Object> serialize() {
         Map<String, Object> map = new HashMap<>();
 

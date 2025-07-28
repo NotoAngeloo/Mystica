@@ -134,6 +134,10 @@ commands:
     description: allows devs to get unidentified items
     usage: /MysticaItem <player>
     permission: developer
+  StarterKit:
+    description: allows devs and mms to give players starter things
+    usage: /StarterKit <player>
+    permission: developer
 
 permissions:
   developer:

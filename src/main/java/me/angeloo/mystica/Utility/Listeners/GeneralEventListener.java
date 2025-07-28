@@ -214,7 +214,7 @@ public class GeneralEventListener implements Listener {
 
         Player player = event.getPlayer();
 
-        if (Parties.getApi().isPlayerInParty(player.getUniqueId())) {
+        if (mysticaPartyManager.inPParty(player)) {
             Party party = Parties.getApi().getPartyOfPlayer(player.getUniqueId());
             PartyPlayer partyPlayer = Parties.getApi().getPartyPlayer(player.getUniqueId());
             assert party != null;
@@ -224,11 +224,16 @@ public class GeneralEventListener implements Listener {
 
         //remove them from mpartymap???? did it fix randomly???
 
-        /*List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
 
-        //Bukkit.getLogger().info("mparty: " + mParty);*/
+        for(LivingEntity member : mParty){
+            mysticaPartyManager.updateMysticaParty(member);
+            Bukkit.getLogger().info("mparty has " + member);
+        }
 
-        mysticaPartyManager.updateMysticaParty(player);
+        //Bukkit.getLogger().info("mparty: " + mParty);
+
+        //mysticaPartyManager.updateMysticaParty(player);
         //also do it for the team
 
         boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();

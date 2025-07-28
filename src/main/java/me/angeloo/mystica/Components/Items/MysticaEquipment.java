@@ -465,6 +465,11 @@ public class MysticaEquipment extends MysticaItem{
     }
 
     @Override
+    public boolean questItem() {
+        return false;
+    }
+
+    @Override
     public Map<String, Object> serialize(){
         Map<String, Object> map = new HashMap<>();
         map.put("identifier",identifier());

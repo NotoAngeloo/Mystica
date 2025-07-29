@@ -23,11 +23,6 @@ public class DisplayWeapons {
 
         PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
-        player.getInventory().setHelmet(null);
-        player.getInventory().setChestplate(null);
-        player.getInventory().setLeggings(null);
-        player.getInventory().setBoots(null);
-
         if(playerEquipment.getHelmet() != null){
             player.getInventory().setHelmet(playerEquipment.getHelmet().build());
         }

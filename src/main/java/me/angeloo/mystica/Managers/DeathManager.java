@@ -9,6 +9,7 @@ import me.angeloo.mystica.CustomEvents.MysticaPlayerDeathEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.Enums.BarType;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -32,6 +33,7 @@ public class DeathManager {
     private final AggroManager aggroManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final GravestoneManager gravestoneManager;
+    private final DisplayWeapons displayWeapons;
 
     public DeathManager(Mystica main){
         profileManager = main.getProfileManager();
@@ -40,6 +42,7 @@ public class DeathManager {
         aggroManager = main.getAggroManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         gravestoneManager = main.getGravestoneManager();
+        displayWeapons = main.getDisplayWeapons();
     }
 
 
@@ -108,11 +111,12 @@ public class DeathManager {
         target.setVisualFire(false);
         //more effects?
 
-        if(target instanceof Player){
-            ((Player) target).setGameMode(GameMode.SURVIVAL);
-            ((Player) target).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(""));
+        if(target instanceof Player player){
+            player.setGameMode(GameMode.SURVIVAL);
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(""));
             Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player) target, BarType.Resource, true));
-            ((Player)target).getInventory().clear();
+            player.getInventory().clear();
+            displayWeapons.displayArmor(player);
         }
 
 

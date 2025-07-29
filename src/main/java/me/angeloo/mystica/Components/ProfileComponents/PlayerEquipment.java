@@ -1,59 +1,60 @@
 package me.angeloo.mystica.Components.ProfileComponents;
 
+import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.Components.Items.MysticaItem;
 import org.bukkit.inventory.ItemStack;
 
 public class PlayerEquipment {
 
-    private MysticaItem[] equipment;
+    private MysticaEquipment[] equipment;
 
-    public PlayerEquipment(MysticaItem[] equipment) {
+    public PlayerEquipment(MysticaEquipment[] equipment) {
         this.equipment = equipment;
     }
 
-    public MysticaItem[] getEquipment() {
+    public MysticaEquipment[] getEquipment() {
         return equipment;
     }
 
-    public void setEquipment(MysticaItem[] equipment) {
+    public void setEquipment(MysticaEquipment[] equipment) {
         this.equipment = equipment;
     }
 
-    public MysticaItem getWeapon(){
+    public MysticaEquipment getWeapon(){
         return equipment[0];
     }
 
-    public MysticaItem getHelmet(){
+    public MysticaEquipment getHelmet(){
         return equipment[1];
     }
 
-    public MysticaItem getChestPlate(){
+    public MysticaEquipment getChestPlate(){
         return equipment[2];
     }
 
-    public MysticaItem getLeggings(){
+    public MysticaEquipment getLeggings(){
         return equipment[3];
     }
 
-    public MysticaItem getBoots(){return equipment[4];}
+    public MysticaEquipment getBoots(){return equipment[4];}
 
-    public void setWeapon(MysticaItem weapon){
+    public void setWeapon(MysticaEquipment weapon){
         equipment[0] = weapon;
     }
 
-    public void setHelmet(MysticaItem helmet){
+    public void setHelmet(MysticaEquipment helmet){
         equipment[1] = helmet;
     }
 
-    public void setChestPlate(MysticaItem chestPlate){
+    public void setChestPlate(MysticaEquipment chestPlate){
         equipment[2] = chestPlate;
     }
 
-    public void setLeggings(MysticaItem leggings){
+    public void setLeggings(MysticaEquipment leggings){
         equipment[3] = leggings;
     }
 
-    public void setBoots(MysticaItem boots){
+    public void setBoots(MysticaEquipment boots){
         equipment[4] = boots;
     }
 

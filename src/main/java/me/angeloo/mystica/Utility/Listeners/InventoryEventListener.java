@@ -10,6 +10,7 @@ import me.angeloo.mystica.Components.Items.StackableItemRegistry;
 import me.angeloo.mystica.Managers.CustomInventoryManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.DisplayWeapons;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -31,12 +32,14 @@ public class InventoryEventListener implements Listener {
     private final ProfileManager profileManager;
     private final CustomInventoryManager inventoryManager;
     private final PartyInventory partyInventory;
+    private final DisplayWeapons displayWeapons;
 
     public InventoryEventListener(Mystica main){
         this.main = main;
         profileManager = main.getProfileManager();
         inventoryManager = main.getInventoryManager();
         partyInventory = main.getPartyInventory();
+        displayWeapons = main.getDisplayWeapons();
     }
 
     @EventHandler
@@ -233,6 +236,7 @@ public class InventoryEventListener implements Listener {
 
 
         player.getInventory().clear();
+        displayWeapons.displayArmor(player);
     }
 
     @EventHandler

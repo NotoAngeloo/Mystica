@@ -257,11 +257,11 @@ public class EquipmentInventory implements Listener {
 
                 EquipmentSlot slot = mysticaEquipment.getEquipmentSlot();
 
-                switch (slot){
-                    case WEAPON:{
+                switch (slot) {
+                    case WEAPON -> {
                         ItemStack oldWeapon = topInv.getItem(18);
 
-                        if(oldWeapon != null){
+                        if (oldWeapon != null) {
                             ItemMeta oldMeta = oldWeapon.getItemMeta();
                             assert oldMeta != null;
                             PersistentDataContainer persistentDataContainer = oldMeta.getPersistentDataContainer();
@@ -284,10 +284,10 @@ public class EquipmentInventory implements Listener {
                         displayWeapons.displayArmor(player);
                         return;
                     }
-                    case HEAD:{
+                    case HEAD -> {
                         ItemStack oldHelmet = topInv.getItem(10);
 
-                        if(oldHelmet != null){
+                        if (oldHelmet != null) {
                             ItemMeta oldMeta = oldHelmet.getItemMeta();
                             assert oldMeta != null;
                             PersistentDataContainer persistentDataContainer = oldMeta.getPersistentDataContainer();
@@ -310,10 +310,10 @@ public class EquipmentInventory implements Listener {
                         displayWeapons.displayArmor(player);
                         return;
                     }
-                    case CHEST:{
+                    case CHEST -> {
                         ItemStack oldChestPlate = topInv.getItem(19);
 
-                        if(oldChestPlate != null){
+                        if (oldChestPlate != null) {
                             ItemMeta oldMeta = oldChestPlate.getItemMeta();
                             assert oldMeta != null;
                             PersistentDataContainer persistentDataContainer = oldMeta.getPersistentDataContainer();
@@ -336,10 +336,10 @@ public class EquipmentInventory implements Listener {
                         displayWeapons.displayArmor(player);
                         return;
                     }
-                    case LEGS:{
+                    case LEGS -> {
                         ItemStack oldLeggings = topInv.getItem(28);
 
-                        if(oldLeggings != null){
+                        if (oldLeggings != null) {
                             ItemMeta oldMeta = oldLeggings.getItemMeta();
                             assert oldMeta != null;
                             PersistentDataContainer persistentDataContainer = oldMeta.getPersistentDataContainer();
@@ -362,10 +362,10 @@ public class EquipmentInventory implements Listener {
                         displayWeapons.displayArmor(player);
                         return;
                     }
-                    case BOOTS:{
+                    case BOOTS -> {
                         ItemStack oldBoots = topInv.getItem(37);
 
-                        if(oldBoots != null){
+                        if (oldBoots != null) {
                             ItemMeta oldMeta = oldBoots.getItemMeta();
                             assert oldMeta != null;
                             PersistentDataContainer persistentDataContainer = oldMeta.getPersistentDataContainer();
@@ -419,8 +419,8 @@ public class EquipmentInventory implements Listener {
                 MysticaEquipment mysticaEquipment = gson.fromJson(json, MysticaEquipment.class);
 
 
-                switch (event.getSlot()){
-                    case 18:{
+                switch (event.getSlot()) {
+                    case 18 -> {
                         playerEquipment.setWeapon(null);
                         currentBag.addItem(mysticaEquipment);
                         gearReader.setGearStats(player);
@@ -428,7 +428,7 @@ public class EquipmentInventory implements Listener {
                         openEquipmentInventory(player);
                         return;
                     }
-                    case 10:{
+                    case 10 -> {
                         playerEquipment.setHelmet(null);
                         currentBag.addItem(mysticaEquipment);
                         gearReader.setGearStats(player);
@@ -436,7 +436,7 @@ public class EquipmentInventory implements Listener {
                         openEquipmentInventory(player);
                         return;
                     }
-                    case 19:{
+                    case 19 -> {
                         playerEquipment.setChestPlate(null);
                         currentBag.addItem(mysticaEquipment);
                         gearReader.setGearStats(player);
@@ -444,7 +444,7 @@ public class EquipmentInventory implements Listener {
                         openEquipmentInventory(player);
                         return;
                     }
-                    case 28:{
+                    case 28 -> {
                         playerEquipment.setLeggings(null);
                         currentBag.addItem(mysticaEquipment);
                         gearReader.setGearStats(player);
@@ -452,7 +452,7 @@ public class EquipmentInventory implements Listener {
                         openEquipmentInventory(player);
                         return;
                     }
-                    case 37:{
+                    case 37 -> {
                         playerEquipment.setBoots(null);
                         currentBag.addItem(mysticaEquipment);
                         gearReader.setGearStats(player);

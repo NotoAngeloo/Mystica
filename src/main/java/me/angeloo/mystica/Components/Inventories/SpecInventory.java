@@ -2,6 +2,8 @@ package me.angeloo.mystica.Components.Inventories;
 
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
+import me.angeloo.mystica.CustomEvents.MaxHealthChangeOutOfCombatEvent;
+import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.InventoryItemGetter;
 import me.angeloo.mystica.Managers.ProfileManager;
@@ -58,52 +60,45 @@ public class SpecInventory implements Listener {
 
         inv.setItem(40, getSubclassItem(subClass));
 
-        switch (playerClass){
-            case Elementalist:{
+        switch (playerClass) {
+            case Elementalist -> {
                 inv.setItem(9, getPyromancerItem());
                 //inv.setItem(13, getCryomancerItem());
                 inv.setItem(18, getConjurerItem());
-                break;
             }
-            case Ranger:{
+            case Ranger -> {
                 inv.setItem(9, getScoutItem());
                 inv.setItem(18, getTamerItem());
-                break;
             }
-            case Mystic:{
+            case Mystic -> {
                 inv.setItem(9, getShepardItem());
                 //chaos is a secret subclass
-                if(profileManager.getAnyProfile(player).getMilestones().getMilestone("chaos")){
+                if (profileManager.getAnyProfile(player).getMilestones().getMilestone("chaos")) {
                     inv.setItem(27, getChaosItem());
                 }
 
                 inv.setItem(18, getArcaneItem());
-                break;
             }
-            case Shadow_Knight:{
+            case Shadow_Knight -> {
                 inv.setItem(9, getBloodItem());
                 inv.setItem(18, getDoomItem());
-                break;
             }
-            case Paladin:{
+            case Paladin -> {
                 inv.setItem(9, getTemplarItem());
                 //secret
-                if(profileManager.getAnyProfile(player).getMilestones().getMilestone("divine")){
+                if (profileManager.getAnyProfile(player).getMilestones().getMilestone("divine")) {
                     inv.setItem(27, getDivineItem());
                 }
 
                 inv.setItem(18, getDawnItem());
-                break;
             }
-            case Warrior:{
+            case Warrior -> {
                 inv.setItem(9, getGladiatorItem());
                 inv.setItem(18, getExecutionerItem());
-                break;
             }
-            case Assassin:{
+            case Assassin -> {
                 inv.setItem(9, getDuelistItem());
                 inv.setItem(18, getAlchemistItem());
-                break;
             }
         }
 
@@ -147,17 +142,21 @@ public class SpecInventory implements Listener {
                     return;
                 }
 
-                //TODO: change this to account for enum instead of string
-
-                /*String name = meta.getDisplayName();
-
+                String name = meta.getDisplayName();
                 name = name.replaceAll("§.", "");
 
-                profileManager.getAnyProfile(player).setPlayerSubclass(name);
-                player.openInventory(openSpecInventory(player));
-                profileManager.getAnyProfile(player).getStats().setLevelStats(profileManager.getAnyProfile(player).getStats().getLevel(),
-                        profileManager.getAnyProfile(player).getPlayerClass(), name);*/
+                SubClass subClass = SubClass.valueOf(name);
 
+                profileManager.getAnyProfile(player).setPlayerSubclass(subClass);
+                profileManager.getAnyProfile(player).getStats().setLevelStats(
+                        profileManager.getAnyProfile(player).getStats().getLevel(),
+                        profileManager.getAnyProfile(player).getPlayerClass(),
+                        subClass);
+
+                topInv.setItem(40, getSubclassItem(subClass));
+
+
+                Bukkit.getServer().getPluginManager().callEvent(new MaxHealthChangeOutOfCombatEvent(player));
                 Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource, true));
                 return;
             }
@@ -176,48 +175,32 @@ public class SpecInventory implements Listener {
 
     private ItemStack getSubclassItem(SubClass subclass){
 
-        switch (subclass){
-            case Pyromancer:
-                return getPyromancerItem();
-            case Conjurer:
-                return getConjurerItem();
+        return switch (subclass) {
+            case Pyromancer -> getPyromancerItem();
+            case Conjurer -> getConjurerItem();
             /*case "cryomancer":
                 return getCryomancerItem();*/
-            case Scout:
-                return getScoutItem();
-            case Tamer:
-                return getTamerItem();
-            case Chaos:
-                return getChaosItem();
-            case Arcane:
-                return getArcaneItem();
-            case Shepard:
-                return getShepardItem();
-            case Doom:
-                return getDoomItem();
-            case Blood:
-                return getBloodItem();
-            case Templar:
-                return getTemplarItem();
-            case Divine:
-                return getDivineItem();
-            case Dawn:
-                return getDawnItem();
-            case Gladiator:
-                return getGladiatorItem();
-            case Executioner:
-                return getExecutionerItem();
-            case Duelist:
-                return getDuelistItem();
-            case Alchemist:
-                return getAlchemistItem();
-        }
-        return new ItemStack(Material.AIR);
+            case Scout -> getScoutItem();
+            case Tamer -> getTamerItem();
+            case Chaos -> getChaosItem();
+            case Arcane -> getArcaneItem();
+            case Shepard -> getShepardItem();
+            case Doom -> getDoomItem();
+            case Blood -> getBloodItem();
+            case Templar -> getTemplarItem();
+            case Divine -> getDivineItem();
+            case Dawn -> getDawnItem();
+            case Gladiator -> getGladiatorItem();
+            case Executioner -> getExecutionerItem();
+            case Duelist -> getDuelistItem();
+            case Alchemist -> getAlchemistItem();
+            default -> new ItemStack(Material.AIR);
+        };
     }
 
     private ItemStack getPyromancerItem(){
         return inventoryItemGetter.getItem(Material.CYAN_DYE, 9,
-                ChatColor.of(elementalistColor) + "Pyromancer",
+                ChatColor.of(elementalistColor) + SubClass.Pyromancer.name(),
                 "",
                 ChatColor.of(levelColor) + "Each level",
                 ChatColor.of(Color.WHITE) + "+15 Health, +3 Attack, +1 Both Defense",
@@ -237,7 +220,7 @@ public class SpecInventory implements Listener {
 
     private ItemStack getConjurerItem(){
         return inventoryItemGetter.getItem(Material.CYAN_DYE, 10,
-                ChatColor.of(elementalistColor) + "Conjurer",
+                ChatColor.of(elementalistColor) + SubClass.Conjurer.name(),
                 "",
                 ChatColor.of(levelColor) + "Each level",
                 ChatColor.of(Color.WHITE) + "+30 Health, +2 Attack, +1 Both Defense",
@@ -259,7 +242,7 @@ public class SpecInventory implements Listener {
 
     private ItemStack getScoutItem(){
         return inventoryItemGetter.getItem(Material.LIME_DYE, 9,
-                ChatColor.of(rangerColor) + "Scout",
+                ChatColor.of(rangerColor) + SubClass.Scout.name(),
                 "",
                 ChatColor.of(levelColor) + "Each level",
                 ChatColor.of(Color.WHITE) + "+15 Health, +3 Attack, +1 Both Defense",
@@ -281,7 +264,7 @@ public class SpecInventory implements Listener {
 
     private ItemStack getTamerItem(){
         return inventoryItemGetter.getItem(Material.LIME_DYE, 10,
-                ChatColor.of(rangerColor) + "Animal Tamer",
+                ChatColor.of(rangerColor) + SubClass.Tamer.name(),
                 "",
                 ChatColor.of(levelColor) + "Each level",
                 ChatColor.of(Color.WHITE) + "+30 Health, +2 Attack, +1 Both Defense",
@@ -302,7 +285,7 @@ public class SpecInventory implements Listener {
 
     private ItemStack getChaosItem(){
         return inventoryItemGetter.getItem(Material.ENDER_EYE, 0,
-                ChatColor.of(mysticColor) + "Chaos",
+                ChatColor.of(mysticColor) + SubClass.Chaos.name(),
                 "",
                 ChatColor.of(levelColor) + "Each level",
                 ChatColor.of(Color.WHITE) + "+15 Health, +3 Attack, +1 Both Defense",
@@ -326,7 +309,7 @@ public class SpecInventory implements Listener {
 
     private ItemStack getArcaneItem(){
         return inventoryItemGetter.getItem(Material.PURPLE_DYE, 9,
-                ChatColor.of(mysticColor) + "Arcane Master",
+                ChatColor.of(mysticColor) + SubClass.Arcane.name(),
                 "",
                 ChatColor.of(levelColor) + "Each level",
                 ChatColor.of(Color.WHITE) + "+15 Health, +3 Attack, +1 Both Defense",
@@ -350,7 +333,7 @@ public class SpecInventory implements Listener {
 
     private ItemStack getShepardItem(){
         return inventoryItemGetter.getItem(Material.PURPLE_DYE, 10,
-                ChatColor.of(mysticColor) + "Shepard",
+                ChatColor.of(mysticColor) + SubClass.Shepard.name(),
                 "",
                 ChatColor.of(levelColor) + "Each level",
                 ChatColor.of(Color.WHITE) + "+30 Health, +2 Attack, +1 Both Defense",
@@ -381,7 +364,7 @@ public class SpecInventory implements Listener {
 
     private ItemStack getBloodItem(){
         return inventoryItemGetter.getItem(Material.RED_DYE, 9,
-                ChatColor.of(shadowKnightColor) + "Blood",
+                ChatColor.of(shadowKnightColor) + SubClass.Blood.name(),
                 "",
                 ChatColor.of(levelColor) + "Each level",
                 ChatColor.of(Color.WHITE) + "+30 Health, +1 Attack, +2 Both Defense",
@@ -412,7 +395,7 @@ public class SpecInventory implements Listener {
 
     private ItemStack getDoomItem(){
         return inventoryItemGetter.getItem(Material.RED_DYE, 10,
-                ChatColor.of(shadowKnightColor) + "Doom",
+                ChatColor.of(shadowKnightColor) + SubClass.Doom.name(),
                 "",
                 ChatColor.of(levelColor) + "Each level",
                 ChatColor.of(Color.WHITE) + "+20 Health, +3 Attack, +1 Both Defense",
@@ -439,7 +422,7 @@ public class SpecInventory implements Listener {
 
     private ItemStack getTemplarItem(){
         return inventoryItemGetter.getItem(Material.YELLOW_DYE, 9,
-                ChatColor.of(paladinColor) + "Templar",
+                ChatColor.of(paladinColor) + SubClass.Templar.name(),
                 "",
                 ChatColor.of(levelColor) + "Each level",
                 ChatColor.of(Color.WHITE) + "+30 Health, +1 Attack, +2 Both Defense",
@@ -463,7 +446,7 @@ public class SpecInventory implements Listener {
 
     private ItemStack getDivineItem(){
         return inventoryItemGetter.getItem(Material.YELLOW_DYE, 19,
-                ChatColor.of(paladinColor) + "Divine",
+                ChatColor.of(paladinColor) + SubClass.Divine.name(),
                 "",
                 ChatColor.of(levelColor) + "Each level",
                 ChatColor.of(Color.WHITE) + "+30 Health, +2 Attack, +1 Both Defense",
@@ -486,7 +469,7 @@ public class SpecInventory implements Listener {
 
     private ItemStack getDawnItem(){
         return inventoryItemGetter.getItem(Material.YELLOW_DYE, 10,
-                ChatColor.of(paladinColor) + "Dawn",
+                ChatColor.of(paladinColor) + SubClass.Dawn.name(),
                 "",
                 ChatColor.of(levelColor) + "Each level",
                 ChatColor.of(Color.WHITE) + "+15 Health, +3 Attack, +1 Both Defense",
@@ -513,7 +496,7 @@ public class SpecInventory implements Listener {
 
     private ItemStack getExecutionerItem(){
         return inventoryItemGetter.getItem(Material.ORANGE_DYE, 10,
-                ChatColor.of(warriorColor) + "Executioner",
+                ChatColor.of(warriorColor) + SubClass.Executioner.name(),
                 "",
                 ChatColor.of(levelColor) + "Each level",
                 ChatColor.of(Color.WHITE) + "+15 Health, +3 Attack, +1 Both Defense",
@@ -539,7 +522,7 @@ public class SpecInventory implements Listener {
 
     private ItemStack getGladiatorItem(){
         return inventoryItemGetter.getItem(Material.ORANGE_DYE, 9,
-                ChatColor.of(warriorColor) + "Gladiator",
+                ChatColor.of(warriorColor) + SubClass.Gladiator.name(),
                 "",
                 ChatColor.of(levelColor) + "Each level",
                 ChatColor.of(Color.WHITE) + "+30 Health, +1 Attack, +2 Both Defense",
@@ -562,7 +545,7 @@ public class SpecInventory implements Listener {
 
     private ItemStack getDuelistItem(){
         return inventoryItemGetter.getItem(Material.PINK_DYE, 12,
-                ChatColor.of(assassinColor) + "Duelist",
+                ChatColor.of(assassinColor) + SubClass.Duelist.name(),
                 "",
                 ChatColor.of(levelColor) + "Each level",
                 ChatColor.of(Color.WHITE) + "+15 Health, +3 Attack, +1 Both Defense",
@@ -587,7 +570,7 @@ public class SpecInventory implements Listener {
 
     private ItemStack getAlchemistItem(){
         return inventoryItemGetter.getItem(Material.PINK_DYE, 14,
-                ChatColor.of(assassinColor) + "Alchemist",
+                ChatColor.of(assassinColor) + SubClass.Alchemist.name(),
                 "",
                 ChatColor.of(levelColor) + "Each level",
                 ChatColor.of(Color.WHITE) + "+30 Health, +2 Attack, +1 Both Defense",

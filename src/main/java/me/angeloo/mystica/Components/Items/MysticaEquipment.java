@@ -32,7 +32,7 @@ public class MysticaEquipment extends MysticaItem{
     //cosmetics later
 
     private final EquipmentSlot equipmentSlot;
-    private final PlayerClass playerClass;
+    private PlayerClass playerClass;
     private int level;
 
     private StatType highStat;
@@ -664,4 +664,6 @@ public class MysticaEquipment extends MysticaItem{
     public void setLevel(int newLevel){
         this.level = newLevel;
     }
+
+    public void setPlayerClass(PlayerClass playerClass){this.playerClass = playerClass;}
 }

@@ -31,8 +31,7 @@ public class Hidden {
 
         caster.setInvisible(true);
 
-        if(caster instanceof Player){
-            Player player = (Player) caster;
+        if(caster instanceof Player player){
             player.getInventory().setItemInMainHand(null);
             player.getInventory().setItemInOffHand(null);
             player.getInventory().setHelmet(null);

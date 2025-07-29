@@ -183,6 +183,7 @@ public class GeneralEventListener implements Listener {
         targetManager.setPlayerTarget(player, null);
         //buffAndDebuffManager.removeAllBuffsAndDebuffs(player);
         gearReader.setGearStats(player);
+        displayWeapons.displayArmor(player);
 
         if (!profileManager.getPlayerNameMap().containsKey(player.getName())) {
 
@@ -511,10 +512,7 @@ public class GeneralEventListener implements Listener {
 
                     ItemStack tempItem = item.clone();
                     player.getInventory().setItem(event.getSlot(), null);
-                    player.getInventory().setHelmet(null);
-                    player.getInventory().setChestplate(null);
-                    player.getInventory().setLeggings(null);
-                    player.getInventory().setBoots(null);
+                    displayWeapons.displayArmor(player);
 
                     equipmentInventory.openEquipmentInventory(player);
                     player.getInventory().addItem(tempItem);
@@ -523,6 +521,21 @@ public class GeneralEventListener implements Listener {
         }
     }
 
+    @EventHandler
+    public void maxHealthChange(MaxHealthChangeOutOfCombatEvent event){
+
+        Player player = event.getPlayer();
+
+        if(profileManager.getAnyProfile(player).getIfDead()){
+            return;
+        }
+
+        if(profileManager.getAnyProfile(player).getIfInCombat()){
+            return;
+        }
+
+        changeResourceHandler.healPlayerToFull(player);
+    }
 
     @EventHandler
     public void noOpenInvCombatOrDead(InventoryOpenEvent event) {

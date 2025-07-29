@@ -230,7 +230,7 @@ public class ProfileManager {
                     int hp = stats.getHealth();
 
                     //equipment
-                    PlayerEquipment playerEquipment = new PlayerEquipment(new MysticaItem[5]);
+                    PlayerEquipment playerEquipment = new PlayerEquipment(new MysticaEquipment[5]);
 
 
                     ConfigurationSection equipmentSection = config.getConfigurationSection(id + ".equipment");
@@ -454,7 +454,7 @@ public class ProfileManager {
         mysticaBagCollection.addBag();
 
 
-        PlayerEquipment playerEquipment = new PlayerEquipment(new MysticaItem[5]);
+        PlayerEquipment playerEquipment = new PlayerEquipment(new MysticaEquipment[5]);
 
         int[] defaultSkillSlots = new int[8];
         defaultSkillSlots[0] = 1;
@@ -540,7 +540,7 @@ public class ProfileManager {
 
         MysticaBagCollection mysticaBagCollection = new MysticaBagCollection(new ArrayList<>());
         mysticaBagCollection.addBag();
-        PlayerEquipment playerEquipment = new PlayerEquipment(new MysticaItem[5]);
+        PlayerEquipment playerEquipment = new PlayerEquipment(new MysticaEquipment[5]);
 
         Skill_Level skillLevel = new Skill_Level(
                 0,0,0,0,0,0,0,0);

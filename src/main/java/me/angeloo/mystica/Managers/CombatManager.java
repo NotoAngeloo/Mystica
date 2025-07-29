@@ -67,9 +67,6 @@ public class CombatManager {
                 player.getInventory().setItemInMainHand(weapon);
                 player.getInventory().setItemInOffHand(offhand);
             }
-            else{
-                //player.getInventory().setItemInMainHand(inventoryItemGetter.getNoneEquipment().getBaseWeapon());
-            }
 
 
             cooldownDisplayer.initializeItems(player);

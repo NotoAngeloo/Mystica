@@ -80,7 +80,6 @@ public class HonorCounter {
         combatManager.startCombatTimer(caster);
 
         execute(caster);
-        purity.skillListAdd(caster, 3);
 
         if(cooldownTask.containsKey(caster.getUniqueId())){
             cooldownTask.get(caster.getUniqueId()).cancel();
@@ -209,7 +208,15 @@ public class HonorCounter {
     public double getSkillDamage(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_3_Level_Bonus();
-        return (purity.calculatePurityPercentDamage(caster, 3, 30)) + ((int)(skillLevel/3));
+
+        double damage = 30 + ((int)(skillLevel/3));
+
+        if(purity.active(caster)){
+            damage = damage * 3;
+            purity.reset(caster);
+        }
+
+        return damage;
     }
 
     public int getCooldown(LivingEntity caster){

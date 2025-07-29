@@ -5,6 +5,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
@@ -78,7 +79,12 @@ public class OrderShield {
         combatManager.startCombatTimer(caster);
 
         execute(caster);
-        purity.skillListAdd(caster, 5);
+
+        if(profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Dawn)){
+            purity.add(caster, 5);
+        }
+
+
 
         if(cooldownTask.containsKey(caster.getUniqueId())){
             cooldownTask.get(caster.getUniqueId()).cancel();
@@ -265,7 +271,14 @@ public class OrderShield {
     public double getSkillDamage(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_5_Level_Bonus();
-        return (purity.calculatePurityPercentDamage(caster, 5, 35)) + ((int)(skillLevel/3));
+        double damage = 35 + ((int)(skillLevel/3));
+
+        if(purity.active(caster)){
+            damage = damage * 3;
+            purity.reset(caster);
+        }
+
+        return damage;
     }
 
     public int getCooldown(LivingEntity caster){

@@ -89,7 +89,11 @@ public class Judgement {
         }
 
         execute(caster, target);
-        purity.skillListAdd(caster, 8);
+
+        if(profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Dawn)){
+            purity.add(caster, 8);
+        }
+
 
         if(cooldownTask.containsKey(caster.getUniqueId())){
             cooldownTask.get(caster.getUniqueId()).cancel();
@@ -262,7 +266,15 @@ public class Judgement {
     public double getSkillDamage(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_5_Level_Bonus();
-        return (purity.calculatePurityPercentDamage(caster, 8, 30)) + ((int)(skillLevel/3));
+
+        double damage = 30 + ((int)(skillLevel/3));
+
+        if(purity.active(caster)){
+            damage = damage * 3;
+            purity.reset(caster);
+        }
+
+        return damage;
     }
 
     public int getCooldown(LivingEntity entity){

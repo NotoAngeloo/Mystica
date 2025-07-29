@@ -147,7 +147,7 @@ public class CombatManager {
         profileManager.getAnyProfile(player).setIfInCombat(false);
 
         if(profileManager.getAnyProfile(player).getPlayerClass().equals(PlayerClass.Paladin)){
-            abilityManager.getPaladinAbilities().getPurity().resetPurity(player);
+            abilityManager.getPaladinAbilities().getPurity().reset(player);
         }
 
 

@@ -77,7 +77,6 @@ public class ModestCalling {
         combatManager.startCombatTimer(caster);
 
         execute(caster);
-        purity.skillListAdd(caster, 7);
 
         if(cooldownTask.containsKey(caster.getUniqueId())){
             cooldownTask.get(caster.getUniqueId()).cancel();
@@ -195,7 +194,15 @@ public class ModestCalling {
     public double getSkillDamage(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_7_Level_Bonus();
-        return (purity.calculatePurityPercentDamage(caster, 7, 20)) + ((int)(skillLevel/3));
+
+        double damage = 20 + ((int)(skillLevel/3));
+
+        if(purity.active(caster)){
+            damage = damage * 3;
+            purity.reset(caster);
+        }
+
+        return damage;
     }
 
     public int getCooldown(LivingEntity caster){

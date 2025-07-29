@@ -200,7 +200,6 @@ public class PaladinBasic {
                     return;
                 }
 
-                purity.skillListAdd(caster, 0);
 
                 if(subclass.equals(SubClass.Divine)){
 

@@ -65,7 +65,6 @@ public class JusticeMark {
         combatManager.startCombatTimer(caster);
 
         execute(caster, target);
-        purity.skillListAdd(caster, 8);
 
         if(cooldownTask.containsKey(caster.getUniqueId())){
             cooldownTask.get(caster.getUniqueId()).cancel();

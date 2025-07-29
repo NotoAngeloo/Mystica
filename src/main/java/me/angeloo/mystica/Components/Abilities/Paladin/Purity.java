@@ -6,58 +6,60 @@ import java.util.*;
 
 public class Purity {
 
-    //make this a list instead
-    private final Map<UUID, LinkedList<Integer>> savedAbilities = new HashMap<>();
+    private final Map<UUID, List<Integer>> savedAbilities = new HashMap<>();
+    private final Map<UUID, Boolean> active = new HashMap<>();
 
     public Purity(){
 
     }
 
-    public void skillListAdd(LivingEntity entity, int skill){
+    public void add(LivingEntity entity, int skill){
 
-        LinkedList<Integer> abilities = getSaved(entity);
+        List<Integer> abilities = getSaved(entity);
+
+        if(abilities.contains(skill)){
+            reset(entity);
+        }
 
         abilities.add(skill);
 
-        if(abilities.size()>5){
-            abilities.removeFirst();
+        if(abilities.size()==3){
+            active.put(entity.getUniqueId(), true);
+            reset(entity);
+            return;
         }
 
         savedAbilities.put(entity.getUniqueId(), abilities);
     }
 
-    private LinkedList<Integer> getSaved(LivingEntity entity){
+    private List<Integer> getSaved(LivingEntity entity){
 
         if(!savedAbilities.containsKey(entity.getUniqueId())){
-            resetPurity(entity);
+            reset(entity);
         }
 
         return savedAbilities.get(entity.getUniqueId());
     }
 
-    public double calculatePurityPercentDamage(LivingEntity entity, int skill, double damage){
-
-        LinkedList<Integer> abilities = getSaved(entity);
-
-        double purity = 120;
-
-        int count = 0;
-        for(int num : abilities){
-            if(num == skill){
-                count++;
-            }
-        }
-
-        purity -= count*20;
-
-        int percent = (int) Math.floor((purity/120) * 100);
-
-        return damage *  (1 +((double)percent / 100));
+    public boolean active(LivingEntity entity){
+        return active.getOrDefault(entity.getUniqueId(), false);
     }
 
-    public void resetPurity(LivingEntity entity){
-        LinkedList<Integer> defaultList = new LinkedList<>(Arrays.asList(0, 0, 0, 0, 0));
-        savedAbilities.put(entity.getUniqueId(), defaultList);
+    public void reset(LivingEntity entity){
+        savedAbilities.put(entity.getUniqueId(), new ArrayList<>());
+    }
+
+    public int get(LivingEntity entity){
+
+        int size = 0;
+
+        if(savedAbilities.containsKey(entity.getUniqueId())){
+            size = savedAbilities.get(entity.getUniqueId()).size();
+        }
+
+
+        return size;
+
     }
 
 

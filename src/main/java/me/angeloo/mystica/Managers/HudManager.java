@@ -2287,8 +2287,8 @@ public class HudManager {
         if(entity instanceof Player || profileManager.getAnyProfile(entity).fakePlayer()){
             Profile playerProfile = profileManager.getAnyProfile(entity);
             PlayerClass playerClass = playerProfile.getPlayerClass();
-            switch (playerClass){
-                case Mystic:{
+            switch (playerClass) {
+                case Mystic -> {
 
                     //-128 space
                     resourceBar.append("\uF80C");
@@ -2303,104 +2303,82 @@ public class HudManager {
 
                     int amount = (int) Math.ceil(ratio * 20);
 
-                    if(amount < 0){
+                    if (amount < 0) {
                         amount = 0;
                     }
 
-                    if(currentMana <= 0){
+                    if (currentMana <= 0) {
                         amount = 0;
                     }
 
-                    switch (amount){
-                        case 20:{
+                    switch (amount) {
+                        case 20 -> {
                             resourceBar.append("\uE0CD");
-                            break;
                         }
-                        case 19:{
+                        case 19 -> {
                             resourceBar.append("\uE0CE");
-                            break;
                         }
-                        case 18:{
+                        case 18 -> {
                             resourceBar.append("\uE0CF");
-                            break;
                         }
-                        case 17:{
+                        case 17 -> {
                             resourceBar.append("\uE0D0");
-                            break;
                         }
-                        case 16:{
+                        case 16 -> {
                             resourceBar.append("\uE0D1");
-                            break;
                         }
-                        case 15:{
+                        case 15 -> {
                             resourceBar.append("\uE0D2");
-                            break;
                         }
-                        case 14:{
+                        case 14 -> {
                             resourceBar.append("\uE0D3");
-                            break;
                         }
-                        case 13:{
+                        case 13 -> {
                             resourceBar.append("\uE0D4");
-                            break;
                         }
-                        case 12:{
+                        case 12 -> {
                             resourceBar.append("\uE0D5");
-                            break;
                         }
-                        case 11:{
+                        case 11 -> {
                             resourceBar.append("\uE0D6");
-                            break;
                         }
-                        case 10:{
+                        case 10 -> {
                             resourceBar.append("\uE0D7");
-                            break;
                         }
-                        case 9:{
+                        case 9 -> {
                             resourceBar.append("\uE0D8");
-                            break;
                         }
-                        case 8:{
+                        case 8 -> {
                             resourceBar.append("\uE0D9");
-                            break;
                         }
-                        case 7:{
+                        case 7 -> {
                             resourceBar.append("\uE0DA");
-                            break;
                         }
-                        case 6:{
+                        case 6 -> {
                             resourceBar.append("\uE0DB");
-                            break;
                         }
-                        case 5:{
+                        case 5 -> {
                             resourceBar.append("\uE0DC");
-                            break;
                         }
-                        case 4:{
+                        case 4 -> {
                             resourceBar.append("\uE0DD");
-                            break;
                         }
-                        case 3:{
+                        case 3 -> {
                             resourceBar.append("\uE0DE");
-                            break;
                         }
-                        case 2:{
+                        case 2 -> {
                             resourceBar.append("\uE0DF");
-                            break;
                         }
-                        case 1:{
+                        case 1 -> {
                             resourceBar.append("\uE0E0");
-                            break;
                         }
-                        case 0:{
+                        case 0 -> {
                             resourceBar.append("\uE0E1");
-                            break;
                         }
                     }
 
-                    break;
                 }
-                case Warrior:{
+                case Warrior -> {
                     //-128 space
                     resourceBar.append("\uF80C");
 
@@ -2414,104 +2392,82 @@ public class HudManager {
 
                     int amount = (int) Math.ceil(ratio * 20);
 
-                    if(amount < 0){
+                    if (amount < 0) {
                         amount = 0;
                     }
 
-                    if(currentRage <= 0){
+                    if (currentRage <= 0) {
                         amount = 0;
                     }
 
-                    switch (amount){
-                        case 20:{
+                    switch (amount) {
+                        case 20 -> {
                             resourceBar.append("\uE0E2");
-                            break;
                         }
-                        case 19:{
+                        case 19 -> {
                             resourceBar.append("\uE0E3");
-                            break;
                         }
-                        case 18:{
+                        case 18 -> {
                             resourceBar.append("\uE0E4");
-                            break;
                         }
-                        case 17:{
+                        case 17 -> {
                             resourceBar.append("\uE0E5");
-                            break;
                         }
-                        case 16:{
+                        case 16 -> {
                             resourceBar.append("\uE0E6");
-                            break;
                         }
-                        case 15:{
+                        case 15 -> {
                             resourceBar.append("\uE0E7");
-                            break;
                         }
-                        case 14:{
+                        case 14 -> {
                             resourceBar.append("\uE0E8");
-                            break;
                         }
-                        case 13:{
+                        case 13 -> {
                             resourceBar.append("\uE0E9");
-                            break;
                         }
-                        case 12:{
+                        case 12 -> {
                             resourceBar.append("\uE0EA");
-                            break;
                         }
-                        case 11:{
+                        case 11 -> {
                             resourceBar.append("\uE0EB");
-                            break;
                         }
-                        case 10:{
+                        case 10 -> {
                             resourceBar.append("\uE0EC");
-                            break;
                         }
-                        case 9:{
+                        case 9 -> {
                             resourceBar.append("\uE0ED");
-                            break;
                         }
-                        case 8:{
+                        case 8 -> {
                             resourceBar.append("\uE0EE");
-                            break;
                         }
-                        case 7:{
+                        case 7 -> {
                             resourceBar.append("\uE0EF");
-                            break;
                         }
-                        case 6:{
+                        case 6 -> {
                             resourceBar.append("\uE0F0");
-                            break;
                         }
-                        case 5:{
+                        case 5 -> {
                             resourceBar.append("\uE0F1");
-                            break;
                         }
-                        case 4:{
+                        case 4 -> {
                             resourceBar.append("\uE0F2");
-                            break;
                         }
-                        case 3:{
+                        case 3 -> {
                             resourceBar.append("\uE0F3");
-                            break;
                         }
-                        case 2:{
+                        case 2 -> {
                             resourceBar.append("\uE0F4");
-                            break;
                         }
-                        case 1:{
+                        case 1 -> {
                             resourceBar.append("\uE0F5");
-                            break;
                         }
-                        case 0:{
+                        case 0 -> {
                             resourceBar.append("\uE0E1");
-                            break;
                         }
                     }
 
-                    break;
                 }
-                case Shadow_Knight:{
+                case Shadow_Knight -> {
                     //-128 space
                     resourceBar.append("\uF80C");
 
@@ -2525,64 +2481,52 @@ public class HudManager {
 
                     int amount = (int) Math.ceil(ratio * 10);
 
-                    if(amount < 0){
+                    if (amount < 0) {
                         amount = 0;
                     }
 
-                    if(currentEnergy <= 0){
+                    if (currentEnergy <= 0) {
                         amount = 0;
                     }
 
-                    switch (amount){
-                        case 10:{
+                    switch (amount) {
+                        case 10 -> {
                             resourceBar.append("\uE0F6");
-                            break;
                         }
-                        case 9:{
+                        case 9 -> {
                             resourceBar.append("\uE0F7");
-                            break;
                         }
-                        case 8:{
+                        case 8 -> {
                             resourceBar.append("\uE0F8");
-                            break;
                         }
-                        case 7:{
+                        case 7 -> {
                             resourceBar.append("\uE0F9");
-                            break;
                         }
-                        case 6:{
+                        case 6 -> {
                             resourceBar.append("\uE0FA");
-                            break;
                         }
-                        case 5:{
+                        case 5 -> {
                             resourceBar.append("\uE0FB");
-                            break;
                         }
-                        case 4:{
+                        case 4 -> {
                             resourceBar.append("\uE0FC");
-                            break;
                         }
-                        case 3:{
+                        case 3 -> {
                             resourceBar.append("\uE0FD");
-                            break;
                         }
-                        case 2:{
+                        case 2 -> {
                             resourceBar.append("\uE0FE");
-                            break;
                         }
-                        case 1:{
+                        case 1 -> {
                             resourceBar.append("\uE0FF");
-                            break;
                         }
-                        case 0:{
+                        case 0 -> {
                             resourceBar.append("\uE0E1");
-                            break;
                         }
                     }
 
-                    break;
                 }
-                case Ranger:{
+                case Ranger -> {
 
                     //-128 space
                     resourceBar.append("\uF80C");
@@ -2597,36 +2541,61 @@ public class HudManager {
 
                     int amount = (int) Math.ceil(ratio * 3);
 
-                    if(amount < 0){
+                    if (amount < 0) {
                         amount = 0;
                     }
 
-                    if(currentFocus <= 0){
+                    if (currentFocus <= 0) {
                         amount = 0;
                     }
 
-                    switch (amount){
-                        case 3:{
+                    switch (amount) {
+                        case 3 -> {
                             resourceBar.append("\uE100");
-                            break;
                         }
-                        case 2:{
+                        case 2 -> {
                             resourceBar.append("\uE101");
-                            break;
                         }
-                        case 1:{
+                        case 1 -> {
                             resourceBar.append("\uE102");
-                            break;
                         }
-                        case 0:{
+                        case 0 -> {
                             resourceBar.append("\uE0E1");
-                            break;
                         }
                     }
 
-                    break;
                 }
-                case Assassin:{
+                case Paladin -> {
+
+                    if(profileManager.getAnyProfile(entity).getPlayerSubclass().equals(SubClass.Dawn)){
+                        //-128 space
+                        resourceBar.append("\uF80C");
+
+                        //-4 space
+                        resourceBar.append("\uF804");
+
+                        int current = abilityManager.getPaladinAbilities().getPurity().get(entity);
+
+                        switch (current) {
+                            case 3 -> {
+                                resourceBar.append("\uE100");
+                            }
+                            case 2 -> {
+                                resourceBar.append("\uE101");
+                            }
+                            case 1 -> {
+                                resourceBar.append("\uE102");
+                            }
+                            case 0 -> {
+                                resourceBar.append("\uE0E1");
+                            }
+                        }
+                    }
+
+
+
+                }
+                case Assassin -> {
 
                     //-128 space
                     resourceBar.append("\uF80C");
@@ -2636,66 +2605,53 @@ public class HudManager {
 
                     int combo = abilityManager.getAssassinAbilities().getCombo().getComboPoints(entity);
 
-                    if(profileManager.getAnyProfile(entity).getPlayerSubclass().equals(SubClass.Duelist)){
+                    if (profileManager.getAnyProfile(entity).getPlayerSubclass().equals(SubClass.Duelist)) {
 
 
-
-                        switch (combo){
-                            case 0:{
+                        switch (combo) {
+                            case 0 -> {
                                 resourceBar.append("\uE108");
-                                break;
                             }
-                            case 1:{
+                            case 1 -> {
                                 resourceBar.append("\uE109");
-                                break;
                             }
-                            case 2:{
+                            case 2 -> {
                                 resourceBar.append("\uE10A");
-                                break;
                             }
-                            case 3:{
+                            case 3 -> {
                                 resourceBar.append("\uE10B");
-                                break;
                             }
-                            case 4:{
+                            case 4 -> {
                                 resourceBar.append("\uE10C");
-                                break;
                             }
-                            case 5:{
+                            case 5 -> {
                                 resourceBar.append("\uE008");
-                                break;
                             }
                         }
 
                         break;
                     }
 
-                    switch (combo){
-                        case 0:{
+                    switch (combo) {
+                        case 0 -> {
                             resourceBar.append("\uE103");
-                            break;
                         }
-                        case 1:{
+                        case 1 -> {
                             resourceBar.append("\uE104");
-                            break;
                         }
-                        case 2:{
+                        case 2 -> {
                             resourceBar.append("\uE105");
-                            break;
                         }
-                        case 3:{
+                        case 3 -> {
                             resourceBar.append("\uE106");
-                            break;
                         }
-                        case 4:{
+                        case 4 -> {
                             resourceBar.append("\uE107");
-                            break;
                         }
                     }
 
-                    break;
                 }
-                case Elementalist:{
+                case Elementalist -> {
 
                     //-128 space
                     resourceBar.append("\uF80C");
@@ -2705,12 +2661,12 @@ public class HudManager {
 
                     double currentHeat = abilityManager.getElementalistAbilities().getHeat().getHeat(entity);
 
-                    if(currentHeat < 50){
+                    if (currentHeat < 50) {
                         resourceBar.append("\uE10D");
                         return String.valueOf(resourceBar);
                     }
 
-                    if(currentHeat < 90){
+                    if (currentHeat < 90) {
                         resourceBar.append("\uE10E");
                         return String.valueOf(resourceBar);
                     }
@@ -2719,7 +2675,6 @@ public class HudManager {
                     resourceBar.append("\uE10F");
 
 
-                    break;
                 }
             }
 

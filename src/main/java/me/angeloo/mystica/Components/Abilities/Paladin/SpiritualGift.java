@@ -81,7 +81,6 @@ public class SpiritualGift {
         combatManager.startCombatTimer(caster);
 
         execute(caster, target);
-        purity.skillListAdd(caster, 5);
 
         if(cooldownTask.containsKey(caster.getUniqueId())){
             cooldownTask.get(caster.getUniqueId()).cancel();
@@ -184,7 +183,14 @@ public class SpiritualGift {
     public double getHealPower(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_5_Level_Bonus();
-        return (purity.calculatePurityPercentDamage(caster, 5, 5)) +  ((int)(skillLevel/10));
+        double damage = 5 + ((int)(skillLevel/3));
+
+        if(purity.active(caster)){
+            damage = damage * 3;
+            purity.reset(caster);
+        }
+
+        return damage;
     }
 
     public int getDuration(LivingEntity caster){

@@ -81,7 +81,6 @@ public class MercifulHealing {
         combatManager.startCombatTimer(caster);
 
         execute(caster, target);
-        purity.skillListAdd(caster, 2);
 
         if(cooldownTask.containsKey(caster.getUniqueId())){
             cooldownTask.get(caster.getUniqueId()).cancel();
@@ -283,7 +282,14 @@ public class MercifulHealing {
     public double getHealPower(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_2_Level_Bonus();
-        return  (purity.calculatePurityPercentDamage(caster, 2, 10)) + ((int)(skillLevel/3));
+        double damage = 10 + ((int)(skillLevel/3));
+
+        if(purity.active(caster)){
+            damage = damage * 3;
+            purity.reset(caster);
+        }
+
+        return damage;
     }
 
     public void resetCooldown(LivingEntity caster){

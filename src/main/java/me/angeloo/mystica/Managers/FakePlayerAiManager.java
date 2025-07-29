@@ -49,28 +49,22 @@ public class FakePlayerAiManager {
                 return;
             }
 
-            switch (profileManager.getAnyProfile(companion).getPlayerClass()){
-                case Paladin:{
+            switch (profileManager.getAnyProfile(companion).getPlayerClass()) {
+                case Paladin -> {
                     startTemplarRotation(companion);
-                    break;
                 }
-                case Ranger:{
+                case Ranger -> {
                     startTamerRotation(companion);
-                    break;
                 }
-                case Mystic:{
+                case Mystic -> {
                     startShepardRotation(companion);
-                    break;
                 }
-                case Warrior:{
+                case Warrior -> {
                     startExecutionerRotation(companion);
-                    break;
                 }
-                case Elementalist:{
+                case Elementalist -> {
                     startConjurerRotation(companion);
-                    break;
                 }
-
             }
         }
 
@@ -84,6 +78,10 @@ public class FakePlayerAiManager {
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
+
+                if(this.isCancelled()){
+                    return;
+                }
 
 
                 if(profileManager.getAnyProfile(companion).getIfDead()){
@@ -224,6 +222,9 @@ public class FakePlayerAiManager {
             @Override
             public void run(){
 
+                if(this.isCancelled()){
+                    return;
+                }
 
                 if(profileManager.getAnyProfile(companion).getIfDead()){
                     stopAiTask(companion.getUniqueId());
@@ -395,6 +396,9 @@ public class FakePlayerAiManager {
             public void run(){
 
                 //Bukkit.getLogger().info("mystic");
+                if(this.isCancelled()){
+                    return;
+                }
 
 
                 if(profileManager.getAnyProfile(companion).getIfDead()){
@@ -533,6 +537,9 @@ public class FakePlayerAiManager {
             public void run(){
 
                 //Bukkit.getLogger().info("warrior");
+                if(this.isCancelled()){
+                    return;
+                }
 
 
                 if(profileManager.getAnyProfile(companion).getIfDead()){
@@ -680,6 +687,10 @@ public class FakePlayerAiManager {
             @Override
             public void run(){
 
+                if(this.isCancelled()){
+                    return;
+                }
+
                 //Bukkit.getLogger().info("elementalist");
 
                 if(profileManager.getAnyProfile(companion).getIfDead()){
@@ -824,20 +835,31 @@ public class FakePlayerAiManager {
 
     public void stopAiTask(UUID uuid){
 
-        if(aiTaskMap.containsKey(uuid)){
-            aiTaskMap.get(uuid).cancel();
-            profileManager.removeCompanionCombat(uuid);
-        }
 
-        Entity entity = Bukkit.getEntity(uuid);
-        if(entity instanceof LivingEntity){
-            LivingEntity companion = (LivingEntity) entity;
-            abilityManager.interruptBasic(companion);
-            profileManager.getAnyProfile(companion).setIfInCombat(false);
-        }
+
+        Bukkit.getScheduler().runTask(main, () ->{
+            if(aiTaskMap.containsKey(uuid)){
+                aiTaskMap.get(uuid).cancel();
+                profileManager.removeCompanionCombat(uuid);
+            }
+
+            Entity entity = Bukkit.getEntity(uuid);
+            if(entity instanceof LivingEntity companion){
+                abilityManager.interruptBasic(companion);
+                profileManager.getAnyProfile(companion).setIfInCombat(false);
+            }
+
+            Bukkit.getScheduler().runTaskLaterAsynchronously(main, ()->{
+                aiTaskMap.remove(uuid);
+            },20);
+
+
+        });
+
+
         //Bukkit.getLogger().info("rotation stopped");
 
-        aiTaskMap.remove(uuid);
+
     }
 
     public void setCaution(LivingEntity entity, boolean caution){

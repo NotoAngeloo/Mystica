@@ -75,7 +75,6 @@ public class SacredAegis {
         combatManager.startCombatTimer(caster);
 
         execute(caster, target);
-        purity.skillListAdd(caster, 6);
 
 
         if(cooldownTask.containsKey(caster.getUniqueId())){

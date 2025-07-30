@@ -49,40 +49,32 @@ public class EquipSkills {
     }
 
     public void setAnySlot(int slot, int toSkill){
-        switch(slot){
-            case 0:{
+        switch (slot) {
+            case 0 -> {
                 setSlot0(toSkill);
-                break;
             }
-            case 1:{
+            case 1 -> {
                 setSlot1(toSkill);
-                break;
             }
-            case 2:{
+            case 2 -> {
                 setSlot2(toSkill);
-                break;
             }
-            case 3:{
+            case 3 -> {
                 setSlot3(toSkill);
-                break;
             }
-            case 4:{
+            case 4 -> {
                 setSlot4(toSkill);
-                break;
             }
-            case 5:{
+            case 5 -> {
                 setSlot5(toSkill);
-                break;
             }
-            case 6:{
+            case 6 -> {
                 setSlot6(toSkill);
-                break;
             }
-            case 7:{
+            case 7 -> {
                 setSlot7(toSkill);
-                break;
             }
-            default:{
+            default -> {
                 Bukkit.getLogger().info("something went wrong when setting skill slots");
             }
         }

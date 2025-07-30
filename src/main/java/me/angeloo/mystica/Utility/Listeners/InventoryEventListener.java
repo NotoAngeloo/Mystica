@@ -1,27 +1,32 @@
 package me.angeloo.mystica.Utility.Listeners;
 
 
+import me.angeloo.mystica.Components.Inventories.Abilities.AbilityInventory;
 import me.angeloo.mystica.Components.Inventories.Party.PartyInventory;
 import me.angeloo.mystica.Components.Inventories.Storage.MysticaBag;
 import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.Items.MysticaItem;
 import me.angeloo.mystica.Components.Items.StackableItem;
 import me.angeloo.mystica.Components.Items.StackableItemRegistry;
+import me.angeloo.mystica.CustomEvents.SetMenuItemsEvent;
 import me.angeloo.mystica.Managers.CustomInventoryManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DisplayWeapons;
+import me.angeloo.mystica.Utility.InventoryItemGetter;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
@@ -30,15 +35,19 @@ public class InventoryEventListener implements Listener {
     private final Mystica main;
 
     private final ProfileManager profileManager;
+    private final InventoryItemGetter itemGetter;
     private final CustomInventoryManager inventoryManager;
     private final PartyInventory partyInventory;
+    private final AbilityInventory abilityInventory;
     private final DisplayWeapons displayWeapons;
 
     public InventoryEventListener(Mystica main){
         this.main = main;
         profileManager = main.getProfileManager();
+        itemGetter = main.getItemGetter();
         inventoryManager = main.getInventoryManager();
         partyInventory = main.getPartyInventory();
+        abilityInventory = main.getAbilityInventory();
         displayWeapons = main.getDisplayWeapons();
     }
 
@@ -182,8 +191,12 @@ public class InventoryEventListener implements Listener {
         }
 
 
+    }
 
-
+    @EventHandler
+    public void invOpen(InventoryOpenEvent event){
+        Player player = (Player) event.getPlayer();
+        player.setItemOnCursor(null);
     }
 
     @EventHandler
@@ -204,25 +217,71 @@ public class InventoryEventListener implements Listener {
             return;
         }
 
+        event.setCancelled(true);
+
         Player player = (Player) event.getWhoClicked();
 
-        //Bukkit.getLogger().info("Slot: " + event.getSlot());
+        ItemStack item = event.getCurrentItem();
 
-        if(event.getSlot() == 0){
+        if(item == null){
+            return;
+        }
 
+        player.getInventory().clear();
+        displayWeapons.displayArmor(player);
+
+        if(event.getSlot() == 27){
             profileManager.getAnyProfile(player).getMysticaBagCollection().openMysticaBag(player, 0);
-
-            return;
         }
 
-        if(event.getSlot() == 4){
+        if(event.getSlot() == 29){
+            abilityInventory.openAbilityInventory(player, -1);
+        }
+
+        if(event.getSlot() == 31){
             partyInventory.openPartyInventory(player);
-            return;
         }
+
 
         //Bukkit.getLogger().info(String.valueOf(event.getSlot()));
 
     }
+
+    @EventHandler
+    public void menuOpen(SetMenuItemsEvent event){
+
+        Player player = event.getPlayer();
+
+        if(profileManager.getAnyProfile(player).getIfDead()){
+            return;
+        }
+
+        if(profileManager.getAnyProfile(player).getIfInCombat()){
+            return;
+        }
+
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                Inventory inventory = player.getOpenInventory().getTopInventory();
+                if(inventory.getType().equals(InventoryType.CRAFTING)){
+                    setMenuItems(player);
+                }
+            }
+        }.runTaskLaterAsynchronously(main, 1);
+
+
+    }
+
+    private void setMenuItems(Player player){
+
+        //check to see what player has unlocked
+        player.getInventory().setItem(27, itemGetter.getItem(Material.LEATHER, 1, "Bag"));
+        player.getInventory().setItem(29, itemGetter.getItem(Material.AMETHYST_SHARD, 1, "Skills"));
+        player.getInventory().setItem(31, itemGetter.getItem(Material.BROWN_BANNER, 1, "Team"));
+
+    }
+
 
     @EventHandler
     public void guiClose(InventoryCloseEvent event){
@@ -234,9 +293,9 @@ public class InventoryEventListener implements Listener {
             return;
         }
 
-
         player.getInventory().clear();
         displayWeapons.displayArmor(player);
+        Bukkit.getServer().getPluginManager().callEvent(new SetMenuItemsEvent(player));
     }
 
     @EventHandler

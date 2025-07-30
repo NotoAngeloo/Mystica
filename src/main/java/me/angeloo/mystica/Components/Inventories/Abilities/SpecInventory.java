@@ -1,9 +1,8 @@
-package me.angeloo.mystica.Components.Inventories;
+package me.angeloo.mystica.Components.Inventories.Abilities;
 
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.CustomEvents.MaxHealthChangeOutOfCombatEvent;
-import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.InventoryItemGetter;
 import me.angeloo.mystica.Managers.ProfileManager;
@@ -167,7 +166,7 @@ public class SpecInventory implements Listener {
             }
 
             if(skillSlots.contains(slot)){
-                player.openInventory(abilityInventory.openAbilityInventory(player, -1));
+                abilityInventory.openAbilityInventory(player, -1);
             }
         }
     }

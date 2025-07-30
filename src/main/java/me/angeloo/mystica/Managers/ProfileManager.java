@@ -1091,8 +1091,8 @@ public class ProfileManager {
 
     public void setCompanionFaces(UUID uuid, String companion){
 
-        switch (companion.toLowerCase()){
-            case "salmon":{
+        switch (companion.toLowerCase()) {
+            case "salmon" -> {
                 companionFace.put(uuid, "\uE267");
                 companionFace0.put(uuid, "\uE268");
                 companionFace1.put(uuid, "\uE269");
@@ -1100,7 +1100,7 @@ public class ProfileManager {
                 companionFace3.put(uuid, "\uE26B");
                 return;
             }
-            case "slippy":{
+            case "slippy" -> {
                 companionFace.put(uuid, "\uE26C");
                 companionFace0.put(uuid, "\uE26D");
                 companionFace1.put(uuid, "\uE26E");
@@ -1108,7 +1108,7 @@ public class ProfileManager {
                 companionFace3.put(uuid, "\uE270");
                 return;
             }
-            case "wings":{
+            case "wings" -> {
                 companionFace.put(uuid, "\uE271");
                 companionFace0.put(uuid, "\uE272");
                 companionFace1.put(uuid, "\uE273");
@@ -1116,12 +1116,20 @@ public class ProfileManager {
                 companionFace3.put(uuid, "\uE275");
                 return;
             }
-            case "darwin":{
+            case "darwin" -> {
                 companionFace.put(uuid, "\uE276");
                 companionFace0.put(uuid, "\uE277");
                 companionFace1.put(uuid, "\uE278");
                 companionFace2.put(uuid, "\uE279");
                 companionFace3.put(uuid, "\uE27A");
+                return;
+            }
+            case "luna" ->{
+                companionFace.put(uuid, "\uE27B");
+                companionFace0.put(uuid, "\uE27C");
+                companionFace1.put(uuid, "\uE27D");
+                companionFace2.put(uuid, "\uE27E");
+                companionFace3.put(uuid, "\uE27F");
                 return;
             }
         }

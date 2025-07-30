@@ -7,6 +7,8 @@ import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Commands.*;
 import me.angeloo.mystica.Components.Inventories.*;
+import me.angeloo.mystica.Components.Inventories.Abilities.AbilityInventory;
+import me.angeloo.mystica.Components.Inventories.Abilities.SpecInventory;
 import me.angeloo.mystica.Components.Inventories.Equipment.*;
 import me.angeloo.mystica.Components.Inventories.Party.DungeonSelect;
 import me.angeloo.mystica.Components.Inventories.Party.InvitedInventory;

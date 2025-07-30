@@ -7,7 +7,7 @@ import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
-import me.angeloo.mystica.Components.Inventories.AbilityInventory;
+import me.angeloo.mystica.Components.Inventories.Abilities.AbilityInventory;
 import me.angeloo.mystica.Components.Inventories.Equipment.EquipmentInventory;
 import me.angeloo.mystica.Components.Items.PathToolItem;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
@@ -155,6 +155,7 @@ public class GeneralEventListener implements Listener {
         Player player = event.getPlayer();
 
         hudManager.innitHud(player);
+        Bukkit.getServer().getPluginManager().callEvent(new SetMenuItemsEvent(player));
 
         if (combatLogs.contains(player.getUniqueId())) {
             deathManager.playerNowDead(player);
@@ -423,7 +424,7 @@ public class GeneralEventListener implements Listener {
 
         Player player = (Player) event.getWhoClicked();
 
-        player.openInventory(abilityInventory.openAbilityInventory(player, -1));
+        abilityInventory.openAbilityInventory(player, -1);
     }
 
 
@@ -812,6 +813,7 @@ public class GeneralEventListener implements Listener {
         Player player = event.getPlayer();
 
         player.setSaturation(1);
+
 
         if (targetManager.getPlayerTarget(player) == null) {
             return;

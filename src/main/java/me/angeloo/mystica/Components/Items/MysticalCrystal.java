@@ -51,7 +51,7 @@ public class MysticalCrystal extends StackableItem{
 
     @Override
     public int getCustomModelData() {
-        return 0;
+        return 1;
     }
 
 

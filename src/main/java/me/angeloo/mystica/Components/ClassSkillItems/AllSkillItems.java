@@ -42,29 +42,29 @@ public class AllSkillItems {
 
         PlayerClass playerClass = playerProfile.getPlayerClass();
 
-        switch (playerClass){
-            case Elementalist:{
+        switch (playerClass) {
+            case Elementalist -> {
                 return elementalistSkillItems.getSkill(skillNumber, player);
             }
-            case Ranger:{
+            case Ranger -> {
                 return rangerSkillItems.getSkill(skillNumber, player);
             }
-            case Mystic:{
+            case Mystic -> {
                 return mysticSkillItem.getSkill(skillNumber, player);
             }
-            case Shadow_Knight:{
+            case Shadow_Knight -> {
                 return shadowKnightSkillItems.getSkill(skillNumber, player);
             }
-            case Paladin:{
+            case Paladin -> {
                 return paladinSkillItems.getSkill(skillNumber, player);
             }
-            case Warrior:{
+            case Warrior -> {
                 return warriorSkillItems.getSkill(skillNumber, player);
             }
-            case Assassin:{
+            case Assassin -> {
                 return assassinSkillItems.getSkill(skillNumber, player);
             }
-            case NONE:{
+            case NONE -> {
                 return noneSkillItems.getSkill(skillNumber, player);
             }
         }
@@ -78,26 +78,26 @@ public class AllSkillItems {
         Profile playerProfile = profileManager.getAnyProfile(player);
         PlayerClass clazz = playerProfile.getPlayerClass();
 
-        switch (clazz){
-            case Elementalist:{
+        switch (clazz) {
+            case Elementalist -> {
                 return elementalistSkillItems.getUltimate(player);
             }
-            case Ranger:{
+            case Ranger -> {
                 return rangerSkillItems.getUltimate(player);
             }
-            case Mystic:{
+            case Mystic -> {
                 return mysticSkillItem.getUltimate(player);
             }
-            case Shadow_Knight:{
+            case Shadow_Knight -> {
                 return shadowKnightSkillItems.getUltimate(player);
             }
-            case Paladin:{
+            case Paladin -> {
                 return paladinSkillItems.getUltimate(player);
             }
-            case Warrior:{
+            case Warrior -> {
                 return warriorSkillItems.getUltimate(player);
             }
-            case Assassin:{
+            case Assassin -> {
                 return assassinSkillItems.getUltimate(player);
             }
         }

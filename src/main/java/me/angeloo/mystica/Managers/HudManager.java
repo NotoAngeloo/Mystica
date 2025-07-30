@@ -2340,6 +2340,10 @@ public class HudManager {
 
                         int current = abilityManager.getPaladinAbilities().getPurity().get(entity);
 
+                        if(abilityManager.getPaladinAbilities().getPurity().active(entity)){
+                            current = 3;
+                        }
+
                         switch (current) {
                             case 3 -> {
                                 resourceBar.append("\uE100");

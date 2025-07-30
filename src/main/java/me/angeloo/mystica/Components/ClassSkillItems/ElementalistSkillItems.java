@@ -43,9 +43,8 @@ public class ElementalistSkillItems {
         Skill_Level skillLevel = playerProfile.getSkillLevels();
 
 
-        switch(number){
-
-            case 1:{
+        switch (number) {
+            case 1 -> {
                 return itemGetter.getItem(Material.CYAN_DYE, 1,
                         ChatColor.of(elementalistColor) + "Ice Bolt",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_1_Level_Bonus()),
@@ -54,8 +53,8 @@ public class ElementalistSkillItems {
                         ChatColor.of(Color.WHITE) + "Channel water to form an ice arrow",
                         ChatColor.of(Color.WHITE) + "and shoot it at the enemy");
             }
-            case 2:{
-                return itemGetter.getItem(Material.CYAN_DYE,2,
+            case 2 -> {
+                return itemGetter.getItem(Material.CYAN_DYE, 2,
                         ChatColor.of(elementalistColor) + "Fiery Magma",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_2_Level_Bonus()),
                         ChatColor.of(elementalistColor) + String.valueOf(abilityManager.getElementalistAbilities().getFieryMagma().getSkillDamage(player)) + " power +  (" +
@@ -66,8 +65,8 @@ public class ElementalistSkillItems {
                         ChatColor.of(Color.WHITE) + "damage for 3 seconds before exploding,",
                         ChatColor.of(Color.WHITE) + "dealing damage to nearby enemies");
             }
-            case 3:{
-                return itemGetter.getItem(Material.CYAN_DYE,3,
+            case 3 -> {
+                return itemGetter.getItem(Material.CYAN_DYE, 3,
                         ChatColor.of(elementalistColor) + "Descending Inferno",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_3_Level_Bonus()),
                         ChatColor.of(elementalistColor) + String.valueOf(abilityManager.getElementalistAbilities().getDescendingInferno().getSkillDamage(player)) + " x 3 damage",
@@ -77,16 +76,16 @@ public class ElementalistSkillItems {
                         ChatColor.of(Color.WHITE) + "towards the target, causing damage on",
                         ChatColor.of(Color.WHITE) + "impact");
             }
-            case 4:{
-                return itemGetter.getItem(Material.CYAN_DYE,4,
+            case 4 -> {
+                return itemGetter.getItem(Material.CYAN_DYE, 4,
                         ChatColor.of(elementalistColor) + "Windrush Form",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_4_Level_Bonus()),
                         "",
                         ChatColor.of(Color.WHITE) + "Calls a strong wind to envelop the",
                         ChatColor.of(Color.WHITE) + "caster, expediting movement.");
             }
-            case 5:{
-                return itemGetter.getItem(Material.CYAN_DYE,5,
+            case 5 -> {
+                return itemGetter.getItem(Material.CYAN_DYE, 5,
                         ChatColor.of(elementalistColor) + "Wind Wall",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_5_Level_Bonus()),
                         "",
@@ -94,8 +93,8 @@ public class ElementalistSkillItems {
                         ChatColor.of(Color.WHITE) + "shield, absorbing and reflecting",
                         ChatColor.of(Color.WHITE) + "a certain amount of damage");
             }
-            case 6:{
-                return itemGetter.getItem(Material.CYAN_DYE,6,
+            case 6 -> {
+                return itemGetter.getItem(Material.CYAN_DYE, 6,
                         ChatColor.of(elementalistColor) + "Dragon Breathing",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_6_Level_Bonus()),
                         ChatColor.of(elementalistColor) + String.valueOf(abilityManager.getElementalistAbilities().getDragonBreathing().getSkillDamage(player)) + " power + " +
@@ -108,8 +107,8 @@ public class ElementalistSkillItems {
                         ChatColor.of(Color.WHITE) + "ahead, and causing affected enemies",
                         ChatColor.of(Color.WHITE) + "to continue burning for 5 seconds");
             }
-            case 7:{
-                return itemGetter.getItem(Material.CYAN_DYE,7,
+            case 7 -> {
+                return itemGetter.getItem(Material.CYAN_DYE, 7,
                         ChatColor.of(elementalistColor) + "Elemental Breath",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_7_Level_Bonus()),
                         "",
@@ -118,7 +117,7 @@ public class ElementalistSkillItems {
                         ChatColor.of(Color.WHITE) + "effects of " + ChatColor.of(elementalistColor) + "Ice Bolt "
                                 + ChatColor.of(Color.WHITE) + "and " + ChatColor.of(elementalistColor) + "Descending",
                         ChatColor.of(elementalistColor) + "Inferno" + ChatColor.of(Color.WHITE) + ". " +
-                        ChatColor.of(elementalistColor) + "Ice Bolt " + ChatColor.of(Color.WHITE) + "becomes " +
+                                ChatColor.of(elementalistColor) + "Ice Bolt " + ChatColor.of(Color.WHITE) + "becomes " +
                                 ChatColor.of(elementalistColor) + "Ice Lance",
                         ChatColor.of(Color.WHITE) + "dealing double damage. Fireballs from",
                         ChatColor.of(elementalistColor) + "Descending Inferno "
@@ -126,8 +125,8 @@ public class ElementalistSkillItems {
                         ChatColor.of(Color.WHITE) + "hitting targets, dealing area of effect",
                         ChatColor.of(Color.WHITE) + "damage");
             }
-            case 8:{
-                return itemGetter.getItem(Material.CYAN_DYE,8,
+            case 8 -> {
+                return itemGetter.getItem(Material.CYAN_DYE, 8,
                         ChatColor.of(elementalistColor) + "Elemental Matrix",
                         ChatColor.of(levelColor) + "Level " + (profileManager.getAnyProfile(player).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(player).getStats().getLevel()) + skillLevel.getSkill_8_Level_Bonus()),
                         ChatColor.of(elementalistColor) + String.valueOf(abilityManager.getElementalistAbilities().getElemental_matrix().getSkillDamage(player)) + " power x 2",

@@ -38,136 +38,164 @@ public class SpecInventory implements Listener {
         this.abilityInventory = abilityInventory;
     }
 
-    public Inventory openSpecInventory(Player player){
-        Inventory inv = Bukkit.createInventory(null, 9*6, ChatColor.WHITE + "\uF807" + "\uE065");
+    public void openSpecInventory(Player player){
+        //-46
+        Inventory inv = Bukkit.createInventory(null, 9*6, ChatColor.WHITE + "\uF80A\uF808\uF806"+ "\uE065");
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
         PlayerClass playerClass = playerProfile.getPlayerClass();
         SubClass subClass = playerProfile.getPlayerSubclass();
 
-        //inv.setItem(27, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
+        //slots for ability upgrades, coming soon tm
 
-        //inv.setItem(5, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
-        //inv.setItem(3, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
+        /*inv.setItem(3, new ItemStack(Material.WHITE_STAINED_GLASS_PANE));
+        inv.setItem(5, new ItemStack(Material.WHITE_STAINED_GLASS_PANE));
 
-        //inv.setItem(20, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
-        //inv.setItem(22, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
-        //inv.setItem(24, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
+        inv.setItem(10, new ItemStack(Material.WHITE_STAINED_GLASS_PANE));
+        inv.setItem(16, new ItemStack(Material.WHITE_STAINED_GLASS_PANE));
+
+        inv.setItem(22, new ItemStack(Material.WHITE_STAINED_GLASS_PANE));
+
+        inv.setItem(27, new ItemStack(Material.WHITE_STAINED_GLASS_PANE));
+        inv.setItem(29, new ItemStack(Material.WHITE_STAINED_GLASS_PANE));
+
+        inv.setItem(33, new ItemStack(Material.WHITE_STAINED_GLASS_PANE));
+        inv.setItem(35, new ItemStack(Material.WHITE_STAINED_GLASS_PANE));*/
 
 
+        player.openInventory(inv);
 
-        inv.setItem(40, getSubclassItem(subClass));
+
+        player.getInventory().setItem(13, getSubclassItem(subClass));
 
         switch (playerClass) {
             case Elementalist -> {
-                inv.setItem(9, getPyromancerItem());
-                //inv.setItem(13, getCryomancerItem());
-                inv.setItem(18, getConjurerItem());
+                player.getInventory().setItem(29, getPyromancerItem());
+                //player.getInventory().setItem(22, getcrymancerItem());
+                player.getInventory().setItem(33, getConjurerItem());
             }
             case Ranger -> {
-                inv.setItem(9, getScoutItem());
-                inv.setItem(18, getTamerItem());
+                player.getInventory().setItem(29, getScoutItem());
+                player.getInventory().setItem(33, getTamerItem());
             }
             case Mystic -> {
-                inv.setItem(9, getShepardItem());
-                //chaos is a secret subclass
-                if (profileManager.getAnyProfile(player).getMilestones().getMilestone("chaos")) {
-                    inv.setItem(27, getChaosItem());
-                }
-
-                inv.setItem(18, getArcaneItem());
+                player.getInventory().setItem(29, getArcaneItem());
+                //player.getInventory().setItem(22, getchoseItem());
+                player.getInventory().setItem(33, getShepardItem());
             }
             case Shadow_Knight -> {
-                inv.setItem(9, getBloodItem());
-                inv.setItem(18, getDoomItem());
+                player.getInventory().setItem(29, getBloodItem());
+                player.getInventory().setItem(33, getDoomItem());
             }
             case Paladin -> {
-                inv.setItem(9, getTemplarItem());
-                //secret
-                if (profileManager.getAnyProfile(player).getMilestones().getMilestone("divine")) {
-                    inv.setItem(27, getDivineItem());
-                }
-
-                inv.setItem(18, getDawnItem());
+                player.getInventory().setItem(29, getTemplarItem());
+                //player.getInventory().setItem(22, getdivineItem());
+                player.getInventory().setItem(33, getDawnItem());
             }
             case Warrior -> {
-                inv.setItem(9, getGladiatorItem());
-                inv.setItem(18, getExecutionerItem());
+                player.getInventory().setItem(29, getGladiatorItem());
+                player.getInventory().setItem(33, getExecutionerItem());
             }
             case Assassin -> {
-                inv.setItem(9, getDuelistItem());
-                inv.setItem(18, getAlchemistItem());
+                player.getInventory().setItem(29, getDuelistItem());
+                player.getInventory().setItem(33, getAlchemistItem());
             }
         }
 
-        return inv;
+
     }
 
     @EventHandler
     public void specClicks(InventoryClickEvent event){
-        if(event.getView().getTitle().contains(ChatColor.WHITE + "\uF807" + "\uE065")){
+        if(event.getView().getTitle().contains("\uE065")){
             event.setCancelled(true);
 
-            Inventory topInv = event.getView().getTopInventory();
-
-            if(event.getClickedInventory() != topInv){
-                return;
-            }
-
             Player player = (Player) event.getWhoClicked();
-
             int slot = event.getSlot();
             ItemStack item = event.getCurrentItem();
 
-            List<Integer> specSlots = new ArrayList<>();
-            specSlots.add(9);
-            specSlots.add(18);
-            specSlots.add(27);
+            Inventory topInv = event.getView().getTopInventory();
+            Inventory bottomInv = event.getView().getBottomInventory();
 
-            if(specSlots.contains(slot)){
-                if(item==null){
-                    return;
-                }
-
-                if(!item.hasItemMeta()){
-                    return;
-                }
-
-                ItemMeta meta = item.getItemMeta();
-
-                assert meta != null;
-                if(!meta.hasDisplayName()){
-                    return;
-                }
-
-                String name = meta.getDisplayName();
-                name = name.replaceAll("§.", "");
-
-                SubClass subClass = SubClass.valueOf(name);
-
-                profileManager.getAnyProfile(player).setPlayerSubclass(subClass);
-                profileManager.getAnyProfile(player).getStats().setLevelStats(
-                        profileManager.getAnyProfile(player).getStats().getLevel(),
-                        profileManager.getAnyProfile(player).getPlayerClass(),
-                        subClass);
-
-                topInv.setItem(40, getSubclassItem(subClass));
-
-
-                Bukkit.getServer().getPluginManager().callEvent(new MaxHealthChangeOutOfCombatEvent(player));
-                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource, true));
+            if(event.getClickedInventory() == topInv){
                 return;
             }
 
-            List<Integer> skillSlots = new ArrayList<>();
-            for(int i=46;i<=48;i++){
-                skillSlots.add(i);
+
+            if(event.getClickedInventory() == bottomInv){
+                List<Integer> specSlots = new ArrayList<>();
+                specSlots.add(29);
+                specSlots.add(31);
+                specSlots.add(33);
+
+
+                if(specSlots.contains(slot)){
+                    if(item==null){
+                        return;
+                    }
+
+                    if(!item.hasItemMeta()){
+                        return;
+                    }
+
+                    ItemMeta meta = item.getItemMeta();
+
+                    assert meta != null;
+                    if(!meta.hasDisplayName()){
+                        return;
+                    }
+
+                    String name = meta.getDisplayName();
+                    name = name.replaceAll("§.", "");
+
+                    SubClass subClass = SubClass.valueOf(name);
+
+                    profileManager.getAnyProfile(player).setPlayerSubclass(subClass);
+                    profileManager.getAnyProfile(player).getStats().setLevelStats(
+                            profileManager.getAnyProfile(player).getStats().getLevel(),
+                            profileManager.getAnyProfile(player).getPlayerClass(),
+                            subClass);
+
+                    bottomInv.setItem(13, getSubclassItem(subClass));
+
+
+                    Bukkit.getServer().getPluginManager().callEvent(new MaxHealthChangeOutOfCombatEvent(player));
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource, true));
+                    return;
+                }
+
+                if(slot == 13){
+
+                    profileManager.getAnyProfile(player).setPlayerSubclass(SubClass.NONE);
+                    profileManager.getAnyProfile(player).getStats().setLevelStats(
+                            profileManager.getAnyProfile(player).getStats().getLevel(),
+                            profileManager.getAnyProfile(player).getPlayerClass(),
+                            SubClass.NONE);
+
+                    bottomInv.setItem(13, null);
+
+                    return;
+                }
+
+                List<Integer> skillSlots = new ArrayList<>();
+                for(int i=6;i<=8;i++){
+                    skillSlots.add(i);
+                }
+
+                if(skillSlots.contains(slot)){
+                    abilityInventory.openAbilityInventory(player, -1);
+                }
+                return;
             }
 
-            if(skillSlots.contains(slot)){
-                abilityInventory.openAbilityInventory(player, -1);
-            }
+
+
+
+
+
+
+
         }
     }
 

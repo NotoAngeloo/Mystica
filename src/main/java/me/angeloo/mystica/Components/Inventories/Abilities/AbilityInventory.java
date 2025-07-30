@@ -231,7 +231,7 @@ public class AbilityInventory implements Listener {
                 pathSlots.add(6);
 
                 if(pathSlots.contains(slot)){
-                    player.openInventory(specInventory.openSpecInventory(player));
+                    specInventory.openSpecInventory(player);
                 }
 
                 return;

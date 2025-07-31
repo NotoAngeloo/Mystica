@@ -970,7 +970,14 @@ public class ProfileManager {
         currentCompanions.add(companion);
         companionMap.put(player, currentCompanions);
         companionsPlayer.put(companion, player);
-        //Bukkit.getLogger().info("Companion " + companion + " added to " + player.getName());
+        Entity cEntity = Bukkit.getEntity(companion);
+        assert cEntity != null;
+        if(MythicBukkit.inst().getAPIHelper().isMythicMob(companion)){
+            String name = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(cEntity).getDisplayName();
+            Bukkit.getLogger().info("Companion " + name + " added to " + player.getName());
+        }
+
+
         Bukkit.getServer().getPluginManager().callEvent(new UpdateMysticaPartyEvent(player));
 
     }
@@ -982,6 +989,7 @@ public class ProfileManager {
     public Player getCompanionsPlayer(LivingEntity companion){
         return companionsPlayer.getOrDefault(companion.getUniqueId(), null);
     }
+
 
     public void removeCompanion(Player player, UUID companion){
         List<UUID> currentCompanions = getCompanions(player);

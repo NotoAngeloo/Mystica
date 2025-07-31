@@ -9,6 +9,7 @@ import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import me.angeloo.mystica.Components.Inventories.Abilities.AbilityInventory;
 import me.angeloo.mystica.Components.Inventories.Equipment.EquipmentInventory;
+import me.angeloo.mystica.Components.Inventories.Party.PartyInventory;
 import me.angeloo.mystica.Components.Items.PathToolItem;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
@@ -16,6 +17,7 @@ import me.angeloo.mystica.CustomEvents.*;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Tasks.AggroTick;
+import me.angeloo.mystica.Tasks.RezTick;
 import me.angeloo.mystica.Utility.*;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
@@ -75,13 +77,16 @@ public class GeneralEventListener implements Listener {
     private final DisplayWeapons displayWeapons;
     private final GearReader gearReader;
     private final ClassSetter classSetter;
-    private final Locations locations;
     private final GravestoneManager gravestoneManager;
+
+    private final PartyInventory partyInventory;
 
     private final DamageCalculator damageCalculator;
     private final ChangeResourceHandler changeResourceHandler;
 
     private final FirstClearManager firstClearManager;
+
+    private final RezTick rezTick;
 
     private final Map<UUID, BukkitTask> countdownTasks = new HashMap<>();
     private final Map<UUID, Boolean> dropCheck = new HashMap<>();
@@ -118,9 +123,10 @@ public class GeneralEventListener implements Listener {
         gearReader = new GearReader(main);
         classSetter = new ClassSetter(main);
         firstClearManager = main.getFirstClearManager();
-        locations = new Locations(main);
         gravestoneManager = main.getGravestoneManager();
         mysticaPartyManager = main.getMysticaPartyManager();
+        partyInventory = main.getPartyInventory();
+        rezTick = main.getRezTick();
     }
 
     @EventHandler
@@ -216,27 +222,8 @@ public class GeneralEventListener implements Listener {
 
         Player player = event.getPlayer();
 
-        if (mysticaPartyManager.inPParty(player)) {
-            Party party = Parties.getApi().getPartyOfPlayer(player.getUniqueId());
-            PartyPlayer partyPlayer = Parties.getApi().getPartyPlayer(player.getUniqueId());
-            assert party != null;
-            assert partyPlayer != null;
-            party.removeMember(partyPlayer);
-        }
+        mysticaPartyManager.removeFromParty(player);
 
-        //remove them from mpartymap???? did it fix randomly???
-
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
-
-        for(LivingEntity member : mParty){
-            mysticaPartyManager.updateMysticaParty(member);
-            Bukkit.getLogger().info("mparty has " + member);
-        }
-
-        //Bukkit.getLogger().info("mparty: " + mParty);
-
-        //mysticaPartyManager.updateMysticaParty(player);
-        //also do it for the team
 
         boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
         boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
@@ -523,6 +510,33 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
+    public void partyUpdateWhenObserving(PartyUpdateWhenObservingEvent event){
+
+        List<LivingEntity> mParty = event.getMParty();
+
+        for(LivingEntity member : mParty){
+
+            if(member instanceof Player player){
+
+                InventoryView view = player.getOpenInventory();;
+
+                if(view.getTitle().contains("\uE05E") ||
+                        view.getTitle().contains("\uE05F") ||
+                        view.getTitle().contains("\uE060")){
+
+
+                    Bukkit.getLogger().info("player should see this be updated");
+                    partyInventory.openPartyInventory(player);
+
+                }
+
+            }
+
+        }
+
+    }
+
+    @EventHandler
     public void maxHealthChange(MaxHealthChangeOutOfCombatEvent event){
 
         Player player = event.getPlayer();
@@ -622,14 +636,15 @@ public class GeneralEventListener implements Listener {
             }
         }
 
-        //team wipe
+        //Bukkit.getLogger().info("team wipe");
+
         for (LivingEntity member : mParty) {
             dpsManager.removeDps(member);
 
-            if (member instanceof Player) {
-                hudManager.getDamageBoardPlaceholders().clearPlaceholders((Player) member);
+            if (member instanceof Player player) {
+                hudManager.getDamageBoardPlaceholders().clearPlaceholders(player);
+                rezTick.ableRezCountdown(player);
             }
-
 
         }
 
@@ -1082,8 +1097,12 @@ public class GeneralEventListener implements Listener {
 
     @EventHandler
     public void ultimateStatusChange(UltimateStatusChageEvent event){
-
         Player player = event.getPlayer();
+
+        if(rezTick.running(player)){
+            return;
+        }
+
         hudManager.displayUltimate(player);
     }
 
@@ -1096,11 +1115,9 @@ public class GeneralEventListener implements Listener {
 
         event.setCancelled(true);
 
-        if((event.getEntity() instanceof Player)){
+        if((event.getEntity() instanceof Player player)){
 
             event.setCancelled(true);
-
-            Player player = (Player) event.getEntity();
 
 
             boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
@@ -1641,16 +1658,13 @@ public class GeneralEventListener implements Listener {
     @EventHandler
     public void onMMRemoval(MythicMobDespawnEvent event){
 
-
         Entity entity = event.getMob().getEntity().getBukkitEntity();
 
         fakePlayerAiManager.stopAiTask(entity.getUniqueId());
 
-        if(!(entity instanceof  LivingEntity)){
+        if(!(entity instanceof LivingEntity livingEntity)){
             return;
         }
-
-        LivingEntity livingEntity = (LivingEntity) entity;
 
         profileManager.getAnyProfile(livingEntity).setIfDead(true);
 
@@ -1690,6 +1704,7 @@ public class GeneralEventListener implements Listener {
 
     }
 
+    //put a cooldown on when allowed to rez
 
     @EventHandler
     public void rezPlayer(PlayerInteractEvent event){
@@ -1706,32 +1721,13 @@ public class GeneralEventListener implements Listener {
             return;
         }
 
+        if(!rezTick.ableToRez(player)){
+            return;
+        }
+
         event.setCancelled(true);
-        player.closeInventory();
 
         if(event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK){
-
-            List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
-
-            for(LivingEntity member : mParty){
-
-                boolean partyMemberDeathStatus = profileManager.getAnyProfile(member).getIfDead();
-
-                if(partyMemberDeathStatus){
-                    continue;
-                }
-
-
-                boolean partyMemberCombatStatus = profileManager.getAnyProfile(member).getIfInCombat();
-
-                if(partyMemberCombatStatus){
-                    return;
-                }
-
-
-
-            }
-
 
             deathManager.playerNowLive(player, false, null);
             displayWeapons.displayArmor(player);

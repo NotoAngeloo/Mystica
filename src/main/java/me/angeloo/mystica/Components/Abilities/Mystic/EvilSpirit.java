@@ -203,10 +203,14 @@ public class EvilSpirit {
         }
 
         chaosShards.put(caster.getUniqueId(), current);
-        if(caster instanceof Player){
-            Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
-            Bukkit.getServer().getPluginManager().callEvent(new UltimateStatusChageEvent((Player) caster));
+        if(caster instanceof Player player){
+
+            Bukkit.getScheduler().runTask(main, () ->{
+                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+                Bukkit.getServer().getPluginManager().callEvent(new UltimateStatusChageEvent((Player) caster));
+            });
+
+
         }
 
     }

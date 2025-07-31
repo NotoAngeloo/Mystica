@@ -63,6 +63,7 @@ public class DungeonSelect implements Listener {
 
         player.openInventory(inv);
 
+        player.getInventory().clear();
     }
 
     @EventHandler

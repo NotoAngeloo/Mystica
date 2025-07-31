@@ -72,7 +72,6 @@ public class DuranceOfTruth {
         }
 
 
-
         combatManager.startCombatTimer(caster);
 
         execute(caster);
@@ -157,7 +156,6 @@ public class DuranceOfTruth {
         }
 
         Location start = caster.getLocation().clone();
-        //Location end = start.clone().add(direction.multiply(baseRange));
         Location end = start.clone();
 
         while (baseRange > 0) {
@@ -173,11 +171,6 @@ public class DuranceOfTruth {
             end = target.getLocation().clone();
         }
 
-
-        //player.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, end, 0, 0, 0, 0);
-
-
-        //abilityManager.setSkillRunning(player, true);
         Location finalEnd = end;
         double finalSkillDamage = getSkillDamage(caster);
         new BukkitRunnable(){
@@ -223,7 +216,6 @@ public class DuranceOfTruth {
                         center = caster.getLocation();
                         spawnShields(center);
                         damage();
-                        //abilityManager.setSkillRunning(player, false);
                     }
                 }
 
@@ -265,15 +257,13 @@ public class DuranceOfTruth {
                             continue;
                         }
 
-                        if(!(entity instanceof LivingEntity)){
+                        if(!(entity instanceof LivingEntity livingEntity)){
                             continue;
                         }
 
                         if(entity instanceof ArmorStand){
                             continue;
                         }
-
-                        LivingEntity livingEntity = (LivingEntity) entity;
 
                         //pvp logic
                         if(entity instanceof Player){
@@ -290,14 +280,19 @@ public class DuranceOfTruth {
                         }
                     }
 
+                    List<LivingEntity> toRemove = new ArrayList<>();
+
                     for(LivingEntity hitEntity : affected){
                         if(hitByThisTick.contains(hitEntity)){
                            continue;
                         }
                         buffAndDebuffManager.getSilence().applySilence(hitEntity, 20*3);
-                        affected.remove(hitEntity);
+                        toRemove.add(hitEntity);
                     }
 
+                    for(LivingEntity entity : toRemove){
+                        affected.remove(entity);
+                    }
 
                     count++;
                 }
@@ -324,15 +319,13 @@ public class DuranceOfTruth {
                         continue;
                     }
 
-                    if(!(entity instanceof LivingEntity)){
+                    if(!(entity instanceof LivingEntity livingEntity)){
                         continue;
                     }
 
                     if(entity instanceof ArmorStand){
                         continue;
                     }
-
-                    LivingEntity livingEntity = (LivingEntity) entity;
 
                     boolean crit = damageCalculator.checkIfCrit(caster, 0);
                     double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Physical", finalSkillDamage, crit));

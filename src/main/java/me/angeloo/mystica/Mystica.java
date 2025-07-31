@@ -74,6 +74,7 @@ public final class Mystica extends JavaPlugin{
     private FakePlayerAiManager fakePlayerAiManager;
     private AggroTick aggroTick;
     private AggroManager aggroManager;
+    private RezTick rezTick;
     private DpsManager dpsManager;
     private PvpManager pvpManager;
     private CombatManager combatManager;
@@ -88,7 +89,6 @@ public final class Mystica extends JavaPlugin{
     private PveChecker pveChecker;
     private DamageCalculator damageCalculator;
     private ChangeResourceHandler changeResourceHandler;
-    private Locations locations;
     
     private AbilityInventory abilityInventory;
     private SpecInventory specInventory;
@@ -153,9 +153,6 @@ public final class Mystica extends JavaPlugin{
 
         mysticaPartyManager = new MysticaPartyManager(this);
 
-        locations = new Locations(this);
-        locations.initializeLocationals();
-
         inventoryItemGetter = new InventoryItemGetter();
         displayWeapons = new DisplayWeapons(this);
 
@@ -181,6 +178,7 @@ public final class Mystica extends JavaPlugin{
         abilityManager = new AbilityManager(this);
         combatManager = abilityManager.getCombatManager();
 
+        rezTick = new RezTick(this);
         deathManager = new DeathManager(this);
         allSkillItems = abilityManager.getAllSkillItems();
 
@@ -207,6 +205,7 @@ public final class Mystica extends JavaPlugin{
         firstClearManager.createOrLoadFolder();
 
         aggroTick = new AggroTick(this);
+
 
         getCommand("ToggleGlobalPvp").setExecutor(new ToggleGlobalPvp(this));
         getCommand("SeeRawDamage").setExecutor(new SeeRawDamage(this));
@@ -268,8 +267,6 @@ public final class Mystica extends JavaPlugin{
 
         //NaturalRegenTick regenTick = new NaturalRegenTick(this);
         //fregenTick.runTaskTimer(this, 0, 40);
-        RezTick rezTick = new RezTick(this);
-        rezTick.runTaskTimerAsynchronously(this, 0, 20);
         DailyTick dailyTick = new DailyTick(this);
         dailyTick.runTaskTimerAsynchronously(this, 0, 1200);
 
@@ -305,6 +302,7 @@ public final class Mystica extends JavaPlugin{
     @Override
     public void onDisable() {
 
+        rezTick.stopAll();
 
         for (Player player : Bukkit.getOnlinePlayers()){
 
@@ -381,6 +379,10 @@ public final class Mystica extends JavaPlugin{
         return aggroManager;
     }
 
+    public RezTick getRezTick(){
+        return rezTick;
+    }
+
     public CombatManager getCombatManager(){
         return combatManager;
     }
@@ -422,8 +424,6 @@ public final class Mystica extends JavaPlugin{
     }
 
     public FirstClearManager getFirstClearManager(){return firstClearManager;}
-
-    public Locations getLocations(){return locations;}
 
     public DailyData getDailyData(){return dailyData;}
 

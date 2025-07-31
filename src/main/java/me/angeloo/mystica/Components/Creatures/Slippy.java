@@ -55,23 +55,18 @@ public class Slippy {
 
             assert partyPlayer != null;
             if (partyPlayer.isInParty()) {
-
-                Party party = api.getParty(partyPlayer.getPartyId());
-
+                UUID partyId = partyPlayer.getPartyId();
+                assert partyId != null;
+                Party party = api.getParty(partyId);
                 assert party != null;
                 UUID partyLeaderId = party.getLeader();
-
                 assert partyLeaderId != null;
-
                 theClosestPlayersLeader = Bukkit.getPlayer(partyLeaderId);
-
 
             } else {
                 theClosestPlayersLeader = closestPlayer;
             }
-
             assert theClosestPlayersLeader != null;
-            //Bukkit.getLogger().info(theClosestPlayersLeader.getName());
 
         }
 

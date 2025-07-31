@@ -88,7 +88,7 @@ public class CoersicaBoss {
             level = profileManager.getAnyProfile(theClosestPlayersLeader).getPlayerBossLevel().getBossLevel();
         }
 
-        int hp = 50000 + (250 * (level-1));
+        int hp = 30000 + (150 * (level-1));
         int atk = 90 + (35 * level-1);
         int def = 50 + (35 * level-1);
         int mdef = 50 + (35 * level-1);

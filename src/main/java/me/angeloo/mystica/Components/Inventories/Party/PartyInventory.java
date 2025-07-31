@@ -476,8 +476,23 @@ public class PartyInventory implements Listener {
 
             if(event.getClickedInventory() == bottomInv){
 
+                ItemStack item = event.getCurrentItem();
 
+                if(item == null){
+                    return;
+                }
 
+                if(!item.hasItemMeta()){
+                    return;
+                }
+
+                SkullMeta meta = (SkullMeta) item.getItemMeta();
+                assert meta != null;
+                Player pPlayer = Bukkit.getPlayer(meta.getDisplayName());
+                assert pPlayer != null;
+
+                partyManager.removeFromParty(pPlayer);
+                openPartyInventory(player);
             }
 
         }

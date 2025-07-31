@@ -2,7 +2,6 @@ package me.angeloo.mystica.Components.Commands;
 
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.Locations;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Server;
@@ -20,11 +19,9 @@ import java.util.List;
 public class MysticaInteractions implements CommandExecutor {
 
     private final ProfileManager profileManager;
-    private final Locations locations;
 
     public MysticaInteractions(Mystica main){
         profileManager = main.getProfileManager();
-        locations = main.getLocations();
     }
 
     @Override

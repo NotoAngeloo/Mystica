@@ -41,6 +41,7 @@ public class MysticaBag{
 
 
         //depending on bag unlocks, give a bag in bottom
+        player.getInventory().clear();
 
         for(int i = 0; i<8;i++){
 

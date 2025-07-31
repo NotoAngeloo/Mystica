@@ -8,6 +8,7 @@ import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.CustomEvents.MysticaPlayerDeathEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Components.Profile;
+import me.angeloo.mystica.Tasks.RezTick;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.Enums.BarType;
@@ -30,6 +31,7 @@ public class DeathManager {
     private final ProfileManager profileManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final AbilityManager abilityManager;
+    private final RezTick rezTick;
     private final AggroManager aggroManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final GravestoneManager gravestoneManager;
@@ -37,6 +39,7 @@ public class DeathManager {
 
     public DeathManager(Mystica main){
         profileManager = main.getProfileManager();
+        rezTick = main.getRezTick();
         changeResourceHandler = main.getChangeResourceHandler();
         abilityManager = main.getAbilityManager();
         aggroManager = main.getAggroManager();
@@ -51,7 +54,6 @@ public class DeathManager {
         Location deathLoc = player.getLocation();
 
         Profile playerProfile = profileManager.getAnyProfile(player);
-
 
 
         player.getInventory().clear();
@@ -98,6 +100,7 @@ public class DeathManager {
         abilityManager.interruptBasic(player);
         //dpsManager.removeDps(player);
         Bukkit.getServer().getPluginManager().callEvent(new MysticaPlayerDeathEvent(player));
+        rezTick.startRezTickFor(player);
     }
 
     public void playerNowLive(LivingEntity target, Boolean bySkill, LivingEntity entityWhoCastSkill){

@@ -181,367 +181,71 @@ public class DamageBoardPlaceholders {
     }
 
     public String getDamage_Bar_1(Player player){
-
-        /*StringBuilder bar = new StringBuilder();
-
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
-        mParty.sort(Comparator.comparingInt(dpsManager::getRoundedDps).reversed());
-
-        if(mParty.size() < 1){
-            return " ";
-        }
-
-        double dps = dpsManager.getRoundedDps(mParty.get(0));
-
-        if(dps == 0){
-            return " ";
-        }
-
-        double topDps = dpsManager.getRoundedDps(mParty.get(0));
-
-
-        bar.append(dpsBar.getBar(mParty.get(0), topDps, dps));
-
-
-        return String.valueOf(bar);*/
-
         return damageBar1.getOrDefault(player.getUniqueId(), " ");
     }
 
     public String getDamagePlayer_1(Player player){
-
-        /*StringBuilder bar = new StringBuilder();
-
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
-        mParty.sort(Comparator.comparingInt(dpsManager::getRoundedDps).reversed());
-
-        if(mParty.size() < 1){
-            return " ";
-        }
-
-        double dps = dpsManager.getRoundedDps(mParty.get(0));
-
-        if(dps == 0){
-            return " ";
-        }
-
-        bar.append(mParty.get(0).getName());
-
-        return String.valueOf(bar);*/
         return damagePlayer1.getOrDefault(player.getUniqueId(), " ");
     }
 
     public String getDps_1(Player player){
-
-        /*StringBuilder bar = new StringBuilder();
-
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
-        mParty.sort(Comparator.comparingInt(dpsManager::getRoundedDps).reversed());
-
-        if(mParty.size() < 1){
-            return " ";
-        }
-
-        double dps = dpsManager.getRoundedDps(mParty.get(0));
-
-        if(dps == 0){
-            return " ";
-        }
-
-        bar.append((int)dps);
-
-        return String.valueOf(bar);*/
         return dps1.getOrDefault(player.getUniqueId(), " ");
     }
 
     public String getDamage_Bar_2(Player player){
-
-        /*StringBuilder bar = new StringBuilder();
-
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
-        mParty.sort(Comparator.comparingInt(dpsManager::getRoundedDps).reversed());
-
-        if(mParty.size() < 2){
-            return " ";
-        }
-
-        double dps = dpsManager.getRoundedDps(mParty.get(1));
-
-        if(dps == 0){
-            return " ";
-        }
-
-        double topDps = dpsManager.getRoundedDps(mParty.get(0));
-
-
-        bar.append(dpsBar.getBar(mParty.get(1), topDps, dps));
-
-        return String.valueOf(bar);*/
         return damageBar2.getOrDefault(player.getUniqueId(), " ");
     }
 
     public String getDamagePlayer_2(Player player){
-
-        /*StringBuilder bar = new StringBuilder();
-
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
-        mParty.sort(Comparator.comparingInt(dpsManager::getRoundedDps).reversed());
-
-        if(mParty.size() < 2){
-            return " ";
-        }
-
-        double dps = dpsManager.getRoundedDps(mParty.get(1));
-
-        if(dps == 0){
-            return " ";
-        }
-
-        bar.append(mParty.get(1).getName());
-
-        return String.valueOf(bar);*/
         return damagePlayer2.getOrDefault(player.getUniqueId(), " ");
     }
 
     public String getDps_2(Player player){
-
-        /*StringBuilder bar = new StringBuilder();
-
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
-        mParty.sort(Comparator.comparingInt(dpsManager::getRoundedDps).reversed());
-
-        if(mParty.size() < 2){
-            return " ";
-        }
-
-        double dps = dpsManager.getRoundedDps(mParty.get(1));
-
-        if(dps == 0){
-            return " ";
-        }
-
-        bar.append((int)dps);
-
-        return String.valueOf(bar);*/
         return dps2.getOrDefault(player.getUniqueId(), " ");
     }
 
     public String getDamage_Bar_3(Player player){
-
-        /*StringBuilder bar = new StringBuilder();
-
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
-        mParty.sort(Comparator.comparingInt(dpsManager::getRoundedDps).reversed());
-
-        if(mParty.size() < 3){
-            return " ";
-        }
-
-        double dps = dpsManager.getRoundedDps(mParty.get(2));
-
-        if(dps == 0){
-            return " ";
-        }
-
-        double topDps = dpsManager.getRoundedDps(mParty.get(0));
-
-
-        bar.append(dpsBar.getBar(mParty.get(2), topDps, dps));
-
-        return String.valueOf(bar);*/
         return damageBar3.getOrDefault(player.getUniqueId(), " ");
     }
 
     public String getDamagePlayer_3(Player player){
-
-        /*StringBuilder bar = new StringBuilder();
-
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
-        mParty.sort(Comparator.comparingInt(dpsManager::getRoundedDps).reversed());
-
-        if(mParty.size() < 3){
-            return " ";
-        }
-
-        double dps = dpsManager.getRoundedDps(mParty.get(2));
-
-        if(dps == 0){
-            return " ";
-        }
-
-        bar.append(mParty.get(2).getName());
-
-        return String.valueOf(bar);*/
         return damagePlayer3.getOrDefault(player.getUniqueId(), " ");
     }
 
     public String getDps_3(Player player){
 
-        /*StringBuilder bar = new StringBuilder();
-
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
-        mParty.sort(Comparator.comparingInt(dpsManager::getRoundedDps).reversed());
-
-        if(mParty.size() < 3){
-            return " ";
-        }
-
-        double dps = dpsManager.getRoundedDps(mParty.get(2));
-
-        if(dps == 0){
-            return " ";
-        }
-
-        bar.append((int)dps);
-
-        return String.valueOf(bar);*/
         return dps3.getOrDefault(player.getUniqueId(), " ");
     }
 
     public String getDamage_Bar_4(Player player){
 
-        /*StringBuilder bar = new StringBuilder();
-
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
-        mParty.sort(Comparator.comparingInt(dpsManager::getRoundedDps).reversed());
-
-        if(mParty.size() < 4){
-            return " ";
-        }
-
-        double dps = dpsManager.getRoundedDps(mParty.get(3));
-
-        if(dps == 0){
-            return " ";
-        }
-
-        double topDps = dpsManager.getRoundedDps(mParty.get(0));
-
-
-        bar.append(dpsBar.getBar(mParty.get(3), topDps, dps));
-
-        return String.valueOf(bar);*/
 
         return damageBar4.getOrDefault(player.getUniqueId(), " ");
     }
 
     public String getDamagePlayer_4(Player player){
 
-        /*StringBuilder bar = new StringBuilder();
-
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
-        mParty.sort(Comparator.comparingInt(dpsManager::getRoundedDps).reversed());
-
-        if(mParty.size() < 4){
-            return " ";
-        }
-
-        double dps = dpsManager.getRoundedDps(mParty.get(3));
-
-        if(dps == 0){
-            return " ";
-        }
-
-        bar.append(mParty.get(3).getName());
-
-        return String.valueOf(bar);*/
 
         return damagePlayer4.getOrDefault(player.getUniqueId(), " ");
     }
 
     public String getDps_4(Player player){
 
-        /*StringBuilder bar = new StringBuilder();
-
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
-        mParty.sort(Comparator.comparingInt(dpsManager::getRoundedDps).reversed());
-
-        if(mParty.size() < 4){
-            return " ";
-        }
-
-        double dps = dpsManager.getRoundedDps(mParty.get(3));
-
-        if(dps == 0){
-            return " ";
-        }
-
-        bar.append((int)dps);
-
-        return String.valueOf(bar);*/
 
         return dps4.getOrDefault(player.getUniqueId(), " ");
     }
 
     public String getDamage_Bar_5(Player player){
-
-        /*StringBuilder bar = new StringBuilder();
-
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
-        mParty.sort(Comparator.comparingInt(dpsManager::getRoundedDps).reversed());
-
-        if(mParty.size() < 5){
-            return " ";
-        }
-
-        double dps = dpsManager.getRoundedDps(mParty.get(4));
-
-        if(dps == 0){
-            return " ";
-        }
-
-        double topDps = dpsManager.getRoundedDps(mParty.get(0));
-
-
-        bar.append(dpsBar.getBar(mParty.get(4), topDps, dps));
-
-        return String.valueOf(bar);*/
         return damageBar5.getOrDefault(player.getUniqueId(), " ");
     }
 
     public String getDamagePlayer_5(Player player){
 
-        /*StringBuilder bar = new StringBuilder();
-
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
-        mParty.sort(Comparator.comparingInt(dpsManager::getRoundedDps).reversed());
-
-        if(mParty.size() < 5){
-            return " ";
-        }
-
-        double dps = dpsManager.getRoundedDps(mParty.get(4));
-
-        if(dps == 0){
-            return " ";
-        }
-
-        bar.append(mParty.get(4).getName());
-
-        return String.valueOf(bar);*/
         return damagePlayer5.getOrDefault(player.getUniqueId(), " ");
     }
 
     public String getDps_5(Player player){
 
-        /*StringBuilder bar = new StringBuilder();
-
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
-        mParty.sort(Comparator.comparingInt(dpsManager::getRoundedDps).reversed());
-
-        if(mParty.size() < 5){
-            return " ";
-        }
-
-        double dps = dpsManager.getRoundedDps(mParty.get(4));
-
-        if(dps == 0){
-            return " ";
-        }
-
-        bar.append((int)dps);
-
-        return String.valueOf(bar);*/
 
         return dps5.getOrDefault(player.getUniqueId(), " ");
     }

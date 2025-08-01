@@ -42,36 +42,39 @@ public class ElementalistAbilities {
 
     public void useElementalistAbility(LivingEntity caster, int abilityNumber){
 
-        switch (abilityNumber){
-            case 1:
+        switch (abilityNumber) {
+            case 1 -> {
                 iceBolt.use(caster);
                 return;
-            case 2:{
+            }
+            case 2 -> {
                 fieryMagma.use(caster);
                 return;
             }
-            case 3:{
+            case 3 -> {
                 descendingInferno.use(caster);
                 return;
             }
-            case 4:{
+            case 4 -> {
                 windrushForm.use(caster);
                 return;
             }
-            case 5:{
+            case 5 -> {
                 windWall.use(caster);
                 return;
             }
-            case 6:{
+            case 6 -> {
                 dragonBreathing.use(caster);
                 return;
             }
-            case 7:
+            case 7 -> {
                 elementalBreath.use(caster);
                 return;
-            case 8:
+            }
+            case 8 -> {
                 elemental_matrix.use(caster);
                 return;
+            }
         }
 
     }

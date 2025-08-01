@@ -23,6 +23,7 @@ import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
+import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.Logic.StealthTargetBlacklist;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
@@ -66,9 +67,10 @@ public class GeneralEventListener implements Listener {
     private final DpsManager dpsManager;
     private final AggroManager aggroManager;
     private final PvpManager pvpManager;
-    private final InventoryItemGetter inventoryItemGetter;
+    private final InventoryItemGetter itemGetter;
     private final TargetManager targetManager;
     private final CombatManager combatManager;
+    private final CooldownDisplayer cooldownDisplayer;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final AbilityManager abilityManager;
     private final DeathManager deathManager;
@@ -88,7 +90,6 @@ public class GeneralEventListener implements Listener {
 
     private final RezTick rezTick;
 
-    private final Map<UUID, BukkitTask> countdownTasks = new HashMap<>();
     private final Map<UUID, Boolean> dropCheck = new HashMap<>();
 
     private final Map<UUID, Long> breakawayCooldown = new HashMap<>();
@@ -103,7 +104,7 @@ public class GeneralEventListener implements Listener {
         dailyData = main.getDailyData();
         profileManager = main.getProfileManager();
         pathingManager = main.getPathingManager();
-        inventoryItemGetter = main.getItemGetter();
+        itemGetter = main.getItemGetter();
         fakePlayerAiManager = main.getFakePlayerAiManager();
         stealthTargetBlacklist = main.getStealthTargetBlacklist();
         aggroTick = main.getAggroTick();
@@ -126,6 +127,7 @@ public class GeneralEventListener implements Listener {
         gravestoneManager = main.getGravestoneManager();
         mysticaPartyManager = main.getMysticaPartyManager();
         partyInventory = main.getPartyInventory();
+        cooldownDisplayer = main.getCooldownDisplayer();
         rezTick = main.getRezTick();
     }
 
@@ -159,7 +161,6 @@ public class GeneralEventListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-
         hudManager.innitHud(player);
         Bukkit.getServer().getPluginManager().callEvent(new SetMenuItemsEvent(player));
 
@@ -170,27 +171,18 @@ public class GeneralEventListener implements Listener {
 
         profileManager.getAnyProfile(player);
 
-        //player.sendMessage(dailyData.getLevelAnnouncement());
-
-        /*PluginManager pluginManager = Bukkit.getPluginManager();
-        Plugin interactions = pluginManager.getPlugin("interactions");
-        Server server = Bukkit.getServer();
-        if(interactions != null && interactions.isEnabled()){
-
-            new BukkitRunnable(){
-                @Override
-                public void run(){
-                    server.dispatchCommand(server.getConsoleSender(), "interactions start tutorial " +  player.getName());
-                }
-            }.runTaskLater(main, 5);
-
-        }*/
+        player.getInventory().setHeldItemSlot(8);
 
 
         targetManager.setPlayerTarget(player, null);
-        //buffAndDebuffManager.removeAllBuffsAndDebuffs(player);
         gearReader.setGearStats(player);
-        displayWeapons.displayArmor(player);
+
+        if(!profileManager.getAnyProfile(player).getIfDead()){
+            displayWeapons.displayArmor(player);
+            cooldownDisplayer.initializeItems(player);
+        }
+
+
 
         if (!profileManager.getPlayerNameMap().containsKey(player.getName())) {
 
@@ -213,7 +205,6 @@ public class GeneralEventListener implements Listener {
         }
 
         profileManager.addToPlayerNameMap(player);
-
 
     }
 
@@ -251,8 +242,7 @@ public class GeneralEventListener implements Listener {
     //maybe ill make items to be added to a bag, when implemented. just to stop items being deleted when combat end
     @EventHandler
     public void noItemPickup(EntityPickupItemEvent event) {
-        if (event.getEntity() instanceof Player) {
-            Player player = (Player) event.getEntity();
+        if (event.getEntity() instanceof Player player) {
 
             boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
             boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
@@ -455,6 +445,52 @@ public class GeneralEventListener implements Listener {
             equipmentInventory.openEquipmentInventory(player);
             player.getInventory().addItem(tempItem);
         }
+    }
+
+    @EventHandler
+    public void invOpen(InventoryOpenEvent event){
+        Player player = (Player) event.getPlayer();
+
+        if(event.getInventory().getType().equals(InventoryType.CRAFTING)){
+            Bukkit.getLogger().info("open?");
+        }
+    }
+
+    @EventHandler
+    public void menuOpen(SetMenuItemsEvent event){
+
+        Player player = event.getPlayer();
+
+        if(profileManager.getAnyProfile(player).getIfDead()){
+            return;
+        }
+
+        cooldownDisplayer.initializeItems(player);
+
+        if(profileManager.getAnyProfile(player).getIfInCombat()){
+            return;
+        }
+
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                Inventory inventory = player.getOpenInventory().getTopInventory();
+                if(inventory.getType().equals(InventoryType.CRAFTING)){
+                    setMenuItems(player);
+                }
+            }
+        }.runTaskLaterAsynchronously(main, 1);
+
+
+    }
+
+    private void setMenuItems(Player player){
+
+        //check to see what player has unlocked
+        player.getInventory().setItem(27, itemGetter.getItem(Material.LEATHER, 1, "Bag"));
+        player.getInventory().setItem(29, itemGetter.getItem(Material.AMETHYST_SHARD, 1, "Skills"));
+        player.getInventory().setItem(31, itemGetter.getItem(Material.BROWN_BANNER, 1, "Team"));
+
     }
 
     @EventHandler
@@ -768,61 +804,6 @@ public class GeneralEventListener implements Listener {
 
 
     @EventHandler
-    public void onManualCombatStart(PlayerAnimationEvent event) {
-
-        Player player = event.getPlayer();
-
-        if (!player.isSneaking()) {
-            return;
-        }
-
-        if (player.getGameMode() != GameMode.SURVIVAL) {
-            return;
-        }
-
-        if (event.getAnimationType() == PlayerAnimationType.ARM_SWING && event.getPlayer().getInventory().getItemInMainHand().getType().isAir()) {
-
-            boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
-
-            //make sure not in combat
-            if (combatStatus) {
-                return;
-            }
-
-            UUID uuid = player.getUniqueId();
-            if (countdownTasks.containsKey(uuid)) {
-                countdownTasks.get(uuid).cancel();
-            }
-
-            BukkitTask task = new BukkitRunnable() {
-                private int secondsLeft = 3;
-
-                @Override
-                public void run() {
-
-                    if (player.isSneaking()) {
-                        if (secondsLeft > 0) {
-                            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("Starting Combat in " + secondsLeft));
-                            secondsLeft--;
-                        } else {
-                            this.cancel();
-                            combatManager.startCombatTimer(player);
-
-                        }
-                    } else {
-                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("Cancelled combat"));
-                        this.cancel();
-                    }
-
-                }
-            }.runTaskTimer(main, 0, 20);
-
-            countdownTasks.put(uuid, task);
-
-        }
-    }
-
-    @EventHandler
     public void targetTooFar(PlayerMoveEvent event) {
 
         Player player = event.getPlayer();
@@ -951,10 +932,9 @@ public class GeneralEventListener implements Listener {
 
                 List<LivingEntity> attackers = aggroManager.getAttackerList(defender);
                 for (LivingEntity attacker : attackers) {
-                    if (!(attacker instanceof Player)) {
+                    if (!(attacker instanceof Player attackerPlayer)) {
                         continue;
                     }
-                    Player attackerPlayer = (Player) attacker;
                     Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(attackerPlayer, Target, false));
                 }
 
@@ -962,15 +942,13 @@ public class GeneralEventListener implements Listener {
 
         }
 
-        if (defender instanceof Player) {
+        if (defender instanceof Player defenderPlayer) {
 
             boolean deathStatus = profileManager.getAnyProfile(defender).getIfDead();
 
             if (deathStatus) {
                 return;
             }
-
-            Player defenderPlayer = (Player) defender;
 
 
             if (!event.getIfPositive()) {
@@ -993,8 +971,7 @@ public class GeneralEventListener implements Listener {
 
             for (LivingEntity member : mysticaParty) {
 
-                if (member instanceof Player) {
-                    Player player = (Player) member;
+                if (member instanceof Player player) {
                     Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, Team, false));
                 }
 
@@ -1196,16 +1173,9 @@ public class GeneralEventListener implements Listener {
             return;
         }
 
-
         boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
 
         if(deathStatus){
-            return;
-        }
-
-        boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
-
-        if (!combatStatus) {
             return;
         }
 
@@ -1226,15 +1196,13 @@ public class GeneralEventListener implements Listener {
 
         Player player = event.getPlayer();
 
-        if(!profileManager.getAnyProfile(player).getIfInCombat()){
-            return;
-        }
-
         if(profileManager.getAnyProfile(player).getIfDead()){
             return;
         }
 
         event.setCancelled(true);
+
+
         int newSlot = event.getNewSlot();
 
         EquipSkills equipSkills = profileManager.getAnyProfile(player).getEquipSkills();
@@ -1703,8 +1671,6 @@ public class GeneralEventListener implements Listener {
         Bukkit.getScheduler().runTask(main, () -> profileManager.transferCompanionsToLeader(player, newLeader));
 
     }
-
-    //put a cooldown on when allowed to rez
 
     @EventHandler
     public void rezPlayer(PlayerInteractEvent event){

@@ -6,8 +6,8 @@ import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Commands.*;
-import me.angeloo.mystica.Components.Inventories.*;
 import me.angeloo.mystica.Components.Inventories.Abilities.AbilityInventory;
+import me.angeloo.mystica.Components.Inventories.Abilities.ClassSelectInventory;
 import me.angeloo.mystica.Components.Inventories.Abilities.SpecInventory;
 import me.angeloo.mystica.Components.Inventories.Equipment.*;
 import me.angeloo.mystica.Components.Inventories.Party.DungeonSelect;
@@ -25,7 +25,7 @@ import me.angeloo.mystica.Utility.*;
 import me.angeloo.mystica.Utility.DamageIndicator.DamageIndicatorApi;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
+import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.Listeners.GeneralEventListener;
 import me.angeloo.mystica.Utility.Listeners.InventoryEventListener;
 import me.angeloo.mystica.Utility.Listeners.MMListeners;
@@ -82,6 +82,7 @@ public final class Mystica extends JavaPlugin{
     private GravestoneManager gravestoneManager;
     private BossCastingManager bossCastingManager;
     private AbilityManager abilityManager;
+    private CooldownDisplayer cooldownDisplayer;
     private DeathManager deathManager;
     private CustomInventoryManager customInventoryManager;
     private MatchMakingManager matchMakingManager;
@@ -176,6 +177,7 @@ public final class Mystica extends JavaPlugin{
         damageCalculator = new DamageCalculator(this);
 
         abilityManager = new AbilityManager(this);
+        cooldownDisplayer = new CooldownDisplayer(this, abilityManager);
         combatManager = abilityManager.getCombatManager();
 
         rezTick = new RezTick(this);
@@ -329,9 +331,7 @@ public final class Mystica extends JavaPlugin{
                 combatManager.forceCombatEnd(player);
             }
 
-            if(player.getWorld().getName().startsWith("tutorial_") && !profileManager.getAnyProfile(player).getMilestones().getMilestone("tutorial")){
-                classSetter.setClass(player, PlayerClass.NONE);
-            }
+            player.setGameMode(GameMode.SURVIVAL);
 
         }
 
@@ -465,6 +465,10 @@ public final class Mystica extends JavaPlugin{
         return hudManager;
     }
 
+
+    public CooldownDisplayer getCooldownDisplayer(){
+        return cooldownDisplayer;
+    }
 
     @NotNull
     public PacketInterface getPacketInterface(){

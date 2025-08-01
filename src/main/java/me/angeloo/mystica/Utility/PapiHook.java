@@ -13,14 +13,12 @@ import org.jetbrains.annotations.Nullable;
 
 public class PapiHook extends PlaceholderExpansion {
 
-    private final Mystica main;
     private final MysticaEntityGrabber mysticaEntityGrabber;
     private final DamageBoardPlaceholders damageBoardPlaceholders;
     private final ProfileManager profileManager;
     private final TargetManager targetManager;
 
     public PapiHook(Mystica main){
-        this.main = main;
         mysticaEntityGrabber = new MysticaEntityGrabber(main);
         damageBoardPlaceholders = main.getHudManager().getDamageBoardPlaceholders();
         profileManager = main.getProfileManager();
@@ -48,74 +46,77 @@ public class PapiHook extends PlaceholderExpansion {
             Player player = offlinePlayer.getPlayer();
             assert player != null;
 
-            switch (params.toLowerCase()){
-                case "random":{
+            switch (params.toLowerCase()) {
+                case "random" -> {
                     return String.valueOf(mysticaEntityGrabber.getRandomEntity(player));
                 }
-                case "lowestphp":{
+                case "lowestphp" -> {
                     return String.valueOf(mysticaEntityGrabber.getLowestPhp(player));
                 }
-                case "class":{
+                case "class" -> {
                     return profileManager.getAnyProfile(player).getPlayerClass().toString();
                 }
-                case "amount":{
+                case "amount" -> {
                     return String.valueOf(mysticaEntityGrabber.getValidAmount(player));
                 }
-                case "bosstarget":{
+                case "bosstarget" -> {
                     return String.valueOf(mysticaEntityGrabber.getBossTarget(player));
                 }
-                case "leader":{
+                case "leader" -> {
                     return String.valueOf(mysticaEntityGrabber.getMPartyLeader(player));
                 }
-                case "damage_bar_1":{
+                case "damage_bar_1" -> {
                     return String.valueOf(damageBoardPlaceholders.getDamage_Bar_1(player));
                 }
-                case "damage_player_1":{
+                case "damage_player_1" -> {
                     return String.valueOf(damageBoardPlaceholders.getDamagePlayer_1(player));
                 }
-                case "damage_bar_2":{
+                case "damage_bar_2" -> {
                     return String.valueOf(damageBoardPlaceholders.getDamage_Bar_2(player));
                 }
-                case "damage_player_2":{
+                case "damage_player_2" -> {
                     return String.valueOf(damageBoardPlaceholders.getDamagePlayer_2(player));
                 }
-                case "damage_bar_3":{
+                case "damage_bar_3" -> {
                     return String.valueOf(damageBoardPlaceholders.getDamage_Bar_3(player));
                 }
-                case "damage_player_3":{
+                case "damage_player_3" -> {
                     return String.valueOf(damageBoardPlaceholders.getDamagePlayer_3(player));
                 }
-                case "damage_bar_4":{
+                case "damage_bar_4" -> {
                     return String.valueOf(damageBoardPlaceholders.getDamage_Bar_4(player));
                 }
-                case "damage_player_4":{
+                case "damage_player_4" -> {
                     return String.valueOf(damageBoardPlaceholders.getDamagePlayer_4(player));
                 }
-                case "damage_bar_5":{
+                case "damage_bar_5" -> {
                     return String.valueOf(damageBoardPlaceholders.getDamage_Bar_5(player));
                 }
-                case "damage_player_5":{
+                case "damage_player_5" -> {
                     return String.valueOf(damageBoardPlaceholders.getDamagePlayer_5(player));
                 }
-                case "dps_1":{
+                case "dps_1" -> {
                     return String.valueOf(damageBoardPlaceholders.getDps_1(player));
                 }
-                case "dps_2":{
+                case "dps_2" -> {
                     return String.valueOf(damageBoardPlaceholders.getDps_2(player));
                 }
-                case "dps_3":{
+                case "dps_3" -> {
                     return String.valueOf(damageBoardPlaceholders.getDps_3(player));
                 }
-                case "dps_4":{
+                case "dps_4" -> {
                     return String.valueOf(damageBoardPlaceholders.getDps_4(player));
                 }
-                case "dps_5":{
+                case "dps_5" -> {
                     return String.valueOf(damageBoardPlaceholders.getDps_5(player));
                 }
-                case "combat":{
+                case "combat" -> {
                     return String.valueOf(profileManager.getAnyProfile(player).getIfInCombat());
                 }
-                default:{
+                case "dead" ->{
+                    return String.valueOf(profileManager.getAnyProfile(player).getIfDead());
+                }
+                default -> {
                     return String.valueOf(profileManager.getAnyProfile(player).getMilestones().getMilestone(params));
                 }
             }

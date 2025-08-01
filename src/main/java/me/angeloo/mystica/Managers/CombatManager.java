@@ -152,17 +152,21 @@ public class CombatManager {
 
         //and restore their inventories
 
-        if(!profileManager.getAnyProfile(player).getIfDead()){
-
-            player.setInvisible(false);
-
-            player.getInventory().clear();
-
-        }
-
 
         //dpsManager.removeDps(player);
         abilityManager.resetAbilityBuffs(player);
+        abilityManager.resetCooldowns(player);
+
+
+        if(!profileManager.getAnyProfile(player).getIfDead()){
+            player.setInvisible(false);
+            cooldownDisplayer.initializeItems(player);
+            displayWeapons.displayArmor(player);
+        }
+
+        player.getInventory().setItemInMainHand(null);
+
+
         Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, true));
     }
 

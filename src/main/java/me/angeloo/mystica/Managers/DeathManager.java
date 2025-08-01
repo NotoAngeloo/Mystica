@@ -12,6 +12,7 @@ import me.angeloo.mystica.Tasks.RezTick;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.Enums.BarType;
+import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -36,6 +37,7 @@ public class DeathManager {
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final GravestoneManager gravestoneManager;
     private final DisplayWeapons displayWeapons;
+    private final CooldownDisplayer cooldownDisplayer;
 
     public DeathManager(Mystica main){
         profileManager = main.getProfileManager();
@@ -46,6 +48,7 @@ public class DeathManager {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         gravestoneManager = main.getGravestoneManager();
         displayWeapons = main.getDisplayWeapons();
+        cooldownDisplayer = main.getCooldownDisplayer();
     }
 
 
@@ -114,28 +117,15 @@ public class DeathManager {
         target.setVisualFire(false);
         //more effects?
 
-        if(target instanceof Player player){
-            player.setGameMode(GameMode.SURVIVAL);
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(""));
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player) target, BarType.Resource, true));
-            player.getInventory().clear();
-            displayWeapons.displayArmor(player);
-        }
-
-
-        profileManager.getAnyProfile(target).setIfInCombat(false);
-
-
-
         if(!bySkill){
             target.teleport(target.getWorld().getSpawnLocation());
 
             abilityManager.resetCooldowns(target);
 
-            if(target instanceof Player){
+            if(target instanceof Player player){
 
                 if(!profileManager.getCompanions((Player) target).isEmpty()){
-                    for(UUID companion : profileManager.getCompanions((Player) target)){
+                    for(UUID companion : profileManager.getCompanions(player)){
 
                         LivingEntity livingEntity = (LivingEntity) Bukkit.getEntity(companion);
 
@@ -143,12 +133,14 @@ public class DeathManager {
                             livingEntity.teleport(target.getWorld().getSpawnLocation());
                             playerNowLive(livingEntity, false, null);
                             Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent(livingEntity, "reset"));
-                            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player) target, BarType.Team, true));
+                            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Team, true));
                         }
 
 
                     }
                 }
+
+                player.getInventory().setItemInMainHand(null);
             }
 
         }
@@ -158,6 +150,20 @@ public class DeathManager {
 
             changeResourceHandler.subtractHealthFromEntity(target, halfHealth, null, false);
         }
+
+        if(target instanceof Player player){
+            player.setGameMode(GameMode.SURVIVAL);
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(""));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player) target, BarType.Resource, true));
+            player.getInventory().clear();
+            displayWeapons.displayArmor(player);
+            cooldownDisplayer.initializeItems(player);
+        }
+
+
+        profileManager.getAnyProfile(target).setIfInCombat(false);
+
+
 
         if(!(target instanceof Player)){
             target.setAI(true);

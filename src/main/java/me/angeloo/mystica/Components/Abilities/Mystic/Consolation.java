@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Abilities.Mystic;
 
+import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -13,12 +14,15 @@ public class Consolation {
 
     private final Mystica main;
 
+    private final ProfileManager profileManager;
+
     private final Map<UUID, BukkitTask> taskMap = new HashMap<>();
 
     private final Map<LivingEntity, List<LivingEntity>> affected = new HashMap<>();
 
     public Consolation(Mystica main){
         this.main = main;
+        profileManager = main.getProfileManager();
     }
 
     public void apply(LivingEntity caster, LivingEntity target){
@@ -32,7 +36,17 @@ public class Consolation {
     }
 
     public List<LivingEntity> getTargets(LivingEntity caster){
-        return affected.getOrDefault(caster, new ArrayList<>());
+        List<LivingEntity> targets = new ArrayList<>(affected.getOrDefault(caster, new ArrayList<>()));
+        List<LivingEntity> toRemove = new ArrayList<>();
+
+        for(LivingEntity target : targets){
+            if(profileManager.getAnyProfile(target).getIfDead()){
+                toRemove.add(target);
+            }
+        }
+        targets.removeAll(toRemove);
+        affected.put(caster, targets);
+        return targets;
     }
 
     public void removeTargets(LivingEntity caster){

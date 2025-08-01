@@ -20,6 +20,7 @@ public class RezTick{
     private final MysticaPartyManager mysticaPartyManager;
 
     private final Map<UUID, BukkitTask> rezTasks = new HashMap<>();
+    private final Map<UUID, BukkitTask> countDownTasks = new HashMap<>();
     private final Map<UUID, Integer> ableToRez = new HashMap<>();
 
     public RezTick(Mystica main){
@@ -32,6 +33,10 @@ public class RezTick{
 
         if(rezTasks.containsKey(player.getUniqueId())){
             return;
+        }
+
+        if(!partyInCombat(player)){
+            ableRezCountdown(player);
         }
 
 
@@ -62,30 +67,15 @@ public class RezTick{
                 String rezMessage = "Left Click to Respawn";
 
 
-                List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
-
-                for(LivingEntity member : mParty){
-
-                    boolean partyMemberDeathStatus = profileManager.getAnyProfile(member).getIfDead();
-
-                    if(partyMemberDeathStatus){
-                        continue;
-                    }
-
-                    //check to see how companion members in combat
-                    boolean partyMemberCombatStatus = profileManager.getAnyProfile(member).getIfInCombat();
-
-                    if(partyMemberCombatStatus){
-                        rezMessage = "Party in Combat";
-                        break;
-                    }
-
+                if(partyInCombat(player)){
+                    rezMessage = "Party in Combat";
                 }
 
-                if(getRezTime(player) != 0){
-                    rezMessage = "Able to revive in " + getRezTime(player);
+                if(!partyInCombat(player)){
+                    if(!ableToRez(player)){
+                        rezMessage = "Able to revive in " + getRezTime(player);
+                    }
                 }
-
 
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(rezMessage));
 
@@ -116,16 +106,37 @@ public class RezTick{
     }
 
     public boolean ableToRez(Player player){
-        return getRezTime(player) <= 0;
+
+        if(partyInCombat(player)){
+            return false;
+        }
+
+        if(ableToRez.containsKey(player.getUniqueId())){
+            return getRezTime(player) <= 0;
+        }
+
+        return true;
     }
 
     public void ableRezCountdown(Player player){
 
+        if(countDownTasks.containsKey(player.getUniqueId())){
+            return;
+        }
+
         ableToRez.put(player.getUniqueId(), 3);
 
-        new BukkitRunnable(){
+        BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
+
+
+                if(partyInCombat(player) && inParty(player)){
+                    this.cancel();
+                    ableToRez.put(player.getUniqueId(), 3);
+                    countDownTasks.remove(player.getUniqueId());
+                    return;
+                }
 
                 int time = getRezTime(player);
 
@@ -136,14 +147,45 @@ public class RezTick{
                 if(time <= 0){
                     this.cancel();
                     ableToRez.remove(player.getUniqueId());
+                    countDownTasks.remove(player.getUniqueId());
                 }
             }
         }.runTaskTimerAsynchronously(main, 20, 20);
 
+        countDownTasks.put(player.getUniqueId(), task);
     }
 
     private int getRezTime(Player player){
-        return ableToRez.getOrDefault(player.getUniqueId(), 0);
+        return ableToRez.getOrDefault(player.getUniqueId(), 3);
+    }
+
+    private boolean partyInCombat(Player player){
+
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
+
+        for(LivingEntity member : mParty){
+
+            boolean partyMemberDeathStatus = profileManager.getAnyProfile(member).getIfDead();
+
+            if(partyMemberDeathStatus){
+                continue;
+            }
+
+            //check to see how companion members in combat
+            boolean partyMemberCombatStatus = profileManager.getAnyProfile(member).getIfInCombat();
+
+            if(partyMemberCombatStatus){
+                return true;
+            }
+
+        }
+
+        return false;
+    }
+
+    private boolean inParty(Player player){
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
+        return mParty.size() != 1;
     }
 
 }

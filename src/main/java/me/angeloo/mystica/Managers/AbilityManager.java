@@ -73,36 +73,36 @@ public class AbilityManager {
 
         PlayerClass clazz = playerProfile.getPlayerClass();
 
-        switch (clazz){
-            case Elementalist:{
+        switch (clazz) {
+            case Elementalist -> {
                 elementalistAbilities.useElementalistAbility(caster, abilityNumber);
                 return;
             }
-            case Ranger:{
+            case Ranger -> {
                 rangerAbilities.useRangerAbility(caster, abilityNumber);
                 return;
             }
-            case Mystic:{
+            case Mystic -> {
                 mysticAbilities.useMysticAbility(caster, abilityNumber);
                 return;
             }
-            case Shadow_Knight:{
+            case Shadow_Knight -> {
                 shadowKnightAbilities.useShadowKnightAbility(caster, abilityNumber);
                 return;
             }
-            case Paladin:{
+            case Paladin -> {
                 paladinAbilities.usePaladinAbility(caster, abilityNumber);
                 return;
             }
-            case Warrior:{
+            case Warrior -> {
                 warriorAbilities.useWarriorAbility(caster, abilityNumber);
                 return;
             }
-            case Assassin:{
+            case Assassin -> {
                 assassinAbilities.useAssassinAbility(caster, abilityNumber);
                 return;
             }
-            case NONE:{
+            case NONE -> {
                 noneAbilities.useNoneAbility(caster, abilityNumber);
                 return;
             }
@@ -131,36 +131,36 @@ public class AbilityManager {
 
         PlayerClass clazz = playerProfile.getPlayerClass();
 
-        switch (clazz){
-            case Elementalist:{
+        switch (clazz) {
+            case Elementalist -> {
                 elementalistAbilities.useElementalistBasic(caster);
                 return;
             }
-            case Ranger:{
+            case Ranger -> {
                 rangerAbilities.useRangerBasic(caster);
                 return;
             }
-            case Mystic:{
+            case Mystic -> {
                 mysticAbilities.useMysticBasic(caster);
                 return;
             }
-            case Shadow_Knight:{
+            case Shadow_Knight -> {
                 shadowKnightAbilities.useShadowKnightBasic(caster);
                 return;
             }
-            case Paladin:{
+            case Paladin -> {
                 paladinAbilities.usePaladinBasic(caster);
                 return;
             }
-            case Warrior:{
+            case Warrior -> {
                 warriorAbilities.useWarriorBasic(caster);
                 return;
             }
-            case Assassin:{
+            case Assassin -> {
                 assassinAbilities.useAssassinBasic(caster);
                 return;
             }
-            case NONE:{
+            case NONE -> {
                 noneAbilities.useNoneBasic(caster);
                 return;
             }
@@ -183,32 +183,32 @@ public class AbilityManager {
 
         PlayerClass clazz = playerProfile.getPlayerClass();
 
-        switch (clazz){
-            case Elementalist:{
+        switch (clazz) {
+            case Elementalist -> {
                 elementalistAbilities.useElementalistUltimate(caster);
                 return;
             }
-            case Ranger:{
+            case Ranger -> {
                 rangerAbilities.useRangerUltimate(caster);
                 return;
             }
-            case Mystic:{
+            case Mystic -> {
                 mysticAbilities.useMysticUltimate(caster);
                 return;
             }
-            case Shadow_Knight:{
+            case Shadow_Knight -> {
                 shadowKnightAbilities.useShadowKnightUltimate(caster);
                 return;
             }
-            case Paladin:{
+            case Paladin -> {
                 paladinAbilities.usePaladinUltimate(caster);
                 return;
             }
-            case Warrior:{
+            case Warrior -> {
                 warriorAbilities.useWarriorUltimate(caster);
                 return;
             }
-            case Assassin:{
+            case Assassin -> {
                 assassinAbilities.useAssassinUltimate(caster);
                 return;
             }
@@ -221,30 +221,30 @@ public class AbilityManager {
         PlayerClass clazz = playerProfile.getPlayerClass();
 
         switch (clazz) {
-            case Elementalist: {
+            case Elementalist -> {
                 elementalistAbilities.getHeat().reduceHeat(caster, elementalistAbilities.getHeat().getHeat(caster));
                 return;
             }
-            case Ranger: {
+            case Ranger -> {
                 rangerAbilities.getFocus().loseFocus(caster);
                 return;
             }
-            case Mystic: {
+            case Mystic -> {
                 mysticAbilities.getMana().addManaToEntity(caster, 500);
                 return;
             }
-            case Shadow_Knight: {
+            case Shadow_Knight -> {
                 shadowKnightAbilities.getEnergy().addEnergyToEntity(caster, 100);
                 return;
             }
-            case Paladin: {
+            case Paladin -> {
                 return;
             }
-            case Warrior: {
+            case Warrior -> {
                 warriorAbilities.getRage().subTractRageFromEntity(caster, warriorAbilities.getRage().getCurrentRage(caster));
                 return;
             }
-            case Assassin: {
+            case Assassin -> {
                 return;
             }
         }

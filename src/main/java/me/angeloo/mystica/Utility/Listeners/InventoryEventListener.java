@@ -13,6 +13,7 @@ import me.angeloo.mystica.Managers.CustomInventoryManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DisplayWeapons;
+import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.InventoryItemGetter;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -247,40 +248,7 @@ public class InventoryEventListener implements Listener {
 
     }
 
-    @EventHandler
-    public void menuOpen(SetMenuItemsEvent event){
 
-        Player player = event.getPlayer();
-
-        if(profileManager.getAnyProfile(player).getIfDead()){
-            return;
-        }
-
-        if(profileManager.getAnyProfile(player).getIfInCombat()){
-            return;
-        }
-
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-                Inventory inventory = player.getOpenInventory().getTopInventory();
-                if(inventory.getType().equals(InventoryType.CRAFTING)){
-                    setMenuItems(player);
-                }
-            }
-        }.runTaskLaterAsynchronously(main, 1);
-
-
-    }
-
-    private void setMenuItems(Player player){
-
-        //check to see what player has unlocked
-        player.getInventory().setItem(27, itemGetter.getItem(Material.LEATHER, 1, "Bag"));
-        player.getInventory().setItem(29, itemGetter.getItem(Material.AMETHYST_SHARD, 1, "Skills"));
-        player.getInventory().setItem(31, itemGetter.getItem(Material.BROWN_BANNER, 1, "Team"));
-
-    }
 
 
     @EventHandler

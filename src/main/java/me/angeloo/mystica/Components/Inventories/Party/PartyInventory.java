@@ -161,6 +161,8 @@ public class PartyInventory implements Listener {
 
         player.openInventory(inv);
 
+        player.getInventory().clear();
+
         if(!partyManager.inPParty(player)){
             return;
         }

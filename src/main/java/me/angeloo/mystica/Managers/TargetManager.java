@@ -16,6 +16,7 @@ import java.util.*;
 
 public class TargetManager {
 
+    private final GravestoneManager gravestoneManager;
     private final MysticaPartyManager mysticaPartyManager;
     private final FakePlayerTargetManager fakePlayerTargetManager;
     private final StealthTargetBlacklist stealthTargetBlacklist;
@@ -29,6 +30,7 @@ public class TargetManager {
     private final Map<UUID, UUID> bossTarget = new HashMap<>();
 
     public TargetManager(Mystica main){
+        gravestoneManager = main.getGravestoneManager();
         fakePlayerTargetManager = main.getFakePlayerTargetManager();
         stealthTargetBlacklist = main.getStealthTargetBlacklist();
         pveChecker = main.getPveChecker();
@@ -50,7 +52,10 @@ public class TargetManager {
     public void setPlayerTarget(Player player, LivingEntity entity){
 
         if(entity instanceof ArmorStand){
-            return;
+
+            if(!gravestoneManager.isGravestone(entity)){
+                return;
+            }
         }
 
         playerTarget.put(player.getUniqueId(), entity);

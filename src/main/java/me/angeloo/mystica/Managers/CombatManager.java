@@ -40,6 +40,10 @@ public class CombatManager {
 
     public void startCombatTimer(LivingEntity caster){
 
+        if(profileManager.getAnyProfile(caster).fakePlayer()){
+            profileManager.getAnyProfile(caster).setIfInCombat(true);
+        }
+
         if(!(caster instanceof Player player)){
             return;
         }
@@ -110,16 +114,23 @@ public class CombatManager {
                 continue;
             }
 
-            if(member instanceof Player){
-                boolean partyMemberDeathStatus = profileManager.getAnyProfile(member).getIfDead();
+            boolean partyMemberDeathStatus = profileManager.getAnyProfile(member).getIfDead();
 
-                if(partyMemberDeathStatus){
-                    continue;
-                }
+            if(partyMemberDeathStatus){
+                continue;
             }
 
 
+            if(member instanceof Player mPlayer){
+
+                if(combatTimeEnough(mPlayer)){
+                    continue;
+                }
+
+            }
+
             boolean partyMemberCombatStatus = profileManager.getAnyProfile(member).getIfInCombat();
+
 
             if(partyMemberCombatStatus){
                 return false;
@@ -128,6 +139,10 @@ public class CombatManager {
 
         }
 
+        return combatTimeEnough(player);
+    }
+
+    private boolean combatTimeEnough(Player player){
         long currentTime = System.currentTimeMillis();
         long lastCalled = getLastCalledCombat(player);
         //Bukkit.getLogger().info(String.valueOf(currentTime - lastCalled));

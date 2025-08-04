@@ -133,7 +133,7 @@ public class RezTick{
 
                 if(partyInCombat(player) && inParty(player)){
                     this.cancel();
-                    ableToRez.put(player.getUniqueId(), 3);
+                    ableToRez.remove(player.getUniqueId());
                     countDownTasks.remove(player.getUniqueId());
                     return;
                 }
@@ -171,7 +171,7 @@ public class RezTick{
                 continue;
             }
 
-            //check to see how companion members in combat
+            //okay, so players are preventing eachother from leaving combat
             boolean partyMemberCombatStatus = profileManager.getAnyProfile(member).getIfInCombat();
 
             if(partyMemberCombatStatus){

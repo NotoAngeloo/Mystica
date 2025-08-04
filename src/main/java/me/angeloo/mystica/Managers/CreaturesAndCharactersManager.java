@@ -71,98 +71,64 @@ public class CreaturesAndCharactersManager {
 
     public void makeNpcProfile(String name, UUID uuid){
 
-        switch (name){
-            case "Lindwyrm":{
+        switch (name) {
+            case "Lindwyrm" -> {
                 theLindwyrm.makeProfile(uuid);
                 profileManager.setBossHome(uuid);
                 profileManager.setBossIcon(uuid, name);
-                break;
             }
-            case "WeberBoss":{
+            case "WeberBoss" -> {
                 weberBoss.makeProfile(uuid);
                 profileManager.setBossHome(uuid);
                 profileManager.setBossIcon(uuid, name);
-                break;
             }
-            case "CoersicaBoss":{
+            case "CoersicaBoss" -> {
                 coersicaBoss.makeProfile(uuid);
                 profileManager.setBossHome(uuid);
                 profileManager.setBossIcon(uuid, name);
-                break;
             }
-            case "Coersica_Dimension_Rift":{
+            case "Coersica_Dimension_Rift" -> {
                 coersicaBoss.makeSpawnablePortalProfile(uuid);
-                break;
             }
-            case "Coersica_Shadow_Elemental": {
+            case "Coersica_Shadow_Elemental" -> {
                 coersicaBoss.makeSpawnableProfile(uuid);
-                break;
             }
-            case "HoLeeBoss":{
+            case "HoLeeBoss" -> {
                 hoLeeBoss.makeProfile(uuid);
                 profileManager.setBossHome(uuid);
                 profileManager.setBossIcon(uuid, name);
-                break;
             }
-            case "HoLeePikeman":{
+            case "HoLeePikeman" -> {
                 hoLeeBoss.makeSpawnableProfile(uuid);
-                break;
             }
-            case "CorruptHeart":{
+            case "CorruptHeart" -> {
                 corruptHeart.makeProfile(uuid);
                 profileManager.setBossHome(uuid);
                 profileManager.setBossIcon(uuid, name);
-                break;
             }
-            case "SafeZone":
-            case "TankZone":
-            case "RangedZone":
-            case "MeleeZone":
-            case "Nothing":
-            case "DemonPortal":
-            case "HeartTendril":
-            case "Dimension_Rift":
-            case "ChaosSeed":
-            case "ShadowSeed":
-            case"Coersica_Shadow_Grip":
-            case "LindwyrmRock":{
+            case "SafeZone", "TankZone", "RangedZone", "MeleeZone", "Nothing", "DemonPortal", "HeartTendril", "Dimension_Rift", "ChaosSeed", "ShadowSeed", "Coersica_Shadow_Grip", "LindwyrmRock", "Corpse" -> {
                 makeImmortalObjectProfile(uuid);
-                break;
             }
-            case "FastTravelNpc":
-            case "HoLeeNpc":
-            case "CaptainNpc":
-            case "HansNpc":
-            case "NewPlayerNpc":
-            case "ClassTutorial":
-            case "LunaNpc":
-            case "ArchbishopNpc":{
+            case "FastTravelNpc", "HoLeeNpc", "CaptainNpc", "HansNpc", "NewPlayerNpc", "ClassTutorial", "LunaNpc", "ArchbishopNpc" -> {
                 makeDefaultNonCombatantProfile(uuid);
-                break;
             }
-            case "Slippy":{
+            case "Slippy" -> {
                 slippy.makeProfile(uuid);
-                break;
             }
-            case "Darwin":{
+            case "Darwin" -> {
                 darwin.makeProfile(uuid);
-                break;
             }
-            case "SammingSins":{
+            case "SammingSins" -> {
                 sammingSins.makeProfile(uuid);
-                break;
             }
-            case "Luna":{
+            case "Luna" -> {
                 luna.makeProfile(uuid);
-                break;
             }
-            case "Wings":{
+            case "Wings" -> {
                 wings.makeProfile(uuid);
-                break;
             }
-            default:{
+            default -> {
                 profileManager.createNewDefaultNonPlayerProfile(uuid);
-                break;
             }
         }
     }

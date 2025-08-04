@@ -168,9 +168,8 @@ public final class Mystica extends JavaPlugin{
         buffAndDebuffManager = new BuffAndDebuffManager(this);
 
         fakePlayerTargetManager = new FakePlayerTargetManager(this);
-        targetManager = new TargetManager(this);
-
         gravestoneManager = new GravestoneManager();
+        targetManager = new TargetManager(this);
         dpsManager = new DpsManager(this);
         changeResourceHandler = new ChangeResourceHandler(this);
 

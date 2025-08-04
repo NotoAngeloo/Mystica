@@ -561,7 +561,7 @@ public class GeneralEventListener implements Listener {
                         view.getTitle().contains("\uE060")){
 
 
-                    Bukkit.getLogger().info("player should see this be updated");
+                    //Bukkit.getLogger().info("player should see this be updated");
                     partyInventory.openPartyInventory(player);
 
                 }
@@ -1325,255 +1325,159 @@ public class GeneralEventListener implements Listener {
         double bonusRange = buffAndDebuffManager.getTotalRangeModifier(player);
         double totalRange = baseRange + bonusRange;
 
-        boolean prioritizePlayer = player.isSneaking();
+
+        boolean inCombat = profileManager.getAnyProfile(player).getIfInCombat();
+        boolean prioritizePlayer = !inCombat || player.isSneaking();
+
+        Vector direction = player.getEyeLocation().getDirection();
+        double x = direction.getX() * totalRange;
+        double y = direction.getY() * totalRange;
+        double z = direction.getZ() * totalRange;
+        Location start = player.getEyeLocation();
+        Location end = start.clone().add(x, y, z);
+        BoundingBox boundingBox = BoundingBox.of(start, end);
+        double closestDistanceSquaredMob = Double.MAX_VALUE;
+        double closestDistanceSquaredPlayer = Double.MAX_VALUE;
+        Entity theClosestMob = null;
+        Entity theClosestPlayer = null;
 
         if(prioritizePlayer){
-            Vector direction = player.getEyeLocation().getDirection();
-            double x = direction.getX() * totalRange;
-            double y = direction.getY() * totalRange;
-            double z = direction.getZ() * totalRange;
-            Location start = player.getEyeLocation();
-            Location end = start.clone().add(x, y, z);
-            BoundingBox boundingBox = BoundingBox.of(start, end);
 
-            double closestDistanceSquaredMob = Double.MAX_VALUE;
-            double closestDistanceSquaredPlayer = Double.MAX_VALUE;
-            Entity theClosestMob = null;
-            Entity theClosestPlayer = null;
-            for(Entity entity: player.getWorld().getNearbyEntities(boundingBox)){
-                //only players and mobs
-                if(entity == player){
+            for(Entity entity : player.getWorld().getNearbyEntities(boundingBox)){
+
+                if(entity==player){
                     continue;
-                }
-
-                if(!(entity instanceof LivingEntity)){
-                    continue;
-                }
-
-                if(MythicBukkit.inst().getAPIHelper().isMythicMob(entity.getUniqueId())){
-                    String mobType = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).getMobType();
-
-                    if(mobType.equalsIgnoreCase("safezone")){
-                        continue;
-                    }
                 }
 
                 LivingEntity livingEntity = (LivingEntity) entity;
+
+                double distanceSquared = entity.getLocation().distanceSquared(player.getLocation());
+
+                if(MythicBukkit.inst().getAPIHelper().isMythicMob(entity.getUniqueId())){
+
+                    if(profileManager.getAnyProfile(livingEntity).getIfObject()){
+                        if(gravestoneManager.isGravestone(entity)){
+                            if(distanceSquared < closestDistanceSquaredPlayer){
+                                theClosestPlayer  = entity;
+                                closestDistanceSquaredPlayer = distanceSquared;
+                            }
+                        }
+                        continue;
+                    }
+
+
+                    if(profileManager.getAnyProfile(livingEntity).fakePlayer()){
+                        if(distanceSquared < closestDistanceSquaredPlayer){
+                            theClosestPlayer  = entity;
+                            closestDistanceSquaredPlayer = distanceSquared;
+                        }
+                    }
+
+                    if(distanceSquared < closestDistanceSquaredMob){
+                        theClosestMob  = entity;
+                        closestDistanceSquaredMob = distanceSquared;
+                    }
+
+                    continue;
+                }
 
                 if(profileManager.getAnyProfile(livingEntity).getIfDead()){
                     continue;
                 }
 
-                if(entity instanceof Player || profileManager.getAnyProfile(livingEntity).fakePlayer() ){
-
-                    if(entity instanceof Player){
-                        if(pvpManager.pvpLogic(player, (Player) entity)){
-                            if(stealthTargetBlacklist.get((Player) entity)){
-                                continue;
-                            }
-                        }
-                    }
-
-
-                    double distanceSquared = entity.getLocation().distanceSquared(player.getLocation());
-                    if(distanceSquared < closestDistanceSquaredPlayer){
-                        theClosestPlayer = entity;
-                        closestDistanceSquaredPlayer = distanceSquared;
+                if(entity instanceof Player){
+                    if(pvpManager.pvpLogic(player, (Player)entity) && stealthTargetBlacklist.get((Player)entity)){
+                        continue;
                     }
                 }
 
-                if(!(entity instanceof Player)){
-
-                    boolean object = profileManager.getAnyProfile(player).getIfObject();
-
-                    if(object){
-
-                        if(!gravestoneManager.isGravestone(entity)){
-                            continue;
-                        }
-                    }
-
-                    double distanceSquared = entity.getLocation().distanceSquared(player.getLocation());
-                    if(distanceSquared < closestDistanceSquaredMob){
-                        theClosestMob = entity;
-                        closestDistanceSquaredMob = distanceSquared;
-                    }
+                if(distanceSquared < closestDistanceSquaredPlayer){
+                    theClosestPlayer = entity;
+                    closestDistanceSquaredPlayer = distanceSquared;
                 }
-            }
 
-            if(theClosestPlayer == null){
-                if(theClosestMob != null){
-                    targetManager.setPlayerTarget(player, (LivingEntity) theClosestMob);
-                }
+
             }
 
             if(theClosestPlayer != null){
                 targetManager.setPlayerTarget(player, (LivingEntity) theClosestPlayer);
+                return;
             }
+
+            if(theClosestMob != null){
+                targetManager.setPlayerTarget(player, (LivingEntity) theClosestMob);
+            }
+
+            return;
+        }
+
+        //non player prior
+        for(Entity entity : player.getWorld().getNearbyEntities(boundingBox)){
+
+            if(entity==player){
+                continue;
+            }
+
+            LivingEntity livingEntity = (LivingEntity) entity;
+
+            double distanceSquared = entity.getLocation().distanceSquared(player.getLocation());
+
+            if(MythicBukkit.inst().getAPIHelper().isMythicMob(entity.getUniqueId())){
+
+                if(profileManager.getAnyProfile(livingEntity).getIfObject()){
+                    if(gravestoneManager.isGravestone(entity)){
+                        if(distanceSquared < closestDistanceSquaredPlayer){
+                            theClosestPlayer  = entity;
+                            closestDistanceSquaredPlayer = distanceSquared;
+                        }
+                    }
+
+                    continue;
+
+                }
+
+                if(profileManager.getAnyProfile(livingEntity).fakePlayer()){
+                    if(distanceSquared < closestDistanceSquaredPlayer){
+                        theClosestPlayer  = entity;
+                        closestDistanceSquaredPlayer = distanceSquared;
+                    }
+                }
+
+                if(distanceSquared < closestDistanceSquaredMob){
+                    theClosestMob  = entity;
+                    closestDistanceSquaredMob = distanceSquared;
+                }
+
+                continue;
+            }
+
+            if(profileManager.getAnyProfile(livingEntity).getIfDead()){
+                continue;
+            }
+
+            if(entity instanceof Player){
+                if(pvpManager.pvpLogic(player, (Player)entity) && stealthTargetBlacklist.get((Player)entity)){
+                    continue;
+                }
+            }
+
+            if(distanceSquared < closestDistanceSquaredPlayer){
+                theClosestPlayer = entity;
+                closestDistanceSquaredPlayer = distanceSquared;
+            }
+
 
         }
-        else{
-            boolean inCombat = profileManager.getAnyProfile(player).getIfInCombat();
 
-            Vector direction = player.getEyeLocation().getDirection();
-            double x = direction.getX() * totalRange;
-            double y = direction.getY() * totalRange;
-            double z = direction.getZ() * totalRange;
-            Location start = player.getEyeLocation();
-            Location end = start.clone().add(x, y, z);
-            BoundingBox boundingBox = BoundingBox.of(start, end);
-
-            if(inCombat){
-
-                double closestDistanceSquaredMob = Double.MAX_VALUE;
-                double closestDistanceSquaredPlayer = Double.MAX_VALUE;
-                Entity theClosestMob = null;
-                LivingEntity theClosestPlayer = null;
-                for(Entity entity: player.getWorld().getNearbyEntities(boundingBox)){
-                    //only players and mobs
-                    if(entity == player){
-                        continue;
-                    }
-
-                    if(!(entity instanceof LivingEntity)){
-                        continue;
-                    }
-
-                    if(MythicBukkit.inst().getAPIHelper().isMythicMob(entity.getUniqueId())){
-                        String mobType = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).getMobType();
-
-                        if(mobType.equalsIgnoreCase("safezone")){
-                            continue;
-                        }
-                    }
-
-                    LivingEntity livingEntity = (LivingEntity) entity;
-
-                    if(profileManager.getAnyProfile(livingEntity).getIfDead()){
-                        continue;
-                    }
-
-                    if(entity instanceof Player || profileManager.getAnyProfile(livingEntity).fakePlayer()){
-
-                        if(entity instanceof Player){
-                            if(pvpManager.pvpLogic(player, (Player) entity)){
-                                if(stealthTargetBlacklist.get((Player) entity)){
-                                    continue;
-                                }
-                            }
-                            double distanceSquared = entity.getLocation().distanceSquared(player.getLocation());
-
-                            Player entityPlayer = (Player) entity;
-
-                            if(pvpManager.pvpLogic(player, entityPlayer)){
-
-                                if(distanceSquared < closestDistanceSquaredMob){
-                                    theClosestMob = entityPlayer;
-                                    closestDistanceSquaredMob = distanceSquared;
-                                }
-                            }
-
-                            if(distanceSquared < closestDistanceSquaredPlayer){
-                                theClosestPlayer = entityPlayer;
-                                closestDistanceSquaredPlayer = distanceSquared;
-                            }
-                        }
-
-
-
-                    }
-
-                    if(!(entity instanceof Player)){
-
-                        boolean object = profileManager.getAnyProfile(livingEntity).getIfObject();
-
-                        if(object){
-
-                            if(!gravestoneManager.isGravestone(entity)){
-                                continue;
-                            }
-                        }
-
-                        if(profileManager.getAnyProfile((LivingEntity) entity).fakePlayer()){
-                            continue;
-                        }
-
-                        double distanceSquared = entity.getLocation().distanceSquared(player.getLocation());
-                        if(distanceSquared < closestDistanceSquaredMob){
-                            theClosestMob = entity;
-                            closestDistanceSquaredMob = distanceSquared;
-                        }
-                    }
-                }
-
-                if(theClosestMob == null){
-                    if(theClosestPlayer != null){
-                        targetManager.setPlayerTarget(player, theClosestPlayer);
-                    }
-                }
-
-                if(theClosestMob != null){
-                    targetManager.setPlayerTarget(player, (LivingEntity) theClosestMob);
-                }
-            }
-            else{
-
-                LivingEntity theClosest = null;
-                double closestDistanceSquared = Double.MAX_VALUE;
-
-                for(Entity entity: player.getWorld().getNearbyEntities(boundingBox)){
-                    //only players and mobs
-                    if(entity == player){
-                        continue;
-                    }
-
-                    if(!(entity instanceof LivingEntity)){
-                        continue;
-                    }
-
-                    if(MythicBukkit.inst().getAPIHelper().isMythicMob(entity.getUniqueId())){
-                        String mobType = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).getMobType();
-
-                        if(mobType.equalsIgnoreCase("safezone")){
-                            continue;
-                        }
-                    }
-
-                    LivingEntity livingEntity = (LivingEntity) entity;
-
-                    if(profileManager.getAnyProfile(livingEntity).getIfDead()){
-                        continue;
-                    }
-
-                    boolean object = profileManager.getAnyProfile(livingEntity).getIfObject();
-
-                    if(object){
-                        if(!gravestoneManager.isGravestone(entity)){
-                            continue;
-                        }
-                    }
-
-                    if(entity instanceof Player){
-                        if(pvpManager.pvpLogic(player, (Player) entity)){
-                            if(stealthTargetBlacklist.get((Player) entity)){
-                                continue;
-                            }
-                        }
-                    }
-
-                    double distanceSquared = entity.getLocation().distanceSquared(player.getLocation());
-
-                    if(distanceSquared < closestDistanceSquared){
-                        theClosest = livingEntity;
-                        closestDistanceSquared = distanceSquared;
-                    }
-
-                    if(theClosest != null){
-                        targetManager.setPlayerTarget(player, theClosest);
-                    }
-                }
-            }
+        if(theClosestMob != null){
+            targetManager.setPlayerTarget(player, (LivingEntity) theClosestMob);
+            return;
         }
+
+        if(theClosestPlayer != null){
+            targetManager.setPlayerTarget(player, (LivingEntity) theClosestPlayer);
+        }
+
 
     }
 

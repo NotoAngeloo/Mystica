@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.Inventories.Party;
 
 import me.angeloo.mystica.Managers.CustomInventoryManager;
+import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.MatchMaking.MatchMakingManager;
 import me.angeloo.mystica.Managers.MysticaPartyManager;
 import me.angeloo.mystica.Managers.ProfileManager;
@@ -19,6 +20,7 @@ import java.util.List;
 public class DungeonSelect implements Listener {
 
     private final ProfileManager profileManager;
+    private final DisplayWeapons displayWeapons;
     private final CustomInventoryManager customInventoryManager;
     private final MysticaPartyManager mysticaPartyManager;
     private final MatchMakingManager matchMakingManager;
@@ -28,6 +30,7 @@ public class DungeonSelect implements Listener {
         customInventoryManager = main.getInventoryManager();
         mysticaPartyManager = main.getMysticaPartyManager();
         matchMakingManager = main.getMatchMakingManager();
+        displayWeapons = main.getDisplayWeapons();
     }
 
     public void openDungeonSelect(Player player){
@@ -62,8 +65,8 @@ public class DungeonSelect implements Listener {
         Inventory inv = Bukkit.createInventory(null, 9 * 6, ChatColor.WHITE + "\uF807" + dungeonSplash + "\uF80D" + "\uF82B\uF828\uF826" + "\uE08B");
 
         player.openInventory(inv);
-
         player.getInventory().clear();
+        displayWeapons.displayArmor(player);
     }
 
     @EventHandler
@@ -108,15 +111,19 @@ public class DungeonSelect implements Listener {
                 switch (customInventoryManager.getDungeonIndex(player)) {
                     case 0 -> {
                         Mystica.dungeonsApi().initiateDungeonForPlayer(player, "Heart_of_Corruption");
+                        player.closeInventory();
                     }
                     case 1 -> {
                         Mystica.dungeonsApi().initiateDungeonForPlayer(player, "Acolyte_of_Chaos");
+                        player.closeInventory();
                     }
                     case 2 -> {
                         Mystica.dungeonsApi().initiateDungeonForPlayer(player, "Cave_of_Lindwyrm");
+                        player.closeInventory();
                     }
                     case 3 -> {
                         Mystica.dungeonsApi().initiateDungeonForPlayer(player, "Curse_of_Shadow");
+                        player.closeInventory();
                     }
                 }
 

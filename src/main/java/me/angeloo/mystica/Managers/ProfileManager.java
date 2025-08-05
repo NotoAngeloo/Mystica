@@ -1028,7 +1028,7 @@ public class ProfileManager {
 
     }
 
-    public void transferCompanionsToLeader(Player player, Player newPlayer){
+    /*public void transferCompanionsToLeader(Player player, Player newPlayer){
         List<UUID> companions = new ArrayList<>(getCompanions(player));
 
         if(!companions.isEmpty()){
@@ -1042,7 +1042,7 @@ public class ProfileManager {
         }
 
         Bukkit.getScheduler().runTask(main, () -> Bukkit.getServer().getPluginManager().callEvent(new UpdateMysticaPartyEvent(player)));
-    }
+    }*/
 
     public void setPlayerResourceBar(Player player, BossBar resourceBar){
         playerResourceBar.put(player.getUniqueId(), resourceBar);

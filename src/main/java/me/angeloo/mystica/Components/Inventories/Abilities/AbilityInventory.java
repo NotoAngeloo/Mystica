@@ -3,6 +3,7 @@ package me.angeloo.mystica.Components.Inventories.Abilities;
 import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Inventories.Abilities.SpecInventory;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
+import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.InventoryItemGetter;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -22,6 +23,7 @@ import java.util.List;
 public class AbilityInventory implements Listener {
 
     private final ProfileManager profileManager;
+    private final DisplayWeapons displayWeapons;
     private final AllSkillItems allSkillItems;
     private final InventoryItemGetter inventoryItemGetter;
     private final SpecInventory specInventory;
@@ -30,6 +32,7 @@ public class AbilityInventory implements Listener {
         profileManager = main.getProfileManager();
         allSkillItems = main.getAllSkillItems();
         inventoryItemGetter = main.getItemGetter();
+        displayWeapons = main.getDisplayWeapons();
         specInventory = new SpecInventory(main, this);
     }
 
@@ -113,8 +116,8 @@ public class AbilityInventory implements Listener {
 
 
         player.openInventory(inv);
-
         player.getInventory().clear();
+        displayWeapons.displayArmor(player);
 
         player.getInventory().setItem(27, allSkillItems.getPlayerSkill(player, equipSkills.getAnySlot()[0]));
         player.getInventory().setItem(28, allSkillItems.getPlayerSkill(player, equipSkills.getAnySlot()[1]));

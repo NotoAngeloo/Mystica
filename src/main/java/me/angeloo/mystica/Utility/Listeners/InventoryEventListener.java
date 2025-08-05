@@ -255,11 +255,13 @@ public class InventoryEventListener implements Listener {
 
         Player player = (Player) event.getPlayer();
 
-        if(event.getInventory().getType().equals(InventoryType.CRAFTING)){
+
+
+        if(profileManager.getAnyProfile(player).getIfInCombat()){
             return;
         }
 
-        if(profileManager.getAnyProfile(player).getIfInCombat()){
+        if(event.getInventory().getType().equals(InventoryType.CRAFTING)){
             return;
         }
 

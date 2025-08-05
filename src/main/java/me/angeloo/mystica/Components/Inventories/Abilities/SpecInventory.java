@@ -3,6 +3,7 @@ package me.angeloo.mystica.Components.Inventories.Abilities;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.CustomEvents.MaxHealthChangeOutOfCombatEvent;
+import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.InventoryItemGetter;
 import me.angeloo.mystica.Managers.ProfileManager;
@@ -29,12 +30,14 @@ import static me.angeloo.mystica.Mystica.*;
 public class SpecInventory implements Listener {
 
     private final ProfileManager profileManager;
+    private final DisplayWeapons displayWeapons;
     private final InventoryItemGetter inventoryItemGetter;
     private final AbilityInventory abilityInventory;
 
     public SpecInventory(Mystica main, AbilityInventory abilityInventory){
         profileManager = main.getProfileManager();
         inventoryItemGetter = main.getItemGetter();
+        displayWeapons = main.getDisplayWeapons();
         this.abilityInventory = abilityInventory;
     }
 
@@ -65,7 +68,8 @@ public class SpecInventory implements Listener {
 
 
         player.openInventory(inv);
-
+        player.getInventory().clear();
+        displayWeapons.displayArmor(player);
 
         player.getInventory().setItem(13, getSubclassItem(subClass));
 

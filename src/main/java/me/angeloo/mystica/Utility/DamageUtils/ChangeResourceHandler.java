@@ -218,8 +218,8 @@ public class ChangeResourceHandler {
             entity.setAI(false);
             if(MythicBukkit.inst().getAPIHelper().isMythicMob(entity.getUniqueId())){
                 AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).getEntity();
-                MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).signalMob(abstractEntity, "die");
                 Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent(entity, "stop"));
+                MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).signalMob(abstractEntity, "die");
             }
 
             List<Entity> passengers = entity.getPassengers();
@@ -389,6 +389,8 @@ public class ChangeResourceHandler {
 
     public void addXpToPlayer(Player player, float amount) {
 
+        /*
+
         float currentXp = player.getExp();
         int currentLevel = profileManager.getAnyProfile(player).getStats().getLevel();
         //int currentLevel = player.getLevel();
@@ -412,6 +414,9 @@ public class ChangeResourceHandler {
         //player.setLevel(currentLevel);
         player.setExp(currentXp);
         profileManager.getAnyProfile(player).getStats().setLevel(currentLevel);
+
+
+         */
     }
 
 
@@ -592,8 +597,8 @@ public class ChangeResourceHandler {
         entity.setAI(false);
         if(MythicBukkit.inst().getAPIHelper().isMythicMob(entity.getUniqueId())){
             AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).getEntity();
-            MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).signalMob(abstractEntity, "die");
             Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent(entity, "stop"));
+            MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).signalMob(abstractEntity, "die");
         }
 
         List<Entity> passengers = entity.getPassengers();

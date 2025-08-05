@@ -236,6 +236,7 @@ public class CombatManager {
         displayWeapons.displayArmor(player);
         player.getInventory().setItemInMainHand(null);
         sheathed.remove(player.getUniqueId());
+        abilityManager.interruptBasic(player);
     }
 
     private boolean ifSheathed(Player player){

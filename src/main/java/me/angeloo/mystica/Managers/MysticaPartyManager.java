@@ -270,6 +270,18 @@ public class MysticaPartyManager {
             profileManager.removeCompanions(player);
         }
 
+        if(inPParty(player)) {
+            Bukkit.getLogger().info(player.getName() + " in pparty");
+            Party party = Parties.getApi().getPartyOfPlayer(player.getUniqueId());
+            Bukkit.getLogger().info("party: " + party);
+            PartyPlayer partyPlayer = Parties.getApi().getPartyPlayer(player.getUniqueId());
+            Bukkit.getLogger().info("party player: " + partyPlayer);
+            assert party != null;
+            assert partyPlayer != null;
+            party.removeMember(partyPlayer);
+            Bukkit.getLogger().info("removing from pparty");
+        }
+
         if(Mystica.dungeonsApi().isPlayerInDungeon(player)){
             List<MythicPlayer> mythicPlayers = Mystica.dungeonsApi().getDungeonInstance(player).getPlayers();
             for(MythicPlayer mythicPlayer : mythicPlayers){
@@ -280,14 +292,6 @@ public class MysticaPartyManager {
                 }
 
             }
-        }
-
-        if(inPParty(player)) {
-            Party party = Parties.getApi().getPartyOfPlayer(player.getUniqueId());
-            PartyPlayer partyPlayer = Parties.getApi().getPartyPlayer(player.getUniqueId());
-            assert party != null;
-            assert partyPlayer != null;
-            party.removeMember(partyPlayer);
         }
 
         List<LivingEntity> mParty = new ArrayList<>(getMysticaParty(player));
@@ -301,7 +305,7 @@ public class MysticaPartyManager {
     }
 
     public boolean inPParty(Player player){
-        return  Parties.getApi().isPlayerInParty(player.getUniqueId());
+        return Parties.getApi().isPlayerInParty(player.getUniqueId());
     }
 
 }

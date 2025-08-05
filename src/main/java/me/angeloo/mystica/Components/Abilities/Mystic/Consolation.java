@@ -76,6 +76,11 @@ public class Consolation {
 
                 List<LivingEntity> targets = getTargets(caster);
 
+                if(targets.isEmpty()){
+                    this.cancel();
+                    return;
+                }
+
                 for(LivingEntity target : targets){
 
                     if(caster.getWorld() == target.getWorld()){

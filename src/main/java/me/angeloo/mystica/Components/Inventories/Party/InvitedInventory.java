@@ -4,6 +4,7 @@ import me.angeloo.mystica.Managers.CustomInventoryManager;
 import me.angeloo.mystica.Managers.MysticaPartyManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.DisplayWeapons;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -28,6 +29,7 @@ import static me.angeloo.mystica.Mystica.menuColor;
 public class InvitedInventory implements Listener {
 
     private final Mystica main;
+    private final DisplayWeapons displayWeapons;
     private final ProfileManager profileManager;
     private final MysticaPartyManager mysticaPartyManager;
 
@@ -35,6 +37,7 @@ public class InvitedInventory implements Listener {
         this.main = main;
         profileManager = main.getProfileManager();
         mysticaPartyManager = main.getMysticaPartyManager();
+        displayWeapons = main.getDisplayWeapons();
     }
 
     public void sendInviteInventory(Player player, Player inviter){
@@ -46,6 +49,8 @@ public class InvitedInventory implements Listener {
         inv.setItem(22, headGetter(inviter));
 
         player.openInventory(inv);
+        player.getInventory().clear();
+        displayWeapons.displayArmor(player);
 
     }
 

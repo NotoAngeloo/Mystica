@@ -754,6 +754,13 @@ public class GeneralEventListener implements Listener {
             }
 
 
+            //revive all companions
+            for (LivingEntity member : mParty) {
+                if(profileManager.getAnyProfile(member).fakePlayer()){
+                    deathManager.playerNowLive(member, false, null);
+                }
+            }
+
         }
 
         profileManager.getAnyProfile(entity).getVoidsOnDeath(victors);
@@ -1402,6 +1409,7 @@ public class GeneralEventListener implements Listener {
                         theClosestPlayer  = entity;
                         closestDistanceSquaredPlayer = distanceSquared;
                     }
+                    continue;
                 }
 
                 if(distanceSquared < closestDistanceSquaredMob){
@@ -1532,15 +1540,17 @@ public class GeneralEventListener implements Listener {
 
     }
 
-    @EventHandler
+    /*@EventHandler
     public void onPartyJoin(BukkitPartiesPlayerPostJoinEvent event){
+
+        PartyPlayer pPlayer = event.getPartyPlayer();
 
         Player player = Bukkit.getPlayer(event.getPartyPlayer().getPartyId());
         Player newLeader = Bukkit.getPlayer(event.getParty().getLeader());
 
         Bukkit.getScheduler().runTask(main, () -> profileManager.transferCompanionsToLeader(player, newLeader));
 
-    }
+    }*/
 
     @EventHandler
     public void rezPlayer(PlayerInteractEvent event){

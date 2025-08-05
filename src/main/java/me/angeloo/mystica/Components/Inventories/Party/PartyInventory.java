@@ -4,6 +4,7 @@ import me.angeloo.mystica.Managers.CustomInventoryManager;
 import me.angeloo.mystica.Managers.MysticaPartyManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.Enums.Role;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -27,6 +28,7 @@ import static me.angeloo.mystica.Mystica.*;
 public class PartyInventory implements Listener {
 
     private final ProfileManager profileManager;
+    private final DisplayWeapons displayWeapons;
     private final MysticaPartyManager partyManager;
     private final CustomInventoryManager inventoryManager;
     private final InvitedInventory invitedInventory;
@@ -36,6 +38,7 @@ public class PartyInventory implements Listener {
         profileManager = main.getProfileManager();
         partyManager = main.getMysticaPartyManager();
         inventoryManager = main.getInventoryManager();
+        displayWeapons = main.getDisplayWeapons();
         invitedInventory = main.getInvitedInventory();
     }
 
@@ -162,6 +165,7 @@ public class PartyInventory implements Listener {
         player.openInventory(inv);
 
         player.getInventory().clear();
+        displayWeapons.displayArmor(player);
 
         if(!partyManager.inPParty(player)){
             return;

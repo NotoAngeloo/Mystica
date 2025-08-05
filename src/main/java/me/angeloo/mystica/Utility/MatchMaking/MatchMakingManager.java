@@ -127,15 +127,19 @@ public class MatchMakingManager {
             case 0 -> {
                 Mystica.dungeonsApi().initiateDungeonForPlayer(player, Dungeon.Heart_of_Corruption.name());
                 dungeonRequiresInterrupt = true;
+                player.closeInventory();
             }
             case 1 -> {
                 Mystica.dungeonsApi().initiateDungeonForPlayer(player, Dungeon.Acolyte_of_Chaos.name());
+                player.closeInventory();
             }
             case 2 -> {
                 Mystica.dungeonsApi().initiateDungeonForPlayer(player, Dungeon.Cave_of_Lindwyrm.name());
+                player.closeInventory();
             }
             case 3 -> {
                 Mystica.dungeonsApi().initiateDungeonForPlayer(player, Dungeon.Curse_of_Shadow.name());
+                player.closeInventory();
             }
         }
 

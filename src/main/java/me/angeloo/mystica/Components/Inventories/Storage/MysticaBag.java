@@ -32,7 +32,6 @@ public class MysticaBag{
         //nothing, -8, bag png
         Inventory inventory = Bukkit.createInventory(null, 9*6, ChatColor.WHITE + "\uF808" + "\uE05C");
         player.openInventory(inventory);
-
         displayBagItems(player);
 
     }

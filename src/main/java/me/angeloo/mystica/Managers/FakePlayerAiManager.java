@@ -18,6 +18,7 @@ public class FakePlayerAiManager {
     private final Mystica main;
 
     private final ProfileManager profileManager;
+    private final DeathManager deathManager;
     private final MysticaPartyManager mysticaPartyManager;
     private final FakePlayerTargetManager fakePlayerTargetManager;
     private final AbilityManager abilityManager;
@@ -32,6 +33,7 @@ public class FakePlayerAiManager {
         mysticaPartyManager = main.getMysticaPartyManager();
         profileManager = main.getProfileManager();
         abilityManager = main.getAbilityManager();
+        deathManager = main.getDeathManager();
         fakePlayerTargetManager = main.getFakePlayerTargetManager();
     }
 
@@ -850,6 +852,8 @@ public class FakePlayerAiManager {
             if(entity instanceof LivingEntity companion){
                 abilityManager.interruptBasic(companion);
                 profileManager.getAnyProfile(companion).setIfInCombat(false);
+
+
             }
 
             Bukkit.getScheduler().runTaskLaterAsynchronously(main, ()->{

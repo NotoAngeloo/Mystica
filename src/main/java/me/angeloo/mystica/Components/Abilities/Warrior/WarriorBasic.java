@@ -150,13 +150,11 @@ public class WarriorBasic {
                         break;
                     }
                 }
-                combatManager.startCombatTimer(caster);
+
             }
         }.runTaskTimer(main, 0, 10);
         basicRunning.put(caster.getUniqueId(), task);
 
-
-        combatManager.startCombatTimer(caster);
     }
 
     private void basicStage4(LivingEntity caster){

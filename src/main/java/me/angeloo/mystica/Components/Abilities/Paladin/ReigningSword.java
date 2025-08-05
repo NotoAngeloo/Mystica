@@ -69,8 +69,6 @@ public class ReigningSword {
             return;
         }
 
-        combatManager.startCombatTimer(caster);
-
         execute(caster);
 
         if(profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Dawn)){

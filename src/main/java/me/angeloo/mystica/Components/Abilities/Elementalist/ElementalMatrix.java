@@ -72,9 +72,6 @@ public class ElementalMatrix {
             return;
         }
 
-
-        combatManager.startCombatTimer(caster);
-
         execute(caster);
 
         if(cooldownTask.containsKey(caster.getUniqueId())){

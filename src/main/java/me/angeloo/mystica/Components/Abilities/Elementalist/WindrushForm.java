@@ -49,8 +49,6 @@ public class WindrushForm {
             return;
         }
 
-        combatManager.startCombatTimer(caster);
-
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_4_Level_Bonus();
 

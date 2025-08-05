@@ -63,9 +63,6 @@ public class Stealth {
         if(getIfStealthed(caster)){
             reveal(caster);
             cooldownDisplayer.displayCooldown(caster, 8);
-            if(caster instanceof Player){
-                combatManager.startCombatTimer(caster);
-            }
             return;
         }
 
@@ -74,10 +71,6 @@ public class Stealth {
         }
 
         cooldownDisplayer.displayCooldown(caster, 8);
-
-        if(caster instanceof Player){
-            combatManager.startCombatTimer(caster);
-        }
 
         vanish(caster);
 

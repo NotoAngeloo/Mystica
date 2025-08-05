@@ -72,8 +72,6 @@ public class SacredAegis {
             target = caster;
         }
 
-        combatManager.startCombatTimer(caster);
-
         execute(caster, target);
 
 

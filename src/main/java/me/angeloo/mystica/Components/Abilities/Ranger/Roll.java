@@ -3,6 +3,7 @@ package me.angeloo.mystica.Components.Abilities.Ranger;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -43,9 +44,6 @@ public class Roll {
         if(!usable(caster)){
             return;
         }
-
-
-        combatManager.startCombatTimer(caster);
 
         execute(caster);
 

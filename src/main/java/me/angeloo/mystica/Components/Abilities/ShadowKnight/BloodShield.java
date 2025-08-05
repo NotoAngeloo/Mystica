@@ -57,8 +57,6 @@ public class BloodShield {
 
         energy.subTractEnergyFromEntity(caster, getCost());
 
-        combatManager.startCombatTimer(caster);
-
         execute(caster);
 
         if(cooldownTask.containsKey(caster.getUniqueId())){

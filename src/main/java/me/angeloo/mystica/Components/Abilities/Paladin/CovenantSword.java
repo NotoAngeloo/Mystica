@@ -79,8 +79,6 @@ public class CovenantSword {
         }
 
 
-        combatManager.startCombatTimer(caster);
-
         execute(caster);
 
         if(profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Dawn)){

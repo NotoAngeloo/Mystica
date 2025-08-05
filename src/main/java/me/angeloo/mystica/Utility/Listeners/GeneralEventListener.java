@@ -1227,6 +1227,10 @@ public class GeneralEventListener implements Listener {
     @EventHandler
     public void playerCastSkillOnEnemy(SkillOnEnemyEvent event){
 
+        if(event.getCaster() instanceof Player player){
+            combatManager.startCombatTimer(player);
+        }
+
         LivingEntity entity = event.getEntity();
 
         if(entity instanceof Player){

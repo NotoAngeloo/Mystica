@@ -78,8 +78,6 @@ public class ShadowGrip {
 
         energy.subTractEnergyFromEntity(caster, getCost());
 
-        combatManager.startCombatTimer(caster);
-
         execute(caster);
 
         if(cooldownTask.containsKey(caster.getUniqueId())){

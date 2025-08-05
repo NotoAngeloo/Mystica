@@ -76,8 +76,6 @@ public class WeaknessStrike {
             return;
         }
 
-        combatManager.startCombatTimer(caster);
-
 
         execute(caster);
 

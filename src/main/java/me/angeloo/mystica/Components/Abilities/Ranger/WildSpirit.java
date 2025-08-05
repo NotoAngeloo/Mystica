@@ -74,9 +74,6 @@ public class WildSpirit {
             return;
         }
 
-
-        combatManager.startCombatTimer(caster);
-
         spawn(caster);
 
         if(cooldownTask.containsKey(caster.getUniqueId())){

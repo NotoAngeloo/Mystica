@@ -5,7 +5,9 @@ import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -64,9 +66,18 @@ public class CooldownDisplayer {
         }
 
         boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
-        boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
 
-        if(deathStatus || !combatStatus){
+        if(deathStatus){
+            return;
+        }
+
+        player = Bukkit.getOfflinePlayer(player.getUniqueId()).getPlayer();
+
+        if(player == null){
+            return;
+        }
+
+        if(!player.isOnline()){
             return;
         }
 

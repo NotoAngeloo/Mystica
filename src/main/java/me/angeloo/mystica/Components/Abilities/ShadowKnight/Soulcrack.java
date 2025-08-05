@@ -76,8 +76,6 @@ public class Soulcrack {
         }
 
 
-        combatManager.startCombatTimer(caster);
-
         execute(caster);
 
         if(cooldownTask.containsKey(caster.getUniqueId())){

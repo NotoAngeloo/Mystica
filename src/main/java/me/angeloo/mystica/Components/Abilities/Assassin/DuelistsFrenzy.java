@@ -71,7 +71,6 @@ public class DuelistsFrenzy {
             return;
         }
 
-        combatManager.startCombatTimer(caster);
 
         execute(caster);
 

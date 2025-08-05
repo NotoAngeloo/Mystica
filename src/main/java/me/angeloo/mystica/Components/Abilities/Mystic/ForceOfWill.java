@@ -76,8 +76,6 @@ public class ForceOfWill {
                         return;
                     }
 
-                    combatManager.startCombatTimer(caster);
-
                     mana.subTractManaFromEntity(caster, getCost());
 
                     passThroughDamage(caster, target);
@@ -94,8 +92,6 @@ public class ForceOfWill {
 
                     mana.subTractManaFromEntity(caster, getCost());
 
-                    combatManager.startCombatTimer(caster);
-
                     passThroughDamage(caster, target);
                     return;
                 }
@@ -111,9 +107,6 @@ public class ForceOfWill {
             return;
         }
 
-
-
-        combatManager.startCombatTimer(caster);
 
         execute(caster);
 

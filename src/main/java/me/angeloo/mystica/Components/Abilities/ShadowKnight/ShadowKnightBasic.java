@@ -123,7 +123,6 @@ public class ShadowKnightBasic {
 
                 }
 
-                combatManager.startCombatTimer(caster);
             }
         }.runTaskTimer(main, 0, 15);
         basicRunning.put(caster.getUniqueId(), task);

@@ -83,9 +83,6 @@ public class ArcaneShield {
 
         mana.subTractManaFromEntity(caster, getCost());
 
-
-        combatManager.startCombatTimer(caster);
-
         execute(caster, target);
 
         if(cooldownTask.containsKey(caster.getUniqueId())){

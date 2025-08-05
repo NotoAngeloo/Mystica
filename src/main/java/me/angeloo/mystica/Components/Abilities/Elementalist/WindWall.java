@@ -49,11 +49,9 @@ public class WindWall {
             abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        if(!usable(caster)){
+        if(!usable(caster)) {
             return;
         }
-
-        combatManager.startCombatTimer(caster);
 
         execute(caster);
 

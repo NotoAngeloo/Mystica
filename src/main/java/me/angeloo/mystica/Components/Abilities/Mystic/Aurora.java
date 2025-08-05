@@ -74,8 +74,6 @@ public class Aurora {
 
         mana.subTractManaFromEntity(caster, getCost());
 
-        combatManager.startCombatTimer(caster);
-
         execute(caster, target);
 
         if(cooldownTask.containsKey(caster.getUniqueId())){

@@ -59,8 +59,6 @@ public class NoneBasic {
         if(!usable(caster)){
             return;
         }
-
-        combatManager.startCombatTimer(caster);
         executeBasic(caster);
 
     }

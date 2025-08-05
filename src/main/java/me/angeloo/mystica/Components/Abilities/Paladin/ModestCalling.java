@@ -74,8 +74,6 @@ public class ModestCalling {
             return;
         }
 
-        combatManager.startCombatTimer(caster);
-
         execute(caster);
 
         if(cooldownTask.containsKey(caster.getUniqueId())){

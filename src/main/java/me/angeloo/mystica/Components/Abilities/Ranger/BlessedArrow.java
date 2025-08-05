@@ -82,8 +82,6 @@ public class BlessedArrow {
             target = caster;
         }
 
-        combatManager.startCombatTimer(caster);
-
         execute(caster, target);
 
         if(cooldownTask.containsKey(caster.getUniqueId())){

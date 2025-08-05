@@ -80,11 +80,6 @@ public class FlyingBlade {
         }
 
 
-        if(caster instanceof Player){
-            combatManager.startCombatTimer((Player) caster);
-        }
-
-
         execute(caster);
 
         if(cooldownTask.containsKey(caster.getUniqueId())){

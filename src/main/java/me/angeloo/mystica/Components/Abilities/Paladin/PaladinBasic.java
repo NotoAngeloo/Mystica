@@ -290,7 +290,6 @@ public class PaladinBasic {
 
                 }
 
-                combatManager.startCombatTimer(caster);
             }
         }.runTaskTimer(main, 0, 15);
         basicRunning.put(caster.getUniqueId(), task);

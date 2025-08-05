@@ -54,9 +54,6 @@ public class Dash {
             return;
         }
 
-
-        combatManager.startCombatTimer(player);
-
         execute(player);
 
         if(cooldownTask.containsKey(player.getUniqueId())){

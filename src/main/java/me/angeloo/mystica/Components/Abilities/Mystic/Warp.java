@@ -49,8 +49,6 @@ public class Warp {
             return;
         }
 
-        combatManager.startCombatTimer(caster);
-
         double maxDistance = 8 + buffAndDebuffManager.getTotalRangeModifier(caster);
 
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +

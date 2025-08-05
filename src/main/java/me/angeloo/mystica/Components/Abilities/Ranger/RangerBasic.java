@@ -205,7 +205,6 @@ public class RangerBasic {
                     }
                 }
 
-                combatManager.startCombatTimer(caster);
             }
         }.runTaskTimer(main, 0, 10);
         basicRunning.put(caster.getUniqueId(), task);

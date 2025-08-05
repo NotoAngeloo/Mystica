@@ -77,9 +77,6 @@ public class Judgement {
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
-
-        combatManager.startCombatTimer(caster);
-
         if(target == null){
             target = caster;
         }

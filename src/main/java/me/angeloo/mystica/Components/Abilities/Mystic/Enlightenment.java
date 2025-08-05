@@ -60,7 +60,6 @@ public class Enlightenment {
 
         mana.subTractManaFromEntity(caster, getCost());
 
-        combatManager.startCombatTimer(caster);
 
         execute(caster);
 

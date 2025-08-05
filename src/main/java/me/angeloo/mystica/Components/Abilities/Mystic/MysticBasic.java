@@ -172,7 +172,6 @@ public class MysticBasic {
 
 
                 basicStageChaos(caster);
-                combatManager.startCombatTimer(caster);
             }
         }.runTaskTimer(main, 0, 15);
         basicRunning.put(caster.getUniqueId(), task);
@@ -397,7 +396,6 @@ public class MysticBasic {
 
 
                 basicStage(caster);
-                combatManager.startCombatTimer(caster);
             }
         }.runTaskTimer(main, 0, 15);
         basicRunning.put(caster.getUniqueId(), task);

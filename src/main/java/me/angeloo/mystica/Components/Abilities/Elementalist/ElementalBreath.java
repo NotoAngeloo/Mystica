@@ -52,8 +52,6 @@ public class ElementalBreath {
         }
 
 
-        combatManager.startCombatTimer(caster);
-
         execute(caster);
 
         if(cooldownTask.containsKey(caster.getUniqueId())){

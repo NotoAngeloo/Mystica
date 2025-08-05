@@ -73,7 +73,6 @@ public class MeteorCrater {
 
         rage.subTractRageFromEntity(caster, getCost());
 
-        combatManager.startCombatTimer(caster);
 
         execute(caster);
 

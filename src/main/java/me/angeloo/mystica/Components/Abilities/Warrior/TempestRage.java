@@ -67,8 +67,6 @@ public class TempestRage {
             return;
         }
 
-        combatManager.startCombatTimer(caster);
-
         execute(caster);
 
         int cooldown = 10;

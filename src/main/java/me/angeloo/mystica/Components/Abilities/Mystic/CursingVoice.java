@@ -54,9 +54,6 @@ public class CursingVoice {
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
 
-
-        combatManager.startCombatTimer(caster);
-
         if(cooldownTask.containsKey(caster.getUniqueId())){
             cooldownTask.get(caster.getUniqueId()).cancel();;
         }

@@ -47,8 +47,6 @@ public class WildRoar {
             return;
         }
 
-        combatManager.startCombatTimer(caster);
-
         execute(caster);
 
         if(cooldownTask.containsKey(caster.getUniqueId())){

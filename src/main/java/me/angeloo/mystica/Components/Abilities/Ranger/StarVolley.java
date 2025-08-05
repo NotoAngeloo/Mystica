@@ -72,7 +72,6 @@ public class StarVolley {
             return;
         }
 
-        combatManager.startCombatTimer(caster);
 
         execute(caster);
 

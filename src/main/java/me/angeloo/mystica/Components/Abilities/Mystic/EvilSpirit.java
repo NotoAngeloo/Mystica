@@ -46,8 +46,6 @@ public class EvilSpirit {
             return;
         }
 
-
-        combatManager.startCombatTimer(caster);
         execute(caster);
     }
 

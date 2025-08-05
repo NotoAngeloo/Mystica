@@ -69,8 +69,6 @@ public class ArcaneMissiles {
         }
 
 
-        combatManager.startCombatTimer(caster);
-
         execute(caster);
 
         if(cooldownTask.containsKey(caster.getUniqueId())){

@@ -70,8 +70,6 @@ public class AssassinBasic {
             return;
         }
 
-        combatManager.startCombatTimer(caster);
-
         executeBasic(caster);
 
     }
@@ -99,10 +97,6 @@ public class AssassinBasic {
 
 
                 basicStage(caster);
-
-                if(caster instanceof Player){
-                    combatManager.startCombatTimer(caster);
-                }
 
 
             }

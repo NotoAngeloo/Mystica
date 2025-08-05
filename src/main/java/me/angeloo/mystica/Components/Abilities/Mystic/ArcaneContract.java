@@ -107,8 +107,6 @@ public class ArcaneContract {
             putOnCooldown(member.getUniqueId());
         }
 
-        combatManager.startCombatTimer(caster);
-
         execute(caster, actualTarget);
 
     }

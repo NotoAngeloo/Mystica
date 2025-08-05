@@ -78,8 +78,6 @@ public class SpiritualGift {
         }
 
 
-        combatManager.startCombatTimer(caster);
-
         execute(caster, target);
 
         if(cooldownTask.containsKey(caster.getUniqueId())){

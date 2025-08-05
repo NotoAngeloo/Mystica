@@ -45,16 +45,13 @@ public class NoneAbilities {
 
     public int getAbilityCooldown(LivingEntity caster, int abilityNumber){
 
-        switch (abilityNumber){
-            case 1:
-                return kick.getCooldown(caster);
-            case 2:
-                return dash.getCooldown(caster);
-            case 3:
-                return noneRoll.getCooldown(caster);
-        }
+        return switch (abilityNumber) {
+            case 1 -> kick.getCooldown(caster);
+            case 2 -> dash.getCooldown(caster);
+            case 3 -> noneRoll.getCooldown(caster);
+            default -> 0;
+        };
 
-        return 0;
     }
 
     public void resetCooldowns(LivingEntity caster){

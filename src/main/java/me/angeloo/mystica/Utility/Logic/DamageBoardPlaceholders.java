@@ -54,11 +54,12 @@ public class DamageBoardPlaceholders {
     }
 
     public void clearPlaceholders(Player player){
+
         damageBar1.put(player.getUniqueId(), " ");
         damageBar2.put(player.getUniqueId(), " ");
-        damageBar2.put(player.getUniqueId(), " ");
-        damageBar2.put(player.getUniqueId(), " ");
-        damageBar2.put(player.getUniqueId(), " ");
+        damageBar3.put(player.getUniqueId(), " ");
+        damageBar4.put(player.getUniqueId(), " ");
+        damageBar5.put(player.getUniqueId(), " ");
 
         damagePlayer1.put(player.getUniqueId(), " ");
         damagePlayer2.put(player.getUniqueId(), " ");

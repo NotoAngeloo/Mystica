@@ -447,14 +447,6 @@ public class GeneralEventListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void invOpen(InventoryOpenEvent event){
-        Player player = (Player) event.getPlayer();
-
-        if(event.getInventory().getType().equals(InventoryType.CRAFTING)){
-            Bukkit.getLogger().info("open?");
-        }
-    }
 
     @EventHandler
     public void menuOpen(SetMenuItemsEvent event){
@@ -1179,7 +1171,6 @@ public class GeneralEventListener implements Listener {
             return;
         }
 
-
         if(dropCheck.containsKey(player.getUniqueId())){
             if(dropCheck.get(player.getUniqueId())){
                 return;
@@ -1507,6 +1498,11 @@ public class GeneralEventListener implements Listener {
         gravestoneManager.removeGravestone(player);
 
         if(!profileManager.getCompanions(player).isEmpty()){
+
+            for(UUID companion : profileManager.getCompanions(player)){
+                fakePlayerAiManager.stopAiTask(companion);
+            }
+
             profileManager.removeCompanions(player);
         }
 

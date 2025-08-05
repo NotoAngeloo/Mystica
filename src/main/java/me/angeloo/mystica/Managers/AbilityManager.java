@@ -257,30 +257,30 @@ public class AbilityManager {
         PlayerClass clazz = playerProfile.getPlayerClass();
 
         switch (clazz) {
-            case Elementalist: {
+            case Elementalist -> {
                 elementalistAbilities.getHeat().loseHeatNaturally(caster);
                 return;
             }
-            case Ranger: {
+            case Ranger -> {
                 rangerAbilities.getFocus().regenFocusNaturally(caster);
                 return;
             }
-            case Mystic: {
+            case Mystic -> {
                 mysticAbilities.getMana().regenManaNaturally(caster);
                 return;
             }
-            case Shadow_Knight: {
+            case Shadow_Knight -> {
                 shadowKnightAbilities.getEnergy().regenEnergyNaturally(caster);
                 return;
             }
-            case Paladin: {
+            case Paladin -> {
                 return;
             }
-            case Warrior: {
+            case Warrior -> {
                 warriorAbilities.getRage().loseRageNaturally(caster);
                 return;
             }
-            case Assassin: {
+            case Assassin -> {
                 return;
             }
         }
@@ -292,29 +292,29 @@ public class AbilityManager {
 
         PlayerClass clazz = playerProfile.getPlayerClass();
 
-        switch (clazz){
-            case Elementalist:{
+        switch (clazz) {
+            case Elementalist -> {
                 return elementalistAbilities.getAbilityCooldown(player, abilityNumber);
             }
-            case Ranger:{
+            case Ranger -> {
                 return rangerAbilities.getAbilityCooldown(player, abilityNumber);
             }
-            case Mystic:{
+            case Mystic -> {
                 return mysticAbilities.getAbilityCooldown(player, abilityNumber);
             }
-            case Shadow_Knight:{
+            case Shadow_Knight -> {
                 return shadowKnightAbilities.getAbilityCooldown(player, abilityNumber);
             }
-            case Paladin:{
+            case Paladin -> {
                 return paladinAbilities.getAbilityCooldown(player, abilityNumber);
             }
-            case Warrior:{
+            case Warrior -> {
                 return warriorAbilities.getAbilityCooldown(player, abilityNumber);
             }
-            case Assassin:{
+            case Assassin -> {
                 return assassinAbilities.getAbilityCooldown(player, abilityNumber);
             }
-            case NONE:{
+            case NONE -> {
                 return noneAbilities.getAbilityCooldown(player, abilityNumber);
             }
         }
@@ -328,26 +328,26 @@ public class AbilityManager {
 
         PlayerClass clazz = playerProfile.getPlayerClass();
 
-        switch (clazz){
-            case Elementalist:{
+        switch (clazz) {
+            case Elementalist -> {
                 return elementalistAbilities.getUltimateCooldown(player);
             }
-            case Ranger:{
+            case Ranger -> {
                 return rangerAbilities.getUltimateCooldown(player);
             }
-            case Mystic:{
+            case Mystic -> {
                 return mysticAbilities.getUltimateCooldown(player);
             }
-            case Shadow_Knight:{
+            case Shadow_Knight -> {
                 return shadowKnightAbilities.getUltimateCooldown(player);
             }
-            case Paladin:{
+            case Paladin -> {
                 return paladinAbilities.getUltimateCooldown(player);
             }
-            case Warrior:{
+            case Warrior -> {
                 return warriorAbilities.getUltimateCooldown(player);
             }
-            case Assassin:{
+            case Assassin -> {
                 return assassinAbilities.getUltimateCooldown(player);
             }
         }
@@ -361,26 +361,26 @@ public class AbilityManager {
 
         PlayerClass clazz = playerProfile.getPlayerClass();
 
-        switch (clazz){
-            case Elementalist:{
+        switch (clazz) {
+            case Elementalist -> {
                 return elementalistAbilities.getPlayerUltimateCooldown(player);
             }
-            case Ranger:{
+            case Ranger -> {
                 return rangerAbilities.getPlayerUltimateCooldown(player);
             }
-            case Mystic:{
+            case Mystic -> {
                 return mysticAbilities.getPlayerUltimateCooldown(player);
             }
-            case Shadow_Knight:{
+            case Shadow_Knight -> {
                 return shadowKnightAbilities.getPlayerUltimateCooldown(player);
             }
-            case Paladin:{
+            case Paladin -> {
                 return paladinAbilities.getPlayerUltimateCooldown(player);
             }
-            case Warrior:{
+            case Warrior -> {
                 return warriorAbilities.getPlayerUltimateCooldown(player);
             }
-            case Assassin:{
+            case Assassin -> {
                 return assassinAbilities.getPlayerUltimateCooldown(player);
             }
         }
@@ -396,38 +396,36 @@ public class AbilityManager {
         SubClass subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
 
-        switch (clazz){
-            case Elementalist:
-            case Paladin:
-            case Ranger:{
+        switch (clazz) {
+            case Elementalist, Paladin, Ranger -> {
 
                 return 0;
             }
-            case Shadow_Knight:{
+            case Shadow_Knight -> {
 
-                if(abilityNumber == 2){
+                if (abilityNumber == 2) {
                     return shadowKnightAbilities.getSpiritualAttack().returnWhichItem(player);
                 }
 
-                if(abilityNumber == 4){
+                if (abilityNumber == 4) {
                     return shadowKnightAbilities.getBloodsucker().returnWhichItem(player);
                 }
 
-                if(abilityNumber == 5){
+                if (abilityNumber == 5) {
                     return shadowKnightAbilities.getSoulReap().returnWhichItem(player);
                 }
 
-                if(abilityNumber == 6){
+                if (abilityNumber == 6) {
                     return shadowKnightAbilities.getShadowGrip().returnWhichItem(player);
                 }
 
-                if(abilityNumber == -1){
+                if (abilityNumber == -1) {
 
-                    if(subclass.equals(SubClass.Blood)){
+                    if (subclass.equals(SubClass.Blood)) {
                         return shadowKnightAbilities.getBloodShield().returnWhichItem(player);
                     }
 
-                    if(subclass.equals(SubClass.Doom)){
+                    if (subclass.equals(SubClass.Doom)) {
                         return shadowKnightAbilities.getAnnihilation().returnWhichItem(player);
                     }
 
@@ -435,50 +433,49 @@ public class AbilityManager {
 
                 return 0;
             }
+            case Warrior -> {
 
-            case Warrior: {
-
-                if(abilityNumber == 4){
+                if (abilityNumber == 4) {
                     return warriorAbilities.getMeteorCrater().returnWhichItem(player);
                 }
 
                 return 0;
             }
-            case Mystic:{
+            case Mystic -> {
 
-                if(subclass.equals(SubClass.Chaos)){
+                if (subclass.equals(SubClass.Chaos)) {
 
-                    if(abilityNumber==-1){
+                    if (abilityNumber == -1) {
                         return mysticAbilities.getChaosMysticModelData(player);
                     }
 
 
                 }
 
-                if(!subclass.equals(SubClass.Chaos)){
+                if (!subclass.equals(SubClass.Chaos)) {
 
-                    if(abilityNumber == 1){
+                    if (abilityNumber == 1) {
                         return mysticAbilities.getArcaneShield().returnWhichItem(player);
                     }
 
-                    if(abilityNumber == 2){
+                    if (abilityNumber == 2) {
                         return mysticAbilities.getPurifyingBlast().returnWhichItem(player);
                     }
 
-                    if(abilityNumber == 6){
+                    if (abilityNumber == 6) {
                         return mysticAbilities.getAurora().returnWhichItem(player);
                     }
 
-                    if(abilityNumber == 7){
+                    if (abilityNumber == 7) {
                         return mysticAbilities.getArcaneContract().returnWhichItem(player);
                     }
 
-                    if(abilityNumber == 8){
+                    if (abilityNumber == 8) {
                         return mysticAbilities.getLightSigil().returnWhichItem(player);
                     }
 
-                    if(subclass.equals(SubClass.Shepard)){
-                        if(abilityNumber == -1){
+                    if (subclass.equals(SubClass.Shepard)) {
+                        if (abilityNumber == -1) {
                             return mysticAbilities.getEnlightenment().returnWhichItem(player);
                         }
                     }
@@ -489,24 +486,24 @@ public class AbilityManager {
 
                 return 0;
             }
-            case Assassin:{
+            case Assassin -> {
 
 
-                if(abilityNumber==3){
+                if (abilityNumber == 3) {
                     return assassinAbilities.getWeaknessStrike().returnWhichItem(player);
                 }
 
-                if(abilityNumber==4){
+                if (abilityNumber == 4) {
                     return assassinAbilities.getPierce().returnWhichItem(player);
                 }
 
-                if(abilityNumber==8){
+                if (abilityNumber == 8) {
                     return assassinAbilities.getStealth().returnWhichItem(player);
                 }
 
-                if(abilityNumber==-1){
+                if (abilityNumber == -1) {
 
-                    if(subclass.equals(SubClass.Duelist)){
+                    if (subclass.equals(SubClass.Duelist)) {
                         return assassinAbilities.getDuelistsFrenzy().returnWhichItem(player);
                     }
 
@@ -551,19 +548,16 @@ public class AbilityManager {
     }
     public void setCasting(LivingEntity caster, boolean casting){
         castMap.put(caster, casting);
-        if(caster instanceof Player){
-            Player player = (Player) caster;
+        if(caster instanceof Player player){
             Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
         }
 
     }
     public void setCastBar(LivingEntity caster, double percent){
 
-        if(!(caster instanceof Player)){
+        if(!(caster instanceof Player player)){
             return;
         }
-
-        Player player = (Player) caster;
 
         percentCastBar.put(caster, percent);
         Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Cast, false));

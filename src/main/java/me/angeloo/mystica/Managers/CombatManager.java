@@ -2,6 +2,7 @@ package me.angeloo.mystica.Managers;
 
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
+import me.angeloo.mystica.CustomEvents.SetMenuItemsEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Tasks.CombatTick;
 import me.angeloo.mystica.Utility.Enums.BarType;
@@ -147,7 +148,7 @@ public class CombatManager {
         long lastCalled = getLastCalledCombat(player);
         //Bukkit.getLogger().info(String.valueOf(currentTime - lastCalled));
 
-        return currentTime - lastCalled > 10000;
+        return currentTime - lastCalled > 5000;
     }
 
     public void forceCombatEnd(Player player){
@@ -177,10 +178,10 @@ public class CombatManager {
             player.setInvisible(false);
             cooldownDisplayer.initializeItems(player);
             displayWeapons.displayArmor(player);
+            Bukkit.getServer().getPluginManager().callEvent(new SetMenuItemsEvent(player));
         }
 
         player.getInventory().setItemInMainHand(null);
-
 
         Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, true));
     }

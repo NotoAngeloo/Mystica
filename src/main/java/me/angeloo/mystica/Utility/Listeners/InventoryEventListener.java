@@ -222,25 +222,24 @@ public class InventoryEventListener implements Listener {
 
         Player player = (Player) event.getWhoClicked();
 
-        ItemStack item = event.getCurrentItem();
-
-        if(item == null){
+        if(profileManager.getAnyProfile(player).getIfInCombat()){
             return;
         }
 
-        player.getInventory().clear();
-        displayWeapons.displayArmor(player);
 
         if(event.getSlot() == 27){
             profileManager.getAnyProfile(player).getMysticaBagCollection().openMysticaBag(player, 0);
+            player.setItemOnCursor(null);
         }
 
         if(event.getSlot() == 29){
             abilityInventory.openAbilityInventory(player, -1);
+            player.setItemOnCursor(null);
         }
 
         if(event.getSlot() == 31){
             partyInventory.openPartyInventory(player);
+            player.setItemOnCursor(null);
         }
 
 
@@ -256,6 +255,9 @@ public class InventoryEventListener implements Listener {
 
         Player player = (Player) event.getPlayer();
 
+        if(event.getInventory().getType().equals(InventoryType.CRAFTING)){
+            return;
+        }
 
         if(profileManager.getAnyProfile(player).getIfInCombat()){
             return;

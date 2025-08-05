@@ -190,22 +190,18 @@ public class RangerBasic {
                 }
 
                 tryToRemoveBasicStage(caster);
-                switch (getStage(caster)){
-                    case 1:{
+                switch (getStage(caster)) {
+                    case 1 -> {
                         basicStage1(caster, 2);
-                        break;
                     }
-                    case 2:{
+                    case 2 -> {
                         basicStage1(caster, 3);
-                        break;
                     }
-                    case 3:{
+                    case 3 -> {
                         basicStage2(caster);
-                        break;
                     }
-                    case 4:{
+                    case 4 -> {
                         basicStage3(caster);
-                        break;
                     }
                 }
 

@@ -43,53 +43,52 @@ public class RangerAbilities {
 
     public void useRangerAbility(LivingEntity caster, int abilityNumber){
 
-        switch (abilityNumber){
-            case 1:{
+        switch (abilityNumber) {
+            case 1 -> {
                 bitingRain.use(caster);
                 return;
             }
-            case 2:{
+            case 2 -> {
                 shadowCrows.use(caster);
                 return;
             }
-            case 3:{
+            case 3 -> {
                 relentless.use(caster);
                 return;
             }
-            case 4:{
+            case 4 -> {
                 razorWind.use(caster);
                 return;
             }
-            case 5:{
+            case 5 -> {
                 blessedArrow.use(caster);
                 return;
             }
-            case 6:{
+            case 6 -> {
                 rallyingCry.use(caster);
                 return;
             }
-            case 7:{
+            case 7 -> {
                 wildSpirit.sendSignal(caster);
                 return;
             }
-            case 8:{
+            case 8 -> {
                 roll.use(caster);
                 return;
             }
         }
     }
 
-    public void useRangerUltimate(LivingEntity caster
-    ){
+    public void useRangerUltimate(LivingEntity caster){
 
         SubClass subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
-        switch (subclass){
-            case Tamer:{
+        switch (subclass) {
+            case Tamer -> {
                 wildRoar.use(caster);
                 return;
             }
-            case Scout:{
+            case Scout -> {
                 starVolley.use(caster);
                 return;
             }
@@ -104,52 +103,40 @@ public class RangerAbilities {
 
     public int getAbilityCooldown(LivingEntity caster, int abilityNumber){
 
-        switch (abilityNumber){
-            case 1:
-                return bitingRain.getCooldown(caster);
-            case 2:
-                return shadowCrows.getCooldown(caster);
-            case 3:
-                return relentless.getCooldown(caster);
-            case 4:
-                return razorWind.getCooldown(caster);
-            case 5:
-                return blessedArrow.getCooldown(caster);
-            case 6:
-                return rallyingCry.getCooldown(caster);
-            case 7:
-                return wildSpirit.getCooldown(caster);
-            case 8:
-                return roll.getCooldown(caster);
-        }
+        return switch (abilityNumber) {
+            case 1 -> bitingRain.getCooldown(caster);
+            case 2 -> shadowCrows.getCooldown(caster);
+            case 3 -> relentless.getCooldown(caster);
+            case 4 -> razorWind.getCooldown(caster);
+            case 5 -> blessedArrow.getCooldown(caster);
+            case 6 -> rallyingCry.getCooldown(caster);
+            case 7 -> wildSpirit.getCooldown(caster);
+            case 8 -> roll.getCooldown(caster);
+            default -> 0;
+        };
 
-        return 0;
     }
 
     public int getPlayerUltimateCooldown(Player player){
         SubClass subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
-        switch (subclass){
-            case Tamer:
-                return wildRoar.getPlayerCooldown(player);
-            case Scout:
-                return starVolley.getPlayerCooldown(player);
-        }
+        return switch (subclass) {
+            case Tamer -> wildRoar.getPlayerCooldown(player);
+            case Scout -> starVolley.getPlayerCooldown(player);
+            default -> 0;
+        };
 
-        return 0;
     }
 
     public int getUltimateCooldown(Player player){
         SubClass subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
-        switch (subclass){
-            case Tamer:
-                return wildRoar.getSkillCooldown();
-            case Scout:
-                return starVolley.getSkillCooldown();
-        }
+        return switch (subclass) {
+            case Tamer -> wildRoar.getSkillCooldown();
+            case Scout -> starVolley.getSkillCooldown();
+            default -> 0;
+        };
 
-        return 0;
     }
 
     public void resetCooldowns(LivingEntity caster){

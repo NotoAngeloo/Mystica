@@ -298,15 +298,13 @@ public class MysticBasic {
                         continue;
                     }
 
-                    if(!(entity instanceof LivingEntity)){
+                    if(!(entity instanceof LivingEntity livingEntity)){
                         continue;
                     }
 
                     if(entity instanceof ArmorStand){
                         continue;
                     }
-
-                    LivingEntity livingEntity = (LivingEntity) entity;
 
                     if(hitBySkill.contains(livingEntity)){
                         continue;

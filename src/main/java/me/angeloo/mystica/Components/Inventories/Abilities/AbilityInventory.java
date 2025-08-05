@@ -114,6 +114,8 @@ public class AbilityInventory implements Listener {
 
         player.openInventory(inv);
 
+        player.getInventory().clear();
+
         player.getInventory().setItem(27, allSkillItems.getPlayerSkill(player, equipSkills.getAnySlot()[0]));
         player.getInventory().setItem(28, allSkillItems.getPlayerSkill(player, equipSkills.getAnySlot()[1]));
         player.getInventory().setItem(29, allSkillItems.getPlayerSkill(player, equipSkills.getAnySlot()[2]));

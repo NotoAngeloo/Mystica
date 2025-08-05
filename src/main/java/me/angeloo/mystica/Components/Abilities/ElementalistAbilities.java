@@ -83,12 +83,12 @@ public class ElementalistAbilities {
 
         SubClass subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
-        switch (subclass){
-            case Pyromancer:{
+        switch (subclass) {
+            case Pyromancer -> {
                 fieryWing.use(caster);
                 return;
             }
-            case Conjurer:{
+            case Conjurer -> {
                 conjuringForce.use(caster);
                 return;
             }
@@ -105,26 +105,18 @@ public class ElementalistAbilities {
 
     public int getAbilityCooldown(Player player, int abilityNumber){
 
-        switch (abilityNumber){
-            case 1:
-                return iceBolt.getCooldown(player);
-            case 2:
-                return fieryMagma.getCooldown(player);
-            case 3:
-                return descendingInferno.getCooldown(player);
-            case 4:
-                return windrushForm.getCooldown(player);
-            case 5:
-                return windWall.getCooldown(player);
-            case 6:
-                return dragonBreathing.getCooldown(player);
-            case 7:
-                return elementalBreath.getCooldown(player);
-            case 8:
-                return elemental_matrix.getCooldown(player);
-        }
+        return switch (abilityNumber) {
+            case 1 -> iceBolt.getCooldown(player);
+            case 2 -> fieryMagma.getCooldown(player);
+            case 3 -> descendingInferno.getCooldown(player);
+            case 4 -> windrushForm.getCooldown(player);
+            case 5 -> windWall.getCooldown(player);
+            case 6 -> dragonBreathing.getCooldown(player);
+            case 7 -> elementalBreath.getCooldown(player);
+            case 8 -> elemental_matrix.getCooldown(player);
+            default -> 0;
+        };
 
-        return 0;
     }
 
 

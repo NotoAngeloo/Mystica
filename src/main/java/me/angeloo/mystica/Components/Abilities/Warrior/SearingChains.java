@@ -143,6 +143,9 @@ public class SearingChains {
 
         }
 
+        //later add the talent tree
+        boolean taunt = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Gladiator);
+
         if(targeted){
             direction = target.getLocation().toVector().subtract(caster.getLocation().toVector()).setY(0).normalize();
         }
@@ -151,7 +154,6 @@ public class SearingChains {
         start.setDirection(direction);
 
         Location end = start.clone().add(direction.multiply(8));
-
 
 
         Vector finalDirection = direction;
@@ -301,7 +303,7 @@ public class SearingChains {
                                 continue;
                             }
 
-                            if(!(entity instanceof LivingEntity)){
+                            if(!(entity instanceof LivingEntity livingEntity)){
                                 continue;
                             }
 
@@ -309,15 +311,17 @@ public class SearingChains {
                                 continue;
                             }
 
-                            LivingEntity livingEntity = (LivingEntity) entity;
-
                             if(hitBySkill.contains(livingEntity)){
                                 continue;
                             }
 
                             hitBySkill.add(livingEntity);
 
-                            aggroManager.setAsHighPriorityTarget(livingEntity, caster);
+                            if(taunt){
+                                aggroManager.setAsHighPriorityTarget(livingEntity, caster);
+                            }
+
+
 
                             boolean crit = damageCalculator.checkIfCrit(caster, 0);
                             double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Physical", finalSkillDamage, crit));

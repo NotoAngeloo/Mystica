@@ -80,9 +80,9 @@ public class FakePlayerAiManager {
             public void run(){
 
                 if(this.isCancelled()){
+                    stopAiTask(companion.getUniqueId());
                     return;
                 }
-
 
                 if(profileManager.getAnyProfile(companion).getIfDead()){
                     stopAiTask(companion.getUniqueId());
@@ -223,6 +223,7 @@ public class FakePlayerAiManager {
             public void run(){
 
                 if(this.isCancelled()){
+                    stopAiTask(companion.getUniqueId());
                     return;
                 }
 
@@ -397,9 +398,9 @@ public class FakePlayerAiManager {
 
                 //Bukkit.getLogger().info("mystic");
                 if(this.isCancelled()){
+                    stopAiTask(companion.getUniqueId());
                     return;
                 }
-
 
                 if(profileManager.getAnyProfile(companion).getIfDead()){
                     stopAiTask(companion.getUniqueId());
@@ -538,6 +539,7 @@ public class FakePlayerAiManager {
 
                 //Bukkit.getLogger().info("warrior");
                 if(this.isCancelled()){
+                    stopAiTask(companion.getUniqueId());
                     return;
                 }
 
@@ -688,6 +690,7 @@ public class FakePlayerAiManager {
             public void run(){
 
                 if(this.isCancelled()){
+                    stopAiTask(companion.getUniqueId());
                     return;
                 }
 
@@ -835,7 +838,7 @@ public class FakePlayerAiManager {
 
     public void stopAiTask(UUID uuid){
 
-
+        Bukkit.getLogger().info("stopping companion task for " + uuid + " due to despawn");
 
         Bukkit.getScheduler().runTask(main, () ->{
             if(aiTaskMap.containsKey(uuid)){

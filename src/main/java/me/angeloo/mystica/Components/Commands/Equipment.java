@@ -21,12 +21,10 @@ public class Equipment implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args){
 
-        if(!(sender instanceof Player)){
+        if(!(sender instanceof Player player)){
             sender.sendMessage("only players");
             return true;
         }
-
-        Player player = (Player) sender;
 
         boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
 

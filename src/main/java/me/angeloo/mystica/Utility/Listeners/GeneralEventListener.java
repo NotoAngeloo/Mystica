@@ -173,7 +173,6 @@ public class GeneralEventListener implements Listener {
 
         player.getInventory().setHeldItemSlot(8);
 
-
         targetManager.setPlayerTarget(player, null);
         gearReader.setGearStats(player);
 
@@ -181,8 +180,6 @@ public class GeneralEventListener implements Listener {
             displayWeapons.displayArmor(player);
             cooldownDisplayer.initializeItems(player);
         }
-
-
 
         if (!profileManager.getPlayerNameMap().containsKey(player.getName())) {
 
@@ -205,6 +202,8 @@ public class GeneralEventListener implements Listener {
         }
 
         profileManager.addToPlayerNameMap(player);
+
+        combatManager.sheathWeapon(player);
 
     }
 
@@ -578,39 +577,6 @@ public class GeneralEventListener implements Listener {
         }
 
         changeResourceHandler.healPlayerToFull(player);
-    }
-
-    @EventHandler
-    public void noOpenInvCombatOrDead(InventoryOpenEvent event) {
-        Player player = (Player) event.getPlayer();
-
-        boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
-        boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
-
-        if (!combatStatus) {
-            return;
-        }
-
-        if (!deathStatus) {
-            return;
-        }
-        event.setCancelled(true);
-        player.sendMessage("you can't do that right now");
-        player.closeInventory();
-    }
-
-    @EventHandler
-    public void noCombatInvInteraction(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
-
-        boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
-        if (!combatStatus) {
-            return;
-        }
-        event.setCancelled(true);
-
-        player.closeInventory();
-        player.sendMessage("you can't do that right now");
     }
 
     @EventHandler

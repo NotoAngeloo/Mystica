@@ -138,7 +138,7 @@ public class DungeonSelect implements Listener {
             }
 
             List<Integer> botSlots = new ArrayList<>();
-            botSlots.add(5);
+            botSlots.add(6);
             botSlots.add(7);
             botSlots.add(8);
 

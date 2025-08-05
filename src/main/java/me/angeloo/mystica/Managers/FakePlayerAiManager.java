@@ -838,7 +838,7 @@ public class FakePlayerAiManager {
 
     public void stopAiTask(UUID uuid){
 
-        Bukkit.getLogger().info("stopping companion task for " + uuid + " due to despawn");
+        //Bukkit.getLogger().info("stopping companion task for " + uuid + " due to despawn");
 
         Bukkit.getScheduler().runTask(main, () ->{
             if(aiTaskMap.containsKey(uuid)){

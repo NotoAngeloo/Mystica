@@ -25,8 +25,6 @@ public class CombatTick {
     private final AbilityManager abilityManager;
     private final ChangeResourceHandler changeResourceHandler;
 
-    private final Map<UUID, BukkitTask> combatTasks = new HashMap<>();
-
     public CombatTick(Mystica main, CombatManager combatmanager, AbilityManager abilityManager){
         this.main = main;
         profileManager = main.getProfileManager();
@@ -37,7 +35,7 @@ public class CombatTick {
 
     public void startCombatTickFor(Player player){
 
-        BukkitTask combatTask = new BukkitRunnable(){
+        new BukkitRunnable(){
 
             @Override
             public void run(){
@@ -96,13 +94,9 @@ public class CombatTick {
                     }
                 });
 
-
-                combatTasks.remove(player.getUniqueId());
             }
 
         }.runTaskTimerAsynchronously(main, 0, 40);
-
-        combatTasks.put(player.getUniqueId(), combatTask);
 
     }
 

@@ -65,9 +65,9 @@ public class AbilityManager {
             return;
         }
 
-
         interruptBasic(caster);
 
+        combatManager.unSheathWeapon(caster);
 
         Profile playerProfile = profileManager.getAnyProfile(caster);
 
@@ -118,6 +118,8 @@ public class AbilityManager {
         if(buffAndDebuffManager.getIfCantAct(caster)){
             return;
         }
+
+        combatManager.unSheathWeapon(caster);
 
         if(caster instanceof Player){
             if(profileManager.getAnyProfile(caster).getPlayerEquipment().getWeapon() == null){
@@ -178,6 +180,7 @@ public class AbilityManager {
             return;
         }
 
+        combatManager.unSheathWeapon(caster);
 
         Profile playerProfile = profileManager.getAnyProfile(caster);
 

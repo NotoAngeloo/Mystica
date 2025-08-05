@@ -14,11 +14,14 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 
 import java.util.*;
 
 public class CombatManager {
+
+    private final Mystica main;
 
     private final DisplayWeapons displayWeapons;
     private final ProfileManager profileManager;
@@ -27,9 +30,11 @@ public class CombatManager {
     private final CooldownDisplayer cooldownDisplayer;
     private final CombatTick combatTick;
 
+    private final Map<UUID, Boolean> sheathed = new HashMap<>();
     private final Map<UUID, Long> lastCalledCombat = new HashMap<>();
 
     public CombatManager(Mystica main, AbilityManager manager){
+        this.main = main;
         profileManager = main.getProfileManager();
         displayWeapons = main.getDisplayWeapons();
         mysticaPartyManager = main.getMysticaPartyManager();
@@ -54,27 +59,13 @@ public class CombatManager {
         if (!combatStatus){
             //player.sendMessage("You are now in combat");
 
+            player.closeInventory();
             player.getInventory().clear();
-
             displayWeapons.displayArmor(player);
 
-            player.getInventory().setHeldItemSlot(8);
-
-            PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
-
-            if(playerEquipment.getWeapon() != null){
-                ItemStack weapon = playerEquipment.getWeapon().build();
-                ItemStack offhand = weapon.clone();
-                ItemMeta offhandMeta = offhand.getItemMeta();
-                assert offhandMeta != null;
-                offhandMeta.setCustomModelData(offhand.getItemMeta().getCustomModelData() + 1);
-                offhand.setItemMeta(offhandMeta);
-                player.getInventory().setItemInMainHand(weapon);
-                player.getInventory().setItemInOffHand(offhand);
-            }
-
-
             cooldownDisplayer.initializeItems(player);
+
+            unSheathWeapon(player);
 
             /*PluginManager pluginManager = Bukkit.getPluginManager();
             Plugin interactions =  pluginManager.getPlugin("interactions");
@@ -176,17 +167,79 @@ public class CombatManager {
 
         if(!profileManager.getAnyProfile(player).getIfDead()){
             player.setInvisible(false);
-            cooldownDisplayer.initializeItems(player);
-            displayWeapons.displayArmor(player);
+            sheathWeapon(player);
             Bukkit.getServer().getPluginManager().callEvent(new SetMenuItemsEvent(player));
         }
-
-        player.getInventory().setItemInMainHand(null);
-
         Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, true));
     }
 
+    public void unSheathWeapon(LivingEntity caster){
+
+        if(!(caster instanceof Player player)){
+            return;
+        }
+
+        //check if shealthed already
+        if(!ifSheathed(player)){
+            return;
+        }
+
+        PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
+
+        if(playerEquipment.getWeapon() != null){
+            ItemStack weapon = playerEquipment.getWeapon().build();
+            ItemStack offhand = weapon.clone();
+            ItemMeta offhandMeta = offhand.getItemMeta();
+            assert offhandMeta != null;
+            offhandMeta.setCustomModelData(offhand.getItemMeta().getCustomModelData() + 1);
+            offhand.setItemMeta(offhandMeta);
+            player.getInventory().setItemInMainHand(weapon);
+            player.getInventory().setItemInOffHand(offhand);
+        }
+
+        sheathed.put(player.getUniqueId(), true);
+
+        new BukkitRunnable(){
+            @Override
+            public void run(){
 
 
+                Player refreshedPlayer = Bukkit.getOfflinePlayer(player.getUniqueId()).getPlayer();
+
+                if(refreshedPlayer == null){
+                    return;
+                }
+
+                if(!refreshedPlayer.isOnline()){
+                    return;
+                }
+
+
+
+                sheathWeapon(player);
+
+            }
+        }.runTaskLaterAsynchronously(main, 200);
+
+    }
+
+    public void sheathWeapon(Player player){
+
+        if(profileManager.getAnyProfile(player).getIfInCombat()){
+            return;
+        }
+
+        if(profileManager.getAnyProfile(player).getIfDead()){
+            return;
+        }
+
+        displayWeapons.displayArmor(player);
+        player.getInventory().setItemInMainHand(null);
+        sheathed.remove(player.getUniqueId());
+    }
+
+    private boolean ifSheathed(Player player){
+        return sheathed.getOrDefault(player.getUniqueId(), true);
+    }
 
 }

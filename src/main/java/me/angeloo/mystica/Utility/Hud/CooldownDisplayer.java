@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -78,6 +79,10 @@ public class CooldownDisplayer {
         }
 
         if(!player.isOnline()){
+            return;
+        }
+
+        if(!player.getOpenInventory().getTopInventory().getType().equals(InventoryType.CRAFTING)){
             return;
         }
 

@@ -78,6 +78,58 @@ public class HudManager {
             Map.entry('|', 2), Map.entry('}', 5), Map.entry('~', 7)
     );
 
+    //0-20, in that order
+    private final String[] playerTargetHealthBar = {"\uE0CC", "\uE0CB", "\uE0CA", "\uE0C9", "\uE0C8", "\uE0C7",
+            "\uE0C6", "\uE0C5", "\uE0C4", "\uE0C3", "\uE0C2", "\uE0C1", "\uE0C0", "\uE0BF", "\uE0BE", "\uE0BD",
+            "\uE0BC", "\uE0BB", "\uE0BA", "\uE0B9", "\uE0B8"};
+
+    //1-20
+    private final String[] playerTargetShieldBar = {"\uE123", "\uE122", "\uE121", "\uE120", "\uE11F", "\uE11E",
+            "\uE11D", "\uE11C", "\uE11B", "\uE11A", "\uE119", "\uE118", "\uE117", "\uE116", "\uE115", "\uE114",
+            "\uE113", "\uE112", "\uE111", "\uE110"};
+
+    //0-20
+    private final String[] teamHealthBar0 = {"\uE163", "\uE162", "\uE161", "\uE160", "\uE15F", "\uE15E", "\uE15D",
+            "\uE15C", "\uE15B", "\uE15A", "\uE159", "\uE158", "\uE157", "\uE156", "\uE155", "\uE154", "\uE153",
+            "\uE152", "\uE151", "\uE150", "\uE14F"};
+
+    //1-20
+    private final String[] teamShieldBar0 = {"\uE177", "\uE176", "\uE175", "\uE174", "\uE173", "\uE172", "\uE171",
+            "\uE170", "\uE16F", "\uE16E", "\uE16D", "\uE16C", "\uE16B", "\uE16A", "\uE169", "\uE168", "\uE167",
+            "\uE166", "\uE165", "\uE164"};
+
+    //0-20
+    private final String[] teamHealthBar1 = {"\uE18E", "\uE18D", "\uE18C", "\uE18B", "\uE18A", "\uE189", "\uE188",
+            "\uE187", "\uE186", "\uE185", "\uE184", "\uE183", "\uE182", "\uE181", "\uE180", "\uE17F", "\uE17E",
+            "\uE17D", "\uE17C", "\uE17B", "\uE17A"};
+
+    //1-20
+    private final String[] teamShieldBar1 = {"\uE1A2", "\uE1A1", "\uE1A0", "\uE19F", "\uE19E", "\uE19D", "\uE19C",
+            "\uE19B", "\uE19A","\uE199", "\uE198", "\uE197", "\uE196","\uE195", "\uE194", "\uE193", "\uE192",
+            "\uE191", "\uE190", "\uE18F"};
+
+    //0-20
+    private final String[] teamHealthBar2 = {"\uE1B9", "\uE1B8", "\uE1B7", "\uE1B6", "\uE1B5", "\uE1B4", "\uE1B3",
+            "\uE1B2", "\uE1B1", "\uE1B0", "\uE1AF", "\uE1AE", "\uE1AD", "\uE1AC", "\uE1AB", "\uE1AA", "\uE1A9",
+            "\uE1A8", "\uE1A7", "\uE1A6", "\uE1A5"};
+
+    //1-20
+    private final String[] teamShieldBar2 = {"\uE1CD", "\uE1CC", "\uE1CB", "\uE1CA", "\uE1C9", "\uE1C8", "\uE1C7",
+            "\uE1C6", "\uE1C5", "\uE1C4", "\uE1C3", "\uE1C2", "\uE1C1", "\uE1C0", "\uE1BF", "\uE1BE", "\uE1BD",
+            "\uE1BC", "\uE1BB", "\uE1BA"};
+
+
+    //0-20
+    private final String[] teamHealthBar3 = {"\uE1E4", "\uE1E3", "\uE1E2", "\uE1E1", "\uE1E0", "\uE1DF", "\uE1DE",
+            "\uE1DD", "\uE1DC", "\uE1DB", "\uE1DA", "\uE1D9", "\uE1D8", "\uE1D7", "\uE1D6", "\uE1D5", "\uE1D4",
+            "\uE1D3", "\uE1D2", "\uE1D1", "\uE1D0"};
+
+    //1-20
+    private final String[] teamShieldBar3 = {"\uE1F9", "\uE1F8","\uE1F7", "\uE1F6", "\uE1F5", "\uE1F4", "\uE1F3",
+            "\uE1F2", "\uE1F1", "\uE1F0", "\uE1EF", "\uE1ED", "\uE1EC", "\uE1EB", "\uE1EA", "\uE1E9", "\uE1E8",
+            "\uE1E7", "\uE1E6", "\uE1E5"};
+
+
     public HudManager(Mystica main){
         this.main = main;
         profileManager = main.getProfileManager();
@@ -904,7 +956,6 @@ public class HudManager {
             entityBar.append(profileManager.getCompanionTeamFace(entity.getUniqueId(), slot));
 
 
-
             //+3 is only because default steve face.
             entityBar.append("\uF823");
         }
@@ -1297,71 +1348,8 @@ public class HudManager {
             amount = 0;
         }
 
-        switch (amount) {
-            case 20 -> {
-                healthBar.append("\uE0B8");
-            }
-            case 19 -> {
-                healthBar.append("\uE0B9");
-            }
-            case 18 -> {
-                healthBar.append("\uE0BA");
-            }
-            case 17 -> {
-                healthBar.append("\uE0BB");
-            }
-            case 16 -> {
-                healthBar.append("\uE0BC");
-            }
-            case 15 -> {
-                healthBar.append("\uE0BD");
-            }
-            case 14 -> {
-                healthBar.append("\uE0BE");
-            }
-            case 13 -> {
-                healthBar.append("\uE0BF");
-            }
-            case 12 -> {
-                healthBar.append("\uE0C0");
-            }
-            case 11 -> {
-                healthBar.append("\uE0C1");
-            }
-            case 10 -> {
-                healthBar.append("\uE0C2");
-            }
-            case 9 -> {
-                healthBar.append("\uE0C3");
-            }
-            case 8 -> {
-                healthBar.append("\uE0C4");
-            }
-            case 7 -> {
-                healthBar.append("\uE0C5");
-            }
-            case 6 -> {
-                healthBar.append("\uE0C6");
-            }
-            case 5 -> {
-                healthBar.append("\uE0C7");
-            }
-            case 4 -> {
-                healthBar.append("\uE0C8");
-            }
-            case 3 -> {
-                healthBar.append("\uE0C9");
-            }
-            case 2 -> {
-                healthBar.append("\uE0CA");
-            }
-            case 1 -> {
-                healthBar.append("\uE0CB");
-            }
-            case 0 -> {
-                healthBar.append("\uE0CC");
-            }
-        }
+
+        healthBar.append(playerTargetHealthBar[amount]);
 
         double maxHp = profileManager.getAnyProfile(entity).getTotalHealth();
         double shield = buffAndDebuffManager.getGenericShield().getCurrentShieldAmount(entity) +
@@ -1384,71 +1372,10 @@ public class HudManager {
 
             //-4 space
             healthBar.append("\uF804");
-        }
 
-        switch (shieldAmount) {
-            case 20 -> {
-                healthBar.append("\uE110");
-            }
-            case 19 -> {
-                healthBar.append("\uE111");
-            }
-            case 18 -> {
-                healthBar.append("\uE112");
-            }
-            case 17 -> {
-                healthBar.append("\uE113");
-            }
-            case 16 -> {
-                healthBar.append("\uE114");
-            }
-            case 15 -> {
-                healthBar.append("\uE115");
-            }
-            case 14 -> {
-                healthBar.append("\uE116");
-            }
-            case 13 -> {
-                healthBar.append("\uE117");
-            }
-            case 12 -> {
-                healthBar.append("\uE118");
-            }
-            case 11 -> {
-                healthBar.append("\uE119");
-            }
-            case 10 -> {
-                healthBar.append("\uE11A");
-            }
-            case 9 -> {
-                healthBar.append("\uE11B");
-            }
-            case 8 -> {
-                healthBar.append("\uE11C");
-            }
-            case 7 -> {
-                healthBar.append("\uE11D");
-            }
-            case 6 -> {
-                healthBar.append("\uE11E");
-            }
-            case 5 -> {
-                healthBar.append("\uE11F");
-            }
-            case 4 -> {
-                healthBar.append("\uE120");
-            }
-            case 3 -> {
-                healthBar.append("\uE121");
-            }
-            case 2 -> {
-                healthBar.append("\uE122");
-            }
-            case 1 -> {
-                healthBar.append("\uE123");
-            }
-        }
+            healthBar.append(playerTargetShieldBar[shieldAmount-1]);
 
+        }
 
         return String.valueOf(healthBar);
     }
@@ -1495,548 +1422,46 @@ public class HudManager {
 
         switch (slot) {
             case 0 -> {
-                switch (amount) {
-                    case 20 -> {
-                        healthBar.append("\uE14F");
-                    }
-                    case 19 -> {
-                        healthBar.append("\uE150");
-                    }
-                    case 18 -> {
-                        healthBar.append("\uE151");
-                    }
-                    case 17 -> {
-                        healthBar.append("\uE152");
-                    }
-                    case 16 -> {
-                        healthBar.append("\uE153");
-                    }
-                    case 15 -> {
-                        healthBar.append("\uE154");
-                    }
-                    case 14 -> {
-                        healthBar.append("\uE155");
-                    }
-                    case 13 -> {
-                        healthBar.append("\uE156");
-                    }
-                    case 12 -> {
-                        healthBar.append("\uE157");
-                    }
-                    case 11 -> {
-                        healthBar.append("\uE158");
-                    }
-                    case 10 -> {
-                        healthBar.append("\uE159");
-                    }
-                    case 9 -> {
-                        healthBar.append("\uE15A");
-                    }
-                    case 8 -> {
-                        healthBar.append("\uE15B");
-                    }
-                    case 7 -> {
-                        healthBar.append("\uE15C");
-                    }
-                    case 6 -> {
-                        healthBar.append("\uE15D");
-                    }
-                    case 5 -> {
-                        healthBar.append("\uE15E");
-                    }
-                    case 4 -> {
-                        healthBar.append("\uE15F");
-                    }
-                    case 3 -> {
-                        healthBar.append("\uE160");
-                    }
-                    case 2 -> {
-                        healthBar.append("\uE161");
-                    }
-                    case 1 -> {
-                        healthBar.append("\uE162");
-                    }
-                    case 0 -> {
-                        healthBar.append("\uE163");
-                    }
-                }
+                healthBar.append(teamHealthBar0[amount]);
 
                 if (shieldAmount != 0) {
                     //-67 space
                     healthBar.append("\uF80B\uF803");
+                    healthBar.append(teamShieldBar0[shieldAmount-1]);
                 }
 
-                switch (shieldAmount) {
-                    case 20 -> {
-                        healthBar.append("\uE164");
-                    }
-                    case 19 -> {
-                        healthBar.append("\uE165");
-                    }
-                    case 18 -> {
-                        healthBar.append("\uE166");
-                    }
-                    case 17 -> {
-                        healthBar.append("\uE167");
-                    }
-                    case 16 -> {
-                        healthBar.append("\uE168");
-                    }
-                    case 15 -> {
-                        healthBar.append("\uE169");
-                    }
-                    case 14 -> {
-                        healthBar.append("\uE16A");
-                    }
-                    case 13 -> {
-                        healthBar.append("\uE16B");
-                    }
-                    case 12 -> {
-                        healthBar.append("\uE16C");
-                    }
-                    case 11 -> {
-                        healthBar.append("\uE16D");
-                    }
-                    case 10 -> {
-                        healthBar.append("\uE16E");
-                    }
-                    case 9 -> {
-                        healthBar.append("\uE16F");
-                    }
-                    case 8 -> {
-                        healthBar.append("\uE170");
-                    }
-                    case 7 -> {
-                        healthBar.append("\uE171");
-                    }
-                    case 6 -> {
-                        healthBar.append("\uE172");
-                    }
-                    case 5 -> {
-                        healthBar.append("\uE173");
-                    }
-                    case 4 -> {
-                        healthBar.append("\uE174");
-                    }
-                    case 3 -> {
-                        healthBar.append("\uE175");
-                    }
-                    case 2 -> {
-                        healthBar.append("\uE176");
-                    }
-                    case 1 -> {
-                        healthBar.append("\uE177");
-                    }
-                }
             }
             case 1 -> {
-                switch (amount) {
-                    case 20 -> {
-                        healthBar.append("\uE17A");
-                    }
-                    case 19 -> {
-                        healthBar.append("\uE17B");
-                    }
-                    case 18 -> {
-                        healthBar.append("\uE17C");
-                    }
-                    case 17 -> {
-                        healthBar.append("\uE17D");
-                    }
-                    case 16 -> {
-                        healthBar.append("\uE17E");
-                    }
-                    case 15 -> {
-                        healthBar.append("\uE17F");
-                    }
-                    case 14 -> {
-                        healthBar.append("\uE180");
-                    }
-                    case 13 -> {
-                        healthBar.append("\uE181");
-                    }
-                    case 12 -> {
-                        healthBar.append("\uE182");
-                    }
-                    case 11 -> {
-                        healthBar.append("\uE183");
-                    }
-                    case 10 -> {
-                        healthBar.append("\uE184");
-                    }
-                    case 9 -> {
-                        healthBar.append("\uE185");
-                    }
-                    case 8 -> {
-                        healthBar.append("\uE186");
-                    }
-                    case 7 -> {
-                        healthBar.append("\uE187");
-                    }
-                    case 6 -> {
-                        healthBar.append("\uE188");
-                    }
-                    case 5 -> {
-                        healthBar.append("\uE189");
-                    }
-                    case 4 -> {
-                        healthBar.append("\uE18A");
-                    }
-                    case 3 -> {
-                        healthBar.append("\uE18B");
-                    }
-                    case 2 -> {
-                        healthBar.append("\uE18C");
-                    }
-                    case 1 -> {
-                        healthBar.append("\uE18D");
-                    }
-                    case 0 -> {
-                        healthBar.append("\uE18E");
-                    }
-                }
+                healthBar.append(teamHealthBar1[amount]);
 
                 if (shieldAmount != 0) {
                     //-67 space
                     healthBar.append("\uF80B\uF803");
+                    healthBar.append(teamShieldBar1[shieldAmount-1]);
                 }
 
-                switch (shieldAmount) {
-                    case 20 -> {
-                        healthBar.append("\uE18F");
-                    }
-                    case 19 -> {
-                        healthBar.append("\uE190");
-                    }
-                    case 18 -> {
-                        healthBar.append("\uE191");
-                    }
-                    case 17 -> {
-                        healthBar.append("\uE192");
-                    }
-                    case 16 -> {
-                        healthBar.append("\uE193");
-                    }
-                    case 15 -> {
-                        healthBar.append("\uE194");
-                    }
-                    case 14 -> {
-                        healthBar.append("\uE195");
-                    }
-                    case 13 -> {
-                        healthBar.append("\uE196");
-                    }
-                    case 12 -> {
-                        healthBar.append("\uE197");
-                    }
-                    case 11 -> {
-                        healthBar.append("\uE198");
-                    }
-                    case 10 -> {
-                        healthBar.append("\uE199");
-                    }
-                    case 9 -> {
-                        healthBar.append("\uE19A");
-                    }
-                    case 8 -> {
-                        healthBar.append("\uE19B");
-                    }
-                    case 7 -> {
-                        healthBar.append("\uE19C");
-                    }
-                    case 6 -> {
-                        healthBar.append("\uE19D");
-                    }
-                    case 5 -> {
-                        healthBar.append("\uE19E");
-                    }
-                    case 4 -> {
-                        healthBar.append("\uE19F");
-                    }
-                    case 3 -> {
-                        healthBar.append("\uE1A0");
-                    }
-                    case 2 -> {
-                        healthBar.append("\uE1A1");
-                    }
-                    case 1 -> {
-                        healthBar.append("\uE1A2");
-                    }
-                }
             }
             case 3 -> {
-                switch (amount) {
-                    case 20 -> {
-                        healthBar.append("\uE1D0");
-                    }
-                    case 19 -> {
-                        healthBar.append("\uE1D1");
-                    }
-                    case 18 -> {
-                        healthBar.append("\uE1D2");
-                    }
-                    case 17 -> {
-                        healthBar.append("\uE1D3");
-                    }
-                    case 16 -> {
-                        healthBar.append("\uE1D4");
-                    }
-                    case 15 -> {
-                        healthBar.append("\uE1D5");
-                    }
-                    case 14 -> {
-                        healthBar.append("\uE1D6");
-                    }
-                    case 13 -> {
-                        healthBar.append("\uE1D7");
-                    }
-                    case 12 -> {
-                        healthBar.append("\uE1D8");
-                    }
-                    case 11 -> {
-                        healthBar.append("\uE1D9");
-                    }
-                    case 10 -> {
-                        healthBar.append("\uE1DA");
-                    }
-                    case 9 -> {
-                        healthBar.append("\uE1DB");
-                    }
-                    case 8 -> {
-                        healthBar.append("\uE1DC");
-                    }
-                    case 7 -> {
-                        healthBar.append("\uE1DD");
-                    }
-                    case 6 -> {
-                        healthBar.append("\uE1DE");
-                    }
-                    case 5 -> {
-                        healthBar.append("\uE1DF");
-                    }
-                    case 4 -> {
-                        healthBar.append("\uE1E0");
-                    }
-                    case 3 -> {
-                        healthBar.append("\uE1E1");
-                    }
-                    case 2 -> {
-                        healthBar.append("\uE1E2");
-                    }
-                    case 1 -> {
-                        healthBar.append("\uE1E3");
-                    }
-                    case 0 -> {
-                        healthBar.append("\uE1E4");
-                    }
-                }
+                healthBar.append(teamHealthBar3[amount]);
 
                 if (shieldAmount != 0) {
                     //-67 space
                     healthBar.append("\uF80B\uF803");
+                    healthBar.append(teamShieldBar3[shieldAmount-1]);
                 }
 
-                switch (shieldAmount) {
-                    case 20 -> {
-                        healthBar.append("\uE1E5");
-                    }
-                    case 19 -> {
-                        healthBar.append("\uE1E6");
-                    }
-                    case 18 -> {
-                        healthBar.append("\uE1E7");
-                    }
-                    case 17 -> {
-                        healthBar.append("\uE1E8");
-                    }
-                    case 16 -> {
-                        healthBar.append("\uE1E9");
-                    }
-                    case 15 -> {
-                        healthBar.append("\uE1EA");
-                    }
-                    case 14 -> {
-                        healthBar.append("\uE1EB");
-                    }
-                    case 13 -> {
-                        healthBar.append("\uE1EC");
-                    }
-                    case 12 -> {
-                        healthBar.append("\uE1ED");
-                    }
-                    case 11 -> {
-                        healthBar.append("\uE1EF");
-                    }
-                    case 10 -> {
-                        healthBar.append("\uE1F0");
-                    }
-                    case 9 -> {
-                        healthBar.append("\uE1F1");
-                    }
-                    case 8 -> {
-                        healthBar.append("\uE1F2");
-                    }
-                    case 7 -> {
-                        healthBar.append("\uE1F3");
-                    }
-                    case 6 -> {
-                        healthBar.append("\uE1F4");
-                    }
-                    case 5 -> {
-                        healthBar.append("\uE1F5");
-                    }
-                    case 4 -> {
-                        healthBar.append("\uE1F6");
-                    }
-                    case 3 -> {
-                        healthBar.append("\uE1F7");
-                    }
-                    case 2 -> {
-                        healthBar.append("\uE1F8");
-                    }
-                    case 1 -> {
-                        healthBar.append("\uE1F9");
-                    }
-                }
             }
             case 2 -> {
-                switch (amount) {
-                    case 20 -> {
-                        healthBar.append("\uE1A5");
-                    }
-                    case 19 -> {
-                        healthBar.append("\uE1A6");
-                    }
-                    case 18 -> {
-                        healthBar.append("\uE1A7");
-                    }
-                    case 17 -> {
-                        healthBar.append("\uE1A8");
-                    }
-                    case 16 -> {
-                        healthBar.append("\uE1A9");
-                    }
-                    case 15 -> {
-                        healthBar.append("\uE1AA");
-                    }
-                    case 14 -> {
-                        healthBar.append("\uE1AB");
-                    }
-                    case 13 -> {
-                        healthBar.append("\uE1AC");
-                    }
-                    case 12 -> {
-                        healthBar.append("\uE1AD");
-                    }
-                    case 11 -> {
-                        healthBar.append("\uE1AE");
-                    }
-                    case 10 -> {
-                        healthBar.append("\uE1AF");
-                    }
-                    case 9 -> {
-                        healthBar.append("\uE1B0");
-                    }
-                    case 8 -> {
-                        healthBar.append("\uE1B1");
-                    }
-                    case 7 -> {
-                        healthBar.append("\uE1B2");
-                    }
-                    case 6 -> {
-                        healthBar.append("\uE1B3");
-                    }
-                    case 5 -> {
-                        healthBar.append("\uE1B4");
-                    }
-                    case 4 -> {
-                        healthBar.append("\uE1B5");
-                    }
-                    case 3 -> {
-                        healthBar.append("\uE1B6");
-                    }
-                    case 2 -> {
-                        healthBar.append("\uE1B7");
-                    }
-                    case 1 -> {
-                        healthBar.append("\uE1B8");
-                    }
-                    case 0 -> {
-                        healthBar.append("\uE1B9");
-                    }
-                }
+                healthBar.append(teamHealthBar2[amount]);
 
                 if (shieldAmount != 0) {
                     //-67 space
                     healthBar.append("\uF80B\uF803");
+                    healthBar.append(teamShieldBar2[shieldAmount-1]);
                 }
 
-                switch (shieldAmount) {
-                    case 20 -> {
-                        healthBar.append("\uE1BA");
-                    }
-                    case 19 -> {
-                        healthBar.append("\uE1BB");
-                    }
-                    case 18 -> {
-                        healthBar.append("\uE1BC");
-                    }
-                    case 17 -> {
-                        healthBar.append("\uE1BD");
-                    }
-                    case 16 -> {
-                        healthBar.append("\uE1BE");
-                    }
-                    case 15 -> {
-                        healthBar.append("\uE1BF");
-                    }
-                    case 14 -> {
-                        healthBar.append("\uE1C0");
-                    }
-                    case 13 -> {
-                        healthBar.append("\uE1C1");
-                    }
-                    case 12 -> {
-                        healthBar.append("\uE1C2");
-                    }
-                    case 11 -> {
-                        healthBar.append("\uE1C3");
-                    }
-                    case 10 -> {
-                        healthBar.append("\uE1C4");
-                    }
-                    case 9 -> {
-                        healthBar.append("\uE1C5");
-                    }
-                    case 8 -> {
-                        healthBar.append("\uE1C6");
-                    }
-                    case 7 -> {
-                        healthBar.append("\uE1C7");
-                    }
-                    case 6 -> {
-                        healthBar.append("\uE1C8");
-                    }
-                    case 5 -> {
-                        healthBar.append("\uE1C9");
-                    }
-                    case 4 -> {
-                        healthBar.append("\uE1CA");
-                    }
-                    case 3 -> {
-                        healthBar.append("\uE1CB");
-                    }
-                    case 2 -> {
-                        healthBar.append("\uE1CC");
-                    }
-                    case 1 -> {
-                        healthBar.append("\uE1CD");
-                    }
-                }
             }
         }
-
-
 
 
         return String.valueOf(healthBar);

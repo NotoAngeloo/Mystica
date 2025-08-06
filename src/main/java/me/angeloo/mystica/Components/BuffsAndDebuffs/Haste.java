@@ -34,9 +34,8 @@ public class Haste {
 
         hasteLevel.put(entity.getUniqueId(), level);
 
-        if(entity instanceof Player){
-            Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+        if(entity instanceof Player player){
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
         if(removeHasteTaskMap.containsKey(entity.getUniqueId())){
@@ -70,7 +69,7 @@ public class Haste {
 
         if(entity instanceof Player){
             Bukkit.getScheduler().runTask(main,()->{
-                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player)entity, BarType.Status, false));
+                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(entity, BarType.Status));
             });
         }
 

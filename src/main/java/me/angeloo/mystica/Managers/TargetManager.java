@@ -82,19 +82,17 @@ public class TargetManager {
             }
         }
 
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Target, true));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Target));
 
     }
 
     public void setTargetToNearestValid(LivingEntity caster, double radius){
 
 
-        if(!(caster instanceof Player)){
+        if(!(caster instanceof Player player)){
             fakePlayerTargetManager.setTargetToNearestValid(caster, radius);
             return;
         }
-
-        Player player = (Player) caster;
 
         LivingEntity target = getPlayerTarget(player);
 
@@ -121,20 +119,16 @@ public class TargetManager {
                 continue;
             }
 
-            if(!(entity instanceof LivingEntity)){
+            if(!(entity instanceof LivingEntity livingEntity)){
                 continue;
             }
-
-            LivingEntity livingEntity = (LivingEntity) entity;
 
             if(entity.isDead()){
                 continue;
             }
 
-            if(entity instanceof Player){
+            if(entity instanceof Player entityPlayer){
                 double distanceSquared = entity.getLocation().distanceSquared(player.getLocation());
-
-                Player entityPlayer = (Player) entity;
 
                 if(stealthTargetBlacklist.get(entityPlayer)){
                     continue;

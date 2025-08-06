@@ -48,9 +48,6 @@ public class HudManager {
     private final SkinGrabber skinGrabber;
 
 
-    private final Map<UUID, Long> lastTargetBarUpdate = new HashMap<>();
-    private final Map<UUID, Long> lastTeamBarUpdate = new HashMap<>();
-
     private final Map<Character, Integer> MINECRAFT_CHAR_WIDTHS = Map.<Character, Integer>ofEntries(
             Map.entry(' ', 4), Map.entry('!', 2), Map.entry('"', 5), Map.entry('#', 6),
             Map.entry('$', 6), Map.entry('%', 6), Map.entry('&', 6), Map.entry('\'', 3),
@@ -129,6 +126,35 @@ public class HudManager {
             "\uE1F2", "\uE1F1", "\uE1F0", "\uE1EF", "\uE1ED", "\uE1EC", "\uE1EB", "\uE1EA", "\uE1E9", "\uE1E8",
             "\uE1E7", "\uE1E6", "\uE1E5"};
 
+    //0-20
+    private final String[] manaBar = {"\uE0E1","\uE0E0","\uE0DF","\uE0DE","\uE0DD","\uE0DC","\uE0DB","\uE0DA","\uE0D9",
+            "\uE0D8", "\uE0D7","\uE0D6","\uE0D5","\uE0D4","\uE0D3","\uE0D2","\uE0D1","\uE0D0","\uE0CF","\uE0CE","\uE0CD"};
+
+    //0-20
+    private final String[] rageBar = {"\uE0E1","\uE0F5","\uE0F4","\uE0F3","\uE0F2","\uE0F1","\uE0F0","\uE0EF","\uE0EE",
+            "\uE0ED","\uE0EC","\uE0EB","\uE0EA","\uE0E9","\uE0E8","\uE0E7","\uE0E6","\uE0E5","\uE0E4","\uE0E3","\uE0E2"};
+
+    //0-10
+    private final String[] energyBar = {"\uE0E1", "\uE0FF","\uE0FE","\uE0FD","\uE0FC","\uE0FB","\uE0FA","\uE0F9","\uE0F8","\uE0F7","\uE0F6"};
+
+    //0-8
+    private final String[] ultimateCooldown = {"\uE137", "\uE136","\uE135","\uE134","\uE133","\uE132","\uE131","\uE130","\uE12F"};
+
+    //0-20, 0 and 1 are same
+    private final String[] stackAmount = {"\uE008", "\uE008", "\uE009", "\uE00A", "\uE00B", "\uE00C", "\uE00D", "\uE00E", "\uE00F", "\uE010",
+            "\uE011", "\uE012", "\uE013", "\uE014", "\uE015", "\uE016", "\uE017", "\uE018", "\uE019", "\uE01A", "\uE01B"};
+
+    //1-8
+    private final String[] duration = {"\uE001","\uE002","\uE003","\uE004","\uE005","\uE006","\uE007","\uE008"};
+
+    //0-8
+    private final String[] squadHealth0 = {"\uE21A", "\uE219", "\uE218", "\uE217", "\uE216", "\uE215", "\uE214", "\uE213", "\uE212"};
+
+    //0-8
+    private final String[] squadHealth1 = {"\uE223", "\uE222", "\uE221", "\uE220", "\uE21F", "\uE21E", "\uE21D", "\uE21C", "\uE21B"};
+
+    //0-8
+    private final String[] squadHealth2 = {"\uE009","\uE22B","\uE22A","\uE229","\uE228","\uE227","\uE226","\uE225","\uE224"};
 
     public HudManager(Mystica main){
         this.main = main;
@@ -231,73 +257,9 @@ public class HudManager {
 
                 //Bukkit.getLogger().info(String.valueOf(amount));
 
-                switch (amount) {
-                    case 20 -> {
-                        castBar.append("\uE0CD");
-                    }
-                    case 19 -> {
-                        castBar.append("\uE0CE");
-                    }
-                    case 18 -> {
-                        castBar.append("\uE0CF");
-                    }
-                    case 17 -> {
-                        castBar.append("\uE0D0");
-                    }
-                    case 16 -> {
-                        castBar.append("\uE0D1");
-                    }
-                    case 15 -> {
-                        castBar.append("\uE0D2");
-                    }
-                    case 14 -> {
-                        castBar.append("\uE0D3");
-                    }
-                    case 13 -> {
-                        castBar.append("\uE0D4");
-                    }
-                    case 12 -> {
-                        castBar.append("\uE0D5");
-                    }
-                    case 11 -> {
-                        castBar.append("\uE0D6");
-                    }
-                    case 10 -> {
-                        castBar.append("\uE0D7");
-                    }
-                    case 9 -> {
-                        castBar.append("\uE0D8");
-                    }
-                    case 8 -> {
-                        castBar.append("\uE0D9");
-                    }
-                    case 7 -> {
-                        castBar.append("\uE0DA");
-                    }
-                    case 6 -> {
-                        castBar.append("\uE0DB");
-                    }
-                    case 5 -> {
-                        castBar.append("\uE0DC");
-                    }
-                    case 4 -> {
-                        castBar.append("\uE0DD");
-                    }
-                    case 3 -> {
-                        castBar.append("\uE0DE");
-                    }
-                    case 2 -> {
-                        castBar.append("\uE0DF");
-                    }
-                    case 1 -> {
-                        castBar.append("\uE0E0");
-                    }
-                }
+                castBar.append(manaBar[amount]);
 
-                //Bukkit.getLogger().info(String.valueOf(percent));
-
-
-
+                //warningmessage in first slot later
                 player.sendTitle(" ", String.valueOf(castBar), 0, 5, 0);
             }
         }.runTaskAsynchronously(main);
@@ -316,13 +278,8 @@ public class HudManager {
         }.runTaskAsynchronously(main);
 
     }
-    public void editTargetBar(Player player, boolean force){
+    public void editTargetBar(Player player){
 
-        if(!force){
-            if(getTimeSinceTarget(player) < 1){
-                return;
-            }
-        }
 
         BossBar targetBar = profileManager.getPlayerTargetBar(player);
 
@@ -336,15 +293,10 @@ public class HudManager {
         }.runTaskAsynchronously(main);
 
 
-        lastTargetBarUpdate.put(player.getUniqueId(), System.currentTimeMillis());
     }
-    public void editTeamBar(Player player, boolean force){
+    public void editTeamBar(Player player){
 
-        if(!force){
-            if(getTimeSinceTeam(player) < 1){
-                return;
-            }
-        }
+
         BossBar teamBar = profileManager.getPlayerTeamBar(player);
 
         new BukkitRunnable(){
@@ -355,7 +307,6 @@ public class HudManager {
         }.runTaskAsynchronously(main);
 
 
-        lastTeamBarUpdate.put(player.getUniqueId(), System.currentTimeMillis());
     }
     public void editStatusBar(Player player){
         BossBar statusBar = profileManager.getPlayerStatusBar(player);
@@ -372,37 +323,6 @@ public class HudManager {
     }
 
 
-    private long getTimeSinceTeam(Player player){
-
-        long now = System.currentTimeMillis();
-
-        long last;
-
-        if(!lastTeamBarUpdate.containsKey(player.getUniqueId())){
-            lastTeamBarUpdate.put(player.getUniqueId(), now);
-        }
-
-        last = lastTeamBarUpdate.get(player.getUniqueId());
-
-
-        return ((now-last) / 1000);
-    }
-
-    private long getTimeSinceTarget(Player player){
-
-        long now = System.currentTimeMillis();
-
-        long last;
-
-        if(!lastTargetBarUpdate.containsKey(player.getUniqueId())){
-            lastTargetBarUpdate.put(player.getUniqueId(), now);
-        }
-
-        last = lastTargetBarUpdate.get(player.getUniqueId());
-
-
-        return ((now-last) / 1000);
-    }
 
 
     private String createPlayerDataString(Player player){
@@ -826,69 +746,7 @@ public class HudManager {
             stacks = 20;
         }
 
-        switch (stacks) {
-            case 0, 1 -> {
-                stacksString.append("\uE008");
-            }
-            case 2 -> {
-                stacksString.append("\uE009");
-            }
-            case 3 -> {
-                stacksString.append("\uE00A");
-            }
-            case 4 -> {
-                stacksString.append("\uE00B");
-            }
-            case 5 -> {
-                stacksString.append("\uE00C");
-            }
-            case 6 -> {
-                stacksString.append("\uE00D");
-            }
-            case 7 -> {
-                stacksString.append("\uE00E");
-            }
-            case 8 -> {
-                stacksString.append("\uE00F");
-            }
-            case 9 -> {
-                stacksString.append("\uE010");
-            }
-            case 10 -> {
-                stacksString.append("\uE011");
-            }
-            case 11 -> {
-                stacksString.append("\uE012");
-            }
-            case 12 -> {
-                stacksString.append("\uE013");
-            }
-            case 13 -> {
-                stacksString.append("\uE014");
-            }
-            case 14 -> {
-                stacksString.append("\uE015");
-            }
-            case 15 -> {
-                stacksString.append("\uE016");
-            }
-            case 16 -> {
-                stacksString.append("\uE017");
-            }
-            case 17 -> {
-                stacksString.append("\uE018");
-            }
-            case 18 -> {
-                stacksString.append("\uE019");
-            }
-            case 19 -> {
-                stacksString.append("\uE01A");
-            }
-            case 20 -> {
-                stacksString.append("\uE01B");
-            }
-        }
-
+        stacksString.append(stackAmount[stacks]);
 
 
         return String.valueOf(stacksString);
@@ -903,32 +761,10 @@ public class HudManager {
         //-17
         durationString.append("\uF809\uF801");
 
-        switch (icon) {
-            case 8 -> {
-                durationString.append("\uE008");
-            }
-            case 7 -> {
-                durationString.append("\uE007");
-            }
-            case 6 -> {
-                durationString.append("\uE006");
-            }
-            case 5 -> {
-                durationString.append("\uE005");
-            }
-            case 4 -> {
-                durationString.append("\uE004");
-            }
-            case 3 -> {
-                durationString.append("\uE003");
-            }
-            case 2 -> {
-                durationString.append("\uE002");
-            }
-            case 1 -> {
-                durationString.append("\uE001");
-            }
+        if(icon != 0){
+            durationString.append(duration[icon-1]);
         }
+
 
         return String.valueOf(durationString);
     }
@@ -1027,97 +863,13 @@ public class HudManager {
         //slot switch here for height
         switch (slot) {
             case 0, 1, 2 -> {
-                switch (amount) {
-                    case 8 -> {
-                        entityBar.append("\uE212");
-                    }
-                    case 7 -> {
-                        entityBar.append("\uE213");
-                    }
-                    case 6 -> {
-                        entityBar.append("\uE214");
-                    }
-                    case 5 -> {
-                        entityBar.append("\uE215");
-                    }
-                    case 4 -> {
-                        entityBar.append("\uE216");
-                    }
-                    case 3 -> {
-                        entityBar.append("\uE217");
-                    }
-                    case 2 -> {
-                        entityBar.append("\uE218");
-                    }
-                    case 1 -> {
-                        entityBar.append("\uE219");
-                    }
-                    case 0 -> {
-                        entityBar.append("\uE21A");
-                    }
-                }
+                entityBar.append(squadHealth0[amount]);
             }
             case 3, 4, 5 -> {
-                switch (amount) {
-                    case 8 -> {
-                        entityBar.append("\uE21B");
-                    }
-                    case 7 -> {
-                        entityBar.append("\uE21C");
-                    }
-                    case 6 -> {
-                        entityBar.append("\uE21D");
-                    }
-                    case 5 -> {
-                        entityBar.append("\uE21E");
-                    }
-                    case 4 -> {
-                        entityBar.append("\uE21F");
-                    }
-                    case 3 -> {
-                        entityBar.append("\uE220");
-                    }
-                    case 2 -> {
-                        entityBar.append("\uE221");
-                    }
-                    case 1 -> {
-                        entityBar.append("\uE222");
-                    }
-                    case 0 -> {
-                        entityBar.append("\uE223");
-                    }
-                }
+                entityBar.append(squadHealth1[amount]);
             }
             case 6, 7, 8 -> {
-                switch (amount) {
-                    case 8 -> {
-                        entityBar.append("\uE224");
-                    }
-                    case 7 -> {
-                        entityBar.append("\uE225");
-                    }
-                    case 6 -> {
-                        entityBar.append("\uE226");
-                    }
-                    case 5 -> {
-                        entityBar.append("\uE227");
-                    }
-                    case 4 -> {
-                        entityBar.append("\uE228");
-                    }
-                    case 3 -> {
-                        entityBar.append("\uE229");
-                    }
-                    case 2 -> {
-                        entityBar.append("\uE22A");
-                    }
-                    case 1 -> {
-                        entityBar.append("\uE22B");
-                    }
-                    case 0 -> {
-                        entityBar.append("\uE009");
-                    }
-                }
+                entityBar.append(squadHealth2[amount]);
             }
         }
 
@@ -1471,8 +1223,6 @@ public class HudManager {
 
         StringBuilder resourceBar = new StringBuilder();
 
-
-
         if(entity instanceof Player || profileManager.getAnyProfile(entity).fakePlayer()){
             Profile playerProfile = profileManager.getAnyProfile(entity);
             PlayerClass playerClass = playerProfile.getPlayerClass();
@@ -1499,72 +1249,7 @@ public class HudManager {
                     if (currentMana <= 0) {
                         amount = 0;
                     }
-
-                    switch (amount) {
-                        case 20 -> {
-                            resourceBar.append("\uE0CD");
-                        }
-                        case 19 -> {
-                            resourceBar.append("\uE0CE");
-                        }
-                        case 18 -> {
-                            resourceBar.append("\uE0CF");
-                        }
-                        case 17 -> {
-                            resourceBar.append("\uE0D0");
-                        }
-                        case 16 -> {
-                            resourceBar.append("\uE0D1");
-                        }
-                        case 15 -> {
-                            resourceBar.append("\uE0D2");
-                        }
-                        case 14 -> {
-                            resourceBar.append("\uE0D3");
-                        }
-                        case 13 -> {
-                            resourceBar.append("\uE0D4");
-                        }
-                        case 12 -> {
-                            resourceBar.append("\uE0D5");
-                        }
-                        case 11 -> {
-                            resourceBar.append("\uE0D6");
-                        }
-                        case 10 -> {
-                            resourceBar.append("\uE0D7");
-                        }
-                        case 9 -> {
-                            resourceBar.append("\uE0D8");
-                        }
-                        case 8 -> {
-                            resourceBar.append("\uE0D9");
-                        }
-                        case 7 -> {
-                            resourceBar.append("\uE0DA");
-                        }
-                        case 6 -> {
-                            resourceBar.append("\uE0DB");
-                        }
-                        case 5 -> {
-                            resourceBar.append("\uE0DC");
-                        }
-                        case 4 -> {
-                            resourceBar.append("\uE0DD");
-                        }
-                        case 3 -> {
-                            resourceBar.append("\uE0DE");
-                        }
-                        case 2 -> {
-                            resourceBar.append("\uE0DF");
-                        }
-                        case 1 -> {
-                            resourceBar.append("\uE0E0");
-                        }
-                        case 0 -> {
-                            resourceBar.append("\uE0E1");
-                        }
-                    }
+                    resourceBar.append(manaBar[amount]);
 
                 }
                 case Warrior -> {
@@ -1589,71 +1274,7 @@ public class HudManager {
                         amount = 0;
                     }
 
-                    switch (amount) {
-                        case 20 -> {
-                            resourceBar.append("\uE0E2");
-                        }
-                        case 19 -> {
-                            resourceBar.append("\uE0E3");
-                        }
-                        case 18 -> {
-                            resourceBar.append("\uE0E4");
-                        }
-                        case 17 -> {
-                            resourceBar.append("\uE0E5");
-                        }
-                        case 16 -> {
-                            resourceBar.append("\uE0E6");
-                        }
-                        case 15 -> {
-                            resourceBar.append("\uE0E7");
-                        }
-                        case 14 -> {
-                            resourceBar.append("\uE0E8");
-                        }
-                        case 13 -> {
-                            resourceBar.append("\uE0E9");
-                        }
-                        case 12 -> {
-                            resourceBar.append("\uE0EA");
-                        }
-                        case 11 -> {
-                            resourceBar.append("\uE0EB");
-                        }
-                        case 10 -> {
-                            resourceBar.append("\uE0EC");
-                        }
-                        case 9 -> {
-                            resourceBar.append("\uE0ED");
-                        }
-                        case 8 -> {
-                            resourceBar.append("\uE0EE");
-                        }
-                        case 7 -> {
-                            resourceBar.append("\uE0EF");
-                        }
-                        case 6 -> {
-                            resourceBar.append("\uE0F0");
-                        }
-                        case 5 -> {
-                            resourceBar.append("\uE0F1");
-                        }
-                        case 4 -> {
-                            resourceBar.append("\uE0F2");
-                        }
-                        case 3 -> {
-                            resourceBar.append("\uE0F3");
-                        }
-                        case 2 -> {
-                            resourceBar.append("\uE0F4");
-                        }
-                        case 1 -> {
-                            resourceBar.append("\uE0F5");
-                        }
-                        case 0 -> {
-                            resourceBar.append("\uE0E1");
-                        }
-                    }
+                    resourceBar.append(rageBar[amount]);
 
                 }
                 case Shadow_Knight -> {
@@ -1678,41 +1299,7 @@ public class HudManager {
                         amount = 0;
                     }
 
-                    switch (amount) {
-                        case 10 -> {
-                            resourceBar.append("\uE0F6");
-                        }
-                        case 9 -> {
-                            resourceBar.append("\uE0F7");
-                        }
-                        case 8 -> {
-                            resourceBar.append("\uE0F8");
-                        }
-                        case 7 -> {
-                            resourceBar.append("\uE0F9");
-                        }
-                        case 6 -> {
-                            resourceBar.append("\uE0FA");
-                        }
-                        case 5 -> {
-                            resourceBar.append("\uE0FB");
-                        }
-                        case 4 -> {
-                            resourceBar.append("\uE0FC");
-                        }
-                        case 3 -> {
-                            resourceBar.append("\uE0FD");
-                        }
-                        case 2 -> {
-                            resourceBar.append("\uE0FE");
-                        }
-                        case 1 -> {
-                            resourceBar.append("\uE0FF");
-                        }
-                        case 0 -> {
-                            resourceBar.append("\uE0E1");
-                        }
-                    }
+                    resourceBar.append(energyBar[amount]);
 
                 }
                 case Ranger -> {
@@ -1900,73 +1487,7 @@ public class HudManager {
             }
         }
 
-
-        switch (amount) {
-            case 20 -> {
-                resourceBar.append("\uE0E2");
-            }
-            case 19 -> {
-                resourceBar.append("\uE0E3");
-            }
-            case 18 -> {
-                resourceBar.append("\uE0E4");
-            }
-            case 17 -> {
-                resourceBar.append("\uE0E5");
-            }
-            case 16 -> {
-                resourceBar.append("\uE0E6");
-            }
-            case 15 -> {
-                resourceBar.append("\uE0E7");
-            }
-            case 14 -> {
-                resourceBar.append("\uE0E8");
-            }
-            case 13 -> {
-                resourceBar.append("\uE0E9");
-            }
-            case 12 -> {
-                resourceBar.append("\uE0EA");
-            }
-            case 11 -> {
-                resourceBar.append("\uE0EB");
-            }
-            case 10 -> {
-                resourceBar.append("\uE0EC");
-            }
-            case 9 -> {
-                resourceBar.append("\uE0ED");
-            }
-            case 8 -> {
-                resourceBar.append("\uE0EE");
-            }
-            case 7 -> {
-                resourceBar.append("\uE0EF");
-            }
-            case 6 -> {
-                resourceBar.append("\uE0F0");
-            }
-            case 5 -> {
-                resourceBar.append("\uE0F1");
-            }
-            case 4 -> {
-                resourceBar.append("\uE0F2");
-            }
-            case 3 -> {
-                resourceBar.append("\uE0F3");
-            }
-            case 2 -> {
-                resourceBar.append("\uE0F4");
-            }
-            case 1 -> {
-                resourceBar.append("\uE0F5");
-            }
-            case 0 -> {
-                resourceBar.append("\uE0E1");
-            }
-        }
-
+        resourceBar.append(rageBar[amount]);
 
         return String.valueOf(resourceBar);
     }
@@ -2142,39 +1663,9 @@ public class HudManager {
 
         //Bukkit.getLogger().info("percent " + percent);
 
-
-        switch (percent) {
-            case 8 -> {
-                return "\uE12F";
-            }
-            case 7 -> {
-                return "\uE130";
-            }
-            case 6 -> {
-                return "\uE131";
-            }
-            case 5 -> {
-                return "\uE132";
-            }
-            case 4 -> {
-                return "\uE133";
-            }
-            case 3 -> {
-                return "\uE134";
-            }
-            case 2 -> {
-                return "\uE135";
-            }
-            case 1 -> {
-                return "\uE136";
-            }
-            case 0 -> {
-                return "\uE137";
-            }
-        }
+        return ultimateCooldown[percent];
 
 
-        return String.valueOf(unicode);
     }
 
 }

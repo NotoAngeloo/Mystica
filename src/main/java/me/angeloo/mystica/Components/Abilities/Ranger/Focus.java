@@ -29,9 +29,8 @@ public class Focus {
     public void loseFocus(LivingEntity caster){
         manaAmount.put(caster.getUniqueId(), 0);
 
-        if(caster instanceof Player){
-            Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource, false));
+        if(caster instanceof Player player){
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource));
         }
     }
 
@@ -50,9 +49,8 @@ public class Focus {
         manaAmount.put(entity.getUniqueId(), newCurrentMana);
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, true));
 
-        if(entity instanceof Player){
-            Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource, false));
+        if(entity instanceof Player player){
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource));
         }
     }
 

@@ -24,7 +24,7 @@ public class WellCrit {
 
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
     }
@@ -33,7 +33,7 @@ public class WellCrit {
         active.remove(entity.getUniqueId());
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
     }
 

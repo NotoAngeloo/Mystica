@@ -79,7 +79,7 @@ public class ClassSetter {
         displayWeapons.displayArmor(player);
         gearReader.setGearStats(player);
         Bukkit.getServer().getPluginManager().callEvent(new MaxHealthChangeOutOfCombatEvent(player));
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource, true));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource));
 
     }
 

@@ -273,9 +273,8 @@ public class Infection {
 
                 infectionTime.put(caster.getUniqueId(), timeLeft);
 
-                if(caster instanceof Player){
-                    Player player = (Player) caster;
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+                if(caster instanceof Player player){
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
                 }
 
 
@@ -286,9 +285,8 @@ public class Infection {
                 infectionTime.remove(caster.getUniqueId());
                 infectionTarget.remove(caster.getUniqueId());
                 infectionTask.remove(caster.getUniqueId());
-                if(caster instanceof Player){
-                    Player player = (Player) caster;
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+                if(caster instanceof Player player){
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
                 }
             }
 
@@ -323,18 +321,16 @@ public class Infection {
             enhancedTaskMap.get(caster.getUniqueId()).cancel();
         }
 
-        if(caster instanceof Player){
-            Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+        if(caster instanceof Player player){
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
                 enhanced.remove(caster.getUniqueId());
-                if(caster instanceof Player){
-                    Player player = (Player) caster;
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+                if(caster instanceof Player player){
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
                 }
             }
         }.runTaskLater(main, 20*10);

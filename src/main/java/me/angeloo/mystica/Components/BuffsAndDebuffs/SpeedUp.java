@@ -22,7 +22,7 @@ public class SpeedUp {
 
         double current = getSpeedUpAmount(player);
 
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
 
         if(amount > current){
             speedUpAmount.put(player, amount);
@@ -40,7 +40,7 @@ public class SpeedUp {
         speedUpAmount.remove(player);
         player.setWalkSpeed(.2f);
 
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
 
     }
 

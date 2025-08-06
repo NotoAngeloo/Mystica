@@ -57,13 +57,7 @@ public class BossCastingManager {
                 // send the data to all nearby players
 
                 Bukkit.getScheduler().runTask(main,()->{
-                    for(LivingEntity enemy : aggroManager.getAttackerList(entity)){
-                        if(!(enemy instanceof Player)){
-                            continue;
-                        }
-                        Player player = (Player) enemy;
-                        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Target, true));
-                    }
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(entity, BarType.WhomeverTarget));
                 });
 
 

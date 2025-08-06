@@ -132,7 +132,7 @@ public class MysticaPartyManager {
             mysticaPartyMap.put(member, mParty);
 
             if(member instanceof Player pMember){
-                Bukkit.getServer().getScheduler().runTask(main, () ->  Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(pMember, BarType.Team, true)));
+                Bukkit.getServer().getScheduler().runTask(main, () ->  Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(pMember, BarType.Team)));
             }
 
 

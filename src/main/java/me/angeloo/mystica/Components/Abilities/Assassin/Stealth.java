@@ -106,9 +106,8 @@ public class Stealth {
                     buffAndDebuffManager.getHidden().hidePlayer(caster, true);
                     stealthTargetBlacklist.add(caster);
                     stealthed.put(caster.getUniqueId(), true);
-                    if (caster instanceof Player) {
-                        Player player = (Player) caster;
-                        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+                    if (caster instanceof Player player) {
+                        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
                     }
 
                     revealAfterTime(caster);
@@ -165,9 +164,8 @@ public class Stealth {
         buffAndDebuffManager.getHidden().unhidePlayer(caster);
         stealthTargetBlacklist.remove(caster);
         stealthed.put(caster.getUniqueId(), false);
-        if(caster instanceof Player){
-            Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+        if(caster instanceof Player player){
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
     }
@@ -177,9 +175,8 @@ public class Stealth {
         buffAndDebuffManager.getHidden().unhidePlayer(caster);
         stealthTargetBlacklist.remove(caster);
         stealthed.put(caster.getUniqueId(), false);
-        if(caster instanceof Player){
-            Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+        if(caster instanceof Player player){
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
         abilityReadyInMap.put(caster.getUniqueId(), 30);

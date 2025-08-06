@@ -40,9 +40,8 @@ public class FlamingSigilBuff {
         hasAttackMap.put(entity.getUniqueId(), true);
         attackAmountMap.put(entity.getUniqueId(), multiplier);
 
-        if(entity instanceof Player){
-            Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+        if(entity instanceof Player player){
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
         if(removeAttackBuffTaskMap.containsKey(entity.getUniqueId())){
@@ -79,7 +78,7 @@ public class FlamingSigilBuff {
         attackAmountMap.remove(entity.getUniqueId());
         if(entity instanceof Player){
             Bukkit.getScheduler().runTask(main,()->{
-                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player)entity, BarType.Status, false));
+                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player)entity, BarType.Status));
             });
 
         }
@@ -96,9 +95,8 @@ public class FlamingSigilBuff {
         hasHealthMap.put(entity.getUniqueId(), true);
         healthAmountMap.put(entity.getUniqueId(), multiplier);
 
-        if(entity instanceof Player){
-            Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+        if(entity instanceof Player player){
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
         if(removeHealthBuffTaskMap.containsKey(entity.getUniqueId())){
@@ -133,9 +131,8 @@ public class FlamingSigilBuff {
     public void removeHealthBuff(LivingEntity entity){
         hasHealthMap.remove(entity.getUniqueId());
         healthAmountMap.remove(entity.getUniqueId());
-        if(entity instanceof Player){
-            Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+        if(entity instanceof Player player){
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
     }
 

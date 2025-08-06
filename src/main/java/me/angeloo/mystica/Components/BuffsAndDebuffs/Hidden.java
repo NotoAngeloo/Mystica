@@ -38,7 +38,7 @@ public class Hidden {
             player.getInventory().setChestplate(null);
             player.getInventory().setLeggings(null);
             player.getInventory().setBoots(null);
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
 
@@ -62,9 +62,8 @@ public class Hidden {
 
         boolean deathStatus = profileManager.getAnyProfile(caster).getIfDead();
 
-        if(caster instanceof Player){
-            Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+        if(caster instanceof Player player){
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
 

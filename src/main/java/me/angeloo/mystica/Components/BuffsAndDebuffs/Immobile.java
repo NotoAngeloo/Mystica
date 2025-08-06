@@ -41,9 +41,8 @@ public class Immobile {
 
         immobileMap.put(entity.getUniqueId(), true);
 
-        if(entity instanceof Player){
-            Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+        if(entity instanceof Player player){
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
         if(removeImmobileTaskMap.containsKey(entity.getUniqueId())){
@@ -106,9 +105,8 @@ public class Immobile {
 
                     }
 
-                    if(entity instanceof Player){
-                        Player player = (Player) entity;
-                        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+                    if(entity instanceof Player player){
+                        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
                     }
                     this.cancel();
                 }

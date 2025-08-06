@@ -165,7 +165,7 @@ public class SpecInventory implements Listener {
 
 
                     Bukkit.getServer().getPluginManager().callEvent(new MaxHealthChangeOutOfCombatEvent(player));
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource, true));
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource));
                     return;
                 }
 

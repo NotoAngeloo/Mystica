@@ -47,11 +47,9 @@ public class ArmorBreak {
 
             for (Entity thisEntity : entity.getWorld().getNearbyEntities(hitBox)) {
 
-                if(!(thisEntity instanceof Player)){
+                if(!(thisEntity instanceof Player player)){
                     continue;
                 }
-
-                Player player = (Player) thisEntity;
 
                 player.sendMessage(entity.getName() + "'s armor has shattered. Secondary tank, take aggro!");
             }
@@ -76,7 +74,7 @@ public class ArmorBreak {
 
                 if(entity instanceof Player){
                     Bukkit.getScheduler().runTask(main, ()->{
-                        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player)entity, BarType.Status, false));
+                        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(entity, BarType.Status));
                     });
 
                 }
@@ -108,7 +106,7 @@ public class ArmorBreak {
         timeLeft.remove(entity.getUniqueId());
         if(entity instanceof Player){
             Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
     }
 

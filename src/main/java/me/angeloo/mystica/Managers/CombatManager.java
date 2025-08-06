@@ -170,7 +170,7 @@ public class CombatManager {
             sheathWeapon(player);
             Bukkit.getServer().getPluginManager().callEvent(new SetMenuItemsEvent(player));
         }
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, true));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
     }
 
     public void unSheathWeapon(LivingEntity caster){

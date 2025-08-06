@@ -104,6 +104,7 @@ public class DeathManager {
         //dpsManager.removeDps(player);
         Bukkit.getServer().getPluginManager().callEvent(new MysticaPlayerDeathEvent(player));
         rezTick.startRezTickFor(player);
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.WhomeverTarget));
     }
 
     public void playerNowLive(LivingEntity target, Boolean bySkill, LivingEntity entityWhoCastSkill){
@@ -133,7 +134,7 @@ public class DeathManager {
                             livingEntity.teleport(target.getWorld().getSpawnLocation());
                             playerNowLive(livingEntity, false, null);
                             Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent(livingEntity, "reset"));
-                            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Team, true));
+                            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Team));
                         }
 
 
@@ -154,7 +155,7 @@ public class DeathManager {
         if(target instanceof Player player){
             player.setGameMode(GameMode.SURVIVAL);
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(""));
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player) target, BarType.Resource, true));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player) target, BarType.Resource));
             player.getInventory().clear();
             displayWeapons.displayArmor(player);
             cooldownDisplayer.initializeItems(player);
@@ -169,8 +170,7 @@ public class DeathManager {
             target.setAI(true);
         }
 
-
-
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(target, BarType.WhomeverTarget));
 
     }
 

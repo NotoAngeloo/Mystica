@@ -33,9 +33,8 @@ public class ShadowCrowsDebuff {
             removeDebuffTaskMap.get(entity.getUniqueId()).cancel();
         }
 
-        if(entity instanceof Player){
-            Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+        if(entity instanceof Player player){
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
         BukkitTask task = new BukkitRunnable(){
@@ -72,7 +71,7 @@ public class ShadowCrowsDebuff {
 
         if(entity instanceof Player){
             Bukkit.getScheduler().runTask(main,()->{
-                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player) entity, BarType.Status, false));
+                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(entity, BarType.Status));
             });
 
         }

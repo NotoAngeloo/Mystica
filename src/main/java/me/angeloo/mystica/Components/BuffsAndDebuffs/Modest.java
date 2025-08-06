@@ -34,9 +34,8 @@ public class Modest {
 
         modestMap.put(entity.getUniqueId(), multiplier);
 
-        if(entity instanceof Player){
-            Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+        if(entity instanceof Player player){
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
         if(removeModestTaskMap.containsKey(entity.getUniqueId())){
@@ -69,7 +68,7 @@ public class Modest {
 
         if(entity instanceof Player){
             Bukkit.getScheduler().runTask(main,()->{
-                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player)entity, BarType.Status, false));
+                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(entity, BarType.Status));
             });
 
         }

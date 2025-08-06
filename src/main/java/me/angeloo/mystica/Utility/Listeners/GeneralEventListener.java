@@ -1,9 +1,5 @@
 package me.angeloo.mystica.Utility.Listeners;
 
-import com.alessiodp.parties.api.Parties;
-import com.alessiodp.parties.api.events.bukkit.player.BukkitPartiesPlayerPostJoinEvent;
-import com.alessiodp.parties.api.interfaces.Party;
-import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
@@ -26,8 +22,6 @@ import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.Logic.StealthTargetBlacklist;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -44,7 +38,6 @@ import org.bukkit.event.player.*;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
@@ -874,6 +867,8 @@ public class GeneralEventListener implements Listener {
         boolean immortal = false;
         boolean immune = buffAndDebuffManager.getImmune().getImmune(defender);
 
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(defender, WhomeverTarget));
+
         if (!(defender instanceof Player)) {
 
             if (!profileManager.getAnyProfile(defender).fakePlayer()) {
@@ -895,13 +890,6 @@ public class GeneralEventListener implements Listener {
                     aggroTick.startAggroTaskFor(defender);
                 }
 
-                List<LivingEntity> attackers = aggroManager.getAttackerList(defender);
-                for (LivingEntity attacker : attackers) {
-                    if (!(attacker instanceof Player attackerPlayer)) {
-                        continue;
-                    }
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(attackerPlayer, Target, false));
-                }
 
             }
 
@@ -937,7 +925,7 @@ public class GeneralEventListener implements Listener {
             for (LivingEntity member : mysticaParty) {
 
                 if (member instanceof Player player) {
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, Team, false));
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, Team));
                 }
 
             }
@@ -998,37 +986,67 @@ public class GeneralEventListener implements Listener {
     @EventHandler
     public void hudUpdate(HudUpdateEvent event) {
 
-        Player player = event.getPlayer();
+        LivingEntity entity = event.getPlayer();
         BarType barType = event.getBarType();
-        boolean forced = event.getIfForced();
 
-        switch (barType) {
+        if(entity instanceof Player player){
+            switch (barType) {
 
-            case Resource -> {
-                hudManager.editResourceBar(player);
-                return;
+                case Resource -> {
+                    hudManager.editResourceBar(player);
+                    return;
+                }
+
+                case Target -> {
+                    hudManager.editTargetBar(player);
+                    return;
+                }
+                case Team -> {
+                    hudManager.editTeamBar(player);
+                    return;
+                }
+                case Status -> {
+                    hudManager.editStatusBar(player);
+                    return;
+                }
+                case Cast -> {
+                    hudManager.displayCastBar(player);
+                    return;
+                }
+                case Dps -> {
+                    hudManager.getDamageBoardPlaceholders().updateDamageBoardValues(player);
+                    return;
+                }
+
+            }
+        }
+
+        if(barType.equals(WhomeverTarget)){
+
+            Location center = entity.getLocation();
+
+            BoundingBox hitBox = new BoundingBox(
+                    center.getX() - 20,
+                    center.getY() - 20,
+                    center.getZ() - 20,
+                    center.getX() + 20,
+                    center.getY() + 20,
+                    center.getZ() + 20
+            );
+
+            for (Entity thisEntity : entity.getWorld().getNearbyEntities(hitBox)) {
+
+                if(!(thisEntity instanceof Player player)){
+                    continue;
+                }
+
+                if(targetManager.isTargeting(player, entity)){
+                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, Target));
+                }
+
             }
 
-            case Target -> {
-                hudManager.editTargetBar(player, forced);
-                return;
-            }
-            case Team -> {
-                hudManager.editTeamBar(player, forced);
-                return;
-            }
-            case Status -> {
-                hudManager.editStatusBar(player);
-                return;
-            }
-            case Cast -> {
-                hudManager.displayCastBar(player);
-                return;
-            }
-            case Dps -> {
-                hudManager.getDamageBoardPlaceholders().updateDamageBoardValues(player);
-                return;
-            }
+
         }
 
 
@@ -1644,8 +1662,8 @@ public class GeneralEventListener implements Listener {
             }
 
             if(member instanceof Player player){
-                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, Team, true));
-                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, Dps, true));
+                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, Team));
+                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, Dps));
             }
         }
 
@@ -1661,7 +1679,7 @@ public class GeneralEventListener implements Listener {
 
         Player player = profileManager.getCompanionsPlayer(companion);
 
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, Team, true));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, Team));
 
     }
 

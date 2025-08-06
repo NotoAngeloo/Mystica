@@ -233,6 +233,7 @@ public class ChangeResourceHandler {
             }
 
             Bukkit.getServer().getPluginManager().callEvent(new MysticaPlayerDeathEvent(entity));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(entity, BarType.WhomeverTarget));
 
         }
     }
@@ -292,7 +293,7 @@ public class ChangeResourceHandler {
         player.setHealth(hearts);
 
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(player, false));
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource, false));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource));
 
         lastDamaged.put(player.getUniqueId(), (System.currentTimeMillis()/1000));
     }
@@ -382,7 +383,7 @@ public class ChangeResourceHandler {
         player.setHealth(hearts);
 
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(player, true));
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource, false));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource));
 
     }
 
@@ -527,6 +528,7 @@ public class ChangeResourceHandler {
         double actualMaxHealth = profileManager.getAnyProfile(player).getTotalHealth();
         profileManager.getAnyProfile(player).setCurrentHealth(actualMaxHealth);
         player.setHealth(20);
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.WhomeverTarget));
     }
 
 
@@ -572,6 +574,7 @@ public class ChangeResourceHandler {
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(player, false));
 
         lastDamaged.put(player.getUniqueId(), (System.currentTimeMillis()/1000));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.WhomeverTarget));
     }
 
     private void killFakePlayerNoMatterWhat(LivingEntity entity){
@@ -599,6 +602,7 @@ public class ChangeResourceHandler {
             AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).getEntity();
             Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent(entity, "stop"));
             MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).signalMob(abstractEntity, "die");
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(entity, BarType.WhomeverTarget));
         }
 
         List<Entity> passengers = entity.getPassengers();

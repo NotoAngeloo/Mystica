@@ -98,7 +98,7 @@ public class DpsManager {
 
         for(LivingEntity member : mParty){
             if(member instanceof Player){
-                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player)member, BarType.Dps, false));
+                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(member, BarType.Dps));
             }
         }
 

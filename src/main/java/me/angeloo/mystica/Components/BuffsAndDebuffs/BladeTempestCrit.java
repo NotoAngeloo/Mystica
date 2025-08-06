@@ -28,9 +28,8 @@ public class BladeTempestCrit {
 
         active.put(entity.getUniqueId(), true);
 
-        if(entity instanceof Player){
-            Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+        if(entity instanceof Player player){
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
         if(removeBuffTaskMap.containsKey(entity.getUniqueId())){
@@ -57,9 +56,8 @@ public class BladeTempestCrit {
 
     public void removeBonus(LivingEntity entity){
         active.remove(entity.getUniqueId());
-        if(entity instanceof Player){
-            Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+        if(entity instanceof Player player){
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
     }
 

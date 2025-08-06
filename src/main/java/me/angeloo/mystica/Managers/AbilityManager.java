@@ -552,7 +552,7 @@ public class AbilityManager {
     public void setCasting(LivingEntity caster, boolean casting){
         castMap.put(caster, casting);
         if(caster instanceof Player player){
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
     }
@@ -563,14 +563,12 @@ public class AbilityManager {
         }
 
         percentCastBar.put(caster, percent);
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Cast, false));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Cast));
     }
     public double getCastPercent(Player player){
         return percentCastBar.getOrDefault(player, 0.0);
     }
 
-    //public boolean getIfSkillRunning(Player player){return skillRunning.getOrDefault(player, false);}
-    //public void setSkillRunning(Player player, boolean running){skillRunning.put(player, running);}
 
     public void interruptBasic(LivingEntity caster){
         elementalistAbilities.getElementalistBasic().stopBasicRunning(caster);

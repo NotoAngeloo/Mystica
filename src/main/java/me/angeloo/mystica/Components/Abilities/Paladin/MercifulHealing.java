@@ -249,7 +249,7 @@ public class MercifulHealing {
 
         if(caster instanceof Player){
             Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
         moveCast.put(caster.getUniqueId(), true);
@@ -257,7 +257,7 @@ public class MercifulHealing {
     public void unQueueMoveCast(LivingEntity caster){
         if(caster instanceof Player){
             Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
         moveCast.remove(caster.getUniqueId());
     }

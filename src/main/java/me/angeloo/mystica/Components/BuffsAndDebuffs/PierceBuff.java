@@ -26,9 +26,8 @@ public class PierceBuff {
     public void applyBuff(LivingEntity entity){
         buffActiveMap.put(entity.getUniqueId(), getDuration());
 
-        if(entity instanceof Player){
-            Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+        if(entity instanceof Player player){
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
 
@@ -38,7 +37,7 @@ public class PierceBuff {
 
                 if(entity instanceof Player){
                     Bukkit.getScheduler().runTask(main, ()->{
-                        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player) entity, BarType.Status, false));
+                        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(entity, BarType.Status));
                     });
 
                 }
@@ -55,7 +54,7 @@ public class PierceBuff {
 
                 if(entity instanceof Player){
                     Bukkit.getScheduler().runTask(main,()->{
-                        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent((Player) entity, BarType.Status, false));
+                        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(entity, BarType.Status));
                     });
 
                 }
@@ -77,9 +76,8 @@ public class PierceBuff {
     public void removeBuff(LivingEntity entity){
         buffActiveMap.remove(entity.getUniqueId());
 
-        if(entity instanceof Player){
-            Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+        if(entity instanceof Player player){
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
     }

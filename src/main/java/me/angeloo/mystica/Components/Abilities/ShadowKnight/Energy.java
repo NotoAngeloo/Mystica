@@ -41,9 +41,8 @@ public class Energy {
         cooldownDisplayer.displayCooldown(caster, 6);
 
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(caster, true));
-        if(caster instanceof Player){
-            Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource, false));
+        if(caster instanceof Player player){
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource));
         }
     }
 
@@ -62,9 +61,8 @@ public class Energy {
         cooldownDisplayer.displayCooldown(entity, 6);
 
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, true));
-        if(entity instanceof Player){
-            Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource, false));
+        if(entity instanceof Player player){
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource));
         }
     }
 

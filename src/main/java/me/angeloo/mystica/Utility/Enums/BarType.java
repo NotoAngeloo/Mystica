@@ -7,6 +7,7 @@ public enum BarType {
     Team,
     Status,
     Cast,
-    Dps
+    Dps,
+    WhomeverTarget
 
 }

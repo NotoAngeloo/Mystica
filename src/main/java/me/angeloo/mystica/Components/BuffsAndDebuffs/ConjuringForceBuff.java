@@ -25,9 +25,8 @@ public class ConjuringForceBuff {
         if(extraDamageAmount > currentExtraDamage){
             extraDamageMap.put(entity, extraDamageAmount);
 
-            if(entity instanceof Player){
-                Player player = (Player) entity;
-                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+            if(entity instanceof Player player){
+                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
             }
 
         }
@@ -38,9 +37,8 @@ public class ConjuringForceBuff {
         hasConjForceBuffMap.remove(entity);
         extraDamageMap.remove(entity);
 
-        if(entity instanceof Player){
-            Player player = (Player) entity;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status, false));
+        if(entity instanceof Player player){
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
     }

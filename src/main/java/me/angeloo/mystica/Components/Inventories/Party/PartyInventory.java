@@ -78,9 +78,6 @@ public class PartyInventory implements Listener {
 
         //-7, png, +8, -265, +78, png
         String title = ChatColor.WHITE + "\uF807" + sortByPng + "\uF828" + "\uF80D" + "\uF82B\uF828\uF826" + teamSquadPng;
-
-        //make different buttons depending if leader or not in a party or whatnot. put on seperate png
-
         Inventory inv = Bukkit.createInventory(null, 9*6, title);
 
         List<Player> onlinePlayers = new ArrayList<>(Bukkit.getOnlinePlayers());
@@ -219,6 +216,9 @@ public class PartyInventory implements Listener {
 
     private ItemStack inviteHead(Player player){
 
+        player = Bukkit.getOfflinePlayer(player.getUniqueId()).getPlayer();
+        assert player != null;
+
         ItemStack head = new ItemStack(Material.PLAYER_HEAD);
 
         SkullMeta meta = (SkullMeta) head.getItemMeta();
@@ -320,11 +320,11 @@ public class PartyInventory implements Listener {
 
         lores.add(ChatColor.of(menuColor) + "Role: " + inventoryManager.getRole(player));
 
-        if(player == mePlayer){
+        if(player.getUniqueId() == mePlayer.getUniqueId()){
             lores.add("");
             lores.add(ChatColor.of(menuColor) + "Click to leave");
         }else {
-            if(leaderPlayer == player){
+            if(leaderPlayer.getUniqueId() == player.getUniqueId()){
                 lores.add("");
                 lores.add(ChatColor.of(menuColor) + "Click to remove");
             }

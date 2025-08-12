@@ -13,6 +13,7 @@ import me.angeloo.mystica.CustomEvents.*;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Managers.Parties.FakePlayerAiManager;
 import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
+import me.angeloo.mystica.Managers.Parties.PlayerParty;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Tasks.AggroTick;
 import me.angeloo.mystica.Tasks.RezTick;
@@ -158,6 +159,7 @@ public class GeneralEventListener implements Listener {
         Player player = event.getPlayer();
         hudManager.innitHud(player);
         Bukkit.getServer().getPluginManager().callEvent(new SetMenuItemsEvent(player));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Team));
 
         if (combatLogs.contains(player.getUniqueId())) {
             deathManager.playerNowDead(player);
@@ -1484,6 +1486,27 @@ public class GeneralEventListener implements Listener {
 
         Player player = event.getPlayer();
 
+        if(mysticaPartyManager.inPParty(player) && event.getFrom().equals(Bukkit.getWorld("world"))){
+
+            Player leader = mysticaPartyManager.getLeaderPlayer(player);
+
+            if(player.equals(leader)){
+
+                for(Player member : mysticaPartyManager.getPlayerParty(player)){
+
+                    if(member == player){
+                        continue;
+                    }
+
+                    member.teleport(leader);
+
+                }
+
+            }
+
+        }
+
+
         if(profileManager.getAnyProfile(player).getIfDead()){
             deathManager.playerNowLive(player, false, null);
         }
@@ -1560,17 +1583,6 @@ public class GeneralEventListener implements Listener {
 
     }
 
-    /*@EventHandler
-    public void onPartyJoin(BukkitPartiesPlayerPostJoinEvent event){
-
-        PartyPlayer pPlayer = event.getPartyPlayer();
-
-        Player player = Bukkit.getPlayer(event.getPartyPlayer().getPartyId());
-        Player newLeader = Bukkit.getPlayer(event.getParty().getLeader());
-
-        Bukkit.getScheduler().runTask(main, () -> profileManager.transferCompanionsToLeader(player, newLeader));
-
-    }*/
 
     @EventHandler
     public void rezPlayer(PlayerInteractEvent event){

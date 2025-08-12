@@ -37,8 +37,12 @@ public class PlayerParty {
 
         UUID removeId = toRemove.getUniqueId();
         partyIds.remove(removeId);
+        List<UUID> memberList = new ArrayList<>(partyIds);
+        if(memberList.isEmpty()){
+            return;
+        }
+
         if(leaderId.equals(removeId)){
-            List<UUID> memberList = new ArrayList<>(partyIds);
             leaderId = memberList.get(0);
         }
     }

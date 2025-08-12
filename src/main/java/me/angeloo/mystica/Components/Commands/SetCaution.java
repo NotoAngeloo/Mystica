@@ -1,6 +1,6 @@
 package me.angeloo.mystica.Components.Commands;
 
-import me.angeloo.mystica.Managers.FakePlayerAiManager;
+import me.angeloo.mystica.Managers.Parties.FakePlayerAiManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
@@ -9,7 +9,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;

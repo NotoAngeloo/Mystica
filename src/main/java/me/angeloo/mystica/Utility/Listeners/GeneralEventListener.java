@@ -11,6 +11,8 @@ import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.CustomEvents.*;
 import me.angeloo.mystica.Managers.*;
+import me.angeloo.mystica.Managers.Parties.FakePlayerAiManager;
+import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Tasks.AggroTick;
 import me.angeloo.mystica.Tasks.RezTick;
@@ -1535,7 +1537,7 @@ public class GeneralEventListener implements Listener {
         if(profileManager.getAnyProfile(livingEntity).fakePlayer()){
             Player companionPlayer = profileManager.getCompanionsPlayer(livingEntity);
             profileManager.removeCompanion(companionPlayer, livingEntity.getUniqueId());
-            mysticaPartyManager.removeFromMysticaPartyMap(livingEntity);
+            //mysticaPartyManager.removeFromMysticaPartyMap(livingEntity);
             profileManager.clearCompanionFaces(entity.getUniqueId());
 
         }
@@ -1652,7 +1654,7 @@ public class GeneralEventListener implements Listener {
         List<LivingEntity> oldMParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(entity));
 
         for(LivingEntity member : oldMParty){
-            mysticaPartyManager.updateMysticaParty(member);
+            //mysticaPartyManager.updateMysticaParty(member);
         }
 
         for(LivingEntity member : oldMParty){

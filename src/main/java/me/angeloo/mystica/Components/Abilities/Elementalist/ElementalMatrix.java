@@ -2,6 +2,7 @@ package me.angeloo.mystica.Components.Abilities.Elementalist;
 
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Managers.*;
+import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;

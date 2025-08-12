@@ -1,11 +1,10 @@
 package me.angeloo.mystica.Tasks;
 
-import me.angeloo.mystica.Managers.MysticaPartyManager;
+import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;

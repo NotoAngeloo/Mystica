@@ -6,6 +6,7 @@ import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
+import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
@@ -37,26 +38,26 @@ public class CreaturesAndCharactersManager {
     private final Darwin darwin;
     private final Slippy slippy;
 
-    public CreaturesAndCharactersManager(Mystica main, ProfileManager profileManager){
+    public CreaturesAndCharactersManager(Mystica main, ProfileManager profileManager, MysticaPartyManager mysticaPartyManager){
         this.main = main;
         this.profileManager = profileManager;
 
 
-        theLindwyrm = new TheLindwyrm(main, profileManager);
-        corruptHeart = new CorruptHeart(main, profileManager);
-        weberBoss = new WeberBoss(main, profileManager);
+        theLindwyrm = new TheLindwyrm(main, profileManager, mysticaPartyManager);
+        corruptHeart = new CorruptHeart(main, profileManager, mysticaPartyManager);
+        weberBoss = new WeberBoss(main, profileManager, mysticaPartyManager);
         newPlayerNpc = new NewPlayerNpc(main, profileManager);
         archbishopNpc = new ArchbishopNpc(main, profileManager);
         hansNpc = new HansNpc(main, profileManager);
         hoLeeNpc = new HoLeeNpc(main, profileManager);
         captainNpc = new CaptainNpc(main, profileManager);
-        hoLeeBoss = new HoLeeBoss(main, profileManager);
-        coersicaBoss = new CoersicaBoss(main, profileManager);
-        sammingSins = new SammingSins(main, profileManager);
-        luna = new Luna(main, profileManager);
-        wings = new Wings(main, profileManager);
-        darwin = new Darwin(main, profileManager);
-        slippy = new Slippy(main, profileManager);
+        hoLeeBoss = new HoLeeBoss(main, profileManager, mysticaPartyManager);
+        coersicaBoss = new CoersicaBoss(main, profileManager, mysticaPartyManager);
+        sammingSins = new SammingSins(main, profileManager, mysticaPartyManager);
+        luna = new Luna(main, profileManager, mysticaPartyManager);
+        wings = new Wings(main, profileManager, mysticaPartyManager);
+        darwin = new Darwin(main, profileManager, mysticaPartyManager);
+        slippy = new Slippy(main, profileManager, mysticaPartyManager);
     }
 
     public void spawnAllNpcs() throws InvalidMobTypeException {

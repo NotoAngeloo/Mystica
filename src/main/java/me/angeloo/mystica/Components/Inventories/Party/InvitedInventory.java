@@ -1,7 +1,6 @@
 package me.angeloo.mystica.Components.Inventories.Party;
 
-import me.angeloo.mystica.Managers.CustomInventoryManager;
-import me.angeloo.mystica.Managers.MysticaPartyManager;
+import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DisplayWeapons;
@@ -15,16 +14,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import static me.angeloo.mystica.Mystica.*;
-import static me.angeloo.mystica.Mystica.menuColor;
 
 public class InvitedInventory implements Listener {
 

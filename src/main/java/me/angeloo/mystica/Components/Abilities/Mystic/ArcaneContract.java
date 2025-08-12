@@ -2,6 +2,7 @@ package me.angeloo.mystica.Components.Abilities.Mystic;
 
 import me.angeloo.mystica.Components.Abilities.MysticAbilities;
 import me.angeloo.mystica.Managers.*;
+import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.Logic.PveChecker;

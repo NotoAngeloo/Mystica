@@ -2,7 +2,7 @@ package me.angeloo.mystica.Components.Commands;
 
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.BuffAndDebuffManager;
-import me.angeloo.mystica.Managers.MysticaPartyManager;
+import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
@@ -10,7 +10,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 public class DeleteProfile implements CommandExecutor {
@@ -48,7 +47,7 @@ public class DeleteProfile implements CommandExecutor {
             return true;
         }
 
-        mysticaPartyManager.removeFromMysticaPartyMap(player);
+        //mysticaPartyManager.removeFromMysticaPartyMap(player);
         abilityManager.resetAbilityBuffs(player);
         abilityManager.resetCooldowns(player);
         buffAndDebuffManager.removeAllBuffsAndDebuffs(player);

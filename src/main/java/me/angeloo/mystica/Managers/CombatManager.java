@@ -3,6 +3,7 @@ package me.angeloo.mystica.Managers;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.CustomEvents.SetMenuItemsEvent;
+import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Tasks.CombatTick;
 import me.angeloo.mystica.Utility.Enums.BarType;

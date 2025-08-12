@@ -3,12 +3,11 @@ package me.angeloo.mystica.Utility.MatchMaking;
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Managers.CustomInventoryManager;
-import me.angeloo.mystica.Managers.MysticaPartyManager;
+import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Enums.Dungeon;
 import me.angeloo.mystica.Utility.Enums.Role;
-import me.angeloo.mystica.Utility.Enums.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -117,7 +116,7 @@ public class MatchMakingManager {
         //make the players enter, when all entered, fill with bots
 
         Player leaderPlayer = mysticaPartyManager.getLeaderPlayer(player);
-        Set<Player> partyPlayers = mysticaPartyManager.getPartyPlayers(player);
+        List<Player> partyPlayers = mysticaPartyManager.getPlayerParty(player).getPlayers();
         List<LivingEntity> mParty = mysticaPartyManager.getMysticaParty(leaderPlayer);
 
         boolean dungeonRequiresInterrupt = false;

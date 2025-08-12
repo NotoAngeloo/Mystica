@@ -9,6 +9,7 @@ import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.Components.Items.MysticaItem;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.CustomEvents.UpdateMysticaPartyEvent;
+import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.PlayerProfile;
@@ -43,11 +44,12 @@ public class ProfileManager {
 
     private final Mystica main;
 
+    private final MysticaPartyManager mysticaPartyManager;
+    private final CreaturesAndCharactersManager creaturesAndCharactersManager;
+
     private final File subFolder;
     private final ProfileFileWriter profileFileWriter;
     private final PathingManager pathingManager;
-
-    private final CreaturesAndCharactersManager creaturesAndCharactersManager;
 
     private final Map<UUID, PlayerProfile> playerProfiles = new HashMap<>();
     private final Map<UUID, FakePlayerProfile> fakePlayerProfileMap = new HashMap<>();
@@ -78,8 +80,8 @@ public class ProfileManager {
 
     public ProfileManager(Mystica main) {
         this.main = main;
-
-        creaturesAndCharactersManager = new CreaturesAndCharactersManager(main, this);
+        mysticaPartyManager = new MysticaPartyManager(main);
+        creaturesAndCharactersManager = new CreaturesAndCharactersManager(main, this, mysticaPartyManager);
 
 
         File dataFolder = main.getDataFolder();
@@ -1206,6 +1208,8 @@ public class ProfileManager {
     public String getBossIcon(UUID uuid){
         return bossIcons.getOrDefault(uuid, "\uE1A3");
     }
+
+    public MysticaPartyManager getMysticaPartyManager(){return mysticaPartyManager;}
 
     public CreaturesAndCharactersManager getCreaturesAndCharactersManager(){return creaturesAndCharactersManager;}
 }

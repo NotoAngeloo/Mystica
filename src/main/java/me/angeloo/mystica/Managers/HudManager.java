@@ -2,6 +2,7 @@ package me.angeloo.mystica.Managers;
 
 import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Profile;
+import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Hud.IconCalculator;
 import me.angeloo.mystica.Utility.Hud.SkinGrabber;

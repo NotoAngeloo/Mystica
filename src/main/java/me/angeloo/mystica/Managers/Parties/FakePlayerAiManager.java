@@ -1,8 +1,13 @@
-package me.angeloo.mystica.Managers;
+package me.angeloo.mystica.Managers.Parties;
 
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.Abilities.*;
+import me.angeloo.mystica.Managers.AbilityManager;
+import me.angeloo.mystica.Managers.DeathManager;
+import me.angeloo.mystica.Managers.FakePlayerTargetManager;
+import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
+import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;

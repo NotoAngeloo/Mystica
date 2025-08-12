@@ -1,7 +1,5 @@
 package me.angeloo.mystica.Managers;
-
-import com.alessiodp.parties.api.Parties;
-import com.alessiodp.parties.api.interfaces.PartiesAPI;
+import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
@@ -17,9 +15,11 @@ public class PvpManager {
     private boolean globalPvp = false;
 
     private final ProfileManager profileManager;
+    private final MysticaPartyManager mysticaPartyManager;
 
     public PvpManager(Mystica main){
         profileManager = main.getProfileManager();
+        mysticaPartyManager = main.getMysticaPartyManager();
     }
 
     private boolean inPvp(LivingEntity player){
@@ -60,9 +60,8 @@ public class PvpManager {
             return false;
         }
 
-        PartiesAPI api = Parties.getApi();
 
-        if(api.areInTheSameParty(player.getUniqueId(), otherPlayer.getUniqueId())){
+        if(mysticaPartyManager.inSameParty(player.getUniqueId(), otherPlayer.getUniqueId())){
             return false;
         }
 

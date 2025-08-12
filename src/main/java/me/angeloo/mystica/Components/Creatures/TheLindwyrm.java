@@ -1,13 +1,10 @@
 package me.angeloo.mystica.Components.Creatures;
 
-import com.alessiodp.parties.api.Parties;
-import com.alessiodp.parties.api.interfaces.PartiesAPI;
-import com.alessiodp.parties.api.interfaces.Party;
-import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
+import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
@@ -25,9 +22,11 @@ import java.util.UUID;
 public class TheLindwyrm {
 
     private final ProfileManager profileManager;
+    private final MysticaPartyManager mysticaPartyManager;
 
-    public TheLindwyrm(Mystica main, ProfileManager profileManager){
+    public TheLindwyrm(Mystica main, ProfileManager profileManager, MysticaPartyManager mysticaPartyManager){
         this.profileManager = profileManager;
+        this.mysticaPartyManager = mysticaPartyManager;
     }
 
     public void makeProfile(UUID uuid){
@@ -52,32 +51,8 @@ public class TheLindwyrm {
             }
         }
 
-        PartiesAPI api = Parties.getApi();
-
         if(closestPlayer != null){
-            PartyPlayer partyPlayer = api.getPartyPlayer(closestPlayer.getUniqueId());
-
-            assert partyPlayer != null;
-            if(partyPlayer.isInParty()){
-
-                Party party = api.getParty(partyPlayer.getPartyId());
-
-                assert party != null;
-                UUID partyLeaderId = party.getLeader();
-
-                assert partyLeaderId != null;
-
-                theClosestPlayersLeader = Bukkit.getPlayer(partyLeaderId);
-
-
-            }
-            else{
-                theClosestPlayersLeader = closestPlayer;
-            }
-
-            assert theClosestPlayersLeader != null;
-            //Bukkit.getLogger().info(theClosestPlayersLeader.getName());
-
+            theClosestPlayersLeader = mysticaPartyManager.getLeaderPlayer(closestPlayer);
         }
 
         int level = 1;

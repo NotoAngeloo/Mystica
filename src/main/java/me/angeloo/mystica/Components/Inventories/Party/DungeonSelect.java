@@ -3,7 +3,7 @@ package me.angeloo.mystica.Components.Inventories.Party;
 import me.angeloo.mystica.Managers.CustomInventoryManager;
 import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.MatchMaking.MatchMakingManager;
-import me.angeloo.mystica.Managers.MysticaPartyManager;
+import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import net.md_5.bungee.api.ChatColor;
@@ -130,7 +130,7 @@ public class DungeonSelect implements Listener {
                 return;
             }
 
-            if(mysticaPartyManager.getMPartyLeader(player) != player){
+            if(mysticaPartyManager.getLeaderPlayer(player) != player){
                 return;
             }
 

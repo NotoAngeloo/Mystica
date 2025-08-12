@@ -1,7 +1,7 @@
 package me.angeloo.mystica.Components.Inventories.Party;
 
 import me.angeloo.mystica.Managers.CustomInventoryManager;
-import me.angeloo.mystica.Managers.MysticaPartyManager;
+import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DisplayWeapons;
@@ -171,6 +171,7 @@ public class PartyInventory implements Listener {
             return;
         }
 
+        //Player leaderPlayer = partyManager.getLeaderPlayer(player);
         Player leaderPlayer = partyManager.getLeaderPlayer(player);
 
         player.getInventory().setItem(13, teamHead(leaderPlayer, player));
@@ -274,6 +275,8 @@ public class PartyInventory implements Listener {
 
     private ItemStack teamHead(Player player, Player mePlayer){
 
+        Player leaderPlayer = partyManager.getLeaderPlayer(player);
+
         ItemStack head = new ItemStack(Material.PLAYER_HEAD);
 
         SkullMeta meta = (SkullMeta) head.getItemMeta();
@@ -321,7 +324,7 @@ public class PartyInventory implements Listener {
             lores.add("");
             lores.add(ChatColor.of(menuColor) + "Click to leave");
         }else {
-            if(partyManager.getLeaderPlayer(player) == player){
+            if(leaderPlayer == player){
                 lores.add("");
                 lores.add(ChatColor.of(menuColor) + "Click to remove");
             }

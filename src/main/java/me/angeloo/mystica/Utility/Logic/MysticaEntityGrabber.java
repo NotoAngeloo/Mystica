@@ -1,6 +1,6 @@
 package me.angeloo.mystica.Utility.Logic;
 
-import me.angeloo.mystica.Managers.MysticaPartyManager;
+import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Managers.TargetManager;
 import me.angeloo.mystica.Mystica;
@@ -98,7 +98,7 @@ public class MysticaEntityGrabber {
     }
 
     public UUID getMPartyLeader(Player player){
-        return mysticaPartyManager.getMPartyLeader(player).getUniqueId();
+        return mysticaPartyManager.getLeaderPlayer(player).getUniqueId();
     }
 
 

@@ -69,10 +69,6 @@
             <url>https://mvn.lumine.io/repository/maven-public/</url>
         </repository>
         <repository>
-            <id>alessiodp-repo</id>
-            <url>https://repo.alessiodp.com/releases/</url>
-        </repository>
-        <repository>
             <id>dmulloy2-repo</id>
             <url>https://repo.dmulloy2.net/repository/public/</url>
         </repository>
@@ -103,12 +99,6 @@
             <groupId>io.lumine</groupId>
             <artifactId>Mythic-Dist</artifactId>
             <version>5.2.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.alessiodp.parties</groupId>
-            <artifactId>parties-api</artifactId>
-            <version>3.2.9</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

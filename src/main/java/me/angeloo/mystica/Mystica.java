@@ -1,8 +1,5 @@
 package me.angeloo.mystica;
 
-import com.alessiodp.parties.api.Parties;
-import com.alessiodp.parties.api.interfaces.Party;
-import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Commands.*;
@@ -18,6 +15,8 @@ import me.angeloo.mystica.Components.Items.MysticalCrystal;
 import me.angeloo.mystica.Components.Items.SoulStone;
 import me.angeloo.mystica.Components.Items.StackableItemRegistry;
 import me.angeloo.mystica.Managers.*;
+import me.angeloo.mystica.Managers.Parties.FakePlayerAiManager;
+import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
 import me.angeloo.mystica.NMS.Common.PacketInterface;
 import me.angeloo.mystica.NMS.NMSVersion;
 import me.angeloo.mystica.Tasks.*;
@@ -49,8 +48,6 @@ public final class Mystica extends JavaPlugin{
     private static Mystica plugin;
 
     private PacketInterface packetManager;
-
-    private CreaturesAndCharactersManager creaturesAndCharactersManager;
 
     private ProfileManager profileManager;
     private ProfileFileWriter profileFileWriter;
@@ -150,9 +147,7 @@ public final class Mystica extends JavaPlugin{
 
         profileManager = new ProfileManager(this);
         profileManager.loadProfilesFromConfig();
-        creaturesAndCharactersManager = profileManager.getCreaturesAndCharactersManager();
-
-        mysticaPartyManager = new MysticaPartyManager(this);
+        mysticaPartyManager = profileManager.getMysticaPartyManager();
 
         inventoryItemGetter = new InventoryItemGetter();
         displayWeapons = new DisplayWeapons(this);
@@ -290,11 +285,11 @@ public final class Mystica extends JavaPlugin{
 
 
 
-        try {
+        /*try {
             creaturesAndCharactersManager.spawnAllNpcs();
         } catch (InvalidMobTypeException e) {
             throw new RuntimeException(e);
-        }
+        }*/
 
 
         this.api = new DamageIndicatorApi(this);
@@ -308,16 +303,6 @@ public final class Mystica extends JavaPlugin{
 
         for (Player player : Bukkit.getOnlinePlayers()){
 
-            if(mysticaPartyManager.inPParty(player)){
-                Party party = Parties.getApi().getParty(player.getUniqueId());
-
-                if(party != null){
-                    PartyPlayer partyPlayer = Parties.getApi().getPartyPlayer(player.getUniqueId());
-                    assert partyPlayer != null;
-                    party.removeMember(partyPlayer);
-                }
-
-            }
 
             player.getInventory().clear();
 

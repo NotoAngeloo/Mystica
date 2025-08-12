@@ -116,7 +116,7 @@ public class MatchMakingManager {
         //make the players enter, when all entered, fill with bots
 
         Player leaderPlayer = mysticaPartyManager.getLeaderPlayer(player);
-        List<Player> partyPlayers = mysticaPartyManager.getPlayerParty(player).getPlayers();
+        Set<Player> partyPlayers = mysticaPartyManager.getPlayerParty(player);
         List<LivingEntity> mParty = mysticaPartyManager.getMysticaParty(leaderPlayer);
 
         boolean dungeonRequiresInterrupt = false;

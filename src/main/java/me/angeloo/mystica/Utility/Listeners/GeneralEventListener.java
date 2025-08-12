@@ -1501,7 +1501,7 @@ public class GeneralEventListener implements Listener {
                 fakePlayerAiManager.stopAiTask(companion);
             }
 
-            profileManager.removeCompanions(player);
+            profileManager.removeAllCompanions(player);
         }
 
         if(!player.getWorld().equals(Bukkit.getWorld("world"))){
@@ -1654,19 +1654,12 @@ public class GeneralEventListener implements Listener {
         List<LivingEntity> oldMParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(entity));
 
         for(LivingEntity member : oldMParty){
-            //mysticaPartyManager.updateMysticaParty(member);
-        }
-
-        for(LivingEntity member : oldMParty){
-
-            if(member == null){
-                continue;
-            }
-
             if(member instanceof Player player){
+                mysticaPartyManager.updateMysticaParty(player);
                 Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, Team));
                 Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, Dps));
             }
+
         }
 
     }

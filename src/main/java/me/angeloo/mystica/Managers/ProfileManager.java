@@ -80,7 +80,7 @@ public class ProfileManager {
 
     public ProfileManager(Mystica main) {
         this.main = main;
-        mysticaPartyManager = new MysticaPartyManager(main);
+        mysticaPartyManager = new MysticaPartyManager(main, this);
         creaturesAndCharactersManager = new CreaturesAndCharactersManager(main, this, mysticaPartyManager);
 
 
@@ -1007,7 +1007,7 @@ public class ProfileManager {
         Bukkit.getServer().getPluginManager().callEvent(new UpdateMysticaPartyEvent(player));
     }
 
-    public void removeCompanions(Player player){
+    public void removeAllCompanions(Player player){
 
 
         List<UUID> currentCompanions = getCompanions(player);

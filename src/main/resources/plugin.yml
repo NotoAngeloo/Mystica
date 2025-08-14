@@ -137,6 +137,10 @@ commands:
     description: allows devs and mms to give players starter things
     usage: /StarterKit <player>
     permission: developer
+  BossWarn:
+    description: allows mms to warn player about upcoming mechanics
+    usage: /BossWarn <player.uuid> <warning> <time>
+    permission: developer
 
 permissions:
   developer:

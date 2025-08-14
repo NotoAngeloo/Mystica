@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.Hud.BossWarnings;
 import me.angeloo.mystica.Utility.Hud.IconCalculator;
 import me.angeloo.mystica.Utility.Hud.SkinGrabber;
 import me.angeloo.mystica.Utility.Logic.DamageBoardPlaceholders;
@@ -37,6 +38,7 @@ public class HudManager {
     private final ProfileManager profileManager;
     private final MysticaPartyManager mysticaPartyManager;
     private final DamageBoardPlaceholders damageBoardPlaceholders;
+    private final BossWarnings bossWarnings;
 
 
     private final AllSkillItems allSkillItems;
@@ -168,6 +170,7 @@ public class HudManager {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         targetManager = main.getTargetManager();
         bossCastingManager = main.getBossCastingManager();
+        bossWarnings = new BossWarnings(main);
         gravestoneManager = main.getGravestoneManager();
         iconCalculator = new IconCalculator();
         skinGrabber = new SkinGrabber();
@@ -176,6 +179,8 @@ public class HudManager {
     public DamageBoardPlaceholders getDamageBoardPlaceholders(){
         return damageBoardPlaceholders;
     }
+
+    public BossWarnings getBossWarnings(){return bossWarnings;}
 
     public void innitHud(Player player){
 
@@ -232,18 +237,24 @@ public class HudManager {
 
     }
 
+
     public void displayCastBar(Player player){
 
         new BukkitRunnable(){
             @Override
             public void run(){
-                if(!abilityManager.getIfCasting(player)){
+
+                if(!player.isOnline()){
+                    return;
+                }
+
+                if(!abilityManager.getIfCasting(player) && Objects.equals(getBossWarning(player), " ")){
                     //Bukkit.getLogger().info("player stop casting");
                     player.sendTitle("", "", 0, 1, 0);
                     return;
                 }
 
-                if(abilityManager.getCastPercent(player) == 0){
+                if(abilityManager.getCastPercent(player) == 0 && Objects.equals(getBossWarning(player), " ")){
                     //Bukkit.getLogger().info("player stop casting");
                     player.sendTitle("", "", 0, 1, 0);
                     return;
@@ -251,18 +262,20 @@ public class HudManager {
 
                 StringBuilder castBar = new StringBuilder();
 
-                double percent =  abilityManager.getCastPercent(player);
+                if(abilityManager.getIfCasting(player) && abilityManager.getCastPercent(player) != 0){
+                    double percent =  abilityManager.getCastPercent(player);
 
-                double ratio = percent / 100;
+                    double ratio = percent / 100;
 
-                int amount = (int) Math.ceil(ratio * 20);
+                    int amount = (int) Math.ceil(ratio * 20);
 
-                //Bukkit.getLogger().info(String.valueOf(amount));
+                    //Bukkit.getLogger().info(String.valueOf(amount));
 
-                castBar.append(manaBar[amount]);
+                    castBar.append(manaBar[amount]);
+                }
 
                 //warningmessage in first slot later
-                player.sendTitle(" ", String.valueOf(castBar), 0, 5, 0);
+                player.sendTitle(getBossWarning(player), String.valueOf(castBar), 0, 5, 0);
             }
         }.runTaskAsynchronously(main);
 
@@ -1744,6 +1757,10 @@ public class HudManager {
         return ultimateCooldown[percent];
 
 
+    }
+
+    private String getBossWarning(Player player){
+        return bossWarnings.getWarning(player);
     }
 
 }

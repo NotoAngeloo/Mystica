@@ -13,7 +13,6 @@ import me.angeloo.mystica.CustomEvents.*;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Managers.Parties.FakePlayerAiManager;
 import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
-import me.angeloo.mystica.Managers.Parties.PlayerParty;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Tasks.AggroTick;
 import me.angeloo.mystica.Tasks.RezTick;

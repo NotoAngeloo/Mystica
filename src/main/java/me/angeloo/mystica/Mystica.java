@@ -24,6 +24,7 @@ import me.angeloo.mystica.Utility.*;
 import me.angeloo.mystica.Utility.DamageIndicator.DamageIndicatorApi;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Hud.BossWarnings;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.Listeners.GeneralEventListener;
 import me.angeloo.mystica.Utility.Listeners.InventoryEventListener;
@@ -59,6 +60,7 @@ public final class Mystica extends JavaPlugin{
 
     private DamageBoardPlaceholders damageBoardPlaceholders;
     private HudManager hudManager;
+    private BossWarnings bossWarnings;
 
     private DisplayWeapons displayWeapons;
     private ClassSetter classSetter;
@@ -182,6 +184,7 @@ public final class Mystica extends JavaPlugin{
 
         hudManager = new HudManager(this);
         damageBoardPlaceholders = hudManager.getDamageBoardPlaceholders();
+        bossWarnings = hudManager.getBossWarnings();
 
         fakePlayerAiManager = new FakePlayerAiManager(this);
 
@@ -236,6 +239,7 @@ public final class Mystica extends JavaPlugin{
         getCommand("DungeonSelect").setExecutor(new DungeonFinder(this));
         getCommand("MysticaItem").setExecutor(new MysticaItem(this));
         getCommand("StarterKit").setExecutor(new StarterKit(this));
+        getCommand("BossWarn").setExecutor(new BossWarn(this));
 
 
         this.getServer().getPluginManager().registerEvents(new ClassSelectInventory(this), this);
@@ -454,6 +458,8 @@ public final class Mystica extends JavaPlugin{
     public CooldownDisplayer getCooldownDisplayer(){
         return cooldownDisplayer;
     }
+
+    public BossWarnings getBossWarnings(){return bossWarnings;}
 
     @NotNull
     public PacketInterface getPacketInterface(){

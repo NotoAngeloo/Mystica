@@ -249,7 +249,7 @@ public class ForceOfWill {
                     if(!((Player)caster).isOnline()){
                         this.cancel();
                         abilityManager.setCasting(caster, false);
-                        abilityManager.setCastBar((Player) caster, 0);
+                        abilityManager.setCastBar(caster, 0);
                         return;
                     }
                 }

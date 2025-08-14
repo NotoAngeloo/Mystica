@@ -1198,7 +1198,8 @@ public class ProfileManager {
 
         switch (bossName.toLowerCase()){
             case "lindwyrm":{
-                bossIcons.put(uuid, "\uE04E");
+                //make this look better later
+                //bossIcons.put(uuid, "\uE04E");
                 return;
             }
         }
@@ -1207,6 +1208,10 @@ public class ProfileManager {
 
     public String getBossIcon(UUID uuid){
         return bossIcons.getOrDefault(uuid, "\uE1A3");
+    }
+
+    public String getPassiveIcon(UUID uuid){
+        return bossIcons.getOrDefault(uuid, "\uE061");
     }
 
     public MysticaPartyManager getMysticaPartyManager(){return mysticaPartyManager;}

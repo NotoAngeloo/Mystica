@@ -49,7 +49,7 @@ public class MysticAbilities {
         healthAbsorb = new HealthAbsorb(main, manager);
         arcaneShield = new ArcaneShield(main, manager, this);
         purifyingBlast = new PurifyingBlast(main, manager, this);
-        forceOfWill = new ForceOfWill(main, manager, this);
+        forceOfWill = new ForceOfWill(main, manager);
         dreadfall = new Dreadfall(main, manager);
         aurora = new Aurora(main, manager, this);
         arcaneContract = new ArcaneContract(main, manager, this);

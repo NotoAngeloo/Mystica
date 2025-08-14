@@ -323,21 +323,21 @@ public class PartyInventory implements Listener {
         if(player.getUniqueId() == mePlayer.getUniqueId()){
             lores.add("");
             lores.add(ChatColor.of(menuColor) + "Click to leave");
-        }else {
-            if(leaderPlayer.getUniqueId() == player.getUniqueId()){
-                lores.add("");
-                lores.add(ChatColor.of(menuColor) + "Click to remove");
-            }
+            meta.setLore(lores);
+            head.setItemMeta(meta);
+            return head;
+        }
+
+        if(leaderPlayer.getUniqueId() == mePlayer.getUniqueId()){
+            lores.add("");
+            lores.add(ChatColor.of(menuColor) + "Click to remove");
         }
 
 
 
 
-
         meta.setLore(lores);
-
         head.setItemMeta(meta);
-
         return head;
     }
 

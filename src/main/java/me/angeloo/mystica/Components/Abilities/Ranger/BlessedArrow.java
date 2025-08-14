@@ -115,8 +115,6 @@ public class BlessedArrow {
 
         boolean scout = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Scout);
 
-        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
-                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_5_Level_Bonus();
         double skillDamage = getSkillDamage(caster);
 
         if(rallyingCry.getIfBuffTime(caster) > 0){

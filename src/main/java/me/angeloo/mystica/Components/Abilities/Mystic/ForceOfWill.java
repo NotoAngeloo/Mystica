@@ -27,26 +27,22 @@ public class ForceOfWill {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
     private final TargetManager targetManager;
-    private final PvpManager pvpManager;
     private final PveChecker pveChecker;
+    private final PvpManager pvpManager;
     private final DamageCalculator damageCalculator;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final AbilityManager abilityManager;
     private final CooldownDisplayer cooldownDisplayer;
 
-    private final Mana mana;
-
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public ForceOfWill(Mystica main, AbilityManager manager, MysticAbilities mysticAbilities){
+    public ForceOfWill(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
         abilityManager = manager;
-        combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
@@ -54,50 +50,11 @@ public class ForceOfWill {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
-        mana = mysticAbilities.getMana();
     }
 
     public void use(LivingEntity caster){
         if(!abilityReadyInMap.containsKey(caster.getUniqueId())){
             abilityReadyInMap.put(caster.getUniqueId(), 0);
-        }
-
-
-        boolean shepard = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Shepard);
-
-        if(shepard){
-            LivingEntity target = targetManager.getPlayerTarget(caster);
-
-            if(target instanceof Player){
-                if(!pvpManager.pvpLogic(caster, (Player) target)){
-                    //do something else
-
-                    if(!usable(caster, target)){
-                        return;
-                    }
-
-                    mana.subTractManaFromEntity(caster, getCost());
-
-                    passThroughDamage(caster, target);
-                    return;
-                }
-            }
-
-            if(!(target instanceof Player)){
-                if(!pveChecker.pveLogic(target)){
-
-                    if(!usable(caster, target)){
-                        return;
-                    }
-
-                    mana.subTractManaFromEntity(caster, getCost());
-
-                    passThroughDamage(caster, target);
-                    return;
-                }
-            }
-
-
         }
 
         targetManager.setTargetToNearestValid(caster, getRange(caster));
@@ -106,7 +63,6 @@ public class ForceOfWill {
         if(!usable(caster, target)){
             return;
         }
-
 
         execute(caster);
 
@@ -136,7 +92,7 @@ public class ForceOfWill {
         cooldownTask.put(caster.getUniqueId(), task);
     }
 
-    private void passThroughDamage(LivingEntity caster, LivingEntity target){
+    /*private void passThroughDamage(LivingEntity caster, LivingEntity target){
 
         abilityManager.setCasting(caster, true);
         double castTime = 4;
@@ -267,7 +223,7 @@ public class ForceOfWill {
 
         }.runTaskTimer(main, 0, 1);
 
-    }
+    }*/
 
     private void execute(LivingEntity caster){
 
@@ -427,6 +383,11 @@ public class ForceOfWill {
     }
 
     public boolean usable(LivingEntity caster, LivingEntity target){
+
+        if(target == null){
+            return false;
+        }
+
         double distance = caster.getLocation().distance(target.getLocation());
 
         if(distance > getRange(caster)){
@@ -437,17 +398,18 @@ public class ForceOfWill {
             return false;
         }
 
-        if(getCooldown(caster) > 0){
-            return false;
+        if(target instanceof Player){
+            if(!pvpManager.pvpLogic(caster, (Player) target)){
+                return false;
+            }
         }
 
-
-        //check shepardlogic
-        if(profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Shepard)){
-            return mana.getCurrentMana(caster) >= getCost();
+        if(!(target instanceof Player)){
+            if(!pveChecker.pveLogic(target)){
+                return false;
+            }
         }
 
-
-        return true;
+        return getCooldown(caster) <= 0;
     }
 }

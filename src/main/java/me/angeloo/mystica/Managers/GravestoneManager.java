@@ -3,6 +3,7 @@ package me.angeloo.mystica.Managers;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,9 +28,9 @@ public class GravestoneManager {
         return gravestones.containsKey(entity);
     }
 
-    public LivingEntity getPlayer(Entity entity){
+    public Player getPlayer(Entity entity){
 
-        return (LivingEntity) Bukkit.getEntity(gravestones.get(entity));
+        return Bukkit.getOfflinePlayer(gravestones.get(entity)).getPlayer();
     }
 
     public Entity getGravestone(LivingEntity player){

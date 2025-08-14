@@ -42,6 +42,7 @@ public class HudManager {
     private final AllSkillItems allSkillItems;
     private final AbilityManager abilityManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
+    private final GravestoneManager gravestoneManager;
     private final TargetManager targetManager;
     private final BossCastingManager bossCastingManager;
     private final IconCalculator iconCalculator;
@@ -167,7 +168,7 @@ public class HudManager {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         targetManager = main.getTargetManager();
         bossCastingManager = main.getBossCastingManager();
-
+        gravestoneManager = main.getGravestoneManager();
         iconCalculator = new IconCalculator();
         skinGrabber = new SkinGrabber();
     }
@@ -1032,9 +1033,69 @@ public class HudManager {
 
         }
 
-        if(profileManager.getIfEntityIsBoss(entity.getUniqueId())){
+        if(gravestoneManager.isGravestone(entity)){
 
-            //get whichever background specificlly, later
+
+            //can't call async
+            Player player = gravestoneManager.getPlayer(entity);
+
+            PlayerClass playerClass = profileManager.getAnyProfile(player).getPlayerClass();
+
+
+            //frame color
+            switch (playerClass) {
+                case Assassin -> {
+                    icon.append(ChatColor.of(assassinColor));
+                }
+                case Elementalist -> {
+                    icon.append(ChatColor.of(elementalistColor));
+                }
+                case Mystic -> {
+                    icon.append(ChatColor.of(mysticColor));
+                }
+                case Paladin -> {
+                    icon.append(ChatColor.of(paladinColor));
+                }
+                case Ranger -> {
+                    icon.append(ChatColor.of(rangerColor));
+                }
+                case Shadow_Knight -> {
+                    icon.append(ChatColor.of(shadowKnightColor));
+                }
+                case Warrior -> {
+                    icon.append(ChatColor.of(warriorColor));
+                }
+            }
+
+            //background
+            icon.append("\uE14D");
+
+
+            //-43
+            icon.append("\uF80A\uF808\uF803");
+
+            //frame
+            icon.append(ChatColor.RESET);
+            icon.append("\uE143");
+
+            //-35
+            icon.append("\uF80A\uF803");
+
+            icon.append(skinGrabber.getFace(player));
+
+            //-10
+            icon.append("\uF808\uF802");
+
+            icon.append(profileManager.getAnyProfile(player).getStats().getLevel());
+
+            //+38
+            icon.append("\uF82A\uF826");
+
+
+            return String.valueOf(icon);
+        }
+
+        if(!profileManager.getAnyProfile(entity).getIsPassive()){
 
             icon.append(profileManager.getBossIcon(entity.getUniqueId()));
 
@@ -1058,13 +1119,26 @@ public class HudManager {
         }
 
         if(profileManager.getAnyProfile(entity).getIsPassive()){
-            //default npc
-            icon.append(("\uE127"));
+
+            icon.append(profileManager.getPassiveIcon(entity.getUniqueId()));
+
+            //-43
+            icon.append("\uF80A\uF808\uF803");
+
+            //frame
+            icon.append(ChatColor.RESET);
+            icon.append(("\uE143"));
+
+            //-46
+            icon.append("\uF80A\uF808\uF806");
+
+            icon.append(profileManager.getAnyProfile(entity).getStats().getLevel());
+
+            //+40
+            icon.append("\uF82A\uF828");
             return String.valueOf(icon);
         }
 
-        //default enemy
-        icon.append(("\uE128"));
 
         return String.valueOf(icon);
     }
@@ -1101,6 +1175,9 @@ public class HudManager {
             amount = 0;
         }
 
+        if(gravestoneManager.isGravestone(entity)){
+            amount = 0;
+        }
 
         healthBar.append(playerTargetHealthBar[amount]);
 

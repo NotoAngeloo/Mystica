@@ -254,6 +254,7 @@ public class GeneralEventListener implements Listener {
 
     }
 
+
     @EventHandler
     public void noBreakBlocks(BlockBreakEvent event) {
         Player player = event.getPlayer();
@@ -1311,6 +1312,7 @@ public class GeneralEventListener implements Listener {
         Player player = event.getPlayer();
         abilityManager.interruptBasic(player);
 
+
         double baseRange = 20;
         double bonusRange = buffAndDebuffManager.getTotalRangeModifier(player);
         double totalRange = baseRange + bonusRange;
@@ -1583,6 +1585,57 @@ public class GeneralEventListener implements Listener {
 
     }
 
+    @EventHandler
+    public void rezPlayerClickBody(PlayerInteractEntityEvent event){
+
+        Player player = event.getPlayer();
+
+        if(player.getGameMode() != GameMode.SPECTATOR){
+            return;
+        }
+
+        boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
+
+        if(!deathStatus){
+            return;
+        }
+
+        if(!rezTick.ableToRez(player)){
+            return;
+        }
+
+        event.setCancelled(true);
+
+        deathManager.playerNowLive(player, false, null);
+        displayWeapons.displayArmor(player);
+    }
+
+    @EventHandler
+    public void playerPunchBody(EntityDamageByEntityEvent event){
+
+        if(!(event.getDamager() instanceof Player player)){
+            return;
+        }
+
+        if(player.getGameMode() != GameMode.SPECTATOR){
+            return;
+        }
+
+        boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
+
+        if(!deathStatus){
+            return;
+        }
+
+        if(!rezTick.ableToRez(player)){
+            return;
+        }
+
+        event.setCancelled(true);
+
+        deathManager.playerNowLive(player, false, null);
+        displayWeapons.displayArmor(player);
+    }
 
     @EventHandler
     public void rezPlayer(PlayerInteractEvent event){
@@ -1605,11 +1658,24 @@ public class GeneralEventListener implements Listener {
 
         event.setCancelled(true);
 
-        if(event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK){
+        //whats the event for clicking an entity
+        if(event.getAction() == Action.LEFT_CLICK_AIR ||
+                event.getAction() == Action.LEFT_CLICK_BLOCK){
 
             deathManager.playerNowLive(player, false, null);
             displayWeapons.displayArmor(player);
         }
+
+    }
+
+
+    @EventHandler
+    public void playerRezByPlayer(PlayerRezByPlayerEvent event){
+
+        LivingEntity caster = event.getCaster();
+        LivingEntity target = event.getEntity();
+
+        deathManager.playerNowLive(target, true, caster);
 
     }
 

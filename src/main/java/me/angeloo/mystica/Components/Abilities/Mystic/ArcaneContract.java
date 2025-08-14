@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.Abilities.Mystic;
 
 import me.angeloo.mystica.Components.Abilities.MysticAbilities;
+import me.angeloo.mystica.CustomEvents.PlayerRezByPlayerEvent;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Mystica;
@@ -30,7 +31,6 @@ public class ArcaneContract {
     private final CombatManager combatManager;
     private final BuffAndDebuffManager buffAndDebuffManager;
     private final CooldownDisplayer cooldownDisplayer;
-    private final DeathManager deathManager;
     private final Mana mana;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -46,7 +46,6 @@ public class ArcaneContract {
         combatManager = manager.getCombatManager();
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
-        deathManager = new DeathManager(main);
         gravestoneManager = main.getGravestoneManager();
     }
 
@@ -114,7 +113,9 @@ public class ArcaneContract {
 
     private void execute(LivingEntity caster, LivingEntity target){
 
-        deathManager.playerNowLive(target, true, caster);
+        //create custom event
+        //deathManager.playerNowLive(target, true, caster);
+        Bukkit.getServer().getPluginManager().callEvent(new PlayerRezByPlayerEvent(target, caster));
 
         new BukkitRunnable(){
             double height = 0;

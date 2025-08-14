@@ -58,7 +58,9 @@ public class AggroTick {
 
                 for(LivingEntity attacker : originalAttackerList){
 
-                    playerCombatManager.startCombatTimer(attacker);
+                    Bukkit.getScheduler().runTask(main, () ->{
+                        playerCombatManager.startCombatTimer(attacker);
+                    });
 
                     boolean blacklist = aggroManager.getIfOnBlackList(attacker);
                     boolean deathStatus = profileManager.getAnyProfile(attacker).getIfDead();
@@ -124,8 +126,12 @@ public class AggroTick {
                     if(deathStatus || blackList){
                         ((Creature) entity).setTarget(null);
                     }else{
-                        //Bukkit.getLogger().info("starting combat from aggro");
-                        playerCombatManager.startCombatTimer(targetedPlayer);
+
+                        Bukkit.getScheduler().runTask(main, ()->{
+                            playerCombatManager.startCombatTimer(targetedPlayer);
+                        });
+
+
                     }
 
                 }

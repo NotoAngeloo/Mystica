@@ -504,9 +504,6 @@ public class HudManager {
     private String createStatusString(Player player){
         StringBuilder status = new StringBuilder();
 
-        if(!profileManager.getAnyProfile(player).getIfInCombat()){
-            return String.valueOf(status);
-        }
 
         if(profileManager.getAnyProfile(player).getIfDead()){
             return String.valueOf(status);
@@ -1762,5 +1759,6 @@ public class HudManager {
     private String getBossWarning(Player player){
         return bossWarnings.getWarning(player);
     }
+
 
 }

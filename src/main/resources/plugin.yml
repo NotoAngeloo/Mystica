@@ -139,7 +139,7 @@ commands:
     permission: developer
   BossWarn:
     description: allows mms to warn player about upcoming mechanics
-    usage: /BossWarn <player.uuid> <warning> <time>
+    usage: /BossWarn <player.uuid> <time> <warning>
     permission: developer
 
 permissions:

@@ -37,7 +37,7 @@ public class BossWarn implements CommandExecutor {
 
         //player, warning, time
 
-        if (args.length == 3) {
+        if (args.length >= 3) {
 
 
             if (args[0].equalsIgnoreCase("<target.uuid>")) {
@@ -52,13 +52,30 @@ public class BossWarn implements CommandExecutor {
             //Bukkit.getLogger().info(String.valueOf(player));
 
             if(player == null){
+                Bukkit.getLogger().info("player " + args[0] + " not found");
                 return true;
             }
 
             //Bukkit.getLogger().info("5");
 
-            String warning = args[1];
-            int time = Integer.parseInt(args[2]);
+            int time;
+
+            try {
+                time = Integer.parseInt(args[1]);
+            }
+            catch (NumberFormatException e){
+                Bukkit.getLogger().info("bosswarn time input not number");
+                return true;
+            }
+
+            StringBuilder sb = new StringBuilder();
+            for (int i = 2; i < args.length; i++) {
+                sb.append(args[i]);
+                if (i < args.length - 1) {
+                    sb.append(" ");
+                }
+            }
+            String warning = sb.toString();
 
             bossWarnings.setWarning(player, warning, time);
 

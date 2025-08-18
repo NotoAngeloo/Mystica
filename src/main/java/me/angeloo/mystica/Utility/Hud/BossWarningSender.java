@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Utility.Hud;
 
 import me.angeloo.mystica.Mystica;
+import org.bukkit.Warning;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -9,8 +10,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class BossWarnings {
+public class BossWarningSender {
 
+
+    private final Map<String, String> warningCache = new HashMap<>();
 
     private final Map<Character, String> characterStringMap = Map.<Character, String>ofEntries(
             Map.entry(' ', " "), Map.entry('!',"\uE280"), Map.entry('"',"\uE281"), Map.entry('#',"\uE282"),
@@ -41,27 +44,58 @@ public class BossWarnings {
 
     private final Mystica main;
 
-    private final Map<UUID, String> warningMap = new HashMap<>();
+    private final Map<UUID, BossWarning> warningMap = new HashMap<>();
     private final Map<UUID, BukkitTask> removalTaskMap = new HashMap<>();
 
-    public BossWarnings(Mystica main){
+    public BossWarningSender(Mystica main){
         this.main = main;
     }
 
     public String getWarning(Player player){
-        return warningMap.getOrDefault(player.getUniqueId(), " ");
+
+        if(warningMap.containsKey(player.getUniqueId())){
+            return warningMap.get(player.getUniqueId()).getWarning();
+        }
+
+        return " ";
     }
 
-    //perhaps if warning in a mpa already, grab it from there instead of calculating
-    public void setWarning(Player player, String string, int time){
+    //make so some cannot be overwritten
+    public void setWarning(Player player, String string, int time, boolean overridable){
 
         if(removalTaskMap.containsKey(player.getUniqueId())){
+
+            if(warningMap.containsKey(player.getUniqueId())){
+                BossWarning warning = warningMap.get(player.getUniqueId());
+                if(!warning.getIfOverridable()){
+                    return;
+                }
+            }
+
             removalTaskMap.get(player.getUniqueId()).cancel();
             removalTaskMap.remove(player.getUniqueId());
         }
 
-        StringBuilder text = new StringBuilder();
+        if(warningCache.containsKey(string)){
+            string = warningCache.get(string);
 
+            BossWarning warning = new BossWarning(string, overridable);
+
+            warningMap.put(player.getUniqueId(), warning);
+            BukkitTask task = new BukkitRunnable(){
+                @Override
+                public void run(){
+                    removeWarning(player);
+                    removalTaskMap.remove(player.getUniqueId());
+                }
+
+            }.runTaskLaterAsynchronously(main, time);
+
+            removalTaskMap.put(player.getUniqueId(), task);
+            return;
+        }
+
+        StringBuilder text = new StringBuilder();
         //left banner
         text.append("\uE2DE");
 
@@ -89,10 +123,14 @@ public class BossWarnings {
         //right banner
         text.append("\uE2F0");
 
+        warningCache.put(string, String.valueOf(text));
+
         string = String.valueOf(text);
 
+        BossWarning warning = new BossWarning(string, overridable);
+
         //remove after time
-        warningMap.put(player.getUniqueId(), string);
+        warningMap.put(player.getUniqueId(), warning);
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){

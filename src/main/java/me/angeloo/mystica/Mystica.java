@@ -1,6 +1,5 @@
 package me.angeloo.mystica;
 
-import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Commands.*;
 import me.angeloo.mystica.Components.Inventories.Abilities.AbilityInventory;
@@ -24,7 +23,7 @@ import me.angeloo.mystica.Utility.*;
 import me.angeloo.mystica.Utility.DamageIndicator.DamageIndicatorApi;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
-import me.angeloo.mystica.Utility.Hud.BossWarnings;
+import me.angeloo.mystica.Utility.Hud.BossWarningSender;
 import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.Listeners.GeneralEventListener;
 import me.angeloo.mystica.Utility.Listeners.InventoryEventListener;
@@ -60,7 +59,7 @@ public final class Mystica extends JavaPlugin{
 
     private DamageBoardPlaceholders damageBoardPlaceholders;
     private HudManager hudManager;
-    private BossWarnings bossWarnings;
+    private BossWarningSender bossWarningSender;
 
     private DisplayWeapons displayWeapons;
     private ClassSetter classSetter;
@@ -184,7 +183,7 @@ public final class Mystica extends JavaPlugin{
 
         hudManager = new HudManager(this);
         damageBoardPlaceholders = hudManager.getDamageBoardPlaceholders();
-        bossWarnings = hudManager.getBossWarnings();
+        bossWarningSender = hudManager.getBossWarnings();
 
         fakePlayerAiManager = new FakePlayerAiManager(this);
 
@@ -459,7 +458,7 @@ public final class Mystica extends JavaPlugin{
         return cooldownDisplayer;
     }
 
-    public BossWarnings getBossWarnings(){return bossWarnings;}
+    public BossWarningSender getBossWarnings(){return bossWarningSender;}
 
     @NotNull
     public PacketInterface getPacketInterface(){

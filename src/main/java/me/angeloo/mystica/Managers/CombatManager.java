@@ -23,7 +23,7 @@ import java.util.*;
 public class CombatManager {
 
     private final Mystica main;
-
+    private final DpsManager dpsManager;
     private final DisplayWeapons displayWeapons;
     private final ProfileManager profileManager;
     private final MysticaPartyManager mysticaPartyManager;
@@ -40,6 +40,7 @@ public class CombatManager {
         displayWeapons = main.getDisplayWeapons();
         mysticaPartyManager = main.getMysticaPartyManager();
         abilityManager = manager;
+        dpsManager = main.getDpsManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         combatTick = new CombatTick(main, this, manager);
     }
@@ -58,6 +59,7 @@ public class CombatManager {
         boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
 
         if (!combatStatus){
+            profileManager.getAnyProfile(player).setIfInCombat(true);
             //player.sendMessage("You are now in combat");
 
             player.closeInventory();
@@ -76,6 +78,31 @@ public class CombatManager {
                 server.dispatchCommand(server.getConsoleSender(), "interactions stop " + player.getName());
             }*/
 
+            //make rest of team in combat
+            for(LivingEntity member :getMParty(player)){
+                if(member instanceof Player pPlayer){
+                    startCombatTimer(pPlayer);
+                }
+
+
+            }
+
+            dpsManager.removeDps(player);
+            //remove for companions
+            if(!profileManager.getCompanions(player).isEmpty()){
+                Bukkit.getScheduler().runTask(main, ()->{
+                    for(UUID companionId : profileManager.getCompanions(player)){
+
+                        if(!(Bukkit.getEntity(companionId) instanceof LivingEntity companion)){
+                            continue;
+                        }
+
+                        dpsManager.removeDps(companion);
+                    }
+
+
+                });
+            }
 
             combatTick.startCombatTickFor(player);
         }
@@ -99,9 +126,7 @@ public class CombatManager {
 
         //first check mparty
 
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
-
-        for(LivingEntity member : mParty){
+        for(LivingEntity member : getMParty(player)){
 
             if(member == player){
                 continue;
@@ -242,6 +267,10 @@ public class CombatManager {
 
     private boolean ifSheathed(Player player){
         return sheathed.getOrDefault(player.getUniqueId(), true);
+    }
+
+    private List<LivingEntity> getMParty(LivingEntity entity){
+        return new ArrayList<>(mysticaPartyManager.getMysticaParty(entity));
     }
 
 }

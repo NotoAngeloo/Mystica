@@ -1,15 +1,13 @@
 package me.angeloo.mystica.Components.Commands;
 
-import io.lumine.mythic.bukkit.entities.BukkitIllusioner;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Enums.BarType;
-import me.angeloo.mystica.Utility.Hud.BossWarnings;
+import me.angeloo.mystica.Utility.Hud.BossWarningSender;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -19,11 +17,11 @@ import java.util.UUID;
 public class BossWarn implements CommandExecutor {
 
     private final Mystica main;
-    private final BossWarnings bossWarnings;
+    private final BossWarningSender bossWarningSender;
 
     public BossWarn(Mystica main){
         this.main = main;
-        bossWarnings = main.getBossWarnings();
+        bossWarningSender = main.getBossWarnings();
     }
 
     @Override
@@ -37,7 +35,7 @@ public class BossWarn implements CommandExecutor {
 
         //player, warning, time
 
-        if (args.length >= 3) {
+        if (args.length >= 4) {
 
 
             if (args[0].equalsIgnoreCase("<target.uuid>")) {
@@ -68,8 +66,11 @@ public class BossWarn implements CommandExecutor {
                 return true;
             }
 
+            boolean overridable = Boolean.parseBoolean(args[2]);;
+
+
             StringBuilder sb = new StringBuilder();
-            for (int i = 2; i < args.length; i++) {
+            for (int i = 3; i < args.length; i++) {
                 sb.append(args[i]);
                 if (i < args.length - 1) {
                     sb.append(" ");
@@ -77,7 +78,7 @@ public class BossWarn implements CommandExecutor {
             }
             String warning = sb.toString();
 
-            bossWarnings.setWarning(player, warning, time);
+            bossWarningSender.setWarning(player, warning, time, overridable);
 
             new BukkitRunnable(){
                 int left = time;

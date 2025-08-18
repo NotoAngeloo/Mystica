@@ -4,7 +4,7 @@ import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.Hud.BossWarnings;
+import me.angeloo.mystica.Utility.Hud.BossWarningSender;
 import me.angeloo.mystica.Utility.Hud.IconCalculator;
 import me.angeloo.mystica.Utility.Hud.SkinGrabber;
 import me.angeloo.mystica.Utility.Logic.DamageBoardPlaceholders;
@@ -38,7 +38,7 @@ public class HudManager {
     private final ProfileManager profileManager;
     private final MysticaPartyManager mysticaPartyManager;
     private final DamageBoardPlaceholders damageBoardPlaceholders;
-    private final BossWarnings bossWarnings;
+    private final BossWarningSender bossWarningSender;
 
 
     private final AllSkillItems allSkillItems;
@@ -170,7 +170,7 @@ public class HudManager {
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         targetManager = main.getTargetManager();
         bossCastingManager = main.getBossCastingManager();
-        bossWarnings = new BossWarnings(main);
+        bossWarningSender = new BossWarningSender(main);
         gravestoneManager = main.getGravestoneManager();
         iconCalculator = new IconCalculator();
         skinGrabber = new SkinGrabber();
@@ -180,7 +180,7 @@ public class HudManager {
         return damageBoardPlaceholders;
     }
 
-    public BossWarnings getBossWarnings(){return bossWarnings;}
+    public BossWarningSender getBossWarnings(){return bossWarningSender;}
 
     public void innitHud(Player player){
 
@@ -1757,7 +1757,7 @@ public class HudManager {
     }
 
     private String getBossWarning(Player player){
-        return bossWarnings.getWarning(player);
+        return bossWarningSender.getWarning(player);
     }
 
 

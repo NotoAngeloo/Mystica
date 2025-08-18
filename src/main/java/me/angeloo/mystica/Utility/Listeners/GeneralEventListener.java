@@ -630,7 +630,6 @@ public class GeneralEventListener implements Listener {
         //Bukkit.getLogger().info("team wipe");
 
         for (LivingEntity member : mParty) {
-            dpsManager.removeDps(member);
 
             if (member instanceof Player player) {
                 hudManager.getDamageBoardPlaceholders().clearPlaceholders(player);
@@ -1222,11 +1221,17 @@ public class GeneralEventListener implements Listener {
     @EventHandler
     public void playerCastSkillOnEnemy(SkillOnEnemyEvent event){
 
+        LivingEntity entity = event.getEntity();
+
+        if(profileManager.getAnyProfile(entity).getIfDead() || entity.isDead()){
+            return;
+        }
+
         if(event.getCaster() instanceof Player player){
             combatManager.startCombatTimer(player);
         }
 
-        LivingEntity entity = event.getEntity();
+
 
         if(entity instanceof Player){
             return;

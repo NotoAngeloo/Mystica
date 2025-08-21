@@ -269,6 +269,14 @@ public class HudManager {
 
                     int amount = (int) Math.ceil(ratio * 20);
 
+                    if(amount <=0){
+                        amount = 0;
+                    }
+
+                    if(amount>=20){
+                        amount = 20;
+                    }
+
                     //Bukkit.getLogger().info(String.valueOf(amount));
 
                     castBar.append(manaBar[amount]);
@@ -1743,8 +1751,6 @@ public class HudManager {
     }
 
     private String ultimateCooldown(Player player){
-
-        StringBuilder unicode = new StringBuilder();
 
 
         int percent = iconCalculator.calculate(abilityManager.getPlayerUltimateCooldown(player), abilityManager.getUltimateCooldown(player));

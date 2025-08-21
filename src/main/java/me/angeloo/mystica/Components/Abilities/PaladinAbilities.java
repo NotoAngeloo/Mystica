@@ -203,7 +203,7 @@ public class PaladinAbilities {
             case 3:
                 return reigningSword.getCooldown(player);
             case 4:
-                return covenantSword.getCooldown(player);
+                return covenantSword.getReadyIn(player);
             case 5:
                 return orderShield.getCooldown(player);
             case 6:
@@ -211,7 +211,7 @@ public class PaladinAbilities {
             case 7:
                 return duranceOfTruth.getCooldown(player);
             case 8:
-                return judgement.getCooldown(player);
+                return judgement.getReadyIn(player);
         }
 
         return 0;

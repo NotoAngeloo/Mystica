@@ -4,6 +4,8 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+
+import java.util.Map;
 import java.util.Random;
 
 
@@ -11,6 +13,11 @@ public class DamageIndicatorCalculator {
 
     private static final Random RANDOM = new Random();
 
+    //0-9
+    private final String[] critNumbers = {"\uE039","\uE03A","\uE03B","\uE03C","\uE03D","\uE03E","\uE03F","\uE048","\uE04C","\uE04D"};
+
+    //0-9
+    private final String[] nonCritNumbers = {"\uE02F","\uE030","\uE031","\uE032","\uE033","\uE034","\uE035","\uE036","\uE037","\uE038"};
 
     public DamageIndicatorCalculator(){
     }
@@ -25,15 +32,16 @@ public class DamageIndicatorCalculator {
 
         Location targetLocation = entity.getLocation().add(2 * xOffset * RANDOM.nextDouble() - xOffset, yOffset - 0.2d, 2*zOffset*RANDOM.nextDouble() - zOffset);
 
-        double scale = 10;
-        double scaledDamage = Math.ceil(damage * scale) / scale;
+        /*double scale = 10;
+        double scaledDamage = Math.ceil(damage * scale) / scale;*/
+        int damageInt = (int) Math.ceil(damage);
 
-        DamageIndicator.getInstance().spawnDamageIndicator(player, targetLocation, scaledDamage, getFormat(scaledDamage, crit));
+        DamageIndicator.getInstance().spawnDamageIndicator(player, targetLocation, damage, getFormat(damageInt, crit));
 
 
     }
 
-    public String getFormat(double damage, boolean crit){
+    public String getFormat(int damage, boolean crit){
 
         StringBuilder damageNumbers = new StringBuilder();
 
@@ -43,78 +51,14 @@ public class DamageIndicatorCalculator {
             damageNumbers.append("\uE02E");
 
             for(char c : damageAsString.toCharArray()){
-
-                switch (c) {
-                    case '0' -> {
-                        damageNumbers.append("\uE039");
-                    }
-                    case '1' -> {
-                        damageNumbers.append("\uE03A");
-                    }
-                    case '2' -> {
-                        damageNumbers.append("\uE03B");
-                    }
-                    case '3' -> {
-                        damageNumbers.append("\uE03C");
-                    }
-                    case '4' -> {
-                        damageNumbers.append("\uE03D");
-                    }
-                    case '5' -> {
-                        damageNumbers.append("\uE03E");
-                    }
-                    case '6' -> {
-                        damageNumbers.append("\uE03F");
-                    }
-                    case '7' -> {
-                        damageNumbers.append("\uE048");
-                    }
-                    case '8' -> {
-                        damageNumbers.append("\uE04C");
-                    }
-                    case '9' -> {
-                        damageNumbers.append("\uE04D");
-                    }
-                }
-
+                int i = Integer.parseInt(String.valueOf(c));
+                damageNumbers.append(critNumbers[i]);
             }
         }
         else{
             for(char c : damageAsString.toCharArray()){
-
-                switch (c) {
-                    case '0' -> {
-                        damageNumbers.append("\uE02F");
-                    }
-                    case '1' -> {
-                        damageNumbers.append("\uE030");
-                    }
-                    case '2' -> {
-                        damageNumbers.append("\uE031");
-                    }
-                    case '3' -> {
-                        damageNumbers.append("\uE032");
-                    }
-                    case '4' -> {
-                        damageNumbers.append("\uE033");
-                    }
-                    case '5' -> {
-                        damageNumbers.append("\uE034");
-                    }
-                    case '6' -> {
-                        damageNumbers.append("\uE035");
-                    }
-                    case '7' -> {
-                        damageNumbers.append("\uE036");
-                    }
-                    case '8' -> {
-                        damageNumbers.append("\uE037");
-                    }
-                    case '9' -> {
-                        damageNumbers.append("\uE038");
-                    }
-                }
-
+                int i = Integer.parseInt(String.valueOf(c));
+                damageNumbers.append(nonCritNumbers[i]);
             }
         }
 

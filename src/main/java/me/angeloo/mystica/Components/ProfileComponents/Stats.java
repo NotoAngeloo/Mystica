@@ -58,172 +58,149 @@ public class Stats {
         int magic_defence = 50;
         int crit = 1;
 
-        switch (playerClass){
-            case Assassin:{
-                attack+=(level*2);
-                health+=(level*15);
-                defence+=(level);
-                magic_defence+=(level);
+        switch (playerClass) {
+            case Assassin -> {
+                attack += (level * 2);
+                health += (level * 15);
+                defence += (level);
+                magic_defence += (level);
 
-                switch (subclass){
-                    case Duelist:{
-                        attack+=level;
-                        crit+=10;
-                        break;
+                switch (subclass) {
+                    case Duelist -> {
+                        attack += level;
+                        crit += 10;
                     }
-                    case Alchemist:{
-                        health+=(level*15);
-                        break;
+                    case Alchemist -> {
+                        health += (level * 15);
                     }
                 }
 
 
-                break;
             }
-            case Elementalist:{
+            case Elementalist -> {
 
-                attack+=(level*2);
-                health+=(level*15);
-                defence+=(level);
-                magic_defence+=(level);
+                attack += (level * 2);
+                health += (level * 15);
+                defence += (level);
+                magic_defence += (level);
 
-                switch (subclass){
-                    case Pyromancer:{
-                        attack+=level;
-                        crit+=10;
-                        break;
+                switch (subclass) {
+                    case Pyromancer -> {
+                        attack += level;
+                        crit += 10;
                     }
-                    case Conjurer:{
-                        health+=(level*15);
-                        break;
+                    case Conjurer -> {
+                        health += (level * 15);
                     }
                 }
 
-                break;
             }
-            case Mystic:{
+            case Mystic -> {
 
-                attack+=(level*2);
-                health+=(level*15);
-                defence+=(level);
-                magic_defence+=(level);
+                attack += (level * 2);
+                health += (level * 15);
+                defence += (level);
+                magic_defence += (level);
 
-                switch (subclass){
-                    case Arcane:
-                    case Chaos:{
-                        attack+=level;
-                        crit+=10;
-                        break;
+                switch (subclass) {
+                    case Arcane, Chaos -> {
+                        attack += level;
+                        crit += 10;
                     }
-                    case Shepard:{
-                        health+=(level*15);
-                        break;
+                    case Shepard -> {
+                        health += (level * 15);
                     }
                 }
 
-                break;
             }
-            case Paladin:{
+            case Paladin -> {
 
-                attack+=(level*2);
-                health+=(level*15);
-                defence+=(level);
-                magic_defence+=(level);
+                attack += (level * 2);
+                health += (level * 15);
+                defence += (level);
+                magic_defence += (level);
 
-                switch (subclass){
-                    case Dawn: {
-                        attack+=level;
-                        crit+=10;
-                        break;
+                switch (subclass) {
+                    case Dawn -> {
+                        attack += level;
+                        crit += 10;
                     }
-                    case Divine:{
-                        health+=(level*15);
-                        break;
+                    case Divine -> {
+                        health += (level * 15);
                     }
-                    case Templar:{
-                        attack-=(level);
-                        health+=(level*15);
-                        defence+=(level);
-                        magic_defence+=(level);
-                        break;
+                    case Templar -> {
+                        attack -= (level);
+                        health += (level * 15);
+                        defence += (level);
+                        magic_defence += (level);
                     }
                 }
 
-                break;
             }
-            case Ranger:{
-                attack+=(level*2);
-                health+=(level*15);
-                defence+=(level);
-                magic_defence+=(level);
+            case Ranger -> {
+                attack += (level * 2);
+                health += (level * 15);
+                defence += (level);
+                magic_defence += (level);
 
-                switch (subclass){
-                    case Scout:{
-                        attack+=level;
-                        crit+=10;
-                        break;
+                switch (subclass) {
+                    case Scout -> {
+                        attack += level;
+                        crit += 10;
                     }
-                    case Tamer:{
-                        health+=(level*15);
-                        break;
+                    case Tamer -> {
+                        health += (level * 15);
                     }
                 }
 
 
-                break;
             }
-            case Shadow_Knight:{
-                attack+=(level*2);
-                health+=(level*15);
-                defence+=(level);
-                magic_defence+=(level);
+            case Shadow_Knight -> {
+                attack += (level * 2);
+                health += (level * 15);
+                defence += (level);
+                magic_defence += (level);
 
-                switch (subclass){
-                    case Doom: {
-                        attack+=level;
-                        crit+=10;
-                        break;
+                switch (subclass) {
+                    case Doom -> {
+                        attack += level;
+                        crit += 10;
                     }
-                    case Blood:{
-                        attack-=(level);
-                        health+=(level*15);
-                        defence+=(level);
-                        magic_defence+=(level);
-                        break;
+                    case Blood -> {
+                        attack -= (level);
+                        health += (level * 15);
+                        defence += (level);
+                        magic_defence += (level);
                     }
                 }
 
-                break;
             }
-            case Warrior:{
+            case Warrior -> {
 
-                attack+=(level*2);
-                health+=(level*15);
-                defence+=(level);
-                magic_defence+=(level);
+                attack += (level * 2);
+                health += (level * 15);
+                defence += (level);
+                magic_defence += (level);
 
-                switch (subclass){
-                    case Executioner: {
-                        attack+=level;
-                        crit+=10;
-                        break;
+                switch (subclass) {
+                    case Executioner -> {
+                        attack += level;
+                        crit += 10;
                     }
-                    case Gladiator:{
-                        attack-=(level);
-                        health+=(level*15);
-                        defence+=(level);
-                        magic_defence+=(level);
-                        break;
+                    case Gladiator -> {
+                        attack -= (level);
+                        health += (level * 15);
+                        defence += (level);
+                        magic_defence += (level);
                     }
                 }
 
-                break;
             }
-            case NONE:{
-                attack+=(level*2);
-                health+=(level*15);
-                defence+=(level);
-                magic_defence+=(level);
+            case NONE -> {
+                attack += (level * 2);
+                health += (level * 15);
+                defence += (level);
+                magic_defence += (level);
             }
         }
 

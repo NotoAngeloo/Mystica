@@ -90,18 +90,18 @@ public class CovenantSword {
             cooldownTask.get(caster.getUniqueId()).cancel();
         }
 
-        abilityReadyInMap.put(caster.getUniqueId(), 20);
+        abilityReadyInMap.put(caster.getUniqueId(), getCooldown());
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(getCooldown(caster) <= 0){
+                if(getReadyIn(caster) <= 0){
                     cooldownDisplayer.displayCooldown(caster, 4);
                     this.cancel();
                     return;
                 }
 
-                int cooldown = getCooldown(caster) - 1;
+                int cooldown = getReadyIn(caster) - 1;
                 cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
@@ -447,7 +447,7 @@ public class CovenantSword {
         return damage;
     }
 
-    public int getCooldown(LivingEntity caster){
+    public int getReadyIn(LivingEntity caster){
         int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
@@ -462,7 +462,11 @@ public class CovenantSword {
     }
 
     public boolean usable(LivingEntity caster){
-        return getCooldown(caster) <= 0;
+        return getReadyIn(caster) <= 0;
+    }
+
+    public int getCooldown(){
+        return 20;
     }
 
 }

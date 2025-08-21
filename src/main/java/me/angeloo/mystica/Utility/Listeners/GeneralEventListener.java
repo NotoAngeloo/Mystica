@@ -689,6 +689,7 @@ public class GeneralEventListener implements Listener {
         }
 
         LivingEntity entity = event.getEntityWhoDied();
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(entity, WhomeverTarget));
 
         Yield yield = profileManager.getAnyProfile(entity).getYield();
 
@@ -1029,12 +1030,12 @@ public class GeneralEventListener implements Listener {
             Location center = entity.getLocation();
 
             BoundingBox hitBox = new BoundingBox(
-                    center.getX() - 20,
-                    center.getY() - 20,
-                    center.getZ() - 20,
-                    center.getX() + 20,
-                    center.getY() + 20,
-                    center.getZ() + 20
+                    center.getX() - 50,
+                    center.getY() - 50,
+                    center.getZ() - 50,
+                    center.getX() + 50,
+                    center.getY() + 50,
+                    center.getZ() + 50
             );
 
             for (Entity thisEntity : entity.getWorld().getNearbyEntities(hitBox)) {
@@ -1185,14 +1186,17 @@ public class GeneralEventListener implements Listener {
             return;
         }
 
-        event.setCancelled(true);
-
-
         int newSlot = event.getNewSlot();
 
         EquipSkills equipSkills = profileManager.getAnyProfile(player).getEquipSkills();
         int abilityNumber = equipSkills.getAnySlot()[newSlot];
+        //Bukkit.getLogger().info("ability number " + abilityNumber);
         abilityManager.useAbility(player, abilityNumber);
+
+        Bukkit.getScheduler().runTask(main, ()->{
+            player.getInventory().setHeldItemSlot(8);
+        });
+
 
     }
 
@@ -1519,6 +1523,7 @@ public class GeneralEventListener implements Listener {
 
         targetManager.setPlayerTarget(player, null);
         combatManager.forceCombatEnd(player);
+        Bukkit.getPluginManager().callEvent(new HudUpdateEvent(player, Target));
 
         displayWeapons.displayArmor(player);
 

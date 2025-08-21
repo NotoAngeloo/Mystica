@@ -29,41 +29,38 @@ public class FakePlayerTargetManager {
     public void suggestTarget(LivingEntity entity, LivingEntity target){
         //first check the class
 
+        if (target == null) {
+            return;
+        }
+
         //maybe make this subclass in the future, easy enough to change
-        switch (profileManager.getAnyProfile(entity).getPlayerClass()){
-            case Elementalist:
-            case Warrior:
-            case Ranger:{
+        switch (profileManager.getAnyProfile(entity).getPlayerClass()) {
+            case Elementalist, Warrior, Ranger -> {
 
-                if(target == null){
-                    break;
-                }
 
-                if(pveChecker.pveLogic(target) && !profileManager.getAnyProfile(target).getIfObject()){
+                if (pveChecker.pveLogic(target) && !profileManager.getAnyProfile(target).getIfObject()) {
                     targetMap.put(entity.getUniqueId(), target);
                 }
 
-                break;
             }
-            case Paladin:{
+            case Paladin -> {
 
-                if(targetMap.containsKey(entity.getUniqueId())){
+                if (targetMap.containsKey(entity.getUniqueId())) {
 
                     LivingEntity currentTarget = targetMap.get(entity.getUniqueId());
 
                     //ignore if already targeting a boss
-                    if(profileManager.getIfEntityIsBoss(currentTarget.getUniqueId())){
-                        break;
+                    if (profileManager.getIfEntityIsBoss(currentTarget.getUniqueId())) {
+                        return;
                     }
 
                 }
 
-                if(pveChecker.pveLogic(target) && !profileManager.getAnyProfile(target).getIfObject()){
+                if (pveChecker.pveLogic(target) && !profileManager.getAnyProfile(target).getIfObject()) {
                     targetMap.put(entity.getUniqueId(), target);
                     //Bukkit.getLogger().info("target of companion set to " + target);
                 }
 
-                break;
             }
         }
 
@@ -106,20 +103,16 @@ public class FakePlayerTargetManager {
                 continue;
             }
 
-            if(!(entity instanceof LivingEntity)){
+            if(!(entity instanceof LivingEntity livingEntity)){
                 continue;
             }
-
-            LivingEntity livingEntity = (LivingEntity) entity;
 
             if(entity.isDead()){
                 continue;
             }
 
-            if(entity instanceof Player){
+            if(entity instanceof Player entityPlayer){
                 double distanceSquared = entity.getLocation().distanceSquared(caster.getLocation());
-
-                Player entityPlayer = (Player) entity;
 
                 if(stealthTargetBlacklist.get(entityPlayer)){
                     continue;

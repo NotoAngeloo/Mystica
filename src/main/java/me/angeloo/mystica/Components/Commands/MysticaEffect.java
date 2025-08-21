@@ -71,52 +71,52 @@ public class MysticaEffect implements CommandExecutor {
             int amount = Integer.parseInt(args[3]);
 
             switch (type.toLowerCase()) {
-                case "crush":{
+                //crush amount = %damage of their health
 
-                    if(!(target instanceof Player)){
-                        return true;
-                    }
+                case "crush" -> {
 
                     int bossLevel = profileManager.getAnyProfile(caster).getStats().getLevel();
 
-                    int crushThreshold = 100 + (10 * bossLevel-1);
+                    //crush threshold increase by 10 each boss level
+                    int crushThreshold = 100 + (10 * (bossLevel - 1));
 
                     SubClass subclass = profileManager.getAnyProfile(target).getPlayerSubclass();
 
-                    if(subclass.equals(SubClass.Gladiator)
+
+                    if (subclass.equals(SubClass.Gladiator)
                             || subclass.equals(SubClass.Templar)
-                            || subclass.equals(SubClass.Blood)){
+                            || subclass.equals(SubClass.Blood)) {
                         crushThreshold -= 100;
                     }
 
-                    if(subclass.equals(SubClass.Executioner)){
+                    if (subclass.equals(SubClass.Executioner)) {
                         crushThreshold -= 50;
                     }
 
                     crushThreshold -= profileManager.getAnyProfile(target).getTotalDefense();
 
-                    if(crushThreshold<=0){
+                    if (crushThreshold <= 0) {
                         return true;
                     }
 
-                    double percent = profileManager.getAnyProfile(target).getTotalHealth() * ((double)amount/100);
+                    double percent = profileManager.getAnyProfile(target).getTotalHealth() * ((double) amount / 100);
 
                     changeResourceHandler.subtractHealthFromEntity(target, percent, caster, true);
                     //Bukkit.getLogger().info("crush");
 
                     return true;
                 }
-                case "stun":{
+                case "stun" -> {
                     buffAndDebuffManager.getStun().applyStun(target, amount);
                     return true;
                 }
-                case "unstun":{
+                case "unstun" -> {
                     buffAndDebuffManager.getStun().removeStun(target);
                     return true;
                 }
-                case "immune":{
+                case "immune" -> {
 
-                    if(buffAndDebuffManager.getImmune().getImmune(target)){
+                    if (buffAndDebuffManager.getImmune().getImmune(target)) {
                         buffAndDebuffManager.getImmune().removeImmune(target);
                         return true;
                     }
@@ -124,31 +124,31 @@ public class MysticaEffect implements CommandExecutor {
                     buffAndDebuffManager.getImmune().applyImmune(target, amount);
                     return true;
                 }
-                case "melt":{
+                case "melt" -> {
                     buffAndDebuffManager.getArmorBreak().applyArmorBreak(target);
                     return true;
                 }
-                case "heal_percent":{
+                case "heal_percent" -> {
                     double totalHealth = profileManager.getAnyProfile(target).getTotalHealth();
                     double healed = totalHealth * (amount * .01);
                     changeResourceHandler.addHealthToEntity(target, healed, caster);
                     return true;
                 }
-                case "fear":{
+                case "fear" -> {
                     buffAndDebuffManager.getFear().applyFear(target, amount);
                     return true;
                 }
-                case "fear_if_targeting":{
+                case "fear_if_targeting" -> {
 
-                    if(targetManager.isTargeting(target, caster)){
+                    if (targetManager.isTargeting(target, caster)) {
                         buffAndDebuffManager.getFear().applyFear(target, amount);
 
-                        if(target instanceof Player){
-                            if(!profileManager.getCompanions((Player)target).isEmpty())  {
-                                for(UUID companion : profileManager.getCompanions((Player) target)){
+                        if (target instanceof Player) {
+                            if (!profileManager.getCompanions((Player) target).isEmpty()) {
+                                for (UUID companion : profileManager.getCompanions((Player) target)) {
                                     LivingEntity entity = (LivingEntity) Bukkit.getEntity(companion);
 
-                                    if(entity == null){
+                                    if (entity == null) {
                                         continue;
                                     }
 

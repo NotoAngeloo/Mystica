@@ -1,7 +1,6 @@
 package me.angeloo.mystica.Utility.Hud;
 
 import me.angeloo.mystica.Mystica;
-import org.bukkit.Warning;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -16,7 +15,7 @@ public class BossWarningSender {
     private final Map<String, String> warningCache = new HashMap<>();
 
     private final Map<Character, String> characterStringMap = Map.<Character, String>ofEntries(
-            Map.entry(' ', " "), Map.entry('!',"\uE280"), Map.entry('"',"\uE281"), Map.entry('#',"\uE282"),
+            Map.entry(' ', "\uE2DF"), Map.entry('!',"\uE280"), Map.entry('"',"\uE281"), Map.entry('#',"\uE282"),
             Map.entry('$', "\uE283"), Map.entry('%', "\uE284"), Map.entry('&', "\uE285"), Map.entry('\'', "\uE286"),
             Map.entry('(', "\uE287"), Map.entry(')', "\uE288"), Map.entry('*', "\uE289"), Map.entry('+', "\uE28A"),
             Map.entry(',', "\uE28B"), Map.entry('-', "\uE28C"), Map.entry('.', "\uE28D"), Map.entry('/', "\uE28E"),
@@ -42,7 +41,10 @@ public class BossWarningSender {
             Map.entry('|', "\uE2DB"), Map.entry('}', "\uE2DC"), Map.entry('~', "\uE2DD")
     );
 
+
     private final Mystica main;
+
+    private final BossWarning defaultWarning = new BossWarning(" ", true);
 
     private final Map<UUID, BossWarning> warningMap = new HashMap<>();
     private final Map<UUID, BukkitTask> removalTaskMap = new HashMap<>();
@@ -59,6 +61,7 @@ public class BossWarningSender {
 
         return " ";
     }
+
 
     //make so some cannot be overwritten
     public void setWarning(Player player, String string, int time, boolean overridable){
@@ -101,27 +104,27 @@ public class BossWarningSender {
 
         //-1
         text.append("\uF801");
+
         //for each letter, get from a pre saved map
-
         for(char c : string.toCharArray()){
-            //banner
-            text.append("\uE2DF");
-            //-4
-            text.append("\uF804");
             text.append(getChar(c));
+            //-1
+            text.append("\uF801");
 
-            if(getChar(c).equals(" ")){
-                //-1b
+            if(c=='i'||c=='!'||c=='l'){
+                //-1
                 text.append("\uF801");
             }
-
         }
 
-        //-1
-        text.append("\uF801");
 
         //right banner
         text.append("\uE2F0");
+
+
+
+
+
 
         warningCache.put(string, String.valueOf(text));
 
@@ -145,7 +148,7 @@ public class BossWarningSender {
     }
 
     public void removeWarning(Player player){
-        warningMap.remove(player.getUniqueId());
+        warningMap.put(player.getUniqueId(), defaultWarning);
     }
 
     //make it blank later

@@ -100,7 +100,7 @@ public class FakePlayerAiManager {
 
                 LivingEntity target = fakePlayerTargetManager.getTarget(companion);
 
-                if(profileManager.getAnyProfile(target).getIfDead()){
+                if(profileManager.getAnyProfile(target).getIfDead() || profileManager.getAnyProfile(target).getIfDead() || target==null){
                     stopAiTask(companion.getUniqueId());
                     return;
                 }
@@ -243,7 +243,7 @@ public class FakePlayerAiManager {
 
                 LivingEntity target = fakePlayerTargetManager.getTarget(companion);
 
-                if(profileManager.getAnyProfile(target).getIfDead()){
+                if(profileManager.getAnyProfile(target).getIfDead() || profileManager.getAnyProfile(target).getIfDead() || target==null){
                     stopAiTask(companion.getUniqueId());
                     return;
                 }
@@ -560,7 +560,7 @@ public class FakePlayerAiManager {
 
                 LivingEntity target = fakePlayerTargetManager.getTarget(companion);
 
-                if(profileManager.getAnyProfile(target).getIfDead()){
+                if(profileManager.getAnyProfile(target).getIfDead() || profileManager.getAnyProfile(target).getIfDead() || target==null){
                     stopAiTask(companion.getUniqueId());
                     return;
                 }
@@ -712,7 +712,7 @@ public class FakePlayerAiManager {
 
                 LivingEntity target = fakePlayerTargetManager.getTarget(companion);
 
-                if(profileManager.getAnyProfile(target).getIfDead()){
+                if(profileManager.getAnyProfile(target).getIfDead() || profileManager.getAnyProfile(target).getIfDead() || target==null){
                     stopAiTask(companion.getUniqueId());
                     return;
                 }

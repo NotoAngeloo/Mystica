@@ -8,6 +8,7 @@ import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.Components.Items.MysticaItem;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.CustomEvents.UpdateMysticaPartyEvent;
 import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Mystica;
@@ -15,6 +16,7 @@ import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.PlayerProfile;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
+import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.ProfileFileWriter;
 import me.angeloo.mystica.Utility.Enums.SubClass;
@@ -913,6 +915,7 @@ public class ProfileManager {
         boss.setAI(false);
         boss.teleport(home);
 
+        Bukkit.getPluginManager().callEvent(new HudUpdateEvent(boss, BarType.WhomeverTarget));
 
         if(MythicBukkit.inst().getAPIHelper().isMythicMob(uuid)){
 

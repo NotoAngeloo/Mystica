@@ -374,12 +374,12 @@ public class CoersicaBoss {
             return;
         }
 
-        LivingEntity HoLee = null;
+        LivingEntity livingEntity = null;
 
         for (Entity thisEntity : entity.getWorld().getEntities()) {
             if(MythicBukkit.inst().getAPIHelper().isMythicMob(thisEntity)){
                 if(MythicBukkit.inst().getAPIHelper().getMythicMobInstance(thisEntity).getMobType().equals("CoersicaBoss")){
-                    HoLee = (LivingEntity) thisEntity;
+                    livingEntity = (LivingEntity) thisEntity;
                     break;
                 }
             }
@@ -387,8 +387,8 @@ public class CoersicaBoss {
 
         int level = 1;
 
-        if(HoLee != null){
-            level = profileManager.getAnyProfile(HoLee).getStats().getLevel();
+        if(livingEntity != null){
+            level = profileManager.getAnyProfile(livingEntity).getStats().getLevel();
         }
 
         int hp = 500 + (100 * (level-1));
@@ -406,19 +406,6 @@ public class CoersicaBoss {
 
         Yield yield = new Yield(xpYield, new ArrayList<>());
         NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(false, hp, stats, isMovable, immortal, passive, object, yield) {
-
-
-            @Override
-            public Boolean getIfDead() {
-
-                Entity entity = Bukkit.getEntity(uuid);
-
-                if(entity != null){
-                    return entity.isDead();
-                }
-
-                return true;
-            }
 
             @Override
             public Boolean getIfInCombat() {

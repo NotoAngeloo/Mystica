@@ -586,7 +586,7 @@ public class MysticBasic {
 
             //Bukkit.getLogger().info(caster.getName() + " healing");
 
-            double healPower = 1;
+            double healPower = 3;
             boolean crit = damageCalculator.checkIfCrit(caster, 0);
             double healAmount  = damageCalculator.calculateHealing(caster, healPower, crit);
 

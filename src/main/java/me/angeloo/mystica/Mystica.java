@@ -9,6 +9,7 @@ import me.angeloo.mystica.Components.Inventories.Equipment.*;
 import me.angeloo.mystica.Components.Inventories.Party.DungeonSelect;
 import me.angeloo.mystica.Components.Inventories.Party.InvitedInventory;
 import me.angeloo.mystica.Components.Inventories.Party.PartyInventory;
+import me.angeloo.mystica.Components.Inventories.Quests.QuestAcceptInventory;
 import me.angeloo.mystica.Components.Items.BagItem;
 import me.angeloo.mystica.Components.Items.MysticalCrystal;
 import me.angeloo.mystica.Components.Items.SoulStone;
@@ -99,6 +100,7 @@ public final class Mystica extends JavaPlugin{
     private DungeonSelect dungeonSelect;
     private InvitedInventory invitedInventory;
     private PartyInventory partyInventory;
+    private QuestAcceptInventory questAcceptInventory;
 
     private FirstClearManager firstClearManager;
 
@@ -199,6 +201,7 @@ public final class Mystica extends JavaPlugin{
         dungeonSelect = new DungeonSelect(this);
         invitedInventory = new InvitedInventory(this);
         partyInventory = new PartyInventory(this);
+        questAcceptInventory = new QuestAcceptInventory(this);
 
         firstClearManager = new FirstClearManager(this);
         firstClearManager.createOrLoadFolder();
@@ -215,7 +218,6 @@ public final class Mystica extends JavaPlugin{
         getCommand("Trash").setExecutor(new Trash());
         getCommand("ClassSelect").setExecutor(new ClassSelect(this));
         getCommand("GearSwap").setExecutor(new GearSwap());
-        getCommand("WhatAreMyStats").setExecutor(new WhatAreMyStats(this));
         getCommand("ToggleImmunity").setExecutor(new ToggleImmunity(this));
         getCommand("Reforge").setExecutor(new Reforge(this));
         getCommand("Refine").setExecutor(new Refine(this));
@@ -239,6 +241,7 @@ public final class Mystica extends JavaPlugin{
         getCommand("MysticaItem").setExecutor(new MysticaItem(this));
         getCommand("StarterKit").setExecutor(new StarterKit(this));
         getCommand("BossWarn").setExecutor(new BossWarn(this));
+        getCommand("TestQuestGui").setExecutor(new TestQuestGui(this));
 
 
         this.getServer().getPluginManager().registerEvents(new ClassSelectInventory(this), this);
@@ -459,6 +462,8 @@ public final class Mystica extends JavaPlugin{
     }
 
     public BossWarningSender getBossWarnings(){return bossWarningSender;}
+
+    public QuestAcceptInventory getQuestAcceptInventory(){return questAcceptInventory;}
 
     @NotNull
     public PacketInterface getPacketInterface(){

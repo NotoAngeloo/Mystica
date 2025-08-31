@@ -268,11 +268,7 @@ public class ArcaneShield {
         }
 
 
-        if(mana.getCurrentMana(caster)<getCost()){
-            return false;
-        }
-
-        return true;
+        return mana.getCurrentMana(caster) >= getCost();
     }
 
     public int returnWhichItem(Player player){

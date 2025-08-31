@@ -210,6 +210,8 @@ public class GeneralEventListener implements Listener {
 
         mysticaPartyManager.removeFromParty(player);
 
+        aggroManager.removeFromAllAttackerLists(player);
+
 
         boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
         boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();

@@ -168,7 +168,7 @@ public class Enlightenment {
     }
 
     public int getCost(){
-        return 100;
+        return 50;
     }
 
     public int getPlayerCooldown(LivingEntity caster){

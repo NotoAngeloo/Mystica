@@ -91,7 +91,6 @@ public class TargetManager {
 
 
         if(!(caster instanceof Player player)){
-            fakePlayerTargetManager.setTargetToNearestValid(caster, radius);
             return;
         }
 

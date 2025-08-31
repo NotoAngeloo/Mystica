@@ -336,7 +336,7 @@ public class PaladinBasic {
                 continue;
             }
 
-            if(!(entity instanceof LivingEntity)){
+            if(!(entity instanceof LivingEntity livingEntity)){
                 continue;
             }
 
@@ -349,8 +349,6 @@ public class PaladinBasic {
             if(entity instanceof ArmorStand){
                 continue;
             }
-
-            LivingEntity livingEntity = (LivingEntity) entity;
 
             if(!(entity instanceof Player)){
                 if(!pveChecker.pveLogic(livingEntity)){
@@ -380,9 +378,10 @@ public class PaladinBasic {
             if(caster instanceof Player){
                 targetManager.setPlayerTarget((Player)caster, targetToHit);
             }
-            else{
-                fakePlayerTargetManager.setFakePlayerTarget(caster, targetToHit);
-            }
+
+            //this is gone because paladin companions kept losing target and stopped taunting
+            //fakePlayerTargetManager.setFakePlayerTarget(caster, targetToHit);
+
 
             boolean crit = damageCalculator.checkIfCrit(caster, 0);
             double damage = damageCalculator.calculateDamage(caster, targetToHit, "Physical", getSkillDamage(caster)

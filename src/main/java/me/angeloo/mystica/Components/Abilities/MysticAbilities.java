@@ -213,7 +213,7 @@ public class MysticAbilities {
             case 6:
                 return aurora.getCooldown(player);
             case 7:
-                return arcaneContract.getCooldown(player);
+                return arcaneContract.getReadyIn(player);
             case 8:
                 return lightSigil.getCooldown(player);
         }

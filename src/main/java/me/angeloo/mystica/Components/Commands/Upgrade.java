@@ -22,12 +22,10 @@ public class Upgrade implements CommandExecutor {
 
         if(args.length == 0){
 
-            if(!(sender instanceof Player)){
+            if(!(sender instanceof Player player)){
                 sender.sendMessage("only players");
                 return true;
             }
-
-            Player player = (Player) sender;
 
             upgradeInventory.openUpgradeInventory(player);
 

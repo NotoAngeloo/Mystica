@@ -169,11 +169,21 @@ public class MatchMakingManager {
         boolean finalHeal = healer;
         boolean finalInterrupt = dungeonRequiresInterrupt;
         new BukkitRunnable(){
+            int count = 0;
             @Override
             public void run(){
 
                 if(!Mystica.dungeonsApi().isPlayerInDungeon(leaderPlayer)){
                     return;
+                }
+
+                if(count<=1){
+                    count++;
+                    return;
+                }
+
+                for(Player pMember: partyPlayers){
+                    pMember.sendMessage("Filled team with bots");
                 }
 
                 boolean interruptSpawned = false;

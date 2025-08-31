@@ -302,7 +302,7 @@ public class Infection {
 
 
     public boolean getIfEnhanced(LivingEntity caster){
-        return enhanced.getOrDefault(caster, false);
+        return enhanced.getOrDefault(caster.getUniqueId(), false);
     }
 
     public boolean getIfThisPlayerInfectThisEntity(LivingEntity caster, LivingEntity entity){

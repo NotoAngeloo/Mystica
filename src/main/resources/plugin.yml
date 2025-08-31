@@ -27,9 +27,6 @@ commands:
   SeeRawDamage:
     description: allows for better testing of seeing damage
     usage: /SeeRawDamage
-  WhatAreMyStats:
-    description: allows for players to see their attributes
-    usage: /WhatAreMyStats
   MysticaDamage:
     description: allows mms to damage player using this plugin
     usage: /MysticaDamage <target> <caster> <type> <amount>
@@ -140,6 +137,10 @@ commands:
   BossWarn:
     description: allows mms to warn player about upcoming mechanics
     usage: /BossWarn <player.uuid> <time> <warning>
+    permission: developer
+  TestQuestGui:
+    description: allows devs to test what quest would look like
+    usage: /TestQuestGui <player> <text>
     permission: developer
 
 permissions:

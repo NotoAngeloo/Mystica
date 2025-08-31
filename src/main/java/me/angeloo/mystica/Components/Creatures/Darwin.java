@@ -68,6 +68,12 @@ public class Darwin {
         magic_defence+=(level);
 
         attack+=level;
+        crit += 10;
+
+        //stats from gear, making so simulates starter gear, unleveled
+        attack+=9;
+        health+=99;
+        defence+=8;
 
         Stats stats = new Stats(level, attack, health, defence, magic_defence, crit);
 

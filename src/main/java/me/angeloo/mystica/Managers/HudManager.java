@@ -135,6 +135,10 @@ public class HudManager {
             "\uE0D8", "\uE0D7","\uE0D6","\uE0D5","\uE0D4","\uE0D3","\uE0D2","\uE0D1","\uE0D0","\uE0CF","\uE0CE","\uE0CD"};
 
     //0-20
+    private final String[] castBar = {"\uE305","\uE304","\uE303","\uE302","\uE301","\uE300","\uE2FF","\uE2FE","\uE2FD",
+            "\uE2FC", "\uE2FB","\uE2FA","\uE2F9","\uE2F8","\uE2F7","\uE2F6","\uE2F5","\uE2F4","\uE2F3","\uE2F2","\uE2F1"};
+
+    //0-20
     private final String[] rageBar = {"\uE0E1","\uE0F5","\uE0F4","\uE0F3","\uE0F2","\uE0F1","\uE0F0","\uE0EF","\uE0EE",
             "\uE0ED","\uE0EC","\uE0EB","\uE0EA","\uE0E9","\uE0E8","\uE0E7","\uE0E6","\uE0E5","\uE0E4","\uE0E3","\uE0E2"};
 
@@ -260,7 +264,7 @@ public class HudManager {
                     return;
                 }
 
-                StringBuilder castBar = new StringBuilder();
+                StringBuilder castBarString = new StringBuilder();
 
                 if(abilityManager.getIfCasting(player) && abilityManager.getCastPercent(player) != 0){
                     double percent =  abilityManager.getCastPercent(player);
@@ -279,11 +283,11 @@ public class HudManager {
 
                     //Bukkit.getLogger().info(String.valueOf(amount));
 
-                    castBar.append(manaBar[amount]);
+                    castBarString.append(castBar[amount]);
                 }
 
                 //warningmessage in first slot later
-                player.sendTitle(getBossWarning(player), String.valueOf(castBar), 0, 5, 0);
+                player.sendTitle(getBossWarning(player), String.valueOf(castBarString), 0, 5, 0);
             }
         }.runTaskAsynchronously(main);
 
@@ -1501,7 +1505,7 @@ public class HudManager {
                                 resourceBar.append("\uE10C");
                             }
                             case 5 -> {
-                                resourceBar.append("\uE008");
+                                resourceBar.append("\uE06A");
                             }
                         }
 

@@ -136,6 +136,7 @@ public class DeathManager {
                             playerNowLive(livingEntity, false, null);
                             Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent(livingEntity, "reset"));
                             Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Team));
+                            livingEntity.setAI(true);
                         }
 
 

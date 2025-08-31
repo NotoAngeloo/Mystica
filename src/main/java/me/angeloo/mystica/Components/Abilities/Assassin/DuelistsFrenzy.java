@@ -280,7 +280,7 @@ public class DuelistsFrenzy {
 
     public int returnWhichItem(Player player){
 
-        if(combo.getComboPoints(player) != 6){
+        if(combo.getComboPoints(player) != 5){
             return 1;
         }
 

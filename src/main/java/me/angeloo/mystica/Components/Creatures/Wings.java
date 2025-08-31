@@ -57,18 +57,25 @@ public class Wings {
             level = profileManager.getAnyProfile(theClosestPlayersLeader).getStats().getLevel();
         }
 
-        int attack = 50 + (9 * level);
-        int health = 100 + (117 * level);
-        int defence = 50 + (8 * level);
-        int magic_defence = 50 + (8 * level);
+        //base stats
+        int attack = 50;
+        int health = 100;
+        int defence = 50;
+        int magic_defence = 50;
         int crit = 1;
 
+        //from level
         attack+=(level*2);
         health+=(level*15);
         defence+=(level);
         magic_defence+=(level);
 
         health+=(level*15);
+
+        //stats from gear, making so simulates starter gear, unleveled
+        attack+=9;
+        health+=99;
+        defence+=8;
 
         Stats stats = new Stats(level, attack, health, defence, magic_defence, crit);
 

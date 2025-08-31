@@ -76,8 +76,7 @@ public class Mana {
 
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, true));
 
-        if(entity instanceof Player){
-            Player player = (Player) entity;
+        if(entity instanceof Player player){
             Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource));
         }
     }
@@ -98,7 +97,7 @@ public class Mana {
         if (currentTime - getLastManaed(entity.getUniqueId()) >= 10) {
             int currentMana = getCurrentMana(entity);
 
-            int manaRegenRate = 50;
+            int manaRegenRate = 100;
 
 
             if (currentMana > maxMana) {

@@ -69,20 +69,52 @@ public class ArcaneContract {
             return;
         }
 
+
         if(!gravestoneManager.isGravestone(target)){
+
+            if(!profileManager.getAnyProfile(target).fakePlayer()){
+                return;
+            }
+
+            if(pveChecker.pveLogic(target)){
+                return;
+            }
+
+            if(!profileManager.getAnyProfile(target).getIfDead()){
+                return;
+            }
+
+            if(getReadyIn(caster) > 0){
+                return;
+            }
+
+
+            if(mana.getCurrentMana(caster)<getCost()){
+                return;
+            }
+
+            mana.subTractManaFromEntity(caster, getCost());
+
+            List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(caster));
+            for(LivingEntity member : mParty){
+                putOnCooldown(member.getUniqueId());
+            }
+
+            execute(caster, target);
+
             return;
         }
 
-        LivingEntity actualTarget = gravestoneManager.getPlayer(target);
+        Player actualTarget = gravestoneManager.getPlayer(target);
 
         if(pveChecker.pveLogic(actualTarget)){
             return;
         }
 
-        if(actualTarget instanceof Player){
-            if(pvpManager.pvpLogic(caster, (Player) actualTarget)){
-                return;
-            }
+
+
+        if(pvpManager.pvpLogic(caster, actualTarget)){
+            return;
         }
 
 
@@ -90,7 +122,7 @@ public class ArcaneContract {
             return;
         }
 
-        if(getCooldown(caster) > 0){
+        if(getReadyIn(caster) > 0){
             return;
         }
 
@@ -199,7 +231,7 @@ public class ArcaneContract {
         return 100;
     }
 
-    public int getCooldown(LivingEntity caster){
+    public int getReadyIn(LivingEntity caster){
         int cooldown = abilityReadyInMap.getOrDefault(caster.getUniqueId(), 0);
 
         if(cooldown < 0){
@@ -220,6 +252,58 @@ public class ArcaneContract {
         }
 
         return 0;
+    }
+
+    public void useAsCompanion(LivingEntity caster, LivingEntity target){
+
+        abilityReadyInMap.put(caster.getUniqueId(), 120);
+
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(caster));
+        for(LivingEntity member : mParty){
+            putOnCooldown(member.getUniqueId());
+        }
+
+        Bukkit.getServer().getPluginManager().callEvent(new PlayerRezByPlayerEvent(target, caster));
+
+        if(target instanceof Player player){
+            player.sendMessage("Wings: Hey, be more careful!");
+        }
+
+        new BukkitRunnable(){
+            double height = 0;
+            final double radius = 1;
+            double angle = 0;
+            Vector initialDirection;
+
+            @Override
+            public void run(){
+                Location playerLoc = target.getLocation();
+
+                if (initialDirection == null) {
+                    initialDirection = playerLoc.getDirection().setY(0).normalize();
+                    initialDirection.rotateAroundY(Math.toRadians(-45));
+                }
+
+                Vector direction = initialDirection.clone();
+                double radians = Math.toRadians(angle);
+
+                direction.rotateAroundY(radians);
+
+                double x = playerLoc.getX() + direction.getX() * radius;
+                double z = playerLoc.getZ() + direction.getZ() * radius;
+
+                Location particleLoc = new Location(target.getWorld(), x, target.getLocation().getY() + height, z);
+
+                target.getWorld().spawnParticle(Particle.SPELL_WITCH, particleLoc, 1, 0, 0, 0, 0);
+
+                height += .05;
+                angle += 11;
+                if(height >= 2){
+                    this.cancel();
+                }
+            }
+        }.runTaskTimer(main, 0L, 1);
+
     }
 
 }

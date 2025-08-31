@@ -47,8 +47,7 @@ public class ClassSelectInventory implements Listener {
 
         switch (index) {
             case 0 -> {
-                //title = "\uF809\uF808\uF804\uE06F" + "\uF801\uE070" +  "\uF82A\uF828\uF825\uF80D\uE071" + "\uF801\uE072";
-                //title = "\uF809\uF808\uF804\uE06F" + "\uF801\uE070\uF821" +  "\uF82A\uF828\uF825\uF80D\uE071" + "\uF801\uE072";
+                //assassin
                 title = "\uF809\uF808\uF804\uE06F" + "\uF801\uE070\uF821" + "\uF82A\uF826\uF825\uF80D\uE071" + "\uF801\uE072";
 
             }
@@ -140,7 +139,7 @@ public class ClassSelectInventory implements Listener {
 
                 switch (colorlessTitle) {
                     case ("\uF809\uF808\uF804\uE06F" + "\uF801\uE070\uF821" + "\uF82A\uF826\uF825\uF80D\uE071" + "\uF801\uE072") -> {
-                        classSetter.setClass(player, PlayerClass.NONE);
+                        classSetter.setClass(player, PlayerClass.Assassin);
                         player.closeInventory();
                         return;
 

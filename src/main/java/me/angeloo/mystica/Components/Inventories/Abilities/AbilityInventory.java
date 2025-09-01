@@ -85,34 +85,6 @@ public class AbilityInventory implements Listener {
 
         }
 
-        /*inv.setItem(0, allSkillItems.getPlayerSkill(player, 1));
-        inv.setItem(1, allSkillItems.getPlayerSkill(player, 2));
-        inv.setItem(2, allSkillItems.getPlayerSkill(player, 3));
-        inv.setItem(3, allSkillItems.getPlayerSkill(player, 4));
-        inv.setItem(4, allSkillItems.getPlayerSkill(player, 5));
-        inv.setItem(5, allSkillItems.getPlayerSkill(player, 6));
-        inv.setItem(6, allSkillItems.getPlayerSkill(player, 7));
-        inv.setItem(7, allSkillItems.getPlayerSkill(player, 8));*/
-
-        //the select item
-        /*if(selectedSlot != -1){
-
-            ItemStack selector;
-
-            if(selectedSlot >=0 && selectedSlot<=8){
-
-                selector = inventoryItemGetter.getItem(Material.DIAMOND, 1, " ");
-
-                inv.setItem(selectedSlot, selector);
-            }
-
-            if(selectedSlot>=9 && selectedSlot <=16){
-                selector = inventoryItemGetter.getItem(Material.DIAMOND, 2, " ");
-                inv.setItem(selectedSlot + 9, selector);
-            }
-
-
-        }*/
 
 
         player.openInventory(inv);
@@ -128,19 +100,6 @@ public class AbilityInventory implements Listener {
         player.getInventory().setItem(33, allSkillItems.getPlayerSkill(player, equipSkills.getAnySlot()[6]));
         player.getInventory().setItem(34, allSkillItems.getPlayerSkill(player, equipSkills.getAnySlot()[7]));
         player.getInventory().setItem(35, allSkillItems.getBasic(player));
-
-
-        /*inv.setItem(37, allSkillItems.getPlayerSkill(player, equipSkills.getAnySlot()[1]));
-        inv.setItem(38, allSkillItems.getPlayerSkill(player, equipSkills.getAnySlot()[2]));
-        inv.setItem(39, allSkillItems.getPlayerSkill(player, equipSkills.getAnySlot()[3]));
-        inv.setItem(40, allSkillItems.getPlayerSkill(player, equipSkills.getAnySlot()[4]));
-        inv.setItem(41, allSkillItems.getPlayerSkill(player, equipSkills.getAnySlot()[5]));
-        inv.setItem(42, allSkillItems.getPlayerSkill(player, equipSkills.getAnySlot()[6]));
-        inv.setItem(43, allSkillItems.getPlayerSkill(player, equipSkills.getAnySlot()[7]));
-        inv.setItem(44, allSkillItems.getBasic(player));
-
-
-        inv.setItem(49, allSkillItems.getUltimate(player));*/
 
 
 

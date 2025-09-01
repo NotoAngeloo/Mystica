@@ -1,21 +1,8 @@
-package me.angeloo.mystica.Components.Inventories.Quests;
-
-import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.DisplayWeapons;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
+package me.angeloo.mystica.Components.Quests;
 
 import java.util.Map;
 
-public class QuestAcceptInventory {
-
-    private final Mystica main;
+public class QuestInventoryTextGenerator {
 
     private final Map<Character, String> characterStringMapLine0 = Map.<Character, String>ofEntries(
             Map.entry(' ', " "), Map.entry('!',"\uE306"), Map.entry('"',"\uE307"), Map.entry('#',"\uE308"),
@@ -44,65 +31,31 @@ public class QuestAcceptInventory {
             Map.entry('|', "\uE361"), Map.entry('}', "\uE362"), Map.entry('~', "\uE363")
     );
 
-    private final DisplayWeapons displayWeapons;
+    public QuestInventoryTextGenerator(){
 
-    public QuestAcceptInventory(Mystica main){
-        this.main = main;
-        displayWeapons = main.getDisplayWeapons();
     }
 
-    public void openQuestAccept(Player player, String text){
+    public String getInventoryText(String[] text){
 
-        //first check if this line of text has been generated already
+        StringBuilder inventoryText = new StringBuilder();
 
-        //replaces "\n" with newline char
-        text = text.replaceAll("\\\\n", "\n");
+        int index = 0;
+        for(String s : text){
 
-        //in a task cuz needs to calculate something expensive
-        String finalText = text;
-        BukkitTask task = new BukkitRunnable(){
-            @Override
-            public void run(){
-
-                StringBuilder questText = new StringBuilder();
-
-                //check if /n to increase line number
-
-                for(char c : finalText.toCharArray()){
-
-                    if(c == '\n'){
-                        //Bukkit.getLogger().info("newline detected");
-
-                        //increase the line and do negative spaces
-
-                        continue;
-                    }
-
-                    questText.append(getCharacter(c,0));
-                }
-
-                Inventory inv = Bukkit.createInventory(null, 9*6, ChatColor.WHITE + String.valueOf(questText));
-
-                inv.setItem(0, new ItemStack(Material.EMERALD));
-                inv.setItem(8, new ItemStack(Material.EMERALD));
-
-                Bukkit.getScheduler().runTask(main, ()->{
-                        player.openInventory(inv);
-                player.getInventory().clear();
-                displayWeapons.displayArmor(player);
-                });
-
+            //check for unicodes of negative space
+            for(char c : s.toCharArray()){
+                inventoryText.append(getCharacter(c, index));
             }
-        }.runTaskAsynchronously(main);
 
+            index ++;
+        }
 
-
-
-
-
+        return inventoryText.toString();
     }
 
     private String getCharacter(char c, int line){
+
+        //depend on index
 
         return characterStringMapLine0.getOrDefault(c,"");
 

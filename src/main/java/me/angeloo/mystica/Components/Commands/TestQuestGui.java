@@ -1,6 +1,6 @@
 package me.angeloo.mystica.Components.Commands;
 
-import me.angeloo.mystica.Components.Inventories.Quests.QuestAcceptInventory;
+import me.angeloo.mystica.Components.Quests.QuestAcceptInventory;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -8,8 +8,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.UUID;
 
 public class TestQuestGui implements CommandExecutor {
 
@@ -40,7 +38,7 @@ public class TestQuestGui implements CommandExecutor {
 
             String text = sb.toString();
 
-            questAcceptInventory.openQuestAccept(player, text);
+            //questAcceptInventory.openQuestAccept(player, text);
 
         }
 

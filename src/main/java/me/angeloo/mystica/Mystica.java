@@ -9,11 +9,12 @@ import me.angeloo.mystica.Components.Inventories.Equipment.*;
 import me.angeloo.mystica.Components.Inventories.Party.DungeonSelect;
 import me.angeloo.mystica.Components.Inventories.Party.InvitedInventory;
 import me.angeloo.mystica.Components.Inventories.Party.PartyInventory;
-import me.angeloo.mystica.Components.Inventories.Quests.QuestAcceptInventory;
+import me.angeloo.mystica.Components.Quests.QuestAcceptInventory;
 import me.angeloo.mystica.Components.Items.BagItem;
 import me.angeloo.mystica.Components.Items.MysticalCrystal;
 import me.angeloo.mystica.Components.Items.SoulStone;
 import me.angeloo.mystica.Components.Items.StackableItemRegistry;
+import me.angeloo.mystica.Components.Quests.QuestManager;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Managers.Parties.FakePlayerAiManager;
 import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
@@ -52,6 +53,8 @@ public final class Mystica extends JavaPlugin{
 
     private ProfileManager profileManager;
     private ProfileFileWriter profileFileWriter;
+
+    private QuestManager questManager;
 
     private MysticaPartyManager mysticaPartyManager;
 
@@ -139,7 +142,6 @@ public final class Mystica extends JavaPlugin{
         StackableItemRegistry.register("BAG", BagItem::deserialize);
         StackableItemRegistry.register("MYSTICAL CRYSTAL", MysticalCrystal::deserialize);
 
-
         pathingManager = new PathingManager(this);
         pathingManager.createOrLoadFolder();
 
@@ -188,6 +190,9 @@ public final class Mystica extends JavaPlugin{
         bossWarningSender = hudManager.getBossWarnings();
 
         fakePlayerAiManager = new FakePlayerAiManager(this);
+
+        questManager = new QuestManager(this);
+        questManager.loadQuests();
 
         customInventoryManager = new CustomInventoryManager(this);
         abilityInventory = new AbilityInventory(this);

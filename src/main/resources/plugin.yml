@@ -95,9 +95,6 @@ commands:
     description: lets mms open boss level inv
     usage: /BossLevel
     permission: developer
-  MysticaQuest:
-    description: opens quest books
-    usage: /MysticaQuest <player> <quest/accept>
   HitValidCheck:
     description: lets mms see if what they hit with a skill is valid
     usage: /HitValidCheck <caster> <target>
@@ -138,9 +135,9 @@ commands:
     description: allows mms to warn player about upcoming mechanics
     usage: /BossWarn <player.uuid> <time> <warning>
     permission: developer
-  TestQuestGui:
-    description: allows devs to test what quest would look like
-    usage: /TestQuestGui <player> <text>
+  MysticaQuest:
+    description: opens quests or reloads
+    usage: /MysticaQuest <player/reload> <quest>
     permission: developer
 
 permissions:

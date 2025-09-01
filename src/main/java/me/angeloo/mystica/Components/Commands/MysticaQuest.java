@@ -1,6 +1,8 @@
 package me.angeloo.mystica.Components.Commands;
 
+import me.angeloo.mystica.Components.Quests.Quest;
 import me.angeloo.mystica.Components.Quests.QuestAcceptInventory;
+import me.angeloo.mystica.Components.Quests.QuestManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -9,18 +11,31 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class TestQuestGui implements CommandExecutor {
+public class MysticaQuest implements CommandExecutor {
 
+    private final QuestManager questManager;
     private final QuestAcceptInventory questAcceptInventory;
 
-    public TestQuestGui(Mystica main){
+    public MysticaQuest(Mystica main){
+        questManager = main.getQuestManager();
         questAcceptInventory = main.getQuestAcceptInventory();
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
 
-        if (args.length >= 1) {
+        if(args.length == 1){
+
+            if(args[0].equals("reload") || args[0].equals("r")){
+
+                questManager.loadQuests();
+
+                return true;
+            }
+
+        }
+
+        if (args.length == 2) {
 
             Player player = Bukkit.getPlayer(args[0]);
 
@@ -28,17 +43,15 @@ public class TestQuestGui implements CommandExecutor {
                 return true;
             }
 
-            StringBuilder sb = new StringBuilder();
-            for (int i = 1; i < args.length; i++) {
-                sb.append(args[i]);
-                if (i < args.length - 1) {
-                    sb.append(" ");
-                }
+            Quest quest = questManager.getQuest(args[1]);
+
+            if(quest == null){
+                sender.sendMessage("no quest " + args[1] + " found");
+                return true;
             }
 
-            String text = sb.toString();
+            questAcceptInventory.openQuestAccept(player, quest);
 
-            //questAcceptInventory.openQuestAccept(player, text);
 
         }
 

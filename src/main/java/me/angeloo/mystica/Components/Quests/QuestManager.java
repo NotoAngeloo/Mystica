@@ -133,7 +133,7 @@ public class QuestManager {
         }
 
 
-
+        Bukkit.getLogger().info("loaded " + quests.entrySet().size() + " quests");
     }
 
 

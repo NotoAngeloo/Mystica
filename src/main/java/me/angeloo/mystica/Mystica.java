@@ -246,7 +246,7 @@ public final class Mystica extends JavaPlugin{
         getCommand("MysticaItem").setExecutor(new MysticaItem(this));
         getCommand("StarterKit").setExecutor(new StarterKit(this));
         getCommand("BossWarn").setExecutor(new BossWarn(this));
-        getCommand("TestQuestGui").setExecutor(new TestQuestGui(this));
+        getCommand("MysticaQuest").setExecutor(new MysticaQuest(this));
 
 
         this.getServer().getPluginManager().registerEvents(new ClassSelectInventory(this), this);
@@ -467,6 +467,8 @@ public final class Mystica extends JavaPlugin{
     }
 
     public BossWarningSender getBossWarnings(){return bossWarningSender;}
+
+    public QuestManager getQuestManager(){return questManager;}
 
     public QuestAcceptInventory getQuestAcceptInventory(){return questAcceptInventory;}
 

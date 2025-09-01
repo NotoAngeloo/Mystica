@@ -39,15 +39,11 @@ public class QuestAcceptInventory {
 
     */
 
-    public void openQuestAccept(Player player, String[] text){
+    public void openQuestAccept(Player player, Quest quest){
 
-        //first check if this line of text has been generated already
-
-        //replaces "\n" with newline char
-        //text = text.replaceAll("\\\\n", "\n");
 
         //in a task cuz needs to calculate something expensive
-        //String finalText = text;
+
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
@@ -57,7 +53,7 @@ public class QuestAcceptInventory {
 
                 //check if /n to increase line number
 
-                questText.append(textGenerator.getInventoryText(text));
+                questText.append(textGenerator.getInventoryText(quest.getDescription()));
 
                 Inventory inv = Bukkit.createInventory(null, 9*6, ChatColor.WHITE + String.valueOf(questText));
 
@@ -68,6 +64,9 @@ public class QuestAcceptInventory {
                         player.openInventory(inv);
                 player.getInventory().clear();
                 displayWeapons.displayArmor(player);
+
+                player.getInventory().setItem(27, new ItemStack(Material.EMERALD));
+                player.getInventory().setItem(35, new ItemStack(Material.EMERALD));
                 });
 
             }

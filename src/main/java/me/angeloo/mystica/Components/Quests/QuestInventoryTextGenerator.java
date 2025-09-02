@@ -332,6 +332,60 @@ public class QuestInventoryTextGenerator {
                 Map.entry('x', "\uE7B7"), Map.entry('y', "\uE7B8"), Map.entry('z', "\uE7B9"), Map.entry('{', "\uE7BA"),
                 Map.entry('|', "\uE7BB"), Map.entry('}', "\uE7BC"), Map.entry('~', "\uE7BD")
         ));
+        
+        characterStringMapList.add(Map.<Character, String>ofEntries(
+                Map.entry(' ', " "), Map.entry('!', "\uE7BE"), Map.entry('"', "\uE7BF"), Map.entry('#', "\uE7C0"),
+                Map.entry('$', "\uE7C1"), Map.entry('%', "\uE7C2"), Map.entry('&', "\uE7C3"), Map.entry('\'', "\uE7C4"),
+                Map.entry('(', "\uE7C5"), Map.entry(')', "\uE7C6"), Map.entry('*', "\uE7C7"), Map.entry('+', "\uE7C8"),
+                Map.entry(',', "\uE7C9"), Map.entry('-', "\uE7CA"), Map.entry('.', "\uE7CB"), Map.entry('/', "\uE7CC"),
+                Map.entry('0', "\uE7CD"), Map.entry('1', "\uE7CE"), Map.entry('2', "\uE7CF"), Map.entry('3', "\uE7D0"),
+                Map.entry('4', "\uE7D1"), Map.entry('5', "\uE7D2"), Map.entry('6', "\uE7D3"), Map.entry('7', "\uE7D4"),
+                Map.entry('8', "\uE7D5"), Map.entry('9', "\uE7D6"), Map.entry(':', "\uE7D7"), Map.entry(';', "\uE7D8"),
+                Map.entry('<', "\uE7D9"), Map.entry('=', "\uE7DA"), Map.entry('>', "\uE7DB"), Map.entry('?', "\uE7DC"),
+                Map.entry('@', "\uE7DD"), Map.entry('A', "\uE7DE"), Map.entry('B', "\uE7DF"), Map.entry('C', "\uE7E0"),
+                Map.entry('D', "\uE7E1"), Map.entry('E', "\uE7E2"), Map.entry('F', "\uE7E3"), Map.entry('G', "\uE7E4"),
+                Map.entry('H', "\uE7E5"), Map.entry('I', "\uE7E6"), Map.entry('J', "\uE7E7"), Map.entry('K', "\uE7E8"),
+                Map.entry('L', "\uE7E9"), Map.entry('M', "\uE7EA"), Map.entry('N', "\uE7EB"), Map.entry('O', "\uE7EC"),
+                Map.entry('P', "\uE7ED"), Map.entry('Q', "\uE7EE"), Map.entry('R', "\uE7EF"), Map.entry('S', "\uE7F0"),
+                Map.entry('T', "\uE7F1"), Map.entry('U', "\uE7F2"), Map.entry('V', "\uE7F3"), Map.entry('W', "\uE7F4"),
+                Map.entry('X', "\uE7F5"), Map.entry('Y', "\uE7F6"), Map.entry('Z', "\uE7F7"), Map.entry('[', "\uE7F8"),
+                Map.entry('\\', "\uE7F9"), Map.entry(']', "\uE7FA"), Map.entry('^', "\uE7FB"), Map.entry('_', "\uE7FC"),
+                Map.entry('`', "\uE7FD"), Map.entry('a', "\uE7FE"), Map.entry('b', "\uE7FF"), Map.entry('c', "\uE800"),
+                Map.entry('d', "\uE801"), Map.entry('e', "\uE802"), Map.entry('f', "\uE803"), Map.entry('g', "\uE804"),
+                Map.entry('h', "\uE805"), Map.entry('i', "\uE806"), Map.entry('j', "\uE807"), Map.entry('k', "\uE808"),
+                Map.entry('l', "\uE809"), Map.entry('m', "\uE80A"), Map.entry('n', "\uE80B"), Map.entry('o', "\uE80C"),
+                Map.entry('p', "\uE80D"), Map.entry('q', "\uE80E"), Map.entry('r', "\uE80F"), Map.entry('s', "\uE810"),
+                Map.entry('t', "\uE811"), Map.entry('u', "\uE812"), Map.entry('v', "\uE813"), Map.entry('w', "\uE814"),
+                Map.entry('x', "\uE815"), Map.entry('y', "\uE816"), Map.entry('z', "\uE817"), Map.entry('{', "\uE818"),
+                Map.entry('|', "\uE819"), Map.entry('}', "\uE81A"), Map.entry('~', "\uE81B")
+        ));
+
+        characterStringMapList.add(Map.<Character, String>ofEntries(
+                Map.entry(' ', " "), Map.entry('!', "\uE81C"), Map.entry('"', "\uE81D"), Map.entry('#', "\uE81E"),
+                Map.entry('$', "\uE81F"), Map.entry('%', "\uE820"), Map.entry('&', "\uE821"), Map.entry('\'', "\uE822"),
+                Map.entry('(', "\uE823"), Map.entry(')', "\uE824"), Map.entry('*', "\uE825"), Map.entry('+', "\uE826"),
+                Map.entry(',', "\uE827"), Map.entry('-', "\uE828"), Map.entry('.', "\uE829"), Map.entry('/', "\uE82A"),
+                Map.entry('0', "\uE82B"), Map.entry('1', "\uE82C"), Map.entry('2', "\uE82D"), Map.entry('3', "\uE82E"),
+                Map.entry('4', "\uE82F"), Map.entry('5', "\uE830"), Map.entry('6', "\uE831"), Map.entry('7', "\uE832"),
+                Map.entry('8', "\uE833"), Map.entry('9', "\uE834"), Map.entry(':', "\uE835"), Map.entry(';', "\uE836"),
+                Map.entry('<', "\uE837"), Map.entry('=', "\uE838"), Map.entry('>', "\uE839"), Map.entry('?', "\uE83A"),
+                Map.entry('@', "\uE83B"), Map.entry('A', "\uE83C"), Map.entry('B', "\uE83D"), Map.entry('C', "\uE83E"),
+                Map.entry('D', "\uE83F"), Map.entry('E', "\uE840"), Map.entry('F', "\uE841"), Map.entry('G', "\uE842"),
+                Map.entry('H', "\uE843"), Map.entry('I', "\uE844"), Map.entry('J', "\uE845"), Map.entry('K', "\uE846"),
+                Map.entry('L', "\uE847"), Map.entry('M', "\uE848"), Map.entry('N', "\uE849"), Map.entry('O', "\uE84A"),
+                Map.entry('P', "\uE84B"), Map.entry('Q', "\uE84C"), Map.entry('R', "\uE84D"), Map.entry('S', "\uE84E"),
+                Map.entry('T', "\uE84F"), Map.entry('U', "\uE850"), Map.entry('V', "\uE851"), Map.entry('W', "\uE852"),
+                Map.entry('X', "\uE853"), Map.entry('Y', "\uE854"), Map.entry('Z', "\uE855"), Map.entry('[', "\uE856"),
+                Map.entry('\\', "\uE857"), Map.entry(']', "\uE858"), Map.entry('^', "\uE859"), Map.entry('_', "\uE85A"),
+                Map.entry('`', "\uE85B"), Map.entry('a', "\uE85C"), Map.entry('b', "\uE85D"), Map.entry('c', "\uE85E"),
+                Map.entry('d', "\uE85F"), Map.entry('e', "\uE860"), Map.entry('f', "\uE861"), Map.entry('g', "\uE862"),
+                Map.entry('h', "\uE863"), Map.entry('i', "\uE864"), Map.entry('j', "\uE865"), Map.entry('k', "\uE866"),
+                Map.entry('l', "\uE867"), Map.entry('m', "\uE868"), Map.entry('n', "\uE869"), Map.entry('o', "\uE86A"),
+                Map.entry('p', "\uE86B"), Map.entry('q', "\uE86C"), Map.entry('r', "\uE86D"), Map.entry('s', "\uE86E"),
+                Map.entry('t', "\uE86F"), Map.entry('u', "\uE870"), Map.entry('v', "\uE871"), Map.entry('w', "\uE872"),
+                Map.entry('x', "\uE873"), Map.entry('y', "\uE874"), Map.entry('z', "\uE875"), Map.entry('{', "\uE876"),
+                Map.entry('|', "\uE877"), Map.entry('}', "\uE878"), Map.entry('~', "\uE879")
+        ));
     }
 
     public String getInventoryText(List<String> text){

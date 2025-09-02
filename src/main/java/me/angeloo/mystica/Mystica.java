@@ -265,6 +265,7 @@ public final class Mystica extends JavaPlugin{
         this.getServer().getPluginManager().registerEvents(equipmentInventory, this);
         this.getServer().getPluginManager().registerEvents(partyInventory, this);
         this.getServer().getPluginManager().registerEvents(invitedInventory, this);
+        this.getServer().getPluginManager().registerEvents(questAcceptInventory,(this));
 
         this.getServer().getPluginManager().registerEvents(new InventoryEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new GeneralEventListener(this), this);

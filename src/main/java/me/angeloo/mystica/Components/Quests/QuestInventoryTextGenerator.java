@@ -436,7 +436,6 @@ public class QuestInventoryTextGenerator {
                 inventoryText.append(CHAR_NEGATIVE_SPACE.getOrDefault(c, ""));
             }
 
-            //inventoryText.append("\uF821".repeat(getPixelWidth(s)));
 
             index ++;
         }

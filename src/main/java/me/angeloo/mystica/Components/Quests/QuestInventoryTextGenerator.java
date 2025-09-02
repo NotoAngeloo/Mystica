@@ -388,6 +388,37 @@ public class QuestInventoryTextGenerator {
         ));
     }
 
+    //there are a few characters that yml does not like being in there, figure out which they are
+
+    // \ "
+
+    private final Map<Character, String> CHAR_NEGATIVE_SPACE = Map.<Character, String>ofEntries(
+            Map.entry(' ', "\uF804"), Map.entry('!', "\uF802"), Map.entry('"', "\uF805"), Map.entry('#', "\uF807"),
+            Map.entry('$', "\uF807"), Map.entry('%', "\uF807"), Map.entry('&', "\uF807"), Map.entry('\'', "\uF802"),
+            Map.entry('(', "\uF805"), Map.entry(')', "\uF805"), Map.entry('*', "\uF805"), Map.entry('+', "\uF807"),
+            Map.entry(',', "\uF802"), Map.entry('-', "\uF807"), Map.entry('.', "\uF802"), Map.entry('/', "\uF807"),
+            Map.entry('0', "\uF807"), Map.entry('1', "\uF807"), Map.entry('2', "\uF807"), Map.entry('3', "\uF807"),
+            Map.entry('4', "\uF807"), Map.entry('5', "\uF807"), Map.entry('6', "\uF807"), Map.entry('7', "\uF807"),
+            Map.entry('8', "\uF807"), Map.entry('9', "\uF807"), Map.entry(':', "\uF805"), Map.entry(';', "\uF805"),
+            Map.entry('<', "\uF805"), Map.entry('=', "\uF805"), Map.entry('>', "\uF805"), Map.entry('?', "\uF807"),
+            Map.entry('@', "\uF805"), Map.entry('A', "\uF807"), Map.entry('B', "\uF807"), Map.entry('C', "\uF807"),
+            Map.entry('D', "\uF807"), Map.entry('E', "\uF807"), Map.entry('F', "\uF807"), Map.entry('G', "\uF807"),
+            Map.entry('H', "\uF807"), Map.entry('I', "\uF805"), Map.entry('J', "\uF807"), Map.entry('K', "\uF807"),
+            Map.entry('L', "\uF807"), Map.entry('M', "\uF807"), Map.entry('N', "\uF807"), Map.entry('O', "\uF807"),
+            Map.entry('P', "\uF807"), Map.entry('Q', "\uF807"), Map.entry('R', "\uF807"), Map.entry('S', "\uF807"),
+            Map.entry('T', "\uF807"), Map.entry('U', "\uF807"), Map.entry('V', "\uF807"), Map.entry('W', "\uF807"),
+            Map.entry('X', "\uF807"), Map.entry('Y', "\uF807"), Map.entry('Z', "\uF807"), Map.entry('[', "\uF805"),
+            Map.entry('\\', "\uF805"), Map.entry(']', "\uF805"), Map.entry('^', "\uF807"), Map.entry('_', "\uF807"),
+            Map.entry('`', "\uF804"), Map.entry('a', "\uF807"), Map.entry('b', "\uF807"), Map.entry('c', "\uF807"),
+            Map.entry('d', "\uF807"), Map.entry('e', "\uF807"), Map.entry('f', "\uF806"), Map.entry('g', "\uF807"),
+            Map.entry('h', "\uF807"), Map.entry('i', "\uF802"), Map.entry('j', "\uF807"), Map.entry('k', "\uF806"),
+            Map.entry('l', "\uF804"), Map.entry('m', "\uF807"), Map.entry('n', "\uF807"), Map.entry('o', "\uF807"),
+            Map.entry('p', "\uF807"), Map.entry('q', "\uF807"), Map.entry('r', "\uF807"), Map.entry('s', "\uF807"),
+            Map.entry('t', "\uF805"), Map.entry('u', "\uF807"), Map.entry('v', "\uF807"), Map.entry('w', "\uF807"),
+            Map.entry('x', "\uF807"), Map.entry('y', "\uF807"), Map.entry('z', "\uF807"), Map.entry('{', "\uF805"),
+            Map.entry('|', "\uF802"), Map.entry('}', "\uF805"), Map.entry('~', "\uF808\uF801")
+    );
+
     public String getInventoryText(List<String> text){
 
         StringBuilder inventoryText = new StringBuilder();
@@ -399,6 +430,13 @@ public class QuestInventoryTextGenerator {
 
                 inventoryText.append(getCharacter(c, index));
             }
+
+            //append negative space automatically
+            for (char c : s.toCharArray()){
+                inventoryText.append(CHAR_NEGATIVE_SPACE.getOrDefault(c, ""));
+            }
+
+            //inventoryText.append("\uF821".repeat(getPixelWidth(s)));
 
             index ++;
         }
@@ -415,5 +453,6 @@ public class QuestInventoryTextGenerator {
 
         return characterStringMapList.get(line).getOrDefault(c, String.valueOf(c));
     }
+
 
 }

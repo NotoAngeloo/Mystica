@@ -223,7 +223,6 @@ public class QuestAcceptInventory implements Listener {
                     //-100
                     questText.append("\uF80B\uF80A\uF804");
 
-                    //description can hav max of 14 lines, if has more need to index them
                     List<String> viewableDescription = getViewableDescription(player, getCurrentViewedQuest(player));
 
                     questText.append(textGenerator.getInventoryText(viewableDescription));
@@ -297,5 +296,7 @@ public class QuestAcceptInventory implements Listener {
     private int maxIndex(List<String> description){
         return Math.max(0, description.size() - 12);
     }
+
+    //make actual buttons later
 
 }

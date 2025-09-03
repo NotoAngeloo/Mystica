@@ -1,14 +1,20 @@
 package me.angeloo.mystica.Components.Quests;
 
+import net.md_5.bungee.api.ChatColor;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class QuestInventoryTextGenerator {
 
     private final List<Map<Character,String>> characterStringMapList = new ArrayList<>();
 
+    private static final Pattern HEX_PATTERN = Pattern.compile("<#([A-Fa-f0-9]{6})>");
 
     public QuestInventoryTextGenerator(){
         characterStringMapList.add(Map.<Character, String>ofEntries(
@@ -426,7 +432,46 @@ public class QuestInventoryTextGenerator {
         int index = 0;
         for(String s : text){
 
-            for(char c : s.toCharArray()){
+            inventoryText.append(ChatColor.RESET);
+            inventoryText.append(ChatColor.WHITE);
+
+            int pos = 0;
+            String activeColor = "";
+
+            while (pos < s.length()) {
+                Matcher matcher = HEX_PATTERN.matcher(s);
+                if (matcher.find(pos) && matcher.start() == pos) {
+                    // Found a hex color tag
+                    String hex = matcher.group(1);
+                    activeColor = ChatColor.of(Color.decode("#" + hex)).toString();
+                    pos = matcher.end(); // skip past the tag
+                    continue;
+                }
+
+                char c = s.charAt(pos);
+
+                // Append the character with the current color
+                inventoryText.append(activeColor).append(getCharacter(c, index));
+
+                pos++;
+            }
+
+            pos = 0;
+
+            while (pos < s.length()) {
+                Matcher matcher = HEX_PATTERN.matcher(s);
+                if (matcher.find(pos) && matcher.start() == pos) {
+                    pos = matcher.end();
+                    continue;
+                }
+                char c = s.charAt(pos);
+                inventoryText.append(CHAR_NEGATIVE_SPACE.getOrDefault(c, ""));
+                pos++;
+            }
+
+            index++;
+
+            /*for(char c : s.toCharArray()){
 
                 inventoryText.append(getCharacter(c, index));
             }
@@ -437,7 +482,7 @@ public class QuestInventoryTextGenerator {
             }
 
 
-            index ++;
+            index ++;*/
         }
 
         return inventoryText.toString();
@@ -452,6 +497,7 @@ public class QuestInventoryTextGenerator {
 
         return characterStringMapList.get(line).getOrDefault(c, String.valueOf(c));
     }
+
 
 
 }

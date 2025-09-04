@@ -1,20 +1,20 @@
 package me.angeloo.mystica.Components.Quests.Objectives;
 
 import io.lumine.mythic.api.mobs.MythicMob;
+import me.angeloo.mystica.Components.Quests.Progress.KillObjectiveProgress;
 import me.angeloo.mystica.Components.Quests.Progress.ObjectiveProgress;
-import me.angeloo.mystica.Components.Quests.Progress.SpeakObjectiveProgress;
 import me.angeloo.mystica.Components.Quests.QuestEnums.QuestType;
-import org.bukkit.entity.Player;
 
-public class SpeakObjective implements QuestObjective {
+public class KillObjective implements QuestObjective{
 
     private final String id;
     private final MythicMob target;
+    private final int required;
 
-    public SpeakObjective(String id, MythicMob target){
+    public KillObjective(String id, MythicMob target, int required){
         this.id = id;
         this.target = target;
-
+        this.required = required;
     }
 
     @Override
@@ -29,12 +29,16 @@ public class SpeakObjective implements QuestObjective {
 
     @Override
     public ObjectiveProgress createProcess() {
-        return new SpeakObjectiveProgress(this);
+        return new KillObjectiveProgress(this);
     }
-
 
     public MythicMob getTarget(){
         return target;
     }
+
+    public int getRequired(){
+        return required;
+    }
+
 
 }

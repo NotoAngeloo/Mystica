@@ -3,6 +3,7 @@ package me.angeloo.mystica.Components.Quests;
 import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.Items.MysticaItem;
+import me.angeloo.mystica.Components.Quests.Objectives.KillObjective;
 import me.angeloo.mystica.Components.Quests.Objectives.QuestObjective;
 import me.angeloo.mystica.Components.Quests.Objectives.SpeakObjective;
 import me.angeloo.mystica.Components.Quests.QuestEnums.QuestType;
@@ -14,16 +15,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class QuestManager {
 
     private final Mystica main;
+
+    private final Map<UUID, PlayerQuestData> playerQuests = new HashMap<>();
 
     private final Map<String, Quest> quests = new HashMap<>();
 
@@ -74,12 +75,17 @@ public class QuestManager {
 
                         String mobName = objSection.getString("target");
 
+                        int amount = objSection.getInt("amount");
+
                         MythicMob mobType = MythicBukkit.inst().getAPIHelper().getMythicMob(mobName);
 
 
                         switch (questType){
                             case Speak -> {
-                                objectives.add(new SpeakObjective(mobType));
+                                objectives.add(new SpeakObjective(questId, mobType));
+                            }
+                            case Kill -> {
+                                objectives.add(new KillObjective(questId, mobType, amount));
                             }
                             default -> {
                                 Bukkit.getLogger().info("unknown quest type: " + questType);
@@ -145,6 +151,10 @@ public class QuestManager {
 
     public Quest getQuest(String id){
         return quests.get(id);
+    }
+
+    public PlayerQuestData getQuestData(Player player){
+        return playerQuests.computeIfAbsent(player.getUniqueId(), PlayerQuestData::new);
     }
 
 }

@@ -191,10 +191,6 @@ public class FakePlayerProfile implements Profile {
         return true;
     }
 
-    @Override
-    public Milestones getMilestones() {
-        return null;
-    }
 
 
     @Override

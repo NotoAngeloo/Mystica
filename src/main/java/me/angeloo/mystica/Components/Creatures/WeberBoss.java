@@ -185,11 +185,6 @@ public class WeberBoss {
             }
 
             @Override
-            public Milestones getMilestones() {
-                return null;
-            }
-
-            @Override
             public void getVoidsOnDeath(Set<Player> players) {
 
             }

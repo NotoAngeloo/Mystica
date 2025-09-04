@@ -47,10 +47,6 @@ commands:
     description: toggles global pvp
     usage: /ToggleGlobalPvp
     permission: developer
-  SetMilestone:
-    description: lets the game set milestones for players
-    usage: /SetMilestone <Player> <Milestone> <true/false>
-    permission: developer
   Reforge:
     description: allows testing of reforge mechanic
     usage: /Reforge
@@ -70,10 +66,6 @@ commands:
   ManualSave:
     description: saves profiles manually
     usage: /ManualSave
-    permission: developer
-  SavePaths:
-    description: saves paths manually
-    usage: /SavePaths
     permission: developer
   DeleteProfile:
     description: deletes a profile

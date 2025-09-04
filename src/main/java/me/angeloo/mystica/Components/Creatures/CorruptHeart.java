@@ -184,11 +184,6 @@ public class CorruptHeart {
             }
 
             @Override
-            public Milestones getMilestones() {
-                return null;
-            }
-
-            @Override
             public void getVoidsOnDeath(Set<Player> players) {
                 //Bukkit.getServer().getPluginManager().callEvent(new BossKillQuestCompleteEvent(players, "sewer2"));
             }

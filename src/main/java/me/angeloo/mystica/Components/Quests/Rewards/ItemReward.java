@@ -25,4 +25,8 @@ public class ItemReward implements QuestReward{
 
     }
 
+    public MysticaItem getItem(){
+        return this.mysticaItem;
+    }
+
 }

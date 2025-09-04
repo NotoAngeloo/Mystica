@@ -116,9 +116,7 @@ public class PapiHook extends PlaceholderExpansion {
                 case "dead" ->{
                     return String.valueOf(profileManager.getAnyProfile(player).getIfDead());
                 }
-                default -> {
-                    return String.valueOf(profileManager.getAnyProfile(player).getMilestones().getMilestone(params));
-                }
+
             }
 
 

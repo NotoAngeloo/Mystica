@@ -57,7 +57,5 @@ public interface Profile {
 
     Boolean fakePlayer();
 
-    Milestones getMilestones();
-
     void getVoidsOnDeath(Set<Player> players);
 }

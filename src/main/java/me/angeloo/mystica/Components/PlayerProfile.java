@@ -26,8 +26,6 @@ public abstract class PlayerProfile implements Profile{
 
     private final PlayerBossLevel playerBossLevel;
 
-    private final Milestones milestones;
-
     public PlayerProfile(
             Boolean ifDead,
             Boolean ifInCombat,
@@ -46,8 +44,7 @@ public abstract class PlayerProfile implements Profile{
             Skill_Level skillLevel,
             EquipSkills equipSkills,
 
-            PlayerBossLevel playerBossLevel,
-            Milestones milestones
+            PlayerBossLevel playerBossLevel
 
    ) {
 
@@ -72,7 +69,6 @@ public abstract class PlayerProfile implements Profile{
 
         this.playerBossLevel = playerBossLevel;
 
-        this.milestones = milestones;
 
     }
 
@@ -145,8 +141,6 @@ public abstract class PlayerProfile implements Profile{
     public EquipSkills getEquipSkills(){return equipSkills;}
     @Override
     public PlayerBossLevel getPlayerBossLevel(){return playerBossLevel;}
-    @Override
-    public Milestones getMilestones(){return milestones;}
 
     public int getTotalHealth(){
         return stats.getHealth() + statsFromGear.getHealth();

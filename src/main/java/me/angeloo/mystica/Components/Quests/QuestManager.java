@@ -56,6 +56,7 @@ public class QuestManager {
 
                 String name = questSection.getString("name", questId);
                 List<String> description = questSection.getStringList("description");
+                List<String> completed = questSection.getStringList("description_completed");
 
                 List<QuestObjective> objectives = new ArrayList<>();
                 ConfigurationSection objectiveSection = questSection.getConfigurationSection("objectives");
@@ -123,10 +124,11 @@ public class QuestManager {
 
 
                 //do something with this
-                Quest quest = new Quest(questId, name, description, objectives, rewards);
+
+                //apply quests per player want each one able to complete seperatley
+                Quest quest = new Quest(questId, name, description, completed, objectives, rewards);
                 registerQuest(quest);
 
-                //Bukkit.getLogger().info("quest: " + questId + " " + name + " " + description + " " + objectives + " " + rewards);
             }
 
 

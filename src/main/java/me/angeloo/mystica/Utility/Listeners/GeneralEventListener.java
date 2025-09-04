@@ -228,12 +228,6 @@ public class GeneralEventListener implements Listener {
 
         targetManager.setPlayerTarget(player, null);
 
-        if (player.getWorld().getName().startsWith("tutorial_")) {
-            //remove class
-            if (!profileManager.getAnyProfile(player).getMilestones().getMilestone("tutorial")) {
-                classSetter.setClass(player, PlayerClass.NONE);
-            }
-        }
     }
 
     //maybe ill make items to be added to a bag, when implemented. just to stop items being deleted when combat end
@@ -266,72 +260,6 @@ public class GeneralEventListener implements Listener {
         event.setCancelled(true);
     }
 
-    @EventHandler
-    public void displayPathsWithTool(PlayerToggleSneakEvent event) {
-        Player player = event.getPlayer();
-
-        if (!player.isOp()) {
-            return;
-        }
-
-        if (player.getGameMode() != GameMode.CREATIVE) {
-            return;
-        }
-
-        ItemStack item = player.getInventory().getItemInMainHand();
-
-        ItemStack pathTool = new CustomItemConverter().convert(new PathToolItem(), 1);
-
-        if (!item.isSimilar(pathTool)) {
-            return;
-        }
-
-        pathingManager.displayAllNearbyPaths(player);
-    }
-
-    @EventHandler
-    public void onPathTool(PlayerInteractEvent event) {
-
-        Player player = event.getPlayer();
-
-        if (!player.isOp()) {
-            return;
-        }
-
-        if (player.getGameMode() != GameMode.CREATIVE) {
-            return;
-        }
-
-        ItemStack item = player.getInventory().getItemInMainHand();
-
-        ItemStack pathTool = new CustomItemConverter().convert(new PathToolItem(), 1);
-
-        if (!item.isSimilar(pathTool)) {
-            return;
-        }
-
-        event.setCancelled(true);
-
-        //depending on click add to list
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            Block block = event.getClickedBlock();
-            assert block != null;
-            Location location = block.getLocation();
-            pathingManager.createPath(location);
-            pathingManager.displayAllNearbyPaths(player);
-            return;
-        }
-
-        if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-            Block block = event.getClickedBlock();
-            assert block != null;
-            Location location = block.getLocation();
-            pathingManager.deletePath(location);
-            pathingManager.displayAllNearbyPaths(player);
-            return;
-        }
-
-    }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {

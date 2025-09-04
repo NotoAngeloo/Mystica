@@ -201,11 +201,6 @@ public class SpectralSteed {
             }
 
             @Override
-            public Milestones getMilestones() {
-                return null;
-            }
-
-            @Override
             public void getVoidsOnDeath(Set<Player> players) {
 
             }

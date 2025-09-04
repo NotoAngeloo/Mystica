@@ -158,11 +158,6 @@ public class ProfileManager {
 
             config.set(id + ".boss_level", playerBossLevel.getBossLevel());
 
-            for(Map.Entry<String, Boolean> entry : profile.getMilestones().getAllMilestones().entrySet()){
-                config.set(id + ".milestones." + entry.getKey(), entry.getValue());
-            }
-
-
 
             for(int i = 0; i<collection.getMysticaBagAmount(); i++){
                 MysticaBag bag = collection.getBag(i);
@@ -308,8 +303,6 @@ public class ProfileManager {
                         }
                     }
 
-                    Milestones milestones = new Milestones(allMilestones);
-
                     PlayerBossLevel playerBossLevel = new PlayerBossLevel(bossLevel);
 
                     MysticaBagCollection mysticaBagCollection = new MysticaBagCollection(new ArrayList<>());
@@ -356,8 +349,7 @@ public class ProfileManager {
                             playerEquipment,
                             new Skill_Level(0,0,0,0,0,0,0,0),
                             equipSkills,
-                            playerBossLevel,
-                            milestones) {
+                            playerBossLevel) {
 
                         @Override
                         public Boolean getIsPassive() {
@@ -474,9 +466,6 @@ public class ProfileManager {
 
         PlayerBossLevel playerBossLevel = new PlayerBossLevel(1);
 
-        Milestones milestones = new Milestones(new HashMap<>());
-
-
         return new PlayerProfile(false, false, currentHealth,
                 stats,
                 gearStats,
@@ -486,8 +475,7 @@ public class ProfileManager {
                 playerEquipment,
                 new Skill_Level(0,0,0,0,0,0,0,0),
                 equipSkills,
-                playerBossLevel,
-                milestones) {
+                playerBossLevel) {
 
 
             @Override
@@ -563,7 +551,6 @@ public class ProfileManager {
 
         PlayerBossLevel playerBossLevel = new PlayerBossLevel(1);
 
-        Milestones milestones = new Milestones(new HashMap<>());
 
         PlayerProfile profile = new PlayerProfile(false, false, currentHealth,
                 stats,
@@ -574,8 +561,7 @@ public class ProfileManager {
                 playerEquipment,
                 skillLevel,
                 equipSkills,
-                playerBossLevel,
-                milestones) {
+                playerBossLevel) {
 
 
             @Override
@@ -790,11 +776,6 @@ public class ProfileManager {
             @Override
             public Boolean fakePlayer() {
                 return false;
-            }
-
-            @Override
-            public Milestones getMilestones() {
-                return null;
             }
 
             @Override

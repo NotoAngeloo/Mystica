@@ -1,7 +1,12 @@
 package me.angeloo.mystica.Components.Quests;
 
+import me.angeloo.mystica.Components.Items.MysticaItem;
+import me.angeloo.mystica.Components.Items.UnidentifiedItem;
+import me.angeloo.mystica.Components.Quests.Rewards.ItemReward;
+import me.angeloo.mystica.Components.Quests.Rewards.QuestReward;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DisplayWeapons;
+import me.angeloo.mystica.Utility.InventoryItemGetter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -11,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -22,6 +28,7 @@ public class QuestAcceptInventory implements Listener {
 
     private final DisplayWeapons displayWeapons;
     private final QuestInventoryTextGenerator textGenerator;
+    private final InventoryItemGetter itemGetter;
 
     private final Map<UUID, Quest> currentViewedQuest = new HashMap<>();
     private final Map<UUID, Integer> questDescriptionIndex = new HashMap<>();
@@ -30,12 +37,15 @@ public class QuestAcceptInventory implements Listener {
         this.main = main;
         displayWeapons = main.getDisplayWeapons();
         textGenerator = new QuestInventoryTextGenerator();
+        itemGetter = main.getItemGetter();
     }
 
     public void openQuestAccept(Player player, Quest quest){
 
         questDescriptionIndex.put(player.getUniqueId(), 0);
         currentViewedQuest.put(player.getUniqueId(), quest);
+
+        //check progress on the quest to determine
 
         //in a task cuz needs to calculate something expensive
 
@@ -64,7 +74,7 @@ public class QuestAcceptInventory implements Listener {
                 //-100
                 questText.append("\uF80B\uF80A\uF804");
 
-                //description can hav max of 14 lines, if has more need to index them
+
                 List<String> viewableDescription = getViewableDescription(player, quest);
 
                 questText.append(textGenerator.getInventoryText(viewableDescription));
@@ -79,12 +89,10 @@ public class QuestAcceptInventory implements Listener {
                     player.getInventory().clear();
                     displayWeapons.displayArmor(player);
 
-                    //scroll buttons to be, maybe make these only show up with lengthy quests
 
                     if(questDescriptionIndex.get(player.getUniqueId())!=0){
                         player.getInventory().setItem(35, new ItemStack(Material.EMERALD));
                     }
-
 
 
                     if(!maxScrollReached(player)){
@@ -92,6 +100,7 @@ public class QuestAcceptInventory implements Listener {
                     }
 
 
+                    player.getInventory().setItem(27, getRewardItem(quest));
 
                 });
 
@@ -104,9 +113,12 @@ public class QuestAcceptInventory implements Listener {
     private List<String> getViewableDescription(Player player, Quest quest){
 
         String title = quest.getName();
+        //check progress before deciding if get this or the other one
         List<String> questDescription = quest.getDescription();
         List<String> viewableDescription = new ArrayList<>();
         int index = questDescriptionIndex.getOrDefault(player.getUniqueId(), 0);
+
+
 
         viewableDescription.add(title);
         viewableDescription.add("");
@@ -247,6 +259,27 @@ public class QuestAcceptInventory implements Listener {
                     return;
                 }
 
+                List<Integer> acceptSlots = new ArrayList<>();
+
+                acceptSlots.add(2);
+                acceptSlots.add(3);
+                acceptSlots.add(4);
+                acceptSlots.add(5);
+                acceptSlots.add(6);
+                acceptSlots.add(34);
+                acceptSlots.add(33);
+                acceptSlots.add(32);
+                acceptSlots.add(31);
+                acceptSlots.add(30);
+                acceptSlots.add(29);
+
+                if(acceptSlots.contains(slot)){
+                    Bukkit.getLogger().info("quest accept");
+                    return;
+                }
+
+
+
                 return;
             }
 
@@ -297,6 +330,31 @@ public class QuestAcceptInventory implements Listener {
         return Math.max(0, description.size() - 12);
     }
 
-    //make actual buttons later
+
+    private ItemStack getRewardItem(Quest quest){
+
+        ItemStack rewardItem = itemGetter.getItem(Material.EMERALD, 0, ChatColor.RESET + "Rewards:");
+
+        List<String> lores = new ArrayList<>();
+
+        lores.add("");
+
+        for(QuestReward reward : quest.getRewards()){
+
+            if(reward instanceof ItemReward itemReward){
+                MysticaItem mi = itemReward.getItem();
+
+                lores.add(ChatColor.WHITE+ "- " + mi.identifier());
+            }
+        }
+
+        ItemMeta meta = rewardItem.getItemMeta();
+        assert meta != null;
+        meta.setLore(lores);
+        rewardItem.setItemMeta(meta);
+
+        return rewardItem;
+
+    }
 
 }

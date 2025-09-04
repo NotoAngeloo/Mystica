@@ -188,11 +188,6 @@ public class TheLindwyrm {
             }
 
             @Override
-            public Milestones getMilestones() {
-                return null;
-            }
-
-            @Override
             public void getVoidsOnDeath(Set<Player> players) {
 
             }

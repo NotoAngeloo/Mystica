@@ -240,10 +240,6 @@ public class CreaturesAndCharactersManager {
                 return false;
             }
 
-            @Override
-            public Milestones getMilestones() {
-                return null;
-            }
 
             @Override
             public void getVoidsOnDeath(Set<Player> players) {
@@ -382,11 +378,6 @@ public class CreaturesAndCharactersManager {
             @Override
             public Boolean fakePlayer() {
                 return false;
-            }
-
-            @Override
-            public Milestones getMilestones() {
-                return null;
             }
 
             @Override

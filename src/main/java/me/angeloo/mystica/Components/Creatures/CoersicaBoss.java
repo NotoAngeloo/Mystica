@@ -188,11 +188,6 @@ public class CoersicaBoss {
             }
 
             @Override
-            public Milestones getMilestones() {
-                return null;
-            }
-
-            @Override
             public void getVoidsOnDeath(Set<Player> players) {
 
             }
@@ -352,10 +347,6 @@ public class CoersicaBoss {
                 return false;
             }
 
-            @Override
-            public Milestones getMilestones() {
-                return null;
-            }
 
             @Override
             public void getVoidsOnDeath(Set<Player> players) {
@@ -515,11 +506,6 @@ public class CoersicaBoss {
             @Override
             public Boolean fakePlayer() {
                 return false;
-            }
-
-            @Override
-            public Milestones getMilestones() {
-                return null;
             }
 
             @Override

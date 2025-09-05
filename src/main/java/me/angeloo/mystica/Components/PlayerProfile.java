@@ -2,8 +2,12 @@ package me.angeloo.mystica.Components;
 
 import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.ProfileComponents.*;
+import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class PlayerProfile implements Profile{
 
@@ -25,6 +29,8 @@ public abstract class PlayerProfile implements Profile{
     private final EquipSkills equipSkills;
 
     private final PlayerBossLevel playerBossLevel;
+
+    private Map<String, QuestProgress> questProgressMap = new HashMap<>();
 
     public PlayerProfile(
             Boolean ifDead,
@@ -69,6 +75,7 @@ public abstract class PlayerProfile implements Profile{
 
         this.playerBossLevel = playerBossLevel;
 
+        //this.questProgressMap = questProgressMap;
 
     }
 
@@ -141,6 +148,30 @@ public abstract class PlayerProfile implements Profile{
     public EquipSkills getEquipSkills(){return equipSkills;}
     @Override
     public PlayerBossLevel getPlayerBossLevel(){return playerBossLevel;}
+
+
+
+    @Override
+    public Map<String, QuestProgress> getQuestProgress() {
+        return questProgressMap;
+    }
+
+    public void addQuestProgress(QuestProgress progress) {
+        questProgressMap.put(progress.getQuest().getId(), progress);
+    }
+
+    public QuestProgress getQuestProgress(String questId) {
+        return questProgressMap.get(questId);
+    }
+
+    public void removeQuestProgress(String questId) {
+        questProgressMap.remove(questId);
+    }
+
+    public void lazyInnitQuestProgress(Map<String, QuestProgress> newMap){
+        this.questProgressMap = newMap;
+    }
+
 
     public int getTotalHealth(){
         return stats.getHealth() + statsFromGear.getHealth();

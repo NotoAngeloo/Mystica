@@ -6,12 +6,14 @@ import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
+import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
 import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import org.bukkit.entity.Player;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -246,6 +248,21 @@ public class CreaturesAndCharactersManager {
 
             }
 
+            @Override
+            public Map<String, QuestProgress> getQuestProgress() {
+                return null;
+            }
+
+            @Override
+            public void addQuestProgress(QuestProgress progress) {
+
+            }
+
+            @Override
+            public void removeQuestProgress(String questId) {
+
+            }
+
 
             @Override
             public MysticaBagCollection getMysticaBagCollection() {
@@ -382,6 +399,21 @@ public class CreaturesAndCharactersManager {
 
             @Override
             public void getVoidsOnDeath(Set<Player> players) {
+
+            }
+
+            @Override
+            public Map<String, QuestProgress> getQuestProgress() {
+                return null;
+            }
+
+            @Override
+            public void addQuestProgress(QuestProgress progress) {
+
+            }
+
+            @Override
+            public void removeQuestProgress(String questId) {
 
             }
 

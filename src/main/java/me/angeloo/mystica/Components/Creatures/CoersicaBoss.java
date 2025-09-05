@@ -5,6 +5,7 @@ import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
+import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
 import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -16,10 +17,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class CoersicaBoss {
 
@@ -192,6 +190,20 @@ public class CoersicaBoss {
 
             }
 
+            @Override
+            public Map<String, QuestProgress> getQuestProgress() {
+                return null;
+            }
+
+            @Override
+            public void addQuestProgress(QuestProgress progress) {
+
+            }
+
+            @Override
+            public void removeQuestProgress(String questId) {
+
+            }
 
 
         };
@@ -353,6 +365,21 @@ public class CoersicaBoss {
 
             }
 
+            @Override
+            public Map<String, QuestProgress> getQuestProgress() {
+                return null;
+            }
+
+            @Override
+            public void addQuestProgress(QuestProgress progress) {
+
+            }
+
+            @Override
+            public void removeQuestProgress(String questId) {
+
+            }
+
 
         };
         profileManager.addToNonPlayerProfiles(uuid, nonPlayerProfile);
@@ -510,6 +537,21 @@ public class CoersicaBoss {
 
             @Override
             public void getVoidsOnDeath(Set<Player> players) {
+
+            }
+
+            @Override
+            public Map<String, QuestProgress> getQuestProgress() {
+                return null;
+            }
+
+            @Override
+            public void addQuestProgress(QuestProgress progress) {
+
+            }
+
+            @Override
+            public void removeQuestProgress(String questId) {
 
             }
 

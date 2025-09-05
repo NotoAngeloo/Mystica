@@ -24,8 +24,6 @@ public class QuestManager {
 
     private final Mystica main;
 
-    private final Map<UUID, PlayerQuestData> playerQuests = new HashMap<>();
-
     private final Map<String, Quest> quests = new HashMap<>();
 
     public QuestManager(Mystica main){
@@ -127,10 +125,7 @@ public class QuestManager {
                     }
                 }
 
-
-
-                //do something with this
-
+                //i think something else was supposed to be here
                 //apply quests per player want each one able to complete seperatley
                 Quest quest = new Quest(questId, name, description, completed, objectives, rewards);
                 registerQuest(quest);
@@ -153,8 +148,6 @@ public class QuestManager {
         return quests.get(id);
     }
 
-    public PlayerQuestData getQuestData(Player player){
-        return playerQuests.computeIfAbsent(player.getUniqueId(), PlayerQuestData::new);
-    }
+
 
 }

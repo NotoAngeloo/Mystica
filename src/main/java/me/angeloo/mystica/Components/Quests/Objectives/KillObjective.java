@@ -4,6 +4,7 @@ import io.lumine.mythic.api.mobs.MythicMob;
 import me.angeloo.mystica.Components.Quests.Progress.KillObjectiveProgress;
 import me.angeloo.mystica.Components.Quests.Progress.ObjectiveProgress;
 import me.angeloo.mystica.Components.Quests.QuestEnums.QuestType;
+import org.bukkit.configuration.ConfigurationSection;
 
 public class KillObjective implements QuestObjective{
 
@@ -28,8 +29,15 @@ public class KillObjective implements QuestObjective{
     }
 
     @Override
-    public ObjectiveProgress createProcess() {
+    public ObjectiveProgress createProgress() {
         return new KillObjectiveProgress(this);
+    }
+
+    @Override
+    public ObjectiveProgress createProgressFromData(ConfigurationSection section) {
+        KillObjectiveProgress progress = new KillObjectiveProgress(this);
+        progress.deserialize(section);
+        return progress;
     }
 
     public MythicMob getTarget(){

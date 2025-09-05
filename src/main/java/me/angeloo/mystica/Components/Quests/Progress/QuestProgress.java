@@ -4,22 +4,27 @@ import me.angeloo.mystica.Components.Quests.Objectives.QuestObjective;
 import me.angeloo.mystica.Components.Quests.Progress.ObjectiveProgress;
 import me.angeloo.mystica.Components.Quests.Quest;
 import me.angeloo.mystica.Components.Quests.QuestEnums.QuestType;
+import me.angeloo.mystica.Components.Quests.QuestManager;
+import me.angeloo.mystica.Mystica;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class QuestProgress {
 
+
     private final Quest quest;
+    private final List<ObjectiveProgress> objectiveProgresses = new ArrayList<>();
 
-    private final List<ObjectiveProgress> objectives;
-
-    public QuestProgress(Quest quest){
+    public QuestProgress(Quest quest) {
         this.quest = quest;
-        this.objectives = new ArrayList<>();
 
-        for(QuestObjective template : quest.getObjectives()){
-            objectives.add(template.createProcess());
+        // Convert each QuestObjective template into a mutable ObjectiveProgress
+        for (QuestObjective obj : quest.getObjectives()) {
+            objectiveProgresses.add(obj.createProgress());
         }
     }
 
@@ -27,32 +32,44 @@ public class QuestProgress {
         return quest;
     }
 
-    public List<ObjectiveProgress> getObjectives(){
-        return objectives;
+    public List<ObjectiveProgress> getObjectiveProgresses() {
+        return objectiveProgresses;
     }
 
-    public void updateProgress(QuestType type, Object data){
 
-        for(ObjectiveProgress progress : objectives){
+    public static QuestProgress deserialize(QuestManager questManager, String questId, ConfigurationSection questSection){
 
-            if(progress.getObjective().getType().equals(type)){
-                progress.update(data);
-            }
+        Quest quest = questManager.getQuest(questId);
 
+        if(quest == null){
+            throw new IllegalArgumentException("Quest with ID " + questId + " not found");
         }
 
-    }
+        QuestProgress progress = new QuestProgress(quest);
 
-    public boolean isComplete(){
-        for (ObjectiveProgress progress : objectives){
+        ConfigurationSection objectivesSection = questSection.getConfigurationSection("objectives");
+        if (objectivesSection != null) {
+            List<ObjectiveProgress> newProgresses = new ArrayList<>();
 
-            if(!progress.isComplete()){
-                return false;
+            int i = 0;
+            for (QuestObjective objective : quest.getObjectives()) {
+                ConfigurationSection objSec = objectivesSection.getConfigurationSection(String.valueOf(i));
+                if (objSec != null) {
+                    newProgresses.add(objective.createProgressFromData(objSec));
+                } else {
+                    newProgresses.add(objective.createProgress());
+                }
+                i++;
             }
 
+            // Replace the default objective progress with the deserialized ones
+            progress.getObjectiveProgresses().clear();
+            progress.getObjectiveProgresses().addAll(newProgresses);
         }
-        return true;
 
+        return progress;
     }
+
+
 
 }

@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.Quests.Progress;
 
 import me.angeloo.mystica.Components.Quests.Objectives.KillObjective;
+import org.bukkit.configuration.ConfigurationSection;
 
 public class KillObjectiveProgress extends ObjectiveProgress{
 
@@ -22,6 +23,15 @@ public class KillObjectiveProgress extends ObjectiveProgress{
     @Override
     public boolean isComplete(){
         return kills >= ((KillObjective) getObjective()).getRequired();
+    }
+
+    //not yet, ferb
+    public void serialize(ConfigurationSection section) {
+        section.set("kills", kills);
+    }
+
+    public void deserialize(ConfigurationSection section) {
+        this.kills = section.getInt("kills", 0);
     }
 
 }

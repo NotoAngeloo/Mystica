@@ -150,9 +150,13 @@ public final class Mystica extends JavaPlugin{
 
         profileFileWriter = new ProfileFileWriter(this);
 
+        questManager = new QuestManager(this);
+        questManager.loadQuests();
+
         profileManager = new ProfileManager(this);
         profileManager.loadProfilesFromConfig();
         mysticaPartyManager = profileManager.getMysticaPartyManager();
+
 
         inventoryItemGetter = new InventoryItemGetter();
         displayWeapons = new DisplayWeapons(this);
@@ -191,8 +195,7 @@ public final class Mystica extends JavaPlugin{
 
         fakePlayerAiManager = new FakePlayerAiManager(this);
 
-        questManager = new QuestManager(this);
-        questManager.loadQuests();
+
 
         customInventoryManager = new CustomInventoryManager(this);
         abilityInventory = new AbilityInventory(this);
@@ -231,9 +234,6 @@ public final class Mystica extends JavaPlugin{
         getCommand("ManualSave").setExecutor(new ManualSave(this));
         getCommand("DeleteProfile").setExecutor(new DeleteProfile(this));
         getCommand("MysticaInteractions").setExecutor(new MysticaInteractions(this));
-        getCommand("PathTool").setExecutor(new PathTool());
-        getCommand("DisplayPath").setExecutor(new DisplayPath(this));
-        getCommand("SavePaths").setExecutor(new SavePaths(this));
         getCommand("BossLevel").setExecutor(new BossLevel(this));
         getCommand("HitValidCheck").setExecutor(new HitValidCheck(this));
         getCommand("SetCaution").setExecutor(new SetCaution(this));

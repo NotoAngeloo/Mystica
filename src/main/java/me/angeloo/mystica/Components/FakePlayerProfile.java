@@ -3,11 +3,13 @@ package me.angeloo.mystica.Components;
 import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
+import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Map;
 import java.util.Set;
 
 public class FakePlayerProfile implements Profile {
@@ -195,6 +197,21 @@ public class FakePlayerProfile implements Profile {
 
     @Override
     public void getVoidsOnDeath(Set<Player> players) {
+
+    }
+
+    @Override
+    public Map<String, QuestProgress> getQuestProgress() {
+        return null;
+    }
+
+    @Override
+    public void addQuestProgress(QuestProgress progress) {
+
+    }
+
+    @Override
+    public void removeQuestProgress(String questId) {
 
     }
 

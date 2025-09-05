@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
+import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
 import me.angeloo.mystica.Managers.AbilityManager;
 import me.angeloo.mystica.Managers.BuffAndDebuffManager;
 import me.angeloo.mystica.Managers.CombatManager;
@@ -202,6 +203,21 @@ public class SpectralSteed {
 
             @Override
             public void getVoidsOnDeath(Set<Player> players) {
+
+            }
+
+            @Override
+            public Map<String, QuestProgress> getQuestProgress() {
+                return null;
+            }
+
+            @Override
+            public void addQuestProgress(QuestProgress progress) {
+
+            }
+
+            @Override
+            public void removeQuestProgress(String questId) {
 
             }
 

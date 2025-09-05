@@ -8,6 +8,12 @@ import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.Components.Items.MysticaItem;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
+import me.angeloo.mystica.Components.Quests.Objectives.KillObjective;
+import me.angeloo.mystica.Components.Quests.Progress.KillObjectiveProgress;
+import me.angeloo.mystica.Components.Quests.Progress.ObjectiveProgress;
+import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
+import me.angeloo.mystica.Components.Quests.Progress.SpeakObjectiveProgress;
+import me.angeloo.mystica.Components.Quests.QuestManager;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.CustomEvents.UpdateMysticaPartyEvent;
 import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
@@ -46,6 +52,8 @@ public class ProfileManager {
 
     private final Mystica main;
 
+    private final QuestManager questManager;
+
     private final MysticaPartyManager mysticaPartyManager;
     private final CreaturesAndCharactersManager creaturesAndCharactersManager;
 
@@ -82,6 +90,7 @@ public class ProfileManager {
 
     public ProfileManager(Mystica main) {
         this.main = main;
+        this.questManager = main.getQuestManager();
         mysticaPartyManager = new MysticaPartyManager(main, this);
         creaturesAndCharactersManager = new CreaturesAndCharactersManager(main, this, mysticaPartyManager);
 
@@ -171,6 +180,8 @@ public class ProfileManager {
 
                 config.set(id + ".bag." + i, serializedItems);
 
+                //i forgot what this was for so im not deleting yet
+
                 /*for(MysticaItem item : bag.getBag()){
 
                     config.createSection(id + ".bag." + i + "." + item.identifier());
@@ -188,6 +199,34 @@ public class ProfileManager {
 
                 }*/
 
+
+            }
+
+            Map<String, QuestProgress> questProgressMap = profile.getQuestProgress();
+
+            for(Map.Entry<String, QuestProgress> entry : questProgressMap.entrySet()){
+
+                String questId = entry.getKey();
+                QuestProgress progress = entry.getValue();
+
+                ConfigurationSection questsSection = config.createSection(id + ".quests." + questId);
+
+                List<ObjectiveProgress> objectives = progress.getObjectiveProgresses();
+                ConfigurationSection objectiveSection = questsSection.createSection("objectives");
+
+                for(ObjectiveProgress objectiveProgress : objectives){
+                    String objId = objectiveProgress.getObjective().getId();
+                    ConfigurationSection objSec = objectiveSection.createSection(objId);
+
+                    if(objectiveProgress instanceof KillObjectiveProgress killProgress){
+                        killProgress.serialize(objSec);
+                    }
+
+                    if(objectiveProgress instanceof SpeakObjectiveProgress speakProgress){
+                        speakProgress.serialize(objSec);
+                    }
+
+                }
 
             }
 
@@ -294,15 +333,6 @@ public class ProfileManager {
 
                     int bossLevel = config.getInt(id + ".boss_level");
 
-                    Map<String, Boolean> allMilestones = new HashMap<>();
-
-                    ConfigurationSection milestonesSection = config.getConfigurationSection(id + ".milestones");
-                    if (milestonesSection != null) {
-                        for (String milestone : milestonesSection.getKeys(false)) {
-                            allMilestones.put(milestone, milestonesSection.getBoolean(milestone));
-                        }
-                    }
-
                     PlayerBossLevel playerBossLevel = new PlayerBossLevel(bossLevel);
 
                     MysticaBagCollection mysticaBagCollection = new MysticaBagCollection(new ArrayList<>());
@@ -339,6 +369,23 @@ public class ProfileManager {
 
                     }
 
+                    //this will be saved in the profile
+                    Map<String, QuestProgress> questProgressMap = new HashMap<>();
+
+                    ConfigurationSection questsSection = config.getConfigurationSection("quests");
+                    if(questsSection != null){
+                        for (String questId : questsSection.getKeys(false)){
+                            ConfigurationSection questSection = questsSection.getConfigurationSection(questId);
+
+                            if(questSection == null){
+                                continue;
+                            }
+
+                            QuestProgress progress = QuestProgress.deserialize(questManager, questId, questSection);
+                            questProgressMap.put(questId, progress);
+
+                        }
+                    }
 
                     PlayerProfile profile = new PlayerProfile(false, false, hp,
                             stats,
@@ -388,6 +435,8 @@ public class ProfileManager {
 
 
                     };
+
+                    profile.lazyInnitQuestProgress(questProgressMap);
 
                     playerProfiles.put(id, profile);
 
@@ -780,6 +829,21 @@ public class ProfileManager {
 
             @Override
             public void getVoidsOnDeath(Set<Player> players) {
+
+            }
+
+            @Override
+            public Map<String, QuestProgress> getQuestProgress() {
+                return null;
+            }
+
+            @Override
+            public void addQuestProgress(QuestProgress progress) {
+
+            }
+
+            @Override
+            public void removeQuestProgress(String questId) {
 
             }
 

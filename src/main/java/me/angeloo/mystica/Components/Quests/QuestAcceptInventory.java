@@ -2,8 +2,10 @@ package me.angeloo.mystica.Components.Quests;
 
 import me.angeloo.mystica.Components.Items.MysticaItem;
 import me.angeloo.mystica.Components.Items.UnidentifiedItem;
+import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
 import me.angeloo.mystica.Components.Quests.Rewards.ItemReward;
 import me.angeloo.mystica.Components.Quests.Rewards.QuestReward;
+import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.InventoryItemGetter;
@@ -26,6 +28,8 @@ public class QuestAcceptInventory implements Listener {
 
     private final Mystica main;
 
+    private final ProfileManager profileManager;
+
     private final DisplayWeapons displayWeapons;
     private final QuestInventoryTextGenerator textGenerator;
     private final InventoryItemGetter itemGetter;
@@ -35,6 +39,7 @@ public class QuestAcceptInventory implements Listener {
 
     public QuestAcceptInventory(Mystica main){
         this.main = main;
+        profileManager = main.getProfileManager();
         displayWeapons = main.getDisplayWeapons();
         textGenerator = new QuestInventoryTextGenerator();
         itemGetter = main.getItemGetter();
@@ -274,7 +279,15 @@ public class QuestAcceptInventory implements Listener {
                 acceptSlots.add(29);
 
                 if(acceptSlots.contains(slot)){
-                    Bukkit.getLogger().info("quest accept");
+
+                    Quest quest = getCurrentViewedQuest(player);
+
+                    QuestProgress progress = new QuestProgress(quest);
+
+                    profileManager.getAnyProfile(player).addQuestProgress(progress);
+
+                    player.closeInventory();
+                    //Bukkit.getLogger().info("quest accept");
                     return;
                 }
 

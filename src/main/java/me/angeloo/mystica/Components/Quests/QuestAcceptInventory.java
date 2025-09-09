@@ -3,6 +3,7 @@ package me.angeloo.mystica.Components.Quests;
 import me.angeloo.mystica.Components.Items.MysticaItem;
 import me.angeloo.mystica.Components.Items.UnidentifiedItem;
 import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
+import me.angeloo.mystica.Components.Quests.QuestEnums.RewardType;
 import me.angeloo.mystica.Components.Quests.Rewards.ItemReward;
 import me.angeloo.mystica.Components.Quests.Rewards.QuestReward;
 import me.angeloo.mystica.Managers.ProfileManager;
@@ -60,6 +61,8 @@ public class QuestAcceptInventory implements Listener {
 
         //in a task cuz needs to calculate something expensive
         int finalQuestStage = getQuestStage(player, quest);
+
+        //Bukkit.getLogger().info(String.valueOf(finalQuestStage));
 
         if(finalQuestStage == 3){
             return;
@@ -144,6 +147,9 @@ public class QuestAcceptInventory implements Listener {
         switch (stage){
             case 0 ->{
                 questDescription = quest.getDescription();
+            }
+            case 1 ->{
+                questDescription = quest.getProgress();
             }
             case 2 ->{
                 questDescription = quest.getCompleted();
@@ -350,6 +356,16 @@ public class QuestAcceptInventory implements Listener {
                             player.closeInventory();
                             //rewards
                             profileManager.getAnyProfile(player).getQuestProgressMap().get(quest.getId()).setRewarded();
+
+                            for(QuestReward reward : quest.getRewards()){
+
+                                if(reward instanceof ItemReward itemReward){
+                                    MysticaItem item = itemReward.getItem();
+                                    profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(item);
+                                }
+
+                            }
+
 
                         }
                     }

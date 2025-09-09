@@ -337,14 +337,12 @@ public class GeneralEventListener implements Listener {
 
             progress.updateAllObjectiveProgress(mob);
 
-            if(progress.isComplete()){
-                //probably mark it complete and direct player to turn in the quest. unless its a speak quest
-            }
 
         }
 
 
     }
+
 
     @EventHandler
     public void noPlaceBlocks(BlockPlaceEvent event) {

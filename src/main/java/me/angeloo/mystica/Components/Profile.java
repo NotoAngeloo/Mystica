@@ -61,7 +61,7 @@ public interface Profile {
 
     void getVoidsOnDeath(Set<Player> players);
 
-    Map<String, QuestProgress> getQuestProgress();
+    Map<String, QuestProgress> getQuestProgressMap();
 
 
     void addQuestProgress(QuestProgress progress);

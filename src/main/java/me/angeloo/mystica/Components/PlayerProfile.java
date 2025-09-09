@@ -30,7 +30,7 @@ public abstract class PlayerProfile implements Profile{
 
     private final PlayerBossLevel playerBossLevel;
 
-    private Map<String, QuestProgress> questProgressMap = new HashMap<>();
+    private final Map<String, QuestProgress> questProgressMap = new HashMap<>();
 
     public PlayerProfile(
             Boolean ifDead,
@@ -152,7 +152,7 @@ public abstract class PlayerProfile implements Profile{
 
 
     @Override
-    public Map<String, QuestProgress> getQuestProgress() {
+    public Map<String, QuestProgress> getQuestProgressMap() {
         return questProgressMap;
     }
 
@@ -160,16 +160,16 @@ public abstract class PlayerProfile implements Profile{
         questProgressMap.put(progress.getQuest().getId(), progress);
     }
 
-    public QuestProgress getQuestProgress(String questId) {
-        return questProgressMap.get(questId);
-    }
+
 
     public void removeQuestProgress(String questId) {
         questProgressMap.remove(questId);
     }
 
     public void lazyInnitQuestProgress(Map<String, QuestProgress> newMap){
-        this.questProgressMap = newMap;
+
+        this.questProgressMap.putAll(newMap);
+
     }
 
 

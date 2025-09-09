@@ -191,7 +191,7 @@ public class CoersicaBoss {
             }
 
             @Override
-            public Map<String, QuestProgress> getQuestProgress() {
+            public Map<String, QuestProgress> getQuestProgressMap() {
                 return null;
             }
 
@@ -366,7 +366,7 @@ public class CoersicaBoss {
             }
 
             @Override
-            public Map<String, QuestProgress> getQuestProgress() {
+            public Map<String, QuestProgress> getQuestProgressMap() {
                 return null;
             }
 
@@ -541,7 +541,7 @@ public class CoersicaBoss {
             }
 
             @Override
-            public Map<String, QuestProgress> getQuestProgress() {
+            public Map<String, QuestProgress> getQuestProgressMap() {
                 return null;
             }
 

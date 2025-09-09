@@ -6,6 +6,7 @@ import me.angeloo.mystica.Components.Quests.Quest;
 import me.angeloo.mystica.Components.Quests.QuestEnums.QuestType;
 import me.angeloo.mystica.Components.Quests.QuestManager;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class QuestProgress {
 
     private final Quest quest;
     private final List<ObjectiveProgress> objectiveProgresses = new ArrayList<>();
+    private boolean rewarded;
 
     public QuestProgress(Quest quest) {
         this.quest = quest;
@@ -26,6 +28,8 @@ public class QuestProgress {
         for (QuestObjective obj : quest.getObjectives()) {
             objectiveProgresses.add(obj.createProgress());
         }
+
+        rewarded = false;
     }
 
     public Quest getQuest(){
@@ -34,6 +38,26 @@ public class QuestProgress {
 
     public List<ObjectiveProgress> getObjectiveProgresses() {
         return objectiveProgresses;
+    }
+
+    public void updateAllObjectiveProgress(Object data){
+
+        for(ObjectiveProgress progress : this.objectiveProgresses){
+            progress.update(data);
+        }
+
+    }
+
+    public boolean isComplete(){
+        return objectiveProgresses.stream().allMatch(ObjectiveProgress::isComplete);
+    }
+
+    public void setRewarded(){
+        rewarded = true;
+    }
+
+    public boolean isRewarded(){
+        return rewarded;
     }
 
 

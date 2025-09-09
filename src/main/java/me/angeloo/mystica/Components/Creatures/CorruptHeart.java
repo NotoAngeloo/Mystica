@@ -187,7 +187,7 @@ public class CorruptHeart {
             }
 
             @Override
-            public Map<String, QuestProgress> getQuestProgress() {
+            public Map<String, QuestProgress> getQuestProgressMap() {
                 return null;
             }
 

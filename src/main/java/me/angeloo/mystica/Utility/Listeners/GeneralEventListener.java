@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Utility.Listeners;
 
 import io.lumine.mythic.api.adapters.AbstractEntity;
+import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import me.angeloo.mystica.Components.Inventories.Abilities.AbilityInventory;
@@ -9,6 +10,8 @@ import me.angeloo.mystica.Components.Inventories.Party.PartyInventory;
 import me.angeloo.mystica.Components.Items.PathToolItem;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
+import me.angeloo.mystica.Components.Quests.Progress.ObjectiveProgress;
+import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
 import me.angeloo.mystica.CustomEvents.*;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Managers.Parties.FakePlayerAiManager;
@@ -159,6 +162,7 @@ public class GeneralEventListener implements Listener {
         hudManager.innitHud(player);
         Bukkit.getServer().getPluginManager().callEvent(new SetMenuItemsEvent(player));
         Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Team));
+        
 
         if (combatLogs.contains(player.getUniqueId())) {
             deathManager.playerNowDead(player);
@@ -297,6 +301,50 @@ public class GeneralEventListener implements Listener {
 
     }
 
+    @EventHandler
+    public void mmInteract(PlayerInteractEntityEvent event){
+
+        Player player = event.getPlayer();
+        Entity clicked = event.getRightClicked();
+
+
+        if(!MythicBukkit.inst().getAPIHelper().isMythicMob(clicked.getUniqueId())){
+            return;
+        }
+
+        MythicMob mythicMob = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(clicked).getType();
+
+        Bukkit.getServer().getPluginManager().callEvent(new UpdateSpeakQuestProgressEvent(player, mythicMob));
+
+    }
+
+    @EventHandler
+    public void speakUpdate(UpdateSpeakQuestProgressEvent event){
+
+        Player player = event.getPlayer();
+
+        MythicMob mob = event.getMob();
+
+
+        for(Map.Entry<String, QuestProgress> progressMap : profileManager.getAnyProfile(player).getQuestProgressMap().entrySet()){
+
+            QuestProgress progress = progressMap.getValue();
+
+            if(progress.isComplete()){
+                //Bukkit.getLogger().info("already complete");
+                return;
+            }
+
+            progress.updateAllObjectiveProgress(mob);
+
+            if(progress.isComplete()){
+                //probably mark it complete and direct player to turn in the quest. unless its a speak quest
+            }
+
+        }
+
+
+    }
 
     @EventHandler
     public void noPlaceBlocks(BlockPlaceEvent event) {

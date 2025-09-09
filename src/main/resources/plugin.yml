@@ -7,7 +7,6 @@ depend:
   - TAB
 softdepend:
   - MythicMobs
-  - Interactions
 api-version: '1.19'
 commands:
   Trash:
@@ -71,10 +70,6 @@ commands:
     description: deletes a profile
     usage: /DeleteProfile
     permission: developer
-  MysticaInteractions:
-    description: allows mms to check for mystica data before determining which interaction to start
-    usage: /MysticaInteractions <Interaction> <Player>
-    permission: developer
   BossLevel:
     description: lets mms open boss level inv
     usage: /BossLevel
@@ -86,10 +81,6 @@ commands:
   SetCaution:
     description: lets mms mess with fake player ai
     usage: /SetCaution <entityuuid> <boolean>
-    permission: developer
-  SignalNearbyNpc:
-    description: lets interactions signal mms
-    usage: /SignalNearbyNpc <player> <signal>
     permission: developer
   StopCompanionRotation:
     description: lets companions stop their rotation

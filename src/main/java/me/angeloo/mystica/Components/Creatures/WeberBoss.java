@@ -188,7 +188,7 @@ public class WeberBoss {
             }
 
             @Override
-            public Map<String, QuestProgress> getQuestProgress() {
+            public Map<String, QuestProgress> getQuestProgressMap() {
                 return null;
             }
 

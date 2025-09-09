@@ -1,5 +1,7 @@
 package me.angeloo.mystica.Components.Quests.Progress;
 
+import io.lumine.mythic.api.mobs.MythicMob;
+import me.angeloo.mystica.Components.Quests.Objectives.KillObjective;
 import me.angeloo.mystica.Components.Quests.Objectives.SpeakObjective;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -14,8 +16,11 @@ public class SpeakObjectiveProgress extends ObjectiveProgress{
     @Override
     public void update(Object data){
 
-        if(data.equals(((SpeakObjective) getObjective()).getTarget())){
-            spoken = true;
+        if(data instanceof MythicMob mob){
+            if(mob.equals(((SpeakObjective) getObjective()).getTarget())){
+                spoken = true;
+            }
+
         }
 
     }

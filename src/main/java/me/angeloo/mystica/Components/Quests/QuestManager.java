@@ -6,6 +6,7 @@ import me.angeloo.mystica.Components.Items.MysticaItem;
 import me.angeloo.mystica.Components.Quests.Objectives.KillObjective;
 import me.angeloo.mystica.Components.Quests.Objectives.QuestObjective;
 import me.angeloo.mystica.Components.Quests.Objectives.SpeakObjective;
+import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
 import me.angeloo.mystica.Components.Quests.QuestEnums.QuestType;
 import me.angeloo.mystica.Components.Quests.QuestEnums.RewardType;
 import me.angeloo.mystica.Components.Quests.Rewards.ItemReward;
@@ -55,6 +56,7 @@ public class QuestManager {
 
                 String name = questSection.getString("name", questId);
                 List<String> description = questSection.getStringList("description");
+                List<String> progress = questSection.getStringList("description_progress");
                 List<String> completed = questSection.getStringList("description_completed");
 
                 List<QuestObjective> objectives = new ArrayList<>();
@@ -80,10 +82,10 @@ public class QuestManager {
 
                         switch (questType){
                             case Speak -> {
-                                objectives.add(new SpeakObjective(questId, mobType));
+                                objectives.add(new SpeakObjective(objId, mobType));
                             }
                             case Kill -> {
-                                objectives.add(new KillObjective(questId, mobType, amount));
+                                objectives.add(new KillObjective(objId, mobType, amount));
                             }
                             default -> {
                                 Bukkit.getLogger().info("unknown quest type: " + questType);
@@ -126,8 +128,7 @@ public class QuestManager {
                 }
 
                 //i think something else was supposed to be here
-                //apply quests per player want each one able to complete seperatley
-                Quest quest = new Quest(questId, name, description, completed, objectives, rewards);
+                Quest quest = new Quest(questId, name, description, progress, completed, objectives, rewards);
                 registerQuest(quest);
 
             }
@@ -147,7 +148,6 @@ public class QuestManager {
     public Quest getQuest(String id){
         return quests.get(id);
     }
-
 
 
 }

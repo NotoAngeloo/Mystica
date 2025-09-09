@@ -52,7 +52,18 @@ public class QuestAcceptInventory implements Listener {
 
         //check progress on the quest to determine
 
+
+
+        //put a 3rd thing in the middle when they are on the quest and not finished
+
+        //needs to a check to see if turned in yet
+
         //in a task cuz needs to calculate something expensive
+        int finalQuestStage = getQuestStage(player, quest);
+
+        if(finalQuestStage == 3){
+            return;
+        }
 
         new BukkitRunnable(){
             @Override
@@ -72,7 +83,18 @@ public class QuestAcceptInventory implements Listener {
                 //-126
                 questText.append("\uF80B\uF80A\uF809\uF808\uF806");
                 //accept/complete
-                questText.append("\uE87B");
+                switch (finalQuestStage) {
+                    case 0 -> {
+                        questText.append("\uE87B");
+                    }
+                    case 1 -> {
+                        questText.append("\uE87D");
+                    }
+                    case 2 -> {
+                        questText.append("\uE87C");
+
+                    }
+                }
 
                 //-256
                 questText.append("\uF80D");
@@ -80,13 +102,11 @@ public class QuestAcceptInventory implements Listener {
                 questText.append("\uF80B\uF80A\uF804");
 
 
-                List<String> viewableDescription = getViewableDescription(player, quest);
+                List<String> viewableDescription = getViewableDescription(player, quest, finalQuestStage);
 
                 questText.append(textGenerator.getInventoryText(viewableDescription));
 
                 Inventory inv = Bukkit.createInventory(null, 9*6, ChatColor.WHITE + String.valueOf(questText));
-
-
 
                 Bukkit.getScheduler().runTask(main, ()->
                 {
@@ -115,11 +135,21 @@ public class QuestAcceptInventory implements Listener {
 
     }
 
-    private List<String> getViewableDescription(Player player, Quest quest){
+    private List<String> getViewableDescription(Player player, Quest quest, int stage){
 
         String title = quest.getName();
-        //check progress before deciding if get this or the other one
-        List<String> questDescription = quest.getDescription();
+
+        List<String> questDescription = quest.getProgress();
+
+        switch (stage){
+            case 0 ->{
+                questDescription = quest.getDescription();
+            }
+            case 2 ->{
+                questDescription = quest.getCompleted();
+            }
+        }
+
         List<String> viewableDescription = new ArrayList<>();
         int index = questDescriptionIndex.getOrDefault(player.getUniqueId(), 0);
 
@@ -155,6 +185,8 @@ public class QuestAcceptInventory implements Listener {
             Inventory topInv = event.getView().getTopInventory();
             Inventory bottomInv = event.getView().getBottomInventory();
 
+            int stage = getQuestStage(player, getCurrentViewedQuest(player));
+
             if(event.getClickedInventory() == bottomInv){
 
                 int slot = event.getSlot();
@@ -183,15 +215,25 @@ public class QuestAcceptInventory implements Listener {
                     //-126
                     questText.append("\uF80B\uF80A\uF809\uF808\uF806");
                     //accept/complete
-                    questText.append("\uE87B");
+                    switch (stage){
+                        case 0 ->{
+                            questText.append("\uE87B");
+
+                        }
+                        case 1 -> {
+                            questText.append("\uE87D");
+                        }
+                        case 2 ->{
+                            questText.append("\uE87C");
+                        }
+                    }
 
                     //-256
                     questText.append("\uF80D");
                     //-100
                     questText.append("\uF80B\uF80A\uF804");
 
-                    //description can hav max of 14 lines, if has more need to index them
-                    List<String> viewableDescription = getViewableDescription(player, getCurrentViewedQuest(player));
+                    List<String> viewableDescription = getViewableDescription(player, getCurrentViewedQuest(player), stage);
 
                     questText.append(textGenerator.getInventoryText(viewableDescription));
 
@@ -233,14 +275,25 @@ public class QuestAcceptInventory implements Listener {
                     //-126
                     questText.append("\uF80B\uF80A\uF809\uF808\uF806");
                     //accept/complete
-                    questText.append("\uE87B");
+                    switch (stage){
+                        case 0 ->{
+                            questText.append("\uE87B");
+
+                        }
+                        case 1 ->{
+                            questText.append("\uE87D");
+                        }
+                        case 2 ->{
+                            questText.append("\uE87C");
+                        }
+                    }
 
                     //-256
                     questText.append("\uF80D");
                     //-100
                     questText.append("\uF80B\uF80A\uF804");
 
-                    List<String> viewableDescription = getViewableDescription(player, getCurrentViewedQuest(player));
+                    List<String> viewableDescription = getViewableDescription(player, getCurrentViewedQuest(player), stage);
 
                     questText.append(textGenerator.getInventoryText(viewableDescription));
 
@@ -282,13 +335,26 @@ public class QuestAcceptInventory implements Listener {
 
                     Quest quest = getCurrentViewedQuest(player);
 
-                    QuestProgress progress = new QuestProgress(quest);
+                    switch (stage){
+                        case 0 ->{
 
-                    profileManager.getAnyProfile(player).addQuestProgress(progress);
+                            QuestProgress progress = new QuestProgress(quest);
 
-                    player.closeInventory();
-                    //Bukkit.getLogger().info("quest accept");
-                    return;
+                            profileManager.getAnyProfile(player).addQuestProgress(progress);
+
+                            player.closeInventory();
+                            //Bukkit.getLogger().info("quest accept");
+                            return;
+                        }
+                        case 2 ->{
+                            player.closeInventory();
+                            //rewards
+                            profileManager.getAnyProfile(player).getQuestProgressMap().get(quest.getId()).setRewarded();
+
+                        }
+                    }
+
+
                 }
 
 
@@ -343,6 +409,25 @@ public class QuestAcceptInventory implements Listener {
         return Math.max(0, description.size() - 12);
     }
 
+    private int getQuestStage(Player player, Quest quest){
+        int questStage = 0;
+
+        if(profileManager.getAnyProfile(player).getQuestProgressMap().containsKey(quest.getId())){
+            questStage = 1;
+
+            QuestProgress progress = profileManager.getAnyProfile(player).getQuestProgressMap().get(quest.getId());
+
+            if(progress.isComplete()){
+                questStage = 2;
+            }
+
+            if(progress.isRewarded()){
+                questStage = 3;
+            }
+        }
+
+        return questStage;
+    }
 
     private ItemStack getRewardItem(Quest quest){
 

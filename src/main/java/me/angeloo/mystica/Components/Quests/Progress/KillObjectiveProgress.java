@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Quests.Progress;
 
+import io.lumine.mythic.api.mobs.MythicMob;
 import me.angeloo.mystica.Components.Quests.Objectives.KillObjective;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -14,9 +15,13 @@ public class KillObjectiveProgress extends ObjectiveProgress{
     @Override
     public void update(Object data){
 
-        if(data.equals(((KillObjective) getObjective()).getTarget())){
-            kills ++;
+        if(data instanceof MythicMob mob){
+            if(mob.equals(((KillObjective) getObjective()).getTarget())){
+                kills ++;
+            }
+
         }
+
 
     }
 

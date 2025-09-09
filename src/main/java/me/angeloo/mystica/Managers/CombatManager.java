@@ -70,13 +70,6 @@ public class CombatManager {
 
             unSheathWeapon(player);
 
-            /*PluginManager pluginManager = Bukkit.getPluginManager();
-            Plugin interactions =  pluginManager.getPlugin("interactions");
-            if (interactions != null && interactions.isEnabled()) {
-                Server server = Bukkit.getServer();
-
-                server.dispatchCommand(server.getConsoleSender(), "interactions stop " + player.getName());
-            }*/
 
             //make rest of team in combat
             for(LivingEntity member :getMParty(player)){

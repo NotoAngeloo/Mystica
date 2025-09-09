@@ -201,7 +201,7 @@ public class FakePlayerProfile implements Profile {
     }
 
     @Override
-    public Map<String, QuestProgress> getQuestProgress() {
+    public Map<String, QuestProgress> getQuestProgressMap() {
         return null;
     }
 

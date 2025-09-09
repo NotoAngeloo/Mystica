@@ -8,7 +8,6 @@ import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.Components.Items.MysticaItem;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
-import me.angeloo.mystica.Components.Quests.Objectives.KillObjective;
 import me.angeloo.mystica.Components.Quests.Progress.KillObjectiveProgress;
 import me.angeloo.mystica.Components.Quests.Progress.ObjectiveProgress;
 import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
@@ -202,7 +201,7 @@ public class ProfileManager {
 
             }
 
-            Map<String, QuestProgress> questProgressMap = profile.getQuestProgress();
+            Map<String, QuestProgress> questProgressMap = profile.getQuestProgressMap();
 
             for(Map.Entry<String, QuestProgress> entry : questProgressMap.entrySet()){
 
@@ -215,6 +214,7 @@ public class ProfileManager {
                 ConfigurationSection objectiveSection = questsSection.createSection("objectives");
 
                 for(ObjectiveProgress objectiveProgress : objectives){
+                    //this gets the name of the quest??
                     String objId = objectiveProgress.getObjective().getId();
                     ConfigurationSection objSec = objectiveSection.createSection(objId);
 
@@ -369,10 +369,9 @@ public class ProfileManager {
 
                     }
 
-                    //this will be saved in the profile
                     Map<String, QuestProgress> questProgressMap = new HashMap<>();
 
-                    ConfigurationSection questsSection = config.getConfigurationSection("quests");
+                    ConfigurationSection questsSection = config.getConfigurationSection(id + ".quests");
                     if(questsSection != null){
                         for (String questId : questsSection.getKeys(false)){
                             ConfigurationSection questSection = questsSection.getConfigurationSection(questId);
@@ -382,6 +381,7 @@ public class ProfileManager {
                             }
 
                             QuestProgress progress = QuestProgress.deserialize(questManager, questId, questSection);
+
                             questProgressMap.put(questId, progress);
 
                         }
@@ -669,19 +669,6 @@ public class ProfileManager {
         newPlayer.sendMessage("You are playing a pre-release\nYour items and progress are subjected to being removed");
 
 
-        //interactions stuff
-        PluginManager pluginManager = Bukkit.getPluginManager();
-        Plugin interactions =  pluginManager.getPlugin("interactions");
-        if (interactions != null && interactions.isEnabled()) {
-            Server server = Bukkit.getServer();
-
-            server.dispatchCommand(server.getConsoleSender(), "interactions resetplayer " + newPlayer.getName() + " tutorial");
-
-            //server.dispatchCommand(server.getConsoleSender(), "interactions resetplayer " + newPlayer.getName() + " newplayer");
-            //server.dispatchCommand(server.getConsoleSender(), "interactions resetplayer " + newPlayer.getName() + " captain");
-            //server.dispatchCommand(server.getConsoleSender(), "interactions resetplayer " + newPlayer.getName() + " HoLee");
-        }
-
         //pathingManager.calculatePath(newPlayer, new Location(newPlayer.getWorld(), 64, 99, -350));
     }
 
@@ -833,7 +820,7 @@ public class ProfileManager {
             }
 
             @Override
-            public Map<String, QuestProgress> getQuestProgress() {
+            public Map<String, QuestProgress> getQuestProgressMap() {
                 return null;
             }
 

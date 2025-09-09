@@ -233,11 +233,9 @@ public final class Mystica extends JavaPlugin{
         getCommand("Identify").setExecutor(new Identify(this));
         getCommand("ManualSave").setExecutor(new ManualSave(this));
         getCommand("DeleteProfile").setExecutor(new DeleteProfile(this));
-        getCommand("MysticaInteractions").setExecutor(new MysticaInteractions(this));
         getCommand("BossLevel").setExecutor(new BossLevel(this));
         getCommand("HitValidCheck").setExecutor(new HitValidCheck(this));
         getCommand("SetCaution").setExecutor(new SetCaution(this));
-        getCommand("SignalNearbyNpc").setExecutor(new SignalNearbyNpc());
         getCommand("StopCompanionRotation").setExecutor(new StopCompanionRotation(this));
         getCommand("DisplayInterruptBar").setExecutor(new DisplayInterruptBar(this));
         getCommand("CompanionNeedsToInterrupt").setExecutor(new CompanionNeedsToInterrupt(this));

@@ -8,7 +8,10 @@ import me.angeloo.mystica.Components.Quests.Objectives.QuestObjective;
 import me.angeloo.mystica.Components.Quests.Objectives.SpeakObjective;
 import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
 import me.angeloo.mystica.Components.Quests.QuestEnums.QuestType;
+import me.angeloo.mystica.Components.Quests.QuestEnums.RequirementType;
 import me.angeloo.mystica.Components.Quests.QuestEnums.RewardType;
+import me.angeloo.mystica.Components.Quests.Requirements.QuestRequirement;
+import me.angeloo.mystica.Components.Quests.Requirements.Requirement;
 import me.angeloo.mystica.Components.Quests.Rewards.ItemReward;
 import me.angeloo.mystica.Components.Quests.Rewards.QuestReward;
 import me.angeloo.mystica.Mystica;
@@ -55,9 +58,34 @@ public class QuestManager {
                 }
 
                 String name = questSection.getString("name", questId);
+                String giver = questSection.getString("giver");
+
+
                 List<String> description = questSection.getStringList("description");
                 List<String> progress = questSection.getStringList("description_progress");
                 List<String> completed = questSection.getStringList("description_completed");
+
+                List<Requirement> requirements = new ArrayList<>();
+                ConfigurationSection requirementsSection = questSection.getConfigurationSection("requirements");
+                if(requirementsSection != null){
+                    for(String reqId : requirementsSection.getKeys(false)){
+                        ConfigurationSection reqSection = requirementsSection.getConfigurationSection(reqId);
+                        if(reqSection == null){
+                            continue;
+                        }
+                        RequirementType type = RequirementType.valueOf(reqSection.getString("type"));
+
+                        switch (type){
+                            case Quest ->{
+                                String reqQuestId = reqSection.getString("questId");
+                                requirements.add(new QuestRequirement(reqQuestId));
+                            }
+                            default -> {
+                                Bukkit.getLogger().warning("Unknown requirement type: " + type);
+                            }
+                        }
+                    }
+                }
 
                 List<QuestObjective> objectives = new ArrayList<>();
                 ConfigurationSection objectiveSection = questSection.getConfigurationSection("objectives");
@@ -128,7 +156,7 @@ public class QuestManager {
                 }
 
                 //i think something else was supposed to be here
-                Quest quest = new Quest(questId, name, description, progress, completed, objectives, rewards);
+                Quest quest = new Quest(questId, name, giver, description, progress, completed, objectives, rewards, requirements);
                 registerQuest(quest);
 
             }
@@ -147,6 +175,12 @@ public class QuestManager {
 
     public Quest getQuest(String id){
         return quests.get(id);
+    }
+
+    public List<Quest> getQuestsForNpc(String giverId) {
+        return quests.values().stream()
+                .filter(q -> q.getGiverId().equalsIgnoreCase(giverId))
+                .toList();
     }
 
 

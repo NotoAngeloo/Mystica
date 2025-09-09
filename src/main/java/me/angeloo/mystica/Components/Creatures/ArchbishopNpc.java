@@ -11,12 +11,14 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 
 public class ArchbishopNpc {
 
     private final Mystica main;
     private final ProfileManager profileManager;
+    private BukkitTask spawnTask;
 
     public ArchbishopNpc(Mystica main, ProfileManager profileManager){
         this.main = main;
@@ -28,33 +30,38 @@ public class ArchbishopNpc {
         World world = Bukkit.getWorld("world");
         assert world != null;
 
-        Location spawnLoc = new Location(world, -11.5, 102, -251.5, 180, 0);
+        Location spawnLoc = new Location(world, -11.5, 127, -251.5, 180, 0);
 
 
-        new BukkitRunnable(){
+        this.spawnTask = new BukkitRunnable(){
             @Override
             public void run(){
 
                 BoundingBox hitBox = new BoundingBox(
-                        spawnLoc.getX() - 20,
-                        spawnLoc.getY() - 20,
-                        spawnLoc.getZ() - 20,
-                        spawnLoc.getX() + 20,
-                        spawnLoc.getY() + 20,
-                        spawnLoc.getZ() + 20
+                        spawnLoc.getX() - 50,
+                        spawnLoc.getY() - 50,
+                        spawnLoc.getZ() - 50,
+                        spawnLoc.getX() + 50,
+                        spawnLoc.getY() + 50,
+                        spawnLoc.getZ() + 50
                 );
 
-                for(Entity entity : world.getNearbyEntities(hitBox)){
-                    if(entity instanceof Player){
-                        try {
-                            MythicBukkit.inst().getAPIHelper().spawnMythicMob("ArchbishopNpc", spawnLoc);
-                        } catch (InvalidMobTypeException e) {
-                            throw new RuntimeException(e);
+                Bukkit.getScheduler().runTask(main, ()->{
+                    for(Entity entity : world.getNearbyEntities(hitBox)){
+                        if(entity instanceof Player){
+                            try {
+                                MythicBukkit.inst().getAPIHelper().spawnMythicMob("ArchbishopNpc", spawnLoc);
+                            } catch (InvalidMobTypeException e) {
+                                throw new RuntimeException(e);
+                            }
+
+                            removeNearbyEntities();
+                            this.cancel();
                         }
-                        removeNearbyEntities();
-                        this.cancel();
                     }
-                }
+                });
+
+
 
             }
 
@@ -65,11 +72,9 @@ public class ArchbishopNpc {
                         continue;
                     }
 
-                    if(!(entity instanceof LivingEntity)){
+                    if(!(entity instanceof LivingEntity livingEntity)){
                         continue;
                     }
-
-                    LivingEntity livingEntity = (LivingEntity) entity;
 
                     if(!profileManager.getAnyProfile(livingEntity).getImmortality()){
                         livingEntity.remove();
@@ -78,8 +83,10 @@ public class ArchbishopNpc {
 
             }
 
-        }.runTaskTimer(main, 0, 20);
-
+        }.runTaskTimerAsynchronously(main, 0, 20);
     }
 
+    public BukkitTask getSpawnTask(){
+        return this.spawnTask;
+    }
 }

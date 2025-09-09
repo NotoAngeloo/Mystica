@@ -1,9 +1,8 @@
-package me.angeloo.mystica.Components.Quests;
+package me.angeloo.mystica.Components.Quests.Inventories;
 
 import me.angeloo.mystica.Components.Items.MysticaItem;
-import me.angeloo.mystica.Components.Items.UnidentifiedItem;
 import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
-import me.angeloo.mystica.Components.Quests.QuestEnums.RewardType;
+import me.angeloo.mystica.Components.Quests.Quest;
 import me.angeloo.mystica.Components.Quests.Rewards.ItemReward;
 import me.angeloo.mystica.Components.Quests.Rewards.QuestReward;
 import me.angeloo.mystica.Managers.ProfileManager;
@@ -21,7 +20,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 
@@ -469,6 +467,10 @@ public class QuestAcceptInventory implements Listener {
 
         return rewardItem;
 
+    }
+
+    public QuestInventoryTextGenerator getTextGenerator(){
+        return this.textGenerator;
     }
 
 }

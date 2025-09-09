@@ -1,4 +1,4 @@
-package me.angeloo.mystica.Components.Quests;
+package me.angeloo.mystica.Components.Quests.Inventories;
 
 import net.md_5.bungee.api.ChatColor;
 

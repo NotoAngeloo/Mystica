@@ -63,12 +63,14 @@ public class CreaturesAndCharactersManager {
     }
 
     public void spawnAllNpcs() throws InvalidMobTypeException {
-        //newPlayerNpc.spawn();
-        //dummy.spawn();
-        //archbishopNpc.spawn();
+        archbishopNpc.spawn();
         //hansNpc.spawn();
         //hoLeeNpc.spawn();
         //captainNpc.spawn();
+    }
+
+    public void cancelSpawnTasks(){
+        archbishopNpc.getSpawnTask().cancel();
     }
 
 

@@ -114,6 +114,10 @@ commands:
     description: opens quests or reloads
     usage: /MysticaQuest <player/reload> <quest>
     permission: developer
+  OpenNpcGui:
+    description: opens npc gui for available quests and otherwise
+    usage: /OpenNpcGui <player> <uuid>
+    permission: developer
 
 permissions:
   developer:

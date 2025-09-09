@@ -1,5 +1,6 @@
 package me.angeloo.mystica;
 
+import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Commands.*;
 import me.angeloo.mystica.Components.Inventories.Abilities.AbilityInventory;
@@ -9,7 +10,8 @@ import me.angeloo.mystica.Components.Inventories.Equipment.*;
 import me.angeloo.mystica.Components.Inventories.Party.DungeonSelect;
 import me.angeloo.mystica.Components.Inventories.Party.InvitedInventory;
 import me.angeloo.mystica.Components.Inventories.Party.PartyInventory;
-import me.angeloo.mystica.Components.Quests.QuestAcceptInventory;
+import me.angeloo.mystica.Components.Quests.Inventories.PickQuestInventory;
+import me.angeloo.mystica.Components.Quests.Inventories.QuestAcceptInventory;
 import me.angeloo.mystica.Components.Items.BagItem;
 import me.angeloo.mystica.Components.Items.MysticalCrystal;
 import me.angeloo.mystica.Components.Items.SoulStone;
@@ -53,6 +55,8 @@ public final class Mystica extends JavaPlugin{
 
     private ProfileManager profileManager;
     private ProfileFileWriter profileFileWriter;
+
+    private CreaturesAndCharactersManager creaturesAndCharactersManager;
 
     private QuestManager questManager;
 
@@ -104,6 +108,7 @@ public final class Mystica extends JavaPlugin{
     private InvitedInventory invitedInventory;
     private PartyInventory partyInventory;
     private QuestAcceptInventory questAcceptInventory;
+    private PickQuestInventory pickQuestInventory;
 
     private FirstClearManager firstClearManager;
 
@@ -155,6 +160,7 @@ public final class Mystica extends JavaPlugin{
 
         profileManager = new ProfileManager(this);
         profileManager.loadProfilesFromConfig();
+        creaturesAndCharactersManager = profileManager.getCreaturesAndCharactersManager();
         mysticaPartyManager = profileManager.getMysticaPartyManager();
 
 
@@ -210,6 +216,7 @@ public final class Mystica extends JavaPlugin{
         invitedInventory = new InvitedInventory(this);
         partyInventory = new PartyInventory(this);
         questAcceptInventory = new QuestAcceptInventory(this);
+        pickQuestInventory = new PickQuestInventory(this, questAcceptInventory);
 
         firstClearManager = new FirstClearManager(this);
         firstClearManager.createOrLoadFolder();
@@ -244,6 +251,7 @@ public final class Mystica extends JavaPlugin{
         getCommand("StarterKit").setExecutor(new StarterKit(this));
         getCommand("BossWarn").setExecutor(new BossWarn(this));
         getCommand("MysticaQuest").setExecutor(new MysticaQuest(this));
+        getCommand("OpenNpcGui").setExecutor(new OpenNpcGui(this));
 
 
         this.getServer().getPluginManager().registerEvents(new ClassSelectInventory(this), this);
@@ -294,11 +302,11 @@ public final class Mystica extends JavaPlugin{
 
 
 
-        /*try {
+        try {
             creaturesAndCharactersManager.spawnAllNpcs();
         } catch (InvalidMobTypeException e) {
             throw new RuntimeException(e);
-        }*/
+        }
 
 
         this.api = new DamageIndicatorApi(this);
@@ -332,6 +340,7 @@ public final class Mystica extends JavaPlugin{
         profileManager.saveProfilesToConfig();
         pathingManager.saveFolder();
         dailyData.saveFolder();
+        creaturesAndCharactersManager.cancelSpawnTasks();
         Bukkit.getLogger().info("Mystica Disabled");
     }
 
@@ -469,6 +478,8 @@ public final class Mystica extends JavaPlugin{
     public QuestManager getQuestManager(){return questManager;}
 
     public QuestAcceptInventory getQuestAcceptInventory(){return questAcceptInventory;}
+
+    public PickQuestInventory getPickQuestInventory(){return pickQuestInventory;}
 
     @NotNull
     public PacketInterface getPacketInterface(){

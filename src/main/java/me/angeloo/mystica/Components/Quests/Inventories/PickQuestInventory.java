@@ -81,8 +81,12 @@ public class PickQuestInventory implements Listener {
 
         Inventory inv = Bukkit.createInventory(null, 9*6, ChatColor.WHITE + String.valueOf(title));
 
+        int questAmount = 0;
+        Quest currentQuest = null;
         int invSlot = 9;
         for(Quest quest : quests){
+
+            currentQuest = quest;
 
             if(invSlot>=53){
                 break;
@@ -100,10 +104,16 @@ public class PickQuestInventory implements Listener {
 
                 inv.setItem(invSlot, getQuestItem(quest));
                 invSlot++;
+                questAmount++;
             }
 
         }
 
+        //if only 1 quest, open that instead
+        if(questAmount == 1){
+            questAcceptInventory.openQuestAccept(player, currentQuest);
+            return;
+        }
 
         player.openInventory(inv);
         player.getInventory().clear();

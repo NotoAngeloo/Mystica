@@ -75,20 +75,26 @@ public class QuestProgress {
         if (objectivesSection != null) {
             List<ObjectiveProgress> newProgresses = new ArrayList<>();
 
-            int i = 0;
+
             for (QuestObjective objective : quest.getObjectives()) {
-                ConfigurationSection objSec = objectivesSection.getConfigurationSection(String.valueOf(i));
+                ConfigurationSection objSec = objectivesSection.getConfigurationSection(objective.getId());
                 if (objSec != null) {
                     newProgresses.add(objective.createProgressFromData(objSec));
                 } else {
                     newProgresses.add(objective.createProgress());
                 }
-                i++;
+
             }
 
             // Replace the default objective progress with the deserialized ones
             progress.getObjectiveProgresses().clear();
             progress.getObjectiveProgresses().addAll(newProgresses);
+        }
+
+        boolean rewarded = questSection.getBoolean("rewarded", false);
+
+        if(rewarded){
+            progress.setRewarded();
         }
 
         return progress;

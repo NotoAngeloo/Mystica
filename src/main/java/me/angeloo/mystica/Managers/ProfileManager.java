@@ -176,26 +176,6 @@ public class ProfileManager {
 
                 config.set(id + ".bag." + i, serializedItems);
 
-                //i forgot what this was for so im not deleting yet
-
-                /*for(MysticaItem item : bag.getBag()){
-
-                    config.createSection(id + ".bag." + i + "." + item.identifier());
-
-                    Map<String, Object> itemData = item.serialize();
-
-                    if(item.serialize() == null){
-                        continue;
-                    }
-
-                    for(Map.Entry<String, Object> entry : itemData.entrySet()){
-                        config.set(id + ".bag." + i + "." + item.identifier() + "." + entry.getKey(), entry.getValue());
-                    }
-
-
-                }*/
-
-
             }
 
             Map<String, QuestProgress> questProgressMap = profile.getQuestProgressMap();
@@ -224,6 +204,8 @@ public class ProfileManager {
                     }
 
                 }
+
+                questsSection.set("rewarded", progress.isRewarded());
 
             }
 

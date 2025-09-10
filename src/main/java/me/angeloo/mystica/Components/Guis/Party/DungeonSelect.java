@@ -1,4 +1,4 @@
-package me.angeloo.mystica.Components.Inventories.Party;
+package me.angeloo.mystica.Components.Guis.Party;
 
 import me.angeloo.mystica.Managers.CustomInventoryManager;
 import me.angeloo.mystica.Utility.DisplayWeapons;

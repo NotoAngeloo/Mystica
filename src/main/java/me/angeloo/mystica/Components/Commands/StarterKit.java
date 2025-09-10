@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.Commands;
 
 import me.angeloo.mystica.Components.Items.MysticaEquipment;
+import me.angeloo.mystica.Components.Items.MysticalCrystal;
 import me.angeloo.mystica.Components.Items.SoulStone;
 import me.angeloo.mystica.Components.Items.UnidentifiedItem;
 import me.angeloo.mystica.Managers.ProfileManager;
@@ -30,6 +31,8 @@ public class StarterKit implements CommandExecutor {
         UnidentifiedItem legs = new UnidentifiedItem(EquipmentSlot.LEGS, 1, 1);
         UnidentifiedItem boots = new UnidentifiedItem(EquipmentSlot.BOOTS, 1, 1);
 
+        MysticalCrystal crystal = new MysticalCrystal(1);
+
         if(args.length == 0){
 
             if(!(sender instanceof Player player)){
@@ -37,11 +40,13 @@ public class StarterKit implements CommandExecutor {
                 return true;
             }
 
-            profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(weapon);
-            profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(helmet);
-            profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(chest);
-            profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(legs);
-            profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(boots);
+            //profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(weapon);
+            //profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(helmet);
+            //profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(chest);
+            //profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(legs);
+            //profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(boots);
+
+            profileManager.getAnyProfile(player).getMysticaBagCollection().addToFirstBag(crystal);
 
             return true;
         }

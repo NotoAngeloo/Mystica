@@ -2,6 +2,7 @@ package me.angeloo.mystica.Components.Quests.Inventories;
 
 import io.lumine.mythic.api.mobs.MythicMob;
 import me.angeloo.mystica.Components.PlayerProfile;
+import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
 import me.angeloo.mystica.Components.Quests.Quest;
 import me.angeloo.mystica.Components.Quests.QuestManager;
 import me.angeloo.mystica.Managers.ProfileManager;
@@ -11,12 +12,20 @@ import me.angeloo.mystica.Utility.InventoryItemGetter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PickQuestInventory implements Listener {
@@ -27,7 +36,8 @@ public class PickQuestInventory implements Listener {
     private final DisplayWeapons displayWeapons;
     private final QuestAcceptInventory questAcceptInventory;
     private QuestInventoryTextGenerator textGenerator;
-    private InventoryItemGetter itemGetter;
+
+    //private final Map<String, Shop>
 
     public PickQuestInventory(Mystica main, QuestAcceptInventory questAcceptInventory){
         this.main = main;
@@ -36,7 +46,6 @@ public class PickQuestInventory implements Listener {
         displayWeapons = main.getDisplayWeapons();
         this.questAcceptInventory = questAcceptInventory;
         textGenerator = questAcceptInventory.getTextGenerator();
-        itemGetter = main.getItemGetter();
     }
 
     //which npc does it
@@ -61,10 +70,12 @@ public class PickQuestInventory implements Listener {
         title.append("\uF80B\uF80A\uF809\uF808\uF806");
         //name bar
         title.append("\uE87E");
+
         //-256
         title.append("\uF80D");
         //-100
         title.append("\uF80B\uF80A\uF804");
+
 
         title.append(getQuestText(questGiver));
 
@@ -78,7 +89,16 @@ public class PickQuestInventory implements Listener {
             }
 
             if(quest.canStart(profile)){
-                inv.setItem(invSlot, itemGetter.getItem(Material.EMERALD, 0, ChatColor.RESET + quest.getName()));
+
+                QuestProgress progress = profile.getQuestProgressMap().get(quest.getId());
+
+                if(progress != null){
+                    if(progress.isRewarded()){
+                        continue;
+                    }
+                }
+
+                inv.setItem(invSlot, getQuestItem(quest));
                 invSlot++;
             }
 
@@ -89,10 +109,82 @@ public class PickQuestInventory implements Listener {
         player.getInventory().clear();
         displayWeapons.displayArmor(player);
 
+
+
+        //down here are other functions besides quests, like shop. this should be a different gui
         //player.getInventory().setItem(9, new ItemStack(Material.EMERALD));
-        //player.getInventory().setItem(17, new ItemStack(Material.EMERALD));
+        //player.getInventory().setItem(11, new ItemStack(Material.EMERALD));
         //player.getInventory().setItem(27, new ItemStack(Material.EMERALD));
+        //player.getInventory().setItem(29, new ItemStack(Material.EMERALD));
         //player.getInventory().setItem(35, new ItemStack(Material.EMERALD));
+    }
+
+    @EventHandler
+    public void pickQuestClicks(InventoryClickEvent event){
+
+        //title bar thingy
+        if(!event.getView().getTitle().contains("\uE87E")){
+            return;
+        }
+
+        event.setCancelled(true);
+
+        Player player = (Player) event.getWhoClicked();
+
+        Inventory topInv = event.getView().getTopInventory();
+        Inventory bottomInv = event.getView().getBottomInventory();
+
+        int slot = event.getSlot();
+
+        if(event.getClickedInventory() == topInv){
+            //Bukkit.getLogger().info(String.valueOf(slot));
+
+            ItemStack item = event.getCurrentItem();
+
+            if(item == null){
+                return;
+            }
+
+            ItemMeta meta = item.getItemMeta();
+
+            if(meta == null){
+                return;
+            }
+
+            PersistentDataContainer container = meta.getPersistentDataContainer();
+
+            String questId = container.get(new NamespacedKey(main, "quest_id"), PersistentDataType.STRING);
+
+            Quest quest = questManager.getQuest(questId);
+
+            if(quest == null){
+                return;
+            }
+
+
+            questAcceptInventory.openQuestAccept(player, quest);
+
+        }
+
+    }
+
+    private ItemStack getQuestItem(Quest quest){
+        ItemStack item = new ItemStack(Material.EMERALD);
+
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setDisplayName(ChatColor.WHITE + quest.getName());
+
+        NamespacedKey key = new NamespacedKey(main, "quest_id");
+
+        meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, quest.getId());
+
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+
+        meta.setCustomModelData(0);
+
+        item.setItemMeta(meta);
+        return item;
     }
 
 

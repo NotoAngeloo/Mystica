@@ -3,13 +3,14 @@ package me.angeloo.mystica;
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Commands.*;
-import me.angeloo.mystica.Components.Inventories.Abilities.AbilityInventory;
-import me.angeloo.mystica.Components.Inventories.Abilities.ClassSelectInventory;
-import me.angeloo.mystica.Components.Inventories.Abilities.SpecInventory;
-import me.angeloo.mystica.Components.Inventories.Equipment.*;
-import me.angeloo.mystica.Components.Inventories.Party.DungeonSelect;
-import me.angeloo.mystica.Components.Inventories.Party.InvitedInventory;
-import me.angeloo.mystica.Components.Inventories.Party.PartyInventory;
+import me.angeloo.mystica.Components.Guis.Abilities.AbilityInventory;
+import me.angeloo.mystica.Components.Guis.Abilities.ClassSelectInventory;
+import me.angeloo.mystica.Components.Guis.Abilities.SpecInventory;
+import me.angeloo.mystica.Components.Guis.Equipment.*;
+import me.angeloo.mystica.Components.Guis.Misc.ShopOrQuest;
+import me.angeloo.mystica.Components.Guis.Party.DungeonSelect;
+import me.angeloo.mystica.Components.Guis.Party.InvitedInventory;
+import me.angeloo.mystica.Components.Guis.Party.PartyInventory;
 import me.angeloo.mystica.Components.Quests.Inventories.PickQuestInventory;
 import me.angeloo.mystica.Components.Quests.Inventories.QuestAcceptInventory;
 import me.angeloo.mystica.Components.Items.BagItem;
@@ -109,6 +110,7 @@ public final class Mystica extends JavaPlugin{
     private PartyInventory partyInventory;
     private QuestAcceptInventory questAcceptInventory;
     private PickQuestInventory pickQuestInventory;
+    private ShopOrQuest shopOrQuest;
 
     private FirstClearManager firstClearManager;
 
@@ -217,6 +219,7 @@ public final class Mystica extends JavaPlugin{
         partyInventory = new PartyInventory(this);
         questAcceptInventory = new QuestAcceptInventory(this);
         pickQuestInventory = new PickQuestInventory(this, questAcceptInventory);
+        shopOrQuest = new ShopOrQuest(this);
 
         firstClearManager = new FirstClearManager(this);
         firstClearManager.createOrLoadFolder();
@@ -270,7 +273,9 @@ public final class Mystica extends JavaPlugin{
         this.getServer().getPluginManager().registerEvents(equipmentInventory, this);
         this.getServer().getPluginManager().registerEvents(partyInventory, this);
         this.getServer().getPluginManager().registerEvents(invitedInventory, this);
-        this.getServer().getPluginManager().registerEvents(questAcceptInventory,(this));
+        this.getServer().getPluginManager().registerEvents(questAcceptInventory,this);
+        this.getServer().getPluginManager().registerEvents(shopOrQuest, this);
+        this.getServer().getPluginManager().registerEvents(pickQuestInventory,this);
 
         this.getServer().getPluginManager().registerEvents(new InventoryEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new GeneralEventListener(this), this);
@@ -480,6 +485,8 @@ public final class Mystica extends JavaPlugin{
     public QuestAcceptInventory getQuestAcceptInventory(){return questAcceptInventory;}
 
     public PickQuestInventory getPickQuestInventory(){return pickQuestInventory;}
+
+    public ShopOrQuest getShopOrQuest(){return shopOrQuest;}
 
     @NotNull
     public PacketInterface getPacketInterface(){

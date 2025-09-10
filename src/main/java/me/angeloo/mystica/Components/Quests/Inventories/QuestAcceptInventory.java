@@ -1,10 +1,13 @@
 package me.angeloo.mystica.Components.Quests.Inventories;
 
+import io.lumine.mythic.api.mobs.MythicMob;
+import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.Items.MysticaItem;
 import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
 import me.angeloo.mystica.Components.Quests.Quest;
 import me.angeloo.mystica.Components.Quests.Rewards.ItemReward;
 import me.angeloo.mystica.Components.Quests.Rewards.QuestReward;
+import me.angeloo.mystica.CustomEvents.UpdateSpeakQuestProgressEvent;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DisplayWeapons;
@@ -180,8 +183,8 @@ public class QuestAcceptInventory implements Listener {
     @EventHandler
     public void questAcceptCLick(InventoryClickEvent event){
 
-        //the parchment
-        if(event.getView().getTitle().contains("\uE87A")){
+        //the parchment, needs to ALSO not contain the title, because this is reused in pick quest. maybe it shouldn't
+        if(event.getView().getTitle().contains("\uE87A") && !event.getView().getTitle().contains("\uE87E")){
             event.setCancelled(true);
 
             Player player = (Player) event.getWhoClicked();
@@ -347,7 +350,15 @@ public class QuestAcceptInventory implements Listener {
                             profileManager.getAnyProfile(player).addQuestProgress(progress);
 
                             player.closeInventory();
-                            //Bukkit.getLogger().info("quest accept");
+
+                            //trigger event for the one who gave the quest
+                            MythicMob mythicMob = MythicBukkit.inst().getAPIHelper().getMythicMob(quest.getGiverId());
+
+                            if(mythicMob != null){
+                                Bukkit.getServer().getPluginManager().callEvent(new UpdateSpeakQuestProgressEvent(player, mythicMob));
+                            }
+
+
                             return;
                         }
                         case 2 ->{

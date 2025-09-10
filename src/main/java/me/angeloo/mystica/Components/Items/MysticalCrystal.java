@@ -36,10 +36,10 @@ public class MysticalCrystal extends StackableItem{
     public List<String> getLore() {
         List<String> lores = new ArrayList<>();
         lores.add(ChatColor.of(Color.WHITE) + "You feel a great energy emminating");
-        lores.add((Color.WHITE) +"from within");
+        lores.add(ChatColor.of(Color.WHITE) + "from within");
         lores.add("");
-        lores.add("Bring this to Gaellaman");
         lores.add("");
+        lores.add(ChatColor.of(Color.WHITE) + "Bring this to Gaellaman");
         lores.add(ChatColor.of(epicColor) + "(" + amount + ")");
         return lores;
     }
@@ -55,9 +55,9 @@ public class MysticalCrystal extends StackableItem{
     }
 
 
-    public static SoulStone deserialize(Map<String, Object> data){
+    public static MysticalCrystal deserialize(Map<String, Object> data){
         int amount = (int) data.getOrDefault("amount", 1);
-        return new SoulStone(amount);
+        return new MysticalCrystal(amount);
     }
 
 }

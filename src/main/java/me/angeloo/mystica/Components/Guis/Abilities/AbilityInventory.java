@@ -1,7 +1,6 @@
-package me.angeloo.mystica.Components.Inventories.Abilities;
+package me.angeloo.mystica.Components.Guis.Abilities;
 
 import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
-import me.angeloo.mystica.Components.Inventories.Abilities.SpecInventory;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
 import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.InventoryItemGetter;

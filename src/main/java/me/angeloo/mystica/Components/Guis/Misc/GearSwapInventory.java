@@ -1,4 +1,4 @@
-package me.angeloo.mystica.Components.Inventories;
+package me.angeloo.mystica.Components.Guis.Misc;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

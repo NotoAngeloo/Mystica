@@ -1,6 +1,6 @@
 package me.angeloo.mystica.Components.Commands;
 
-import me.angeloo.mystica.Components.Inventories.Equipment.RefineInventory;
+import me.angeloo.mystica.Components.Guis.Equipment.RefineInventory;
 
 import me.angeloo.mystica.Mystica;
 

@@ -1,6 +1,7 @@
-package me.angeloo.mystica.Components.Inventories.Abilities;
+package me.angeloo.mystica.Components.Guis.Abilities;
 
 import me.angeloo.mystica.Managers.CustomInventoryManager;
+import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ClassSetter;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
@@ -19,11 +20,13 @@ import java.util.List;
 public class ClassSelectInventory implements Listener {
 
     private final Mystica main;
+    private final ProfileManager profileManager;
     private final CustomInventoryManager customInventoryManager;
     private final ClassSetter classSetter;
 
     public ClassSelectInventory(Mystica main){
         this.main = main;
+        profileManager = main.getProfileManager();
         customInventoryManager = main.getInventoryManager();
         classSetter = main.getClassSetter();
     }
@@ -135,6 +138,13 @@ public class ClassSelectInventory implements Listener {
 
             if(selectSlots.contains(slot)){
 
+                //check if player has crystal
+                if(!hasClassCrystal(player)){
+                    //Bukkit.getLogger().info("no class crystal");
+                    return;
+                }
+
+
                 String colorlessTitle = title.replaceAll("§.", "");
 
                 switch (colorlessTitle) {
@@ -205,6 +215,10 @@ public class ClassSelectInventory implements Listener {
             openClassSelect(player);
         }
 
+    }
+
+    private boolean hasClassCrystal(Player player){
+        return profileManager.getAnyProfile(player).getMysticaBagCollection().getClassCrystalAmount() > 0;
     }
 
 

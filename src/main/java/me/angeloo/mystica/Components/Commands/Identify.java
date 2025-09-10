@@ -1,6 +1,6 @@
 package me.angeloo.mystica.Components.Commands;
 
-import me.angeloo.mystica.Components.Inventories.Equipment.IdentifyInventory;
+import me.angeloo.mystica.Components.Guis.Equipment.IdentifyInventory;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

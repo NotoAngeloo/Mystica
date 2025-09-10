@@ -2,6 +2,7 @@ package me.angeloo.mystica.Components.Quests;
 
 import me.angeloo.mystica.Components.PlayerProfile;
 import me.angeloo.mystica.Components.Quests.Objectives.QuestObjective;
+import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
 import me.angeloo.mystica.Components.Quests.Requirements.Requirement;
 import me.angeloo.mystica.Components.Quests.Rewards.QuestReward;
 
@@ -50,6 +51,7 @@ public Quest(String id, String name, String giverId, List<String> description, L
         }
         return true;
     }
+
 
 
 }

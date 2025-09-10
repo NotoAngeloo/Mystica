@@ -1,4 +1,4 @@
-package me.angeloo.mystica.Components.Inventories.Abilities;
+package me.angeloo.mystica.Components.Guis.Abilities;
 
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;

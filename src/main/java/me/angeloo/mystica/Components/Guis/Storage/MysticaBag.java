@@ -1,16 +1,10 @@
-package me.angeloo.mystica.Components.Inventories.Storage;
+package me.angeloo.mystica.Components.Guis.Storage;
 
-import com.google.gson.Gson;
 import me.angeloo.mystica.Components.Items.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -173,6 +167,26 @@ public class MysticaBag{
 
             if(item instanceof StackableItem stackableItem){
                 if(!item.identifier().equalsIgnoreCase("soul stone")){
+                    continue;
+                }
+
+                amount += stackableItem.getAmount();
+            }
+
+
+        }
+
+        return amount;
+    }
+
+    public int getClassCrystalAmount(){
+
+        int amount = 0;
+
+        for(MysticaItem item : bag){
+
+            if(item instanceof StackableItem stackableItem){
+                if(!item.identifier().equalsIgnoreCase("mystical crystal")){
                     continue;
                 }
 

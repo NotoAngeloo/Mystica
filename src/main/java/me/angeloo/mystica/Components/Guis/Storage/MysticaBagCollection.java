@@ -1,4 +1,4 @@
-package me.angeloo.mystica.Components.Inventories.Storage;
+package me.angeloo.mystica.Components.Guis.Storage;
 
 import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.Components.Items.MysticaItem;
@@ -112,6 +112,7 @@ public class MysticaBagCollection {
 
     }
 
+    //way to get other item amount??
     public int getSoulStoneAmount(){
 
         int amount = 0;
@@ -119,6 +120,19 @@ public class MysticaBagCollection {
         for(MysticaBag bag : getBags()){
 
             amount += bag.getSoulStoneAmount();
+
+        }
+
+        return amount;
+    }
+
+    public int getClassCrystalAmount(){
+
+        int amount = 0;
+
+        for(MysticaBag bag : getBags()){
+
+            amount += bag.getClassCrystalAmount();
 
         }
 

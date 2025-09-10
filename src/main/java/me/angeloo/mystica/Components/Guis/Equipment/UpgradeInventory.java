@@ -1,10 +1,9 @@
-package me.angeloo.mystica.Components.Inventories.Equipment;
+package me.angeloo.mystica.Components.Guis.Equipment;
 
 import com.google.gson.Gson;
-import me.angeloo.mystica.Components.Inventories.Storage.MysticaBag;
-import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
+import me.angeloo.mystica.Components.Guis.Storage.MysticaBag;
+import me.angeloo.mystica.Components.Guis.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.Items.MysticaEquipment;
-import me.angeloo.mystica.Components.Items.MysticaItem;
 import me.angeloo.mystica.Components.Items.SoulStone;
 import me.angeloo.mystica.Managers.CustomInventoryManager;
 import me.angeloo.mystica.Managers.ProfileManager;

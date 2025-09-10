@@ -1,7 +1,7 @@
 package me.angeloo.mystica.Components.Creatures;
 
 import io.lumine.mythic.bukkit.MythicBukkit;
-import me.angeloo.mystica.Components.Inventories.Storage.MysticaBagCollection;
+import me.angeloo.mystica.Components.Guis.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.NonPlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;

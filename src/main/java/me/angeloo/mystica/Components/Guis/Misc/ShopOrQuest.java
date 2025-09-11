@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.Guis.Misc;
 
 import io.lumine.mythic.api.mobs.MythicMob;
+import me.angeloo.mystica.Components.Guis.Abilities.ClassSelectInventory;
 import me.angeloo.mystica.Components.PlayerProfile;
 import me.angeloo.mystica.Components.Quests.Inventories.PickQuestInventory;
 import me.angeloo.mystica.Components.Quests.Inventories.QuestAcceptInventory;
@@ -10,6 +11,7 @@ import me.angeloo.mystica.Components.Quests.QuestManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DisplayWeapons;
+import me.angeloo.mystica.Utility.Enums.ShopType;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.network.PacketListener;
 import org.bukkit.Bukkit;
@@ -24,6 +26,7 @@ import java.util.*;
 public class ShopOrQuest implements Listener {
 
     private final ProfileManager profileManager;
+    private final ClassSelectInventory classSelectInventory;
     private final QuestAcceptInventory questAcceptInventory;
     private final QuestManager questManager;
     private final PickQuestInventory pickQuestInventory;
@@ -31,12 +34,19 @@ public class ShopOrQuest implements Listener {
 
     private final Map<UUID, MythicMob> currentNpc = new HashMap<>();
 
+    private final Map<String, ShopType> shopForNpc = Map.ofEntries(
+            Map.entry("ArchbishopNpc", ShopType.ClassSelect)
+    );
+
     public ShopOrQuest(Mystica main){
         profileManager = main.getProfileManager();
+        classSelectInventory = main.getClassSelectInventory();
         questAcceptInventory = main.getQuestAcceptInventory();
         questManager = main.getQuestManager();
         pickQuestInventory = main.getPickQuestInventory();
         displayWeapons = main.getDisplayWeapons();
+
+
     }
 
     //put mm in map to open the quest gui later
@@ -46,20 +56,49 @@ public class ShopOrQuest implements Listener {
         //if can turn in a quest, do that instead
         String giverId = npc.getInternalName();
 
+
+
         List<Quest> quests = questManager.getQuestsForNpc(giverId);
+        int questAmount = 0;
         PlayerProfile profile = (PlayerProfile) profileManager.getAnyProfile(player);
         for(Quest quest : quests){
 
             QuestProgress progress = profile.getQuestProgressMap().get(quest.getId());
 
+            //has a quest that player has not started
             if(progress == null){
+                questAmount++;
                 continue;
             }
 
+            //has a quest player finished (skip because if finish all just open inv)
             if(progress.isComplete()){
                 questAcceptInventory.openQuestAccept(player, quest);
                 return;
             }
+
+            //has a quest the player HAS started
+            questAmount++;
+        }
+
+
+        if(questAmount==0){
+            //if has no quests, just open the regular inventory
+
+            ShopType shopType = shopForNpc.get(giverId);
+
+            if(shopType == null){
+                return;
+            }
+
+            switch (shopType){
+                case ClassSelect -> {
+                    classSelectInventory.openClassSelect(player);
+                    return;
+                }
+            }
+
+            return;
         }
 
 
@@ -88,11 +127,13 @@ public class ShopOrQuest implements Listener {
         Inventory topInv = event.getView().getTopInventory();
         Inventory bottomInv = event.getView().getBottomInventory();
 
+        MythicMob npc = getNpc(player);
+
         int slot = event.getSlot();
 
         if(event.getClickedInventory() == bottomInv){
 
-            Bukkit.getLogger().info(String.valueOf(slot));
+            //Bukkit.getLogger().info(String.valueOf(slot));
 
             List<Integer> questSlots = new ArrayList<>();
             questSlots.add(32);
@@ -106,8 +147,33 @@ public class ShopOrQuest implements Listener {
                     return;
                 }
 
-                pickQuestInventory.open(player, getNpc(player));
+                pickQuestInventory.open(player, npc);
+                return;
+            }
 
+            List<Integer> interactSlots = new ArrayList<>();
+            interactSlots.add(14);
+            interactSlots.add(15);
+            interactSlots.add(16);
+            interactSlots.add(17);
+
+            if(interactSlots.contains(slot)){
+
+
+                ShopType shopType = shopForNpc.get(npc.getInternalName());
+
+                if(shopType == null){
+                    return;
+                }
+
+                switch (shopType){
+                    case ClassSelect -> {
+                        classSelectInventory.openClassSelect(player);
+                        return;
+                    }
+                }
+
+                return;
             }
 
         }

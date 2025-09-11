@@ -97,7 +97,8 @@ public final class Mystica extends JavaPlugin{
     private PveChecker pveChecker;
     private DamageCalculator damageCalculator;
     private ChangeResourceHandler changeResourceHandler;
-    
+
+    private ClassSelectInventory classSelectInventory;
     private AbilityInventory abilityInventory;
     private SpecInventory specInventory;
     private IdentifyInventory identifyInventory;
@@ -206,6 +207,7 @@ public final class Mystica extends JavaPlugin{
 
 
         customInventoryManager = new CustomInventoryManager(this);
+        classSelectInventory = new ClassSelectInventory(this);
         abilityInventory = new AbilityInventory(this);
         specInventory = abilityInventory.getSpecInventory();
         identifyInventory = new IdentifyInventory(this);
@@ -257,7 +259,7 @@ public final class Mystica extends JavaPlugin{
         getCommand("OpenNpcGui").setExecutor(new OpenNpcGui(this));
 
 
-        this.getServer().getPluginManager().registerEvents(new ClassSelectInventory(this), this);
+        this.getServer().getPluginManager().registerEvents(classSelectInventory, this);
         this.getServer().getPluginManager().registerEvents(dungeonSelect, this);
 
 
@@ -487,6 +489,8 @@ public final class Mystica extends JavaPlugin{
     public PickQuestInventory getPickQuestInventory(){return pickQuestInventory;}
 
     public ShopOrQuest getShopOrQuest(){return shopOrQuest;}
+
+    public ClassSelectInventory getClassSelectInventory(){return classSelectInventory;}
 
     @NotNull
     public PacketInterface getPacketInterface(){

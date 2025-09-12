@@ -53,10 +53,7 @@ public class ShopOrQuest implements Listener {
     public void open(Player player, MythicMob npc){
 
 
-        //if can turn in a quest, do that instead
         String giverId = npc.getInternalName();
-
-
 
         List<Quest> quests = questManager.getQuestsForNpc(giverId);
         int questAmount = 0;
@@ -68,6 +65,10 @@ public class ShopOrQuest implements Listener {
             //has a quest that player has not started
             if(progress == null){
                 questAmount++;
+                continue;
+            }
+
+            if(progress.isRewarded()){
                 continue;
             }
 

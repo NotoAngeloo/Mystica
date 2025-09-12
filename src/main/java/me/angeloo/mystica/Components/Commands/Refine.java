@@ -15,7 +15,7 @@ public class Refine implements CommandExecutor {
     private final RefineInventory refineInventory;
 
     public Refine(Mystica main){
-        refineInventory = main.getRefineInventory();
+        refineInventory = main.getEquipmentUpgradeManager().getRefineInventory();
     }
 
     @Override

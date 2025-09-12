@@ -14,7 +14,7 @@ public class Identify implements CommandExecutor {
     private final IdentifyInventory identifyInventory;
 
     public Identify(Mystica main){
-        identifyInventory = main.getIdentifyInventory();
+        identifyInventory = main.getEquipmentUpgradeManager().getIdentifyInventory();
     }
 
     @Override

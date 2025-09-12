@@ -14,7 +14,7 @@ public class Reforge implements CommandExecutor {
     private final ReforgeInventory reforgeInventory;
 
     public Reforge(Mystica main){
-        reforgeInventory = main.getReforgeInventory();
+        reforgeInventory = main.getEquipmentUpgradeManager().getReforgeInventory();
     }
 
     @Override

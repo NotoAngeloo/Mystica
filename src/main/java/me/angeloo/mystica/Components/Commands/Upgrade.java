@@ -14,7 +14,7 @@ public class Upgrade implements CommandExecutor {
     private final UpgradeInventory upgradeInventory;
 
     public Upgrade(Mystica main){
-        upgradeInventory = main.getUpgradeInventory();
+        upgradeInventory = main.getEquipmentUpgradeManager().getUpgradeInventory();
     }
 
     @Override

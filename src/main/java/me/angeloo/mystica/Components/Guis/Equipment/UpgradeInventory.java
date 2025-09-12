@@ -20,19 +20,19 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 
 public class UpgradeInventory implements Listener {
 
     private final ProfileManager profileManager;
+    private final EquipmentUpgradeManager manager;
     private final CustomInventoryManager inventoryManager;
 
 
-    public UpgradeInventory (Mystica main){
+    public UpgradeInventory (Mystica main, EquipmentUpgradeManager manager){
         profileManager = main.getProfileManager();
+        this.manager = manager;
         inventoryManager = main.getInventoryManager();
     }
 
@@ -120,13 +120,13 @@ public class UpgradeInventory implements Listener {
             //this title has this unicode, it means that player is now selecting material to consume
             if(event.getView().getTitle().contains("\uE054")){
 
-                topInv.setItem(29, item);
+                topInv.setItem(19, item);
 
-                if(topInv.getItem(13) == null){
+                if(topInv.getItem(12) == null){
                     return;
                 }
 
-                ItemStack upgrading = topInv.getItem(13);
+                ItemStack upgrading = topInv.getItem(12);
                 assert upgrading != null;
                 ItemMeta upgradeMeta = upgrading.getItemMeta();
                 assert upgradeMeta != null;
@@ -139,13 +139,13 @@ public class UpgradeInventory implements Listener {
 
                 int cost = getRequired(upgradeEquipment, itemLevel);
 
-                topInv.setItem(33, new SoulStone(cost).build());
+                topInv.setItem(23, new SoulStone(cost).build());
 
                 return;
             }
 
-            topInv.setItem(13, item);
-            topInv.setItem(29, null);
+            topInv.setItem(12, item);
+            topInv.setItem(19, null);
 
 
             List<MysticaEquipment> allEquipment = new ArrayList<>(collection.getBagEquipment());
@@ -183,31 +183,62 @@ public class UpgradeInventory implements Listener {
 
         if(event.getClickedInventory() == topInv){
 
-            if(topInv.getItem(13) == null){
+            //other slots
+            Set<Integer> identifySlots = new HashSet<>();
+            identifySlots.add(45);
+            identifySlots.add(46);
+            identifySlots.add(47);
+
+            if(identifySlots.contains(slot)){
+                manager.getIdentifyInventory().openIdentifyInventory(player);
                 return;
             }
 
-            if(slot == 13){
+            Set<Integer> reforgeSlots = new HashSet<>();
+            reforgeSlots.add(48);
+            reforgeSlots.add(49);
+            reforgeSlots.add(50);
+
+            if(reforgeSlots.contains(slot)){
+                manager.getReforgeInventory().openReforgeInventory(player);
+                return;
+            }
+
+            Set<Integer> refineSlots = new HashSet<>();
+            refineSlots.add(51);
+            refineSlots.add(52);
+            refineSlots.add(53);
+
+            if(refineSlots.contains(slot)){
+                manager.getRefineInventory().openRefineInventory(player);
+                return;
+            }
+
+            if(topInv.getItem(12) == null){
+                return;
+            }
+
+            if(slot == 12){
                 openUpgradeInventory(player);
                 return;
             }
 
-            if(topInv.getItem(33) == null){
+            if(topInv.getItem(23) == null){
                 return;
             }
 
-            if(topInv.getItem(29) == null){
+            if(topInv.getItem(19) == null){
                 return;
             }
 
-            List<Integer> upgradeSlots = new ArrayList<>();
-            upgradeSlots.add(53);
-            upgradeSlots.add(52);
-            upgradeSlots.add(51);
+            Set<Integer> upgradeSlots = new HashSet<>();
+            upgradeSlots.add(42);
+            upgradeSlots.add(43);
+            upgradeSlots.add(44);
 
             if(upgradeSlots.contains(slot)){
 
-                ItemStack upgrading = topInv.getItem(13);
+                ItemStack upgrading = topInv.getItem(12);
                 assert upgrading != null;
                 ItemMeta upgradeMeta = upgrading.getItemMeta();
                 assert upgradeMeta != null;
@@ -215,7 +246,8 @@ public class UpgradeInventory implements Listener {
                     return;
                 }
 
-                ItemStack material = topInv.getItem(29);
+                //take out material from bag too
+                ItemStack material = topInv.getItem(19);
                 assert material != null;
                 ItemMeta materialMeta = material.getItemMeta();
                 assert materialMeta != null;
@@ -223,7 +255,7 @@ public class UpgradeInventory implements Listener {
                     return;
                 }
 
-                ItemStack costItem = topInv.getItem(33);
+                ItemStack costItem = topInv.getItem(23);
                 assert costItem != null;
 
                 String upgradeJson = upgradeMeta.getPersistentDataContainer().get(key, PersistentDataType.STRING);
@@ -241,13 +273,17 @@ public class UpgradeInventory implements Listener {
 
                 //take items out of their bag
                 collection.removeItemsFromMultipleBags(new SoulStone(cost));
+                collection.removeItemsFromMultipleBags(materialEquipment);
                 collection.removeItemsFromMultipleBags(upgradeEquipment);
 
                 upgradeEquipment.setLevel(newLevel);
                 collection.addToFirstBag(upgradeEquipment);
 
                 openUpgradeInventory(player);
+                return;
             }
+
+
 
         }
 

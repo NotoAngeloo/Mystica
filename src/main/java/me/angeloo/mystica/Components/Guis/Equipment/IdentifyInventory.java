@@ -22,17 +22,21 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class IdentifyInventory implements Listener {
 
     private final ProfileManager profileManager;
+    private final EquipmentUpgradeManager manager;
     private final CustomInventoryManager inventoryManager;
 
 
-    public IdentifyInventory(Mystica main){
+    public IdentifyInventory(Mystica main, EquipmentUpgradeManager manager){
         profileManager = main.getProfileManager();
         inventoryManager = main.getInventoryManager();
+        this.manager = manager;
     }
 
     //have the identify button show up, only when proper materials put in
@@ -105,34 +109,34 @@ public class IdentifyInventory implements Listener {
             UnidentifiedItem unidentifiedItem = gson.fromJson(json, UnidentifiedItem.class);
 
 
-            topInv.setItem(20, item);
+            topInv.setItem(19, item);
 
             int cost = getRequired(unidentifiedItem);
 
             SoulStone soulStone = new SoulStone(cost);
 
-            topInv.setItem(24, soulStone.build());
+            topInv.setItem(23, soulStone.build());
 
             return;
         }
 
         if(event.getClickedInventory() == topInv){
 
-            List<Integer> identifySlots = new ArrayList<>();
-            identifySlots.add(53);
-            identifySlots.add(52);
-            identifySlots.add(51);
+            Set<Integer> identifySlots = new HashSet<>();
+            identifySlots.add(42);
+            identifySlots.add(43);
+            identifySlots.add(44);
 
 
             if(identifySlots.contains(slot)){
 
                 //check if has enough
 
-                if(topInv.getItem(20) == null){
+                if(topInv.getItem(19) == null){
                     return;
                 }
 
-                ItemStack item = topInv.getItem(20);
+                ItemStack item = topInv.getItem(19);
 
                 assert item != null;
                 ItemMeta meta = item.getItemMeta();
@@ -177,8 +181,40 @@ public class IdentifyInventory implements Listener {
                 currentBag.addItem(newItem);
 
                 openIdentifyInventory(player);
+                return;
             }
 
+
+            //other slots
+            Set<Integer> reforgeSlots = new HashSet<>();
+            reforgeSlots.add(45);
+            reforgeSlots.add(46);
+            reforgeSlots.add(47);
+
+            if(reforgeSlots.contains(slot)){
+                manager.getReforgeInventory().openReforgeInventory(player);
+                return;
+            }
+
+            Set<Integer> refineSlots = new HashSet<>();
+            refineSlots.add(48);
+            refineSlots.add(49);
+            refineSlots.add(50);
+
+            if(refineSlots.contains(slot)){
+                manager.getRefineInventory().openRefineInventory(player);
+                return;
+            }
+
+            Set<Integer> upgradeSlots = new HashSet<>();
+            upgradeSlots.add(51);
+            upgradeSlots.add(52);
+            upgradeSlots.add(53);
+
+            if(upgradeSlots.contains(slot)){
+                manager.getUpgradeInventory().openUpgradeInventory(player);
+                return;
+            }
 
         }
 

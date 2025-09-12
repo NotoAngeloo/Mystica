@@ -21,16 +21,20 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class RefineInventory implements Listener {
 
     private final ProfileManager profileManager;
+    private final EquipmentUpgradeManager manager;
     private final CustomInventoryManager inventoryManager;
 
 
-    public RefineInventory(Mystica main){
+    public RefineInventory(Mystica main, EquipmentUpgradeManager manager){
         profileManager = main.getProfileManager();
+        this.manager = manager;
         inventoryManager = main.getInventoryManager();
     }
 
@@ -102,15 +106,15 @@ public class RefineInventory implements Listener {
                 return;
             }
 
-            topInv.setItem(24, null);
+            topInv.setItem(23, null);
 
-            topInv.setItem(20, item);
+            topInv.setItem(19, item);
 
             int cost = getRequired(equipment);
 
             SoulStone soulStone = new SoulStone(cost);
 
-            topInv.setItem(31, soulStone.build());
+            topInv.setItem(30, soulStone.build());
 
             return;
 
@@ -118,21 +122,21 @@ public class RefineInventory implements Listener {
 
         if(event.getClickedInventory() == topInv){
 
-            List<Integer> refineSlots = new ArrayList<>();
-            refineSlots.add(53);
-            refineSlots.add(52);
-            refineSlots.add(51);
+            Set<Integer> refineSlots = new HashSet<>();
+            refineSlots.add(42);
+            refineSlots.add(43);
+            refineSlots.add(44);
 
 
             if(refineSlots.contains(slot)){
 
                 //check if has enough
 
-                if(topInv.getItem(20) == null){
+                if(topInv.getItem(19) == null){
                     return;
                 }
 
-                ItemStack item = topInv.getItem(20);
+                ItemStack item = topInv.getItem(19);
 
                 assert item != null;
                 ItemMeta meta = item.getItemMeta();
@@ -174,7 +178,7 @@ public class RefineInventory implements Listener {
 
                 );
 
-                topInv.setItem(24, refined.build());
+                topInv.setItem(23, refined.build());
 
                 //subtract items from bag
                 collection.removeItemsFromMultipleBags(new SoulStone(required));
@@ -183,13 +187,13 @@ public class RefineInventory implements Listener {
                 return;
             }
 
-            if(slot == 24){
+            if(slot == 23){
 
-                if(topInv.getItem(24) == null){
+                if(topInv.getItem(23) == null){
                     return;
                 }
 
-                ItemStack newItem = topInv.getItem(24);
+                ItemStack newItem = topInv.getItem(23);
 
                 assert newItem != null;
                 ItemMeta meta = newItem.getItemMeta();
@@ -211,12 +215,12 @@ public class RefineInventory implements Listener {
                 MysticaEquipment equipment = gson.fromJson(json, MysticaEquipment.class);
 
                 //remove cost
-                if(topInv.getItem(20) == null){
+                if(topInv.getItem(19) == null){
                     return;
                 }
 
                 //of which it SHOULDN'T unless something went wrong
-                ItemStack oldItem = topInv.getItem(20);
+                ItemStack oldItem = topInv.getItem(19);
                 assert oldItem != null;
                 ItemMeta oldMeta = oldItem.getItemMeta();
                 assert oldMeta != null;
@@ -237,6 +241,38 @@ public class RefineInventory implements Listener {
 
                 currentBag.addItem(equipment);
                 openRefineInventory(player);
+                return;
+            }
+
+            //other slots
+            Set<Integer> identifySlots = new HashSet<>();
+            identifySlots.add(45);
+            identifySlots.add(46);
+            identifySlots.add(47);
+
+            if(identifySlots.contains(slot)){
+                manager.getIdentifyInventory().openIdentifyInventory(player);
+                return;
+            }
+
+            Set<Integer> reforgeSlots = new HashSet<>();
+            reforgeSlots.add(48);
+            reforgeSlots.add(49);
+            reforgeSlots.add(50);
+
+            if(reforgeSlots.contains(slot)){
+                manager.getReforgeInventory().openReforgeInventory(player);
+                return;
+            }
+
+            Set<Integer> upgradeSlots = new HashSet<>();
+            upgradeSlots.add(51);
+            upgradeSlots.add(52);
+            upgradeSlots.add(53);
+
+            if(upgradeSlots.contains(slot)){
+                manager.getUpgradeInventory().openUpgradeInventory(player);
+                return;
             }
 
         }

@@ -197,6 +197,7 @@ public class GeneralEventListener implements Listener {
 
 
             changeResourceHandler.healPlayerToFull(player);
+            buffAndDebuffManager.removeAllBuffsAndDebuffs(player);
         }
 
         profileManager.addToPlayerNameMap(player);
@@ -341,6 +342,17 @@ public class GeneralEventListener implements Listener {
 
     }
 
+    @EventHandler
+    public void interruptBasicOnInventoryOpen(InventoryOpenEvent event){
+
+        Player player = (Player) event.getPlayer();
+
+        if(event.getView().getTitle().equalsIgnoreCase("crafting")){
+            return;
+        }
+
+        abilityManager.interruptBasic(player);
+    }
 
     @EventHandler
     public void noPlaceBlocks(BlockPlaceEvent event) {
@@ -744,7 +756,8 @@ public class GeneralEventListener implements Listener {
 
         Player player = event.getPlayer();
 
-        player.setSaturation(1);
+        player.setFoodLevel(2);
+        player.setSaturation(0);
 
 
         if (targetManager.getPlayerTarget(player) == null) {

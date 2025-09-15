@@ -124,7 +124,7 @@ public class Relentless {
         abilityManager.setCasting(caster, true);
 
         if(caster instanceof Player){
-            buffAndDebuffManager.getSpeedUp().applySpeedUp((Player) caster, .3f);
+            buffAndDebuffManager.getSpeedUp().applySpeedUp((Player) caster, .5f);
         }
 
 

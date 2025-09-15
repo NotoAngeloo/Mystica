@@ -38,14 +38,14 @@ public class SpeedUp {
     public void removeSpeedUp(Player player){
         hasSpeedUp.remove(player);
         speedUpAmount.remove(player);
-        player.setWalkSpeed(.2f);
+        player.setWalkSpeed(.3f);
 
         Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
 
     }
 
     public float getSpeedUpAmount(Player player){
-        return speedUpAmount.getOrDefault(player, .2f);
+        return speedUpAmount.getOrDefault(player, .3f);
     }
 
 }

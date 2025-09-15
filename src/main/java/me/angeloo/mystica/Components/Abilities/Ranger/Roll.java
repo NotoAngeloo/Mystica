@@ -104,7 +104,7 @@ public class Roll {
 
         //also give a shield and increase move speed
         if(caster instanceof Player){
-            buffAndDebuffManager.getSpeedUp().applySpeedUp((Player) caster, .3f);
+            buffAndDebuffManager.getSpeedUp().applySpeedUp((Player) caster, .5f);
         }
 
 

@@ -28,7 +28,7 @@ public class HansNpc {
         World world = Bukkit.getWorld("world");
         assert world != null;
 
-        Location spawnLoc = new Location(world, 11, 100, -332, -90, 0);
+        Location spawnLoc = new Location(world, 9.5, 125, -332, -90, 0);
 
 
         new BukkitRunnable(){
@@ -36,12 +36,12 @@ public class HansNpc {
             public void run(){
 
                 BoundingBox hitBox = new BoundingBox(
-                        spawnLoc.getX() - 20,
-                        spawnLoc.getY() - 20,
-                        spawnLoc.getZ() - 20,
-                        spawnLoc.getX() + 20,
-                        spawnLoc.getY() + 20,
-                        spawnLoc.getZ() + 20
+                        spawnLoc.getX() - 50,
+                        spawnLoc.getY() - 50,
+                        spawnLoc.getZ() - 50,
+                        spawnLoc.getX() + 50,
+                        spawnLoc.getY() + 50,
+                        spawnLoc.getZ() + 50
                 );
 
                 for(Entity entity : world.getNearbyEntities(hitBox)){

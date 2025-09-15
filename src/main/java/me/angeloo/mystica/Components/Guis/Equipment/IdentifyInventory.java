@@ -9,6 +9,7 @@ import me.angeloo.mystica.Components.Items.UnidentifiedItem;
 import me.angeloo.mystica.Managers.CustomInventoryManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.Enums.EquipmentEnhancementType;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -55,6 +56,8 @@ public class IdentifyInventory implements Listener {
         player.openInventory(inv);
 
         profileManager.getAnyProfile(player).getMysticaBagCollection().getBag(inventoryManager.getBagIndex(player)).displayBagItems(player);
+
+        inventoryManager.setEnhancementTypeIndex(player, EquipmentEnhancementType.Identify);
 
     }
 

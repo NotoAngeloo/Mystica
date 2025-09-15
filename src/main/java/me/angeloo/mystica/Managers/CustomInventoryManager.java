@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Managers;
 
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.Enums.EquipmentEnhancementType;
 import me.angeloo.mystica.Utility.Enums.Role;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import org.bukkit.entity.LivingEntity;
@@ -13,6 +14,7 @@ import java.util.UUID;
 public class CustomInventoryManager {
 
     private final ProfileManager profileManager;
+    private final Map<UUID, EquipmentEnhancementType> enhancementTypeIndex = new HashMap<>();
     private final Map<UUID, Integer> bagIndex = new HashMap<>();
     private final Map<UUID, Integer> classIndex = new HashMap<>();
     private final Map<UUID, Integer> dungeonIndex = new HashMap<>();
@@ -138,6 +140,19 @@ public class CustomInventoryManager {
             }
         }
 
+    }
+
+    public void setEnhancementTypeIndex(Player player, EquipmentEnhancementType type){
+        enhancementTypeIndex.put(player.getUniqueId(), type);
+    }
+
+    public EquipmentEnhancementType getEnhancementTypeIndex(Player player){
+
+        if(!enhancementTypeIndex.containsKey(player.getUniqueId())){
+            enhancementTypeIndex.put(player.getUniqueId(), EquipmentEnhancementType.Identify);
+        }
+
+        return enhancementTypeIndex.get(player.getUniqueId());
     }
 
 }

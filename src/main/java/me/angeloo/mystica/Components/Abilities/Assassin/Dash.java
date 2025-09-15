@@ -86,7 +86,7 @@ public class Dash {
     private void execute(Player player){
 
 
-        buffAndDebuffManager.getSpeedUp().applySpeedUp(player, .5f);
+        buffAndDebuffManager.getSpeedUp().applySpeedUp(player, 0.7f);
 
 
         new BukkitRunnable(){

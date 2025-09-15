@@ -263,46 +263,51 @@ public class ArcaneContract {
             putOnCooldown(member.getUniqueId());
         }
 
-        Bukkit.getServer().getPluginManager().callEvent(new PlayerRezByPlayerEvent(target, caster));
-
         if(target instanceof Player player){
             player.sendMessage("Wings: Hey, be more careful!");
         }
 
-        new BukkitRunnable(){
-            double height = 0;
-            final double radius = 1;
-            double angle = 0;
-            Vector initialDirection;
+        Bukkit.getScheduler().runTask(main, ()->{
+            Bukkit.getServer().getPluginManager().callEvent(new PlayerRezByPlayerEvent(target, caster));
 
-            @Override
-            public void run(){
-                Location playerLoc = target.getLocation();
+            new BukkitRunnable(){
+                double height = 0;
+                final double radius = 1;
+                double angle = 0;
+                Vector initialDirection;
 
-                if (initialDirection == null) {
-                    initialDirection = playerLoc.getDirection().setY(0).normalize();
-                    initialDirection.rotateAroundY(Math.toRadians(-45));
+                @Override
+                public void run(){
+                    Location playerLoc = target.getLocation();
+
+                    if (initialDirection == null) {
+                        initialDirection = playerLoc.getDirection().setY(0).normalize();
+                        initialDirection.rotateAroundY(Math.toRadians(-45));
+                    }
+
+                    Vector direction = initialDirection.clone();
+                    double radians = Math.toRadians(angle);
+
+                    direction.rotateAroundY(radians);
+
+                    double x = playerLoc.getX() + direction.getX() * radius;
+                    double z = playerLoc.getZ() + direction.getZ() * radius;
+
+                    Location particleLoc = new Location(target.getWorld(), x, target.getLocation().getY() + height, z);
+
+                    target.getWorld().spawnParticle(Particle.SPELL_WITCH, particleLoc, 1, 0, 0, 0, 0);
+
+                    height += .05;
+                    angle += 11;
+                    if(height >= 2){
+                        this.cancel();
+                    }
                 }
+            }.runTaskTimer(main, 0L, 1);
 
-                Vector direction = initialDirection.clone();
-                double radians = Math.toRadians(angle);
+        });
 
-                direction.rotateAroundY(radians);
 
-                double x = playerLoc.getX() + direction.getX() * radius;
-                double z = playerLoc.getZ() + direction.getZ() * radius;
-
-                Location particleLoc = new Location(target.getWorld(), x, target.getLocation().getY() + height, z);
-
-                target.getWorld().spawnParticle(Particle.SPELL_WITCH, particleLoc, 1, 0, 0, 0, 0);
-
-                height += .05;
-                angle += 11;
-                if(height >= 2){
-                    this.cancel();
-                }
-            }
-        }.runTaskTimer(main, 0L, 1);
 
     }
 

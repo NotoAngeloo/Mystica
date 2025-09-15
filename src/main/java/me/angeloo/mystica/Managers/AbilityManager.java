@@ -2,6 +2,7 @@ package me.angeloo.mystica.Managers;
 
 import me.angeloo.mystica.Components.Abilities.*;
 import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
+import me.angeloo.mystica.Components.PlayerProfile;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Mystica;
@@ -113,6 +114,13 @@ public class AbilityManager {
 
         if(getIfCasting(caster)){
             return;
+        }
+
+        if(caster instanceof Player player){
+
+            if(!player.getOpenInventory().getTitle().equalsIgnoreCase("crafting")){
+                return;
+            }
         }
 
         if(buffAndDebuffManager.getIfCantAct(caster)){

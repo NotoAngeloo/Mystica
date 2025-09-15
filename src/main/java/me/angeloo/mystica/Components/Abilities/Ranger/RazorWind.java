@@ -124,7 +124,7 @@ public class RazorWind {
         abilityManager.setCasting(caster, true);
 
         if(caster instanceof Player){
-            ((Player)caster).setWalkSpeed(.06f);
+            ((Player)caster).setWalkSpeed(0.05f);
         }
 
 
@@ -139,7 +139,7 @@ public class RazorWind {
                     if(!((Player)caster).isOnline()){
                         this.cancel();
                         abilityManager.setCasting(caster, false);
-                        ((Player)caster).setWalkSpeed(.2f);
+                        ((Player)caster).setWalkSpeed(.3f);
                         return;
                     }
                 }
@@ -149,7 +149,7 @@ public class RazorWind {
                     abilityManager.setCasting(caster, false);
 
                     if(caster instanceof Player){
-                        ((Player)caster).setWalkSpeed(.2f);
+                        ((Player)caster).setWalkSpeed(.3f);
                     }
 
                     return;
@@ -167,7 +167,7 @@ public class RazorWind {
                     this.cancel();
                     abilityManager.setCasting(caster, false);
                     if(caster instanceof Player){
-                        ((Player)caster).setWalkSpeed(.2f);
+                        ((Player)caster).setWalkSpeed(.3f);
                     }
                     return;
                 }
@@ -180,7 +180,7 @@ public class RazorWind {
                     this.cancel();
                     abilityManager.setCasting(caster, false);
                     if(caster instanceof Player){
-                        ((Player)caster).setWalkSpeed(.2f);
+                        ((Player)caster).setWalkSpeed(.3f);
                     }
                     startLaunchTask();
                 }

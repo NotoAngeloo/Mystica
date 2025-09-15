@@ -75,7 +75,7 @@ public class Dash {
 
 
         if(caster instanceof Player){
-            buffAndDebuffManager.getSpeedUp().applySpeedUp((Player) caster, .3f);
+            buffAndDebuffManager.getSpeedUp().applySpeedUp((Player) caster, .5f);
         }
 
 

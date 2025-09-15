@@ -127,8 +127,7 @@ public class BuffAndDebuffManager {
         armorBreak.removeArmorBreak(entity);
         fear.removeFear(entity);
 
-        if(entity instanceof Player){
-            Player player = (Player) entity;
+        if(entity instanceof Player player){
 
             hidden.unhidePlayer(player);
             speedUp.removeSpeedUp(player);

@@ -2,15 +2,18 @@ package me.angeloo.mystica.Components.Guis.Misc;
 
 import io.lumine.mythic.api.mobs.MythicMob;
 import me.angeloo.mystica.Components.Guis.Abilities.ClassSelectInventory;
+import me.angeloo.mystica.Components.Guis.Equipment.EquipmentUpgradeManager;
 import me.angeloo.mystica.Components.PlayerProfile;
 import me.angeloo.mystica.Components.Quests.Inventories.PickQuestInventory;
 import me.angeloo.mystica.Components.Quests.Inventories.QuestAcceptInventory;
 import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
 import me.angeloo.mystica.Components.Quests.Quest;
 import me.angeloo.mystica.Components.Quests.QuestManager;
+import me.angeloo.mystica.Managers.CustomInventoryManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DisplayWeapons;
+import me.angeloo.mystica.Utility.Enums.EquipmentEnhancementType;
 import me.angeloo.mystica.Utility.Enums.ShopType;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.network.PacketListener;
@@ -26,6 +29,8 @@ import java.util.*;
 public class ShopOrQuest implements Listener {
 
     private final ProfileManager profileManager;
+    private final CustomInventoryManager customInventoryManager;
+    private final EquipmentUpgradeManager equipmentUpgradeManager;
     private final ClassSelectInventory classSelectInventory;
     private final QuestAcceptInventory questAcceptInventory;
     private final QuestManager questManager;
@@ -35,11 +40,13 @@ public class ShopOrQuest implements Listener {
     private final Map<UUID, MythicMob> currentNpc = new HashMap<>();
 
     private final Map<String, ShopType> shopForNpc = Map.ofEntries(
-            Map.entry("ArchbishopNpc", ShopType.ClassSelect)
+            Map.entry("ArchbishopNpc", ShopType.ClassSelect), Map.entry("HansNpc", ShopType.EnhanceEquipment)
     );
 
     public ShopOrQuest(Mystica main){
         profileManager = main.getProfileManager();
+        customInventoryManager = main.getInventoryManager();
+        equipmentUpgradeManager = main.getEquipmentUpgradeManager();
         classSelectInventory = main.getClassSelectInventory();
         questAcceptInventory = main.getQuestAcceptInventory();
         questManager = main.getQuestManager();
@@ -95,6 +102,31 @@ public class ShopOrQuest implements Listener {
             switch (shopType){
                 case ClassSelect -> {
                     classSelectInventory.openClassSelect(player);
+                    return;
+                }
+                case EnhanceEquipment -> {
+
+                    EquipmentEnhancementType type = customInventoryManager.getEnhancementTypeIndex(player);
+
+                    switch (type){
+                        case Identify -> {
+                            equipmentUpgradeManager.getIdentifyInventory().openIdentifyInventory(player);
+                            return;
+                        }
+                        case Reforge -> {
+                            equipmentUpgradeManager.getReforgeInventory().openReforgeInventory(player);
+                            return;
+                        }
+                        case Refine -> {
+                            equipmentUpgradeManager.getRefineInventory().openRefineInventory(player);
+                            return;
+                        }
+                        case Upgrade -> {
+                            equipmentUpgradeManager.getUpgradeInventory().openUpgradeInventory(player);
+                            return;
+                        }
+                    }
+
                     return;
                 }
             }

@@ -234,7 +234,7 @@ public class DivineInfusion {
                             double amount = (profileManager.getAnyProfile(thisEntity).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(thisEntity)) * .05;
 
                             if(thisEntity instanceof Player){
-                                buffAndDebuffManager.getSpeedUp().applySpeedUp((Player)thisEntity, .3f);
+                                buffAndDebuffManager.getSpeedUp().applySpeedUp((Player)thisEntity, .5f);
                             }
 
                             buffAndDebuffManager.getGenericShield().applyOrAddShield(thisEntity,amount);

@@ -2,28 +2,32 @@ package me.angeloo.mystica.Utility.Listeners;
 
 
 import me.angeloo.mystica.Components.Guis.Abilities.AbilityInventory;
+import me.angeloo.mystica.Components.Guis.Party.DungeonSelect;
 import me.angeloo.mystica.Components.Guis.Party.PartyInventory;
 import me.angeloo.mystica.Components.Guis.Storage.MysticaBag;
 import me.angeloo.mystica.Components.Guis.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.Items.MysticaItem;
 import me.angeloo.mystica.Components.Items.StackableItem;
 import me.angeloo.mystica.Components.Items.StackableItemRegistry;
-import me.angeloo.mystica.CustomEvents.SetMenuItemsEvent;
 import me.angeloo.mystica.Managers.CustomInventoryManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DisplayWeapons;
+import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.InventoryItemGetter;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
@@ -34,18 +38,22 @@ public class InventoryEventListener implements Listener {
     private final ProfileManager profileManager;
     private final InventoryItemGetter itemGetter;
     private final CustomInventoryManager inventoryManager;
+    private final DungeonSelect dungeonSelect;
     private final PartyInventory partyInventory;
     private final AbilityInventory abilityInventory;
     private final DisplayWeapons displayWeapons;
+    private final CooldownDisplayer cooldownDisplayer;
 
     public InventoryEventListener(Mystica main){
         this.main = main;
         profileManager = main.getProfileManager();
         itemGetter = main.getItemGetter();
         inventoryManager = main.getInventoryManager();
+        dungeonSelect = main.getDungeonSelect();
         partyInventory = main.getPartyInventory();
         abilityInventory = main.getAbilityInventory();
         displayWeapons = main.getDisplayWeapons();
+        cooldownDisplayer = main.getCooldownDisplayer();
     }
 
     @EventHandler
@@ -210,10 +218,6 @@ public class InventoryEventListener implements Listener {
             return;
         }
 
-        if(clickedInv.getType() != InventoryType.PLAYER){
-            return;
-        }
-
         event.setCancelled(true);
 
         Player player = (Player) event.getWhoClicked();
@@ -222,24 +226,72 @@ public class InventoryEventListener implements Listener {
             return;
         }
 
+        int slot = event.getSlot();
 
-        if(event.getSlot() == 27){
-            profileManager.getAnyProfile(player).getMysticaBagCollection().openMysticaBag(player, 0);
-            player.setItemOnCursor(null);
+        if(event.getClickedInventory().equals(event.getView().getTopInventory())){
+
+            //escape
+            if(slot==1||slot==2||slot==3||slot==4){
+
+                World world = Bukkit.getWorld("world");
+
+                assert world != null;
+                player.teleport(world.getSpawnLocation());
+                return;
+            }
+
+            //settings
+            if(slot==0){
+                return;
+            }
+
+            return;
         }
 
-        if(event.getSlot() == 29){
-            abilityInventory.openAbilityInventory(player, -1);
-            player.setItemOnCursor(null);
+        if(event.getClickedInventory().equals(event.getView().getBottomInventory())){
+
+            Set<Integer> skillSlots = new HashSet<>();
+            for(int i=0;i<8;i++){
+                skillSlots.add(i);
+            }
+
+            if(skillSlots.contains(slot)){
+                abilityInventory.openAbilityInventory(player, -1);
+                return;
+            }
+
+
+            //bag
+            if(slot==18||slot==19||slot==27||slot==28){
+                profileManager.getAnyProfile(player).getMysticaBagCollection().openMysticaBag(player, 0);
+                return;
+            }
+
+            //quests
+            if(slot==20||slot==21||slot==29||slot==30){
+
+                return;
+            }
+
+            //dungeon
+            if(slot==22||slot==23||slot==31||slot==32){
+                dungeonSelect.openDungeonSelect(player);
+                return;
+            }
+
+            //party
+            if(slot==24||slot==25||slot==33||slot==34){
+                partyInventory.openPartyInventory(player);
+                return;
+            }
+
+
+            return;
         }
 
-        if(event.getSlot() == 31){
-            partyInventory.openPartyInventory(player);
-            player.setItemOnCursor(null);
-        }
 
 
-        //Bukkit.getLogger().info(String.valueOf(event.getSlot()));
+
 
     }
 
@@ -252,7 +304,6 @@ public class InventoryEventListener implements Listener {
         Player player = (Player) event.getPlayer();
 
 
-
         if(profileManager.getAnyProfile(player).getIfInCombat()){
             return;
         }
@@ -263,7 +314,16 @@ public class InventoryEventListener implements Listener {
 
         player.getInventory().clear();
         displayWeapons.displayArmor(player);
-        Bukkit.getServer().getPluginManager().callEvent(new SetMenuItemsEvent(player));
+
+        Bukkit.getScheduler().runTaskLaterAsynchronously(main, ()->{
+            InventoryView open = player.getOpenInventory();
+
+            if(open.getTitle().equalsIgnoreCase("crafting")){
+                cooldownDisplayer.initializeItems(player);
+            }
+        },1);
+
+
     }
 
     @EventHandler

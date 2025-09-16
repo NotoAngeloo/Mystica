@@ -185,7 +185,7 @@ public class DivineInfusion {
 
                         for(Entity entity : caster.getWorld().getNearbyEntities(hitBox)){
 
-                            if(!(entity instanceof LivingEntity)){
+                            if(!(entity instanceof LivingEntity livingEntity)){
                                 continue;
                             }
 
@@ -193,14 +193,10 @@ public class DivineInfusion {
                                 continue;
                             }
 
-                            LivingEntity livingEntity = (LivingEntity) entity;
-
                             boolean crit = damageCalculator.checkIfCrit(caster, 0);
                             double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Physical", finalSkillDamage, crit));
 
-                            if(livingEntity instanceof Player){
-
-                                Player thisPlayer = (Player) livingEntity;
+                            if(livingEntity instanceof Player thisPlayer){
 
                                 if(pvpManager.pvpLogic(caster, (Player) entity)){
                                     changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);

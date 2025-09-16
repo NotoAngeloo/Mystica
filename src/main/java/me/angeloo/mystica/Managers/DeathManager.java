@@ -6,7 +6,6 @@ import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.CustomEvents.AiSignalEvent;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.CustomEvents.MysticaPlayerDeathEvent;
-import me.angeloo.mystica.CustomEvents.SetMenuItemsEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Tasks.RezTick;
@@ -161,7 +160,6 @@ public class DeathManager {
             player.getInventory().clear();
             displayWeapons.displayArmor(player);
             cooldownDisplayer.initializeItems(player);
-            Bukkit.getServer().getPluginManager().callEvent(new SetMenuItemsEvent(player));
         }
 
 

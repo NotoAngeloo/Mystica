@@ -256,18 +256,20 @@ public class ArcaneContract {
 
     public void useAsCompanion(LivingEntity caster, LivingEntity target){
 
+
         abilityReadyInMap.put(caster.getUniqueId(), 120);
 
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(caster));
-        for(LivingEntity member : mParty){
-            putOnCooldown(member.getUniqueId());
-        }
+        Bukkit.getScheduler().runTask(main,()->{
+            List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(caster));
+            for(LivingEntity member : mParty){
+                putOnCooldown(member.getUniqueId());
+            }
 
-        if(target instanceof Player player){
-            player.sendMessage("Wings: Hey, be more careful!");
-        }
+            if(target instanceof Player player){
+                player.sendMessage("Wings: Hey, be more careful!");
+            }
 
-        Bukkit.getScheduler().runTask(main, ()->{
+
             Bukkit.getServer().getPluginManager().callEvent(new PlayerRezByPlayerEvent(target, caster));
 
             new BukkitRunnable(){
@@ -304,8 +306,11 @@ public class ArcaneContract {
                     }
                 }
             }.runTaskTimer(main, 0L, 1);
-
         });
+
+
+
+
 
 
 

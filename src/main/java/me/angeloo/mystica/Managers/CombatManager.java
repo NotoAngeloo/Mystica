@@ -2,7 +2,6 @@ package me.angeloo.mystica.Managers;
 
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
-import me.angeloo.mystica.CustomEvents.SetMenuItemsEvent;
 import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Tasks.CombatTick;
@@ -187,7 +186,6 @@ public class CombatManager {
         if(!profileManager.getAnyProfile(player).getIfDead()){
             player.setInvisible(false);
             sheathWeapon(player);
-            Bukkit.getServer().getPluginManager().callEvent(new SetMenuItemsEvent(player));
         }
         Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
     }

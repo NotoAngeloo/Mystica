@@ -385,7 +385,7 @@ public class FakePlayerAiManager {
                     if(toRevive != null){
                         toRezInTick ++;
 
-                        if(toRezInTick == 10){
+                        if(toRezInTick == 5){
                             mysticAbilities.getArcaneContract().useAsCompanion(companion, toRevive);
                             return;
                         }

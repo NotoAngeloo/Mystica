@@ -158,7 +158,6 @@ public class GeneralEventListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         hudManager.innitHud(player);
-        Bukkit.getServer().getPluginManager().callEvent(new SetMenuItemsEvent(player));
         Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Team));
         
 
@@ -203,7 +202,7 @@ public class GeneralEventListener implements Listener {
         profileManager.addToPlayerNameMap(player);
 
         combatManager.sheathWeapon(player);
-
+        cooldownDisplayer.initializeItems(player);
     }
 
     @EventHandler
@@ -364,28 +363,6 @@ public class GeneralEventListener implements Listener {
         event.setCancelled(true);
     }
 
-    @EventHandler
-    public void menuClick(InventoryClickEvent event) {
-        Inventory clickedInv = event.getClickedInventory();
-        if (clickedInv == null) {
-            return;
-        }
-
-        String title = event.getView().getTitle();
-
-        if (!title.equalsIgnoreCase("crafting")) {
-            return;
-        }
-
-        if (clickedInv.getType() == InventoryType.PLAYER) {
-            return;
-        }
-
-        Player player = (Player) event.getWhoClicked();
-
-        abilityInventory.openAbilityInventory(player, -1);
-    }
-
 
     @EventHandler
     public void noOffHandEquip(InventoryClickEvent event) {
@@ -430,42 +407,6 @@ public class GeneralEventListener implements Listener {
     }
 
 
-    @EventHandler
-    public void menuOpen(SetMenuItemsEvent event){
-
-        Player player = event.getPlayer();
-
-        if(profileManager.getAnyProfile(player).getIfDead()){
-            return;
-        }
-
-        cooldownDisplayer.initializeItems(player);
-
-        if(profileManager.getAnyProfile(player).getIfInCombat()){
-            return;
-        }
-
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-                Inventory inventory = player.getOpenInventory().getTopInventory();
-                if(inventory.getType().equals(InventoryType.CRAFTING)){
-                    setMenuItems(player);
-                }
-            }
-        }.runTaskLaterAsynchronously(main, 1);
-
-
-    }
-
-    private void setMenuItems(Player player){
-
-        //check to see what player has unlocked
-        player.getInventory().setItem(27, itemGetter.getItem(Material.LEATHER, 1, "Bag"));
-        player.getInventory().setItem(29, itemGetter.getItem(Material.AMETHYST_SHARD, 1, "Skills"));
-        player.getInventory().setItem(31, itemGetter.getItem(Material.BROWN_BANNER, 1, "Team"));
-
-    }
 
     @EventHandler
     public void noArmorEquip(InventoryClickEvent event) {
@@ -1529,6 +1470,7 @@ public class GeneralEventListener implements Listener {
             player.getWorld().setSpawnLocation(player.getLocation());
         }
 
+        //obscelete rn
         if(event.getFrom().getName().contains("tutorial_")){
             Location previousLoc = previousLocations.get(player.getUniqueId());
 

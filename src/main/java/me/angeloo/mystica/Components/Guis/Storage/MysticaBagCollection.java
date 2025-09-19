@@ -112,8 +112,19 @@ public class MysticaBagCollection {
 
     }
 
+    public int getItemAmount(MysticaItem item){
+
+        int amount = 0;
+
+        for(MysticaBag bag : getBags()){
+            amount += bag.getItemAmount(item);
+        }
+
+        return amount;
+    }
+
     //way to get other item amount??
-    public int getSoulStoneAmount(){
+    /*public int getSoulStoneAmount(){
 
         int amount = 0;
 
@@ -137,7 +148,7 @@ public class MysticaBagCollection {
         }
 
         return amount;
-    }
+    }*/
 
     public List<MysticaEquipment> getBagEquipment(){
 

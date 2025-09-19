@@ -162,7 +162,7 @@ public class RefineInventory implements Listener {
 
                 int required = getRequired(equipment);
 
-                int amount = profileManager.getAnyProfile(player).getMysticaBagCollection().getSoulStoneAmount();
+                int amount = profileManager.getAnyProfile(player).getMysticaBagCollection().getItemAmount(new SoulStone(1));
 
                 if(required > amount){
 

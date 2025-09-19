@@ -640,7 +640,7 @@ public class ProfileManager {
 
 
         World world = Bukkit.getWorld("world");
-        Location spawnLoc = new Location(world,409,68,-564,25,5);
+        Location spawnLoc = new Location(world,-11.5,124,-289,0,0);
         newPlayer.teleport(spawnLoc);
         newPlayer.getWorld().setSpawnLocation(spawnLoc);
 
@@ -1166,30 +1166,30 @@ public class ProfileManager {
 
     public String getCompanionTeamFace(UUID uuid, int slot){
 
-        switch (slot){
-            case 0:{
-                if(!companionFace0.containsKey(uuid)){
+        switch (slot) {
+            case 0 -> {
+                if (!companionFace0.containsKey(uuid)) {
                     companionFace0.put(uuid, "\uE14E");
                 }
 
                 return companionFace0.get(uuid);
             }
-            case 1:{
-                if(!companionFace1.containsKey(uuid)){
+            case 1 -> {
+                if (!companionFace1.containsKey(uuid)) {
                     companionFace1.put(uuid, "\uE179");
                 }
 
                 return companionFace1.get(uuid);
             }
-            case 2:{
-                if(!companionFace2.containsKey(uuid)){
+            case 2 -> {
+                if (!companionFace2.containsKey(uuid)) {
                     companionFace2.put(uuid, "\uE1A4");
                 }
 
                 return companionFace2.get(uuid);
             }
-            case 3:{
-                if(!companionFace3.containsKey(uuid)){
+            case 3 -> {
+                if (!companionFace3.containsKey(uuid)) {
                     companionFace3.put(uuid, "\uE1CF");
                 }
 

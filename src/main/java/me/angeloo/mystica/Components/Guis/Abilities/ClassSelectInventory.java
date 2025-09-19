@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Guis.Abilities;
 
+import me.angeloo.mystica.Components.Items.MysticalCrystal;
 import me.angeloo.mystica.Managers.CustomInventoryManager;
 import me.angeloo.mystica.Managers.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -138,12 +139,14 @@ public class ClassSelectInventory implements Listener {
 
             if(selectSlots.contains(slot)){
 
-                //check if player has crystal
-                if(!hasClassCrystal(player)){
-                    //Bukkit.getLogger().info("no class crystal");
+                boolean cost = costsCrystal(player);
+
+                //logic to determine if costs
+                if(cost && !hasClassCrystal(player)){
+                    player.closeInventory();
+                    player.sendMessage("Requires Mystical Crystal");
                     return;
                 }
-
 
                 String colorlessTitle = title.replaceAll("§.", "");
 
@@ -151,37 +154,66 @@ public class ClassSelectInventory implements Listener {
                     case ("\uF809\uF808\uF804\uE06F" + "\uF801\uE070\uF821" + "\uF82A\uF826\uF825\uF80D\uE071" + "\uF801\uE072") -> {
                         classSetter.setClass(player, PlayerClass.Assassin);
                         player.closeInventory();
+
+                        if(cost){
+                            profileManager.getAnyProfile(player).getMysticaBagCollection().removeItemsFromMultipleBags(new MysticalCrystal(1));
+                        }
+
                         return;
 
                     }
                     case ("\uF809\uF808\uF804\uE073" + "\uF801\uE074\uF821" + "\uF82A\uF826\uF825\uF80D\uE075" + "\uF801\uE076") -> {
                         classSetter.setClass(player, PlayerClass.Elementalist);
                         player.closeInventory();
+
+                        if(cost){
+                            profileManager.getAnyProfile(player).getMysticaBagCollection().removeItemsFromMultipleBags(new MysticalCrystal(1));
+                        }
                         return;
                     }
                     case ("\uF809\uF808\uF804\uE077" + "\uF801\uE078\uF821" + "\uF82A\uF826\uF825\uF80D\uE079" + "\uF801\uE07A") -> {
                         classSetter.setClass(player, PlayerClass.Mystic);
                         player.closeInventory();
+
+                        if(cost){
+                            profileManager.getAnyProfile(player).getMysticaBagCollection().removeItemsFromMultipleBags(new MysticalCrystal(1));
+                        }
                         return;
                     }
                     case ("\uF809\uF808\uF804\uE07B" + "\uF801\uE07C\uF821" + "\uF82A\uF826\uF825\uF80D\uE07D" + "\uF801\uE07E") -> {
                         classSetter.setClass(player, PlayerClass.Paladin);
                         player.closeInventory();
+
+                        if(cost){
+                            profileManager.getAnyProfile(player).getMysticaBagCollection().removeItemsFromMultipleBags(new MysticalCrystal(1));
+                        }
                         return;
                     }
                     case ("\uF809\uF808\uF804\uE07F" + "\uF801\uE080\uF821" + "\uF82A\uF826\uF825\uF80D\uE081" + "\uF801\uE082") -> {
                         classSetter.setClass(player, PlayerClass.Ranger);
                         player.closeInventory();
+
+                        if(cost){
+                            profileManager.getAnyProfile(player).getMysticaBagCollection().removeItemsFromMultipleBags(new MysticalCrystal(1));
+                        }
                         return;
                     }
                     case ("\uF809\uF808\uF804\uE083" + "\uF801\uE084\uF821" + "\uF82A\uF826\uF825\uF80D\uE085" + "\uF801\uE086") -> {
                         classSetter.setClass(player, PlayerClass.Shadow_Knight);
                         player.closeInventory();
+
+                        if(cost){
+                            profileManager.getAnyProfile(player).getMysticaBagCollection().removeItemsFromMultipleBags(new MysticalCrystal(1));
+                        }
                         return;
                     }
                     case ("\uF809\uF808\uF804\uE087" + "\uF801\uE088\uF821" + "\uF82A\uF826\uF825\uF80D\uE089" + "\uF801\uE08A") -> {
                         classSetter.setClass(player, PlayerClass.Warrior);
                         player.closeInventory();
+
+                        if(cost){
+                            profileManager.getAnyProfile(player).getMysticaBagCollection().removeItemsFromMultipleBags(new MysticalCrystal(1));
+                        }
                         return;
                     }
                 }
@@ -217,8 +249,20 @@ public class ClassSelectInventory implements Listener {
 
     }
 
+    private boolean costsCrystal(Player player){
+
+        //if none, will ALWAYS cost
+        if(profileManager.getAnyProfile(player).getPlayerClass().equals(PlayerClass.NONE)){
+            return true;
+        }
+
+        //but if not none, will cost nothing if they are level 1
+        return profileManager.getAnyProfile(player).getStats().getLevel() != 1;
+    }
+
+
     private boolean hasClassCrystal(Player player){
-        return profileManager.getAnyProfile(player).getMysticaBagCollection().getClassCrystalAmount() > 0;
+        return profileManager.getAnyProfile(player).getMysticaBagCollection().getItemAmount(new MysticalCrystal(1)) > 0;
     }
 
 

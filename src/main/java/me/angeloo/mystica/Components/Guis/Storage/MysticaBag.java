@@ -158,8 +158,28 @@ public class MysticaBag{
         return successfullyRemoved;
     }
 
+    public int getItemAmount(MysticaItem item){
 
-    public int getSoulStoneAmount(){
+        int amount = 0;
+
+        for(MysticaItem bagItem : bag){
+
+            if(!bagItem.identifier().equalsIgnoreCase(item.identifier())){
+                continue;
+            }
+
+            if(bagItem instanceof StackableItem stackableItem){
+                amount += stackableItem.getAmount();
+                continue;
+            }
+
+            amount +=1;
+        }
+
+        return amount;
+    }
+
+    /*public int getSoulStoneAmount(){
 
         int amount = 0;
 
@@ -197,7 +217,7 @@ public class MysticaBag{
         }
 
         return amount;
-    }
+    }*/
 
     public List<MysticaEquipment> getEquipment(){
 

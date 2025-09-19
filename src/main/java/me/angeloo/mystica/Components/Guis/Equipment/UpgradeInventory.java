@@ -165,7 +165,7 @@ public class UpgradeInventory implements Listener {
 
             bottomInv.clear();
 
-            bottomInv.setItem(9, new SoulStone(collection.getSoulStoneAmount()).build());
+            bottomInv.setItem(9, new SoulStone(collection.getItemAmount(new SoulStone(1))).build());
 
             for(int i = 0; i<25;i++){
 
@@ -266,7 +266,7 @@ public class UpgradeInventory implements Listener {
                 MysticaEquipment upgradeEquipment = gson.fromJson(upgradeJson, MysticaEquipment.class);
                 MysticaEquipment materialEquipment = gson.fromJson(materialJson, MysticaEquipment.class);
 
-                int amount = profileManager.getAnyProfile(player).getMysticaBagCollection().getSoulStoneAmount();
+                int amount = profileManager.getAnyProfile(player).getMysticaBagCollection().getItemAmount(new SoulStone(1));
                 int cost = costItem.getAmount();
                 int newLevel = materialEquipment.getLevel();
 

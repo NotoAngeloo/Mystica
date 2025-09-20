@@ -124,20 +124,20 @@ public class MatchMakingManager {
         //does sending the leader send all others?
         switch (customInventoryManager.getDungeonIndex(player)) {
             case 0 -> {
-                Mystica.dungeonsApi().initiateDungeonForPlayer(player, Dungeon.Heart_of_Corruption.name());
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "md play " + Dungeon.Heart_of_Corruption.name() + " " + player.getName());
                 dungeonRequiresInterrupt = true;
                 player.closeInventory();
             }
             case 1 -> {
-                Mystica.dungeonsApi().initiateDungeonForPlayer(player, Dungeon.Acolyte_of_Chaos.name());
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "md play " + Dungeon.Acolyte_of_Chaos.name() + " " + player.getName());
                 player.closeInventory();
             }
             case 2 -> {
-                Mystica.dungeonsApi().initiateDungeonForPlayer(player, Dungeon.Cave_of_Lindwyrm.name());
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "md play " + Dungeon.Cave_of_Lindwyrm.name() + " " + player.getName());
                 player.closeInventory();
             }
             case 3 -> {
-                Mystica.dungeonsApi().initiateDungeonForPlayer(player, Dungeon.Curse_of_Shadow.name());
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "md play " + Dungeon.Curse_of_Shadow.name() + " " + player.getName());
                 player.closeInventory();
             }
         }

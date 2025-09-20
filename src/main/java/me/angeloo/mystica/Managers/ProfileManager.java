@@ -640,7 +640,7 @@ public class ProfileManager {
 
 
         World world = Bukkit.getWorld("world");
-        Location spawnLoc = new Location(world,-11.5,124,-289,0,0);
+        Location spawnLoc = new Location(world,-11,127,-299,0,0);
         newPlayer.teleport(spawnLoc);
         newPlayer.getWorld().setSpawnLocation(spawnLoc);
 

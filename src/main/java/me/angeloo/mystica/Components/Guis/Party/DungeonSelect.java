@@ -2,6 +2,7 @@ package me.angeloo.mystica.Components.Guis.Party;
 
 import me.angeloo.mystica.Managers.CustomInventoryManager;
 import me.angeloo.mystica.Utility.DisplayWeapons;
+import me.angeloo.mystica.Utility.Enums.Dungeon;
 import me.angeloo.mystica.Utility.MatchMaking.MatchMakingManager;
 import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Managers.ProfileManager;
@@ -108,21 +109,22 @@ public class DungeonSelect implements Listener {
 
             if(enterSlots.contains(slot)){
 
+                //TODO: if not enough players, notify and suggest bots
                 switch (customInventoryManager.getDungeonIndex(player)) {
                     case 0 -> {
-                        Mystica.dungeonsApi().initiateDungeonForPlayer(player, "Heart_of_Corruption");
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "md play " + Dungeon.Heart_of_Corruption.name() + " " + player.getName());
                         player.closeInventory();
                     }
                     case 1 -> {
-                        Mystica.dungeonsApi().initiateDungeonForPlayer(player, "Acolyte_of_Chaos");
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "md play " + Dungeon.Acolyte_of_Chaos.name() + " " + player.getName());
                         player.closeInventory();
                     }
                     case 2 -> {
-                        Mystica.dungeonsApi().initiateDungeonForPlayer(player, "Cave_of_Lindwyrm");
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "md play " + Dungeon.Cave_of_Lindwyrm.name() + " " + player.getName());
                         player.closeInventory();
                     }
                     case 3 -> {
-                        Mystica.dungeonsApi().initiateDungeonForPlayer(player, "Curse_of_Shadow");
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "md play " + Dungeon.Curse_of_Shadow.name() + " " + player.getName());
                         player.closeInventory();
                     }
                 }

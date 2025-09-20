@@ -23,8 +23,8 @@ public class DailyTick extends BukkitRunnable {
     public void run(){
         LocalTime currentTime = LocalTime.now().withSecond(0).withNano(0);
 
-        //once a day
-        if(currentTime.equals(DAILY_RESET)){
+        //once a day disabled atm
+        /*if(currentTime.equals(DAILY_RESET)){
 
             dailyData.decreaseDays();
             int daysTilIncrease = dailyData.getDaysTilIncrease();
@@ -39,7 +39,7 @@ public class DailyTick extends BukkitRunnable {
 
             Bukkit.getServer().broadcastMessage(dailyData.getLevelAnnouncement());
 
-        }
+        }*/
 
         //every even hour
         /*if(currentTime.getMinute()==0 && currentTime.getHour()%2==0){

@@ -4,6 +4,7 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import java.util.Map;
 import java.util.Random;
@@ -24,13 +25,21 @@ public class DamageIndicatorCalculator {
 
     public void displayDamage(Player player, LivingEntity entity, Double damage, boolean crit){
 
-        //depending on crit or not, change the color of the string
-
         double xOffset = 1.25d;
         double yOffset = 0.65d;
         double zOffset = 1.25d;
 
         Location targetLocation = entity.getLocation().add(2 * xOffset * RANDOM.nextDouble() - xOffset, yOffset - 0.2d, 2*zOffset*RANDOM.nextDouble() - zOffset);
+
+        //my addition to make it appears in front of target always intead of on top
+        Location playerloc = player.getLocation();
+        double distance = playerloc.distance(targetLocation);
+        if(distance != 0){
+            Vector direction = playerloc.toVector().subtract(targetLocation.toVector());
+            direction.normalize().multiply(1);
+            targetLocation = targetLocation.add(direction);
+        }
+
 
         /*double scale = 10;
         double scaledDamage = Math.ceil(damage * scale) / scale;*/

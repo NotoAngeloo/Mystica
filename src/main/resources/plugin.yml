@@ -9,9 +9,6 @@ softdepend:
   - MythicMobs
 api-version: '1.19'
 commands:
-  Trash:
-    description: allows players to throw away items
-    usage: /Trash
   Equipment:
     description: opens equipment
     usage: /Equipment
@@ -69,10 +66,6 @@ commands:
   DeleteProfile:
     description: deletes a profile
     usage: /DeleteProfile
-    permission: developer
-  BossLevel:
-    description: lets mms open boss level inv
-    usage: /BossLevel
     permission: developer
   HitValidCheck:
     description: lets mms see if what they hit with a skill is valid

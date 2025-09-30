@@ -17,6 +17,7 @@ import me.angeloo.mystica.Components.Items.BagItem;
 import me.angeloo.mystica.Components.Items.MysticalCrystal;
 import me.angeloo.mystica.Components.Items.SoulStone;
 import me.angeloo.mystica.Components.Items.StackableItemRegistry;
+import me.angeloo.mystica.Components.Quests.Inventories.QuestInventoryTextGenerator;
 import me.angeloo.mystica.Components.Quests.QuestManager;
 import me.angeloo.mystica.Managers.*;
 import me.angeloo.mystica.Managers.Parties.FakePlayerAiManager;
@@ -216,11 +217,11 @@ public final class Mystica extends JavaPlugin{
 
         equipmentInventory = new EquipmentInventory(this);
         matchMakingManager = new MatchMakingManager(this);
-        dungeonSelect = new DungeonSelect(this);
         invitedInventory = new InvitedInventory(this);
         partyInventory = new PartyInventory(this);
         questAcceptInventory = new QuestAcceptInventory(this);
         pickQuestInventory = new PickQuestInventory(this, questAcceptInventory);
+        dungeonSelect = new DungeonSelect(this, questAcceptInventory);
         shopOrQuest = new ShopOrQuest(this);
 
         firstClearManager = new FirstClearManager(this);
@@ -235,7 +236,6 @@ public final class Mystica extends JavaPlugin{
         getCommand("MysticaEffect").setExecutor(new MysticaEffect(this));
         getCommand("StartFuryTimer").setExecutor(new StartFuryTimer(this));
         getCommand("Equipment").setExecutor(new Equipment(this));
-        getCommand("Trash").setExecutor(new Trash());
         getCommand("ClassSelect").setExecutor(new ClassSelect(this));
         getCommand("GearSwap").setExecutor(new GearSwap());
         getCommand("ToggleImmunity").setExecutor(new ToggleImmunity(this));
@@ -245,7 +245,6 @@ public final class Mystica extends JavaPlugin{
         getCommand("Identify").setExecutor(new Identify(this));
         getCommand("ManualSave").setExecutor(new ManualSave(this));
         getCommand("DeleteProfile").setExecutor(new DeleteProfile(this));
-        getCommand("BossLevel").setExecutor(new BossLevel(this));
         getCommand("HitValidCheck").setExecutor(new HitValidCheck(this));
         getCommand("SetCaution").setExecutor(new SetCaution(this));
         getCommand("StopCompanionRotation").setExecutor(new StopCompanionRotation(this));

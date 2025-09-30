@@ -471,21 +471,24 @@ public class QuestInventoryTextGenerator {
 
             index++;
 
-            /*for(char c : s.toCharArray()){
-
-                inventoryText.append(getCharacter(c, index));
-            }
-
-            //append negative space automatically
-            for (char c : s.toCharArray()){
-                inventoryText.append(CHAR_NEGATIVE_SPACE.getOrDefault(c, ""));
-            }
-
-
-            index ++;*/
         }
 
         return inventoryText.toString();
+    }
+
+    public String getDungeonLevelText(int level){
+
+        StringBuilder builder = new StringBuilder();
+
+        String template = "Level: " + level;
+
+        for(char c : template.toCharArray()){
+            builder.append(getCharacter(c, 12));
+        }
+
+
+
+        return builder.toString();
     }
 
     private String getCharacter(char c, int line){

@@ -1,20 +1,17 @@
 package me.angeloo.mystica.Tasks;
 
 import me.angeloo.mystica.CustomEvents.UltimateStatusChageEvent;
-import me.angeloo.mystica.Managers.AbilityManager;
-import me.angeloo.mystica.Managers.CombatManager;
-import me.angeloo.mystica.Managers.ProfileManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class CombatTick {

@@ -179,46 +179,6 @@ public class MysticaBag{
         return amount;
     }
 
-    /*public int getSoulStoneAmount(){
-
-        int amount = 0;
-
-        for(MysticaItem item : bag){
-
-            if(item instanceof StackableItem stackableItem){
-                if(!item.identifier().equalsIgnoreCase("soul stone")){
-                    continue;
-                }
-
-                amount += stackableItem.getAmount();
-            }
-
-
-        }
-
-        return amount;
-    }
-
-    public int getClassCrystalAmount(){
-
-        int amount = 0;
-
-        for(MysticaItem item : bag){
-
-            if(item instanceof StackableItem stackableItem){
-                if(!item.identifier().equalsIgnoreCase("mystical crystal")){
-                    continue;
-                }
-
-                amount += stackableItem.getAmount();
-            }
-
-
-        }
-
-        return amount;
-    }*/
-
     public List<MysticaEquipment> getEquipment(){
 
         List<MysticaEquipment> equipment = new ArrayList<>();

@@ -3,7 +3,7 @@ package me.angeloo.mystica.Components.Commands;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Enums.BarType;
-import me.angeloo.mystica.Utility.Hud.BossWarningSender;
+import me.angeloo.mystica.Components.Hud.BossWarningSender;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

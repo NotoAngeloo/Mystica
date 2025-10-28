@@ -4,16 +4,20 @@ import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
+import me.angeloo.mystica.Components.CombatSystem.*;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
 import me.angeloo.mystica.Components.Guis.Abilities.AbilityInventory;
 import me.angeloo.mystica.Components.Guis.Equipment.EquipmentInventory;
 import me.angeloo.mystica.Components.Guis.Party.PartyInventory;
+import me.angeloo.mystica.Components.Hud.HudManager;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
 import me.angeloo.mystica.CustomEvents.*;
-import me.angeloo.mystica.Managers.*;
-import me.angeloo.mystica.Managers.Parties.FakePlayerAiManager;
-import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
+import me.angeloo.mystica.Components.Parties.FakePlayerAiManager;
+import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Tasks.AggroTick;
 import me.angeloo.mystica.Tasks.RezTick;
@@ -22,7 +26,7 @@ import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
-import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.Logic.StealthTargetBlacklist;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.*;
@@ -40,7 +44,6 @@ import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.inventory.*;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
@@ -1513,6 +1516,11 @@ public class GeneralEventListener implements Listener {
 
         LivingEntity companion = event.getCompanion();
         String signal = event.getSignal();
+
+        if(signal.equalsIgnoreCase("bossdeath")){
+            fakePlayerAiManager.hardStopAiTask(companion.getUniqueId());
+            return;
+        }
 
         if(signal.equalsIgnoreCase("stop")){
             fakePlayerAiManager.stopAiTask(companion.getUniqueId());

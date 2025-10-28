@@ -1,27 +1,34 @@
 package me.angeloo.mystica;
 
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
-import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
+import me.angeloo.mystica.Components.CombatSystem.*;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
+import me.angeloo.mystica.Components.CombatSystem.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Commands.*;
+import me.angeloo.mystica.Components.Creatures.CreaturesAndCharactersManager;
 import me.angeloo.mystica.Components.Guis.Abilities.AbilityInventory;
 import me.angeloo.mystica.Components.Guis.Abilities.ClassSelectInventory;
 import me.angeloo.mystica.Components.Guis.Abilities.SpecInventory;
+import me.angeloo.mystica.Components.Guis.CustomInventoryManager;
 import me.angeloo.mystica.Components.Guis.Equipment.*;
 import me.angeloo.mystica.Components.Guis.Misc.ShopOrQuest;
 import me.angeloo.mystica.Components.Guis.Party.DungeonSelect;
 import me.angeloo.mystica.Components.Guis.Party.InvitedInventory;
 import me.angeloo.mystica.Components.Guis.Party.PartyInventory;
-import me.angeloo.mystica.Components.Quests.Inventories.PickQuestInventory;
-import me.angeloo.mystica.Components.Quests.Inventories.QuestAcceptInventory;
+import me.angeloo.mystica.Components.Guis.Storage.BagEquipmentFunctions;
+import me.angeloo.mystica.Components.Hud.BossCastingManager;
+import me.angeloo.mystica.Components.Hud.HudManager;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
+import me.angeloo.mystica.Components.Guis.QuestInventories.PickQuestInventory;
+import me.angeloo.mystica.Components.Guis.QuestInventories.QuestAcceptInventory;
 import me.angeloo.mystica.Components.Items.BagItem;
 import me.angeloo.mystica.Components.Items.MysticalCrystal;
 import me.angeloo.mystica.Components.Items.SoulStone;
 import me.angeloo.mystica.Components.Items.StackableItemRegistry;
-import me.angeloo.mystica.Components.Quests.Inventories.QuestInventoryTextGenerator;
 import me.angeloo.mystica.Components.Quests.QuestManager;
-import me.angeloo.mystica.Managers.*;
-import me.angeloo.mystica.Managers.Parties.FakePlayerAiManager;
-import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
+import me.angeloo.mystica.Components.Parties.FakePlayerAiManager;
+import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
 import me.angeloo.mystica.NMS.Common.PacketInterface;
 import me.angeloo.mystica.NMS.NMSVersion;
 import me.angeloo.mystica.Tasks.*;
@@ -29,8 +36,8 @@ import me.angeloo.mystica.Utility.*;
 import me.angeloo.mystica.Utility.DamageIndicator.DamageIndicatorApi;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
-import me.angeloo.mystica.Utility.Hud.BossWarningSender;
-import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
+import me.angeloo.mystica.Components.Hud.BossWarningSender;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.Listeners.GeneralEventListener;
 import me.angeloo.mystica.Utility.Listeners.InventoryEventListener;
 import me.angeloo.mystica.Utility.Listeners.MMListeners;
@@ -101,6 +108,7 @@ public final class Mystica extends JavaPlugin{
 
     private ClassSelectInventory classSelectInventory;
     private AbilityInventory abilityInventory;
+    private BagEquipmentFunctions bagEquipmentFunctions;
     private SpecInventory specInventory;
 
     private EquipmentUpgradeManager equipmentUpgradeManager;
@@ -206,11 +214,12 @@ public final class Mystica extends JavaPlugin{
         fakePlayerAiManager = new FakePlayerAiManager(this);
 
 
-
         customInventoryManager = new CustomInventoryManager(this);
+
         classSelectInventory = new ClassSelectInventory(this);
         abilityInventory = new AbilityInventory(this);
         specInventory = abilityInventory.getSpecInventory();
+        bagEquipmentFunctions = new BagEquipmentFunctions(this);
 
         equipmentUpgradeManager = new EquipmentUpgradeManager(this);
 
@@ -221,7 +230,7 @@ public final class Mystica extends JavaPlugin{
         partyInventory = new PartyInventory(this);
         questAcceptInventory = new QuestAcceptInventory(this);
         pickQuestInventory = new PickQuestInventory(this, questAcceptInventory);
-        dungeonSelect = new DungeonSelect(this, questAcceptInventory);
+        dungeonSelect = new DungeonSelect(this);
         shopOrQuest = new ShopOrQuest(this);
 
         firstClearManager = new FirstClearManager(this);
@@ -277,6 +286,7 @@ public final class Mystica extends JavaPlugin{
         this.getServer().getPluginManager().registerEvents(questAcceptInventory,this);
         this.getServer().getPluginManager().registerEvents(shopOrQuest, this);
         this.getServer().getPluginManager().registerEvents(pickQuestInventory,this);
+        this.getServer().getPluginManager().registerEvents(bagEquipmentFunctions, this);
 
         this.getServer().getPluginManager().registerEvents(new InventoryEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new GeneralEventListener(this), this);
@@ -484,6 +494,8 @@ public final class Mystica extends JavaPlugin{
     public ShopOrQuest getShopOrQuest(){return shopOrQuest;}
 
     public ClassSelectInventory getClassSelectInventory(){return classSelectInventory;}
+
+    public BagEquipmentFunctions getBagEquipmentFunctions(){return bagEquipmentFunctions;}
 
     @NotNull
     public PacketInterface getPacketInterface(){

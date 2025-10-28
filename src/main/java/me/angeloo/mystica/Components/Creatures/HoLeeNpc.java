@@ -2,7 +2,7 @@ package me.angeloo.mystica.Components.Creatures;
 
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import io.lumine.mythic.bukkit.MythicBukkit;
-import me.angeloo.mystica.Managers.ProfileManager;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

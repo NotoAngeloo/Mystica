@@ -1,7 +1,7 @@
 package me.angeloo.mystica.Components.Commands;
 
 import me.angeloo.mystica.Components.Guis.Abilities.ClassSelectInventory;
-import me.angeloo.mystica.Managers.CustomInventoryManager;
+import me.angeloo.mystica.Components.Guis.CustomInventoryManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

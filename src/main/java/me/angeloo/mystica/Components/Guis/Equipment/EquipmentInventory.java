@@ -4,9 +4,9 @@ import com.google.gson.Gson;
 import me.angeloo.mystica.Components.Guis.Storage.MysticaBag;
 import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
-import me.angeloo.mystica.Managers.CustomInventoryManager;
+import me.angeloo.mystica.Components.Guis.CustomInventoryManager;
 import me.angeloo.mystica.Utility.InventoryItemGetter;
-import me.angeloo.mystica.Managers.ProfileManager;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.EquipmentSlot;
@@ -51,6 +51,7 @@ public class EquipmentInventory implements Listener {
     public void openEquipmentInventory(Player player) {
         PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
+        //-7, png
         String title = ChatColor.WHITE + "\uF807" + "\uE066";
 
         title = customInventoryManager.addBagPng(title);
@@ -417,7 +418,6 @@ public class EquipmentInventory implements Listener {
 
                 Gson gson = new Gson();
                 MysticaEquipment mysticaEquipment = gson.fromJson(json, MysticaEquipment.class);
-
 
                 switch (event.getSlot()) {
                     case 18 -> {

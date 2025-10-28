@@ -1,7 +1,7 @@
 package me.angeloo.mystica.Components.Commands;
 
-import me.angeloo.mystica.Managers.Parties.FakePlayerAiManager;
-import me.angeloo.mystica.Managers.ProfileManager;
+import me.angeloo.mystica.Components.Parties.FakePlayerAiManager;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

@@ -1,7 +1,7 @@
 package me.angeloo.mystica.Utility.DamageUtils;
 
-import me.angeloo.mystica.Managers.BuffAndDebuffManager;
-import me.angeloo.mystica.Managers.ProfileManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Utility.Enums.SubClass;

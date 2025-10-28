@@ -2,9 +2,9 @@ package me.angeloo.mystica.Utility.MatchMaking;
 
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import io.lumine.mythic.bukkit.MythicBukkit;
-import me.angeloo.mystica.Managers.CustomInventoryManager;
-import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
-import me.angeloo.mystica.Managers.ProfileManager;
+import me.angeloo.mystica.Components.Guis.CustomInventoryManager;
+import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Enums.Dungeon;
 import me.angeloo.mystica.Utility.Enums.Role;
@@ -177,7 +177,7 @@ public class MatchMakingManager {
                     return;
                 }
 
-                if(count<=1){
+                if(count<1){
                     count++;
                     return;
                 }

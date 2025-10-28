@@ -2,9 +2,8 @@ package me.angeloo.mystica.Utility.Listeners;
 
 
 import io.lumine.mythic.bukkit.events.MythicMobSpawnEvent;
-import me.angeloo.mystica.Managers.ProfileManager;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;

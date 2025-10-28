@@ -1,8 +1,8 @@
 package me.angeloo.mystica.Components.Guis.Party;
 
-import me.angeloo.mystica.Managers.CustomInventoryManager;
-import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
-import me.angeloo.mystica.Managers.ProfileManager;
+import me.angeloo.mystica.Components.Guis.CustomInventoryManager;
+import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.Enums.Role;

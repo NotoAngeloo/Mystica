@@ -1,10 +1,9 @@
 package me.angeloo.mystica.Utility.Logic;
 
-import me.angeloo.mystica.Managers.DpsManager;
-import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
+import me.angeloo.mystica.Components.CombatSystem.DpsManager;
+import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.Hud.DpsBar;
-import org.bukkit.Bukkit;
+import me.angeloo.mystica.Components.Hud.DpsBar;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;

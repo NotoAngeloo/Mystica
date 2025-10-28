@@ -1,7 +1,7 @@
 package me.angeloo.mystica.Utility.Logic;
 
-import me.angeloo.mystica.Managers.ProfileManager;
-import me.angeloo.mystica.Managers.PvpManager;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
+import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;

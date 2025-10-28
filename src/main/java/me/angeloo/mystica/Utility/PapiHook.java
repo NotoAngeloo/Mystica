@@ -1,7 +1,7 @@
 package me.angeloo.mystica.Utility;
 
-import me.angeloo.mystica.Managers.ProfileManager;
-import me.angeloo.mystica.Managers.TargetManager;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
+import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Logic.DamageBoardPlaceholders;
 import me.angeloo.mystica.Utility.Logic.MysticaEntityGrabber;

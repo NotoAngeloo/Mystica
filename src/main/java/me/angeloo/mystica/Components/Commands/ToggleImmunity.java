@@ -1,6 +1,6 @@
 package me.angeloo.mystica.Components.Commands;
 
-import me.angeloo.mystica.Managers.BuffAndDebuffManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

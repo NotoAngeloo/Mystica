@@ -1,13 +1,9 @@
 package me.angeloo.mystica.Components.Commands;
 
-import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.Components.Items.MysticalCrystal;
 import me.angeloo.mystica.Components.Items.SoulStone;
-import me.angeloo.mystica.Components.Items.UnidentifiedItem;
-import me.angeloo.mystica.Utility.InventoryItemGetter;
-import me.angeloo.mystica.Managers.ProfileManager;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.EquipmentSlot;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

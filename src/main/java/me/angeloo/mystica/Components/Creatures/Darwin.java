@@ -2,8 +2,8 @@ package me.angeloo.mystica.Components.Creatures;
 import me.angeloo.mystica.Components.FakePlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.Stats;
 import me.angeloo.mystica.CustomEvents.CompanionSpawnEvent;
-import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
-import me.angeloo.mystica.Managers.ProfileManager;
+import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
@@ -56,17 +56,20 @@ public class Darwin {
             level = profileManager.getAnyProfile(theClosestPlayersLeader).getStats().getLevel();
         }
 
-        int attack = 50 + (9 * level);
-        int health = 100 + (117 * level);
-        int defence = 50 + (8 * level);
-        int magic_defence = 50 + (8 * level);
+        //base
+        int attack = 50;
+        int health = 100;
+        int defence = 50;
+        int magic_defence = 50;
         int crit = 1;
 
+        //level
         attack+=(level*2);
         health+=(level*15);
         defence+=(level);
         magic_defence+=(level);
 
+        //subclass
         attack+=level;
         crit += 10;
 

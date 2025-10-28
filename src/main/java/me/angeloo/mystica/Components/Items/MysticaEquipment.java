@@ -164,6 +164,8 @@ public class MysticaEquipment extends MysticaItem{
     }
 
 
+
+
     @Override
     public MysticaItemFormat format() {
         return MysticaItemFormat.EQUIPMENT;

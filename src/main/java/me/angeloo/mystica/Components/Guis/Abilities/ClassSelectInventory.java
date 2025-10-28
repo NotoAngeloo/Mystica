@@ -1,8 +1,8 @@
 package me.angeloo.mystica.Components.Guis.Abilities;
 
 import me.angeloo.mystica.Components.Items.MysticalCrystal;
-import me.angeloo.mystica.Managers.CustomInventoryManager;
-import me.angeloo.mystica.Managers.ProfileManager;
+import me.angeloo.mystica.Components.Guis.CustomInventoryManager;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ClassSetter;
 import me.angeloo.mystica.Utility.DisplayWeapons;
@@ -10,13 +10,11 @@ import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 import java.util.List;

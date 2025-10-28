@@ -1,19 +1,19 @@
 package me.angeloo.mystica.Utility.Listeners;
 
 
+import com.google.gson.Gson;
 import me.angeloo.mystica.Components.Guis.Abilities.AbilityInventory;
 import me.angeloo.mystica.Components.Guis.Party.DungeonSelect;
 import me.angeloo.mystica.Components.Guis.Party.PartyInventory;
+import me.angeloo.mystica.Components.Guis.Storage.BagEquipmentFunctions;
 import me.angeloo.mystica.Components.Guis.Storage.MysticaBag;
 import me.angeloo.mystica.Components.Guis.Storage.MysticaBagCollection;
-import me.angeloo.mystica.Components.Items.MysticaItem;
-import me.angeloo.mystica.Components.Items.StackableItem;
-import me.angeloo.mystica.Components.Items.StackableItemRegistry;
-import me.angeloo.mystica.Managers.CustomInventoryManager;
-import me.angeloo.mystica.Managers.ProfileManager;
+import me.angeloo.mystica.Components.Items.*;
+import me.angeloo.mystica.Components.Guis.CustomInventoryManager;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DisplayWeapons;
-import me.angeloo.mystica.Utility.Hud.CooldownDisplayer;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.InventoryItemGetter;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -27,7 +27,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
 
@@ -36,6 +36,7 @@ public class InventoryEventListener implements Listener {
     private final Mystica main;
 
     private final ProfileManager profileManager;
+    private final BagEquipmentFunctions bagEquipmentFunctions;
     private final InventoryItemGetter itemGetter;
     private final CustomInventoryManager inventoryManager;
     private final DungeonSelect dungeonSelect;
@@ -54,10 +55,13 @@ public class InventoryEventListener implements Listener {
         abilityInventory = main.getAbilityInventory();
         displayWeapons = main.getDisplayWeapons();
         cooldownDisplayer = main.getCooldownDisplayer();
+        bagEquipmentFunctions = main.getBagEquipmentFunctions();
     }
 
     @EventHandler
     public void bagClicks(InventoryClickEvent event){
+
+        //TODO: update it such that checks the item that is selected before doing something with it, like adding the function png on top
 
         if(event.getView().getTitle().equalsIgnoreCase(org.bukkit.ChatColor.WHITE + "\uF808" + "\uE05C")
         || event.getView().getTitle().equalsIgnoreCase(ChatColor.WHITE + "\uF807" + "\uE05D" + "\uF827" + "\uF80D" + "\uF82B\uF828\uF826" + "\uE05C")){
@@ -67,6 +71,8 @@ public class InventoryEventListener implements Listener {
             //if player clicks an item, move it to the top inventory with options to dismantle or move
 
             Player player = (Player) event.getWhoClicked();
+
+            ItemStack[] oldContents = player.getInventory().getContents();
 
             Inventory topInv = event.getView().getTopInventory();
             Inventory bottomInv = event.getView().getBottomInventory();
@@ -86,6 +92,18 @@ public class InventoryEventListener implements Listener {
 
                 if(item == null){
                     return;
+                }
+
+
+                //get the type of item it is, then switch statement for type
+                MysticaItemFormat type = getItemType(item);
+
+                //pass through inventory to not change the uuids of the items displayed
+                switch (type){
+                    case EQUIPMENT -> {
+                        bagEquipmentFunctions.open(player, item, oldContents);
+                        return;
+                    }
                 }
 
                 topInv.setItem(22, item);
@@ -175,27 +193,32 @@ public class InventoryEventListener implements Listener {
                     currentBag.removeFromBag(bagItem);
                     profileManager.getAnyProfile(player).getMysticaBagCollection().openMysticaBag(player, inventoryManager.getBagIndex(player));
 
-                    //this loop finds the slot that selected item is in the mysticabag
-                    /*for(int i = 0; i< 26; i++){
-
-                        ItemStack invItem = bottomInv.getItem(i+9);
-
-                        if(invItem == null){
-                            continue;
-                        }
-
-                        if(invItem.equals(actionItem)){
-                            MysticaItem bagItem = currentBag.getBag().get(i);
-                            currentBag.removeFromBag(bagItem);
-                            profileManager.getAnyProfile(player).getMysticaBagCollection().openMysticaBag(player, inventoryManager.getBagIndex(player));
-                            break;
-                        }
-                    }*/
                 }
             }
         }
 
+    }
 
+    public MysticaItemFormat getItemType(ItemStack item){
+
+        if(!item.hasItemMeta()){
+            return MysticaItemFormat.OTHER;
+        }
+
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+
+        NamespacedKey equipmentKey = new NamespacedKey(Mystica.getPlugin(), "equipment_data");
+        if(item.getItemMeta().getPersistentDataContainer().has(equipmentKey, PersistentDataType.STRING) ){
+            return MysticaItemFormat.EQUIPMENT;
+        }
+
+        NamespacedKey unidentifiedKey = new NamespacedKey(Mystica.getPlugin(), "unidentified_data");
+        if(item.getItemMeta().getPersistentDataContainer().has(unidentifiedKey, PersistentDataType.STRING) ){
+            return MysticaItemFormat.UNIDENTIFIED;
+        }
+
+        return MysticaItemFormat.OTHER;
     }
 
     @EventHandler

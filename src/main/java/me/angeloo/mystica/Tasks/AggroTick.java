@@ -1,14 +1,13 @@
 package me.angeloo.mystica.Tasks;
 
-import me.angeloo.mystica.Managers.AggroManager;
-import me.angeloo.mystica.Managers.CombatManager;
-import me.angeloo.mystica.Managers.DpsManager;
-import me.angeloo.mystica.Managers.ProfileManager;
+import me.angeloo.mystica.Components.CombatSystem.AggroManager;
+import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.DpsManager;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 

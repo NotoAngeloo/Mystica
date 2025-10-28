@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class PlayerEquipment {
 
-    private MysticaEquipment[] equipment;
+    private final MysticaEquipment[] equipment;
 
     public PlayerEquipment(MysticaEquipment[] equipment) {
         this.equipment = equipment;
@@ -16,9 +16,9 @@ public class PlayerEquipment {
         return equipment;
     }
 
-    public void setEquipment(MysticaEquipment[] equipment) {
+    /*public void setEquipment(MysticaEquipment[] equipment) {
         this.equipment = equipment;
-    }
+    }*/
 
     public MysticaEquipment getWeapon(){
         return equipment[0];

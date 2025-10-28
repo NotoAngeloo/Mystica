@@ -1,45 +1,41 @@
 package me.angeloo.mystica.Components.Guis.Party;
 
-import me.angeloo.mystica.Components.Quests.Inventories.QuestAcceptInventory;
-import me.angeloo.mystica.Components.Quests.Inventories.QuestInventoryTextGenerator;
-import me.angeloo.mystica.Managers.CustomInventoryManager;
+import me.angeloo.mystica.Components.Guis.QuestInventories.QuestAcceptInventory;
+import me.angeloo.mystica.Components.Guis.InventoryTextGenerator;
+import me.angeloo.mystica.Components.Guis.CustomInventoryManager;
 import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.Enums.Dungeon;
 import me.angeloo.mystica.Utility.MatchMaking.MatchMakingManager;
-import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
-import me.angeloo.mystica.Managers.ProfileManager;
+import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class DungeonSelect implements Listener {
 
     private final ProfileManager profileManager;
-    private final QuestInventoryTextGenerator textGenerator;
+    private final InventoryTextGenerator textGenerator;
     private final DisplayWeapons displayWeapons;
     private final CustomInventoryManager customInventoryManager;
     private final MysticaPartyManager mysticaPartyManager;
     private final MatchMakingManager matchMakingManager;
 
-    public DungeonSelect(Mystica main, QuestAcceptInventory questAcceptInventory){
+    public DungeonSelect(Mystica main){
         profileManager = main.getProfileManager();
         customInventoryManager = main.getInventoryManager();
         mysticaPartyManager = main.getMysticaPartyManager();
         matchMakingManager = main.getMatchMakingManager();
         displayWeapons = main.getDisplayWeapons();
-        textGenerator = questAcceptInventory.getTextGenerator();
+        textGenerator = customInventoryManager.getTextGenerator();
     }
 
     public void openDungeonSelect(Player player){

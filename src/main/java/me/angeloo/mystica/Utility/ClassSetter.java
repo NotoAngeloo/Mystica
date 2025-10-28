@@ -1,13 +1,11 @@
 package me.angeloo.mystica.Utility;
 
-import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.Items.MysticaEquipment;
-import me.angeloo.mystica.Components.Items.MysticaItem;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 
 import me.angeloo.mystica.CustomEvents.MaxHealthChangeOutOfCombatEvent;
-import me.angeloo.mystica.Managers.ProfileManager;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;

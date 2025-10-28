@@ -3,8 +3,8 @@ package me.angeloo.mystica.Components.Creatures;
 import me.angeloo.mystica.Components.FakePlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.CustomEvents.CompanionSpawnEvent;
-import me.angeloo.mystica.Managers.Parties.MysticaPartyManager;
-import me.angeloo.mystica.Managers.ProfileManager;
+import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
@@ -69,6 +69,7 @@ public class SammingSins {
         defence+=(level);
         magic_defence+=(level);
 
+        //subclass
         attack-=(level);
         health+=(level*15);
         defence+=(level);

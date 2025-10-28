@@ -1,10 +1,10 @@
 package me.angeloo.mystica.Components.Guis.Abilities;
 
-import me.angeloo.mystica.Components.ClassSkillItems.AllSkillItems;
+import me.angeloo.mystica.Components.CombatSystem.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
 import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.InventoryItemGetter;
-import me.angeloo.mystica.Managers.ProfileManager;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

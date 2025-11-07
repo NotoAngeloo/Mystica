@@ -6,6 +6,7 @@ import me.angeloo.mystica.Components.Guis.Abilities.AbilityInventory;
 import me.angeloo.mystica.Components.Guis.Party.DungeonSelect;
 import me.angeloo.mystica.Components.Guis.Party.PartyInventory;
 import me.angeloo.mystica.Components.Guis.Storage.BagEquipmentFunctions;
+import me.angeloo.mystica.Components.Guis.Storage.GenericDiscard;
 import me.angeloo.mystica.Components.Guis.Storage.MysticaBag;
 import me.angeloo.mystica.Components.Guis.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.Items.*;
@@ -37,6 +38,7 @@ public class InventoryEventListener implements Listener {
 
     private final ProfileManager profileManager;
     private final BagEquipmentFunctions bagEquipmentFunctions;
+    private final GenericDiscard genericDiscard;
     private final InventoryItemGetter itemGetter;
     private final CustomInventoryManager inventoryManager;
     private final DungeonSelect dungeonSelect;
@@ -56,15 +58,15 @@ public class InventoryEventListener implements Listener {
         displayWeapons = main.getDisplayWeapons();
         cooldownDisplayer = main.getCooldownDisplayer();
         bagEquipmentFunctions = main.getBagEquipmentFunctions();
+        genericDiscard = main.getGenericDiscard();
     }
 
     @EventHandler
     public void bagClicks(InventoryClickEvent event){
 
-        //TODO: update it such that checks the item that is selected before doing something with it, like adding the function png on top
+        if(event.getView().getTitle().equalsIgnoreCase(org.bukkit.ChatColor.WHITE + "\uF808" + "\uE05C")){
 
-        if(event.getView().getTitle().equalsIgnoreCase(org.bukkit.ChatColor.WHITE + "\uF808" + "\uE05C")
-        || event.getView().getTitle().equalsIgnoreCase(ChatColor.WHITE + "\uF807" + "\uE05D" + "\uF827" + "\uF80D" + "\uF82B\uF828\uF826" + "\uE05C")){
+            //|| event.getView().getTitle().equalsIgnoreCase(ChatColor.WHITE + "\uF807" + "\uE05D" + "\uF827" + "\uF80D" + "\uF82B\uF828\uF826" + "\uE05C")
 
             event.setCancelled(true);
 
@@ -74,13 +76,9 @@ public class InventoryEventListener implements Listener {
 
             ItemStack[] oldContents = player.getInventory().getContents();
 
-            Inventory topInv = event.getView().getTopInventory();
             Inventory bottomInv = event.getView().getBottomInventory();
 
             int slot = event.getSlot();
-
-            MysticaBagCollection collection = profileManager.getAnyProfile(player).getMysticaBagCollection();
-            MysticaBag currentBag = collection.getBag(inventoryManager.getBagIndex(player));
 
             if(event.getClickedInventory() == bottomInv){
 
@@ -104,102 +102,19 @@ public class InventoryEventListener implements Listener {
                         bagEquipmentFunctions.open(player, item, oldContents);
                         return;
                     }
-                }
-
-                topInv.setItem(22, item);
-
-                //-7, title, +7
-                String newTitle = ChatColor.WHITE + "\uF807" + "\uE05D" + "\uF827";
-
-                newTitle = inventoryManager.addBagPng(newTitle);
-
-                event.getView().setTitle(newTitle);
-                return;
-            }
-
-            if(event.getClickedInventory() == topInv){
-
-                ItemStack actionItem = topInv.getItem(22);
-
-                if(actionItem == null){
-                    return;
-                }
-
-                ItemMeta meta = actionItem.getItemMeta();
-
-                if(meta == null){
-                    return;
-                }
-
-                if(meta.getPersistentDataContainer().isEmpty()){
-                    return;
-                }
-
-                List<Integer> discardSlots = new ArrayList<>();
-                discardSlots.add(53);
-                discardSlots.add(52);
-                discardSlots.add(51);
-
-                if(discardSlots.contains(slot)){
-
-                    ItemStack invItem;
-                    MysticaItem bagItem = null;
-
-                    for(int i = 0; i< 26; i++){
-
-                        invItem = bottomInv.getItem(i+9);
-
-                        if(invItem == null){
-                            continue;
-                        }
-
-                        if(invItem.equals(actionItem)){
-                            bagItem = currentBag.getBag().get(i);
-
-                            if(bagItem.questItem()){
-                                player.sendMessage("cannot discard this item");
-                                return;
-                            }
-
-                            break;
-                        }
-                    }
-
-                    Set<NamespacedKey> keys = meta.getPersistentDataContainer().getKeys();
-
-                    if(keys.contains(NamespacedKey.fromString( "mystica:stackable_data"))){
-                        //remove x amount from current bag
-                        //use the registry
-
-                        String name = actionItem.getItemMeta().getDisplayName();
-                        name = name.replaceAll("§.", "");
-
-                        Map<String, Object> data = new HashMap<>();
-                        data.put("identifier", name);
-                        data.put("amount", actionItem.getAmount());
-
-                        StackableItem stackable = StackableItemRegistry.deserialize(data);
-
-                        currentBag.removeAnAmountOfStackables(stackable, actionItem.getAmount());
-
-                        profileManager.getAnyProfile(player).getMysticaBagCollection().openMysticaBag(player, inventoryManager.getBagIndex(player));
+                    default -> {
+                        genericDiscard.open(player, item, oldContents);
                         return;
                     }
-
-                    if(bagItem == null){
-                        return;
-                    }
-
-                    currentBag.removeFromBag(bagItem);
-                    profileManager.getAnyProfile(player).getMysticaBagCollection().openMysticaBag(player, inventoryManager.getBagIndex(player));
-
                 }
+                
             }
+
         }
 
     }
 
-    public MysticaItemFormat getItemType(ItemStack item){
+    private MysticaItemFormat getItemType(ItemStack item){
 
         if(!item.hasItemMeta()){
             return MysticaItemFormat.OTHER;

@@ -17,6 +17,7 @@ import me.angeloo.mystica.Components.Guis.Party.DungeonSelect;
 import me.angeloo.mystica.Components.Guis.Party.InvitedInventory;
 import me.angeloo.mystica.Components.Guis.Party.PartyInventory;
 import me.angeloo.mystica.Components.Guis.Storage.BagEquipmentFunctions;
+import me.angeloo.mystica.Components.Guis.Storage.GenericDiscard;
 import me.angeloo.mystica.Components.Hud.BossCastingManager;
 import me.angeloo.mystica.Components.Hud.HudManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -109,6 +110,7 @@ public final class Mystica extends JavaPlugin{
     private ClassSelectInventory classSelectInventory;
     private AbilityInventory abilityInventory;
     private BagEquipmentFunctions bagEquipmentFunctions;
+    private GenericDiscard genericDiscard;
     private SpecInventory specInventory;
 
     private EquipmentUpgradeManager equipmentUpgradeManager;
@@ -220,6 +222,7 @@ public final class Mystica extends JavaPlugin{
         abilityInventory = new AbilityInventory(this);
         specInventory = abilityInventory.getSpecInventory();
         bagEquipmentFunctions = new BagEquipmentFunctions(this);
+        genericDiscard = new GenericDiscard(this);
 
         equipmentUpgradeManager = new EquipmentUpgradeManager(this);
 
@@ -287,6 +290,7 @@ public final class Mystica extends JavaPlugin{
         this.getServer().getPluginManager().registerEvents(shopOrQuest, this);
         this.getServer().getPluginManager().registerEvents(pickQuestInventory,this);
         this.getServer().getPluginManager().registerEvents(bagEquipmentFunctions, this);
+        this.getServer().getPluginManager().registerEvents(genericDiscard, this);
 
         this.getServer().getPluginManager().registerEvents(new InventoryEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new GeneralEventListener(this), this);
@@ -496,6 +500,8 @@ public final class Mystica extends JavaPlugin{
     public ClassSelectInventory getClassSelectInventory(){return classSelectInventory;}
 
     public BagEquipmentFunctions getBagEquipmentFunctions(){return bagEquipmentFunctions;}
+
+    public GenericDiscard getGenericDiscard(){return genericDiscard;}
 
     @NotNull
     public PacketInterface getPacketInterface(){

@@ -56,7 +56,7 @@ public class SoulStone extends StackableItem{
 
     @Override
     public int getCustomModelData() {
-        return 0;
+        return 1;
     }
 
 

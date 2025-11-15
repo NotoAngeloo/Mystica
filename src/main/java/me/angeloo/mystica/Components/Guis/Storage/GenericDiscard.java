@@ -67,8 +67,6 @@ public class GenericDiscard implements Listener {
         MysticaBagCollection collection = profileManager.getAnyProfile(player).getMysticaBagCollection();
         MysticaBag currentBag = collection.getBag(inventoryManager.getBagIndex(player));
 
-        //TODO:for bottom slot, check item click as well
-
         if(event.getClickedInventory() == topInv){
 
             ItemStack actionItem = topInv.getItem(22);

@@ -208,7 +208,7 @@ public class BagEquipmentFunctions implements Listener {
                         continue;
                     }
 
-                    //this is where its not detecting
+
                     if(invItem.equals(actionItem)){
 
                         bagItem = currentBag.getBag().get(i);

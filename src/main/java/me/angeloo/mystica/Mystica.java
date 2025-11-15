@@ -12,6 +12,7 @@ import me.angeloo.mystica.Components.Guis.Abilities.ClassSelectInventory;
 import me.angeloo.mystica.Components.Guis.Abilities.SpecInventory;
 import me.angeloo.mystica.Components.Guis.CustomInventoryManager;
 import me.angeloo.mystica.Components.Guis.Equipment.*;
+import me.angeloo.mystica.Components.Guis.Misc.DevBoxInventory;
 import me.angeloo.mystica.Components.Guis.Misc.ShopOrQuest;
 import me.angeloo.mystica.Components.Guis.Party.DungeonSelect;
 import me.angeloo.mystica.Components.Guis.Party.InvitedInventory;
@@ -112,6 +113,7 @@ public final class Mystica extends JavaPlugin{
     private BagEquipmentFunctions bagEquipmentFunctions;
     private GenericDiscard genericDiscard;
     private SpecInventory specInventory;
+    private DevBoxInventory devBoxInventory;
 
     private EquipmentUpgradeManager equipmentUpgradeManager;
 
@@ -223,6 +225,7 @@ public final class Mystica extends JavaPlugin{
         specInventory = abilityInventory.getSpecInventory();
         bagEquipmentFunctions = new BagEquipmentFunctions(this);
         genericDiscard = new GenericDiscard(this);
+        devBoxInventory = new DevBoxInventory(this);
 
         equipmentUpgradeManager = new EquipmentUpgradeManager(this);
 
@@ -263,7 +266,7 @@ public final class Mystica extends JavaPlugin{
         getCommand("DisplayInterruptBar").setExecutor(new DisplayInterruptBar(this));
         getCommand("CompanionNeedsToInterrupt").setExecutor(new CompanionNeedsToInterrupt(this));
         getCommand("DungeonSelect").setExecutor(new DungeonFinder(this));
-        getCommand("MysticaItem").setExecutor(new MysticaItem(this));
+        getCommand("DevBox").setExecutor(new DevBox(this));
         getCommand("StarterKit").setExecutor(new StarterKit(this));
         getCommand("BossWarn").setExecutor(new BossWarn(this));
         getCommand("MysticaQuest").setExecutor(new MysticaQuest(this));
@@ -291,10 +294,12 @@ public final class Mystica extends JavaPlugin{
         this.getServer().getPluginManager().registerEvents(pickQuestInventory,this);
         this.getServer().getPluginManager().registerEvents(bagEquipmentFunctions, this);
         this.getServer().getPluginManager().registerEvents(genericDiscard, this);
+        this.getServer().getPluginManager().registerEvents(devBoxInventory, this);
 
         this.getServer().getPluginManager().registerEvents(new InventoryEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new GeneralEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new MMListeners(this), this);
+
 
 
 
@@ -502,6 +507,10 @@ public final class Mystica extends JavaPlugin{
     public BagEquipmentFunctions getBagEquipmentFunctions(){return bagEquipmentFunctions;}
 
     public GenericDiscard getGenericDiscard(){return genericDiscard;}
+
+    public DevBoxInventory getDevBoxInventory() {
+        return devBoxInventory;
+    }
 
     @NotNull
     public PacketInterface getPacketInterface(){

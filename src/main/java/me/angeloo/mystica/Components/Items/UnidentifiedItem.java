@@ -65,18 +65,27 @@ public class UnidentifiedItem extends MysticaItem{
         switch (this.equipmentSlot){
             case WEAPON -> {
                 meta.setDisplayName(ChatColor.of(color) + "Unidentified Weapon");
+                meta.setCustomModelData(1);
             }
             case HEAD -> {
                 meta.setDisplayName(ChatColor.of(color) + "Unidentified Helmet");
+                meta.setCustomModelData(2);
             }
             case CHEST -> {
                 meta.setDisplayName(ChatColor.of(color) + "Unidentified Chestplate");
+                meta.setCustomModelData(3);
             }
             case LEGS -> {
                 meta.setDisplayName(ChatColor.of(color) + "Unidentified Leggings");
+                meta.setCustomModelData(4);
             }
             case BOOTS -> {
                 meta.setDisplayName(ChatColor.of(color) + "Unidentified Boots");
+                meta.setCustomModelData(5);
+            }
+            case Random -> {
+                meta.setDisplayName(ChatColor.of(color) + "Unidentified Equipment");
+                meta.setCustomModelData(6);
             }
         }
 

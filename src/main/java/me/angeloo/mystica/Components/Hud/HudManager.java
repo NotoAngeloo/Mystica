@@ -1,7 +1,7 @@
 package me.angeloo.mystica.Components.Hud;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.CombatSystem.GravestoneManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -45,7 +45,7 @@ public class HudManager {
 
     private final AllSkillItems allSkillItems;
     private final AbilityManager abilityManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final GravestoneManager gravestoneManager;
     private final TargetManager targetManager;
     private final BossCastingManager bossCastingManager;
@@ -173,7 +173,7 @@ public class HudManager {
         mysticaPartyManager = main.getMysticaPartyManager();
         abilityManager = main.getAbilityManager();
         allSkillItems = main.getAllSkillItems();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         targetManager = main.getTargetManager();
         bossCastingManager = main.getBossCastingManager();
         bossWarningSender = new BossWarningSender(main);
@@ -525,7 +525,7 @@ public class HudManager {
 
         StringBuilder offset = new StringBuilder();
 
-        PlayerClass playerClass = profileManager.getAnyProfile(player).getPlayerClass();
+        /*PlayerClass playerClass = profileManager.getAnyProfile(player).getPlayerClass();
         SubClass subClass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
         //-128
@@ -755,7 +755,7 @@ public class HudManager {
             status.append("\uE02D");
         }
 
-        offset.append(status);
+        offset.append(status);*/
 
         return String.valueOf(offset);
     }

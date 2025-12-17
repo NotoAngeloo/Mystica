@@ -2,7 +2,7 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Assassin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AssassinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.CombatManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -35,7 +35,7 @@ public class Stealth {
     private final TargetManager targetManager;
     private final DamageCalculator damageCalculator;
     private final CombatManager combatManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
@@ -53,7 +53,7 @@ public class Stealth {
         targetManager = main.getTargetManager();
         damageCalculator = main.getDamageCalculator();
         combatManager = manager.getCombatManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         combo = assassinAbilities.getCombo();
@@ -99,7 +99,7 @@ public class Stealth {
 
                 boolean deathStatus = profileManager.getAnyProfile(caster).getIfDead();
 
-                if(deathStatus || buffAndDebuffManager.getIfInterrupt(caster)){
+                if(deathStatus || !statusEffectManager.canCast(caster)){
                     this.cancel();
                     return;
                 }
@@ -196,7 +196,7 @@ public class Stealth {
                 }
 
                 int cooldown = getCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 8);

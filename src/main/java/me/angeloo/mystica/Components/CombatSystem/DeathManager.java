@@ -4,7 +4,7 @@ import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.CustomEvents.AiSignalEvent;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.CustomEvents.MysticaPlayerDeathEvent;
@@ -36,7 +36,7 @@ public class DeathManager {
     private final AbilityManager abilityManager;
     private final RezTick rezTick;
     private final AggroManager aggroManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final GravestoneManager gravestoneManager;
     private final DisplayWeapons displayWeapons;
     private final CooldownDisplayer cooldownDisplayer;
@@ -47,7 +47,7 @@ public class DeathManager {
         changeResourceHandler = main.getChangeResourceHandler();
         abilityManager = main.getAbilityManager();
         aggroManager = main.getAggroManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         gravestoneManager = main.getGravestoneManager();
         displayWeapons = main.getDisplayWeapons();
         cooldownDisplayer = main.getCooldownDisplayer();
@@ -101,7 +101,7 @@ public class DeathManager {
 
 
         abilityManager.resetAbilityBuffs(player);
-        buffAndDebuffManager.removeAllBuffsAndDebuffs(player);
+        statusEffectManager.clear(player);
         abilityManager.interruptBasic(player);
         //dpsManager.removeDps(player);
         Bukkit.getServer().getPluginManager().callEvent(new MysticaPlayerDeathEvent(player));

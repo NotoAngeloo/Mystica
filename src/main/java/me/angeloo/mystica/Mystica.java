@@ -3,7 +3,7 @@ package me.angeloo.mystica;
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import me.angeloo.mystica.Components.CombatSystem.*;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Commands.*;
 import me.angeloo.mystica.Components.Creatures.CreaturesAndCharactersManager;
@@ -95,7 +95,9 @@ public final class Mystica extends JavaPlugin{
     private DpsManager dpsManager;
     private PvpManager pvpManager;
     private CombatManager combatManager;
-    private BuffAndDebuffManager buffAndDebuffManager;
+
+    private StatusEffectManager statusEffectManager;
+
     private GravestoneManager gravestoneManager;
     private BossCastingManager bossCastingManager;
     private AbilityManager abilityManager;
@@ -191,7 +193,8 @@ public final class Mystica extends JavaPlugin{
         stealthTargetBlacklist = new StealthTargetBlacklist();
         aggroManager = new AggroManager(this);
         bossCastingManager = new BossCastingManager(this);
-        buffAndDebuffManager = new BuffAndDebuffManager(this);
+
+        statusEffectManager = new StatusEffectManager();
 
         fakePlayerTargetManager = new FakePlayerTargetManager(this);
         gravestoneManager = new GravestoneManager();
@@ -303,11 +306,10 @@ public final class Mystica extends JavaPlugin{
 
 
 
-
-        //NaturalRegenTick regenTick = new NaturalRegenTick(this);
-        //fregenTick.runTaskTimer(this, 0, 40);
         DailyTick dailyTick = new DailyTick(this);
         dailyTick.runTaskTimerAsynchronously(this, 0, 1200);
+
+        startStatusEffectTicker();
 
         Bukkit.getLogger().info("Mystica Enabled");
 
@@ -337,6 +339,9 @@ public final class Mystica extends JavaPlugin{
         this.api = new DamageIndicatorApi(this);
     }
 
+    public void startStatusEffectTicker(){
+        Bukkit.getScheduler().runTaskTimer(this, statusEffectManager::tick, 1L,1L);
+    }
 
     @Override
     public void onDisable() {
@@ -415,9 +420,6 @@ public final class Mystica extends JavaPlugin{
         return combatManager;
     }
 
-    public BuffAndDebuffManager getBuffAndDebuffManager(){
-        return buffAndDebuffManager;
-    }
 
     public AbilityManager getAbilityManager(){
         return abilityManager;
@@ -511,6 +513,8 @@ public final class Mystica extends JavaPlugin{
     public DevBoxInventory getDevBoxInventory() {
         return devBoxInventory;
     }
+
+    public StatusEffectManager getStatusEffectManager(){return statusEffectManager;}
 
     @NotNull
     public PacketInterface getPacketInterface(){

@@ -1,7 +1,8 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Assassin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Misc.SpeedUp;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.CombatManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -21,7 +22,7 @@ public class Dash {
     private final Mystica main;
     private final ProfileManager profileManager;
     private final CombatManager combatManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
@@ -32,7 +33,7 @@ public class Dash {
         this.main = main;
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
@@ -72,7 +73,7 @@ public class Dash {
                 }
 
                 int cooldown = getCooldown(player) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(player);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(player.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(player, 5);
@@ -86,13 +87,13 @@ public class Dash {
     private void execute(Player player){
 
 
-        buffAndDebuffManager.getSpeedUp().applySpeedUp(player, 0.7f);
+        statusEffectManager.applyEffect(player, new SpeedUp(), null, 0.7);
 
 
         new BukkitRunnable(){
             @Override
             public void run(){
-                buffAndDebuffManager.getSpeedUp().removeSpeedUp(player);
+                statusEffectManager.removeEffect(player, "speed_up");
             }
         }.runTaskLater(main, 100);
 

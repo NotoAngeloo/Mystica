@@ -2,7 +2,9 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Assassin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AssassinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.ConcoctionDebuff;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.GenericDamageReduction;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.CombatManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -40,7 +42,7 @@ public class WickedConcoction {
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final DamageCalculator damageCalculator;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
 
     private final Stealth stealth;
@@ -56,7 +58,7 @@ public class WickedConcoction {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         stealth = assassinAbilities.getStealth();
     }
@@ -103,7 +105,7 @@ public class WickedConcoction {
                 }
 
                 int cooldown = getPlayerCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
 
@@ -198,15 +200,17 @@ public class WickedConcoction {
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                         changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
                         stealth.stealthBonusCheck(caster, target);
-                        buffAndDebuffManager.getConcoctionDebuff().applyDebuff(target);
+
+                        statusEffectManager.applyEffect(target, new ConcoctionDebuff(), null, null);
                         return;
                     }
 
                     double healAmount = damageCalculator.calculateHealing(caster, getHealPower(), crit);
 
                     changeResourceHandler.addHealthToEntity(target, healAmount, caster);
-                    buffAndDebuffManager.getDamageReduction().applyDamageReduction(target, .95, 20*15);
-                    //and damage reduction
+
+                    statusEffectManager.applyEffect(target, new GenericDamageReduction(), 20*15,0.95);
+
 
                 }
 
@@ -271,7 +275,7 @@ public class WickedConcoction {
 
             double distance = caster.getLocation().distance(target.getLocation());
 
-            if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+            if(distance > range + statusEffectManager.getAdditionalRange(caster)){
                 return false;
             }
 

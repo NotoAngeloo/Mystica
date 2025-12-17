@@ -2,6 +2,7 @@ package me.angeloo.mystica.Components.Commands;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -16,14 +17,14 @@ public class DeleteProfile implements CommandExecutor {
 
     private final ProfileManager profileManager;
     private final MysticaPartyManager mysticaPartyManager;
+    private final StatusEffectManager statusEffectManager;
     private final AbilityManager abilityManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
 
     public DeleteProfile(Mystica main){
         profileManager = main.getProfileManager();
         abilityManager = main.getAbilityManager();
+        statusEffectManager = main.getStatusEffectManager();
         mysticaPartyManager = main.getMysticaPartyManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
     }
 
     @Override
@@ -50,7 +51,7 @@ public class DeleteProfile implements CommandExecutor {
         //mysticaPartyManager.removeFromMysticaPartyMap(player);
         abilityManager.resetAbilityBuffs(player);
         abilityManager.resetCooldowns(player);
-        buffAndDebuffManager.removeAllBuffsAndDebuffs(player);
+        statusEffectManager.clear(player);
         profileManager.removePlayerProfile(player);
 
         return true;

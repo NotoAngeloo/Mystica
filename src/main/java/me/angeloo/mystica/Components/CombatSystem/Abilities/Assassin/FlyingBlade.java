@@ -2,7 +2,8 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Assassin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AssassinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Stun;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.CombatManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -43,7 +44,7 @@ public class FlyingBlade {
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final DamageCalculator damageCalculator;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
@@ -60,7 +61,7 @@ public class FlyingBlade {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         stealth = assassinAbilities.getStealth();
@@ -75,7 +76,7 @@ public class FlyingBlade {
             abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        targetManager.setTargetToNearestValid(caster, range + buffAndDebuffManager.getTotalRangeModifier(caster));
+        targetManager.setTargetToNearestValid(caster, range + statusEffectManager.getAdditionalRange(caster));
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
 
@@ -103,7 +104,7 @@ public class FlyingBlade {
                 }
 
                 int cooldown = getCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 7);
@@ -174,11 +175,13 @@ public class FlyingBlade {
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
                     if(profileManager.getAnyProfile(target).getIsMovable()){
-                        buffAndDebuffManager.getStun().applyStun(target, 20);
+
+                        statusEffectManager.applyEffect(target, new Stun(), 20, null);
+
                     }
 
                     if(target instanceof Player){
-                        buffAndDebuffManager.getGenericShield().removeShields(target);
+                        statusEffectManager.removeEffect(target, "shield");
                     }
 
                     stealth.stealthBonusCheck(caster, target);
@@ -246,7 +249,7 @@ public class FlyingBlade {
 
             double distance = caster.getLocation().distance(target.getLocation());
 
-            if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+            if(distance > range + statusEffectManager.getAdditionalRange(caster)){
                 return false;
             }
 

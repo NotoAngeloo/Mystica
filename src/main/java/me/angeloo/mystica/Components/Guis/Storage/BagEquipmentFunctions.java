@@ -235,12 +235,16 @@ public class BagEquipmentFunctions implements Listener {
             //equip, add old item to bag
             if(slot==45||slot==46){
 
-                ItemMeta meta = actionItem.getItemMeta();
+
+                MysticaEquipment equipment = (MysticaEquipment) MysticaItem.toMysticaItem(actionItem);
+
+                //old way in case new way breaks
+                /*ItemMeta meta = actionItem.getItemMeta();
                 NamespacedKey key = new NamespacedKey(Mystica.getPlugin(), "equipment_data");
                 assert meta != null;
                 String json = meta.getPersistentDataContainer().get(key, PersistentDataType.STRING);
                 Gson gson = new Gson();
-                MysticaEquipment equipment = gson.fromJson(json, MysticaEquipment.class);
+                MysticaEquipment equipment = gson.fromJson(json, MysticaEquipment.class);*/
 
                 PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 

@@ -1,10 +1,10 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities;
 
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.CombatSystem.CombatManager;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Enums.BarType;
@@ -20,7 +20,7 @@ import java.util.Map;
 public class AbilityManager {
 
     private final ProfileManager profileManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
 
     private final Map<LivingEntity, Boolean> castMap = new HashMap<>();
     private final Map<LivingEntity, Double> percentCastBar = new HashMap<>();
@@ -42,7 +42,7 @@ public class AbilityManager {
 
     public AbilityManager(Mystica main){
         profileManager = main.getProfileManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         allSkillItems = new AllSkillItems(main, this);
         combatManager = new CombatManager(main, this);
 
@@ -59,7 +59,7 @@ public class AbilityManager {
 
     public void useAbility(LivingEntity caster, int abilityNumber){
 
-        if(buffAndDebuffManager.getIfInterrupt(caster)){
+        if(!statusEffectManager.canCast(caster)){
             return;
         }
 
@@ -124,7 +124,7 @@ public class AbilityManager {
             }
         }
 
-        if(buffAndDebuffManager.getIfCantAct(caster)){
+        if(!statusEffectManager.canBasic(caster)){
             return;
         }
 
@@ -180,7 +180,7 @@ public class AbilityManager {
 
     public void useUltimate(LivingEntity caster){
 
-        if(buffAndDebuffManager.getIfInterrupt(caster)){
+        if(!statusEffectManager.canCast(caster)){
             return;
         }
 

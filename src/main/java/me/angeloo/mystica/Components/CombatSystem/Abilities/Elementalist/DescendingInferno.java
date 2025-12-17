@@ -2,7 +2,7 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Elementalist;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.ElementalistAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.CombatManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -43,7 +43,7 @@ public class DescendingInferno {
     private final PveChecker pveChecker;
     private final DamageCalculator damageCalculator;
     private final ChangeResourceHandler changeResourceHandler;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final CooldownDisplayer cooldownDisplayer;
 
     private final Heat heat;
@@ -64,7 +64,7 @@ public class DescendingInferno {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         heat = elementalistAbilities.getHeat();
@@ -79,7 +79,7 @@ public class DescendingInferno {
             abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        targetManager.setTargetToNearestValid(caster, range + buffAndDebuffManager.getTotalRangeModifier(caster));
+        targetManager.setTargetToNearestValid(caster, range + statusEffectManager.getAdditionalRange(caster));
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
@@ -106,7 +106,7 @@ public class DescendingInferno {
 
                 int cooldown = abilityReadyInMap.get(caster.getUniqueId()) - 1;
 
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 3);
@@ -175,7 +175,7 @@ public class DescendingInferno {
 
         if(conjurer){
 
-            double maxHealth = profileManager.getAnyProfile(caster).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(caster);
+            double maxHealth = profileManager.getAnyProfile(caster).getTotalHealth() + statusEffectManager.getHealthBuffAmount(caster);
             double currentHealth = profileManager.getAnyProfile(caster).getCurrentHealth();
 
             double percent = maxHealth/currentHealth;
@@ -446,7 +446,7 @@ public class DescendingInferno {
 
             double distance = caster.getLocation().distance(target.getLocation());
 
-            if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+            if(distance > range + statusEffectManager.getAdditionalRange(caster)){
                 return false;
             }
 

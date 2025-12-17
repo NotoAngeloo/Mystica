@@ -4,6 +4,8 @@ import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.CombatSystem.AggroManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusInstance;
 import me.angeloo.mystica.Components.CombatSystem.DpsManager;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -35,6 +37,7 @@ public class ChangeResourceHandler {
     private final DailyData dailyData;
     private final AggroManager aggroManager;
     private final ProfileManager profileManager;
+    private final StatusEffectManager statusEffectManager;
     private final Map<UUID, Long> lastDamaged = new HashMap<>();
 
     private final BuffAndDebuffManager buffAndDebuffManager;
@@ -51,6 +54,9 @@ public class ChangeResourceHandler {
         aggroManager = main.getAggroManager();
         dailyData = main.getDailyData();
         profileManager = main.getProfileManager();
+
+        statusEffectManager = main.getStatusEffectManager();
+
         buffAndDebuffManager = main.getBuffAndDebuffManager();
         dpsManager = main.getDpsManager();
         damageIndicatorCalculator = new DamageIndicatorCalculator();
@@ -69,6 +75,12 @@ public class ChangeResourceHandler {
         if(entity instanceof ArmorStand){
             return;
         }
+
+
+        statusEffectManager.handleDamage(entity, damage);
+        //check shields
+
+
 
         if(buffAndDebuffManager.getPassThrough().getIfPassingToPlayer(entity)){
             subtractHealthFromEntity(buffAndDebuffManager.getPassThrough().getPassingToCaster(entity), damage, damager, crit);

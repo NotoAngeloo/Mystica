@@ -1,7 +1,8 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Elementalist;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.ConjuringForceBuff;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.CombatManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -27,7 +28,7 @@ public class ConjuringForce {
     private final ProfileManager profileManager;
     private final CombatManager combatManager;
     private final PvpManager pvpManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -37,7 +38,7 @@ public class ConjuringForce {
         profileManager = main.getProfileManager();
         combatManager = manager.getCombatManager();
         pvpManager = main.getPvpManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
     }
 
     //TODO: conj force adds health if ur in it
@@ -69,7 +70,7 @@ public class ConjuringForce {
 
                 int cooldown = getPlayerCooldown(caster) - 1;
 
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
 
@@ -192,12 +193,12 @@ public class ConjuringForce {
                 for(LivingEntity thisEntity : affected){
                     if(!hitBySkill.contains(thisEntity)){
                         affected.remove(thisEntity);
-                        buffAndDebuffManager.getConjuringForceBuff().removeConjuringForceBuff(thisEntity);
+
+                        statusEffectManager.removeEffect(thisEntity, "conjuring_force");
                         continue;
                     }
 
-                    buffAndDebuffManager.getConjuringForceBuff().applyConjuringForceBuff(thisEntity, getBuffAmount(caster));
-
+                    statusEffectManager.applyEffect(thisEntity, new ConjuringForceBuff(), null, getBuffAmount(caster));
 
                 }
 
@@ -213,7 +214,7 @@ public class ConjuringForce {
                 this.cancel();
 
                 for(LivingEntity thisEntity : affected){
-                    buffAndDebuffManager.getConjuringForceBuff().removeConjuringForceBuff(thisEntity);
+                    statusEffectManager.removeEffect(thisEntity, "conjuring_force");
                 }
 
             }

@@ -2,7 +2,8 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Elementalist;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.ElementalistAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.KnockUp;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.CombatManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -41,7 +42,7 @@ public class DragonBreathing {
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final DamageCalculator damageCalculator;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
@@ -59,7 +60,7 @@ public class DragonBreathing {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         heat = elementalistAbilities.getHeat();
@@ -76,7 +77,7 @@ public class DragonBreathing {
         }
 
 
-        targetManager.setTargetToNearestValid(caster, range + buffAndDebuffManager.getTotalRangeModifier(caster));
+        targetManager.setTargetToNearestValid(caster, range + statusEffectManager.getAdditionalRange(caster));
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
@@ -103,7 +104,7 @@ public class DragonBreathing {
 
                 int cooldown = getCooldown(caster) - 1;
 
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 6);
@@ -242,7 +243,8 @@ public class DragonBreathing {
                                         Vector awayDirection = entity.getLocation().toVector().subtract(loc.toVector()).normalize();
                                         Vector velocity = awayDirection.multiply(.5).add(new Vector(0, .5, 0));
                                         livingEntity.setVelocity(velocity);
-                                        buffAndDebuffManager.getKnockUp().applyKnockUp(livingEntity);
+
+                                        statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, null);
                                     }
 
                                 }
@@ -258,7 +260,7 @@ public class DragonBreathing {
                                     Vector awayDirection = entity.getLocation().toVector().subtract(loc.toVector()).normalize();
                                     Vector velocity = awayDirection.multiply(.5).add(new Vector(0, .5, 0));
                                     livingEntity.setVelocity(velocity);
-                                    buffAndDebuffManager.getKnockUp().applyKnockUp(livingEntity);
+                                    statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, null);
                                 }
 
                             }
@@ -368,7 +370,7 @@ public class DragonBreathing {
 
             double distance = caster.getLocation().distance(target.getLocation());
 
-            if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+            if(distance > range + statusEffectManager.getAdditionalRange(caster)){
                 return false;
             }
 

@@ -3,7 +3,8 @@ package me.angeloo.mystica.Utility.DamageUtils;
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.CombatSystem.AggroManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Shields.ShieldInstance;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusInstance;
 import me.angeloo.mystica.Components.CombatSystem.DpsManager;
@@ -39,8 +40,6 @@ public class ChangeResourceHandler {
     private final ProfileManager profileManager;
     private final StatusEffectManager statusEffectManager;
     private final Map<UUID, Long> lastDamaged = new HashMap<>();
-
-    private final BuffAndDebuffManager buffAndDebuffManager;
     private final DpsManager dpsManager;
     private final DamageIndicatorCalculator damageIndicatorCalculator;
 
@@ -54,10 +53,7 @@ public class ChangeResourceHandler {
         aggroManager = main.getAggroManager();
         dailyData = main.getDailyData();
         profileManager = main.getProfileManager();
-
         statusEffectManager = main.getStatusEffectManager();
-
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
         dpsManager = main.getDpsManager();
         damageIndicatorCalculator = new DamageIndicatorCalculator();
     }
@@ -68,7 +64,7 @@ public class ChangeResourceHandler {
             return;
         }
 
-        if(buffAndDebuffManager.getImmune().getImmune(entity)){
+        if(statusEffectManager.hasEffect(entity, "immune")){
             return;
         }
 
@@ -82,33 +78,52 @@ public class ChangeResourceHandler {
 
 
 
-        if(buffAndDebuffManager.getPassThrough().getIfPassingToPlayer(entity)){
+        /*if(buffAndDebuffManager.getPassThrough().getIfPassingToPlayer(entity)){
             subtractHealthFromEntity(buffAndDebuffManager.getPassThrough().getPassingToCaster(entity), damage, damager, crit);
             return;
-        }
+        }*/
 
-        if(buffAndDebuffManager.getWindWallBuff().getIfWindWallActive(entity)){
+        if(statusEffectManager.hasEffect(entity, "wind_wall")){
 
-            if(damager == null){
-                return;
+            StatusInstance instance = statusEffectManager.getInstanceMap(entity).get("wind_wall");
+
+            if(instance instanceof ShieldInstance shieldInstance){
+
+                double shieldHealth = shieldInstance.getRemaining();
+
+                double reflected = Math.min(shieldHealth, damage);
+                subtractHealthFromEntity(damager, reflected, entity, crit);
+
+                shieldInstance.onDamage(entity, damage);
+
+                if(shieldInstance.getRemaining() > 0){
+                    return;
+                }
+
+                damage = shieldInstance.getExcess();
+
             }
 
-            double reflectedDamage = buffAndDebuffManager.getWindWallBuff().calculateHowMuchDamageIsReflected(entity, damage);
-            subtractHealthFromEntity(damager, reflectedDamage, entity, crit);
+        }
 
-            if(buffAndDebuffManager.getWindWallBuff().getIfOverflow(entity)){
 
-                subtractHealthFromEntity(entity, buffAndDebuffManager.getWindWallBuff().getOverflowAmount(entity), damager, crit);
+        if(statusEffectManager.hasShield(entity)){
+            StatusInstance instance = statusEffectManager.getInstanceMap(entity).get("shield");
+
+            if(instance instanceof ShieldInstance shieldInstance){
+                shieldInstance.onDamage(entity, damage);
+
+
+                if(shieldInstance.getRemaining() > 0){
+                    return;
+                }
+
+                //extra damage is saved in the instance
+                damage = shieldInstance.getExcess();
             }
 
-            return;
+
         }
-
-        if(buffAndDebuffManager.getGenericShield().getCurrentShieldAmount(entity) > 0){
-            damage = buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(entity, damage);
-        }
-
-
 
         if(entity instanceof Player){
             subtractHealthFromPlayer((Player) entity, damage);
@@ -224,7 +239,7 @@ public class ChangeResourceHandler {
 
         if(newCurrentHealth <= 0){
             //fake kill entity
-            buffAndDebuffManager.removeAllBuffsAndDebuffs(entity);
+            statusEffectManager.clear(entity);
             profileManager.getAnyProfile(entity).setIfDead(true);
             profileManager.getAnyProfile(entity).setCurrentHealth(profileManager.getAnyProfile(entity).getTotalHealth());
             //dpsManager.removeDps(entity);
@@ -279,7 +294,7 @@ public class ChangeResourceHandler {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        double actualMaxHealth = playerProfile.getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player);
+        double actualMaxHealth = playerProfile.getTotalHealth() + statusEffectManager.getHealthBuffAmount(player);
 
         //this changes bar
         double actualCurrentHealth = profileManager.getAnyProfile(player).getCurrentHealth();
@@ -370,7 +385,7 @@ public class ChangeResourceHandler {
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
-        double actualMaxHealth = playerProfile.getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(player);
+        double actualMaxHealth = playerProfile.getTotalHealth() + statusEffectManager.getHealthBuffAmount(player);
 
         //this changes bar
         double actualCurrentHealth = profileManager.getAnyProfile(player).getCurrentHealth();
@@ -606,7 +621,7 @@ public class ChangeResourceHandler {
         lastDamaged.put(entity.getUniqueId(), (System.currentTimeMillis()/1000));
 
         //fake kill entity
-        buffAndDebuffManager.removeAllBuffsAndDebuffs(entity);
+        statusEffectManager.clear(entity);
         profileManager.getAnyProfile(entity).setIfDead(true);
         profileManager.getAnyProfile(entity).setCurrentHealth(profileManager.getAnyProfile(entity).getTotalHealth());
         //dpsManager.removeDps(entity);

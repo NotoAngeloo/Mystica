@@ -1,8 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Paladin;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.WellCrit;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
@@ -36,8 +35,7 @@ public class LightWell {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final DamageCalculator damageCalculator;
     private final PvpManager pvpManager;
@@ -47,11 +45,10 @@ public class LightWell {
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
 
-    public LightWell(Mystica main, AbilityManager manager){
+    public LightWell(Mystica main){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
@@ -86,14 +83,12 @@ public class LightWell {
 
                 int cooldown = getPlayerCooldown(caster) - 1;
 
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
 
                 if(caster instanceof Player){
-                    Bukkit.getScheduler().runTask(main, () ->{
-                        Bukkit.getServer().getPluginManager().callEvent(new UltimateStatusChageEvent((Player) caster));
-                    });
+                    Bukkit.getScheduler().runTask(main, () -> Bukkit.getServer().getPluginManager().callEvent(new UltimateStatusChageEvent((Player) caster)));
 
                 }
 
@@ -190,15 +185,13 @@ public class LightWell {
                             continue;
                         }
 
-                        if(!(entity instanceof LivingEntity)){
+                        if(!(entity instanceof LivingEntity livingEntity)){
                             continue;
                         }
 
                         if(entity instanceof ArmorStand){
                             continue;
                         }
-
-                        LivingEntity livingEntity = (LivingEntity) entity;
 
 
                         boolean crit = damageCalculator.checkIfCrit(caster, 0);
@@ -316,21 +309,20 @@ public class LightWell {
 
                         for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
-                            if(!(entity instanceof Player)){
+                            if(!(entity instanceof Player thisPlayer)){
                                 continue;
                             }
-
-                            Player thisPlayer = (Player) entity;
 
                             if(pvpManager.pvpLogic(caster, thisPlayer)){
                                 continue;
                             }
 
-                            if(buffAndDebuffManager.getWellCrit().getWellCrit(thisPlayer)>0){
+                            if(statusEffectManager.hasEffect(thisPlayer, "light_well")){
                                 continue;
                             }
 
-                            buffAndDebuffManager.getWellCrit().applyBonus(thisPlayer);
+                            statusEffectManager.applyEffect(thisPlayer, new WellCrit(), null, null);
+
                             orb.remove();
                             this.cancel();
                             break;

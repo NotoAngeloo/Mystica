@@ -1,9 +1,8 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.ShadowKnight;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.ShadowKnightAbilities;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Shields.GenericShield;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.UltimateStatusChageEvent;
 import me.angeloo.mystica.Mystica;
@@ -23,8 +22,7 @@ public class BloodShield {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
 
     private final Energy energy;
@@ -34,11 +32,10 @@ public class BloodShield {
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public BloodShield(Mystica main, AbilityManager manager, ShadowKnightAbilities shadowKnightAbilities){
+    public BloodShield(Mystica main, ShadowKnightAbilities shadowKnightAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         energy = shadowKnightAbilities.getEnergy();
     }
@@ -77,7 +74,7 @@ public class BloodShield {
                 }
 
                 int cooldown = getPlayerCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
 
@@ -96,22 +93,23 @@ public class BloodShield {
 
     private void execute(LivingEntity caster){
 
-        double maxHealth = profileManager.getAnyProfile(caster).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(caster);
+        double maxHealth = profileManager.getAnyProfile(caster).getTotalHealth() + statusEffectManager.getHealthBuffAmount(caster);
         double currentHealth = profileManager.getAnyProfile(caster).getCurrentHealth();
         double missing = maxHealth-currentHealth;
 
         changeResourceHandler.addHealthToEntity(caster, missing * .5, caster);
 
         double shield = profileManager.getAnyProfile(caster).getCurrentHealth();
-        buffAndDebuffManager.getGenericShield().applyOrAddShield(caster, shield);
+        statusEffectManager.applyEffect(caster, new GenericShield(), null, shield);
 
         shieldTime.put(caster.getUniqueId(), 10);
 
         new BukkitRunnable(){
             @Override
             public void run(){
+                
 
-                if(buffAndDebuffManager.getGenericShield().getCurrentShieldAmount(caster)==0){
+                if(statusEffectManager.hasShield(caster)){
                     removeShieldTime(caster);
                     this.cancel();
                     return;
@@ -120,7 +118,7 @@ public class BloodShield {
                 if(!shieldTimeActive(caster)){
                     removeShieldTime(caster);
                     this.cancel();
-                    buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(caster, shield);
+                    statusEffectManager.reduceShield(caster, shield);
                     return;
                 }
 

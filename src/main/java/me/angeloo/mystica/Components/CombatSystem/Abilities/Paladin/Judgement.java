@@ -3,7 +3,7 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Paladin;
 import me.angeloo.mystica.Components.CombatSystem.*;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.PaladinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
@@ -34,13 +34,12 @@ public class Judgement {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
     private final FakePlayerTargetManager fakePlayerTargetManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final DamageCalculator damageCalculator;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final AggroManager aggroManager;
     private final CooldownDisplayer cooldownDisplayer;
@@ -54,13 +53,12 @@ public class Judgement {
     public Judgement(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
         fakePlayerTargetManager = main.getFakePlayerTargetManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         aggroManager = main.getAggroManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
@@ -111,7 +109,7 @@ public class Judgement {
                 }
 
                 int cooldown = getReadyIn(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 8);
@@ -294,7 +292,7 @@ public class Judgement {
 
     public boolean usable(LivingEntity caster){
         double baseRange = 15;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(caster);
+        double extraRange = statusEffectManager.getAdditionalRange(caster);
         double totalRange = baseRange + extraRange;
 
         LivingEntity target;

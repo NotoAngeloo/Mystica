@@ -1,12 +1,11 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Warrior;
 
-import me.angeloo.mystica.CustomEvents.UltimateStatusChageEvent;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.GenericDamageReduction;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Shields.GenericShield;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
+import me.angeloo.mystica.CustomEvents.UltimateStatusChageEvent;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -22,19 +21,15 @@ public class GladiatorHeart {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
-    private final ChangeResourceHandler changeResourceHandler;
+    private final StatusEffectManager statusEffectManager;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public GladiatorHeart(Mystica main, AbilityManager manager){
+    public GladiatorHeart(Mystica main){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
-        changeResourceHandler = main.getChangeResourceHandler();
+        statusEffectManager = main.getStatusEffectManager();
     }
 
     public void use(LivingEntity caster){
@@ -65,14 +60,12 @@ public class GladiatorHeart {
                 }
 
                 int cooldown = getPlayerCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
 
                 if(caster instanceof Player){
-                    Bukkit.getScheduler().runTask(main, () ->{
-                        Bukkit.getServer().getPluginManager().callEvent(new UltimateStatusChageEvent((Player) caster));
-                    });
+                    Bukkit.getScheduler().runTask(main, () -> Bukkit.getServer().getPluginManager().callEvent(new UltimateStatusChageEvent((Player) caster)));
                 }
 
 
@@ -87,17 +80,17 @@ public class GladiatorHeart {
 
         double shield = getShieldAmount(caster);
 
-        buffAndDebuffManager.getGenericShield().applyOrAddShield(caster, shield);
+        statusEffectManager.applyEffect(caster, new GenericShield(), null, shield);
+        statusEffectManager.applyEffect(caster, new GenericDamageReduction(), -1, 0.8);
         //.8 is 20% damage reduction
-        buffAndDebuffManager.getDamageReduction().applyDamageReduction(caster, .8, 0);
 
         new BukkitRunnable(){
             int count = 0;
             @Override
             public void run(){
 
-                if(buffAndDebuffManager.getGenericShield().getCurrentShieldAmount(caster)==0){
-                    buffAndDebuffManager.getDamageReduction().removeReduction(caster);
+                if(!statusEffectManager.hasShield(caster)){
+                    statusEffectManager.removeEffect(caster, "damage_reduction");
                     this.cancel();
                     return;
                 }
@@ -105,16 +98,16 @@ public class GladiatorHeart {
                 if(caster instanceof Player){
                     if(!((Player)caster).isOnline()){
                         this.cancel();
-                        buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(caster, shield);
-                        buffAndDebuffManager.getDamageReduction().removeReduction(caster);
+                        statusEffectManager.reduceShield(caster, shield);
+                        statusEffectManager.removeEffect(caster, "damage_reduction");
                         return;
                     }
                 }
 
                 if(profileManager.getAnyProfile(caster).getIfDead()){
                     this.cancel();
-                    buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(caster, shield);
-                    buffAndDebuffManager.getDamageReduction().removeReduction(caster);
+                    statusEffectManager.reduceShield(caster, shield);
+                    statusEffectManager.removeEffect(caster, "damage_reduction");
                     return;
                 }
 
@@ -122,8 +115,8 @@ public class GladiatorHeart {
 
                 if(count>=5){
                     this.cancel();
-                    buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(caster, shield);
-                    buffAndDebuffManager.getDamageReduction().removeReduction(caster);
+                    statusEffectManager.reduceShield(caster, shield);
+                    statusEffectManager.removeEffect(caster, "damage_reduction");
                 }
                 count++;
             }
@@ -132,7 +125,7 @@ public class GladiatorHeart {
     }
 
     public double getShieldAmount(LivingEntity caster){
-        double maxHealth = profileManager.getAnyProfile(caster).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(caster);
+        double maxHealth = profileManager.getAnyProfile(caster).getTotalHealth()+ statusEffectManager.getHealthBuffAmount(caster);
         double level = profileManager.getAnyProfile(caster).getStats().getLevel();
         return  (level + 10 / maxHealth) * 100;
     }

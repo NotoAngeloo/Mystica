@@ -42,19 +42,19 @@ public class PaladinAbilities {
         purity = new Purity();
 
         decision = new Decision();
-        justiceMark = new JusticeMark(main, manager, this);
-        representative = new Representative(main, manager);
+        justiceMark = new JusticeMark(main, manager);
+        representative = new Representative(main);
 
         judgement = new Judgement(main, manager, this);
         covenantSword = new CovenantSword(main, manager, this);
         reigningSword = new ReigningSword(main, manager, this);
         gloryOfPaladins = new GloryOfPaladins(main, manager, this);
-        paladinBasic = new PaladinBasic(main, manager, this);
+        paladinBasic = new PaladinBasic(main, this);
         divineGuidance = new DivineGuidance(main, manager, this);
         orderShield = new OrderShield(main, manager, this);
         duranceOfTruth = new DuranceOfTruth(main, manager, this);
-        lightWell = new LightWell(main, manager);
-        sanctityShield = new SanctityShield(main, manager);
+        lightWell = new LightWell(main);
+        sanctityShield = new SanctityShield(main);
         torahSword = new TorahSword(main, manager, this);
 
         mercifulHealing = new MercifulHealing(main, manager, this);
@@ -62,7 +62,7 @@ public class PaladinAbilities {
         honorCounter = new HonorCounter(main, manager, this);
         divineInfusion = new DivineInfusion(main, manager, this);
         spiritualGift = new SpiritualGift(main, manager, this);
-        sacredAegis = new SacredAegis(main, manager, this);
+        sacredAegis = new SacredAegis(main, manager);
         modestCalling = new ModestCalling(main, manager, this);
 
 

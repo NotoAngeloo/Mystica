@@ -1,8 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Paladin;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.Haste;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -34,8 +33,7 @@ public class Representative {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final DamageCalculator damageCalculator;
     private final PvpManager pvpManager;
@@ -47,11 +45,10 @@ public class Representative {
     private final Map<UUID, Double> repBuff = new HashMap<>();
 
 
-    public Representative(Mystica main, AbilityManager manager){
+    public Representative(Mystica main){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
@@ -129,7 +126,7 @@ public class Representative {
 
         double level = profileManager.getAnyProfile(caster).getStats().getLevel();
         applyBuff(caster, level);
-        buffAndDebuffManager.getHaste().applyHaste(caster, 3, 10*20);
+        statusEffectManager.applyEffect(caster, new Haste(), 10*20, 3.0);
 
         Location center = caster.getLocation().clone();
 
@@ -172,15 +169,13 @@ public class Representative {
                         for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
 
-                            if(!(entity instanceof LivingEntity)){
+                            if(!(entity instanceof LivingEntity hitEntity)){
                                 continue;
                             }
 
                             if(entity instanceof ArmorStand){
                                 continue;
                             }
-
-                            LivingEntity hitEntity = (LivingEntity) entity;
 
                             if(entity instanceof Player){
                                 if(pvpManager.pvpLogic(caster, (Player)hitEntity)){

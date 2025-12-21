@@ -8,9 +8,13 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
 
 public class StatusEffectManager {
+
 
     private final Map<UUID, Map<String, StatusInstance>> active = new HashMap<>();
 
@@ -114,6 +118,29 @@ public class StatusEffectManager {
 
     }
 
+    //needs to have this because if shield instance can have 0 magnitude and still exist
+    public boolean hasShield(LivingEntity entity){
+
+        if(!hasEffect(entity, "shield")){
+            return false;
+        }
+
+        StatusInstance instance = getInstanceMap(entity).get("shield");
+
+        return instance.magnitude > 0;
+    }
+
+
+    public void reduceShield(LivingEntity entity, double amount){
+
+        if(!hasEffect(entity, "shield")){
+            return;
+        }
+
+        StatusInstance instance = getInstanceMap(entity).get("shield");
+        instance.onDamage(entity, amount);
+    }
+
     public void tick() {
         for (UUID id : active.keySet()) {
 
@@ -154,14 +181,17 @@ public class StatusEffectManager {
                 || hasEffect(entity, "knock_up")
                 || hasEffect(entity, "sleep")
                 || hasEffect(entity, "interrupt")
+                || hasEffect(entity, "pull")
                 );
 
     }
 
+    //if has this on move event, cancel. thats why pulled and knockup doesnt effect this, they require movement
     public boolean canMove(LivingEntity entity){
         return !(
                 hasEffect(entity, "stun")
                 || hasEffect(entity, "sleep")
+                || hasEffect(entity, "root")
                 );
 
     }
@@ -172,6 +202,7 @@ public class StatusEffectManager {
                 || hasEffect(entity, "sleep")
                 || hasEffect(entity, "fear")
                 || hasEffect(entity, "knock_up")
+                || hasEffect(entity, "pull")
         );
     }
 
@@ -215,7 +246,122 @@ public class StatusEffectManager {
         return health;
     }
 
-    //might need to pass in damager for reflect damage
+    public int getCritBuffAmount(LivingEntity entity){
+
+        double crit = 0;
+
+        if(hasEffect(entity, "light_well")){
+            crit += getInstanceMap(entity).get("light_well").magnitude;
+        }
+
+        if(hasEffect(entity, "blade_tempest")){
+            crit += getInstanceMap(entity).get("blade_tempest").magnitude;
+        }
+
+        return (int) crit;
+    }
+
+    public double getAttackBuffAmount(LivingEntity entity){
+
+        double attack = 0;
+
+        if(hasEffect(entity, "flaming_sigil_attack")){
+            attack += getInstanceMap(entity).get("flaming_sigil_attack").magnitude;
+        }
+
+        return attack;
+    }
+
+    public double getDefenceIgnoreModifier(LivingEntity entity){
+
+        double ignore = 1;
+        //multiply 1 by decimals such that in the end multiplying the defence by a smaller and smaller number
+
+        if(hasEffect(entity, "pierce")){
+            ignore *= getInstanceMap(entity).get("pierce").magnitude;
+        }
+
+
+        return ignore;
+    }
+
+    public int getArmorBreakStacks(LivingEntity entity){
+
+        if(!hasEffect(entity, "armor_break")){
+            return 0;
+        }
+
+        return (int) getInstanceMap(entity).get("armor_break").magnitude;
+    }
+
+    public double getTotalDamageMultipliers(LivingEntity attacker, LivingEntity defender){
+
+        double mult = 1;
+
+        //thi is a clone of damage reduction
+        if(hasEffect(defender, "concoction_buff")){
+            //multiply 1 by .95, reducing damage taken
+            mult *= getInstanceMap(defender).get("concoction_buff").magnitude;
+        }
+
+        //this is inverse damage reduction
+        if(hasEffect(defender, "concoction_debuff")){
+            //multiply 1 by 1.05, increasing damage taken
+            mult *= getInstanceMap(defender).get("concoction_debuff").magnitude;
+        }
+
+        if(hasEffect(defender, "damage_reduction")){
+            mult *= getInstanceMap(defender).get("damage_reduction").magnitude;
+        }
+
+        if(hasEffect(attacker, "modest")){
+            //the smaller it is from 1, the less damage they deal
+            double amount = 1 - getInstanceMap(attacker).get("modest").magnitude;
+            mult *= amount;
+        }
+
+        if(hasEffect(defender, "modest")){
+            //the larger it is from 1, the more damage they take
+            double amount = 1 + getInstanceMap(defender).get("modest").magnitude;
+            mult *= amount;
+        }
+
+        if(hasEffect(defender, "shadow_crows")){
+            mult *= getInstanceMap(defender).get("shadow_crows").magnitude;
+        }
+
+        if(hasEffect(attacker, "wild_roar")){
+            mult *= getInstanceMap(attacker).get("wild_roar").magnitude;
+        }
+
+        return mult;
+    }
+
+    public double getTotalDamageAdditives(LivingEntity attacker, LivingEntity defender){
+
+        double add = 0;
+
+        if(hasEffect(attacker, "conjuring_force")){
+            add += getInstanceMap(attacker).get("conjuring_force").magnitude;
+        }
+
+        return add;
+    }
+
+    public double getTotalShield(LivingEntity entity){
+
+        double shield = 0;
+
+        if(hasShield(entity)){
+            shield += getInstanceMap(entity).get("shield").magnitude;
+        }
+
+        if(hasEffect(entity, "wind_wall")){
+            shield += getInstanceMap(entity).get("wind_wall").magnitude;
+        }
+
+        return shield;
+    }
 
     public void handleDamage(LivingEntity entity, double damage) {
         Map<String, StatusInstance> map = active.get(entity.getUniqueId());

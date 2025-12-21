@@ -101,6 +101,7 @@ public class Hidden {
             player.getInventory().setItemInMainHand(playerEquipment.getWeapon().build());
             ItemStack offhand = playerEquipment.getWeapon().build();
             ItemMeta offhandItemMeta = offhand.getItemMeta();
+            assert offhandItemMeta != null;
             offhandItemMeta.setCustomModelData(offhand.getItemMeta().getCustomModelData() + 1);
             offhand.setItemMeta(offhandItemMeta);
             player.getInventory().setItemInOffHand(offhand);

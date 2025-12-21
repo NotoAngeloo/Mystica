@@ -1,18 +1,19 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Paladin;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.PaladinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PaladinAbilities;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Silence;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.GenericDamageReduction;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
-import me.angeloo.mystica.Utility.Enums.SubClass;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -39,8 +40,7 @@ public class DuranceOfTruth {
     private final Mystica main;
     private final ProfileManager profileManager;
     private final TargetManager targetManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
-    private final CombatManager combatManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final DamageCalculator damageCalculator;
     private final PvpManager pvpManager;
@@ -56,8 +56,7 @@ public class DuranceOfTruth {
         this.main = main;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
-        combatManager = manager.getCombatManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
@@ -100,7 +99,7 @@ public class DuranceOfTruth {
                 }
 
                 int cooldown = getCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 7);
@@ -250,10 +249,10 @@ public class DuranceOfTruth {
                         if(entity == caster){
 
                             if(count%20==0){
-                                double fivePercent = (profileManager.getAnyProfile(caster).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(caster)) * .05;
+                                double fivePercent = (profileManager.getAnyProfile(caster).getTotalHealth() + statusEffectManager.getHealthBuffAmount(caster)) * .05;
                                 changeResourceHandler.addHealthToEntity(caster, fivePercent, caster);
 
-                                buffAndDebuffManager.getDamageReduction().applyDamageReduction(caster, 0.95, 20);
+                                statusEffectManager.applyEffect(caster, new GenericDamageReduction(), 20, 0.95);
                             }
 
                             continue;
@@ -288,7 +287,8 @@ public class DuranceOfTruth {
                         if(hitByThisTick.contains(hitEntity)){
                            continue;
                         }
-                        buffAndDebuffManager.getSilence().applySilence(hitEntity, 20*3);
+
+                        statusEffectManager.applyEffect(hitEntity, new Silence(), 20*3, null);
                         toRemove.add(hitEntity);
                     }
 

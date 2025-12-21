@@ -2,7 +2,7 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Mystic;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.MysticAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.CombatManager;
 import me.angeloo.mystica.Components.CombatSystem.GravestoneManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
@@ -35,8 +35,7 @@ public class ArcaneContract {
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final GravestoneManager gravestoneManager;
-    private final CombatManager combatManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final CooldownDisplayer cooldownDisplayer;
     private final Mana mana;
 
@@ -50,8 +49,7 @@ public class ArcaneContract {
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
-        combatManager = manager.getCombatManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         gravestoneManager = main.getGravestoneManager();
     }
@@ -72,7 +70,7 @@ public class ArcaneContract {
 
         double distance = caster.getLocation().distance(target.getLocation());
 
-        if(distance>range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+        if(distance>range + statusEffectManager.getAdditionalRange(caster)){
             return;
         }
 

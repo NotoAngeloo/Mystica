@@ -3,9 +3,7 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Elementalist;
 
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -34,12 +32,11 @@ public class ElementalistBasic {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final DamageCalculator damageCalculator;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
 
     private final Map<UUID, Integer> basicStageMap = new HashMap<>();
@@ -48,15 +45,14 @@ public class ElementalistBasic {
 
     private final Map<UUID, BukkitTask> removeBasicStageTaskMap = new HashMap<>();
 
-    public ElementalistBasic(Mystica main, AbilityManager manager){
+    public ElementalistBasic(Mystica main){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
     }
 
@@ -89,7 +85,7 @@ public class ElementalistBasic {
 
     private double getRange(LivingEntity caster){
         double range = 20;
-        return  range + buffAndDebuffManager.getTotalRangeModifier(caster);
+        return  range + statusEffectManager.getAdditionalRange(caster);
     }
 
     private void executeBasic(LivingEntity caster){
@@ -161,22 +157,18 @@ public class ElementalistBasic {
                 }
 
                 tryToRemoveBasicStage(caster);
-                switch (getStage(caster)){
-                    case 1:{
+                switch (getStage(caster)) {
+                    case 1 -> {
                         basicStage1(caster);
-                        break;
                     }
-                    case 2:{
+                    case 2 -> {
                         basicStage2(caster);
-                        break;
                     }
-                    case 3:{
+                    case 3 -> {
                         basicStage3(caster);
-                        break;
                     }
-                    case 4:{
+                    case 4 -> {
                         basicStage4(caster);
-                        break;
                     }
                 }
             }

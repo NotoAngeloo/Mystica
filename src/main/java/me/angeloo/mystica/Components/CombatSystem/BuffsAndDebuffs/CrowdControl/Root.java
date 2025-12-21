@@ -1,18 +1,16 @@
 package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl;
 
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffect;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusStackType;
 
-public class Pulled implements StatusEffect {
+public class Root implements StatusEffect {
 
     @Override
     public String getId() {
-        return "pull";
+        return "root";
     }
 
     @Override
-    public StatusStackType stackType(){
-        return StatusStackType.IGNORE;
+    public boolean requireDurationDeclaration(){
+        return true;
     }
-
 }

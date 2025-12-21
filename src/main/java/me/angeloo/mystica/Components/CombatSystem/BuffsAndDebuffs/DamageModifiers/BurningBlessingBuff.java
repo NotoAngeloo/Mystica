@@ -3,7 +3,7 @@ package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifie
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffect;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusStackType;
 
-public class BurningBlessing implements StatusEffect {
+public class BurningBlessingBuff implements StatusEffect {
 
     @Override
     public String getId() {
@@ -30,6 +30,7 @@ public class BurningBlessing implements StatusEffect {
         return 3;
     }
 
+    //increase max health by magnitude
     @Override
     public boolean requireMagnitudeDeclaration(){
         return true;

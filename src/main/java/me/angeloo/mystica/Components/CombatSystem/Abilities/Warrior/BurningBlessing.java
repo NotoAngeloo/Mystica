@@ -1,12 +1,12 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Warrior;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.BurningBlessingBuff;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -20,8 +20,7 @@ public class BurningBlessing {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
@@ -31,8 +30,7 @@ public class BurningBlessing {
     public BurningBlessing(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
@@ -65,7 +63,7 @@ public class BurningBlessing {
 
                 int cooldown = getCooldown(caster) - 1;
 
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 8);
@@ -77,10 +75,9 @@ public class BurningBlessing {
 
     private void execute(LivingEntity caster){
 
+        statusEffectManager.applyEffect(caster, new BurningBlessingBuff(), null, getBuffAmount(caster));
 
-        buffAndDebuffManager.getBurningBlessingBuff().applyHealthBuff(caster, getBuffAmount(caster));
-
-        double maxHealth = profileManager.getAnyProfile(caster).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(caster);
+        double maxHealth = profileManager.getAnyProfile(caster).getTotalHealth() + statusEffectManager.getHealthBuffAmount(caster);
         double fourth = maxHealth * .25;
         changeResourceHandler.addHealthToEntity(caster, fourth, caster);
 
@@ -109,12 +106,7 @@ public class BurningBlessing {
     }
 
     public boolean usable(LivingEntity caster){
-        if (getCooldown(caster) > 0) {
-            return false;
-        }
-
-
-        return true;
+        return getCooldown(caster) <= 0;
     }
 
 }

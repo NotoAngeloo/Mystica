@@ -1,6 +1,6 @@
 package me.angeloo.mystica.Utility.DamageUtils;
 
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Components.Profile;
@@ -11,12 +11,12 @@ import org.bukkit.entity.Player;
 public class DamageCalculator {
 
     private final ProfileManager profileManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
 
 
     public DamageCalculator(Mystica main){
         profileManager = main.getProfileManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
     }
 
     public boolean checkIfCrit(LivingEntity caster, int bonus){
@@ -25,10 +25,10 @@ public class DamageCalculator {
 
         int random = (int) (Math.random() * 100) + 1;
 
-        bonus = bonus + buffAndDebuffManager.getCritBuffAmount(caster);
+        bonus = bonus + statusEffectManager.getCritBuffAmount(caster);
 
         if(random <= (playerProfile.getTotalCrit()) + bonus){
-            buffAndDebuffManager.getWellCrit().removeBonus(caster);
+            statusEffectManager.removeEffect(caster, "light_well");
         }
 
         return random <= (playerProfile.getTotalCrit()) + bonus;
@@ -71,7 +71,7 @@ public class DamageCalculator {
 
     public double calculateDamage(LivingEntity damager, LivingEntity entity, String type, double damage, boolean crit){
 
-        if(buffAndDebuffManager.getImmune().getImmune(entity)){
+        if(statusEffectManager.hasEffect(entity, "immune")){
             return 0.0;
         }
 
@@ -88,7 +88,7 @@ public class DamageCalculator {
         double attack;
         double defence;
 
-        double attackBonus = buffAndDebuffManager.getAttackBuffAmount(damager);
+        double attackBonus = statusEffectManager.getAttackBuffAmount(damager);
 
         if(entity instanceof Player){
 
@@ -97,15 +97,15 @@ public class DamageCalculator {
                 attack = playerProfile.getTotalAttack() + attackBonus;
                 defence = enemyProfile.getTotalDefense();
 
-                if(buffAndDebuffManager.getPierceBuff().getIfBuffTime(damager)>0){
-                    defence = defence * .75;
-                }
+                defence *= statusEffectManager.getDefenceIgnoreModifier(damager);
+
 
                 damage = (damage * multiplierForCrit)
                         * ((attack) / (defence));
 
-                if(buffAndDebuffManager.getArmorBreak().getStacks(entity) >= 3){
-                    damage += (profileManager.getAnyProfile(entity).getTotalHealth() * ((buffAndDebuffManager.getArmorBreak().getStacks(entity) * 10) * .01));
+                //manually here since interacts in a unique way
+                if(statusEffectManager.getArmorBreakStacks(entity) >= 3){
+                    damage += (profileManager.getAnyProfile(entity).getTotalHealth() * ((statusEffectManager.getArmorBreakStacks(entity) * 10) * .01));
                 }
             }
 
@@ -127,15 +127,14 @@ public class DamageCalculator {
                 attack = playerProfile.getTotalAttack() + attackBonus;
                 defence = enemyProfile.getStats().getDefense();
 
-                if(buffAndDebuffManager.getPierceBuff().getIfBuffTime(damager)>0){
-                    defence = defence * .75;
-                }
+                defence *= statusEffectManager.getDefenceIgnoreModifier(damager);
+
 
                 damage = (damage * multiplierForCrit)
                         * (attack / defence);
 
-                if(buffAndDebuffManager.getArmorBreak().getStacks(entity) >= 3){
-                    damage += (profileManager.getAnyProfile(entity).getStats().getHealth() * ((buffAndDebuffManager.getArmorBreak().getStacks(entity) * 10) * .01));
+                if(statusEffectManager.getArmorBreakStacks(entity) >= 3){
+                    damage += (profileManager.getAnyProfile(entity).getStats().getHealth() * ((statusEffectManager.getArmorBreakStacks(entity) * 10) * .01));
                 }
             }
 
@@ -149,27 +148,25 @@ public class DamageCalculator {
             }
         }
 
-        damage = damage * buffAndDebuffManager.getTotalDamageMultipliers(damager, entity);
-        damage = damage + buffAndDebuffManager.getTotalDamageAddition(damager, entity);
-
-
+        damage = damage * statusEffectManager.getTotalDamageMultipliers(damager, entity);
+        damage = damage + statusEffectManager.getTotalDamageAdditives(damager, entity);
         return damage;
     }
 
 
-    public double calculateGettingDamaged(LivingEntity hitEntity, LivingEntity entity, String type, double damage){
+    public double calculateGettingDamaged(LivingEntity hitEntity, LivingEntity damager, String type, double damage){
 
-        if(buffAndDebuffManager.getImmune().getImmune(hitEntity)){
+        if(statusEffectManager.hasEffect(hitEntity, "immune")){
             return 0.0;
         }
 
         Profile playerProfile = profileManager.getAnyProfile(hitEntity);
-        Profile enemyProfile = profileManager.getAnyProfile(entity);
+        Profile enemyProfile = profileManager.getAnyProfile(damager);
 
         double attack;
         double defence;
 
-        double attackBonus = buffAndDebuffManager.getAttackBuffAmount(entity);
+        double attackBonus = statusEffectManager.getAttackBuffAmount(damager);
 
         double multiplierForCrit = 1;
         int random = (int) (Math.random() * 100) + 1;
@@ -184,15 +181,14 @@ public class DamageCalculator {
             attack = enemyProfile.getStats().getAttack() + attackBonus;
             defence = playerProfile.getTotalDefense();
 
-            if(buffAndDebuffManager.getPierceBuff().getIfBuffTime(hitEntity)>0){
-                defence = defence * .75;
-            }
+            defence *= statusEffectManager.getDefenceIgnoreModifier(damager);
+
 
             damage = (damage * multiplierForCrit)
                     * (attack / defence);
 
-            if(buffAndDebuffManager.getArmorBreak().getStacks(hitEntity) >= 3){
-                damage += (profileManager.getAnyProfile(hitEntity).getTotalHealth() * ((buffAndDebuffManager.getArmorBreak().getStacks(hitEntity) * 10) * .01));
+            if(statusEffectManager.getArmorBreakStacks(hitEntity) >= 3){
+                damage += (profileManager.getAnyProfile(hitEntity).getTotalHealth() * ((statusEffectManager.getArmorBreakStacks(hitEntity) * 10) * .01));
             }
 
         }
@@ -206,8 +202,8 @@ public class DamageCalculator {
                     * (attack / defence);
         }
 
-        damage = damage * buffAndDebuffManager.getTotalDamageMultipliers(entity, hitEntity);
-
+        damage = damage * statusEffectManager.getTotalDamageMultipliers(damager, hitEntity);
+        damage = damage + statusEffectManager.getTotalDamageAdditives(damager, hitEntity);
 
         return damage;
     }

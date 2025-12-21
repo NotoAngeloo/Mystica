@@ -1,13 +1,13 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.ShadowKnight;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.ShadowKnightAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.ShadowKnightAbilities;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.GenericDamageReduction;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -26,8 +26,7 @@ public class BurialGround {
 
     private final Mystica main;
     private final ProfileManager profileManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
-    private final CombatManager combatManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
@@ -39,8 +38,7 @@ public class BurialGround {
     public BurialGround(Mystica main, AbilityManager manager, ShadowKnightAbilities shadowKnightAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
-        combatManager = manager.getCombatManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         energy = shadowKnightAbilities.getEnergy();
@@ -74,7 +72,7 @@ public class BurialGround {
                 }
 
                 int cooldown = getCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 3);
@@ -103,7 +101,7 @@ public class BurialGround {
                         this.cancel();
 
                         if(blood){
-                            buffAndDebuffManager.getDamageReduction().removeReduction(caster);
+                            statusEffectManager.removeEffect(caster, "damage_reduction");
                         }
 
                         return;
@@ -116,7 +114,7 @@ public class BurialGround {
                     energy.addEnergyToEntity(caster, getEnergyRefund());
 
                     if(blood){
-                        buffAndDebuffManager.getDamageReduction().applyDamageReduction(caster, .8, 0);
+                        statusEffectManager.applyEffect(caster, new GenericDamageReduction(), -1, 0.8);
                     }
                 }
 
@@ -136,7 +134,7 @@ public class BurialGround {
                     this.cancel();
 
                     if(blood){
-                        buffAndDebuffManager.getDamageReduction().removeReduction(caster);
+                        statusEffectManager.removeEffect(caster, "damage_reduction");
                     }
 
                 }
@@ -160,7 +158,7 @@ public class BurialGround {
     }
 
     public double getHealPercent(LivingEntity caster){
-        double healAmount = (profileManager.getAnyProfile(caster).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(caster)) * .03;
+        double healAmount = (profileManager.getAnyProfile(caster).getTotalHealth() + statusEffectManager.getHealthBuffAmount(caster)) * .03;
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_3_Level_Bonus();
         return healAmount + ((int)(skillLevel/3));

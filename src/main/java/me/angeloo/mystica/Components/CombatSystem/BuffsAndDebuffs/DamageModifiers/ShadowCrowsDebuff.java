@@ -9,13 +9,12 @@ public class ShadowCrowsDebuff implements StatusEffect {
         return "shadow_crows";
     }
 
+    //increase damage taken on target
     @Override
     public double getMagnitude(){
-        return 0.1;
+        return 0.9;
     }
 
     @Override
-    public boolean requireDurationDeclaration(){
-        return true;
-    }
+    public int getDuration(){return 15*20;}
 }

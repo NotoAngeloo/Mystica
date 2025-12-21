@@ -10,7 +10,7 @@ public class GenericDamageReduction implements StatusEffect {
         return "damage_reduction";
     }
 
-    //Smaller better
+    //Smaller is better, means they take less
     @Override
     public StatusStackType stackType(){
         return StatusStackType.REPLACE_LARGER;

@@ -1,9 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.ShadowKnight;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.ShadowKnightAbilities;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -36,12 +34,11 @@ public class Annihilation {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final DamageCalculator damageCalculator;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
@@ -50,15 +47,14 @@ public class Annihilation {
     private final Energy energy;
     private final Infection infection;
 
-    public Annihilation(Mystica main, AbilityManager manager, ShadowKnightAbilities shadowKnightAbilities){
+    public Annihilation(Mystica main, ShadowKnightAbilities shadowKnightAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         energy = shadowKnightAbilities.getEnergy();
         infection = shadowKnightAbilities.getInfection();
@@ -100,7 +96,7 @@ public class Annihilation {
                 }
 
                 int cooldown = getPlayerCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
 
                 if(caster instanceof  Player){

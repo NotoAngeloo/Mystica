@@ -1,12 +1,11 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Ranger;
 
-import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Enums.BarType;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -26,8 +25,7 @@ import java.util.UUID;
 public class RallyingCry {
 
     private final Mystica main;
-    private final BuffAndDebuffManager buffAndDebuffManager;
-    private final CombatManager combatManager;
+    private final StatusEffectManager statusEffectManager;
     private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
@@ -36,8 +34,7 @@ public class RallyingCry {
 
     public RallyingCry(Mystica main, AbilityManager manager){
         this.main = main;
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
-        combatManager = manager.getCombatManager();
+        statusEffectManager = main.getStatusEffectManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
@@ -69,7 +66,7 @@ public class RallyingCry {
                 }
 
                 int cooldown = getCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 6);

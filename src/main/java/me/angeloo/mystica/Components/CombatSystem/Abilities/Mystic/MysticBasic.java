@@ -3,9 +3,7 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Mystic;
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.MysticAbilities;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.FakePlayerTargetManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -14,9 +12,12 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
-import me.angeloo.mystica.Utility.Logic.PveChecker;
 import me.angeloo.mystica.Utility.Enums.SubClass;
-import org.bukkit.*;
+import me.angeloo.mystica.Utility.Logic.PveChecker;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -36,13 +37,12 @@ public class MysticBasic {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final FakePlayerTargetManager fakePlayerTargetManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final DamageCalculator damageCalculator;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
 
     private final Consolation consolation;
@@ -50,16 +50,15 @@ public class MysticBasic {
 
     private final Map<UUID, BukkitTask> basicRunning = new HashMap<>();
 
-    public MysticBasic(Mystica main, AbilityManager manager, MysticAbilities mysticAbilities){
+    public MysticBasic(Mystica main, MysticAbilities mysticAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         fakePlayerTargetManager = main.getFakePlayerTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         evilSpirit = mysticAbilities.getEvilSpirit();
         consolation = mysticAbilities.getConsolation();
@@ -84,7 +83,7 @@ public class MysticBasic {
 
     private double getRange(LivingEntity caster){
         double baseRange = 20;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(caster);
+        double extraRange = statusEffectManager.getAdditionalRange(caster);
         return baseRange + extraRange;
     }
 
@@ -124,7 +123,7 @@ public class MysticBasic {
             @Override
             public void run(){
 
-                if(buffAndDebuffManager.getIfBasicInterrupt(caster)){
+                if(!statusEffectManager.canBasic(caster)){
                     this.cancel();
                     stopBasicRunning(caster);
                     return;

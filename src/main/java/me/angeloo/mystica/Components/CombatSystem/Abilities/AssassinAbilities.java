@@ -28,8 +28,8 @@ public class AssassinAbilities {
         profileManager = main.getProfileManager();
         combo = new Combo(main, manager);
         stealth = new Stealth(main, manager, this);
-        duelistsFrenzy = new DuelistsFrenzy(main, manager, this);
-        assassinBasic = new AssassinBasic(main, manager, this);
+        duelistsFrenzy = new DuelistsFrenzy(main, this);
+        assassinBasic = new AssassinBasic(main, this);
         assault = new Assault(main, manager, this);
         laceration = new Laceration(main, manager, this);
         weaknessStrike = new WeaknessStrike(main, manager, this);

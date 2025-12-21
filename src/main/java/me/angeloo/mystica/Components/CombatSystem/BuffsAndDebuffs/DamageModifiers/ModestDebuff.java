@@ -3,16 +3,11 @@ package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifie
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffect;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusStackType;
 
-public class FlamingSigilAttack implements StatusEffect {
+public class ModestDebuff implements StatusEffect {
 
     @Override
     public String getId() {
-        return "flaming_sigil_attack";
-    }
-
-    @Override
-    public String getIcon() {
-        return "\uE026";
+        return "modest";
     }
 
     @Override
@@ -21,19 +16,11 @@ public class FlamingSigilAttack implements StatusEffect {
     }
 
     @Override
-    public int getDuration(){
-        return 8 * 20;
-    }
-
-    @Override
-    public int getPriority() {
-        return 3;
-    }
-
-    //increase attack by magnitude
-    @Override
     public boolean requireMagnitudeDeclaration(){
         return true;
     }
+
+    @Override
+    public int getDuration(){return 20*10;}
 
 }

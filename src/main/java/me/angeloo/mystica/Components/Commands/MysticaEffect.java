@@ -1,6 +1,10 @@
 package me.angeloo.mystica.Components.Commands;
 
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Fear;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Stun;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.ArmorBreak;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.Immune;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Mystica;
@@ -20,13 +24,13 @@ public class MysticaEffect implements CommandExecutor {
 
     private final ProfileManager profileManager;
     private final ChangeResourceHandler changeResourceHandler;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final TargetManager targetManager;
 
     public MysticaEffect(Mystica main) {
         profileManager = main.getProfileManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         targetManager = main.getTargetManager();
     }
 
@@ -107,25 +111,26 @@ public class MysticaEffect implements CommandExecutor {
                     return true;
                 }
                 case "stun" -> {
-                    buffAndDebuffManager.getStun().applyStun(target, amount);
+                    statusEffectManager.applyEffect(target, new Stun(), amount, null);
                     return true;
                 }
                 case "unstun" -> {
-                    buffAndDebuffManager.getStun().removeStun(target);
+                    statusEffectManager.removeEffect(target, "stun");
                     return true;
                 }
                 case "immune" -> {
 
-                    if (buffAndDebuffManager.getImmune().getImmune(target)) {
-                        buffAndDebuffManager.getImmune().removeImmune(target);
+                    if(statusEffectManager.hasEffect(target, "immune")){
+                        statusEffectManager.removeEffect(target, "immune");
                         return true;
                     }
 
-                    buffAndDebuffManager.getImmune().applyImmune(target, amount);
+                    statusEffectManager.applyEffect(target, new Immune(), amount, null);
+
                     return true;
                 }
                 case "melt" -> {
-                    buffAndDebuffManager.getArmorBreak().applyArmorBreak(target);
+                    statusEffectManager.applyEffect(target, new ArmorBreak(), null, null);
                     return true;
                 }
                 case "heal_percent" -> {
@@ -135,13 +140,13 @@ public class MysticaEffect implements CommandExecutor {
                     return true;
                 }
                 case "fear" -> {
-                    buffAndDebuffManager.getFear().applyFear(target, amount);
+                    statusEffectManager.applyEffect(target, new Fear(), amount, null);
                     return true;
                 }
                 case "fear_if_targeting" -> {
 
                     if (targetManager.isTargeting(target, caster)) {
-                        buffAndDebuffManager.getFear().applyFear(target, amount);
+                        statusEffectManager.applyEffect(target, new Fear(), amount, null);
 
                         if (target instanceof Player) {
                             if (!profileManager.getCompanions((Player) target).isEmpty()) {
@@ -152,7 +157,7 @@ public class MysticaEffect implements CommandExecutor {
                                         continue;
                                     }
 
-                                    buffAndDebuffManager.getFear().applyFear(entity, amount);
+                                    statusEffectManager.applyEffect(target, new Fear(), amount, null);
                                 }
                             }
                         }

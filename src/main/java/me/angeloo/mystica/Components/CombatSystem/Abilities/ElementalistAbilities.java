@@ -26,8 +26,8 @@ public class ElementalistAbilities {
     public ElementalistAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
         heat = new Heat(main);
-        fieryWing = new FieryWing(main, manager, this);
-        conjuringForce = new ConjuringForce(main, manager);
+        fieryWing = new FieryWing(main, this);
+        conjuringForce = new ConjuringForce(main);
         elementalBreath = new ElementalBreath(main, manager);
         fieryMagma = new FieryMagma(main, manager, this);
         descendingInferno = new DescendingInferno(main, manager, this);
@@ -36,7 +36,7 @@ public class ElementalistAbilities {
         dragonBreathing = new DragonBreathing(main, manager, this);
         windrushForm = new WindrushForm(main, manager, this);
         windWall = new WindWall(main, manager, this);
-        elementalistBasic = new ElementalistBasic(main, manager);
+        elementalistBasic = new ElementalistBasic(main);
     }
 
     public void useElementalistAbility(LivingEntity caster, int abilityNumber){

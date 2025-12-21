@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.Commands;
 
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.Immune;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -10,29 +11,28 @@ import org.jetbrains.annotations.NotNull;
 
 public class ToggleImmunity implements CommandExecutor {
 
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
 
     public ToggleImmunity(Mystica main){
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
 
-        if(!(sender instanceof Player)){
+        if(!(sender instanceof Player player)){
             sender.sendMessage("only players");
             return true;
         }
 
-        Player player = (Player) sender;
-
-        if(buffAndDebuffManager.getImmune().getImmune(player)){
-            buffAndDebuffManager.getImmune().removeImmune(player);
+        if(statusEffectManager.hasEffect(player, "immune")){
+            statusEffectManager.removeEffect(player, "immune");
             player.sendMessage("removed immunity");
             return true;
         }
 
-        buffAndDebuffManager.getImmune().applyImmune(player, 0);
+        statusEffectManager.applyEffect(player, new Immune(), -1, null);
+
         player.sendMessage("applied immunity");
 
         return true;

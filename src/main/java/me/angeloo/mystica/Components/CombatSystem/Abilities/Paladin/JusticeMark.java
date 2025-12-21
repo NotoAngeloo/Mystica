@@ -1,14 +1,12 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Paladin;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.PaladinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -24,27 +22,22 @@ public class JusticeMark {
     private final Mystica main;
     private final TargetManager targetManager;
     private final ProfileManager profileManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final PvpManager pvpManager;
-    private final CombatManager combatManager;
     private final CooldownDisplayer cooldownDisplayer;
-
-    private final Purity purity;
 
     private final Map<UUID, List<LivingEntity>> marked = new HashMap<>();
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public JusticeMark(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
+    public JusticeMark(Mystica main, AbilityManager manager){
         this.main = main;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         pvpManager = main.getPvpManager();
-        combatManager = manager.getCombatManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
-        purity = paladinAbilities.getPurity();
     }
 
     private final double range = 10;
@@ -84,7 +77,7 @@ public class JusticeMark {
                 }
 
                 int cooldown = getCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 8);
@@ -113,11 +106,9 @@ public class JusticeMark {
 
         for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
-            if(!(entity instanceof Player)){
+            if(!(entity instanceof Player hitPlayer)){
                 continue;
             }
-
-            Player hitPlayer = (Player) entity;
 
             if(pvpManager.pvpLogic(caster, hitPlayer)){
                 continue;
@@ -188,7 +179,7 @@ public class JusticeMark {
 
             double distance = caster.getLocation().distance(target.getLocation());
 
-            if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+            if(distance > range + statusEffectManager.getAdditionalRange(caster)){
                 return false;
             }
         }

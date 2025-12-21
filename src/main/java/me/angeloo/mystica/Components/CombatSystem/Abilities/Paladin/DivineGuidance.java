@@ -1,17 +1,16 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Paladin;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.PaladinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PaladinAbilities;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
-import me.angeloo.mystica.Utility.Enums.SubClass;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -36,8 +35,7 @@ public class DivineGuidance {
 
     private final Mystica main;
     private final ProfileManager profileManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
-    private final CombatManager combatManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final DamageCalculator damageCalculator;
     private final PvpManager pvpManager;
@@ -52,8 +50,7 @@ public class DivineGuidance {
     public DivineGuidance(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
-        combatManager = manager.getCombatManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
@@ -96,7 +93,7 @@ public class DivineGuidance {
                 }
 
                 int cooldown = getCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 2);
@@ -204,15 +201,13 @@ public class DivineGuidance {
 
         for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
-            if(!(entity instanceof LivingEntity)){
+            if(!(entity instanceof LivingEntity hitEntity)){
                 continue;
             }
 
             if(entity instanceof ArmorStand){
                 continue;
             }
-
-            LivingEntity hitEntity = (LivingEntity) entity;
 
             if(entity instanceof Player){
                 if(pvpManager.pvpLogic(caster, (Player)hitEntity)){
@@ -311,15 +306,13 @@ public class DivineGuidance {
                         continue;
                     }
 
-                    if(!(entity instanceof LivingEntity)){
+                    if(!(entity instanceof LivingEntity livingEntity)){
                         continue;
                     }
 
                     if(entity instanceof ArmorStand){
                         continue;
                     }
-
-                    LivingEntity livingEntity = (LivingEntity) entity;
 
                     if(hitBySkill.contains(livingEntity)){
                         continue;

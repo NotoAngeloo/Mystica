@@ -1,16 +1,17 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Paladin;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.PaladinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PaladinAbilities;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Sleep;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.ModestDebuff;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -35,11 +36,10 @@ public class ModestCalling {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final DamageCalculator damageCalculator;
     private final CooldownDisplayer cooldownDisplayer;
@@ -51,11 +51,10 @@ public class ModestCalling {
     public ModestCalling(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         damageCalculator = main.getDamageCalculator();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
@@ -71,7 +70,7 @@ public class ModestCalling {
         }
 
 
-        targetManager.setTargetToNearestValid(caster, range + buffAndDebuffManager.getTotalRangeModifier(caster));
+        targetManager.setTargetToNearestValid(caster, range + statusEffectManager.getAdditionalRange(caster));
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
@@ -97,7 +96,7 @@ public class ModestCalling {
                 }
 
                 int cooldown = getCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 7);
@@ -133,18 +132,17 @@ public class ModestCalling {
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_7_Level_Bonus();
 
-        double multiplier =  1 + (int)(skillLevel/15);
+        //start at .95, for a 5% damage reduction.
+        //every 15 skill levels, reduce by .05
+        double mult = 1 + (int)(skillLevel/15);
 
-        if(!(target instanceof Player)){
-            multiplier = multiplier * .5;
-        }
+        mult *= .05;
 
-        int time = 20*10;
 
         Location end = target.getLocation().clone();
 
         double finalSkillDamage = getSkillDamage(caster);
-        double finalMultiplier = multiplier;
+        double finalMult = mult;
         new BukkitRunnable(){
             @Override
             public void run(){
@@ -172,12 +170,12 @@ public class ModestCalling {
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
+                    statusEffectManager.applyEffect(target, new ModestDebuff(), null, finalMult);
+                    statusEffectManager.applyEffect(target, new Sleep(), 15*20, null);
 
-                    buffAndDebuffManager.getModest().apply(target, finalMultiplier, time);
-                    buffAndDebuffManager.getSleep().applySleep(target, time);
 
                     if(target instanceof Player){
-                        buffAndDebuffManager.getGenericShield().removeShields(target);
+                        statusEffectManager.removeEffect(target, "shield");
                     }
                 }
 
@@ -238,7 +236,7 @@ public class ModestCalling {
 
             double distance = caster.getLocation().distance(target.getLocation());
 
-            if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+            if(distance > range + statusEffectManager.getAdditionalRange(caster)){
                 return false;
             }
         }
@@ -247,12 +245,7 @@ public class ModestCalling {
             return false;
         }
 
-        if(getCooldown(caster) > 0){
-            return false;
-        }
-
-
-        return true;
+        return getCooldown(caster) <= 0;
     }
 
 }

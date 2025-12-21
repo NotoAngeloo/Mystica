@@ -1,9 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Assassin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AssassinAbilities;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
 import me.angeloo.mystica.Components.CombatSystem.FakePlayerTargetManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -39,7 +37,6 @@ public class AssassinBasic {
 
     private final ProfileManager profileManager;
     private final StatusEffectManager statusEffectManager;
-    private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final FakePlayerTargetManager fakePlayerTargetManager;
     private final PvpManager pvpManager;
@@ -54,11 +51,10 @@ public class AssassinBasic {
     private final Combo combo;
     private final DuelistsFrenzy duelistsFrenzy;
 
-    public AssassinBasic(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
+    public AssassinBasic(Mystica main, AssassinAbilities assassinAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
-        combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         fakePlayerTargetManager = main.getFakePlayerTargetManager();
         pvpManager = main.getPvpManager();
@@ -144,7 +140,7 @@ public class AssassinBasic {
                 continue;
             }
 
-            if(!(entity instanceof LivingEntity)){
+            if(!(entity instanceof LivingEntity livingEntity)){
                 continue;
             }
 
@@ -157,8 +153,6 @@ public class AssassinBasic {
             if(entity instanceof ArmorStand){
                 continue;
             }
-
-            LivingEntity livingEntity = (LivingEntity) entity;
 
             if(!(entity instanceof Player)){
                 if(!pveChecker.pveLogic(livingEntity)){

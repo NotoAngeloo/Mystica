@@ -1,20 +1,20 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Warrior;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.WarriorAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.WarriorAbilities;
 import me.angeloo.mystica.Components.CombatSystem.AggroManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Pulled;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
-import me.angeloo.mystica.Utility.Logic.PveChecker;
 import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -37,12 +37,11 @@ public class SearingChains {
 
     private final Mystica main;
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final DamageCalculator damageCalculator;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final AggroManager aggroManager;
     private final CooldownDisplayer cooldownDisplayer;
@@ -54,12 +53,11 @@ public class SearingChains {
     public SearingChains(Mystica main, AbilityManager manager, WarriorAbilities warriorAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         aggroManager = main.getAggroManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
@@ -95,7 +93,7 @@ public class SearingChains {
                 }
 
                 int cooldown = getCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 2);
@@ -336,7 +334,7 @@ public class SearingChains {
                                     changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
                                     rage.addRageToEntity(caster, 10);
                                     validCCTargets.add(livingEntity);
-                                    buffAndDebuffManager.getPulled().applyPull(livingEntity);
+                                    statusEffectManager.applyEffect(livingEntity, new Pulled(), null, null);
                                     targetManager.setPlayerTarget((Player) entity, caster);
                                 }
                                 continue;
@@ -348,7 +346,7 @@ public class SearingChains {
                                 rage.addRageToEntity(caster, 10);
                                 if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
                                     validCCTargets.add(livingEntity);
-                                    buffAndDebuffManager.getPulled().applyPull(livingEntity);
+                                    statusEffectManager.applyEffect(livingEntity, new Pulled(), null, null);
                                 }
                             }
 
@@ -420,7 +418,7 @@ public class SearingChains {
                         }
 
                         if(done.getOrDefault(entity, false)){
-                            buffAndDebuffManager.getPulled().removePull(entity);
+                            statusEffectManager.removeEffect(entity, "pull");
                             continue;
                         }
 

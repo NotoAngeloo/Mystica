@@ -27,9 +27,9 @@ public class RangerAbilities {
     public RangerAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
         focus = new Focus(main);
-        starVolley = new StarVolley(main, manager, this);
+        starVolley = new StarVolley(main, this);
         rallyingCry = new RallyingCry(main, manager);
-        wildRoar = new WildRoar(main, manager);
+        wildRoar = new WildRoar(main);
         relentless = new Relentless(main, manager, this);
         razorWind = new RazorWind(main, manager, this);
         wildSpirit = new WildSpirit(main, manager, this);
@@ -37,7 +37,7 @@ public class RangerAbilities {
         roll = new Roll(main, manager);
         shadowCrows = new ShadowCrows(main, manager, this);
         bitingRain = new BitingRain(main, manager, this);
-        rangerBasic = new RangerBasic(main, manager, this);
+        rangerBasic = new RangerBasic(main, this);
     }
 
     public void useRangerAbility(LivingEntity caster, int abilityNumber){

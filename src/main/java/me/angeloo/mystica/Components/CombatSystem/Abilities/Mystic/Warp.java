@@ -1,13 +1,11 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Mystic;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -25,9 +23,8 @@ public class Warp {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
     private final TargetManager targetManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
@@ -36,10 +33,8 @@ public class Warp {
     public Warp(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
-        ChangeResourceHandler changeResourceHandler = main.getChangeResourceHandler();
+        statusEffectManager = main.getStatusEffectManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
@@ -53,7 +48,7 @@ public class Warp {
             return;
         }
 
-        double maxDistance = 8 + buffAndDebuffManager.getTotalRangeModifier(caster);
+        double maxDistance = 8 + statusEffectManager.getAdditionalRange(caster);
 
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_4_Level_Bonus();
@@ -119,7 +114,7 @@ public class Warp {
                 }
 
                 int cooldown = getCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
 

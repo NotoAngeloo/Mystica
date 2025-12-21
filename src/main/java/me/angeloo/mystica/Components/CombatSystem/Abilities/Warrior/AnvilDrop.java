@@ -1,20 +1,20 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Warrior;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.WarriorAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.WarriorAbilities;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.KnockUp;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.FakePlayerTargetManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
-import me.angeloo.mystica.Utility.Logic.PveChecker;
 import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -39,8 +39,7 @@ public class AnvilDrop {
     private final ProfileManager profileManager;
     private final TargetManager targetManager;
     private final FakePlayerTargetManager fakePlayerTargetManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
-    private final CombatManager combatManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final DamageCalculator damageCalculator;
     private final PvpManager pvpManager;
@@ -57,8 +56,7 @@ public class AnvilDrop {
         targetManager = main.getTargetManager();
         fakePlayerTargetManager = main.getFakePlayerTargetManager();
         profileManager = main.getProfileManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
-        combatManager = manager.getCombatManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
@@ -96,7 +94,7 @@ public class AnvilDrop {
                 }
 
                 int cooldown = getCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 5);
@@ -276,7 +274,7 @@ public class AnvilDrop {
                 continue;
             }
 
-            if(!(entity instanceof LivingEntity)){
+            if(!(entity instanceof LivingEntity livingEntity)){
                 continue;
             }
 
@@ -289,8 +287,6 @@ public class AnvilDrop {
             if(entity instanceof ArmorStand){
                 continue;
             }
-
-            LivingEntity livingEntity = (LivingEntity) entity;
 
             if(!(entity instanceof Player)){
                 if(!pveChecker.pveLogic(livingEntity)){
@@ -343,7 +339,7 @@ public class AnvilDrop {
             if(profileManager.getAnyProfile(targetToHit).getIsMovable()){
                 Vector velocity = (new Vector(0, .75, 0));
                 targetToHit.setVelocity(velocity);
-                buffAndDebuffManager.getKnockUp().applyKnockUp(targetToHit);
+                statusEffectManager.applyEffect(targetToHit, new KnockUp(), null, null);
             }
         }
     }

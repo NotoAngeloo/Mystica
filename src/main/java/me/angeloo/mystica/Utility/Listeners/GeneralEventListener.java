@@ -6,13 +6,14 @@ import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import me.angeloo.mystica.Components.CombatSystem.*;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.Guis.Abilities.AbilityInventory;
 import me.angeloo.mystica.Components.Guis.Equipment.EquipmentInventory;
 import me.angeloo.mystica.Components.Guis.Party.PartyInventory;
 import me.angeloo.mystica.Components.Hud.HudManager;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
+import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
 import me.angeloo.mystica.CustomEvents.*;
@@ -45,6 +46,7 @@ import org.bukkit.event.player.*;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.inventory.*;
 
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
@@ -63,14 +65,13 @@ public class GeneralEventListener implements Listener {
     private final PathingManager pathingManager;
     private final StealthTargetBlacklist stealthTargetBlacklist;
     private final AggroTick aggroTick;
-    private final DpsManager dpsManager;
     private final AggroManager aggroManager;
     private final PvpManager pvpManager;
     private final InventoryItemGetter itemGetter;
     private final TargetManager targetManager;
     private final CombatManager combatManager;
     private final CooldownDisplayer cooldownDisplayer;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final AbilityManager abilityManager;
     private final DeathManager deathManager;
     private final EquipmentInventory equipmentInventory;
@@ -107,12 +108,12 @@ public class GeneralEventListener implements Listener {
         fakePlayerAiManager = main.getFakePlayerAiManager();
         stealthTargetBlacklist = main.getStealthTargetBlacklist();
         aggroTick = main.getAggroTick();
-        dpsManager = main.getDpsManager();
+        DpsManager dpsManager = main.getDpsManager();
         aggroManager = main.getAggroManager();
         pvpManager = main.getPvpManager();
         targetManager = main.getTargetManager();
         combatManager = main.getCombatManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         abilityManager = main.getAbilityManager();
         deathManager = main.getDeathManager();
         equipmentInventory = main.getEquipmentInventory();
@@ -199,7 +200,7 @@ public class GeneralEventListener implements Listener {
 
 
             changeResourceHandler.healPlayerToFull(player);
-            buffAndDebuffManager.removeAllBuffsAndDebuffs(player);
+            statusEffectManager.clear(player);
         }
 
         profileManager.addToPlayerNameMap(player);
@@ -752,7 +753,7 @@ public class GeneralEventListener implements Listener {
         Player player = event.getPlayer();
 
 
-        boolean immobile = buffAndDebuffManager.getImmobile().getImmobile(player);
+        boolean immobile = !statusEffectManager.canMove(player);
 
         if (!immobile) {
             return;
@@ -800,7 +801,7 @@ public class GeneralEventListener implements Listener {
         }
 
         boolean immortal = false;
-        boolean immune = buffAndDebuffManager.getImmune().getImmune(defender);
+        boolean immune = statusEffectManager.hasEffect(defender, "immune");
 
         Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(defender, WhomeverTarget));
 
@@ -899,7 +900,7 @@ public class GeneralEventListener implements Listener {
 
             }
 
-            buffAndDebuffManager.getSleep().forceWakeUp(defender);
+            statusEffectManager.removeEffect(defender, "sleep");
 
 
         }
@@ -1253,7 +1254,7 @@ public class GeneralEventListener implements Listener {
 
 
         double baseRange = 20;
-        double bonusRange = buffAndDebuffManager.getTotalRangeModifier(player);
+        double bonusRange = statusEffectManager.getAdditionalRange(player);
         double totalRange = baseRange + bonusRange;
 
 
@@ -1699,6 +1700,87 @@ public class GeneralEventListener implements Listener {
         Player player = profileManager.getCompanionsPlayer(companion);
 
         Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, Team));
+
+    }
+
+    @EventHandler
+    public void onStealthApply(ApplyStealthEffectEvent event){
+
+        LivingEntity caster = event.getEntity();
+
+        caster.setInvisible(true);
+
+        if(caster instanceof Player player){
+            player.getInventory().setItemInMainHand(null);
+            player.getInventory().setItemInOffHand(null);
+            player.getInventory().setHelmet(null);
+            player.getInventory().setChestplate(null);
+            player.getInventory().setLeggings(null);
+            player.getInventory().setBoots(null);
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
+        }
+
+        aggroManager.removeHighPriorityTarget(caster.getUniqueId());
+        aggroManager.addToBlackList(caster);
+        aggroManager.removeFromAllAttackerLists(caster);
+
+    }
+
+    @EventHandler
+    public void onStealthRemove(RemoveStealthEffectEvent event){
+
+        LivingEntity caster = event.getEntity();
+
+        boolean combatStatus = true;
+
+        if(caster instanceof Player){
+            combatStatus = profileManager.getAnyProfile(caster).getIfInCombat();
+        }
+
+        boolean deathStatus = profileManager.getAnyProfile(caster).getIfDead();
+
+        if(caster instanceof Player player){
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
+        }
+
+
+        if(!deathStatus){
+            caster.setInvisible(false);
+
+            if(!combatStatus){
+                return;
+            }
+
+            if(caster instanceof Player){
+
+                showWeapons((Player) caster);
+
+                displayWeapons.displayArmor((Player) caster);
+            }
+
+
+            aggroManager.removeFromBlackList(caster);
+        }
+    }
+
+    private void showWeapons(Player player){
+
+        if(profileManager.getAnyProfile(player).getIfDead()){
+            return;
+        }
+
+        PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
+
+        if(playerEquipment.getWeapon() != null){
+            player.getInventory().setItemInMainHand(playerEquipment.getWeapon().build());
+            ItemStack offhand = playerEquipment.getWeapon().build();
+            ItemMeta offhandItemMeta = offhand.getItemMeta();
+            assert offhandItemMeta != null;
+            offhandItemMeta.setCustomModelData(offhand.getItemMeta().getCustomModelData() + 1);
+            offhand.setItemMeta(offhandItemMeta);
+            player.getInventory().setItemInOffHand(offhand);
+
+        }
 
     }
 

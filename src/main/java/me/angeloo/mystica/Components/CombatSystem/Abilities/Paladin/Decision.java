@@ -19,8 +19,7 @@ public class Decision {
     }
 
     public void applyDecision(LivingEntity entity){
-        if(entity instanceof Player){
-            Player player = (Player) entity;
+        if(entity instanceof Player player){
             Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
@@ -32,8 +31,7 @@ public class Decision {
     }
 
     public void removeDecision(LivingEntity entity){
-        if(entity instanceof Player){
-            Player player = (Player) entity;
+        if(entity instanceof Player player){
             Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 

@@ -3,26 +3,21 @@ package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifie
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffect;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusStackType;
 
-public class Modest implements StatusEffect {
+public class ConcoctionBuff implements StatusEffect {
 
     @Override
     public String getId() {
-        return "modest";
+        return "concoction_buff";
     }
 
     @Override
-    public StatusStackType stackType(){
-        return StatusStackType.REPLACE_SMALLER;
+    public int getDuration() {
+        return 15*20;
     }
 
+    //reduce damage taken, multiply result by .95
     @Override
-    public boolean requireMagnitudeDeclaration(){
-        return true;
+    public double getMagnitude(){
+        return 0.95;
     }
-
-    @Override
-    public boolean requireDurationDeclaration(){
-        return true;
-    }
-
 }

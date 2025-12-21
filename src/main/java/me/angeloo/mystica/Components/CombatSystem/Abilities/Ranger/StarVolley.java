@@ -1,9 +1,8 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Ranger;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.RangerAbilities;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.Haste;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -35,27 +34,25 @@ public class StarVolley {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final DamageCalculator damageCalculator;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final Focus focus;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public StarVolley(Mystica main, AbilityManager manager, RangerAbilities rangerAbilities){
+    public StarVolley(Mystica main, RangerAbilities rangerAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         focus = rangerAbilities.getFocus();
     }
@@ -69,7 +66,7 @@ public class StarVolley {
         }
 
 
-        targetManager.setTargetToNearestValid(caster, range + buffAndDebuffManager.getTotalRangeModifier(caster));
+        targetManager.setTargetToNearestValid(caster, range + statusEffectManager.getAdditionalRange(caster));
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
@@ -95,7 +92,7 @@ public class StarVolley {
                 }
 
                 int cooldown = getPlayerCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 if(caster instanceof Player){
@@ -188,7 +185,7 @@ public class StarVolley {
                     boolean crit = damageCalculator.checkIfCrit(caster, 0);
 
                     if(crit){
-                        buffAndDebuffManager.getHaste().applyHaste(caster, 1, 2*20);
+                        statusEffectManager.applyEffect(caster, new Haste(), 2*20, 1.0);
                     }
 
                     double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
@@ -259,7 +256,7 @@ public class StarVolley {
 
             double distance = caster.getLocation().distance(target.getLocation());
 
-            if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+            if(distance > range + statusEffectManager.getAdditionalRange(caster)){
                 return false;
             }
         }

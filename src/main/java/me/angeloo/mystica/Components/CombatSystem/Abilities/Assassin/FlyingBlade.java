@@ -1,22 +1,22 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Assassin;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AssassinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AssassinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Stun;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
+import me.angeloo.mystica.Components.Hud.BossCastingManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
-import me.angeloo.mystica.Utility.EquipmentSlot;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
-import me.angeloo.mystica.Utility.Logic.PveChecker;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
+import me.angeloo.mystica.Utility.EquipmentSlot;
+import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -39,7 +39,6 @@ public class FlyingBlade {
     private final MysticaEquipment weapon;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
@@ -47,6 +46,7 @@ public class FlyingBlade {
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
+    private final BossCastingManager bossCastingManager;
 
     private final Stealth stealth;
 
@@ -56,7 +56,6 @@ public class FlyingBlade {
     public FlyingBlade(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
@@ -66,6 +65,7 @@ public class FlyingBlade {
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         stealth = assassinAbilities.getStealth();
         this.weapon = new MysticaEquipment(EquipmentSlot.WEAPON, PlayerClass.Assassin, 1);
+        bossCastingManager = main.getBossCastingManager();
     }
 
     private final double range = 15;
@@ -175,9 +175,7 @@ public class FlyingBlade {
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
                     if(profileManager.getAnyProfile(target).getIsMovable()){
-
                         statusEffectManager.applyEffect(target, new Stun(), 20, null);
-
                     }
 
                     if(target instanceof Player){
@@ -185,6 +183,7 @@ public class FlyingBlade {
                     }
 
                     stealth.stealthBonusCheck(caster, target);
+                    bossCastingManager.interrupt(caster, target);
                 }
 
             }

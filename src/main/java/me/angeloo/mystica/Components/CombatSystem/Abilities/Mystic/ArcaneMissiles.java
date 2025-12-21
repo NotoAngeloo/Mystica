@@ -1,7 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Mystic;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.CombatManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -32,12 +32,11 @@ public class ArcaneMissiles {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final DamageCalculator damageCalculator;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final AbilityManager abilityManager;
 
@@ -48,12 +47,11 @@ public class ArcaneMissiles {
         this.main = main;
         profileManager = main.getProfileManager();
         abilityManager = manager;
-        combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
     }
 
@@ -91,7 +89,7 @@ public class ArcaneMissiles {
                 }
 
                 int cooldown = getPlayerCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 if(caster instanceof Player){
                     Bukkit.getScheduler().runTask(main, () ->{
@@ -107,7 +105,7 @@ public class ArcaneMissiles {
 
     private double getRange(LivingEntity caster){
         double baseRange = 20;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(caster);
+        double extraRange = statusEffectManager.getAdditionalRange(caster);
         return baseRange + extraRange;
     }
 
@@ -117,7 +115,7 @@ public class ArcaneMissiles {
         double skillDamage = getSkillDamage(caster);
 
         double ticks = 10;
-        ticks = ticks - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+        ticks = ticks - statusEffectManager.getHasteLevel(caster);
 
         skillDamage = skillDamage / ticks;
 
@@ -138,7 +136,7 @@ public class ArcaneMissiles {
                     }
                 }
 
-                if(buffAndDebuffManager.getIfInterrupt(caster)){
+                if(!statusEffectManager.canCast(caster)){
                     cancelTask();
                     return;
                 }

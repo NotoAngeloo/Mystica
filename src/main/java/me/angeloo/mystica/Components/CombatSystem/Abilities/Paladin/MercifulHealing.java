@@ -1,18 +1,18 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Paladin;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.PaladinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PaladinAbilities;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Root;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
-import me.angeloo.mystica.Utility.Enums.BarType;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -32,12 +32,11 @@ public class MercifulHealing {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
     private final DamageCalculator damageCalculator;
     private final TargetManager targetManager;
     private final PveChecker pveChecker;
     private final PvpManager pvpManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final AbilityManager abilityManager;
     private final CooldownDisplayer cooldownDisplayer;
@@ -53,11 +52,10 @@ public class MercifulHealing {
         this.main = main;
         profileManager = main.getProfileManager();
         damageCalculator = main.getDamageCalculator();
-        combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         abilityManager = manager;
         cooldownDisplayer= new CooldownDisplayer(main, manager);
@@ -100,7 +98,7 @@ public class MercifulHealing {
                 }
 
                 int cooldown = getCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 2);
@@ -113,7 +111,7 @@ public class MercifulHealing {
 
     private double getRange(LivingEntity caster){
         double baseRange = 10;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(caster);
+        double extraRange = statusEffectManager.getAdditionalRange(caster);
         return baseRange + extraRange;
     }
 
@@ -126,7 +124,8 @@ public class MercifulHealing {
             unQueueMoveCast(caster);
         }
         else{
-            buffAndDebuffManager.getImmobile().applyImmobile(caster, castTime);
+
+            statusEffectManager.applyEffect(caster, new Root(), castTime, null);
         }
 
         new BukkitRunnable(){
@@ -139,14 +138,14 @@ public class MercifulHealing {
                     if(!((Player)caster).isOnline()){
                         this.cancel();
                         abilityManager.setCasting(caster, false);
-                        buffAndDebuffManager.getImmobile().removeImmobile(caster);
+                        statusEffectManager.removeEffect(caster, "root");
                     }
                 }
 
-                if(buffAndDebuffManager.getIfInterrupt(caster)){
+                if(!statusEffectManager.canCast(caster)){
                     this.cancel();
                     abilityManager.setCasting(caster, false);
-                    buffAndDebuffManager.getImmobile().removeImmobile(caster);
+                    statusEffectManager.removeEffect(caster, "root");
                     return;
                 }
 
@@ -161,7 +160,7 @@ public class MercifulHealing {
                 if(distanceToTarget>getRange(caster)){
                     this.cancel();
                     abilityManager.setCasting(caster, false);
-                    buffAndDebuffManager.getImmobile().removeImmobile(caster);
+                    statusEffectManager.removeEffect(caster, "root");
                     return;
                 }
 
@@ -172,7 +171,7 @@ public class MercifulHealing {
                     this.cancel();
                     abilityManager.setCasting(caster, false);
                     healTarget(target);
-                    buffAndDebuffManager.getImmobile().removeImmobile(caster);
+                    statusEffectManager.removeEffect(caster, "root");
                 }
 
                 ran++;
@@ -252,16 +251,14 @@ public class MercifulHealing {
 
     public void queueMoveCast(LivingEntity caster){
 
-        if(caster instanceof Player){
-            Player player = (Player) caster;
+        if(caster instanceof Player player){
             Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
         moveCast.put(caster.getUniqueId(), true);
     }
     public void unQueueMoveCast(LivingEntity caster){
-        if(caster instanceof Player){
-            Player player = (Player) caster;
+        if(caster instanceof Player player){
             Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
         moveCast.remove(caster.getUniqueId());
@@ -322,6 +319,10 @@ public class MercifulHealing {
                 if(pvpManager.pvpLogic(caster, (Player) target)){
                     target = caster;
                 }
+            }
+
+            if(target == caster){
+                return true;
             }
 
         }

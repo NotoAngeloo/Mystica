@@ -1,9 +1,9 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Warrior;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.WarriorAbilities;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Pulled;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Stun;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -33,27 +33,25 @@ public class DeathGaze {
 
     private final Mystica main;
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final DamageCalculator damageCalculator;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final Rage rage;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public DeathGaze(Mystica main, AbilityManager manager, WarriorAbilities warriorAbilities){
+    public DeathGaze(Mystica main, WarriorAbilities warriorAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         rage = warriorAbilities.getRage();
     }
@@ -72,7 +70,7 @@ public class DeathGaze {
             return;
         }
 
-        targetManager.setTargetToNearestValid(caster, range + buffAndDebuffManager.getTotalRangeModifier(caster));
+        targetManager.setTargetToNearestValid(caster, range + statusEffectManager.getAdditionalRange(caster));
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
@@ -97,7 +95,7 @@ public class DeathGaze {
                 }
 
                 int cooldown = getPlayerCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
 
                 if(caster instanceof Player){
@@ -136,7 +134,7 @@ public class DeathGaze {
                     }
                 }
 
-                if(buffAndDebuffManager.getIfInterrupt(caster)){
+                if(!statusEffectManager.canCast(caster)){
                     cancelTask();
                     return;
                 }
@@ -235,14 +233,14 @@ public class DeathGaze {
                     double dPull = playerLoc.distance(targetWasLoc);
                     if(valid){
                         //pull
-                        buffAndDebuffManager.getPulled().applyPull(target);
+                        statusEffectManager.applyEffect(target, new Pulled(), null, null);
 
                         if(dPull <= 1){
                             cancelTask();
-                            buffAndDebuffManager.getPulled().removePull(target);
+                            statusEffectManager.removeEffect(target, "pull");
 
                             if(targetStillValid(target)){
-                                buffAndDebuffManager.getStun().applyStun(target, 20);
+                                statusEffectManager.applyEffect(target, new Stun(), 20, null);
                             }
 
                             return;
@@ -285,7 +283,7 @@ public class DeathGaze {
                             cancelTask();
 
                             if(targetStillValid(target)){
-                                buffAndDebuffManager.getStun().applyStun(target, 20);
+                                statusEffectManager.applyEffect(target, new Stun(), 20, null);
                             }
 
                             return;
@@ -409,7 +407,7 @@ public class DeathGaze {
 
             double distance = caster.getLocation().distance(target.getLocation());
 
-            if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+            if(distance > range + statusEffectManager.getAdditionalRange(caster)){
                 return false;
             }
         }

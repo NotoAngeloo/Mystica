@@ -1,7 +1,5 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.None;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
 import me.angeloo.mystica.Components.CombatSystem.FakePlayerTargetManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -30,7 +28,6 @@ public class NoneBasic {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final FakePlayerTargetManager fakePlayerTargetManager;
     private final PvpManager pvpManager;
@@ -41,11 +38,10 @@ public class NoneBasic {
     private final Map<UUID, Boolean> basicReadyMap = new HashMap<>();
 
 
-    public NoneBasic(Mystica main, AbilityManager manager){
+    public NoneBasic(Mystica main){
         this.main = main;
 
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         fakePlayerTargetManager = main.getFakePlayerTargetManager();
         pvpManager = main.getPvpManager();
@@ -110,7 +106,7 @@ public class NoneBasic {
                 continue;
             }
 
-            if(!(entity instanceof LivingEntity)){
+            if(!(entity instanceof LivingEntity livingEntity)){
                 continue;
             }
 
@@ -123,8 +119,6 @@ public class NoneBasic {
             if(entity instanceof ArmorStand){
                 continue;
             }
-
-            LivingEntity livingEntity = (LivingEntity) entity;
 
             if(!(entity instanceof Player)){
                 if(!pveChecker.pveLogic(livingEntity)){
@@ -174,11 +168,7 @@ public class NoneBasic {
     }
 
     public boolean usable(LivingEntity caster){
-        if(!basicReadyMap.get(caster.getUniqueId())){
-            return false;
-        }
-
-        return true;
+        return basicReadyMap.get(caster.getUniqueId());
     }
 
 }

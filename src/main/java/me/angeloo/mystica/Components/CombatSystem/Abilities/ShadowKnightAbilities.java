@@ -28,12 +28,12 @@ public class ShadowKnightAbilities {
     public ShadowKnightAbilities(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
         energy = new Energy(main, manager);
-        shadowKnightBasic = new ShadowKnightBasic(main, manager);
+        shadowKnightBasic = new ShadowKnightBasic(main);
         infection = new Infection(main, manager);
         soulReap = new SoulReap(main, manager, this);
         spiritualAttack = new SpiritualAttack(main, manager, this);
-        annihilation = new Annihilation(main, manager, this);
-        bloodShield = new BloodShield(main, manager, this);
+        annihilation = new Annihilation(main, this);
+        bloodShield = new BloodShield(main, this);
         burialGround = new BurialGround(main, manager, this);
         bloodsucker = new Bloodsucker(main, manager, this);
         shadowGrip = new ShadowGrip(main, manager, this);

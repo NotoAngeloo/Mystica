@@ -54,8 +54,8 @@ public class MysticAbilities {
         arcaneContract = new ArcaneContract(main, manager, this);
         lightSigil = new LightSigil(main, manager, this);
         arcaneMissiles = new ArcaneMissiles(main, manager);
-        enlightenment = new Enlightenment(main, manager, this);
-        mysticBasic = new MysticBasic(main, manager, this);
+        enlightenment = new Enlightenment(main, this);
+        mysticBasic = new MysticBasic(main, this);
     }
 
     public void useMysticAbility(LivingEntity caster, int abilityNumber){

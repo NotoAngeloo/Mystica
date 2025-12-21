@@ -2,7 +2,7 @@ package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Shields;
 
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffect;
 
-public class WindWall implements StatusEffect {
+public class WindWallShield implements StatusEffect {
 
     @Override
     public String getId() {

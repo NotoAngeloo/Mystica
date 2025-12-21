@@ -1,8 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Ranger;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.WildRoarBuff;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.UltimateStatusChageEvent;
@@ -26,19 +25,17 @@ public class WildRoar {
 
     private final Mystica main;
     private final ProfileManager profileManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final PvpManager pvpManager;
-    private final CombatManager combatManager;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public WildRoar(Mystica main, AbilityManager manager){
+    public WildRoar(Mystica main){
         this.main = main;
         profileManager = main.getProfileManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         pvpManager = main.getPvpManager();
-        combatManager = manager.getCombatManager();
     }
 
     public void use(LivingEntity caster){
@@ -68,13 +65,11 @@ public class WildRoar {
                 }
 
                 int cooldown = getPlayerCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
 
                 if(caster instanceof Player){
-                    Bukkit.getScheduler().runTask(main, ()->{
-                        Bukkit.getServer().getPluginManager().callEvent(new UltimateStatusChageEvent((Player) caster));
-                    });
+                    Bukkit.getScheduler().runTask(main, ()-> Bukkit.getServer().getPluginManager().callEvent(new UltimateStatusChageEvent((Player) caster)));
 
                 }
 
@@ -110,7 +105,7 @@ public class WildRoar {
                 }
 
 
-                boolean hasBuffAlready = buffAndDebuffManager.getWildRoarBuff().getBuffTime(thisEntity) > 0;
+                boolean hasBuffAlready = statusEffectManager.hasEffect(thisEntity, "wild_roar");
 
                 if(hasBuffAlready){
                     continue;
@@ -130,7 +125,8 @@ public class WildRoar {
 
         for(LivingEntity thisEntity : affected){
 
-            buffAndDebuffManager.getWildRoarBuff().applyBuff(thisEntity, getBuffAmount(caster));
+            statusEffectManager.applyEffect(thisEntity, new WildRoarBuff(), null, getBuffAmount(caster));
+
 
             ArmorStand armorStand = caster.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
             armorStand.setInvisible(true);
@@ -199,11 +195,6 @@ public class WildRoar {
     }
 
     public boolean usable(LivingEntity caster){
-        if(getPlayerCooldown(caster) > 0){
-            return false;
-        }
-
-
-        return true;
+        return getPlayerCooldown(caster) <= 0;
     }
 }

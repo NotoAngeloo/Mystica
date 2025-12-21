@@ -1,11 +1,12 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Ranger;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Misc.SpeedUp;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Shields.GenericShield;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -22,8 +23,7 @@ public class Roll {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
@@ -32,8 +32,7 @@ public class Roll {
     public Roll(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
@@ -65,7 +64,7 @@ public class Roll {
                 }
 
                 int cooldown = getCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 8);
@@ -82,7 +81,7 @@ public class Roll {
 
         Vector direction = start.getDirection().normalize();
 
-        double shieldAmount = (profileManager.getAnyProfile(caster).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(caster)) / 4;
+        double shieldAmount = (profileManager.getAnyProfile(caster).getTotalHealth() + statusEffectManager.getHealthBuffAmount(caster)) / 4;
 
         if(caster instanceof Player){
             if(((Player)caster).isSneaking()){
@@ -96,8 +95,7 @@ public class Roll {
             shieldAmount*=2;
         }
 
-
-        buffAndDebuffManager.getGenericShield().applyOrAddShield(caster, shieldAmount);
+        statusEffectManager.applyEffect(caster, new GenericShield(), null, shieldAmount);
 
         double forwardPower = 3;
         double jumpPower = .2;
@@ -106,7 +104,7 @@ public class Roll {
 
         //also give a shield and increase move speed
         if(caster instanceof Player){
-            buffAndDebuffManager.getSpeedUp().applySpeedUp((Player) caster, .5f);
+            statusEffectManager.applyEffect(caster, new SpeedUp(), null, 0.5);
         }
 
 
@@ -116,10 +114,10 @@ public class Roll {
             @Override
             public void run(){
                 if(caster instanceof Player){
-                    buffAndDebuffManager.getSpeedUp().removeSpeedUp((Player) caster);
+                    statusEffectManager.removeEffect(caster, "speed_up");
                 }
 
-                buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(caster, finalShieldAmount);
+                statusEffectManager.reduceShield(caster, finalShieldAmount);
             }
         }.runTaskLater(main, 100);
 

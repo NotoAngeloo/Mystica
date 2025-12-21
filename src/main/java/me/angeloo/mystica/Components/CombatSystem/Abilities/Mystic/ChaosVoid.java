@@ -1,12 +1,17 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Mystic;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Root;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.Immune;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
+import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
+import me.angeloo.mystica.CustomEvents.RemoveStealthEffectEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
+import me.angeloo.mystica.Utility.Enums.BarType;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -26,9 +31,8 @@ public class ChaosVoid {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
     private final AbilityManager abilityManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
@@ -38,9 +42,8 @@ public class ChaosVoid {
     public ChaosVoid(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
         abilityManager = manager;
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
@@ -73,7 +76,7 @@ public class ChaosVoid {
 
                 int cooldown = getCooldown(caster) - 1;
 
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 1);
@@ -87,16 +90,30 @@ public class ChaosVoid {
 
         int castTime = 7 * 20;
 
-        buffAndDebuffManager.getImmobile().applyImmobile(caster, castTime);
+        //if stun doesnt work, maybe ill make a clone of stun
+        statusEffectManager.applyEffect(caster, new Root(), castTime, null);
 
         Location start = caster.getLocation().clone();
 
         abilityManager.setCasting(caster, true);
-        buffAndDebuffManager.getImmune().applyImmune(caster, castTime);
+        statusEffectManager.applyEffect(caster, new Immune(), castTime, null);
 
-        double healAmount = (profileManager.getAnyProfile(caster).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(caster)) / 10;
+        double healAmount = (profileManager.getAnyProfile(caster).getTotalHealth() + statusEffectManager.getHealthBuffAmount(caster)) / 10;
 
-        buffAndDebuffManager.getHidden().hidePlayer(caster, false);
+        //instead of using stealth effect, manually do it here
+        caster.setInvisible(true);
+
+        if(caster instanceof Player player){
+            player.getInventory().setItemInMainHand(null);
+            player.getInventory().setItemInOffHand(null);
+            player.getInventory().setHelmet(null);
+            player.getInventory().setChestplate(null);
+            player.getInventory().setLeggings(null);
+            player.getInventory().setBoots(null);
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
+        }
+
+
         new BukkitRunnable(){
             final Location loc = start.clone();
             Vector initialDirection;
@@ -176,11 +193,12 @@ public class ChaosVoid {
                     abilityManager.setCasting(caster, false);
 
                     if(caster instanceof Player){
-                        abilityManager.setCastBar((Player) caster, 0);
+                        abilityManager.setCastBar(caster, 0);
                     }
 
 
-                    buffAndDebuffManager.getHidden().unhidePlayer(caster);
+                    //doesn't actually need to have the effect to call the event and remove stealth
+                    Bukkit.getServer().getPluginManager().callEvent(new RemoveStealthEffectEvent(caster));
                 }
 
                 angle += 5;
@@ -215,13 +233,7 @@ public class ChaosVoid {
 
         Block block = caster.getLocation().subtract(0,1,0).getBlock();
 
-        if(block.getType() == Material.AIR){
-            return false;
-        }
-
-
-
-        return true;
+        return block.getType() != Material.AIR;
     }
 
 }

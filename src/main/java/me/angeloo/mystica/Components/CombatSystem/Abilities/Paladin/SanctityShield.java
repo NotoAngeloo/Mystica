@@ -1,10 +1,9 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Paladin;
 
-import me.angeloo.mystica.CustomEvents.UltimateStatusChageEvent;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Shields.GenericShield;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
+import me.angeloo.mystica.CustomEvents.UltimateStatusChageEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import org.bukkit.Bukkit;
@@ -22,18 +21,16 @@ public class SanctityShield {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public SanctityShield(Mystica main, AbilityManager manager){
+    public SanctityShield(Mystica main){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
     }
 
@@ -65,7 +62,7 @@ public class SanctityShield {
                 }
 
                 int cooldown = getPlayerCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
 
@@ -88,14 +85,15 @@ public class SanctityShield {
         double healAmount = getHealAmount(caster);
         double shield = getShieldAmount(caster);
 
-        buffAndDebuffManager.getGenericShield().applyOrAddShield(caster, shield);
+        statusEffectManager.applyEffect(caster, new GenericShield(), null, shield);
+
 
         new BukkitRunnable(){
             int count = 0;
             @Override
             public void run(){
 
-                if(buffAndDebuffManager.getGenericShield().getCurrentShieldAmount(caster)==0){
+                if(!statusEffectManager.hasShield(caster)){
                     this.cancel();
                     return;
                 }
@@ -103,14 +101,14 @@ public class SanctityShield {
                 if(caster instanceof Player){
                     if(!((Player)caster).isOnline()){
                         this.cancel();
-                        buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(caster, shield);
+                        statusEffectManager.reduceShield(caster, shield);
                         return;
                     }
                 }
 
                 if(profileManager.getAnyProfile(caster).getIfDead()){
                     this.cancel();
-                    buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(caster, shield);
+                    statusEffectManager.reduceShield(caster, shield);
                     return;
                 }
 
@@ -118,7 +116,7 @@ public class SanctityShield {
 
                 if(count>=5){
                     this.cancel();
-                    buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(caster, shield);
+                    statusEffectManager.reduceShield(caster, shield);
                 }
                 count++;
             }
@@ -127,13 +125,13 @@ public class SanctityShield {
     }
 
     public double getShieldAmount(LivingEntity caster){
-        double maxHealth = profileManager.getAnyProfile(caster).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(caster);
+        double maxHealth = profileManager.getAnyProfile(caster).getTotalHealth() + statusEffectManager.getHealthBuffAmount(caster);
         double level = profileManager.getAnyProfile(caster).getStats().getLevel();
         return  (level + 10 / maxHealth) * 100;
     }
 
     public double getHealAmount(LivingEntity caster){
-        double maxHealth = profileManager.getAnyProfile(caster).getTotalHealth()+ buffAndDebuffManager.getHealthBuffAmount(caster);
+        double maxHealth = profileManager.getAnyProfile(caster).getTotalHealth() + statusEffectManager.getHealthBuffAmount(caster);
         double level = profileManager.getAnyProfile(caster).getStats().getLevel();
         return maxHealth * ((level + 5) /100);
     }

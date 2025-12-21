@@ -15,9 +15,10 @@ public class ConcoctionDebuff implements StatusEffect {
         return 15*20;
     }
 
+    //increase damage taken
     @Override
     public double getMagnitude(){
-        return 0.05;
+        return 1.05;
     }
 
 }

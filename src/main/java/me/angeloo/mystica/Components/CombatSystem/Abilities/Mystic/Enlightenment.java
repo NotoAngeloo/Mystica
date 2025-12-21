@@ -1,9 +1,8 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Mystic;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.MysticAbilities;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.GenericDamageReduction;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.UltimateStatusChageEvent;
 import me.angeloo.mystica.Mystica;
@@ -27,8 +26,7 @@ public class Enlightenment {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final DamageCalculator damageCalculator;
 
@@ -39,11 +37,10 @@ public class Enlightenment {
     private final Consolation consolation;
     private final PurifyingBlast purifyingBlast;
 
-    public Enlightenment(Mystica main, AbilityManager manager, MysticAbilities mysticAbilities){
+    public Enlightenment(Mystica main, MysticAbilities mysticAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         damageCalculator = main.getDamageCalculator();
         mana = mysticAbilities.getMana();
@@ -82,14 +79,12 @@ public class Enlightenment {
 
                 int cooldown = getPlayerCooldown(caster) - 1;
 
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
 
                 if(caster instanceof Player){
-                    Bukkit.getScheduler().runTask(main, () ->{
-                        Bukkit.getServer().getPluginManager().callEvent(new UltimateStatusChageEvent((Player) caster));
-                    });
+                    Bukkit.getScheduler().runTask(main, () -> Bukkit.getServer().getPluginManager().callEvent(new UltimateStatusChageEvent((Player) caster)));
 
                 }
 
@@ -126,7 +121,8 @@ public class Enlightenment {
             }
 
             changeResourceHandler.addHealthToEntity(target, healAmount, caster);
-            buffAndDebuffManager.getDamageReduction().applyDamageReduction(target, .6, 20*10);
+
+            statusEffectManager.applyEffect(target, new GenericDamageReduction(), 20*10, 0.6);
 
             if(caster.getWorld() == target.getWorld()){
                 Location start = caster.getLocation();

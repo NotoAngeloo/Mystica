@@ -1,10 +1,11 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Mystic;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Root;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
+import me.angeloo.mystica.CustomEvents.RemoveStealthEffectEvent;
 import me.angeloo.mystica.CustomEvents.UltimateStatusChageEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Enums.BarType;
@@ -29,8 +30,7 @@ public class EvilSpirit {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final AbilityManager abilityManager;
     private final Map<UUID, Integer> chaosShards = new HashMap<>();
     private final Map<UUID, Boolean> isEvilSpirit = new HashMap<>();
@@ -38,8 +38,7 @@ public class EvilSpirit {
     public EvilSpirit(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         abilityManager = manager;
     }
 
@@ -57,7 +56,8 @@ public class EvilSpirit {
         //hide player and display animation. when over, put hat on head
         int castTime = 25;
 
-        buffAndDebuffManager.getImmobile().applyImmobile(caster, castTime);
+        statusEffectManager.applyEffect(caster, new Root(), castTime, null);
+
 
         Location spawnStart = caster.getLocation().clone();
         spawnStart.subtract(0, 1, 0);
@@ -66,7 +66,17 @@ public class EvilSpirit {
 
         abilityManager.setCasting(caster, true);
 
-        buffAndDebuffManager.getHidden().hidePlayer(caster, false);
+        caster.setInvisible(true);
+
+        if(caster instanceof Player player){
+            player.getInventory().setItemInMainHand(null);
+            player.getInventory().setItemInOffHand(null);
+            player.getInventory().setHelmet(null);
+            player.getInventory().setChestplate(null);
+            player.getInventory().setLeggings(null);
+            player.getInventory().setBoots(null);
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
+        }
 
         new BukkitRunnable(){
             final Location loc = current.clone();
@@ -109,7 +119,7 @@ public class EvilSpirit {
                 double percent = ((double) ran / castTime) * 100;
 
                 if(caster instanceof Player){
-                    abilityManager.setCastBar((Player) caster, percent);
+                    abilityManager.setCastBar(caster, percent);
                 }
 
 
@@ -118,7 +128,7 @@ public class EvilSpirit {
                     abilityManager.setCasting(caster, false);
 
                     if(caster instanceof Player){
-                        abilityManager.setCastBar((Player) caster, 0);
+                        abilityManager.setCastBar(caster, 0);
                     }
 
                     evilSpiritTime(caster);
@@ -172,7 +182,7 @@ public class EvilSpirit {
                 if(count >= 30){
                     this.cancel();
                     isEvilSpirit.put(caster.getUniqueId(), false);
-                    buffAndDebuffManager.getHidden().unhidePlayer(caster);
+                    Bukkit.getServer().getPluginManager().callEvent(new RemoveStealthEffectEvent(caster));
                 }
 
                 count++;
@@ -218,8 +228,7 @@ public class EvilSpirit {
 
     public void removeShards(LivingEntity caster){
         chaosShards.put(caster.getUniqueId(), 0);
-        if(caster instanceof Player){
-            Player player = (Player) caster;
+        if(caster instanceof Player player){
             Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 

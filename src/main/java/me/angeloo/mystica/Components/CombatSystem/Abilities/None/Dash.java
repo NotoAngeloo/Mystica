@@ -1,10 +1,10 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.None;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
-import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Misc.SpeedUp;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
+import me.angeloo.mystica.Mystica;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -17,8 +17,7 @@ import java.util.UUID;
 public class Dash {
 
     private final Mystica main;
-    private final CombatManager combatManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
@@ -26,8 +25,7 @@ public class Dash {
 
     public Dash(Mystica main, AbilityManager manager){
         this.main = main;
-        combatManager = manager.getCombatManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
@@ -60,7 +58,7 @@ public class Dash {
                 }
 
                 int cooldown = getCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 2);
@@ -75,7 +73,7 @@ public class Dash {
 
 
         if(caster instanceof Player){
-            buffAndDebuffManager.getSpeedUp().applySpeedUp((Player) caster, .5f);
+            statusEffectManager.applyEffect(caster, new SpeedUp(), null, 0.5);
         }
 
 
@@ -84,7 +82,7 @@ public class Dash {
             @Override
             public void run(){
                 if(caster instanceof Player){
-                    buffAndDebuffManager.getSpeedUp().removeSpeedUp((Player) caster);
+                    statusEffectManager.removeEffect(caster, "speed_up");
                 }
 
             }

@@ -1,18 +1,18 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Mystic;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.MysticAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.MysticAbilities;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Shields.GenericShield;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
-import me.angeloo.mystica.Utility.Logic.PveChecker;
 import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -33,9 +33,8 @@ public class Aurora {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
     private final TargetManager targetManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final DamageCalculator damageCalculator;
     private final PveChecker pveChecker;
@@ -49,9 +48,8 @@ public class Aurora {
     public Aurora(Mystica main, AbilityManager manager, MysticAbilities mysticAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         damageCalculator = main.getDamageCalculator();
         pveChecker = main.getPveChecker();
@@ -98,7 +96,7 @@ public class Aurora {
 
                 int cooldown = getCooldown(caster) - 1;
 
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
 
@@ -120,7 +118,7 @@ public class Aurora {
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_6_Level_Bonus();
         healPercent = healPercent +  ((int)(skillLevel/3));
 
-        double shieldAmount = (profileManager.getAnyProfile(caster).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(caster) + skillLevel) * .5;
+        double shieldAmount = (profileManager.getAnyProfile(caster).getTotalHealth() + statusEffectManager.getHealthBuffAmount(caster) + skillLevel) * .5;
 
         double finalHealPercent = healPercent;
         new BukkitRunnable(){
@@ -167,15 +165,13 @@ public class Aurora {
 
                     for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
-                        if(!(entity instanceof LivingEntity)){
+                        if(!(entity instanceof LivingEntity hitEntity)){
                             continue;
                         }
 
                         if(entity instanceof ArmorStand){
                             continue;
                         }
-
-                        LivingEntity hitEntity = (LivingEntity) entity;
 
                         if(entity instanceof Player){
                             if (pvpManager.pvpLogic(caster, (Player) hitEntity)) {
@@ -201,12 +197,12 @@ public class Aurora {
 
                         hitBySkill.add(hitEntity);
 
-                        buffAndDebuffManager.getGenericShield().applyOrAddShield(hitEntity, shieldAmount);
+                        statusEffectManager.applyEffect(hitEntity, new GenericShield(), null, shieldAmount);
 
                         new BukkitRunnable(){
                             @Override
                             public void run(){
-                                buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(hitEntity, shieldAmount);
+                                statusEffectManager.reduceShield(hitEntity, shieldAmount);
                             }
                         }.runTaskLater(main, 200);
                     }
@@ -265,7 +261,7 @@ public class Aurora {
 
         double distance = caster.getLocation().distance(target.getLocation());
 
-        if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+        if(distance > range + statusEffectManager.getAdditionalRange(caster)){
             return false;
         }
 

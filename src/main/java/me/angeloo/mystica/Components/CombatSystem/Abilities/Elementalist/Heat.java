@@ -1,8 +1,8 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Elementalist;
 
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.CustomEvents.HealthChangeEvent;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
@@ -20,7 +20,7 @@ public class Heat {
 
     private final ProfileManager profileManager;
     private final ChangeResourceHandler changeResourceHandler;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
 
     private final Map<UUID, Integer> manaAmount = new HashMap<>();
 
@@ -29,7 +29,7 @@ public class Heat {
     public Heat(Mystica main){
         profileManager = main.getProfileManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
     }
 
     public void reduceHeat(LivingEntity caster, int cost){
@@ -42,8 +42,7 @@ public class Heat {
         manaAmount.put(caster.getUniqueId(), newCurrentMana);
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(caster, true));
 
-        if(caster instanceof Player){
-            Player player = (Player) caster;
+        if(caster instanceof Player player){
             Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource));
         }
     }
@@ -55,7 +54,7 @@ public class Heat {
         if(newCurrentMana > maxMana){
 
             //damage entity 10%
-            double maxHp = profileManager.getAnyProfile(entity).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(entity);
+            double maxHp = profileManager.getAnyProfile(entity).getTotalHealth() + statusEffectManager.getHealthBuffAmount(entity);
             changeResourceHandler.subtractHealthFromEntity(entity, maxHp * .1, null, false);
             entity.getWorld().spawnParticle(Particle.FLAME, entity.getLocation(), 50, .5, 1, .5, 0);
 
@@ -64,8 +63,7 @@ public class Heat {
         manaAmount.put(entity.getUniqueId(), newCurrentMana);
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, true));
 
-        if(entity instanceof Player){
-            Player player = (Player) entity;
+        if(entity instanceof Player player){
             Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource));
         }
     }

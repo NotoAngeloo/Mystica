@@ -1,15 +1,15 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Paladin;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.PaladinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PaladinAbilities;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.Haste;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Location;
@@ -29,11 +29,10 @@ public class SpiritualGift {
 
     private final ProfileManager profileManager;
     private final DamageCalculator damageCalculator;
-    private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
@@ -46,11 +45,10 @@ public class SpiritualGift {
         this.main = main;
         profileManager = main.getProfileManager();
         damageCalculator = main.getDamageCalculator();
-        combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         purity = paladinAbilities.getPurity();
@@ -113,7 +111,7 @@ public class SpiritualGift {
 
     private double getRange(LivingEntity caster){
         double baseRange = 12;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(caster);
+        double extraRange = statusEffectManager.getAdditionalRange(caster);
         return baseRange + extraRange;
     }
 
@@ -121,8 +119,7 @@ public class SpiritualGift {
 
         //every 15 levels is a +1
 
-
-        buffAndDebuffManager.getHaste().applyHaste(target, 3, getDuration(caster));
+        statusEffectManager.applyEffect(target, new Haste(), getDuration(caster), 3.0);
 
         double finalHealPower = getHealPower(caster);
         new BukkitRunnable(){
@@ -237,11 +234,7 @@ public class SpiritualGift {
         }
 
 
-        if(getCooldown(caster) > 0){
-            return false;
-        }
-
-        return true;
+        return getCooldown(caster) <= 0;
     }
 
 

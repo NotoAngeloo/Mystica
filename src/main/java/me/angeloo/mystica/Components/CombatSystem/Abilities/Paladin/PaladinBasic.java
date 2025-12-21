@@ -3,10 +3,7 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Paladin;
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.PaladinAbilities;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
-import me.angeloo.mystica.Components.CombatSystem.FakePlayerTargetManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -14,8 +11,8 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
-import me.angeloo.mystica.Utility.Logic.PveChecker;
 import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -42,16 +39,13 @@ public class PaladinBasic {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
     private final TargetManager targetManager;
-    private final FakePlayerTargetManager fakePlayerTargetManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final DamageCalculator damageCalculator;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
 
-    private final Purity purity;
     private final Representative representative;
     private final JusticeMark justiceMark;
     private final GloryOfPaladins gloryOfPaladins;
@@ -61,21 +55,18 @@ public class PaladinBasic {
 
     private final Map<UUID, BukkitTask> removeBasicStageTaskMap = new HashMap<>();
 
-    public PaladinBasic(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
+    public PaladinBasic(Mystica main, PaladinAbilities paladinAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
-        fakePlayerTargetManager = main.getFakePlayerTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         representative = paladinAbilities.getRepresentative();
         gloryOfPaladins = paladinAbilities.getGloryOfPaladins();
         justiceMark = paladinAbilities.getJusticeMark();
-        purity = paladinAbilities.getPurity();
     }
 
     public void useBasic(LivingEntity caster){
@@ -102,7 +93,7 @@ public class PaladinBasic {
             @Override
             public void run(){
 
-                if(buffAndDebuffManager.getIfBasicInterrupt(caster)){
+                if(!statusEffectManager.canBasic(caster)){
                     this.cancel();
                     stopBasicRunning(caster);
                     return;
@@ -127,7 +118,7 @@ public class PaladinBasic {
 
     private double getRange(LivingEntity caster){
         double baseRange = 10;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(caster);
+        double extraRange = statusEffectManager.getAdditionalRange(caster);
         return baseRange + extraRange;
     }
 
@@ -270,30 +261,23 @@ public class PaladinBasic {
 
                 tryToRemoveBasicStage(caster);
 
-                switch (getStage(caster)){
-                    case 1:{
+                switch (getStage(caster)) {
+                    case 1 -> {
                         basicStage1(caster, 2);
-                        break;
                     }
-                    case 2:{
+                    case 2 -> {
                         basicStage1(caster, 3);
-                        break;
                     }
-                    case 3:{
+                    case 3 -> {
                         basicStage1(caster, 4);
-                        break;
                     }
-                    case 4:{
+                    case 4 -> {
                         basicStage1(caster, 5);
-                        break;
                     }
-                    case 5:{
+                    case 5 -> {
                         basicStage5(caster);
-                        break;
 
                     }
-
-
                 }
 
             }

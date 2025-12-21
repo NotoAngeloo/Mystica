@@ -28,7 +28,7 @@ public class WarriorAbilities {
         profileManager = main.getProfileManager();
 
         rage = new Rage(main, manager);
-        warriorBasic = new WarriorBasic(main, manager, this);
+        warriorBasic = new WarriorBasic(main, this);
         lavaQuake = new LavaQuake(main, manager, this);
         searingChains = new SearingChains(main, manager, this);
         tempestRage = new TempestRage(main, manager, this);
@@ -37,8 +37,8 @@ public class WarriorAbilities {
         flamingSigil = new FlamingSigil(main, manager);
         burningBlessing = new BurningBlessing(main, manager);
         magmaSpikes = new MagmaSpikes(main, manager, this);
-        gladiatorHeart = new GladiatorHeart(main, manager);
-        deathGaze = new DeathGaze(main, manager, this);
+        gladiatorHeart = new GladiatorHeart(main);
+        deathGaze = new DeathGaze(main, this);
     }
 
     public void useWarriorAbility(LivingEntity caster, int abilityNumber){

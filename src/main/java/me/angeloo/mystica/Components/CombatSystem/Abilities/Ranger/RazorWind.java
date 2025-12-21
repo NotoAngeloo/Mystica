@@ -1,19 +1,19 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Ranger;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.RangerAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.RangerAbilities;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.Haste;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
-import me.angeloo.mystica.Utility.Logic.PveChecker;
 import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -37,12 +37,11 @@ public class RazorWind {
 
     private final ProfileManager profileManager;
     private final AbilityManager abilityManager;
-    private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final DamageCalculator damageCalculator;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
     private final StarVolley starVolley;
@@ -55,12 +54,11 @@ public class RazorWind {
         this.main = main;
         profileManager = main.getProfileManager();
         abilityManager = manager;
-        combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         starVolley = rangerAbilities.getStarVolley();
@@ -98,7 +96,7 @@ public class RazorWind {
                 }
 
                 int cooldown = getCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 4);
@@ -110,7 +108,7 @@ public class RazorWind {
 
     private double getRange(LivingEntity caster){
         double baseRange = 20;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(caster);
+        double extraRange = statusEffectManager.getAdditionalRange(caster);
         return baseRange + extraRange;
     }
 
@@ -124,7 +122,7 @@ public class RazorWind {
 
         double castTime = 20;
 
-        castTime = castTime - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+        castTime = castTime - statusEffectManager.getHasteLevel(caster);
 
         abilityManager.setCasting(caster, true);
 
@@ -149,7 +147,7 @@ public class RazorWind {
                     }
                 }
 
-                if(buffAndDebuffManager.getIfInterrupt(caster)){
+                if(!statusEffectManager.canCast(caster)){
                     this.cancel();
                     abilityManager.setCasting(caster, false);
 
@@ -300,7 +298,7 @@ public class RazorWind {
 
                                 if(scout && crit){
                                     starVolley.decreaseCooldown(caster);
-                                    buffAndDebuffManager.getHaste().applyHaste(caster, 1, 2*20);
+                                    statusEffectManager.applyEffect(caster, new Haste(), 2*20, 1.0);
                                 }
 
                                 double damage = damageCalculator.calculateDamage(caster, target, "Physical", skillDamage, crit);
@@ -393,11 +391,7 @@ public class RazorWind {
             return false;
         }
 
-        if(getCooldown(caster) > 0){
-            return false;
-        }
-
-        return true;
+        return getCooldown(caster) <= 0;
     }
 
 }

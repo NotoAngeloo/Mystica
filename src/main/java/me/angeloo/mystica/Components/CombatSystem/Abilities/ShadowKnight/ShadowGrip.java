@@ -1,21 +1,23 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.ShadowKnight;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.ShadowKnightAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.ShadowKnightAbilities;
 import me.angeloo.mystica.Components.CombatSystem.AggroManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Pulled;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
-import me.angeloo.mystica.Utility.Logic.PveChecker;
 import me.angeloo.mystica.Utility.Enums.SubClass;
-import org.bukkit.*;
+import me.angeloo.mystica.Utility.Logic.PveChecker;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -35,12 +37,11 @@ public class ShadowGrip {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final DamageCalculator damageCalculator;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final AggroManager aggroManager;
     private final CooldownDisplayer cooldownDisplayer;
@@ -53,12 +54,11 @@ public class ShadowGrip {
     public ShadowGrip(Mystica main, AbilityManager manager, ShadowKnightAbilities shadowKnightAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         aggroManager = main.getAggroManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
@@ -74,7 +74,7 @@ public class ShadowGrip {
         }
 
 
-        targetManager.setTargetToNearestValid(caster, range + buffAndDebuffManager.getTotalRangeModifier(caster));
+        targetManager.setTargetToNearestValid(caster, range + statusEffectManager.getAdditionalRange(caster));
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
@@ -102,7 +102,7 @@ public class ShadowGrip {
                 }
 
                 int cooldown = getCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 6);
@@ -245,7 +245,7 @@ public class ShadowGrip {
 
                     if(targetStillValid(target) && profileManager.getAnyProfile(target).getIsMovable()){
                         pulled = true;
-                        buffAndDebuffManager.getPulled().applyPull(target);
+                        statusEffectManager.applyEffect(target, new Pulled(), null, null);
                     }
 
                     going = false;
@@ -280,7 +280,7 @@ public class ShadowGrip {
                 armorStand.remove();
                 //abilityManager.setSkillRunning(player, false);
                 if(pulled){
-                    buffAndDebuffManager.getPulled().removePull(target);
+                    statusEffectManager.removeEffect(target, "pull");
                 }
             }
 
@@ -354,7 +354,7 @@ public class ShadowGrip {
 
             double distance = caster.getLocation().distance(target.getLocation());
 
-            if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+            if(distance > range + statusEffectManager.getAdditionalRange(caster)){
                 return false;
             }
 

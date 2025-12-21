@@ -1,16 +1,17 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Warrior;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.WarriorAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.WarriorAbilities;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Stun;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
+import me.angeloo.mystica.Components.Hud.BossCastingManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -39,13 +40,13 @@ public class MeteorCrater {
     private final Mystica main;
     private final ProfileManager profileManager;
     private final TargetManager targetManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
-    private final CombatManager combatManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final DamageCalculator damageCalculator;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final CooldownDisplayer cooldownDisplayer;
+    private final BossCastingManager bossCastingManager;
 
     private final Rage rage;
 
@@ -56,14 +57,14 @@ public class MeteorCrater {
         this.main = main;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
-        combatManager = manager.getCombatManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         rage = warriorAbilities.getRage();
+        bossCastingManager = main.getBossCastingManager();
     }
 
     public void use(LivingEntity caster){
@@ -97,7 +98,7 @@ public class MeteorCrater {
                 }
 
                 int cooldown = getCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 4);
@@ -179,7 +180,7 @@ public class MeteorCrater {
                     }
                 }
 
-                if(buffAndDebuffManager.getIfInterrupt(caster)){
+                if(!statusEffectManager.canCast(caster)){
                     cancelTask();
                     //abilityManager.setSkillRunning(player, false);
                     return;
@@ -264,7 +265,7 @@ public class MeteorCrater {
                             continue;
                         }
 
-                        if(!(entity instanceof LivingEntity)){
+                        if(!(entity instanceof LivingEntity livingEntity)){
                             continue;
                         }
 
@@ -272,11 +273,9 @@ public class MeteorCrater {
                             continue;
                         }
 
-                        LivingEntity livingEntity = (LivingEntity) entity;
-
                         boolean crit = damageCalculator.checkIfCrit(caster, 0);
 
-                        double healthPercent = profileManager.getAnyProfile(livingEntity).getCurrentHealth() / (profileManager.getAnyProfile(livingEntity).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(livingEntity));
+                        double healthPercent = profileManager.getAnyProfile(livingEntity).getCurrentHealth() / (profileManager.getAnyProfile(livingEntity).getTotalHealth() + statusEffectManager.getHealthBuffAmount(livingEntity));
 
                         double bonus = 1;
 
@@ -290,7 +289,7 @@ public class MeteorCrater {
                         if(entity instanceof Player){
                             if(pvpManager.pvpLogic(caster, (Player) entity)){
                                 changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
-                                buffAndDebuffManager.getBossInterrupt().interrupt(caster, target);
+                                bossCastingManager.interrupt(caster, target);
                                 stunEntity(target);
                             }
                             continue;
@@ -299,7 +298,7 @@ public class MeteorCrater {
                         if(pveChecker.pveLogic(livingEntity)){
                             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
                             changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
-                            buffAndDebuffManager.getBossInterrupt().interrupt(caster, target);
+                            bossCastingManager.interrupt(caster, target);
                             stunEntity(target);
                         }
 
@@ -322,7 +321,7 @@ public class MeteorCrater {
                 }
 
                 //should be stun instead
-                buffAndDebuffManager.getStun().applyStun(target, 20);
+                statusEffectManager.applyEffect(target, new Stun(), 20, null);
             }
 
             private void cancelTask(){
@@ -368,12 +367,7 @@ public class MeteorCrater {
             return false;
         }
 
-        if(rage.getCurrentRage(caster) < getCost()){
-            //Bukkit.getLogger().info("not enough rage (" + rage.getCurrentRage(caster) + " out of " + getCost() + ")");
-            return false;
-        }
-
-        return true;
+        return rage.getCurrentRage(caster) >= getCost();
     }
 
     public int returnWhichItem(Player player){

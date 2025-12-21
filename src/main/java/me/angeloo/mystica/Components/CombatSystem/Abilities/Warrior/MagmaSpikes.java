@@ -1,15 +1,15 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Warrior;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.WarriorAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.WarriorAbilities;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.KnockUp;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -36,11 +36,10 @@ public class MagmaSpikes {
     private final Mystica main;
     private final ProfileManager profileManager;
     private final AbilityManager abilityManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final DamageCalculator damageCalculator;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
-    private final CombatManager combatManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
     private final Rage rage;
@@ -52,9 +51,8 @@ public class MagmaSpikes {
         this.main = main;
         profileManager = main.getProfileManager();
         abilityManager = manager;
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         damageCalculator = main.getDamageCalculator();
-        combatManager = manager.getCombatManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         changeResourceHandler = main.getChangeResourceHandler();
@@ -90,7 +88,7 @@ public class MagmaSpikes {
                 }
 
                 int cooldown = getCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 7);
@@ -132,7 +130,7 @@ public class MagmaSpikes {
                     return;
                 }
 
-                if(buffAndDebuffManager.getIfInterrupt(caster)){
+                if(!statusEffectManager.canCast(caster)){
                     cancelTask();
                     return;
                 }
@@ -199,15 +197,13 @@ public class MagmaSpikes {
                                 continue;
                             }
 
-                            if(!(entity instanceof LivingEntity)){
+                            if(!(entity instanceof LivingEntity livingEntity)){
                                 continue;
                             }
 
                             if(entity instanceof ArmorStand){
                                 continue;
                             }
-
-                            LivingEntity livingEntity = (LivingEntity) entity;
 
                             boolean crit = damageCalculator.checkIfCrit(caster, 0);
 
@@ -222,7 +218,7 @@ public class MagmaSpikes {
                                     if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
                                         Vector velocity = (new Vector(0, .75, 0));
                                         livingEntity.setVelocity(velocity);
-                                        buffAndDebuffManager.getKnockUp().applyKnockUp(livingEntity);
+                                        statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, null);
                                     }
                                 }
                                 continue;
@@ -236,7 +232,7 @@ public class MagmaSpikes {
                                 if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
                                     Vector velocity = (new Vector(0, .75, 0));
                                     livingEntity.setVelocity(velocity);
-                                    buffAndDebuffManager.getKnockUp().applyKnockUp(livingEntity);
+                                    statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, null);
                                 }
                             }
 

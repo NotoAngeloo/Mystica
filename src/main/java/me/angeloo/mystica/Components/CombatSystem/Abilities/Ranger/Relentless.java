@@ -1,19 +1,20 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Ranger;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.RangerAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.RangerAbilities;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.Haste;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Misc.SpeedUp;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
-import me.angeloo.mystica.Utility.Logic.PveChecker;
 import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -35,12 +36,11 @@ public class Relentless {
 
     private final ProfileManager profileManager;
     private final AbilityManager abilityManager;
-    private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final DamageCalculator damageCalculator;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
     private final StarVolley starVolley;
@@ -53,12 +53,11 @@ public class Relentless {
         this.main = main;
         profileManager = main.getProfileManager();
         abilityManager = manager;
-        combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         focus = rangerAbilities.getFocus();
@@ -97,7 +96,7 @@ public class Relentless {
                 }
 
                 int cooldown = getCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 3);
@@ -110,7 +109,7 @@ public class Relentless {
 
     private double getRange(LivingEntity caster){
         double baseRange = 20;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(caster);
+        double extraRange = statusEffectManager.getAdditionalRange(caster);
         return baseRange + extraRange;
     }
 
@@ -122,14 +121,14 @@ public class Relentless {
 
         double castTime = 15;
 
-        castTime = castTime - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+        castTime = castTime - statusEffectManager.getHasteLevel(caster);
 
         double skillDamage = getSkillDamage(caster);
 
         abilityManager.setCasting(caster, true);
 
         if(caster instanceof Player){
-            buffAndDebuffManager.getSpeedUp().applySpeedUp((Player) caster, .5f);
+            statusEffectManager.applyEffect(caster, new SpeedUp(), null, 0.5);
         }
 
 
@@ -149,7 +148,7 @@ public class Relentless {
                     }
                 }
 
-                if(buffAndDebuffManager.getIfInterrupt(caster)){
+                if(!statusEffectManager.canCast(caster)){
                     cancelTask();
                     return;
                 }
@@ -230,7 +229,7 @@ public class Relentless {
 
                             if(scout && crit){
                                 starVolley.decreaseCooldown(caster);
-                                buffAndDebuffManager.getHaste().applyHaste(caster, 1, 2*20);
+                                statusEffectManager.applyEffect(caster, new Haste(), 2*20, 1.0);
                             }
 
                             double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
@@ -274,7 +273,7 @@ public class Relentless {
                 abilityManager.setCastBar(caster, 0);
 
                 if(caster instanceof Player){
-                    buffAndDebuffManager.getSpeedUp().removeSpeedUp((Player) caster);
+                    statusEffectManager.removeEffect(caster, "speed_up");
                 }
 
 

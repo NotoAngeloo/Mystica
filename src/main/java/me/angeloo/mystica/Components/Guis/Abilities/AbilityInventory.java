@@ -24,13 +24,11 @@ public class AbilityInventory implements Listener {
     private final ProfileManager profileManager;
     private final DisplayWeapons displayWeapons;
     private final AllSkillItems allSkillItems;
-    private final InventoryItemGetter inventoryItemGetter;
     private final SpecInventory specInventory;
 
     public AbilityInventory(Mystica main){
         profileManager = main.getProfileManager();
         allSkillItems = main.getAllSkillItems();
-        inventoryItemGetter = main.getItemGetter();
         displayWeapons = main.getDisplayWeapons();
         specInventory = new SpecInventory(main, this);
     }

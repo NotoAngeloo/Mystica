@@ -12,11 +12,6 @@ public class WellCrit implements StatusEffect {
     }
 
     @Override
-    public int getDuration() {
-        return -1;
-    }
-
-    @Override
     public int getPriority() {
         return 1;
     }

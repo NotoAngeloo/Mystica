@@ -1,23 +1,21 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Assassin;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AssassinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AssassinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.PierceBuff;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
-import me.angeloo.mystica.Utility.EquipmentSlot;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
-import me.angeloo.mystica.Utility.InventoryItemGetter;
-import me.angeloo.mystica.Utility.Logic.PveChecker;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
+import me.angeloo.mystica.Utility.EquipmentSlot;
+import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -38,11 +36,9 @@ public class Pierce {
 
     private final MysticaEquipment weapon;
     private final Mystica main;
-    private final InventoryItemGetter inventoryItemGetter;
     private final ProfileManager profileManager;
     private final TargetManager targetManager;
     private final StatusEffectManager statusEffectManager;
-    private final CombatManager combatManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final DamageCalculator damageCalculator;
     private final PvpManager pvpManager;
@@ -57,11 +53,9 @@ public class Pierce {
 
     public Pierce(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
         this.main = main;
-        inventoryItemGetter = main.getItemGetter();
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
-        combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();

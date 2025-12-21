@@ -1,19 +1,19 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Ranger;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.RangerAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.RangerAbilities;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.Haste;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
-import me.angeloo.mystica.Utility.Logic.PveChecker;
 import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -38,12 +38,11 @@ public class BitingRain {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final DamageCalculator damageCalculator;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
@@ -56,12 +55,11 @@ public class BitingRain {
     public BitingRain(Mystica main, AbilityManager manager, RangerAbilities rangerAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         focus = rangerAbilities.getFocus();
@@ -76,7 +74,7 @@ public class BitingRain {
             abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        targetManager.setTargetToNearestValid(caster, range + buffAndDebuffManager.getTotalRangeModifier(caster));
+        targetManager.setTargetToNearestValid(caster, range + statusEffectManager.getAdditionalRange(caster));
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
@@ -102,7 +100,7 @@ public class BitingRain {
                 }
 
                 int cooldown = getCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 1);
@@ -216,15 +214,13 @@ public class BitingRain {
                             continue;
                         }
 
-                        if(!(entity instanceof LivingEntity)){
+                        if(!(entity instanceof LivingEntity livingEntity)){
                             continue;
                         }
 
                         if(entity instanceof ArmorStand){
                             continue;
                         }
-
-                        LivingEntity livingEntity = (LivingEntity) entity;
 
                         if(hitBySkill.contains(livingEntity)){
                             continue;
@@ -236,7 +232,7 @@ public class BitingRain {
 
                         if(scout && crit){
                             starVolley.decreaseCooldown(caster);
-                            buffAndDebuffManager.getHaste().applyHaste(caster, 1, 2*20);
+                            statusEffectManager.applyEffect(caster, new Haste(), 2*20, 1.0);
                         }
 
                         double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Physical", finalSkillDamage, crit));
@@ -368,7 +364,7 @@ public class BitingRain {
 
             double distance = caster.getLocation().distance(target.getLocation());
 
-            if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+            if(distance > range + statusEffectManager.getAdditionalRange(caster)){
                 return false;
             }
         }

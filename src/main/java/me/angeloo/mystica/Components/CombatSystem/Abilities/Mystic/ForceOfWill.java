@@ -1,17 +1,17 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Mystic;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
-import me.angeloo.mystica.Utility.Logic.PveChecker;
 import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -34,7 +34,7 @@ public class ForceOfWill {
     private final PveChecker pveChecker;
     private final PvpManager pvpManager;
     private final DamageCalculator damageCalculator;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final AbilityManager abilityManager;
     private final CooldownDisplayer cooldownDisplayer;
@@ -50,7 +50,7 @@ public class ForceOfWill {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
@@ -85,7 +85,7 @@ public class ForceOfWill {
                 }
 
                 int cooldown = getCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 3);
@@ -99,7 +99,7 @@ public class ForceOfWill {
 
         abilityManager.setCasting(caster, true);
         double castTime = 4;
-        castTime = castTime - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+        castTime = castTime - statusEffectManager.getHasteLevel(caster);
         castTime = castTime * 20;
 
         double shield = profileManager.getAnyProfile(target).getTotalHealth() * .25;
@@ -118,20 +118,20 @@ public class ForceOfWill {
                         this.cancel();
                         abilityManager.setCasting(caster, false);
                         abilityManager.setCastBar((Player) caster, 0);
-                        buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(caster, shield);
+                        statusEffectManager.reduceShield(caster, shield);
                         buffAndDebuffManager.getPassThrough().removePassThrough(target);
                         return;
                     }
                 }
 
-                if(buffAndDebuffManager.getIfInterrupt(caster)){
+                if(!statusEffectManager.canCast(caster)){
                     this.cancel();
                     abilityManager.setCasting(caster, false);
                     if(caster instanceof Player){
                         abilityManager.setCastBar((Player) caster, 0);
                     }
 
-                    buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(caster, shield);
+                    statusEffectManager.reduceShield(caster, shield);
                     buffAndDebuffManager.getPassThrough().removePassThrough(target);
                     return;
                 }
@@ -152,7 +152,7 @@ public class ForceOfWill {
                         abilityManager.setCastBar((Player) caster, 0);
                     }
 
-                    buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(caster, shield);
+                    statusEffectManager.reduceShield(caster, shield);
                     buffAndDebuffManager.getPassThrough().removePassThrough(target);
                     return;
                 }
@@ -166,7 +166,7 @@ public class ForceOfWill {
                     }
 
 
-                    buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(caster, shield);
+                    statusEffectManager.reduceShield(caster, shield);
                     buffAndDebuffManager.getPassThrough().removePassThrough(target);
                     return;
                 }
@@ -200,7 +200,7 @@ public class ForceOfWill {
                     }
 
 
-                    buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(caster, shield);
+                    statusEffectManager.reduceShield(caster, shield);
                     buffAndDebuffManager.getPassThrough().removePassThrough(target);
                 }
 
@@ -236,7 +236,7 @@ public class ForceOfWill {
 
         abilityManager.setCasting(caster, true);
         double castTime = 4;
-        castTime = castTime - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+        castTime = castTime - statusEffectManager.getHasteLevel(caster);
         castTime = castTime * 20;
 
         double skillDamage = getSkillDamage(caster)/castTime;
@@ -257,7 +257,7 @@ public class ForceOfWill {
                     }
                 }
 
-                if(buffAndDebuffManager.getIfInterrupt(caster)){
+                if(!statusEffectManager.canCast(caster)){
                     this.cancel();
                     abilityManager.setCasting(caster, false);
 
@@ -318,7 +318,7 @@ public class ForceOfWill {
                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
 
                 if(target instanceof Player){
-                    buffAndDebuffManager.getGenericShield().removeShields(target);
+                    statusEffectManager.removeEffect(target, "shield");
                 }
 
                 changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
@@ -356,7 +356,7 @@ public class ForceOfWill {
 
     private double getRange(LivingEntity caster){
         double baseRange = 20;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(caster);
+        double extraRange = statusEffectManager.getAdditionalRange(caster);
         return baseRange + extraRange;
     }
 

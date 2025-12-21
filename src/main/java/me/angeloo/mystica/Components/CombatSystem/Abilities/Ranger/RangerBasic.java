@@ -3,9 +3,8 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Ranger;
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.RangerAbilities;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.KnockUp;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -17,7 +16,6 @@ import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -37,12 +35,11 @@ public class RangerBasic {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final DamageCalculator damageCalculator;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
 
     private final RallyingCry rallyingCry;
@@ -55,16 +52,15 @@ public class RangerBasic {
 
     private final Focus focus;
 
-    public RangerBasic(Mystica main, AbilityManager manager, RangerAbilities rangerAbilities){
+    public RangerBasic(Mystica main, RangerAbilities rangerAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
         rallyingCry = rangerAbilities.getRallyingCry();
-        combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         focus = rangerAbilities.getFocus();
     }
@@ -119,7 +115,7 @@ public class RangerBasic {
 
     private double getRange(LivingEntity caster){
         double baseRange = 20;
-        double extraRange = buffAndDebuffManager.getTotalRangeModifier(caster);
+        double extraRange = statusEffectManager.getAdditionalRange(caster);
         return  baseRange + extraRange;
     }
 
@@ -130,7 +126,7 @@ public class RangerBasic {
             @Override
             public void run(){
 
-                if(buffAndDebuffManager.getIfBasicInterrupt(caster)){
+                if(!statusEffectManager.canBasic(caster)){
                     this.cancel();
                     stopBasicRunning(caster);
                     return;
@@ -406,7 +402,7 @@ public class RangerBasic {
                             Vector awayDirection = target.getLocation().toVector().subtract(caster.getLocation().toVector()).normalize();
                             Vector velocity = awayDirection.multiply(.75).add(new Vector(0, .5, 0));
                             target.setVelocity(velocity);
-                            buffAndDebuffManager.getKnockUp().applyKnockUp(target);
+                            statusEffectManager.applyEffect(target, new KnockUp(), null, null);
                         }
                     }
                 }

@@ -1,19 +1,20 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Ranger;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.RangerAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.RangerAbilities;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.Haste;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.ShadowCrowsDebuff;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
-import me.angeloo.mystica.Utility.Logic.PveChecker;
 import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -36,12 +37,11 @@ public class ShadowCrows {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final DamageCalculator damageCalculator;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
     private final Focus focus;
@@ -53,12 +53,11 @@ public class ShadowCrows {
     public ShadowCrows(Mystica main, AbilityManager manager, RangerAbilities rangerAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         starVolley = rangerAbilities.getStarVolley();
@@ -73,7 +72,7 @@ public class ShadowCrows {
             abilityReadyInMap.put(caster.getUniqueId(), 0);
         }
 
-        targetManager.setTargetToNearestValid(caster, range + buffAndDebuffManager.getTotalRangeModifier(caster));
+        targetManager.setTargetToNearestValid(caster, range + statusEffectManager.getAdditionalRange(caster));
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
@@ -99,7 +98,7 @@ public class ShadowCrows {
                 }
 
                 int cooldown = getCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 2);
@@ -178,7 +177,7 @@ public class ShadowCrows {
                     crowTask();
 
                     if(tamer){
-                        buffAndDebuffManager.getShadowCrowsDebuff().applyDebuff(target, 15 * 20);
+                        statusEffectManager.applyEffect(target, new ShadowCrowsDebuff(), null, null);
                     }
 
                 }
@@ -243,7 +242,7 @@ public class ShadowCrows {
 
                             if(scout && crit){
                                 starVolley.decreaseCooldown(caster);
-                                buffAndDebuffManager.getHaste().applyHaste(caster, 1, 2*20);
+                                statusEffectManager.applyEffect(caster, new Haste(), 2*20, 1.0);
                             }
 
                             double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
@@ -252,7 +251,7 @@ public class ShadowCrows {
                             changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
                             if(target instanceof Player){
-                                buffAndDebuffManager.getGenericShield().removeShields(target);
+                                statusEffectManager.removeEffect(target, "shield");
                             }
 
                         }
@@ -324,7 +323,7 @@ public class ShadowCrows {
 
             double distance = caster.getLocation().distance(target.getLocation());
 
-            if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+            if(distance > range + statusEffectManager.getAdditionalRange(caster)){
                 return false;
             }
 

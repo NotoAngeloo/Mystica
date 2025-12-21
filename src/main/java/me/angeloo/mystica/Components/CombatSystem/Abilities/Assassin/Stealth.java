@@ -1,21 +1,21 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Assassin;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AssassinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AssassinAbilities;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Misc.StealthEffect;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
-import me.angeloo.mystica.Components.CombatSystem.PvpManager;
-import me.angeloo.mystica.Components.CombatSystem.TargetManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
-import me.angeloo.mystica.Utility.Enums.BarType;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.Logic.StealthTargetBlacklist;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -31,10 +31,7 @@ public class Stealth {
 
     private final ProfileManager profileManager;
     private final StealthTargetBlacklist stealthTargetBlacklist;
-    private final PvpManager pvpManager;
-    private final TargetManager targetManager;
     private final DamageCalculator damageCalculator;
-    private final CombatManager combatManager;
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
@@ -49,10 +46,7 @@ public class Stealth {
         this.main = main;
         profileManager = main.getProfileManager();
         stealthTargetBlacklist = main.getStealthTargetBlacklist();
-        pvpManager = main.getPvpManager();
-        targetManager = main.getTargetManager();
         damageCalculator = main.getDamageCalculator();
-        combatManager = manager.getCombatManager();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
@@ -108,7 +102,7 @@ public class Stealth {
                 caster.getWorld().spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, particleLocation, 10, 0.3, 0.5, 0.3, 0.05);
 
                 if(count >= 5){
-                    buffAndDebuffManager.getHidden().hidePlayer(caster, true);
+                    statusEffectManager.applyEffect(caster, new StealthEffect(), null, null);
                     stealthTargetBlacklist.add(caster);
                     stealthed.put(caster.getUniqueId(), true);
                     if (caster instanceof Player player) {
@@ -165,8 +159,7 @@ public class Stealth {
     }
 
     public void reveal(LivingEntity caster){
-
-        buffAndDebuffManager.getHidden().unhidePlayer(caster);
+        statusEffectManager.removeEffect(caster, "stealth");
         stealthTargetBlacklist.remove(caster);
         stealthed.put(caster.getUniqueId(), false);
         if(caster instanceof Player player){
@@ -176,8 +169,7 @@ public class Stealth {
     }
 
     private void forceReveal(LivingEntity caster, LivingEntity victim){
-
-        buffAndDebuffManager.getHidden().unhidePlayer(caster);
+        statusEffectManager.removeEffect(caster, "stealth");
         stealthTargetBlacklist.remove(caster);
         stealthed.put(caster.getUniqueId(), false);
         if(caster instanceof Player player){

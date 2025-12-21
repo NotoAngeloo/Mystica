@@ -1,9 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Assassin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AssassinAbilities;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -32,7 +30,6 @@ public class DuelistsFrenzy {
     private final ProfileManager profileManager;
     private final TargetManager targetManager;
     private final StatusEffectManager statusEffectManager;
-    private final CombatManager combatManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final DamageCalculator damageCalculator;
     private final PvpManager pvpManager;
@@ -46,12 +43,11 @@ public class DuelistsFrenzy {
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
 
-    public DuelistsFrenzy(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
+    public DuelistsFrenzy(Mystica main, AssassinAbilities assassinAbilities){
         this.main = main;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
-        combatManager = manager.getCombatManager();
         changeResourceHandler = main.getChangeResourceHandler();
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();

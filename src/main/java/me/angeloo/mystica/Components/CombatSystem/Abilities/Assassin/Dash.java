@@ -3,11 +3,8 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Assassin;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Misc.SpeedUp;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
-import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
-import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
+import me.angeloo.mystica.Mystica;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -20,10 +17,7 @@ import java.util.UUID;
 public class Dash {
 
     private final Mystica main;
-    private final ProfileManager profileManager;
-    private final CombatManager combatManager;
     private final StatusEffectManager statusEffectManager;
-    private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
@@ -31,10 +25,7 @@ public class Dash {
 
     public Dash(Mystica main, AbilityManager manager){
         this.main = main;
-        profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
         statusEffectManager = main.getStatusEffectManager();
-        changeResourceHandler = main.getChangeResourceHandler();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
@@ -45,11 +36,9 @@ public class Dash {
         }
 
         //figure something else later
-        if(!(caster instanceof Player)){
+        if(!(caster instanceof Player player)){
             return;
         }
-
-        Player player = (Player) caster;
 
         if(getCooldown(player) > 0){
             return;

@@ -1,20 +1,21 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.ShadowKnight;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.ShadowKnightAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.ShadowKnightAbilities;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.KnockUp;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.Items.MysticaEquipment;
+import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
-import me.angeloo.mystica.Utility.EquipmentSlot;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
-import me.angeloo.mystica.Utility.Logic.PveChecker;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
+import me.angeloo.mystica.Utility.EquipmentSlot;
+import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -39,8 +40,7 @@ public class Soulcrack {
     private final Mystica main;
     private final AbilityManager abilityManager;
     private final ProfileManager profileManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
-    private final CombatManager combatManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
@@ -58,8 +58,7 @@ public class Soulcrack {
         this.main = main;
         abilityManager = manager;
         profileManager = main.getProfileManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
-        combatManager = manager.getCombatManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
@@ -98,7 +97,7 @@ public class Soulcrack {
                 }
 
                 int cooldown = getCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 8);
@@ -218,15 +217,13 @@ public class Soulcrack {
                         continue;
                     }
 
-                    if(!(entity instanceof LivingEntity)){
+                    if(!(entity instanceof LivingEntity livingEntity)){
                         continue;
                     }
 
                     if(entity instanceof ArmorStand){
                         continue;
                     }
-
-                    LivingEntity livingEntity = (LivingEntity) entity;
 
                     boolean crit = damageCalculator.checkIfCrit(caster, 0);
                     double damage = damageCalculator.calculateDamage(caster, livingEntity, "Physical", finalSkillDamage, crit);
@@ -240,7 +237,7 @@ public class Soulcrack {
                                 Vector awayDirection = entity.getLocation().toVector().subtract(caster.getLocation().toVector()).normalize();
                                 Vector velocity = awayDirection.multiply(.75).add(new Vector(0, .5, 0));
                                 livingEntity.setVelocity(velocity);
-                                buffAndDebuffManager.getKnockUp().applyKnockUp(livingEntity);
+                                statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, null);
                             }
 
                         }
@@ -255,7 +252,7 @@ public class Soulcrack {
                             Vector awayDirection = entity.getLocation().toVector().subtract(caster.getLocation().toVector()).normalize();
                             Vector velocity = awayDirection.multiply(.75).add(new Vector(0, .5, 0));
                             livingEntity.setVelocity(velocity);
-                            buffAndDebuffManager.getKnockUp().applyKnockUp(livingEntity);
+                            statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, null);
                         }
 
                     }
@@ -268,8 +265,8 @@ public class Soulcrack {
                 abilityManager.setCasting(caster, false);
                 abilityManager.setCastBar(caster, 0);
                 armorStand.remove();
-                if(caster instanceof Player){
-                    buffAndDebuffManager.getHidden().showWeapons((Player) caster);
+                if(caster instanceof Player player){
+                    showWeapons(player);
                 }
 
             }
@@ -304,6 +301,25 @@ public class Soulcrack {
 
     public boolean usable(LivingEntity caster){
         return getCooldown(caster) <= 0;
+    }
+
+    private void showWeapons(Player player){
+        if(profileManager.getAnyProfile(player).getIfDead()){
+            return;
+        }
+
+        PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
+
+        if(playerEquipment.getWeapon() != null){
+            player.getInventory().setItemInMainHand(playerEquipment.getWeapon().build());
+            ItemStack offhand = playerEquipment.getWeapon().build();
+            ItemMeta offhandItemMeta = offhand.getItemMeta();
+            assert offhandItemMeta != null;
+            offhandItemMeta.setCustomModelData(offhand.getItemMeta().getCustomModelData() + 1);
+            offhand.setItemMeta(offhandItemMeta);
+            player.getInventory().setItemInOffHand(offhand);
+
+        }
     }
 
 }

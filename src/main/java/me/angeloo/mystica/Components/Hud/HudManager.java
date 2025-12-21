@@ -865,7 +865,7 @@ public class HudManager {
 
         //depending on health, get a different unicode
         Profile playerProfile = profileManager.getAnyProfile(entity);
-        double actualMaxHealth = playerProfile.getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(entity);
+        double actualMaxHealth = playerProfile.getTotalHealth() + statusEffectManager.getHealthBuffAmount(entity);
         double actualCurrentHealth = profileManager.getAnyProfile(entity).getCurrentHealth();
         double ratio = actualCurrentHealth / actualMaxHealth;
         int amount = (int) Math.ceil(ratio * 8);
@@ -1174,7 +1174,7 @@ public class HudManager {
         StringBuilder healthBar = new StringBuilder();
 
         Profile playerProfile = profileManager.getAnyProfile(entity);
-        double actualMaxHealth = playerProfile.getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(entity);
+        double actualMaxHealth = playerProfile.getTotalHealth() + statusEffectManager.getHealthBuffAmount(entity);
         double actualCurrentHealth = profileManager.getAnyProfile(entity).getCurrentHealth();
 
         double ratio = actualCurrentHealth / actualMaxHealth;
@@ -1206,8 +1206,7 @@ public class HudManager {
         healthBar.append(playerTargetHealthBar[amount]);
 
         double maxHp = profileManager.getAnyProfile(entity).getTotalHealth();
-        double shield = buffAndDebuffManager.getGenericShield().getCurrentShieldAmount(entity) +
-                buffAndDebuffManager.getWindWallBuff().getWallHealth(entity);
+        double shield = statusEffectManager.getTotalShield(entity);
         double shieldRatio = shield/ maxHp;
 
         int shieldAmount = (int) Math.ceil(shieldRatio * 20);
@@ -1238,7 +1237,7 @@ public class HudManager {
         StringBuilder healthBar = new StringBuilder();
 
         Profile playerProfile = profileManager.getAnyProfile(entity);
-        double actualMaxHealth = playerProfile.getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(entity);
+        double actualMaxHealth = playerProfile.getTotalHealth() + statusEffectManager.getHealthBuffAmount(entity);
         double actualCurrentHealth = profileManager.getAnyProfile(entity).getCurrentHealth();
         double ratio = actualCurrentHealth / actualMaxHealth;
         int amount = (int) Math.ceil(ratio * 20);
@@ -1260,8 +1259,7 @@ public class HudManager {
         }
 
         double maxHp = profileManager.getAnyProfile(entity).getTotalHealth();
-        double shield = buffAndDebuffManager.getGenericShield().getCurrentShieldAmount(entity) +
-                buffAndDebuffManager.getWindWallBuff().getWallHealth(entity);
+        double shield = statusEffectManager.getTotalShield(entity);
         double shieldRatio = shield/ maxHp;
 
         int shieldAmount = (int) Math.ceil(shieldRatio * 20);

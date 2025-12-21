@@ -1,8 +1,6 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.ShadowKnight;
 
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
 import me.angeloo.mystica.Components.CombatSystem.FakePlayerTargetManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -27,14 +25,15 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class ShadowKnightBasic {
 
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
     private final TargetManager targetManager;
     private final FakePlayerTargetManager fakePlayerTargetManager;
     private final PvpManager pvpManager;
@@ -47,10 +46,9 @@ public class ShadowKnightBasic {
 
     private final Map<UUID, BukkitTask> removeBasicStageTaskMap = new HashMap<>();
 
-    public ShadowKnightBasic(Mystica main, AbilityManager manager){
+    public ShadowKnightBasic(Mystica main){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
         targetManager = main.getTargetManager();
         fakePlayerTargetManager = main.getFakePlayerTargetManager();
         pvpManager = main.getPvpManager();
@@ -102,30 +100,23 @@ public class ShadowKnightBasic {
             public void run(){
 
                 tryToRemoveBasicStage(caster);
-                switch (getStage(caster)){
-                    case 1:{
+                switch (getStage(caster)) {
+                    case 1 -> {
                         basicStage1(caster, 2);
-                        break;
                     }
-                    case 2:{
+                    case 2 -> {
                         basicStage1(caster, 3);
-                        break;
                     }
-                    case 3:{
+                    case 3 -> {
                         basicStage1(caster, 4);
-                        break;
                     }
-                    case 4:{
+                    case 4 -> {
                         basicStage1(caster, 5);
-                        break;
                     }
-                    case 5:{
+                    case 5 -> {
                         basicStage5(caster);
-                        break;
 
                     }
-
-
                 }
 
             }
@@ -174,7 +165,7 @@ public class ShadowKnightBasic {
                 continue;
             }
 
-            if(!(entity instanceof LivingEntity)){
+            if(!(entity instanceof LivingEntity livingEntity)){
                 continue;
             }
 
@@ -187,8 +178,6 @@ public class ShadowKnightBasic {
             if(entity instanceof ArmorStand){
                 continue;
             }
-
-            LivingEntity livingEntity = (LivingEntity) entity;
 
             if(!(entity instanceof Player)){
                 if(!pveChecker.pveLogic(livingEntity)){

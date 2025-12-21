@@ -3,9 +3,7 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Warrior;
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.WarriorAbilities;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.FakePlayerTargetManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -39,8 +37,7 @@ public class WarriorBasic {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
-    private final CombatManager combatManager;
+    private final StatusEffectManager statusEffectManager;
     private final TargetManager targetManager;
     private final FakePlayerTargetManager fakePlayerTargetManager;
     private final PvpManager pvpManager;
@@ -54,11 +51,10 @@ public class WarriorBasic {
 
     private final Map<UUID, BukkitTask> removeBasicStageTaskMap = new HashMap<>();
 
-    public WarriorBasic(Mystica main, AbilityManager manager, WarriorAbilities warriorAbilities){
+    public WarriorBasic(Mystica main, WarriorAbilities warriorAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
-        combatManager = manager.getCombatManager();
+        statusEffectManager = main.getStatusEffectManager();
         targetManager = main.getTargetManager();
         fakePlayerTargetManager = main.getFakePlayerTargetManager();
         pvpManager = main.getPvpManager();
@@ -106,7 +102,7 @@ public class WarriorBasic {
             @Override
             public void run(){
 
-                if(buffAndDebuffManager.getIfBasicInterrupt(caster)){
+                if(!statusEffectManager.canBasic(caster)){
                     this.cancel();
                     stopBasicRunning(caster);
                     return;
@@ -135,25 +131,20 @@ public class WarriorBasic {
 
                 tryToRemoveBasicStage(caster);
                 switch (getStage(caster)) {
-                    case 1: {
+                    case 1 -> {
                         basicStage1(caster, 2);
-                        break;
                     }
-                    case 2: {
+                    case 2 -> {
                         basicStage2(caster, 3);
-                        break;
                     }
-                    case 3: {
+                    case 3 -> {
                         basicStage1(caster, 4);
-                        break;
                     }
-                    case 4: {
+                    case 4 -> {
                         basicStage2(caster, 5);
-                        break;
                     }
-                    case 5: {
+                    case 5 -> {
                         basicStage4(caster);
-                        break;
                     }
                 }
 
@@ -225,7 +216,7 @@ public class WarriorBasic {
                 continue;
             }
 
-            if(!(entity instanceof LivingEntity)){
+            if(!(entity instanceof LivingEntity livingEntity)){
                 continue;
             }
 
@@ -238,8 +229,6 @@ public class WarriorBasic {
             if(entity instanceof ArmorStand){
                 continue;
             }
-
-            LivingEntity livingEntity = (LivingEntity) entity;
 
             if(!(entity instanceof Player)){
                 if(!pveChecker.pveLogic(livingEntity)){
@@ -387,7 +376,7 @@ public class WarriorBasic {
                 continue;
             }
 
-            if(!(entity instanceof LivingEntity)){
+            if(!(entity instanceof LivingEntity livingEntity)){
                 continue;
             }
 
@@ -400,8 +389,6 @@ public class WarriorBasic {
             if(entity instanceof ArmorStand){
                 continue;
             }
-
-            LivingEntity livingEntity = (LivingEntity) entity;
 
             if(!(entity instanceof Player)){
                 if(!pveChecker.pveLogic(livingEntity)){

@@ -11,11 +11,6 @@ public class ConjuringForceBuff implements StatusEffect {
     }
 
     @Override
-    public int getDuration() {
-        return -1;
-    }
-
-    @Override
     public StatusStackType stackType(){
         return StatusStackType.REPLACE_SMALLER;
     }
@@ -26,10 +21,10 @@ public class ConjuringForceBuff implements StatusEffect {
         return "\uE02A";
     }
 
+    //increase damage dealt by flat amount
     @Override
     public boolean requireMagnitudeDeclaration(){
         return true;
     }
 
-    //Range modifer +10, but i have no idea how to implement it withing this refactor
 }

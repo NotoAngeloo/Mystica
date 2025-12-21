@@ -12,7 +12,7 @@ public class NoneAbilities {
     private final Kick kick;
 
     public NoneAbilities(Mystica main, AbilityManager manager){
-        noneBasic = new NoneBasic(main, manager);
+        noneBasic = new NoneBasic(main);
         dash = new Dash(main, manager);
         noneRoll = new NoneRoll(main, manager);
         kick = new Kick(main, manager);

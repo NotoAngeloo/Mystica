@@ -1,14 +1,15 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Warrior;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.FlamingSigilAttack;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.FlamingSigilHealth;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
-import me.angeloo.mystica.Utility.Logic.PveChecker;
 import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -31,8 +32,7 @@ public class FlamingSigil {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final CooldownDisplayer cooldownDisplayer;
@@ -43,8 +43,7 @@ public class FlamingSigil {
     public FlamingSigil(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
@@ -78,7 +77,7 @@ public class FlamingSigil {
 
                 int cooldown = getCooldown(caster) - 1;
 
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 6);
@@ -147,7 +146,7 @@ public class FlamingSigil {
                 for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
 
-                    if(!(entity instanceof LivingEntity)){
+                    if(!(entity instanceof LivingEntity thisEntity)){
                         continue;
                     }
 
@@ -155,15 +154,13 @@ public class FlamingSigil {
                         continue;
                     }
 
-                    LivingEntity thisEntity = (LivingEntity) entity;
-
                     if(hitBySkill.contains(thisEntity)){
                         continue;
                     }
 
                     if(entity == caster){
-                        buffAndDebuffManager.getFlamingSigilBuff().applyAttackBuff(caster, finalBuffAmount);
-                        buffAndDebuffManager.getFlamingSigilBuff().applyHealthBuff(caster, finalBuffAmount);
+                        statusEffectManager.applyEffect(caster, new FlamingSigilAttack(), null, finalBuffAmount);
+                        statusEffectManager.applyEffect(caster, new FlamingSigilHealth(), null, finalBuffAmount);
                         hitBySkill.add(caster);
                         continue;
                     }
@@ -183,11 +180,11 @@ public class FlamingSigil {
 
 
                     if(executioner){
-                        buffAndDebuffManager.getFlamingSigilBuff().applyAttackBuff(thisEntity, finalBuffAmount);
+                        statusEffectManager.applyEffect(thisEntity, new FlamingSigilAttack(), null, finalBuffAmount);
                     }
 
                     if(gladiator){
-                        buffAndDebuffManager.getFlamingSigilBuff().applyHealthBuff(thisEntity, finalBuffAmount);
+                        statusEffectManager.applyEffect(thisEntity, new FlamingSigilHealth(), null, finalBuffAmount);
                     }
 
                     hitBySkill.add(thisEntity);

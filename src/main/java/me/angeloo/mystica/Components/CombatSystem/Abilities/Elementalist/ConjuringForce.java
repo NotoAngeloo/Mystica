@@ -1,9 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Elementalist;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.ConjuringForceBuff;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
-import me.angeloo.mystica.Components.CombatSystem.CombatManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.UltimateStatusChageEvent;
@@ -26,17 +24,15 @@ public class ConjuringForce {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
     private final PvpManager pvpManager;
     private final StatusEffectManager statusEffectManager;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
     private final Map<UUID, Integer> abilityReadyInMap = new HashMap<>();
 
-    public ConjuringForce(Mystica main, AbilityManager manager){
+    public ConjuringForce(Mystica main){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
         pvpManager = main.getPvpManager();
         statusEffectManager = main.getStatusEffectManager();
     }
@@ -173,11 +169,9 @@ public class ConjuringForce {
                 for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
 
 
-                    if(!(entity instanceof LivingEntity)){
+                    if(!(entity instanceof LivingEntity thisEntity)){
                         continue;
                     }
-
-                    LivingEntity thisEntity = (LivingEntity) entity;
 
                     if(thisEntity instanceof Player){
                         if(pvpManager.pvpLogic(caster, (Player) thisEntity)){

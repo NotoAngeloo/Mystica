@@ -9,8 +9,9 @@ public interface StatusEffect {
 
     /** Duration in ticks for a new instance */
     default int getDuration(){
-        return 0;
+        return -1;
     };
+    //this defaults to -1 for permanent effect
 
     default double getMagnitude(){return 0;}
 

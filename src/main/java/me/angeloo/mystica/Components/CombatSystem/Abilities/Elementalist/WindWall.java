@@ -2,7 +2,8 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Elementalist;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.ElementalistAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Shields.WindWallShield;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.CombatManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -28,8 +29,7 @@ public class WindWall {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final CombatManager combatManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, BukkitTask> cooldownTask = new HashMap<>();
@@ -40,8 +40,7 @@ public class WindWall {
     public WindWall(Mystica main, AbilityManager manager, ElementalistAbilities elementalistAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
-        combatManager = manager.getCombatManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         cooldownDisplayer = new CooldownDisplayer(main, manager);
         heat = elementalistAbilities.getHeat();
     }
@@ -81,7 +80,7 @@ public class WindWall {
                 }
 
                 int cooldown = getCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 5);
@@ -113,7 +112,10 @@ public class WindWall {
         assert entityEquipment != null;
         entityEquipment.setHelmet(matrixItem);
 
-        buffAndDebuffManager.getWindWallBuff().createAWindWall(caster);
+        double fourth = profileManager.getAnyProfile(caster).getTotalHealth() + statusEffectManager.getHealthBuffAmount(caster);
+        fourth += 0.25;
+
+        statusEffectManager.applyEffect(caster, new WindWallShield(), null, fourth);
 
         new BukkitRunnable(){
             int timeRan = 0;
@@ -128,7 +130,7 @@ public class WindWall {
                     }
                 }
 
-                if(!buffAndDebuffManager.getWindWallBuff().getIfWindWallActive(caster)){
+                if(!statusEffectManager.hasEffect(caster, "wind_wall")){
                     cancelTask();
                 }
 
@@ -160,7 +162,7 @@ public class WindWall {
             private void cancelTask() {
                 this.cancel();
                 armorStand.remove();
-                buffAndDebuffManager.getWindWallBuff().removeWindwall(caster);
+                statusEffectManager.removeEffect(caster, "wind_wall");
             }
 
         }.runTaskTimer(main, 0, 1);

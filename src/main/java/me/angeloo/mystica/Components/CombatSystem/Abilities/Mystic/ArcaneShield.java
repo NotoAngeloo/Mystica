@@ -1,17 +1,18 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Mystic;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.MysticAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.BuffAndDebuffManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.MysticAbilities;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Shields.GenericShield;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.CombatManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
-import me.angeloo.mystica.Utility.Logic.PveChecker;
 import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -29,8 +30,7 @@ public class ArcaneShield {
     private final TargetManager targetManager;
     private final PveChecker pveChecker;
     private final PvpManager pvpManager;
-    private final CombatManager combatManager;
-    private final BuffAndDebuffManager buffAndDebuffManager;
+    private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownDisplayer cooldownDisplayer;
 
@@ -49,8 +49,7 @@ public class ArcaneShield {
         targetManager = main.getTargetManager();
         pveChecker = main.getPveChecker();
         pvpManager = main.getPvpManager();
-        combatManager = manager.getCombatManager();
-        buffAndDebuffManager = main.getBuffAndDebuffManager();
+        statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         consolation = mysticAbilities.getConsolation();
         mana = mysticAbilities.getMana();
@@ -106,7 +105,7 @@ public class ArcaneShield {
                 }
 
                 int cooldown = getCooldown(caster) - 1;
-                cooldown = cooldown - buffAndDebuffManager.getHaste().getHasteLevel(caster);
+                cooldown = cooldown - statusEffectManager.getHasteLevel(caster);
 
                 abilityReadyInMap.put(caster.getUniqueId(), cooldown);
                 cooldownDisplayer.displayCooldown(caster, 1);
@@ -150,17 +149,18 @@ public class ArcaneShield {
                 needToRemove.put(thisTarget.getUniqueId(), false);
             }
 
-            double fivePercent = (profileManager.getAnyProfile(thisTarget).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(thisTarget)) / 20;
+            double fivePercent = (profileManager.getAnyProfile(thisTarget).getTotalHealth() + statusEffectManager.getHealthBuffAmount(thisTarget)) / 20;
             double shieldAmount = fivePercent + (((double) profileManager.getAnyProfile(caster).getTotalAttack() / 3) + skillLevel);
 
-            buffAndDebuffManager.getGenericShield().applyOrAddShield(thisTarget, shieldAmount);
+            statusEffectManager.applyEffect(thisTarget, new GenericShield(), null, shieldAmount);
+
 
             int shieldDurationInTicks = 20*60;
 
             new BukkitRunnable(){
                 @Override
                 public void run(){
-                    buffAndDebuffManager.getGenericShield().removeSomeShieldAndReturnHowMuchOver(thisTarget, shieldAmount);
+                    statusEffectManager.reduceShield(thisTarget, shieldAmount);
                     needToRemove.put(thisTarget.getUniqueId(), true);
                 }
             }.runTaskLater(main, shieldDurationInTicks);
@@ -168,7 +168,7 @@ public class ArcaneShield {
 
             if(shepard){
                 //task to heal them for as long as they have a shield
-                double thirtyPercent = (profileManager.getAnyProfile(thisTarget).getTotalHealth() + buffAndDebuffManager.getHealthBuffAmount(thisTarget)) * .3;
+                double thirtyPercent = (profileManager.getAnyProfile(thisTarget).getTotalHealth() + statusEffectManager.getHealthBuffAmount(thisTarget)) * .3;
 
                 if(shieldTaskMap.containsKey(thisTarget.getUniqueId())){
                     shieldTaskMap.get(thisTarget.getUniqueId()).cancel();
@@ -179,7 +179,7 @@ public class ArcaneShield {
                     public void run(){
 
 
-                        boolean stillHasAShield = buffAndDebuffManager.getGenericShield().getCurrentShieldAmount(thisTarget) > 0;
+                        boolean stillHasAShield = statusEffectManager.hasShield(thisTarget);
 
                         if(!stillHasAShield || needToRemove.get(thisTarget.getUniqueId())){
                             this.cancel();
@@ -264,7 +264,7 @@ public class ArcaneShield {
 
         double distance = caster.getLocation().distance(target.getLocation());
 
-        if(distance > range + buffAndDebuffManager.getTotalRangeModifier(caster)){
+        if(distance > range + statusEffectManager.getAdditionalRange(caster)){
             return false;
         }
 

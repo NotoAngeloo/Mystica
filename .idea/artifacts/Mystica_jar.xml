@@ -1,0 +1,18 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="Mystica:jar">
+    <output-path>$USER_HOME$/Desktop/server/plugins</output-path>
+    <root id="archive" name="Mystica.jar">
+      <element id="module-output" name="Mystica" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/comphenix/protocol/ProtocolLib/4.8.0/ProtocolLib-4.8.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.12.8/byte-buddy-1.12.8.jar" path-in-jar="/" />
+      <element id="dir-copy" path="$PROJECT_DIR$/src/main/resources/paths" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/paths/pathing.yml" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/firstclears/firstclears.yml" />
+      <element id="dir-copy" path="$PROJECT_DIR$/src/main/resources/firstclears" />
+      <element id="dir-copy" path="$PROJECT_DIR$/src/main/resources/playerdata" />
+      <element id="dir-copy" path="$PROJECT_DIR$/src/main/resources/dailydata" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/dailydata/dailydata.yml" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/quests/example_quests.yml" />
+    </root>
+  </artifact>
+</component>

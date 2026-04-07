@@ -1,0 +1,538 @@
+package me.angeloo.mystica;
+
+import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
+import me.angeloo.mystica.Components.CombatSystem.*;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.CombatSystem.ClassSkillItems.AllSkillItems;
+import me.angeloo.mystica.Components.Commands.*;
+import me.angeloo.mystica.Components.Creatures.CreaturesAndCharactersManager;
+import me.angeloo.mystica.Components.Guis.Abilities.AbilityInventory;
+import me.angeloo.mystica.Components.Guis.Abilities.ClassSelectInventory;
+import me.angeloo.mystica.Components.Guis.Abilities.SpecInventory;
+import me.angeloo.mystica.Components.Guis.CustomInventoryManager;
+import me.angeloo.mystica.Components.Guis.Equipment.*;
+import me.angeloo.mystica.Components.Guis.Misc.DevBoxInventory;
+import me.angeloo.mystica.Components.Guis.Misc.ShopOrQuest;
+import me.angeloo.mystica.Components.Guis.Party.DungeonSelect;
+import me.angeloo.mystica.Components.Guis.Party.InvitedInventory;
+import me.angeloo.mystica.Components.Guis.Party.PartyInventory;
+import me.angeloo.mystica.Components.Guis.Storage.BagEquipmentFunctions;
+import me.angeloo.mystica.Components.Guis.Storage.GenericDiscard;
+import me.angeloo.mystica.Components.Hud.BossCastingManager;
+import me.angeloo.mystica.Components.Hud.HudManager;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
+import me.angeloo.mystica.Components.Guis.QuestInventories.PickQuestInventory;
+import me.angeloo.mystica.Components.Guis.QuestInventories.QuestAcceptInventory;
+import me.angeloo.mystica.Components.Items.BagItem;
+import me.angeloo.mystica.Components.Items.MysticalCrystal;
+import me.angeloo.mystica.Components.Items.SoulStone;
+import me.angeloo.mystica.Components.Items.StackableItemRegistry;
+import me.angeloo.mystica.Components.Quests.QuestManager;
+import me.angeloo.mystica.Components.Parties.FakePlayerAiManager;
+import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
+import me.angeloo.mystica.NMS.Common.PacketInterface;
+import me.angeloo.mystica.NMS.NMSVersion;
+import me.angeloo.mystica.Tasks.*;
+import me.angeloo.mystica.Utility.*;
+import me.angeloo.mystica.Utility.DamageIndicator.DamageIndicatorApi;
+import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Components.Hud.BossWarningSender;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
+import me.angeloo.mystica.Utility.Listeners.GeneralEventListener;
+import me.angeloo.mystica.Utility.Listeners.InventoryEventListener;
+import me.angeloo.mystica.Utility.Listeners.MMListeners;
+import me.angeloo.mystica.Utility.Logic.DamageBoardPlaceholders;
+import me.angeloo.mystica.Utility.Logic.PveChecker;
+import me.angeloo.mystica.Utility.Logic.StealthTargetBlacklist;
+import me.angeloo.mystica.Utility.MatchMaking.MatchMakingManager;
+//import net.playavalon.mythicdungeons.api.MythicDungeonsService;
+import org.bukkit.*;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+
+
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+
+public final class Mystica extends JavaPlugin{
+
+    private static Mystica plugin;
+
+    private PacketInterface packetManager;
+
+    private ProfileManager profileManager;
+    private ProfileFileWriter profileFileWriter;
+
+    private CreaturesAndCharactersManager creaturesAndCharactersManager;
+
+    private QuestManager questManager;
+
+    private MysticaPartyManager mysticaPartyManager;
+
+    private DailyData dailyData;
+    private PathingManager pathingManager;
+
+    private BossManager bossManager;
+
+    private DamageBoardPlaceholders damageBoardPlaceholders;
+    private HudManager hudManager;
+    private BossWarningSender bossWarningSender;
+
+    private DisplayWeapons displayWeapons;
+    private ClassSetter classSetter;
+    private GearReader gearReader;
+    private InventoryItemGetter inventoryItemGetter;
+    private AllSkillItems allSkillItems;
+    private StealthTargetBlacklist stealthTargetBlacklist;
+    private FakePlayerTargetManager fakePlayerTargetManager;
+    private TargetManager targetManager;
+    private FakePlayerAiManager fakePlayerAiManager;
+    private AggroTick aggroTick;
+    private AggroManager aggroManager;
+    private RezTick rezTick;
+    private DpsManager dpsManager;
+    private PvpManager pvpManager;
+    private CombatManager combatManager;
+
+    private StatusEffectManager statusEffectManager;
+
+    private GravestoneManager gravestoneManager;
+    private BossCastingManager bossCastingManager;
+    private AbilityManager abilityManager;
+    private CooldownDisplayer cooldownDisplayer;
+    private DeathManager deathManager;
+    private CustomInventoryManager customInventoryManager;
+    private MatchMakingManager matchMakingManager;
+
+    private PveChecker pveChecker;
+    private DamageCalculator damageCalculator;
+    private ChangeResourceHandler changeResourceHandler;
+
+    private ClassSelectInventory classSelectInventory;
+    private AbilityInventory abilityInventory;
+    private BagEquipmentFunctions bagEquipmentFunctions;
+    private GenericDiscard genericDiscard;
+    private SpecInventory specInventory;
+    private DevBoxInventory devBoxInventory;
+
+    private EquipmentUpgradeManager equipmentUpgradeManager;
+
+
+    private EquipmentInventory equipmentInventory;
+    private DungeonSelect dungeonSelect;
+    private InvitedInventory invitedInventory;
+    private PartyInventory partyInventory;
+    private QuestAcceptInventory questAcceptInventory;
+    private PickQuestInventory pickQuestInventory;
+    private ShopOrQuest shopOrQuest;
+
+    private FirstClearManager firstClearManager;
+
+    public static final List<Integer> TASKS_ID = new ArrayList<>();
+    private DamageIndicatorApi api;
+
+    public static Color assassinColor = new java.awt.Color(214, 61, 207);
+    public static Color elementalistColor = new Color(52, 151, 219);
+    public static Color mysticColor = new Color(155, 120, 197);
+    public static Color paladinColor = new Color(154, 125, 10);
+    public static Color rangerColor = new Color(34, 111, 80);
+    public static Color shadowKnightColor = new Color(213, 33, 3);
+    public static Color warriorColor = new Color(214, 126, 61);
+
+    public static Color menuColor = new Color(176, 159, 109);
+    public static Color levelColor = new Color(0,102,0);
+
+
+    public static Color commonColor = new Color(137, 141, 173);
+    public static Color uncommonColor = new Color(138, 221, 31);
+    public static Color rareColor = new Color(57, 164, 179);
+    public static Color epicColor = new Color(72, 18, 143);
+
+    /*public static MythicDungeonsService dungeonsApi(){
+        return Bukkit.getServer().getServicesManager().load(MythicDungeonsService.class);
+    }*/
+
+    @Override
+    public void onEnable() {
+
+        plugin = this;
+
+        this.packetManager = NMSVersion.getCurrentVersion().getVersionFactory().create();
+
+        StackableItemRegistry.register("SOUL STONE", SoulStone::deserialize);
+        StackableItemRegistry.register("BAG", BagItem::deserialize);
+        StackableItemRegistry.register("MYSTICAL CRYSTAL", MysticalCrystal::deserialize);
+
+        pathingManager = new PathingManager(this);
+        pathingManager.createOrLoadFolder();
+
+        dailyData = new DailyData(this);
+        dailyData.createOrLoadFolder();
+
+        profileFileWriter = new ProfileFileWriter(this);
+
+        questManager = new QuestManager(this);
+        questManager.loadQuests();
+
+        profileManager = new ProfileManager(this);
+        profileManager.loadProfilesFromConfig();
+        bossManager = profileManager.getBossManager();
+        creaturesAndCharactersManager = profileManager.getCreaturesAndCharactersManager();
+
+
+        mysticaPartyManager = profileManager.getMysticaPartyManager();
+
+
+        inventoryItemGetter = new InventoryItemGetter();
+        displayWeapons = new DisplayWeapons(this);
+
+        gearReader = new GearReader(this);
+        classSetter = new ClassSetter(this);
+        pvpManager = new PvpManager(this);
+        pveChecker = new PveChecker(this);
+
+        stealthTargetBlacklist = new StealthTargetBlacklist();
+        aggroManager = new AggroManager(this);
+        bossCastingManager = new BossCastingManager(this);
+
+        statusEffectManager = new StatusEffectManager();
+
+        fakePlayerTargetManager = new FakePlayerTargetManager(this);
+        gravestoneManager = new GravestoneManager();
+        targetManager = new TargetManager(this);
+        targetManager = new TargetManager(this);
+        dpsManager = new DpsManager(this);
+        changeResourceHandler = new ChangeResourceHandler(this);
+
+        damageCalculator = new DamageCalculator(this);
+
+        abilityManager = new AbilityManager(this);
+        cooldownDisplayer = new CooldownDisplayer(this, abilityManager);
+        combatManager = abilityManager.getCombatManager();
+
+        rezTick = new RezTick(this);
+        deathManager = new DeathManager(this);
+        allSkillItems = abilityManager.getAllSkillItems();
+
+
+        hudManager = new HudManager(this);
+        damageBoardPlaceholders = hudManager.getDamageBoardPlaceholders();
+        bossWarningSender = hudManager.getBossWarnings();
+
+        fakePlayerAiManager = new FakePlayerAiManager(this);
+
+
+        customInventoryManager = new CustomInventoryManager(this);
+
+        classSelectInventory = new ClassSelectInventory(this);
+        abilityInventory = new AbilityInventory(this);
+        specInventory = abilityInventory.getSpecInventory();
+        bagEquipmentFunctions = new BagEquipmentFunctions(this);
+        genericDiscard = new GenericDiscard(this);
+        devBoxInventory = new DevBoxInventory(this);
+
+        equipmentUpgradeManager = new EquipmentUpgradeManager(this);
+
+
+        equipmentInventory = new EquipmentInventory(this);
+        matchMakingManager = new MatchMakingManager(this);
+        invitedInventory = new InvitedInventory(this);
+        partyInventory = new PartyInventory(this);
+        questAcceptInventory = new QuestAcceptInventory(this);
+        pickQuestInventory = new PickQuestInventory(this, questAcceptInventory);
+        dungeonSelect = new DungeonSelect(this);
+        shopOrQuest = new ShopOrQuest(this);
+
+        firstClearManager = new FirstClearManager(this);
+        firstClearManager.createOrLoadFolder();
+
+        aggroTick = new AggroTick(this);
+
+
+        getCommand("ToggleGlobalPvp").setExecutor(new ToggleGlobalPvp(this));
+        getCommand("SeeRawDamage").setExecutor(new SeeRawDamage(this));
+        getCommand("MysticaDamage").setExecutor(new MysticaDamage(this));
+        getCommand("MysticaEffect").setExecutor(new MysticaEffect(this));
+        getCommand("StartFuryTimer").setExecutor(new StartFuryTimer(this));
+        getCommand("Equipment").setExecutor(new Equipment(this));
+        getCommand("ClassSelect").setExecutor(new ClassSelect(this));
+        getCommand("GearSwap").setExecutor(new GearSwap());
+        getCommand("ToggleImmunity").setExecutor(new ToggleImmunity(this));
+        getCommand("Reforge").setExecutor(new Reforge(this));
+        getCommand("Refine").setExecutor(new Refine(this));
+        getCommand("Upgrade").setExecutor(new Upgrade(this));
+        getCommand("Identify").setExecutor(new Identify(this));
+        getCommand("ManualSave").setExecutor(new ManualSave(this));
+        getCommand("DeleteProfile").setExecutor(new DeleteProfile(this));
+        getCommand("HitValidCheck").setExecutor(new HitValidCheck(this));
+        getCommand("SetCaution").setExecutor(new SetCaution(this));
+        getCommand("StopCompanionRotation").setExecutor(new StopCompanionRotation(this));
+        getCommand("DisplayInterruptBar").setExecutor(new DisplayInterruptBar(this));
+        getCommand("CompanionNeedsToInterrupt").setExecutor(new CompanionNeedsToInterrupt(this));
+        getCommand("DungeonSelect").setExecutor(new DungeonFinder(this));
+        getCommand("DevBox").setExecutor(new DevBox(this));
+        getCommand("StarterKit").setExecutor(new StarterKit(this));
+        getCommand("BossWarn").setExecutor(new BossWarn(this));
+        getCommand("MysticaQuest").setExecutor(new MysticaQuest(this));
+        getCommand("OpenNpcGui").setExecutor(new OpenNpcGui(this));
+
+
+        this.getServer().getPluginManager().registerEvents(classSelectInventory, this);
+        this.getServer().getPluginManager().registerEvents(dungeonSelect, this);
+
+
+        //SpecInventory specInventory = abilityInventory.getSpecInventory();
+        //this.getServer().getPluginManager().registerEvents(specInventory, this);
+
+        this.getServer().getPluginManager().registerEvents(abilityInventory, this);
+        this.getServer().getPluginManager().registerEvents(specInventory, this);
+        this.getServer().getPluginManager().registerEvents(equipmentUpgradeManager.getIdentifyInventory(), this);
+        this.getServer().getPluginManager().registerEvents(equipmentUpgradeManager.getReforgeInventory(), this);
+        this.getServer().getPluginManager().registerEvents(equipmentUpgradeManager.getRefineInventory(), this);
+        this.getServer().getPluginManager().registerEvents(equipmentUpgradeManager.getUpgradeInventory(), this);
+        this.getServer().getPluginManager().registerEvents(equipmentInventory, this);
+        this.getServer().getPluginManager().registerEvents(partyInventory, this);
+        this.getServer().getPluginManager().registerEvents(invitedInventory, this);
+        this.getServer().getPluginManager().registerEvents(questAcceptInventory,this);
+        this.getServer().getPluginManager().registerEvents(shopOrQuest, this);
+        this.getServer().getPluginManager().registerEvents(pickQuestInventory,this);
+        this.getServer().getPluginManager().registerEvents(bagEquipmentFunctions, this);
+        this.getServer().getPluginManager().registerEvents(genericDiscard, this);
+        this.getServer().getPluginManager().registerEvents(devBoxInventory, this);
+
+        this.getServer().getPluginManager().registerEvents(new InventoryEventListener(this), this);
+        this.getServer().getPluginManager().registerEvents(new GeneralEventListener(this), this);
+        this.getServer().getPluginManager().registerEvents(new MMListeners(this), this);
+
+
+
+
+        DailyTick dailyTick = new DailyTick(this);
+        dailyTick.runTaskTimerAsynchronously(this, 0, 1200);
+
+        startStatusEffectTicker();
+        startActionBarTicker();
+
+        Bukkit.getLogger().info("Mystica Enabled");
+
+        if(getServer().getPluginManager().getPlugin("PlaceholderAPI") != null){
+            PapiHook.registerHook(this);
+        }
+
+
+        World island = Bukkit.getWorld("world");
+        assert island != null;
+        // WorldBorder border = island.getWorldBorder();
+        //Location center = new Location(island, 94, 66, 118);
+        //border.setCenter(center);
+        //double size = 1775;
+        //border.setSize(size);
+
+
+
+
+        try {
+            creaturesAndCharactersManager.spawnAllNpcs();
+        } catch (InvalidMobTypeException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        this.api = new DamageIndicatorApi(this);
+    }
+
+    public void startStatusEffectTicker(){
+        Bukkit.getScheduler().runTaskTimer(this, statusEffectManager::tick, 1L,1L);
+    }
+
+    //was 5
+    public void startActionBarTicker(){
+        Bukkit.getScheduler().runTaskTimer(this, hudManager::hudTicker, 1L, 1L);
+    }
+
+    @Override
+    public void onDisable() {
+
+        rezTick.stopAll();
+
+        for (Player player : Bukkit.getOnlinePlayers()){
+
+
+            player.getInventory().clear();
+
+            boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
+            boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
+
+            if(deathStatus){
+                deathManager.playerNowLive(player, false, null);
+            }
+            if(combatStatus) {
+                combatManager.forceCombatEnd(player);
+            }
+
+            player.setGameMode(GameMode.SURVIVAL);
+
+        }
+
+        profileManager.saveProfilesToConfig();
+        pathingManager.saveFolder();
+        dailyData.saveFolder();
+        creaturesAndCharactersManager.cancelSpawnTasks();
+        Bukkit.getLogger().info("Mystica Disabled");
+    }
+
+    public static Mystica getPlugin(){return plugin;}
+
+    public static List<Integer> getTasksId() {
+        return TASKS_ID;
+    }
+
+    public ProfileManager getProfileManager(){
+        return profileManager;
+    }
+
+    public PathingManager getPathingManager(){return pathingManager;}
+
+    public ClassSetter getClassSetter(){
+        return classSetter;
+    }
+
+    public StealthTargetBlacklist getStealthTargetBlacklist(){return stealthTargetBlacklist;}
+
+    public FakePlayerTargetManager getFakePlayerTargetManager(){return fakePlayerTargetManager;}
+
+    public TargetManager getTargetManager(){
+        return targetManager;
+    }
+
+    public FakePlayerAiManager getFakePlayerAiManager(){return fakePlayerAiManager;}
+
+    public DpsManager getDpsManager() {
+        return dpsManager;
+    }
+
+    public AggroTick getAggroTick(){
+        return aggroTick;
+    }
+
+    public AggroManager getAggroManager(){
+        return aggroManager;
+    }
+
+    public RezTick getRezTick(){
+        return rezTick;
+    }
+
+    public CombatManager getCombatManager(){
+        return combatManager;
+    }
+
+
+    public AbilityManager getAbilityManager(){
+        return abilityManager;
+    }
+
+    public DeathManager getDeathManager(){
+        return deathManager;
+    }
+
+    public ChangeResourceHandler getChangeResourceHandler(){
+        return changeResourceHandler;
+    }
+
+    public DamageCalculator getDamageCalculator(){
+        return damageCalculator;
+    }
+
+    public PvpManager getPvpManager() {
+        return pvpManager;
+    }
+
+    public PveChecker getPveChecker(){
+        return pveChecker;
+    }
+
+    public CustomInventoryManager getInventoryManager(){
+        return customInventoryManager;
+    }
+
+    public ProfileFileWriter getProfileFileWriter(){
+        return profileFileWriter;
+    }
+
+    public FirstClearManager getFirstClearManager(){return firstClearManager;}
+
+    public DailyData getDailyData(){return dailyData;}
+
+    public GravestoneManager getGravestoneManager(){return gravestoneManager;}
+
+    public BossCastingManager getBossCastingManager(){return bossCastingManager;}
+
+    public DungeonSelect getDungeonSelect(){return dungeonSelect;}
+
+    public PartyInventory getPartyInventory(){return partyInventory;}
+
+    public InvitedInventory getInvitedInventory(){return invitedInventory;}
+
+    public MysticaPartyManager getMysticaPartyManager(){return mysticaPartyManager;}
+
+    public MatchMakingManager getMatchMakingManager(){return matchMakingManager;}
+
+    public InventoryItemGetter getItemGetter(){return inventoryItemGetter;}
+
+    public EquipmentUpgradeManager getEquipmentUpgradeManager(){return equipmentUpgradeManager;}
+
+    public EquipmentInventory getEquipmentInventory(){return equipmentInventory;}
+
+    public GearReader getGearReader(){return gearReader;}
+
+    public DisplayWeapons getDisplayWeapons(){return displayWeapons;}
+
+    public AbilityInventory getAbilityInventory(){return abilityInventory;}
+
+    public AllSkillItems getAllSkillItems(){return allSkillItems;}
+
+    public HudManager getHudManager() {
+        return hudManager;
+    }
+
+
+    public CooldownDisplayer getCooldownDisplayer(){
+        return cooldownDisplayer;
+    }
+
+    public BossWarningSender getBossWarnings(){return bossWarningSender;}
+
+    public QuestManager getQuestManager(){return questManager;}
+
+    public QuestAcceptInventory getQuestAcceptInventory(){return questAcceptInventory;}
+
+    public PickQuestInventory getPickQuestInventory(){return pickQuestInventory;}
+
+    public ShopOrQuest getShopOrQuest(){return shopOrQuest;}
+
+    public ClassSelectInventory getClassSelectInventory(){return classSelectInventory;}
+
+    public BagEquipmentFunctions getBagEquipmentFunctions(){return bagEquipmentFunctions;}
+
+    public GenericDiscard getGenericDiscard(){return genericDiscard;}
+
+    public DevBoxInventory getDevBoxInventory() {
+        return devBoxInventory;
+    }
+
+    public StatusEffectManager getStatusEffectManager(){return statusEffectManager;}
+
+    public BossManager getBossManager(){
+        return bossManager;
+    }
+
+    @NotNull
+    public PacketInterface getPacketInterface(){
+        return packetManager;
+    }
+}

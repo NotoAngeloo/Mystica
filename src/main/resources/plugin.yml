@@ -1,0 +1,119 @@
+name: Mystica
+version: '${project.version}'
+main: me.angeloo.mystica.Mystica
+depend:
+  - PlaceholderAPI
+  - MythicDungeons
+  - TAB
+softdepend:
+  - MythicMobs
+api-version: '1.19'
+commands:
+  Equipment:
+    description: opens equipment
+    usage: /Equipment
+  ClassSelect:
+    description: opens class select
+    usage: /ClassSelect <player>
+    permission: developer
+  GearSwap:
+    description: opens gear swap
+    usage: /GearSwap <player>
+    permission: developer
+  SeeRawDamage:
+    description: allows for better testing of seeing damage
+    usage: /SeeRawDamage
+  MysticaDamage:
+    description: allows mms to damage player using this plugin
+    usage: /MysticaDamage <target> <caster> <type> <amount>
+    permission: developer
+  MysticaEffect:
+    description: allows mms to inflict status using this plugin
+    usage: /MysticaEffect <target> <caster> <type> <modifier>
+    permission: developer
+  ToggleImmunity:
+    description: allows devs to not take damage on boss testing
+    usage: /ToggleImmunity
+    permission: developer
+  StartFuryTimer:
+    description: allows mms to start their fury timer
+    usage: /StartFuryTimer <caster> <duration>
+    permission: developer
+  ToggleGlobalPvp:
+    description: toggles global pvp
+    usage: /ToggleGlobalPvp
+    permission: developer
+  Reforge:
+    description: allows testing of reforge mechanic
+    usage: /Reforge
+    permission: developer
+  Refine:
+    description: allows testing of refine mechanic
+    usage: /Refine
+    permission: developer
+  Upgrade:
+    description: allows testing of upgrade mechanic
+    usage: /Upgrade
+    permission: developer
+  Identify:
+    description: allows testing of identify mechanic
+    usage: /Identify
+    permission: developer
+  ManualSave:
+    description: saves profiles manually
+    usage: /ManualSave
+    permission: developer
+  DeleteProfile:
+    description: deletes a profile
+    usage: /DeleteProfile
+    permission: developer
+  HitValidCheck:
+    description: lets mms see if what they hit with a skill is valid
+    usage: /HitValidCheck <caster> <target>
+    permission: developer
+  SetCaution:
+    description: lets mms mess with fake player ai
+    usage: /SetCaution <entityuuid> <boolean>
+    permission: developer
+  StopCompanionRotation:
+    description: lets companions stop their rotation
+    usage: /StopCompanionRotation <target.uuid>
+    permission: developer
+  DisplayInterruptBar:
+    description: lets mm display their interrupt bar
+    usage: /DisplayInterruptBar <caster.uuid> <speed> <max>
+    permission: developer
+  CompanionNeedsToInterrupt:
+    description: lets mm know when specific skills should be used
+    usage: /CompanionNeedsToInterrupt <caster.uuid> <true/false>
+    permission: developer
+  DungeonSelect:
+    description: opens dungeon select for player
+    usage: /DungeonSelect <player>
+    permission: developer
+  DevBox:
+    description: allows devs to get items for testing
+    usage: /MysticaItem <player>
+    permission: developer
+  StarterKit:
+    description: allows devs and mms to give players starter things
+    usage: /StarterKit <player>
+    permission: developer
+  BossWarn:
+    description: allows mms to warn player about upcoming mechanics
+    usage: /BossWarn <player.uuid> <time> <warning>
+    permission: developer
+  MysticaQuest:
+    description: opens quests or reloads
+    usage: /MysticaQuest <player/reload> <quest>
+    permission: developer
+  OpenNpcGui:
+    description: opens npc gui for available quests and otherwise
+    usage: /OpenNpcGui <player> <uuid>
+    permission: developer
+
+permissions:
+  developer:
+    description: commands for developer stuff
+    default: op
+

@@ -53,32 +53,197 @@ public class HudManager {
     //this is updated when needed. when a player requests data about x entity, grabs it from here
     private final Map<UUID, String> entityBarData = new HashMap<>();
 
-    private final Map<Character, Integer> MINECRAFT_CHAR_WIDTHS = Map.<Character, Integer>ofEntries(
-            Map.entry(' ', 4), Map.entry('!', 2), Map.entry('"', 5), Map.entry('#', 6),
-            Map.entry('$', 6), Map.entry('%', 6), Map.entry('&', 6), Map.entry('\'', 3),
-            Map.entry('(', 5), Map.entry(')', 5), Map.entry('*', 5), Map.entry('+', 6),
-            Map.entry(',', 2), Map.entry('-', 6), Map.entry('.', 2), Map.entry('/', 6),
-            Map.entry('0', 6), Map.entry('1', 6), Map.entry('2', 6), Map.entry('3', 6),
-            Map.entry('4', 6), Map.entry('5', 6), Map.entry('6', 6), Map.entry('7', 6),
-            Map.entry('8', 6), Map.entry('9', 6), Map.entry(':', 2), Map.entry(';', 2),
-            Map.entry('<', 5), Map.entry('=', 6), Map.entry('>', 5), Map.entry('?', 6),
-            Map.entry('@', 7), Map.entry('A', 6), Map.entry('B', 6), Map.entry('C', 6),
-            Map.entry('D', 6), Map.entry('E', 6), Map.entry('F', 6), Map.entry('G', 6),
-            Map.entry('H', 6), Map.entry('I', 4), Map.entry('J', 6), Map.entry('K', 6),
-            Map.entry('L', 6), Map.entry('M', 6), Map.entry('N', 6), Map.entry('O', 6),
-            Map.entry('P', 6), Map.entry('Q', 6), Map.entry('R', 6), Map.entry('S', 6),
-            Map.entry('T', 6), Map.entry('U', 6), Map.entry('V', 6), Map.entry('W', 6),
-            Map.entry('X', 6), Map.entry('Y', 6), Map.entry('Z', 6), Map.entry('[', 4),
-            Map.entry('\\', 6), Map.entry(']', 4), Map.entry('^', 6), Map.entry('_', 6),
-            Map.entry('`', 3), Map.entry('a', 6), Map.entry('b', 6), Map.entry('c', 6),
-            Map.entry('d', 6), Map.entry('e', 6), Map.entry('f', 5), Map.entry('g', 6),
-            Map.entry('h', 6), Map.entry('i', 2), Map.entry('j', 6), Map.entry('k', 5),
-            Map.entry('l', 3), Map.entry('m', 6), Map.entry('n', 6), Map.entry('o', 6),
-            Map.entry('p', 6), Map.entry('q', 6), Map.entry('r', 5), Map.entry('s', 6),
-            Map.entry('t', 4), Map.entry('u', 6), Map.entry('v', 6), Map.entry('w', 6),
-            Map.entry('x', 6), Map.entry('y', 6), Map.entry('z', 6), Map.entry('{', 5),
-            Map.entry('|', 2), Map.entry('}', 5), Map.entry('~', 7)
+
+    private static final Map<Character, Integer> MINECRAFT_CHAR_WIDTHS = Map.ofEntries(
+            Map.entry('!', 1),
+            Map.entry('"', 4),
+            Map.entry('#', 5),
+            Map.entry('$', 5),
+            Map.entry('%', 5),
+            Map.entry('&', 5),
+            Map.entry('\'', 2),
+            Map.entry('(', 4),
+            Map.entry(')', 4),
+            Map.entry('*', 4),
+            Map.entry('+', 5),
+            Map.entry(',', 1),
+            Map.entry('-', 5),
+            Map.entry('.', 1),
+            Map.entry('/', 5),
+            Map.entry('0', 5),
+            Map.entry('1', 5),
+            Map.entry('2', 5),
+            Map.entry('3', 5),
+            Map.entry('4', 5),
+            Map.entry('5', 5),
+            Map.entry('6', 5),
+            Map.entry('7', 5),
+            Map.entry('8', 5),
+            Map.entry('9', 5),
+            Map.entry(':', 1),
+            Map.entry(';', 1),
+            Map.entry('<', 4),
+            Map.entry('=', 5),
+            Map.entry('>', 4),
+            Map.entry('?', 5),
+            Map.entry('@', 6),
+            Map.entry('A', 5),
+            Map.entry('B', 5),
+            Map.entry('C', 5),
+            Map.entry('D', 5),
+            Map.entry('E', 5),
+            Map.entry('F', 5),
+            Map.entry('G', 5),
+            Map.entry('H', 5),
+            Map.entry('I', 3),
+            Map.entry('J', 5),
+            Map.entry('K', 5),
+            Map.entry('L', 5),
+            Map.entry('M', 5),
+            Map.entry('N', 5),
+            Map.entry('O', 5),
+            Map.entry('P', 5),
+            Map.entry('Q', 5),
+            Map.entry('R', 5),
+            Map.entry('S', 5),
+            Map.entry('T', 5),
+            Map.entry('U', 5),
+            Map.entry('V', 5),
+            Map.entry('W', 5),
+            Map.entry('X', 5),
+            Map.entry('Y', 5),
+            Map.entry('Z', 5),
+            Map.entry('[', 3),
+            Map.entry('\\', 5),
+            Map.entry(']', 3),
+            Map.entry('^', 5),
+            Map.entry('_', 5),
+            Map.entry('`', 2),
+            Map.entry('a', 5),
+            Map.entry('b', 5),
+            Map.entry('c', 5),
+            Map.entry('d', 5),
+            Map.entry('e', 5),
+            Map.entry('f', 4),
+            Map.entry('g', 5),
+            Map.entry('h', 5),
+            Map.entry('i', 1),
+            Map.entry('j', 5),
+            Map.entry('k', 4),
+            Map.entry('l', 2),
+            Map.entry('m', 5),
+            Map.entry('n', 5),
+            Map.entry('o', 5),
+            Map.entry('p', 5),
+            Map.entry('q', 5),
+            Map.entry('r', 5),
+            Map.entry('s', 5),
+            Map.entry('t', 3),
+            Map.entry('u', 5),
+            Map.entry('v', 5),
+            Map.entry('w', 5),
+            Map.entry('x', 5),
+            Map.entry('y', 5),
+            Map.entry('z', 5),
+            Map.entry('{', 4),
+            Map.entry('|', 1),
+            Map.entry('}', 4),
+            Map.entry('~', 6),
+            Map.entry('¡', 1),
+            Map.entry('¢', 3),
+            Map.entry('£', 5),
+            Map.entry('¤', 3),
+            Map.entry('¥', 3),
+            Map.entry('¦', 0),
+            Map.entry('§', -2),
+            Map.entry('¨', 2),
+            Map.entry('©', 4),
+            Map.entry('ª', 5),
+            Map.entry('«', 5),
+            Map.entry('¬', 5),
+            Map.entry('®', 6),
+            Map.entry('¯', 3),
+            Map.entry('°', 6),
+            Map.entry('±', 6),
+            Map.entry('²', 5),
+            Map.entry('³', 2),
+            Map.entry('´', 1),
+            Map.entry('µ', 2),
+            Map.entry('¶', 3),
+            Map.entry('·', 5),
+            Map.entry('¸', 1),
+            Map.entry('¹', 1),
+            Map.entry('º', 5),
+            Map.entry('»', 5),
+            Map.entry('¼', 5),
+            Map.entry('½', 5),
+            Map.entry('¾', 3),
+            Map.entry('¿', 5),
+            Map.entry('À', 5),
+            Map.entry('Á', 5),
+            Map.entry('Â', 5),
+            Map.entry('Ã', 3),
+            Map.entry('Ä', 5),
+            Map.entry('Å', 5),
+            Map.entry('Æ', 5),
+            Map.entry('Ç', 5),
+            Map.entry('È', 5),
+            Map.entry('É', 5),
+            Map.entry('Ê', 5),
+            Map.entry('Ë', 5),
+            Map.entry('Ì', 2),
+            Map.entry('Í', 3),
+            Map.entry('Î', 2),
+            Map.entry('Ï', 2),
+            Map.entry('Ð', 3),
+            Map.entry('Ñ', 5),
+            Map.entry('Ò', 3),
+            Map.entry('Ó', 5),
+            Map.entry('Ô', 5),
+            Map.entry('Õ', 5),
+            Map.entry('Ö', 5),
+            Map.entry('×', 3),
+            Map.entry('Ø', 5),
+            Map.entry('Ù', 3),
+            Map.entry('Ú', 5),
+            Map.entry('Û', 3),
+            Map.entry('Ü', 5),
+            Map.entry('Ý', 3),
+            Map.entry('Þ', 3),
+            Map.entry('ß', 5),
+            Map.entry('à', 5),
+            Map.entry('á', 5),
+            Map.entry('â', 5),
+            Map.entry('ã', 5),
+            Map.entry('ä', 5),
+            Map.entry('å', 5),
+            Map.entry('æ', 5),
+            Map.entry('ç', 5),
+            Map.entry('è', 5),
+            Map.entry('é', 5),
+            Map.entry('ê', 5),
+            Map.entry('ë', 5),
+            Map.entry('ì', 2),
+            Map.entry('í', 2),
+            Map.entry('î', 5),
+            Map.entry('ï', 3),
+            Map.entry('ð', 3),
+            Map.entry('ñ', 5),
+            Map.entry('ò', 5),
+            Map.entry('ó', 5),
+            Map.entry('ô', 5),
+            Map.entry('õ', 5),
+            Map.entry('ö', 5),
+            Map.entry('÷', 6),
+            Map.entry('ø', 5),
+            Map.entry('ù', 5),
+            Map.entry('ú', 5),
+            Map.entry('û', 5),
+            Map.entry('ü', 5),
+            Map.entry('ý', 3),
+            Map.entry('þ', 2)
     );
+
 
     //old char mappings
     /*
@@ -184,13 +349,17 @@ public class HudManager {
     private final Map<UUID, String> resourceBarCache = new ConcurrentHashMap<>();
 
 
+    //targeting
     private final String bossResourceBackground = "\uE035";
-
     //0-40, boss
     private final String[] bossBarResource = {"\uE05E","\uE05D","\uE05C","\uE05B","\uE05A","\uE059","\uE058","\uE057","\uE056","\uE055","\uE054","\uE053","\uE052","\uE051","\uE050","\uE04F","\uE04E","\uE04D","\uE04C","\uE04B","\uE04A","\uE049","\uE048","\uE047","\uE046","\uE045","\uE044","\uE043","\uE042","\uE041","\uE040","\uE03F","\uE03E","\uE03D","\uE03C","\uE03B","\uE03A","\uE039","\uE038","\uE037","\uE036"};
-
-    //0-40 boss cast
+    //0-40 boss cast and also fury
     private final String[] bossCastBar = {"\uE087","\uE086","\uE085","\uE084","\uE083","\uE082","\uE081","\uE080","\uE07F","\uE07E","\uE07D","\uE07C","\uE07B","\uE07A","\uE079","\uE078","\uE077","\uE076","\uE075","\uE074","\uE073","\uE072","\uE071","\uE070","\uE06F","\uE06E","\uE06D","\uE06C","\uE06B","\uE06A","\uE069","\uE068","\uE067","\uE066","\uE065","\uE064","\uE063","\uE062","\uE061","\uE060","\uE05F"};
+
+    private final String targetResourceBackground = "\uE088";
+
+    private final String[] targetResource  = {"\uE0B1","\uE0B0","\uE0AF","\uE0AE","\uE0AD","\uE0AC","\uE0AB","\uE0AA","\uE0A9","\uE0A8","\uE0A7","\uE0A6","\uE0A5","\uE0A4","\uE0A3","\uE0A2","\uE0A1","\uE0A0","\uE09F","\uE09E","\uE09D","\uE09C","\uE09B","\uE09A","\uE099","\uE098","\uE097","\uE096","\uE095","\uE094","\uE093","\uE092","\uE091","\uE090","\uE08F","\uE08E","\uE08D","\uE08C","\uE08B","\uE08A","\uE089"};
+
 
     public HudManager(Mystica main){
         this.main = main;
@@ -207,6 +376,7 @@ public class HudManager {
         gravestoneManager = main.getGravestoneManager();
         iconCalculator = new IconCalculator();
         skinGrabber = new SkinGrabber();
+
     }
 
     public DamageBoardPlaceholders getDamageBoardPlaceholders(){
@@ -717,6 +887,8 @@ public class HudManager {
         return "";
     }
 
+
+
     public void updateEntityBarInformation(LivingEntity entity){
 
         new BukkitRunnable(){
@@ -728,17 +900,9 @@ public class HudManager {
 
                     String name = entity.getName();
 
-                    //the idea is such that because we add the name at the end, we must add an equivalent number of pixels at the beginning to keep it centered
-                    for(int i = 0; i< getPixelWidth(name);i++){
-                        //-1
-                        entityData.append("\uF801");
-                    }
-
                     entityData.append(bossHealthBar(entity));
 
                     //fury bar, left side of health bar
-                    //-64
-                    //entityData.append("\uF80B");
                     //-128
                     entityData.append("\uF80C");
                     //-20
@@ -755,15 +919,56 @@ public class HudManager {
                     //-16
                     entityData.append("\uF809");
 
+
+                    int maxNameLength = 141;
+                    int nameWidth = getPixelWidth(name);
+                    int padding = maxNameLength - nameWidth;
+
                     entityData.append(name);
 
+                    // pad remaining space
+                    for (int i = 0; i < padding; i++) {
+                        entityData.append("\uF821"); // +1 pixel
+                        //entityData.append("\uF801"); //-1
+                        //entityData.append("|");
+                        //-1 + | = +1. therefore, | = 2
+                    }
+                    entityBarData.put(entity.getUniqueId(), String.valueOf(entityData));
+
+                    return;
+                }
+
+                if(profileManager.getAnyProfile(entity).fakePlayer()){
+
+                    String name = entity.getName();
+
+                    entityData.append(profileManager.getCompanionFace(entity.getUniqueId()));
+
+                    entityData.append(targetHealthBar(entity));
+
+                    //-101
+                    entityData.append("\uF80B\uF80A\uF805");
+                    entityData.append(name);
+
+                    int maxNameLength = 96;
+                    int nameWidth = getPixelWidth(name);
+                    int padding = maxNameLength - nameWidth;
+
+                    // pad remaining space
+                    for (int i = 0; i < padding; i++) {
+                        entityData.append("\uF821"); // +1 pixel
+                        //entityData.append("\uF801"); //-1
+                        //entityData.append("|");
+                        //-1 + | = +1. therefore, | = 2
+                    }
 
                     entityBarData.put(entity.getUniqueId(), String.valueOf(entityData));
 
                     return;
                 }
 
-                //TODO: not boss health bar. oh boy, faces :(
+                //TODO: player faces using the pixel system
+
             }
         }.runTaskAsynchronously(main);
 
@@ -772,10 +977,14 @@ public class HudManager {
 
     int getPixelWidth(String text) {
 
+        text = text.replaceAll("§.", "");
+
         int width = 0;
+
         for (char c : text.toCharArray()) {
-            width += this.MINECRAFT_CHAR_WIDTHS.getOrDefault(c, 0);
+            width += MINECRAFT_CHAR_WIDTHS.getOrDefault(c, 0)+1;
         }
+
         return width;
     }
 
@@ -809,19 +1018,20 @@ public class HudManager {
             amount = 0;
         }
 
-        healthBar.append(actionBarResourceBackground);
+        //this needs a different bar type
+
+        healthBar.append(targetResourceBackground);
         //-104
         healthBar.append("\uF80B\uF80A\uF808");
 
         healthBar.append(ChatColor.GREEN);
         //grab this from the indexer
-        healthBar.append(actionBarResource[amount]);
+        healthBar.append(targetResource[amount]);
 
         healthBar.append(ChatColor.RESET);
 
         //-104
         healthBar.append("\uF80B\uF80A\uF808");
-
 
 
         double shield = statusEffectManager.getTotalShield(entity);
@@ -841,7 +1051,7 @@ public class HudManager {
         }
 
         healthBar.append(ChatColor.WHITE);
-        healthBar.append(actionBarResource[shieldAmount]);
+        healthBar.append(targetResource[shieldAmount]);
 
         return String.valueOf(healthBar);
     }
@@ -958,7 +1168,7 @@ public class HudManager {
             return String.valueOf(builder);
         }
 
-        int amount = 0;
+        int amount;
 
         double max = bossManager.getMaxFuryDuration(entity.getUniqueId());
         double current = bossManager.getCurrentFuryCount(entity.getUniqueId());

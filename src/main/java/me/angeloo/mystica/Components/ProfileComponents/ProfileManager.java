@@ -1008,44 +1008,44 @@ public class ProfileManager {
     public void setCompanionFaces(UUID uuid, String companion){
 
         switch (companion.toLowerCase()) {
-            case "salmon" -> {
-                companionFace.put(uuid, "\uE267");
-                companionFace0.put(uuid, "\uE268");
-                companionFace1.put(uuid, "\uE269");
-                companionFace2.put(uuid, "\uE26A");
-                companionFace3.put(uuid, "\uE26B");
-                return;
-            }
-            case "slippy" -> {
-                companionFace.put(uuid, "\uE26C");
-                companionFace0.put(uuid, "\uE26D");
-                companionFace1.put(uuid, "\uE26E");
-                companionFace2.put(uuid, "\uE26F");
-                companionFace3.put(uuid, "\uE270");
-                return;
-            }
-            case "wings" -> {
-                companionFace.put(uuid, "\uE271");
-                companionFace0.put(uuid, "\uE272");
-                companionFace1.put(uuid, "\uE273");
-                companionFace2.put(uuid, "\uE274");
-                companionFace3.put(uuid, "\uE275");
-                return;
-            }
             case "darwin" -> {
-                companionFace.put(uuid, "\uE276");
-                companionFace0.put(uuid, "\uE277");
-                companionFace1.put(uuid, "\uE278");
-                companionFace2.put(uuid, "\uE279");
-                companionFace3.put(uuid, "\uE27A");
+                companionFace.put(uuid, "\ue0b7");
+                companionFace0.put(uuid, "\ue0b8");
+                companionFace1.put(uuid, "\ue0b9");
+                companionFace2.put(uuid, "\ue0ba");
+                companionFace3.put(uuid, "\ue0bb");
                 return;
             }
             case "luna" ->{
-                companionFace.put(uuid, "\uE27B");
-                companionFace0.put(uuid, "\uE27C");
-                companionFace1.put(uuid, "\uE27D");
-                companionFace2.put(uuid, "\uE27E");
-                companionFace3.put(uuid, "\uE27F");
+                companionFace.put(uuid, "\ue0bc");
+                companionFace0.put(uuid, "\ue0bd");
+                companionFace1.put(uuid, "\ue0be");
+                companionFace2.put(uuid, "\ue0bf");
+                companionFace3.put(uuid, "\ue0c0");
+                return;
+            }
+            case "salmon" -> {
+                companionFace.put(uuid, "\ue0c1");
+                companionFace0.put(uuid, "\ue0c2");
+                companionFace1.put(uuid, "\ue0c3");
+                companionFace2.put(uuid, "\ue0c4");
+                companionFace3.put(uuid, "\ue0c5");
+                return;
+            }
+            case "slippy" -> {
+                companionFace.put(uuid, "\ue0c6");
+                companionFace0.put(uuid, "\ue0c7");
+                companionFace1.put(uuid, "\ue0c8");
+                companionFace2.put(uuid, "\ue0c9");
+                companionFace3.put(uuid, "\ue0ca");
+                return;
+            }
+            case "wings" -> {
+                companionFace.put(uuid, "\ue0cb");
+                companionFace0.put(uuid, "\ue0cc");
+                companionFace1.put(uuid, "\ue0cd");
+                companionFace2.put(uuid, "\ue0ce");
+                companionFace3.put(uuid, "\ue0cf");
                 return;
             }
         }
@@ -1053,7 +1053,7 @@ public class ProfileManager {
     }
 
     public String getCompanionFace(UUID uuid){
-        return companionFace.getOrDefault(uuid, "\uE144");
+        return companionFace.getOrDefault(uuid, "\uE0B2");
     }
 
     public String getCompanionTeamFace(UUID uuid, int slot){
@@ -1061,35 +1061,35 @@ public class ProfileManager {
         switch (slot) {
             case 0 -> {
                 if (!companionFace0.containsKey(uuid)) {
-                    companionFace0.put(uuid, "\uE14E");
+                    companionFace0.put(uuid, "\ue0b3");
                 }
 
                 return companionFace0.get(uuid);
             }
             case 1 -> {
                 if (!companionFace1.containsKey(uuid)) {
-                    companionFace1.put(uuid, "\uE179");
+                    companionFace1.put(uuid, "\ue0b4");
                 }
 
                 return companionFace1.get(uuid);
             }
             case 2 -> {
                 if (!companionFace2.containsKey(uuid)) {
-                    companionFace2.put(uuid, "\uE1A4");
+                    companionFace2.put(uuid, "\ue0b5");
                 }
 
                 return companionFace2.get(uuid);
             }
             case 3 -> {
                 if (!companionFace3.containsKey(uuid)) {
-                    companionFace3.put(uuid, "\uE1CF");
+                    companionFace3.put(uuid, "\ue0b6");
                 }
 
                 return companionFace3.get(uuid);
             }
         }
 
-        return companionFace.getOrDefault(uuid, "\uE144");
+        return companionFace.getOrDefault(uuid, "\uE0B2");
     }
 
     public void clearCompanionFaces(UUID uuid){

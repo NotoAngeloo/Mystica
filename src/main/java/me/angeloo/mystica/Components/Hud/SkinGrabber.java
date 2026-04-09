@@ -38,8 +38,8 @@ public class SkinGrabber {
         BufferedImage skin = getBufferedImage(player);
 
         if(skin == null){
-            //-25 to not mess up alignment
-            faceMap.put(player.getUniqueId(), "\uE144" + "\uF809\uF808\uF801");
+            //-8 to not mess up alignment
+            faceMap.put(player.getUniqueId(), "\uE0B2" + "\uF808");
             return;
         }
 
@@ -51,28 +51,28 @@ public class SkinGrabber {
 
             switch (y) {
                 case 0 -> {
-                    currentUnicode = "\uE13B";
+                    currentUnicode = "\ue0d0";
                 }
                 case 1 -> {
-                    currentUnicode = "\uE13C";
+                    currentUnicode = "\ue0d1";
                 }
                 case 2 -> {
-                    currentUnicode = "\uE13D";
+                    currentUnicode = "\ue0d2";
                 }
                 case 3 -> {
-                    currentUnicode = "\uE13E";
+                    currentUnicode = "\ue0d3";
                 }
                 case 4 -> {
-                    currentUnicode = "\uE13F";
+                    currentUnicode = "\ue0d4";
                 }
                 case 5 -> {
-                    currentUnicode = "\uE140";
+                    currentUnicode = "\ue0d5";
                 }
                 case 6 -> {
-                    currentUnicode = "\uE141";
+                    currentUnicode = "\ue0d6";
                 }
                 case 7 -> {
-                    currentUnicode = "\uE142";
+                    currentUnicode = "\ue0d7";
                 }
             }
 
@@ -88,8 +88,8 @@ public class SkinGrabber {
             }
 
 
-            //-24
-            face.append("\uF809\uF808");
+            //-16
+            face.append("\uF809");
 
 
         }
@@ -104,7 +104,7 @@ public class SkinGrabber {
 
         //test alignment this when i have more than a handful of testers
         if (skin == null) {
-            //have a default steve skin of different ascents
+            //TODO:have a default steve skin of different ascents
             //squad0Face.put(player.getUniqueId(), )
             return;
         }

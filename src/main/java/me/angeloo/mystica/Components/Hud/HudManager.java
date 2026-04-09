@@ -244,6 +244,17 @@ public class HudManager {
             Map.entry('þ', 2)
     );
 
+    private static final int[] PIXELS = {64, 32, 16, 8, 4, 2, 1};
+
+    private static final String[] GLYPHS = {
+            "\uF82B",
+            "\uF82A",
+            "\uF829",
+            "\uF828",
+            "\uF824",
+            "\uF822",
+            "\uF821"
+    };
 
     //old char mappings
     /*
@@ -898,7 +909,7 @@ public class HudManager {
 
                 if(bossManager.getIfEntityIsBoss(entity.getUniqueId())){
 
-                    String name = entity.getName();
+
 
                     entityData.append(bossHealthBar(entity));
 
@@ -921,18 +932,23 @@ public class HudManager {
 
 
                     int maxNameLength = 141;
+                    String name = truncateName(entity.getName(), maxNameLength);
                     int nameWidth = getPixelWidth(name);
                     int padding = maxNameLength - nameWidth;
 
                     entityData.append(name);
 
                     // pad remaining space
-                    for (int i = 0; i < padding; i++) {
-                        entityData.append("\uF821"); // +1 pixel
-                        //entityData.append("\uF801"); //-1
-                        //entityData.append("|");
-                        //-1 + | = +1. therefore, | = 2
+
+                    for (int i = 0; i < PIXELS.length; i++) {
+
+                        while (padding >= PIXELS[i]) {
+                            entityData.append(GLYPHS[i]);
+                            padding -= PIXELS[i];
+                        }
+
                     }
+
                     entityBarData.put(entity.getUniqueId(), String.valueOf(entityData));
 
                     return;
@@ -940,7 +956,6 @@ public class HudManager {
 
                 if(profileManager.getAnyProfile(entity).fakePlayer()){
 
-                    String name = entity.getName();
 
                     entityData.append(profileManager.getCompanionFace(entity.getUniqueId()));
 
@@ -948,18 +963,23 @@ public class HudManager {
 
                     //-101
                     entityData.append("\uF80B\uF80A\uF805");
-                    entityData.append(name);
 
                     int maxNameLength = 96;
+                    String name = truncateName(entity.getName(), maxNameLength);
                     int nameWidth = getPixelWidth(name);
                     int padding = maxNameLength - nameWidth;
+                    entityData.append(name);
+
+
 
                     // pad remaining space
-                    for (int i = 0; i < padding; i++) {
-                        entityData.append("\uF821"); // +1 pixel
-                        //entityData.append("\uF801"); //-1
-                        //entityData.append("|");
-                        //-1 + | = +1. therefore, | = 2
+                    for (int i = 0; i < PIXELS.length; i++) {
+
+                        while (padding >= PIXELS[i]) {
+                            entityData.append(GLYPHS[i]);
+                            padding -= PIXELS[i];
+                        }
+
                     }
 
                     entityBarData.put(entity.getUniqueId(), String.valueOf(entityData));
@@ -967,13 +987,95 @@ public class HudManager {
                     return;
                 }
 
-                //TODO: player faces using the pixel system
+                if(entity instanceof Player player){
+
+
+                    entityData.append(skinGrabber.getFace(player));
+                    //+16 for alignment
+                    entityData.append("\uF829");
+
+                    entityData.append(targetHealthBar(player));
+
+                    //-101
+                    entityData.append("\uF80B\uF80A\uF805");
+
+                    int maxNameLength = 96;
+                    String name = truncateName(entity.getName(), maxNameLength);
+                    entityData.append(name);
+                    int nameWidth = getPixelWidth(name);
+                    int padding = maxNameLength - nameWidth;
+
+                    // pad remaining space
+                    for (int i = 0; i < PIXELS.length; i++) {
+
+                        while (padding >= PIXELS[i]) {
+                            entityData.append(GLYPHS[i]);
+                            padding -= PIXELS[i];
+                        }
+
+                    }
+
+                    entityBarData.put(player.getUniqueId(), String.valueOf(entityData));
+
+                    return;
+                }
+
+                //default
+
+                entityData.append(targetHealthBar(entity));
+
+                //-101
+                entityData.append("\uF80B\uF80A\uF805");
+
+
+                int maxNameLength = 96;
+                String name = truncateName(entity.getName(), maxNameLength);
+                entityData.append(name);
+                int nameWidth = getPixelWidth(name);
+                int padding = maxNameLength - nameWidth;
+
+                // pad remaining space
+                for (int i = 0; i < PIXELS.length; i++) {
+
+                    while (padding >= PIXELS[i]) {
+                        entityData.append(GLYPHS[i]);
+                        padding -= PIXELS[i];
+                    }
+
+                }
+
+                entityBarData.put(entity.getUniqueId(), String.valueOf(entityData));
 
             }
         }.runTaskAsynchronously(main);
 
 
     }
+
+    String truncateName(String name, int maxWidth){
+
+        name = name.replaceAll("§.", "");
+
+        int width = 0;
+        StringBuilder result = new StringBuilder();
+
+        for (char c : name.toCharArray()) {
+
+            int charWidth = MINECRAFT_CHAR_WIDTHS.getOrDefault(c, -1) + 1;
+
+            //4 is … length
+            if (width + charWidth + 6 > maxWidth) {
+                result.append("…");
+                return result.toString();
+            }
+
+            result.append(c);
+            width += charWidth;
+        }
+
+        return name;
+    }
+
 
     int getPixelWidth(String text) {
 
@@ -982,7 +1084,7 @@ public class HudManager {
         int width = 0;
 
         for (char c : text.toCharArray()) {
-            width += MINECRAFT_CHAR_WIDTHS.getOrDefault(c, 0)+1;
+            width += MINECRAFT_CHAR_WIDTHS.getOrDefault(c, -1)+1;
         }
 
         return width;
@@ -1024,7 +1126,16 @@ public class HudManager {
         //-104
         healthBar.append("\uF80B\uF80A\uF808");
 
-        healthBar.append(ChatColor.GREEN);
+        if(profileManager.getAnyProfile(entity).getIsPassive()){
+            healthBar.append(ChatColor.GREEN);
+        }
+        else{
+            healthBar.append(ChatColor.RED);
+        }
+
+
+
+
         //grab this from the indexer
         healthBar.append(targetResource[amount]);
 

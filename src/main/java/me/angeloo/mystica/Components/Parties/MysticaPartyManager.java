@@ -79,14 +79,6 @@ public class MysticaPartyManager {
 
             mPartyMap.put(player.getUniqueId(), mParty);
 
-            for(LivingEntity member : mParty){
-
-                if(member instanceof Player pMember){
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(pMember, BarType.Team));
-                }
-
-            }
-
             return;
         }
 
@@ -103,7 +95,6 @@ public class MysticaPartyManager {
         }
 
         mPartyMap.put(player.getUniqueId(), mParty);
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Team));
 
     }
 
@@ -164,7 +155,6 @@ public class MysticaPartyManager {
 
         mPartyMap.remove(player.getUniqueId());
         pPartyMap.remove(player.getUniqueId());
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Team));
 
         if(player.getUniqueId() == leaderPlayer.getUniqueId()){
             return;

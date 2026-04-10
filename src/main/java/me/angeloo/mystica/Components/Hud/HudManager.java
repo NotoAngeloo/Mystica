@@ -11,6 +11,7 @@ import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.BossManager;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Logic.DamageBoardPlaceholders;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import net.md_5.bungee.api.ChatColor;
@@ -28,6 +29,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static me.angeloo.mystica.Mystica.assassinColor;
+import static me.angeloo.mystica.Mystica.mysticColor;
+import static me.angeloo.mystica.Mystica.elementalistColor;
+import static me.angeloo.mystica.Mystica.rangerColor;
+import static me.angeloo.mystica.Mystica.paladinColor;
+import static me.angeloo.mystica.Mystica.warriorColor;
+import static me.angeloo.mystica.Mystica.shadowKnightColor;
 
 
 public class HudManager {
@@ -332,6 +341,16 @@ public class HudManager {
     private final String teamResourceBackground3 = "\ue156";
     private final String[] teamResource3 = {"\uE17F","\uE17E","\uE17D","\uE17C","\uE17B","\uE17A","\uE179","\uE178","\uE177","\uE176","\uE175","\uE174","\uE173","\uE172","\uE171","\uE170","\uE16F","\uE16E","\uE16D","\uE16C","\uE16B","\uE16A","\uE169","\uE168","\uE167","\uE166","\uE165","\uE164","\uE163","\uE162","\uE161","\uE160","\uE15F","\uE15E","\uE15D","\uE15C","\uE15B","\uE15A","\uE159","\uE158","\uE157"};
     private final Map<UUID, String> teamResource3Cache = new ConcurrentHashMap<>();
+
+    //squad data
+
+    //0-8
+    private final String[] squadResource0 = {"\ue1c0","\ue1bf","\ue1be","\ue1bd","\ue1bc","\ue1bb","\ue1ba","\ue1b9","\ue1b8"};
+    private final Map<UUID, String> squadResource0Cache = new ConcurrentHashMap<>();
+    private final String[] squadResource1 = {"\ue1c9","\ue1c8","\ue1c7","\ue1c6","\ue1c5","\ue1c4","\ue1c3","\ue1c2","\ue1c1"};
+    private final Map<UUID, String> squadResource1Cache = new ConcurrentHashMap<>();
+    private final String[] squadResource2 = {"\ue1d2","\ue1d1","\ue1d0","\ue1cf","\ue1ce","\ue1cd","\ue1cc","\ue1cb","\ue1ca"};
+    private final Map<UUID, String> squadResource2Cache = new ConcurrentHashMap<>();
 
     public HudManager(Mystica main){
         this.main = main;
@@ -1368,6 +1387,18 @@ public class HudManager {
             builder1.append(profileManager.getCompanionTeamFace(entity.getUniqueId(), 1));
             builder2.append(profileManager.getCompanionTeamFace(entity.getUniqueId(), 2));
             builder3.append(profileManager.getCompanionTeamFace(entity.getUniqueId(), 3));
+
+            /*Player player = profileManager.getCompanionsPlayer(entity);
+
+            builder0.append(skinGrabber.getTeamFace(player, 0));
+            builder1.append(skinGrabber.getTeamFace(player, 1));
+            builder2.append(skinGrabber.getTeamFace(player, 2));
+            builder3.append(skinGrabber.getTeamFace(player, 3));
+            //+16 for alignment
+            builder0.append("\uF829");
+            builder1.append("\uF829");
+            builder2.append("\uF829");
+            builder3.append("\uF829");*/
         }
 
         //append health
@@ -1469,7 +1500,91 @@ public class HudManager {
         teamResource3Cache.put(entity.getUniqueId(),String.valueOf(builder3));
 
 
-        //TODO: squad resource cache
+        updateSelfSquadInfo(entity);
+
+    }
+
+    private void updateSelfSquadInfo(LivingEntity entity){
+
+        StringBuilder builder0 = new StringBuilder();
+        StringBuilder builder1 = new StringBuilder();
+        StringBuilder builder2 = new StringBuilder();
+
+        Profile playerProfile = profileManager.getAnyProfile(entity);
+        PlayerClass playerClass = profileManager.getAnyProfile(entity).getPlayerClass();
+
+        switch (playerClass) {
+            case Assassin -> {
+                builder0.append(ChatColor.of(assassinColor));
+                builder1.append(ChatColor.of(assassinColor));
+                builder2.append(ChatColor.of(assassinColor));
+            }
+            case Elementalist -> {
+                builder0.append(ChatColor.of(elementalistColor));
+                builder1.append(ChatColor.of(elementalistColor));
+                builder2.append(ChatColor.of(elementalistColor));
+            }
+            case Ranger -> {
+                builder0.append(ChatColor.of(rangerColor));
+                builder1.append(ChatColor.of(rangerColor));
+                builder2.append(ChatColor.of(rangerColor));
+            }
+            case Paladin -> {
+                builder0.append(ChatColor.of(paladinColor));
+                builder1.append(ChatColor.of(paladinColor));
+                builder2.append(ChatColor.of(paladinColor));
+            }
+            case Warrior -> {
+                builder0.append(ChatColor.of(warriorColor));
+                builder1.append(ChatColor.of(warriorColor));
+                builder2.append(ChatColor.of(warriorColor));
+            }
+            case Shadow_Knight -> {
+                builder0.append(ChatColor.of(shadowKnightColor));
+                builder1.append(ChatColor.of(shadowKnightColor));
+                builder2.append(ChatColor.of(shadowKnightColor));
+
+            }
+            case Mystic -> {
+                builder0.append(ChatColor.of(mysticColor));
+                builder1.append(ChatColor.of(mysticColor));
+                builder2.append(ChatColor.of(mysticColor));
+            }
+            default -> {
+                builder0.append(ChatColor.RESET);
+                builder0.append(ChatColor.RESET);
+                builder0.append(ChatColor.RESET);
+            }
+        }
+
+        double actualMaxHealth = playerProfile.getTotalHealth() + statusEffectManager.getHealthBuffAmount(entity);
+        double actualCurrentHealth = profileManager.getAnyProfile(entity).getCurrentHealth();
+        double ratio = actualCurrentHealth / actualMaxHealth;
+        int amount = (int) Math.ceil(ratio * 8);
+
+        if(amount < 0){
+            amount = 0;
+        }
+
+        if(actualCurrentHealth <= 0){
+            amount = 0;
+        }
+
+        if(amount > 8){
+            amount = 8;
+        }
+
+        if(playerProfile.getIfDead()){
+            amount = 0;
+        }
+
+        builder0.append(squadResource0[amount]);
+        builder1.append(squadResource1[amount]);
+        builder2.append(squadResource2[amount]);
+
+        squadResource0Cache.put(entity.getUniqueId(), String.valueOf(builder0));
+        squadResource1Cache.put(entity.getUniqueId(),String.valueOf(builder1));
+        squadResource2Cache.put(entity.getUniqueId(),String.valueOf(builder2));
 
     }
 
@@ -1514,6 +1629,7 @@ public class HudManager {
                     }
                 }
 
+                //PROBLEM, faces move *slightly sometimes depending on slot
 
                 slot++;
 
@@ -1534,16 +1650,10 @@ public class HudManager {
 
         StringBuilder offset = new StringBuilder();
 
-
-        /*
-
         //-512 space
         //teamData.append("\uF80E");
         //-100space
         //teamData.append("\uF80B\uF80A\uF804");
-
-
-        //loop based on party members
 
         int slot = 0;
         for(LivingEntity member : mysticaParty){
@@ -1552,20 +1662,84 @@ public class HudManager {
                 continue;
             }
 
-            if(!(member instanceof Player memberPlayer)){
+            //need to test with them unfort
+            /*if(!(member instanceof Player memberPlayer)){
                 //companions not allowed in squads
                 continue;
+            }*/
+
+            //for testing purposes
+            Player memberPlayer;
+
+            if(member instanceof Player){
+                memberPlayer = (Player)member;
+            }
+            else{
+                memberPlayer = profileManager.getCompanionsPlayer(member);
             }
 
-            teamData.append(getSquadMemberDataString(member, slot));
+
+            switch (slot) {
+                case 0, 1, 2 -> {
+                    teamData.append(squadResource0Cache.get(member.getUniqueId()));
+                }
+                case 3, 4, 5 -> {
+                    teamData.append(squadResource1Cache.get(member.getUniqueId()));
+                }
+                case 6, 8, 7 -> {
+                    teamData.append(squadResource2Cache.get(member.getUniqueId()));
+                }
+            }
 
             //-32
             teamData.append("\uF80A");
-
             teamData.append(skinGrabber.getSquadFace(memberPlayer, slot));
 
             // +36
             teamData.append("\uF82A\uF824");
+            //+36
+            offset.append("\uF82A\uF824");
+
+            slot++;
+
+            //this code is bad look away
+            if(slot >= 3){
+                //+1
+                offset.append("\uF821");
+            }
+
+            if(slot == 3 || slot == 6){
+                //-111
+                teamData.append("\uF80B\uF80A\uF808\uF807");
+
+                //+111
+                //offset.append("\uF82B\uF82A\uF828\uF827");
+
+                //-111
+                offset.append("\uF80B\uF80A\uF808\uF807");
+
+            }
+        }
+
+
+        offset.append(teamData);
+
+        return String.valueOf(offset);
+
+
+
+        /*
+
+
+
+
+        //loop based on party members
+
+        int slot = 0;
+        for(LivingEntity member : mysticaParty){
+
+
+
 
             //+36
             offset.append("\uF82A\uF824");
@@ -1588,19 +1762,7 @@ public class HudManager {
                 offset.append("\uF821");
             }
 
-            if(slot == 3 || slot == 6){
 
-                //-111
-                teamData.append("\uF80B\uF80A\uF808\uF807");
-
-                //+111
-                //offset.append("\uF82B\uF82A\uF828\uF827");
-
-                //-111
-                offset.append("\uF80B\uF80A\uF808\uF807");
-
-                //append ofdset later
-            }
 
 
             //+64
@@ -1612,90 +1774,9 @@ public class HudManager {
 
         offset.append(teamData);*/
 
-        return String.valueOf(offset);
+        //return String.valueOf(offset);
     }
 
-
-
-    private String getSquadMemberDataString(LivingEntity entity, int slot){
-
-        StringBuilder entityBar = new StringBuilder();
-
-        /*
-
-        //depending on class
-        PlayerClass playerClass = profileManager.getAnyProfile(entity).getPlayerClass();
-
-        switch (playerClass) {
-            case Assassin -> {
-                entityBar.append(ChatColor.of(assassinColor));
-            }
-            case Elementalist -> {
-                entityBar.append(ChatColor.of(elementalistColor));
-            }
-            case Ranger -> {
-                entityBar.append(ChatColor.of(rangerColor));
-            }
-            case Paladin -> {
-                entityBar.append(ChatColor.of(paladinColor));
-            }
-            case Warrior -> {
-                entityBar.append(ChatColor.of(warriorColor));
-            }
-            case Shadow_Knight -> {
-                entityBar.append(ChatColor.of(shadowKnightColor));
-            }
-            case Mystic -> {
-                entityBar.append(ChatColor.of(mysticColor));
-            }
-            default -> {
-                entityBar.append(ChatColor.RESET);
-            }
-        }
-
-
-        //depending on health, get a different unicode
-        Profile playerProfile = profileManager.getAnyProfile(entity);
-        double actualMaxHealth = playerProfile.getTotalHealth() + statusEffectManager.getHealthBuffAmount(entity);
-        double actualCurrentHealth = profileManager.getAnyProfile(entity).getCurrentHealth();
-        double ratio = actualCurrentHealth / actualMaxHealth;
-        int amount = (int) Math.ceil(ratio * 8);
-
-        if(amount < 0){
-            amount = 0;
-        }
-
-        if(actualCurrentHealth <= 0){
-            amount = 0;
-        }
-
-        if(amount > 8){
-            amount = 8;
-        }
-
-        if(playerProfile.getIfDead()){
-            amount = 0;
-        }
-
-        //slot switch here for height
-        switch (slot) {
-            case 0, 1, 2 -> {
-                entityBar.append(squadHealth0[amount]);
-            }
-            case 3, 4, 5 -> {
-                entityBar.append(squadHealth1[amount]);
-            }
-            case 6, 7, 8 -> {
-                entityBar.append(squadHealth2[amount]);
-            }
-        }
-
-
-
-       */
-
-        return String.valueOf(entityBar);
-    }
 
     //####################################################################################################
 

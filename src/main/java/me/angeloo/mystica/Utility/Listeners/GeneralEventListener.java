@@ -164,7 +164,6 @@ public class GeneralEventListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         hudManager.innitHud(player);
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Team));
         
 
         if (combatLogs.contains(player.getUniqueId())) {
@@ -863,15 +862,7 @@ public class GeneralEventListener implements Listener {
                 Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(dPlayer, Health));
             }
 
-            List<LivingEntity> mysticaParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(defender));
 
-            for (LivingEntity member : mysticaParty) {
-
-                if (member instanceof Player player) {
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, Team));
-                }
-
-            }
         }
 
 
@@ -945,11 +936,6 @@ public class GeneralEventListener implements Listener {
                 case Target -> {
                     hudManager.updateTargetData(player);
                     //Bukkit.getLogger().info("update target");
-                    return;
-                }
-                case Team -> {
-                    //hudManager.editTeamBar(player);
-                    //Bukkit.getLogger().info("update team");
                     return;
                 }
                 case Status -> {
@@ -1705,7 +1691,6 @@ public class GeneralEventListener implements Listener {
         for(LivingEntity member : oldMParty){
             if(member instanceof Player player){
                 mysticaPartyManager.updateMysticaParty(player);
-                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, Team));
                 Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, Dps));
             }
 
@@ -1722,8 +1707,6 @@ public class GeneralEventListener implements Listener {
         changeResourceHandler.addHealthToEntity(companion, max, null);
 
         Player player = profileManager.getCompanionsPlayer(companion);
-
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, Team));
 
     }
 

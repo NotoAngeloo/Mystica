@@ -38,6 +38,12 @@ public class SkinGrabber {
 
     private final String[] teamPixel3 = {"\ue198","\ue199","\ue19a","\ue19b","\ue19c","\ue19d","\ue19e","\ue19f"};
 
+    private final String[] squadPixel0 = {"\ue1a0","\ue1a1","\ue1a2","\ue1a3","\ue1a4","\ue1a5","\ue1a6","\ue1a7"};
+
+    private final String[] squadPixel1 = {"\ue1a8","\ue1a9","\ue1aa","\ue1ab","\ue1ac","\ue1ad","\ue1ae","\ue1af"};
+
+    private final String[] squadPixel2 = {"\ue1b0","\ue1b1","\ue1b2","\ue1b3","\ue1b4","\ue1b5","\ue1b6","\ue1b7"};
+
     public SkinGrabber(){
 
     }
@@ -96,36 +102,10 @@ public class SkinGrabber {
 
         switch (squadSlot) {
             case 0, 1, 2 -> {
-                String currentUnicode = "\uE22C";
 
                 for (int y = 0; y < 8; y++) {
 
-                    switch (y) {
-                        case 0 -> {
-                            currentUnicode = "\uE22C";
-                        }
-                        case 1 -> {
-                            currentUnicode = "\uE22D";
-                        }
-                        case 2 -> {
-                            currentUnicode = "\uE22E";
-                        }
-                        case 3 -> {
-                            currentUnicode = "\uE22F";
-                        }
-                        case 4 -> {
-                            currentUnicode = "\uE230";
-                        }
-                        case 5 -> {
-                            currentUnicode = "\uE231";
-                        }
-                        case 6 -> {
-                            currentUnicode = "\uE232";
-                        }
-                        case 7 -> {
-                            currentUnicode = "\uE233";
-                        }
-                    }
+                    String currentUnicode = squadPixel0[y];
 
                     for (int x = 0; x < 8; x++) {
 
@@ -138,45 +118,18 @@ public class SkinGrabber {
                         face.append("\uF801");
                     }
 
-
                     //-8
                     face.append("\uF808");
-
 
                 }
 
             }
             case 3, 4, 5 -> {
-                String currentUnicode = "\uE234";
+
 
                 for (int y = 0; y < 8; y++) {
 
-                    switch (y) {
-                        case 0 -> {
-                            currentUnicode = "\uE234";
-                        }
-                        case 1 -> {
-                            currentUnicode = "\uE235";
-                        }
-                        case 2 -> {
-                            currentUnicode = "\uE236";
-                        }
-                        case 3 -> {
-                            currentUnicode = "\uE237";
-                        }
-                        case 4 -> {
-                            currentUnicode = "\uE238";
-                        }
-                        case 5 -> {
-                            currentUnicode = "\uE239";
-                        }
-                        case 6 -> {
-                            currentUnicode = "\uE23A";
-                        }
-                        case 7 -> {
-                            currentUnicode = "\uE23B";
-                        }
-                    }
+                    String currentUnicode = squadPixel1[y];
 
                     for (int x = 0; x < 8; x++) {
 
@@ -198,36 +151,10 @@ public class SkinGrabber {
 
             }
             case 6, 7, 8 -> {
-                String currentUnicode = "\uE23C";
 
                 for (int y = 0; y < 8; y++) {
 
-                    switch (y) {
-                        case 0 -> {
-                            currentUnicode = "\uE23C";
-                        }
-                        case 1 -> {
-                            currentUnicode = "\uE23D";
-                        }
-                        case 2 -> {
-                            currentUnicode = "\uE23E";
-                        }
-                        case 3 -> {
-                            currentUnicode = "\uE23F";
-                        }
-                        case 4 -> {
-                            currentUnicode = "\uE240";
-                        }
-                        case 5 -> {
-                            currentUnicode = "\uE241";
-                        }
-                        case 6 -> {
-                            currentUnicode = "\uE242";
-                        }
-                        case 7 -> {
-                            currentUnicode = "\uE243";
-                        }
-                    }
+                    String currentUnicode = squadPixel2[y];
 
                     for (int x = 0; x < 8; x++) {
 

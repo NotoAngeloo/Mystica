@@ -1349,11 +1349,18 @@ public class HudManager {
         StringBuilder builder2 = new StringBuilder();
         StringBuilder builder3 = new StringBuilder();
 
-        //TODO:player team faces
 
         //append face to builders
-        if(entity instanceof Player){
-
+        if(entity instanceof Player player){
+            builder0.append(skinGrabber.getTeamFace(player, 0));
+            builder1.append(skinGrabber.getTeamFace(player, 1));
+            builder2.append(skinGrabber.getTeamFace(player, 2));
+            builder3.append(skinGrabber.getTeamFace(player, 3));
+            //+16 for alignment
+            builder0.append("\uF829");
+            builder1.append("\uF829");
+            builder2.append("\uF829");
+            builder3.append("\uF829");
         }
 
         if(profileManager.getAnyProfile(entity).fakePlayer()){
@@ -1460,6 +1467,10 @@ public class HudManager {
         builder3.append(teamResource3[shieldAmount]);
 
         teamResource3Cache.put(entity.getUniqueId(),String.valueOf(builder3));
+
+
+        //TODO: squad resource cache
+
     }
 
 

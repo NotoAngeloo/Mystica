@@ -209,6 +209,7 @@ public class GeneralEventListener implements Listener {
 
         combatManager.sheathWeapon(player);
         cooldownDisplayer.initializeItems(player);
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.SelfInfo));
     }
 
     @EventHandler

@@ -35,6 +35,7 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Boss;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -61,9 +62,10 @@ public class ProfileManager {
     private final Map<UUID, FakePlayerProfile> fakePlayerProfileMap = new HashMap<>();
     private final Map<UUID, NonPlayerProfile> nonPlayerProfiles = new HashMap<>();
 
-    private final Map<UUID, BossBar> playerResourceBar = new HashMap<>();
     private final Map<UUID, BossBar> playerTargetBar = new HashMap<>();
+    private final Map<UUID, BossBar> playerTargetTargetBar = new HashMap<>();
     private final Map<UUID, BossBar> playerTeamBar = new HashMap<>();
+
     private final Map<UUID, BossBar> playerStatusBar = new HashMap<>();
 
     private final Map<UUID, Boolean> companionCombatMap = new HashMap<>();
@@ -702,6 +704,7 @@ public class ProfileManager {
             @Override
             public Boolean getIfDead() {
 
+                //this throws error if profile called async. called when target a player/fake who targets a non-player
                 Entity entity = Bukkit.getEntity(uuid);
 
                 if(entity != null){
@@ -952,30 +955,11 @@ public class ProfileManager {
         Bukkit.getScheduler().runTask(main, () -> Bukkit.getServer().getPluginManager().callEvent(new UpdateMysticaPartyEvent(player)));
     }*/
 
-    public void setPlayerResourceBar(Player player, BossBar resourceBar){
-        playerResourceBar.put(player.getUniqueId(), resourceBar);
-    }
+
 
     public void setPlayerTargetBar(Player player, BossBar targetBar){
         playerTargetBar.put(player.getUniqueId(), targetBar);
     }
-
-    public void setPlayerTeamBar(Player player, BossBar teamBar){
-        playerTeamBar.put(player.getUniqueId(), teamBar);
-    }
-
-    public void setPlayerStatusBar(Player player, BossBar statusBar){
-        playerStatusBar.put(player.getUniqueId(), statusBar);
-    }
-
-    public BossBar getPlayerResourceBar(Player player){
-        if(!playerResourceBar.containsKey(player.getUniqueId())){
-            BossBar resourceBar = Bukkit.createBossBar("", BarColor.WHITE, BarStyle.SOLID);
-            setPlayerResourceBar(player, resourceBar);
-        }
-        return playerResourceBar.get(player.getUniqueId());
-    }
-
     public BossBar getPlayerTargetBar(Player player){
         if(!playerTargetBar.containsKey(player.getUniqueId())){
             BossBar targetBar = Bukkit.createBossBar("",BarColor.WHITE,BarStyle.SOLID);
@@ -984,12 +968,32 @@ public class ProfileManager {
         return playerTargetBar.get(player.getUniqueId());
     }
 
+    public void setPlayerTargetTargetBar(Player player, BossBar targetTargetBar){
+        playerTargetTargetBar.put(player.getUniqueId(), targetTargetBar);
+    }
+    public BossBar getPlayerTargetTargetBar(Player player){
+        if(!playerTargetTargetBar.containsKey(player.getUniqueId())){
+            BossBar targetTargetBar = Bukkit.createBossBar("",BarColor.WHITE,BarStyle.SOLID);
+            setPlayerTargetTargetBar(player, targetTargetBar);
+        }
+        return playerTargetTargetBar.get(player.getUniqueId());
+    }
+
+    public void setPlayerTeamBar(Player player, BossBar teamBar){
+        playerTeamBar.put(player.getUniqueId(), teamBar);
+    }
     public BossBar getPlayerTeamBar(Player player){
         if(!playerTeamBar.containsKey(player.getUniqueId())){
             BossBar teamBar = Bukkit.createBossBar("",BarColor.WHITE,BarStyle.SOLID);
             setPlayerTeamBar(player, teamBar);
         }
         return playerTeamBar.get(player.getUniqueId());
+    }
+
+
+    //something else later
+    public void setPlayerStatusBar(Player player, BossBar statusBar){
+        playerStatusBar.put(player.getUniqueId(), statusBar);
     }
 
     public BossBar getPlayerStatusBar(Player player){
@@ -1100,25 +1104,6 @@ public class ProfileManager {
         companionFace3.remove(uuid);
     }
 
-    public void setBossIcon(UUID uuid, String bossName){
-
-        switch (bossName.toLowerCase()){
-            case "lindwyrm":{
-                //make this look better later
-                //bossIcons.put(uuid, "\uE04E");
-                return;
-            }
-        }
-
-    }
-
-    public String getBossIcon(UUID uuid){
-        return bossIcons.getOrDefault(uuid, "\uE1A3");
-    }
-
-    public String getPassiveIcon(UUID uuid){
-        return bossIcons.getOrDefault(uuid, "\uE061");
-    }
 
     public MysticaPartyManager getMysticaPartyManager(){return mysticaPartyManager;}
 

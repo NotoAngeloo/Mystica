@@ -77,6 +77,7 @@ public class DeathManager {
         player.setSaturation(20);
         player.setInvisible(true);
         //player.setGlowing(true);
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.SelfInfo));
 
         Entity gravestone;
 
@@ -174,6 +175,7 @@ public class DeathManager {
         }
 
         Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(target, BarType.WhomeverTarget));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(target, BarType.SelfInfo));
 
     }
 

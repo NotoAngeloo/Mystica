@@ -83,17 +83,14 @@ public class CreaturesAndCharactersManager {
             case "Lindwyrm" -> {
                 theLindwyrm.makeProfile(uuid);
                 bossManager.setBossHome(uuid);
-                profileManager.setBossIcon(uuid, name);
             }
             case "WeberBoss" -> {
                 weberBoss.makeProfile(uuid);
                 bossManager.setBossHome(uuid);
-                profileManager.setBossIcon(uuid, name);
             }
             case "CoersicaBoss" -> {
                 coersicaBoss.makeProfile(uuid);
                 bossManager.setBossHome(uuid);
-                profileManager.setBossIcon(uuid, name);
             }
             case "Coersica_Dimension_Rift" -> {
                 coersicaBoss.makeSpawnablePortalProfile(uuid);
@@ -104,7 +101,6 @@ public class CreaturesAndCharactersManager {
             case "HoLeeBoss" -> {
                 hoLeeBoss.makeProfile(uuid);
                 bossManager.setBossHome(uuid);
-                profileManager.setBossIcon(uuid, name);
             }
             case "HoLeePikeman" -> {
                 hoLeeBoss.makeSpawnableProfile(uuid);
@@ -112,7 +108,6 @@ public class CreaturesAndCharactersManager {
             case "CorruptHeart" -> {
                 corruptHeart.makeProfile(uuid);
                 bossManager.setBossHome(uuid);
-                profileManager.setBossIcon(uuid, name);
             }
             case "SafeZone", "TankZone", "RangedZone", "MeleeZone", "Nothing", "DemonPortal", "HeartTendril", "Dimension_Rift", "ChaosSeed", "ShadowSeed", "Coersica_Shadow_Grip", "LindwyrmRock", "Corpse" -> {
                 makeImmortalObjectProfile(uuid);

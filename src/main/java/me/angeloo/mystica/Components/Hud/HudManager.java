@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.Hud;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.AggroManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.CombatSystem.GravestoneManager;
@@ -38,6 +39,7 @@ public class HudManager {
     private final MysticaPartyManager mysticaPartyManager;
     private final DamageBoardPlaceholders damageBoardPlaceholders;
     private final BossWarningSender bossWarningSender;
+    private final AggroManager aggroManager;
 
 
     private final AllSkillItems allSkillItems;
@@ -54,7 +56,7 @@ public class HudManager {
     private final Map<UUID, String> entityBarData = new HashMap<>();
 
 
-    private static final Map<Character, Integer> MINECRAFT_CHAR_WIDTHS = Map.ofEntries(
+    private static final Map<Character, Integer> MINECRAFT_CHAR_WIDTHS = Map.<Character, Integer>ofEntries(
             Map.entry('!', 1),
             Map.entry('"', 4),
             Map.entry('#', 5),
@@ -259,71 +261,12 @@ public class HudManager {
     //old char mappings
     /*
 
-    //0-20, in that order
-    private final String[] playerTargetHealthBar = {"\uE0CC", "\uE0CB", "\uE0CA", "\uE0C9", "\uE0C8", "\uE0C7",
-            "\uE0C6", "\uE0C5", "\uE0C4", "\uE0C3", "\uE0C2", "\uE0C1", "\uE0C0", "\uE0BF", "\uE0BE", "\uE0BD",
-            "\uE0BC", "\uE0BB", "\uE0BA", "\uE0B9", "\uE0B8"};
-
-    //1-20
-    private final String[] playerTargetShieldBar = {"\uE123", "\uE122", "\uE121", "\uE120", "\uE11F", "\uE11E",
-            "\uE11D", "\uE11C", "\uE11B", "\uE11A", "\uE119", "\uE118", "\uE117", "\uE116", "\uE115", "\uE114",
-            "\uE113", "\uE112", "\uE111", "\uE110"};
-
-    //0-20
-    private final String[] teamHealthBar0 = {"\uE163", "\uE162", "\uE161", "\uE160", "\uE15F", "\uE15E", "\uE15D",
-            "\uE15C", "\uE15B", "\uE15A", "\uE159", "\uE158", "\uE157", "\uE156", "\uE155", "\uE154", "\uE153",
-            "\uE152", "\uE151", "\uE150", "\uE14F"};
-
-    //1-20
-    private final String[] teamShieldBar0 = {"\uE177", "\uE176", "\uE175", "\uE174", "\uE173", "\uE172", "\uE171",
-            "\uE170", "\uE16F", "\uE16E", "\uE16D", "\uE16C", "\uE16B", "\uE16A", "\uE169", "\uE168", "\uE167",
-            "\uE166", "\uE165", "\uE164"};
-
-    //0-20
-    private final String[] teamHealthBar1 = {"\uE18E", "\uE18D", "\uE18C", "\uE18B", "\uE18A", "\uE189", "\uE188",
-            "\uE187", "\uE186", "\uE185", "\uE184", "\uE183", "\uE182", "\uE181", "\uE180", "\uE17F", "\uE17E",
-            "\uE17D", "\uE17C", "\uE17B", "\uE17A"};
-
-    //1-20
-    private final String[] teamShieldBar1 = {"\uE1A2", "\uE1A1", "\uE1A0", "\uE19F", "\uE19E", "\uE19D", "\uE19C",
-            "\uE19B", "\uE19A","\uE199", "\uE198", "\uE197", "\uE196","\uE195", "\uE194", "\uE193", "\uE192",
-            "\uE191", "\uE190", "\uE18F"};
-
-    //0-20
-    private final String[] teamHealthBar2 = {"\uE1B9", "\uE1B8", "\uE1B7", "\uE1B6", "\uE1B5", "\uE1B4", "\uE1B3",
-            "\uE1B2", "\uE1B1", "\uE1B0", "\uE1AF", "\uE1AE", "\uE1AD", "\uE1AC", "\uE1AB", "\uE1AA", "\uE1A9",
-            "\uE1A8", "\uE1A7", "\uE1A6", "\uE1A5"};
-
-    //1-20
-    private final String[] teamShieldBar2 = {"\uE1CD", "\uE1CC", "\uE1CB", "\uE1CA", "\uE1C9", "\uE1C8", "\uE1C7",
-            "\uE1C6", "\uE1C5", "\uE1C4", "\uE1C3", "\uE1C2", "\uE1C1", "\uE1C0", "\uE1BF", "\uE1BE", "\uE1BD",
-            "\uE1BC", "\uE1BB", "\uE1BA"};
-
-
-    //0-20
-    private final String[] teamHealthBar3 = {"\uE1E4", "\uE1E3", "\uE1E2", "\uE1E1", "\uE1E0", "\uE1DF", "\uE1DE",
-            "\uE1DD", "\uE1DC", "\uE1DB", "\uE1DA", "\uE1D9", "\uE1D8", "\uE1D7", "\uE1D6", "\uE1D5", "\uE1D4",
-            "\uE1D3", "\uE1D2", "\uE1D1", "\uE1D0"};
-
-    //1-20
-    private final String[] teamShieldBar3 = {"\uE1F9", "\uE1F8","\uE1F7", "\uE1F6", "\uE1F5", "\uE1F4", "\uE1F3",
-            "\uE1F2", "\uE1F1", "\uE1F0", "\uE1EF", "\uE1ED", "\uE1EC", "\uE1EB", "\uE1EA", "\uE1E9", "\uE1E8",
-            "\uE1E7", "\uE1E6", "\uE1E5"};
-
-    //0-20
-    private final String[] manaBar = {"\uE0E1","\uE0E0","\uE0DF","\uE0DE","\uE0DD","\uE0DC","\uE0DB","\uE0DA","\uE0D9",
-            "\uE0D8", "\uE0D7","\uE0D6","\uE0D5","\uE0D4","\uE0D3","\uE0D2","\uE0D1","\uE0D0","\uE0CF","\uE0CE","\uE0CD"};
 
     //0-20
     private final String[] castBar = {"\uE305","\uE304","\uE303","\uE302","\uE301","\uE300","\uE2FF","\uE2FE","\uE2FD",
             "\uE2FC", "\uE2FB","\uE2FA","\uE2F9","\uE2F8","\uE2F7","\uE2F6","\uE2F5","\uE2F4","\uE2F3","\uE2F2","\uE2F1"};
 
-    //0-20
-    private final String[] rageBar = {"\uE0E1","\uE0F5","\uE0F4","\uE0F3","\uE0F2","\uE0F1","\uE0F0","\uE0EF","\uE0EE",
-            "\uE0ED","\uE0EC","\uE0EB","\uE0EA","\uE0E9","\uE0E8","\uE0E7","\uE0E6","\uE0E5","\uE0E4","\uE0E3","\uE0E2"};
 
-    //0-10
-    private final String[] energyBar = {"\uE0E1", "\uE0FF","\uE0FE","\uE0FD","\uE0FC","\uE0FB","\uE0FA","\uE0F9","\uE0F8","\uE0F7","\uE0F6"};
 
     //0-8
     private final String[] ultimateCooldown = {"\uE137", "\uE136","\uE135","\uE134","\uE133","\uE132","\uE131","\uE130","\uE12F"};
@@ -344,6 +287,8 @@ public class HudManager {
     //0-8
     private final String[] squadHealth2 = {"\uE009","\uE22B","\uE22A","\uE229","\uE228","\uE227","\uE226","\uE225","\uE224"};*/
 
+
+    //action bar
     private final String actionBarResourceBackground = "\uE000";
 
     //0-40 (action bar)
@@ -371,6 +316,22 @@ public class HudManager {
 
     private final String[] targetResource  = {"\uE0B1","\uE0B0","\uE0AF","\uE0AE","\uE0AD","\uE0AC","\uE0AB","\uE0AA","\uE0A9","\uE0A8","\uE0A7","\uE0A6","\uE0A5","\uE0A4","\uE0A3","\uE0A2","\uE0A1","\uE0A0","\uE09F","\uE09E","\uE09D","\uE09C","\uE09B","\uE09A","\uE099","\uE098","\uE097","\uE096","\uE095","\uE094","\uE093","\uE092","\uE091","\uE090","\uE08F","\uE08E","\uE08D","\uE08C","\uE08B","\uE08A","\uE089"};
 
+    //team data
+    private final String teamResourceBackground0 = "\ue0d8";
+    private final String[] teamResource0 = {"\uE101","\uE100","\uE0FF","\uE0FE","\uE0FD","\uE0FC","\uE0FB","\uE0FA","\uE0F9","\uE0F8","\uE0F7","\uE0F6","\uE0F5","\uE0F4","\uE0F3","\uE0F2","\uE0F1","\uE0F0","\uE0EF","\uE0EE","\uE0ED","\uE0EC","\uE0EB","\uE0EA","\uE0E9","\uE0E8","\uE0E7","\uE0E6","\uE0E5","\uE0E4","\uE0E3","\uE0E2","\uE0E1","\uE0E0","\uE0DF","\uE0DE","\uE0DD","\uE0DC","\uE0DB","\uE0DA","\uE0D9"};
+    private final Map<UUID, String> teamResource0Cache = new ConcurrentHashMap<>();
+
+    private final String teamResourceBackground1 = "\ue102";
+    private final String[] teamResource1  = {"\uE12B","\uE12A","\uE129","\uE128","\uE127","\uE126","\uE125","\uE124","\uE123","\uE122","\uE121","\uE120","\uE11F","\uE11E","\uE11D","\uE11C","\uE11B","\uE11A","\uE119","\uE118","\uE117","\uE116","\uE115","\uE114","\uE113","\uE112","\uE111","\uE110","\uE10F","\uE10E","\uE10D","\uE10C","\uE10B","\uE10A","\uE109","\uE108","\uE107","\uE106","\uE105","\uE104","\uE103"};
+    private final Map<UUID, String> teamResource1Cache = new ConcurrentHashMap<>();
+
+    private final String teamResourceBackground2 = "\ue12c";
+    private final String[] teamResource2 = {"\uE155","\uE154","\uE153","\uE152","\uE151","\uE150","\uE14F","\uE14E","\uE14D","\uE14C","\uE14B","\uE14A","\uE149","\uE148","\uE147","\uE146","\uE145","\uE144","\uE143","\uE142","\uE141","\uE140","\uE13F","\uE13E","\uE13D","\uE13C","\uE13B","\uE13A","\uE139","\uE138","\uE137","\uE136","\uE135","\uE134","\uE133","\uE132","\uE131","\uE130","\uE12F","\uE12E","\uE12D"};
+    private final Map<UUID, String> teamResource2Cache = new ConcurrentHashMap<>();
+
+    private final String teamResourceBackground3 = "\ue156";
+    private final String[] teamResource3 = {"\uE17F","\uE17E","\uE17D","\uE17C","\uE17B","\uE17A","\uE179","\uE178","\uE177","\uE176","\uE175","\uE174","\uE173","\uE172","\uE171","\uE170","\uE16F","\uE16E","\uE16D","\uE16C","\uE16B","\uE16A","\uE169","\uE168","\uE167","\uE166","\uE165","\uE164","\uE163","\uE162","\uE161","\uE160","\uE15F","\uE15E","\uE15D","\uE15C","\uE15B","\uE15A","\uE159","\uE158","\uE157"};
+    private final Map<UUID, String> teamResource3Cache = new ConcurrentHashMap<>();
 
     public HudManager(Mystica main){
         this.main = main;
@@ -387,7 +348,7 @@ public class HudManager {
         gravestoneManager = main.getGravestoneManager();
         iconCalculator = new IconCalculator();
         skinGrabber = new SkinGrabber();
-
+        aggroManager = main.getAggroManager();
     }
 
     public DamageBoardPlaceholders getDamageBoardPlaceholders(){
@@ -404,16 +365,21 @@ public class HudManager {
             @Override
             public void run(){
                 //bar 1, target
-                BossBar resourceBar = Bukkit.createBossBar(getTargetData(target), BarColor.WHITE, BarStyle.SOLID);
-                resourceBar.addPlayer(player);
-                resourceBar.setVisible(true);
-                profileManager.setPlayerTargetBar(player, resourceBar);
+                BossBar targetBar = Bukkit.createBossBar(getTargetData(target), BarColor.WHITE, BarStyle.SOLID);
+                targetBar.addPlayer(player);
+                targetBar.setVisible(true);
+                profileManager.setPlayerTargetBar(player, targetBar);
 
                 //bar 2, target's target
-                //BossBar targetBar = Bukkit.createBossBar(createTargetDataString(player, target), BarColor.WHITE, BarStyle.SOLID);
-                //targetBar.addPlayer(player);
-                //targetBar.setVisible(true);
-                //profileManager.setPlayerTargetBar(player, targetBar);
+                BossBar targetTargetBar = Bukkit.createBossBar(getTargetTargetData(target), BarColor.WHITE, BarStyle.SOLID);
+                targetTargetBar.addPlayer(player);
+                targetTargetBar.setVisible(true);
+                profileManager.setPlayerTargetTargetBar(player, targetTargetBar);
+
+                BossBar teamBar = Bukkit.createBossBar(createTeamDataString(player), BarColor.WHITE, BarStyle.SOLID);
+                teamBar.addPlayer(player);
+                teamBar.setVisible(true);
+                profileManager.setPlayerTeamBar(player, teamBar);
 
 
                 //team data
@@ -459,6 +425,8 @@ public class HudManager {
         for(Player player : Bukkit.getOnlinePlayers()){
             displayActionBar(player);
             updateTargetData(player);
+            updateTargetTargetData(player);
+            updateTeamData(player);
         }
     }
 
@@ -898,8 +866,6 @@ public class HudManager {
         return "";
     }
 
-
-
     public void updateEntityBarInformation(LivingEntity entity){
 
         new BukkitRunnable(){
@@ -908,7 +874,6 @@ public class HudManager {
                 StringBuilder entityData = new StringBuilder();
 
                 if(bossManager.getIfEntityIsBoss(entity.getUniqueId())){
-
 
 
                     entityData.append(bossHealthBar(entity));
@@ -984,6 +949,7 @@ public class HudManager {
 
                     entityBarData.put(entity.getUniqueId(), String.valueOf(entityData));
 
+                    updateSelfTeamInfo(entity);
                     return;
                 }
 
@@ -1116,9 +1082,18 @@ public class HudManager {
             amount = 40;
         }
 
-        if(profileManager.getAnyProfile(entity).getIfDead()){
-            amount = 0;
+        //reason i am doing this is the potential to call bukkit.getentity async on get if dead
+        if(entity instanceof Player || profile.fakePlayer()){
+            if(profileManager.getAnyProfile(entity).getIfDead()){
+                amount = 0;
+            }
         }
+        else{
+            if(entity.isDead()){
+                amount = 0;
+            }
+        }
+
 
         //this needs a different bar type
 
@@ -1126,15 +1101,14 @@ public class HudManager {
         //-104
         healthBar.append("\uF80B\uF80A\uF808");
 
-        if(profileManager.getAnyProfile(entity).getIsPassive()){
+
+        //not going to check pvp info quite yet
+        if(profileManager.getAnyProfile(entity).getIsPassive() || entity instanceof Player){
             healthBar.append(ChatColor.GREEN);
         }
         else{
             healthBar.append(ChatColor.RED);
         }
-
-
-
 
         //grab this from the indexer
         healthBar.append(targetResource[amount]);
@@ -1213,7 +1187,6 @@ public class HudManager {
         healthBar.append("\uF80C");
         //-27
         healthBar.append("\uF809\uF808\uF803");
-
 
 
         double shield = statusEffectManager.getTotalShield(entity);
@@ -1303,6 +1276,417 @@ public class HudManager {
     }
 
     //#######################################################################################################
+
+    public void updateTargetTargetData(Player player){
+        BossBar targetBar = profileManager.getPlayerTargetTargetBar(player);
+        LivingEntity target = targetManager.getPlayerTarget(player);
+        targetBar.setTitle(getTargetTargetData(target));
+    }
+
+
+    private String getTargetTargetData(LivingEntity entity){
+
+        if(entity == null){
+            return "";
+        }
+
+        StringBuilder builder = new StringBuilder();
+
+        //check targets target
+        LivingEntity target;
+
+        if(entity instanceof Player || profileManager.getAnyProfile(entity).fakePlayer()){
+            target = targetManager.getPlayerTarget(entity);
+        }
+        else{
+            target = aggroManager.getTarget(entity);
+        }
+
+        if(target == entity){
+            //perhaps hide instead, since i still want status of target proper
+            return "";
+        }
+
+        if(target != null){
+
+            //perhaps move it right
+            if(entityBarData.containsKey(target.getUniqueId())){
+
+                //+256
+                builder.append("\uF82D");
+                //+16
+                builder.append("\uF829");
+
+                builder.append(entityBarData.get(target.getUniqueId()));
+
+                //TODO: add target target status effects to THIS bar such that i can reuse same icons with proper spacing
+
+                return String.valueOf(builder);
+            }
+
+        }
+
+        /*if(entityBarData.containsKey(entity.getUniqueId())){
+            return entityBarData.get(entity.getUniqueId());
+        }*/
+
+        return String.valueOf(builder);
+    }
+
+
+    //#####################################################################################################
+
+    public void updateTeamData(Player player){
+        BossBar teamBar = profileManager.getPlayerTeamBar(player);
+        teamBar.setTitle(createTeamDataString(player));
+    }
+
+    //update ALL of them
+    private void updateSelfTeamInfo(LivingEntity entity){
+
+        StringBuilder builder0 = new StringBuilder();
+        StringBuilder builder1 = new StringBuilder();
+        StringBuilder builder2 = new StringBuilder();
+        StringBuilder builder3 = new StringBuilder();
+
+        //TODO:player team faces
+
+        //append face to builders
+        if(entity instanceof Player){
+
+        }
+
+        if(profileManager.getAnyProfile(entity).fakePlayer()){
+            builder0.append(profileManager.getCompanionTeamFace(entity.getUniqueId(), 0));
+            builder1.append(profileManager.getCompanionTeamFace(entity.getUniqueId(), 1));
+            builder2.append(profileManager.getCompanionTeamFace(entity.getUniqueId(), 2));
+            builder3.append(profileManager.getCompanionTeamFace(entity.getUniqueId(), 3));
+        }
+
+        //append health
+        Profile profile = profileManager.getAnyProfile(entity);
+        double actualMaxHealth = profile.getTotalHealth() + statusEffectManager.getHealthBuffAmount(entity);
+        double actualCurrentHealth = profileManager.getAnyProfile(entity).getCurrentHealth();
+
+        double ratio = actualCurrentHealth / actualMaxHealth;
+
+        int amount = (int) Math.ceil(ratio * 40);
+
+        //Bukkit.getLogger().info("player ratio number " + amount);
+
+        if(amount < 0){
+            amount = 0;
+        }
+
+        if(actualCurrentHealth <= 0){
+            amount = 0;
+        }
+
+        if(amount > 40){
+            amount = 40;
+        }
+
+        //don't have to do the fucky thing because fake player never used bukkit.getentity
+        if(profileManager.getAnyProfile(entity).getIfDead()){
+            amount = 0;
+        }
+
+        builder0.append(teamResourceBackground0);
+        //-104
+        builder0.append("\uF80B\uF80A\uF808");
+        builder0.append(ChatColor.GREEN);
+        builder0.append(teamResource0[amount]);
+        builder0.append(ChatColor.RESET);
+        //-104
+        builder0.append("\uF80B\uF80A\uF808");
+
+        double shield = statusEffectManager.getTotalShield(entity);
+        double shieldRatio = shield/ actualMaxHealth;
+
+        int shieldAmount = (int) Math.ceil(shieldRatio * 40);
+
+        if(shieldAmount < 0){
+            shieldAmount = 0;
+        }
+
+        if(shieldAmount > 40){
+            shieldAmount = 40;
+        }
+
+        builder0.append(ChatColor.WHITE);
+        builder0.append(teamResource0[shieldAmount]);
+
+        teamResource0Cache.put(entity.getUniqueId(),String.valueOf(builder0));
+
+
+        builder1.append(teamResourceBackground1);
+        //-104
+        builder1.append("\uF80B\uF80A\uF808");
+        builder1.append(ChatColor.GREEN);
+        builder1.append(teamResource1[amount]);
+        builder1.append(ChatColor.RESET);
+        //-104
+        builder1.append("\uF80B\uF80A\uF808");
+
+        builder1.append(ChatColor.WHITE);
+        builder1.append(teamResource1[shieldAmount]);
+
+        teamResource1Cache.put(entity.getUniqueId(),String.valueOf(builder1));
+
+        builder2.append(teamResourceBackground2);
+        //-104
+        builder2.append("\uF80B\uF80A\uF808");
+        builder2.append(ChatColor.GREEN);
+        builder2.append(teamResource2[amount]);
+        builder2.append(ChatColor.RESET);
+        //-104
+        builder2.append("\uF80B\uF80A\uF808");
+
+        builder2.append(ChatColor.WHITE);
+        builder2.append(teamResource2[shieldAmount]);
+
+        teamResource2Cache.put(entity.getUniqueId(),String.valueOf(builder2));
+
+        builder3.append(teamResourceBackground3);
+        //-104
+        builder3.append("\uF80B\uF80A\uF808");
+        builder3.append(ChatColor.GREEN);
+        builder3.append(teamResource3[amount]);
+        builder3.append(ChatColor.RESET);
+        //-104
+        builder3.append("\uF80B\uF80A\uF808");
+
+        builder3.append(ChatColor.WHITE);
+        builder3.append(teamResource3[shieldAmount]);
+
+        teamResource3Cache.put(entity.getUniqueId(),String.valueOf(builder3));
+    }
+
+
+    private String createTeamDataString(Player player){
+
+        StringBuilder teamData = new StringBuilder();
+
+        List<LivingEntity> mysticaParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
+
+        if(mysticaParty.size() == 1){
+            return String.valueOf(teamData);
+        }
+
+        if(mysticaParty.size() <= 5){
+
+            //temp comment out to see full thing
+            //-512 space
+            //teamData.append("\uF80E");
+            //-100
+            //teamData.append("\uF80B\uF80A\uF804");
+
+            int slot = 0;
+            for(LivingEntity member : mysticaParty){
+
+                if(member == player){
+                    continue;
+                }
+
+                switch (slot) {
+                    case 0 -> {
+                        teamData.append(teamResource0Cache.get(member.getUniqueId()));
+                    }
+                    case 1 -> {
+                        teamData.append(teamResource1Cache.get(member.getUniqueId()));
+                    }
+                    case 2 -> {
+                        teamData.append(teamResource2Cache.get(member.getUniqueId()));
+                    }
+                    case 3 -> {
+                        teamData.append(teamResource3Cache.get(member.getUniqueId()));
+                    }
+                }
+
+
+                slot++;
+
+                if(slot== mysticaParty.size()){
+                    break;
+                }
+
+                //-128
+                teamData.append("\uF80C");
+                //+7
+                teamData.append("\uF827");
+
+            }
+
+            return String.valueOf(teamData);
+        }
+
+
+        StringBuilder offset = new StringBuilder();
+
+
+        /*
+
+        //-512 space
+        //teamData.append("\uF80E");
+        //-100space
+        //teamData.append("\uF80B\uF80A\uF804");
+
+
+        //loop based on party members
+
+        int slot = 0;
+        for(LivingEntity member : mysticaParty){
+
+            if(member == player){
+                continue;
+            }
+
+            if(!(member instanceof Player memberPlayer)){
+                //companions not allowed in squads
+                continue;
+            }
+
+            teamData.append(getSquadMemberDataString(member, slot));
+
+            //-32
+            teamData.append("\uF80A");
+
+            teamData.append(skinGrabber.getSquadFace(memberPlayer, slot));
+
+            // +36
+            teamData.append("\uF82A\uF824");
+
+            //+36
+            offset.append("\uF82A\uF824");
+
+
+
+            //-64
+            //teamData.append("\uF80B");
+
+
+            /*if(slot == mysticaParty.size()){
+                break;
+            }
+
+            slot ++;
+
+            //this code is bad look away
+            if(slot >= 3){
+                //+1
+                offset.append("\uF821");
+            }
+
+            if(slot == 3 || slot == 6){
+
+                //-111
+                teamData.append("\uF80B\uF80A\uF808\uF807");
+
+                //+111
+                //offset.append("\uF82B\uF82A\uF828\uF827");
+
+                //-111
+                offset.append("\uF80B\uF80A\uF808\uF807");
+
+                //append ofdset later
+            }
+
+
+            //+64
+            //teamData.append("\uF82B");
+
+            //move it back if larger that 3
+        }
+
+
+        offset.append(teamData);*/
+
+        return String.valueOf(offset);
+    }
+
+
+
+    private String getSquadMemberDataString(LivingEntity entity, int slot){
+
+        StringBuilder entityBar = new StringBuilder();
+
+        /*
+
+        //depending on class
+        PlayerClass playerClass = profileManager.getAnyProfile(entity).getPlayerClass();
+
+        switch (playerClass) {
+            case Assassin -> {
+                entityBar.append(ChatColor.of(assassinColor));
+            }
+            case Elementalist -> {
+                entityBar.append(ChatColor.of(elementalistColor));
+            }
+            case Ranger -> {
+                entityBar.append(ChatColor.of(rangerColor));
+            }
+            case Paladin -> {
+                entityBar.append(ChatColor.of(paladinColor));
+            }
+            case Warrior -> {
+                entityBar.append(ChatColor.of(warriorColor));
+            }
+            case Shadow_Knight -> {
+                entityBar.append(ChatColor.of(shadowKnightColor));
+            }
+            case Mystic -> {
+                entityBar.append(ChatColor.of(mysticColor));
+            }
+            default -> {
+                entityBar.append(ChatColor.RESET);
+            }
+        }
+
+
+        //depending on health, get a different unicode
+        Profile playerProfile = profileManager.getAnyProfile(entity);
+        double actualMaxHealth = playerProfile.getTotalHealth() + statusEffectManager.getHealthBuffAmount(entity);
+        double actualCurrentHealth = profileManager.getAnyProfile(entity).getCurrentHealth();
+        double ratio = actualCurrentHealth / actualMaxHealth;
+        int amount = (int) Math.ceil(ratio * 8);
+
+        if(amount < 0){
+            amount = 0;
+        }
+
+        if(actualCurrentHealth <= 0){
+            amount = 0;
+        }
+
+        if(amount > 8){
+            amount = 8;
+        }
+
+        if(playerProfile.getIfDead()){
+            amount = 0;
+        }
+
+        //slot switch here for height
+        switch (slot) {
+            case 0, 1, 2 -> {
+                entityBar.append(squadHealth0[amount]);
+            }
+            case 3, 4, 5 -> {
+                entityBar.append(squadHealth1[amount]);
+            }
+            case 6, 7, 8 -> {
+                entityBar.append(squadHealth2[amount]);
+            }
+        }
+
+
+
+       */
+
+        return String.valueOf(entityBar);
+    }
+
+    //####################################################################################################
 
     public void displayCastBar(Player player){
 
@@ -1409,138 +1793,6 @@ public class HudManager {
 
 
 
-    private String createTeamDataString(Player player){
-
-
-        StringBuilder teamData = new StringBuilder();
-
-
-        List<LivingEntity> mysticaParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
-
-        if(mysticaParty.size() == 1){
-            return String.valueOf(teamData);
-        }
-
-
-        if(mysticaParty.size() <= 5){
-
-            //temp comment out to see full thing
-
-            //-512 space
-            teamData.append("\uF80E");
-
-            //-100
-            teamData.append("\uF80B\uF80A\uF804");
-
-            int slot = 0;
-            for(LivingEntity member : mysticaParty){
-
-                if(member == player){
-                    continue;
-                }
-
-
-                //teamData.append(getTeamMemberDataString(player, slot));
-                teamData.append(getTeamMemberDataString(member, slot));
-
-
-                slot++;
-
-                if(slot== mysticaParty.size()){
-                    break;
-                }
-
-                //-87
-                teamData.append("\uF80B\uF809\uF807");
-
-            }
-
-            return String.valueOf(teamData);
-        }
-
-
-
-        StringBuilder offset = new StringBuilder();
-
-
-        //-512 space
-        teamData.append("\uF80E");
-
-        //-100space
-        teamData.append("\uF80B\uF80A\uF804");
-
-
-        //loop based on party members
-
-        int slot = 0;
-        for(LivingEntity member : mysticaParty){
-
-            if(member == player){
-                continue;
-            }
-
-            if(!(member instanceof Player memberPlayer)){
-                //companions not allowed in squads
-                continue;
-            }
-
-            teamData.append(getSquadMemberDataString(member, slot));
-
-            //-32
-            teamData.append("\uF80A");
-
-            teamData.append(skinGrabber.getSquadFace(memberPlayer, slot));
-
-            // +36
-            teamData.append("\uF82A\uF824");
-
-            //+36
-            offset.append("\uF82A\uF824");
-
-
-
-            //-64
-            //teamData.append("\uF80B");
-
-
-            /*if(slot == mysticaParty.size()){
-                break;
-            }*/
-
-            slot ++;
-
-            //this code is bad look away
-            if(slot >= 3){
-                //+1
-                offset.append("\uF821");
-            }
-
-            if(slot == 3 || slot == 6){
-
-                //-111
-                teamData.append("\uF80B\uF80A\uF808\uF807");
-
-                //+111
-                //offset.append("\uF82B\uF82A\uF828\uF827");
-
-                //-111
-                offset.append("\uF80B\uF80A\uF808\uF807");
-
-                //append ofdset later
-            }
-
-
-            //+64
-            //teamData.append("\uF82B");
-
-            //move it back if larger that 3
-        }
-
-
-        offset.append(teamData);
-
-        return String.valueOf(offset);
-    }
 
     private String createStatusString(Player player){
         StringBuilder status = new StringBuilder();
@@ -1829,121 +2081,7 @@ public class HudManager {
         return String.valueOf(durationString);
     }
 
-    private String getTeamMemberDataString(LivingEntity entity, int slot){
 
-        StringBuilder entityBar = new StringBuilder();
-
-        /*
-
-        if(entity instanceof Player player){
-
-
-            entityBar.append(skinGrabber.getTeamFace(player, slot));
-
-            //+19, 16 for face, 3 for offset
-            entityBar.append("\uF829\uF823");
-        }
-
-        if(profileManager.getAnyProfile(entity).fakePlayer()){
-
-
-            //+16
-            //entityBar.append("\uF829");
-
-            entityBar.append(profileManager.getCompanionTeamFace(entity.getUniqueId(), slot));
-
-
-            //+3 is only because default steve face.
-            entityBar.append("\uF823");
-        }
-
-        //change this to get the right value
-        entityBar.append(teamHealthBar(entity, slot));
-
-
-         */
-        return String.valueOf(entityBar);
-    }
-
-    private String getSquadMemberDataString(LivingEntity entity, int slot){
-
-        StringBuilder entityBar = new StringBuilder();
-
-        /*
-
-        //depending on class
-        PlayerClass playerClass = profileManager.getAnyProfile(entity).getPlayerClass();
-
-        switch (playerClass) {
-            case Assassin -> {
-                entityBar.append(ChatColor.of(assassinColor));
-            }
-            case Elementalist -> {
-                entityBar.append(ChatColor.of(elementalistColor));
-            }
-            case Ranger -> {
-                entityBar.append(ChatColor.of(rangerColor));
-            }
-            case Paladin -> {
-                entityBar.append(ChatColor.of(paladinColor));
-            }
-            case Warrior -> {
-                entityBar.append(ChatColor.of(warriorColor));
-            }
-            case Shadow_Knight -> {
-                entityBar.append(ChatColor.of(shadowKnightColor));
-            }
-            case Mystic -> {
-                entityBar.append(ChatColor.of(mysticColor));
-            }
-            default -> {
-                entityBar.append(ChatColor.RESET);
-            }
-        }
-
-
-        //depending on health, get a different unicode
-        Profile playerProfile = profileManager.getAnyProfile(entity);
-        double actualMaxHealth = playerProfile.getTotalHealth() + statusEffectManager.getHealthBuffAmount(entity);
-        double actualCurrentHealth = profileManager.getAnyProfile(entity).getCurrentHealth();
-        double ratio = actualCurrentHealth / actualMaxHealth;
-        int amount = (int) Math.ceil(ratio * 8);
-
-        if(amount < 0){
-            amount = 0;
-        }
-
-        if(actualCurrentHealth <= 0){
-            amount = 0;
-        }
-
-        if(amount > 8){
-            amount = 8;
-        }
-
-        if(playerProfile.getIfDead()){
-            amount = 0;
-        }
-
-        //slot switch here for height
-        switch (slot) {
-            case 0, 1, 2 -> {
-                entityBar.append(squadHealth0[amount]);
-            }
-            case 3, 4, 5 -> {
-                entityBar.append(squadHealth1[amount]);
-            }
-            case 6, 7, 8 -> {
-                entityBar.append(squadHealth2[amount]);
-            }
-        }
-
-
-
-       */
-
-        return String.valueOf(entityBar);
-    }
 
 
 
@@ -2185,95 +2323,7 @@ public class HudManager {
     }
 
 
-    private String teamHealthBar(LivingEntity entity, int slot){
-        StringBuilder healthBar = new StringBuilder();
 
-        /*
-
-        Profile playerProfile = profileManager.getAnyProfile(entity);
-        double actualMaxHealth = playerProfile.getTotalHealth() + statusEffectManager.getHealthBuffAmount(entity);
-        double actualCurrentHealth = profileManager.getAnyProfile(entity).getCurrentHealth();
-        double ratio = actualCurrentHealth / actualMaxHealth;
-        int amount = (int) Math.ceil(ratio * 20);
-
-        if(amount < 0){
-            amount = 0;
-        }
-
-        if(actualCurrentHealth <= 0){
-            amount = 0;
-        }
-
-        if(amount > 20){
-            amount = 20;
-        }
-
-        if(playerProfile.getIfDead()){
-            amount = 0;
-        }
-
-        double maxHp = profileManager.getAnyProfile(entity).getTotalHealth();
-        double shield = statusEffectManager.getTotalShield(entity);
-        double shieldRatio = shield/ maxHp;
-
-        int shieldAmount = (int) Math.ceil(shieldRatio * 20);
-
-        if(shieldAmount < 0){
-            shieldAmount = 0;
-        }
-
-        if(shieldAmount > 20){
-            shieldAmount = 20;
-        }
-
-        switch (slot) {
-            case 0 -> {
-                healthBar.append(teamHealthBar0[amount]);
-
-                if (shieldAmount != 0) {
-                    //-67 space
-                    healthBar.append("\uF80B\uF803");
-                    healthBar.append(teamShieldBar0[shieldAmount-1]);
-                }
-
-            }
-            case 1 -> {
-                healthBar.append(teamHealthBar1[amount]);
-
-                if (shieldAmount != 0) {
-                    //-67 space
-                    healthBar.append("\uF80B\uF803");
-                    healthBar.append(teamShieldBar1[shieldAmount-1]);
-                }
-
-            }
-            case 3 -> {
-                healthBar.append(teamHealthBar3[amount]);
-
-                if (shieldAmount != 0) {
-                    //-67 space
-                    healthBar.append("\uF80B\uF803");
-                    healthBar.append(teamShieldBar3[shieldAmount-1]);
-                }
-
-            }
-            case 2 -> {
-                healthBar.append(teamHealthBar2[amount]);
-
-                if (shieldAmount != 0) {
-                    //-67 space
-                    healthBar.append("\uF80B\uF803");
-                    healthBar.append(teamShieldBar2[shieldAmount-1]);
-                }
-
-            }
-        }
-
-
-
-         */
-        return String.valueOf(healthBar);
-    }
 
     private String resourceBar(LivingEntity entity){
 

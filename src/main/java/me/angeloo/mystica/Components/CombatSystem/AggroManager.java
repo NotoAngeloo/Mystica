@@ -15,6 +15,8 @@ public class AggroManager {
     private final Map<UUID, Long> lastSetAsPriority = new HashMap<>();
     private final Map<LivingEntity, Boolean> blacklist = new HashMap<>();
 
+    private final Map<LivingEntity, LivingEntity> currentTarget = new HashMap<>();
+
     public AggroManager(Mystica main){
         profileManager = main.getProfileManager();
     }
@@ -134,5 +136,13 @@ public class AggroManager {
         }
 
         return false;
+    }
+
+    public void setCurrentTarget(LivingEntity entity, LivingEntity target){
+        currentTarget.put(entity, target);
+    }
+
+    public LivingEntity getTarget(LivingEntity entity){
+        return currentTarget.getOrDefault(entity, null);
     }
 }

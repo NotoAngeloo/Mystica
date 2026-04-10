@@ -50,10 +50,6 @@ public class AggroTick {
                     return;
                 }
 
-                /*LivingEntity targetedEntity = ((Creature) entity).getTarget();
-                assert targetedEntity != null;
-                Bukkit.getLogger().info(targetedEntity.getName());*/
-
                 List<LivingEntity> originalAttackerList = aggroManager.getAliveAttackers(entity);
 
                 List<LivingEntity> attackers = new ArrayList<>();
@@ -72,8 +68,6 @@ public class AggroTick {
                     }
                 }
 
-                //Bukkit.getLogger().info("attackers " + attackers);
-
                 if(aggroManager.getHighPriorityTarget(entity) == null){
 
                     LivingEntity highestDpsPlayer = null;
@@ -81,13 +75,9 @@ public class AggroTick {
 
                     if(!attackers.isEmpty()){
 
-                        //Bukkit.getLogger().info(String.valueOf(attackers));
-
                         for(LivingEntity attacker : attackers){
 
-
                             double dps = dpsManager.getRawDps(attacker);
-                            //Bukkit.getLogger().info(String.valueOf(dps));
                             if(dps > highestDps){
                                 highestDps = dps;
                                 highestDpsPlayer = attacker;
@@ -97,8 +87,7 @@ public class AggroTick {
 
                         if(highestDpsPlayer != null){
                             ((Creature) entity).setTarget(highestDpsPlayer);
-
-                            //Bukkit.getLogger().info("setting target to highest dps player " + highestDpsPlayer.getName());
+                            aggroManager.setCurrentTarget(entity, highestDpsPlayer);
                         }
                     }
                 }
@@ -113,13 +102,12 @@ public class AggroTick {
 
                 if(highPriorityTarget != null){
                     ((Creature) entity).setTarget(highPriorityTarget);
-                    //Bukkit.getLogger().info("setting target to priority player " + highPriorityTarget.getName());
+                    aggroManager.setCurrentTarget(entity, highPriorityTarget);
                 }
 
                 if(((Creature) entity).getTarget() != null){
                     LivingEntity targetedPlayer = ((Creature)entity).getTarget();
 
-                    //Bukkit.getLogger().info(targetedPlayer.getName());
 
                     boolean deathStatus = profileManager.getAnyProfile(targetedPlayer).getIfDead();
 
@@ -127,6 +115,7 @@ public class AggroTick {
 
                     if(deathStatus || blackList){
                         ((Creature) entity).setTarget(null);
+                        aggroManager.setCurrentTarget(entity, null);
                     }else{
 
                         Bukkit.getScheduler().runTask(main, ()->{
@@ -143,6 +132,7 @@ public class AggroTick {
 
                     if(targetedPlayer.isDead()){
                         ((Creature) entity).setTarget(null);
+                        aggroManager.setCurrentTarget(entity, null);
                     }
 
                 }
@@ -150,14 +140,12 @@ public class AggroTick {
                 //ok set the new target if its null, meaning no highest dps nor priority
                 if(((Creature) entity).getTarget() == null){
 
-                    //Bukkit.getLogger().info("target null");
 
                     if(!attackers.isEmpty()){
                         Random random = new Random();
                         int index = random.nextInt(attackers.size());
                         ((Creature) entity).setTarget(attackers.get(index));
-
-                        //Bukkit.getLogger().info("Setting random target to " + attackers.get(index));
+                        aggroManager.setCurrentTarget(entity, attackers.get(index));
                     }
                     else{
 
@@ -166,6 +154,7 @@ public class AggroTick {
                         aggroManager.clearLastPlayer(entity);
                         aggroManager.removeHighPriorityTarget(entity.getUniqueId());
                         aggroTasks.remove(entity);
+                        aggroManager.setCurrentTarget(entity, null);
 
                         Bukkit.getScheduler().runTask(main, () -> {
                             bossManager.resetBoss(entity.getUniqueId());

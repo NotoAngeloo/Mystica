@@ -2,8 +2,8 @@ package me.angeloo.mystica.Components.Parties;
 
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.*;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.*;
 import me.angeloo.mystica.Components.CombatSystem.DeathManager;
 import me.angeloo.mystica.Components.CombatSystem.FakePlayerTargetManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -400,7 +400,7 @@ public class FakePlayerAiManager {
                 }
 
 
-                if(mysticAbilities.getArcaneContract().getReadyIn(companion)==0){
+                if(abilityManager.getCooldownManager().isReady(companion.getUniqueId(), 7, 0)){
                     if(toRevive != null){
                         toRezInTick ++;
 
@@ -425,8 +425,6 @@ public class FakePlayerAiManager {
                         }
                     }
                 }
-
-
 
 
 

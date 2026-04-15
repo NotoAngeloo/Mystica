@@ -3,6 +3,7 @@ package me.angeloo.mystica;
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import me.angeloo.mystica.Components.CombatSystem.*;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Commands.*;
@@ -103,6 +104,7 @@ public final class Mystica extends JavaPlugin{
     private GravestoneManager gravestoneManager;
     private BossCastingManager bossCastingManager;
     private AbilityManager abilityManager;
+    private CooldownManager cooldownManager;
     private CooldownDisplayer cooldownDisplayer;
     private DeathManager deathManager;
     private CustomInventoryManager customInventoryManager;
@@ -211,6 +213,7 @@ public final class Mystica extends JavaPlugin{
         damageCalculator = new DamageCalculator(this);
 
         abilityManager = new AbilityManager(this);
+        cooldownManager = abilityManager.getCooldownManager();
         cooldownDisplayer = new CooldownDisplayer(this, abilityManager);
         combatManager = abilityManager.getCombatManager();
 
@@ -529,6 +532,10 @@ public final class Mystica extends JavaPlugin{
 
     public BossManager getBossManager(){
         return bossManager;
+    }
+
+    public CooldownManager getCooldownManager(){
+        return cooldownManager;
     }
 
     @NotNull

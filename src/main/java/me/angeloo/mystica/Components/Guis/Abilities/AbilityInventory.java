@@ -72,13 +72,13 @@ public class AbilityInventory implements Listener {
 
         for(int i = 0; i<55;i++){
 
-            ItemStack abilityItem = allSkillItems.getPlayerSkill(player, i+1);
+            /*ItemStack abilityItem = allSkillItems.getPlayerSkill(player, i+1);
 
             if(abilityItem.getType() == Material.AIR){
                 break;
             }
 
-            inv.setItem(i, abilityItem);
+            inv.setItem(i, abilityItem);*/
 
         }
 
@@ -88,7 +88,7 @@ public class AbilityInventory implements Listener {
         player.getInventory().clear();
         displayWeapons.displayArmor(player);
 
-        player.getInventory().setItem(27, allSkillItems.getPlayerSkill(player, equipSkills.getAnySlot()[0]));
+        /*player.getInventory().setItem(27, allSkillItems.getPlayerSkill(player, equipSkills.getAnySlot()[0]));
         player.getInventory().setItem(28, allSkillItems.getPlayerSkill(player, equipSkills.getAnySlot()[1]));
         player.getInventory().setItem(29, allSkillItems.getPlayerSkill(player, equipSkills.getAnySlot()[2]));
         player.getInventory().setItem(30, allSkillItems.getPlayerSkill(player, equipSkills.getAnySlot()[3]));
@@ -96,7 +96,7 @@ public class AbilityInventory implements Listener {
         player.getInventory().setItem(32, allSkillItems.getPlayerSkill(player, equipSkills.getAnySlot()[5]));
         player.getInventory().setItem(33, allSkillItems.getPlayerSkill(player, equipSkills.getAnySlot()[6]));
         player.getInventory().setItem(34, allSkillItems.getPlayerSkill(player, equipSkills.getAnySlot()[7]));
-        player.getInventory().setItem(35, allSkillItems.getBasic(player));
+        player.getInventory().setItem(35, allSkillItems.getBasic(player));*/
 
 
 

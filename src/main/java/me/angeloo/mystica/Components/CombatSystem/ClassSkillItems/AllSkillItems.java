@@ -36,7 +36,7 @@ public class AllSkillItems {
 
     }
 
-    public ItemStack getPlayerSkill(Player player, int skillNumber){
+    /*public ItemStack getPlayerSkill(Player player, int skillNumber){
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
@@ -134,6 +134,6 @@ public class AllSkillItems {
         }
 
         return new ItemStack(Material.AIR);
-    }
+    }*/
 
 }

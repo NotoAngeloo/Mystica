@@ -36,7 +36,7 @@ public class AssassinSkillItems {
         this.weapon = new MysticaEquipment(EquipmentSlot.WEAPON, PlayerClass.Assassin, 1);
     }
 
-    public ItemStack getSkill(int number, Player player){
+    /*public ItemStack getSkill(int number, Player player){
 
         Profile playerProfile = profileManager.getAnyProfile(player);
         Skill_Level skillLevel = playerProfile.getSkillLevels();
@@ -192,7 +192,7 @@ public class AssassinSkillItems {
         basicItem.setItemMeta(basicMeta);
 
         return basicItem;
-    }
+    }*/
 
 
 

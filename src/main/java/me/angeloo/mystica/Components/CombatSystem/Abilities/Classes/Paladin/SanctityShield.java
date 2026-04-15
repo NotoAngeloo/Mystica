@@ -1,0 +1,117 @@
+package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin;
+
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Shields.GenericShield;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
+import me.angeloo.mystica.CustomEvents.UltimateStatusChageEvent;
+import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+public class SanctityShield {
+
+    private final Mystica main;
+
+    private final ProfileManager profileManager;
+    private final StatusEffectManager statusEffectManager;
+    private final ChangeResourceHandler changeResourceHandler;
+    private final CooldownManager cooldownManager;
+
+    public SanctityShield(Mystica main, AbilityManager manager){
+        this.main = main;
+        profileManager = main.getProfileManager();
+        statusEffectManager = main.getStatusEffectManager();
+        changeResourceHandler = main.getChangeResourceHandler();
+        cooldownManager = manager.getCooldownManager();
+    }
+
+    private final int abilityNumber = -1;
+    private final int baseCooldown = 12;
+    private final int baseShield = 10;
+
+    public void use(LivingEntity caster){
+
+        if(!usable(caster)){
+            return;
+        }
+
+        execute(caster);
+
+        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+
+    }
+
+    private void execute(LivingEntity caster){
+
+
+        double healAmount = getHealAmount(caster);
+        double shield = getShieldAmount(caster);
+
+        statusEffectManager.applyEffect(caster, new GenericShield(), null, shield);
+
+
+        new BukkitRunnable(){
+            int count = 0;
+            @Override
+            public void run(){
+
+                if(!statusEffectManager.hasShield(caster)){
+                    this.cancel();
+                    return;
+                }
+
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        this.cancel();
+                        statusEffectManager.reduceShield(caster, shield);
+                        return;
+                    }
+                }
+
+                if(profileManager.getAnyProfile(caster).getIfDead()){
+                    this.cancel();
+                    statusEffectManager.reduceShield(caster, shield);
+                    return;
+                }
+
+                changeResourceHandler.addHealthToEntity(caster, healAmount, caster);
+
+                if(count>=5){
+                    this.cancel();
+                    statusEffectManager.reduceShield(caster, shield);
+                }
+                count++;
+            }
+        }.runTaskTimer(main, 0, 20);
+
+    }
+
+    public double getShieldAmount(LivingEntity caster){
+        double maxHealth = profileManager.getAnyProfile(caster).getTotalHealth() + statusEffectManager.getHealthBuffAmount(caster);
+        double level = profileManager.getAnyProfile(caster).getStats().getLevel();
+        return  (level + baseShield / maxHealth) * 100;
+    }
+
+    public double getHealAmount(LivingEntity caster){
+        double maxHealth = profileManager.getAnyProfile(caster).getTotalHealth() + statusEffectManager.getHealthBuffAmount(caster);
+        double level = profileManager.getAnyProfile(caster).getStats().getLevel();
+        return maxHealth * ((level + 5) /100);
+    }
+
+
+    public boolean usable(LivingEntity caster){
+        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+    }
+
+
+}

@@ -180,7 +180,7 @@ public class GeneralEventListener implements Listener {
 
         if(!profileManager.getAnyProfile(player).getIfDead()){
             displayWeapons.displayArmor(player);
-            cooldownDisplayer.initializeItems(player);
+            //cooldownDisplayer.initializeItems(player);
         }
 
         if (!profileManager.getPlayerNameMap().containsKey(player.getName())) {
@@ -207,7 +207,7 @@ public class GeneralEventListener implements Listener {
         profileManager.addToPlayerNameMap(player);
 
         combatManager.sheathWeapon(player);
-        cooldownDisplayer.initializeItems(player);
+        //cooldownDisplayer.initializeItems(player);
         Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.SelfInfo));
     }
 

@@ -5,6 +5,8 @@ import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusStackTyp
 
 public class Haste implements StatusEffect {
 
+    //TODO:MAKE THIS A PERCENT NOW
+
     @Override
     public String getId() {
         return "haste";

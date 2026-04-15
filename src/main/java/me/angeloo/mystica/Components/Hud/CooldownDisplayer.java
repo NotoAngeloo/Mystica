@@ -25,7 +25,7 @@ public class CooldownDisplayer {
         allSkillItems = abilityManager.getAllSkillItems();
     }
 
-    public void initializeItems(Player player){
+    /*public void initializeItems(Player player){
 
         EquipSkills equipSkills = profileManager.getAnyProfile(player).getEquipSkills();
 
@@ -110,7 +110,7 @@ public class CooldownDisplayer {
         }
 
         player.getInventory().setItem(equippedIn, abilityItem);
-    }
+    }*/
 
 
 }

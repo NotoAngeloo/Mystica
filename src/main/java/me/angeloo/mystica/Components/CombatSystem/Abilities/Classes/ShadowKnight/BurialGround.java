@@ -1,0 +1,155 @@
+package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnight;
+
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnightAbilities;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.GenericDamageReduction;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
+import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.Enums.SubClass;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.block.Block;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+public class BurialGround {
+
+    private final Mystica main;
+    private final ProfileManager profileManager;
+    private final StatusEffectManager statusEffectManager;
+    private final ChangeResourceHandler changeResourceHandler;
+    private final CooldownManager cooldownManager;
+
+    private final Energy energy;
+
+    public BurialGround(Mystica main, AbilityManager manager, ShadowKnightAbilities shadowKnightAbilities){
+        this.main = main;
+        profileManager = main.getProfileManager();
+        statusEffectManager = main.getStatusEffectManager();
+        changeResourceHandler = main.getChangeResourceHandler();
+        cooldownManager = manager.getCooldownManager();;
+        energy = shadowKnightAbilities.getEnergy();
+    }
+
+    private final int abilityNumber = 3;
+    private final int baseCooldown = 12;
+    private final int refund = 10;
+
+    public void use(LivingEntity caster){
+
+        if(!usable(caster)){
+            return;
+        }
+
+        execute(caster);
+
+        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+
+    }
+
+    private void execute(LivingEntity caster){
+
+        boolean blood = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Blood);
+
+        Location start = caster.getLocation();
+
+
+        double finalHealAmount = getHealPercent(caster);
+        new BukkitRunnable(){
+            int ran = 0;
+            @Override
+            public void run(){
+
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        this.cancel();
+
+                        if(blood){
+                            statusEffectManager.removeEffect(caster, "damage_reduction");
+                        }
+
+                        return;
+                    }
+                }
+
+                if(playerValid()){
+
+                    changeResourceHandler.addHealthToEntity(caster, finalHealAmount, caster);
+                    energy.addEnergyToEntity(caster, refund);
+
+                    if(blood){
+                        statusEffectManager.applyEffect(caster, new GenericDamageReduction(), -1, 0.8);
+                    }
+                }
+
+                double increment = (2 * Math.PI) / 16; // angle between particles
+
+                for (int i = 0; i < 16; i++) {
+                    double angle = i * increment;
+                    double x = start.getX() + (3 * Math.cos(angle));
+                    double z = start.getZ() + (3 * Math.sin(angle));
+                    double y = start.getY();
+                    Location loc = new Location(caster.getWorld(), x, y, z);
+
+                    caster.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, loc, 1,0, 0, 0, 0);
+                }
+
+                if(ran>=7){
+                    this.cancel();
+
+                    if(blood){
+                        statusEffectManager.removeEffect(caster, "damage_reduction");
+                    }
+
+                }
+
+                ran++;
+            }
+
+            private boolean playerValid(){
+
+                double distance = caster.getLocation().distance(start);
+
+                if(distance>5){
+                    return false;
+                }
+
+                return !profileManager.getAnyProfile(caster).getIfDead();
+            }
+
+        }.runTaskTimer(main, 0, 20);
+
+    }
+
+    public double getHealPercent(LivingEntity caster){
+        double healAmount = (profileManager.getAnyProfile(caster).getTotalHealth() + statusEffectManager.getHealthBuffAmount(caster)) * .03;
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_3_Level_Bonus();
+        return healAmount + ((int)(skillLevel/3));
+    }
+
+
+
+    public boolean usable(LivingEntity caster){
+        if(!cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster))){
+            return false;
+        }
+
+        Block block = caster.getLocation().subtract(0,1,0).getBlock();
+
+        return block.getType() != Material.AIR;
+    }
+
+
+}

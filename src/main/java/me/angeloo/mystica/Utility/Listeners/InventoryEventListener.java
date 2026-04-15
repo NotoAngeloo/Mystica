@@ -257,7 +257,7 @@ public class InventoryEventListener implements Listener {
             InventoryView open = player.getOpenInventory();
 
             if(open.getTitle().equalsIgnoreCase("crafting")){
-                cooldownDisplayer.initializeItems(player);
+                //cooldownDisplayer.initializeItems(player);
             }
         },1);
 

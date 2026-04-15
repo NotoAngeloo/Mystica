@@ -1,6 +1,5 @@
 package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs;
 
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Shields.ShieldInstance;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Utility.Enums.BarType;
 import org.bukkit.Bukkit;
@@ -285,14 +284,14 @@ public class StatusEffectManager {
         );
     }
 
-    public int getHasteLevel(LivingEntity entity){
+    public double getHastePercent(LivingEntity entity){
 
         if(!hasEffect(entity, "haste")){
             return 0;
         }
 
         StatusInstance instance = getInstanceMap(entity).get("haste");
-        return (int) instance.magnitude;
+        return instance.magnitude;
     }
 
     public double getAdditionalRange(LivingEntity entity){

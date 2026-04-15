@@ -67,7 +67,7 @@ public class CombatManager {
             player.getInventory().clear();
             displayWeapons.displayArmor(player);
 
-            cooldownDisplayer.initializeItems(player);
+            //cooldownDisplayer.initializeItems(player);
 
             unSheathWeapon(player);
 
@@ -182,7 +182,7 @@ public class CombatManager {
 
         //dpsManager.removeDps(player);
         abilityManager.resetAbilityBuffs(player);
-        abilityManager.resetCooldowns(player);
+        abilityManager.getCooldownManager().clearAll(player.getUniqueId());
 
 
         if(!profileManager.getAnyProfile(player).getIfDead()){

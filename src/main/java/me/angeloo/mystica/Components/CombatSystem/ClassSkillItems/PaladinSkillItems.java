@@ -36,7 +36,7 @@ public class PaladinSkillItems {
         itemGetter = main.getItemGetter();
     }
 
-    public ItemStack getSkill(int number, Player player){
+    /*public ItemStack getSkill(int number, Player player){
 
         Profile playerProfile = profileManager.getAnyProfile(player);
         Skill_Level skillLevel = playerProfile.getSkillLevels();
@@ -302,7 +302,7 @@ public class PaladinSkillItems {
 
 
         return basicItem;
-    }
+    }*/
 
 
 

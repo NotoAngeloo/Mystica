@@ -124,7 +124,7 @@ public class DeathManager {
         if(!bySkill){
             target.teleport(target.getWorld().getSpawnLocation());
 
-            abilityManager.resetCooldowns(target);
+            abilityManager.getCooldownManager().clearAll(target.getUniqueId());
 
             if(target instanceof Player player){
 
@@ -161,7 +161,7 @@ public class DeathManager {
             //Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(target, BarType.Resource));
             player.getInventory().clear();
             displayWeapons.displayArmor(player);
-            cooldownDisplayer.initializeItems(player);
+            //cooldownDisplayer.initializeItems(player);
         }
 
 

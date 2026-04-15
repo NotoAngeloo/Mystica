@@ -864,6 +864,30 @@ public class HudManager {
         return String.valueOf(builder);
     }
 
+    //#####################################################################################################
+
+    public void updateSkillCache(Player player, int skill){
+
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+
+                //update from cache
+
+            }
+        }.runTaskAsynchronously(main);
+
+    }
+
+    private String getSkillBar(Player player){
+
+        StringBuilder builder = new StringBuilder();
+
+        //collect from cache
+
+        return String.valueOf(builder);
+    }
+
     //#######################################################################################################
 
     public void updateTargetData(Player player){

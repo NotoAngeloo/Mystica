@@ -1,5 +1,8 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities;
 
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.*;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownData;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.CombatSystem.CombatManager;
@@ -20,6 +23,7 @@ import java.util.Map;
 public class AbilityManager {
 
     private final ProfileManager profileManager;
+    private final CooldownManager cooldownManager;
     private final StatusEffectManager statusEffectManager;
 
     private final Map<LivingEntity, Boolean> castMap = new HashMap<>();
@@ -42,6 +46,7 @@ public class AbilityManager {
 
     public AbilityManager(Mystica main){
         profileManager = main.getProfileManager();
+        cooldownManager = new CooldownManager();
         statusEffectManager = main.getStatusEffectManager();
         allSkillItems = new AllSkillItems(main, this);
         combatManager = new CombatManager(main, this);
@@ -298,109 +303,9 @@ public class AbilityManager {
         }
     }
 
-    public int getCooldown(Player player, int abilityNumber){
 
-        Profile playerProfile = profileManager.getAnyProfile(player);
 
-        PlayerClass clazz = playerProfile.getPlayerClass();
-
-        switch (clazz) {
-            case Elementalist -> {
-                return elementalistAbilities.getAbilityCooldown(player, abilityNumber);
-            }
-            case Ranger -> {
-                return rangerAbilities.getAbilityCooldown(player, abilityNumber);
-            }
-            case Mystic -> {
-                return mysticAbilities.getAbilityCooldown(player, abilityNumber);
-            }
-            case Shadow_Knight -> {
-                return shadowKnightAbilities.getAbilityCooldown(player, abilityNumber);
-            }
-            case Paladin -> {
-                return paladinAbilities.getAbilityCooldown(player, abilityNumber);
-            }
-            case Warrior -> {
-                return warriorAbilities.getAbilityCooldown(player, abilityNumber);
-            }
-            case Assassin -> {
-                return assassinAbilities.getAbilityCooldown(player, abilityNumber);
-            }
-            case NONE -> {
-                return noneAbilities.getAbilityCooldown(player, abilityNumber);
-            }
-        }
-
-        return 0;
-    }
-
-    public int getUltimateCooldown(Player player){
-
-        Profile playerProfile = profileManager.getAnyProfile(player);
-
-        PlayerClass clazz = playerProfile.getPlayerClass();
-
-        switch (clazz) {
-            case Elementalist -> {
-                return elementalistAbilities.getUltimateCooldown(player);
-            }
-            case Ranger -> {
-                return rangerAbilities.getUltimateCooldown(player);
-            }
-            case Mystic -> {
-                return mysticAbilities.getUltimateCooldown(player);
-            }
-            case Shadow_Knight -> {
-                return shadowKnightAbilities.getUltimateCooldown(player);
-            }
-            case Paladin -> {
-                return paladinAbilities.getUltimateCooldown(player);
-            }
-            case Warrior -> {
-                return warriorAbilities.getUltimateCooldown(player);
-            }
-            case Assassin -> {
-                return assassinAbilities.getUltimateCooldown(player);
-            }
-        }
-
-        return 0;
-    }
-
-    public int getPlayerUltimateCooldown(Player player){
-
-        Profile playerProfile = profileManager.getAnyProfile(player);
-
-        PlayerClass clazz = playerProfile.getPlayerClass();
-
-        switch (clazz) {
-            case Elementalist -> {
-                return elementalistAbilities.getPlayerUltimateCooldown(player);
-            }
-            case Ranger -> {
-                return rangerAbilities.getPlayerUltimateCooldown(player);
-            }
-            case Mystic -> {
-                return mysticAbilities.getPlayerUltimateCooldown(player);
-            }
-            case Shadow_Knight -> {
-                return shadowKnightAbilities.getPlayerUltimateCooldown(player);
-            }
-            case Paladin -> {
-                return paladinAbilities.getPlayerUltimateCooldown(player);
-            }
-            case Warrior -> {
-                return warriorAbilities.getPlayerUltimateCooldown(player);
-            }
-            case Assassin -> {
-                return assassinAbilities.getPlayerUltimateCooldown(player);
-            }
-        }
-
-        return 0;
-    }
-
-    public int getModelDataAddition(Player player, int abilityNumber){
+    /*public int getModelDataAddition(Player player, int abilityNumber){
 
         Profile playerProfile = profileManager.getAnyProfile(player);
 
@@ -529,7 +434,7 @@ public class AbilityManager {
 
 
         return 0;
-    }
+    }*/
 
     public CombatManager getCombatManager(){
         return combatManager;
@@ -589,16 +494,9 @@ public class AbilityManager {
         warriorAbilities.getWarriorBasic().stopBasicRunning(caster);
     }
 
-    //change to entity later
-    public void resetCooldowns(LivingEntity caster){
-        assassinAbilities.resetCooldowns(caster);
-        elementalistAbilities.resetCooldowns(caster);
-        mysticAbilities.resetCooldowns(caster);
-        noneAbilities.resetCooldowns(caster);
-        paladinAbilities.resetCooldowns(caster);
-        rangerAbilities.resetCooldowns(caster);
-        shadowKnightAbilities.resetCooldowns(caster);
-        warriorAbilities.resetCooldowns(caster);
+
+    public CooldownManager getCooldownManager(){
+        return cooldownManager;
     }
 
     /*public void hideFromPlayers(LivingEntity armorStand){

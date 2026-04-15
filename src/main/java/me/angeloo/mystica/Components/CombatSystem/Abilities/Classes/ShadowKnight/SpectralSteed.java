@@ -1,0 +1,281 @@
+package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnight;
+
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.Guis.Storage.MysticaBagCollection;
+import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
+import me.angeloo.mystica.Components.NonPlayerProfile;
+import me.angeloo.mystica.Components.ProfileComponents.*;
+import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
+import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
+import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
+import me.angeloo.mystica.Utility.Enums.SubClass;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.SkeletonHorse;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
+
+import java.util.*;
+
+public class SpectralSteed {
+
+    private final Mystica main;
+    private final ProfileManager profileManager;
+    private final StatusEffectManager statusEffectManager;
+    private final CooldownManager cooldownManager;
+
+    public SpectralSteed(Mystica main, AbilityManager manager){
+        this.main = main;
+        profileManager = main.getProfileManager();
+        statusEffectManager = main.getStatusEffectManager();
+        cooldownManager = manager.getCooldownManager();
+    }
+
+    private final int abilityNumber = 7;
+    private final int baseCooldown = 20;
+
+    public void use(LivingEntity caster){
+
+        if(!usable(caster)){
+            return;
+        }
+
+        execute(caster);
+
+        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+
+    }
+
+    private void execute(LivingEntity caster){
+
+        Location spawnLoc = caster.getLocation();
+        World world = spawnLoc.getWorld();
+        assert world != null;
+        SkeletonHorse horse = (SkeletonHorse) world.spawnEntity(spawnLoc, EntityType.SKELETON_HORSE);
+
+        Stats stats = new Stats(profileManager.getAnyProfile(caster).getStats().getLevel(), 1,  1,  1, 1, 1);
+        Yield yield = new Yield(0, new ArrayList<>());
+
+        NonPlayerProfile nonPlayerProfile = new NonPlayerProfile(false, 1,stats,false,true, true, true, yield) {
+
+            @Override
+            public Boolean getIfInCombat() {
+                return null;
+            }
+
+
+            @Override
+            public void setIfInCombat(Boolean ifInCombat) {
+
+            }
+
+
+            @Override
+            public void setLevelStats(int level, String subclass) {
+
+            }
+
+            @Override
+            public StatsFromGear getGearStats() {
+                return null;
+            }
+
+
+            @Override
+            public void setGearStats(StatsFromGear statsFromGear) {
+
+            }
+
+            @Override
+            public int getTotalHealth() {
+                return 1;
+            }
+
+
+            @Override
+            public int getTotalAttack() {
+                return 1;
+            }
+
+            @Override
+            public int getTotalDefense() {
+                return 1;
+            }
+
+            @Override
+            public int getTotalMagicDefense() {
+                return 1;
+            }
+
+            @Override
+            public int getTotalCrit() {
+                return 1;
+            }
+
+            @Override
+            public PlayerClass getPlayerClass() {
+                return null;
+            }
+
+            @Override
+            public void setPlayerClass(PlayerClass playerClass) {
+
+            }
+
+            @Override
+            public SubClass getPlayerSubclass() {
+                return null;
+            }
+
+            @Override
+            public void setPlayerSubclass(SubClass playerSubclass) {
+
+            }
+
+            @Override
+            public MysticaBagCollection getMysticaBagCollection() {
+                return null;
+            }
+
+            @Override
+            public PlayerEquipment getPlayerEquipment() {
+                return null;
+            }
+
+            @Override
+            public PlayerBossLevel getPlayerBossLevel() {
+                return null;
+            }
+
+            @Override
+            public Skill_Level getSkillLevels() {
+                return null;
+            }
+
+            @Override
+            public EquipSkills getEquipSkills() {
+                return null;
+            }
+
+            @Override
+            public Boolean fakePlayer() {
+                return false;
+            }
+
+            @Override
+            public void getVoidsOnDeath(Set<Player> players) {
+
+            }
+
+            @Override
+            public Map<String, QuestProgress> getQuestProgressMap() {
+                return null;
+            }
+
+            @Override
+            public void addQuestProgress(QuestProgress progress) {
+
+            }
+
+            @Override
+            public void removeQuestProgress(String questId) {
+
+            }
+
+
+        };
+        profileManager.addToNonPlayerProfiles(horse.getUniqueId(), nonPlayerProfile);
+
+        horse.setTamed(true);
+        horse.setAdult();
+
+        horse.addPassenger(caster);
+
+        moveHorseInDirectionThePlayerLooks(caster, horse);
+
+    }
+
+    public void moveHorseInDirectionThePlayerLooks(LivingEntity caster, SkeletonHorse horse){
+
+        new BukkitRunnable(){
+
+            int count = 0;
+
+            @Override
+            public void run(){
+
+                count += 1;
+
+                if(caster instanceof Player){
+                    if(!((Player)caster).isOnline()){
+                        horse.remove();
+                        this.cancel();
+                        return;
+                    }
+                }
+
+                boolean deathStatus = profileManager.getAnyProfile(caster).getIfDead();
+                boolean combatStatus = profileManager.getAnyProfile(caster).getIfInCombat();
+
+                if(deathStatus || !combatStatus){
+                    horse.remove();
+                    this.cancel();
+                    return;
+                }
+
+                if(!statusEffectManager.canCast(caster)){
+                    horse.remove();
+                    this.cancel();
+                    return;
+                }
+
+                if(count >= 30){
+                    horse.remove();
+                    this.cancel();
+                    return;
+                }
+
+                if(!caster.isInsideVehicle()){
+                    horse.remove();
+                    this.cancel();
+                    return;
+                }
+
+                //check if player dismounted horse as well
+
+                Location current = caster.getEyeLocation();
+                Vector direction = current.getDirection().normalize();
+
+                Vector runVector = direction.multiply(1).setY(0);
+
+                double desiredYaw = Math.toDegrees(Math.atan2(-direction.getX(), direction.getZ()));
+                horse.setRotation((float) desiredYaw, horse.getLocation().getPitch());
+
+                horse.setVelocity(runVector);
+
+            }
+        }.runTaskTimer(main, 0, 5);
+    }
+
+
+    public boolean usable(LivingEntity caster){
+        if(!cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster))){
+            return false;
+        }
+
+        Block block = caster.getLocation().subtract(0,1,0).getBlock();
+
+        return block.getType() != Material.AIR;
+    }
+
+
+}

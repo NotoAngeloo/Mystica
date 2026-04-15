@@ -1,0 +1,258 @@
+package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Mystic;
+
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.MysticAbilities;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.CombatSystem.GravestoneManager;
+import me.angeloo.mystica.Components.CombatSystem.PvpManager;
+import me.angeloo.mystica.Components.CombatSystem.TargetManager;
+import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
+import me.angeloo.mystica.CustomEvents.AiSignalEvent;
+import me.angeloo.mystica.CustomEvents.PlayerRezByPlayerEvent;
+import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.Logic.PveChecker;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
+
+import java.util.*;
+
+public class ArcaneContract {
+
+    private final Mystica main;
+
+    private final ProfileManager profileManager;
+    private final MysticaPartyManager mysticaPartyManager;
+    private final TargetManager targetManager;
+    private final PvpManager pvpManager;
+    private final PveChecker pveChecker;
+    private final GravestoneManager gravestoneManager;
+    private final StatusEffectManager statusEffectManager;
+    private final CooldownManager cooldownManager;
+    private final Mana mana;
+
+
+    public ArcaneContract(Mystica main, AbilityManager manager, MysticAbilities mysticAbilities){
+        this.main = main;
+        profileManager = main.getProfileManager();
+        mysticaPartyManager = main.getMysticaPartyManager();
+        mana = mysticAbilities.getMana();
+        targetManager = main.getTargetManager();
+        pvpManager = main.getPvpManager();
+        pveChecker = main.getPveChecker();
+        statusEffectManager = main.getStatusEffectManager();
+        cooldownManager = manager.getCooldownManager();
+        gravestoneManager = main.getGravestoneManager();
+    }
+
+    private final int abilityNumber = 7;
+    private final double range = 10;
+    private final int cost = 100;
+    private final int baseCooldown = 120;
+
+    public void use(LivingEntity caster){
+
+
+        LivingEntity target = targetManager.getPlayerTarget(caster);
+
+        if(target == null){
+            return;
+        }
+
+        double distance = caster.getLocation().distance(target.getLocation());
+
+        if(distance>range + statusEffectManager.getAdditionalRange(caster)){
+            return;
+        }
+
+
+        if(!gravestoneManager.isGravestone(target)){
+
+            if(!profileManager.getAnyProfile(target).fakePlayer()){
+                return;
+            }
+
+            if(pveChecker.pveLogic(target)){
+                return;
+            }
+
+            if(!profileManager.getAnyProfile(target).getIfDead()){
+                return;
+            }
+
+            //this is unaffected by haste.
+            if(!cooldownManager.isReady(caster.getUniqueId(), abilityNumber, 0)){
+                return;
+            }
+
+
+            if(mana.getCurrentMana(caster)<cost){
+                return;
+            }
+
+            mana.subTractManaFromEntity(caster, cost);
+
+            List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(caster));
+            for(LivingEntity member : mParty){
+                putOnCooldown(member.getUniqueId());
+            }
+
+            execute(caster, target);
+
+            return;
+        }
+
+        Player actualTarget = gravestoneManager.getPlayer(target);
+
+        if(pveChecker.pveLogic(actualTarget)){
+            return;
+        }
+
+
+
+        if(pvpManager.pvpLogic(caster, actualTarget)){
+            return;
+        }
+
+
+        if(!profileManager.getAnyProfile(actualTarget).getIfDead()){
+            return;
+        }
+
+        if(!cooldownManager.isReady(caster.getUniqueId(), abilityNumber, 0)){
+            return;
+        }
+
+
+        if(mana.getCurrentMana(caster)<cost){
+            return;
+        }
+
+        mana.subTractManaFromEntity(caster, cost);
+
+
+        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(caster));
+        for(LivingEntity member : mParty){
+            putOnCooldown(member.getUniqueId());
+        }
+
+        execute(caster, actualTarget);
+
+    }
+
+    private void execute(LivingEntity caster, LivingEntity target){
+
+        //create custom event
+        //deathManager.playerNowLive(target, true, caster);
+        Bukkit.getServer().getPluginManager().callEvent(new PlayerRezByPlayerEvent(target, caster));
+        Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent(target, "reset"));
+
+        new BukkitRunnable(){
+            double height = 0;
+            final double radius = 1;
+            double angle = 0;
+            Vector initialDirection;
+
+            @Override
+            public void run(){
+                Location playerLoc = target.getLocation();
+
+                if (initialDirection == null) {
+                    initialDirection = playerLoc.getDirection().setY(0).normalize();
+                    initialDirection.rotateAroundY(Math.toRadians(-45));
+                }
+
+                Vector direction = initialDirection.clone();
+                double radians = Math.toRadians(angle);
+
+                direction.rotateAroundY(radians);
+
+                double x = playerLoc.getX() + direction.getX() * radius;
+                double z = playerLoc.getZ() + direction.getZ() * radius;
+
+                Location particleLoc = new Location(target.getWorld(), x, target.getLocation().getY() + height, z);
+
+                target.getWorld().spawnParticle(Particle.SPELL_WITCH, particleLoc, 1, 0, 0, 0, 0);
+
+                height += .05;
+                angle += 11;
+                if(height >= 2){
+                    this.cancel();
+                }
+            }
+        }.runTaskTimer(main, 0L, 1);
+
+    }
+
+    private void putOnCooldown(UUID id){
+
+        cooldownManager.start(id, abilityNumber, (long) (baseCooldown * 1000));
+    }
+
+
+
+    public void useAsCompanion(LivingEntity caster, LivingEntity target){
+
+
+        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+
+        Bukkit.getScheduler().runTask(main,()->{
+            List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(caster));
+            for(LivingEntity member : mParty){
+                putOnCooldown(member.getUniqueId());
+            }
+
+            if(target instanceof Player player){
+                player.sendMessage("Wings: Hey, be more careful!");
+            }
+
+
+            Bukkit.getServer().getPluginManager().callEvent(new PlayerRezByPlayerEvent(target, caster));
+            Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent(target, "reset"));
+
+            new BukkitRunnable(){
+                double height = 0;
+                final double radius = 1;
+                double angle = 0;
+                Vector initialDirection;
+
+                @Override
+                public void run(){
+                    Location playerLoc = target.getLocation();
+
+                    if (initialDirection == null) {
+                        initialDirection = playerLoc.getDirection().setY(0).normalize();
+                        initialDirection.rotateAroundY(Math.toRadians(-45));
+                    }
+
+                    Vector direction = initialDirection.clone();
+                    double radians = Math.toRadians(angle);
+
+                    direction.rotateAroundY(radians);
+
+                    double x = playerLoc.getX() + direction.getX() * radius;
+                    double z = playerLoc.getZ() + direction.getZ() * radius;
+
+                    Location particleLoc = new Location(target.getWorld(), x, target.getLocation().getY() + height, z);
+
+                    target.getWorld().spawnParticle(Particle.SPELL_WITCH, particleLoc, 1, 0, 0, 0, 0);
+
+                    height += .05;
+                    angle += 11;
+                    if(height >= 2){
+                        this.cancel();
+                    }
+                }
+            }.runTaskTimer(main, 0L, 1);
+        });
+
+    }
+
+
+}

@@ -1,0 +1,210 @@
+package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Assassin;
+
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.AssassinAbilities;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.CombatSystem.PvpManager;
+import me.angeloo.mystica.Components.CombatSystem.TargetManager;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
+import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
+import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.BossManager;
+import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Utility.Logic.PveChecker;
+import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
+
+public class Laceration {
+
+    private final Mystica main;
+    private final ProfileManager profileManager;
+    private final BossManager bossManager;
+    private final TargetManager targetManager;
+    private final StatusEffectManager statusEffectManager;
+    private final ChangeResourceHandler changeResourceHandler;
+    private final DamageCalculator damageCalculator;
+    private final PvpManager pvpManager;
+    private final PveChecker pveChecker;
+    private final CooldownManager cooldownManager;
+
+    private final Stealth stealth;
+    private final Combo combo;
+
+
+    public Laceration(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
+        this.main = main;
+        bossManager = main.getBossManager();
+        targetManager = main.getTargetManager();
+        profileManager = main.getProfileManager();
+        statusEffectManager = main.getStatusEffectManager();
+        changeResourceHandler = main.getChangeResourceHandler();
+        damageCalculator = main.getDamageCalculator();
+        pvpManager = main.getPvpManager();
+        pveChecker = main.getPveChecker();
+        cooldownManager = manager.getCooldownManager();
+        combo = assassinAbilities.getCombo();
+        stealth = assassinAbilities.getStealth();
+    }
+
+    private final int abilityNumber = 2;
+    private final int baseCooldown = 8;
+    private final int baseDamage = 17;
+    private final int baseBleedDamage = 3;
+    private final double range = 4;
+
+    public void use(LivingEntity caster){
+
+        targetManager.setTargetToNearestValid(caster, range);
+        LivingEntity target = targetManager.getPlayerTarget(caster);
+
+
+        if(!usable(caster, target)){
+            return;
+        }
+
+        execute(caster);
+
+        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+    }
+
+    private void execute(LivingEntity caster){
+
+        boolean alchemist = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Alchemist);
+
+        LivingEntity target = targetManager.getPlayerTarget(caster);
+
+        Location playerLoc = caster.getLocation().clone();
+        Location targetLoc = target.getLocation();
+        Vector targetDir = targetLoc.toVector().subtract(playerLoc.toVector());
+
+        if(playerLoc!=targetLoc){
+            Location warpLoc = targetLoc.add(targetDir.clone().normalize().multiply(-1.5));
+            warpLoc.setDirection(targetDir);
+
+            while (!warpLoc.getBlock().isPassable()){
+                warpLoc.add(0,.1,0);
+            }
+
+            if(caster instanceof Player){
+                if(((Player)caster).isSneaking()){
+                    caster.teleport(warpLoc);
+                }
+            }
+
+
+
+        }
+
+
+        caster.getWorld().spawnParticle(Particle.REDSTONE, targetLoc, 50, .5, 1, .5, 1, new Particle.DustOptions(Color.RED, 1.0f));
+
+        double bleedDamage = getBleedDamage(caster);
+
+        if(alchemist){
+            int comboPoints = combo.removeAnAmountOfPoints(caster, combo.getComboPoints(caster));
+            bleedDamage = bleedDamage + comboPoints;
+        }
+
+
+        boolean crit = damageCalculator.checkIfCrit(caster, 0);
+        double damage = damageCalculator.calculateDamage(caster, target, "Physical", getSkillDamage(caster), crit);
+        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+        changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
+        stealth.stealthBonusCheck(caster, target);
+        combo.addComboPoint(caster);
+
+        double finalBleedDamage = bleedDamage;
+        new BukkitRunnable(){
+            int ticks = 0;
+            @Override
+            public void run(){
+
+                if(bossManager.getIfResetProcessing(target)){
+                    this.cancel();
+                    return;
+                }
+
+                if(target.isDead()){
+                    this.cancel();
+                    return;
+                }
+
+                if(target instanceof Player){
+                    if(!((Player)target).isOnline()){
+                        this.cancel();
+                        return;
+                    }
+
+                    if(profileManager.getAnyProfile(target).getIfDead()){
+                        this.cancel();
+                        return;
+                    }
+                }
+
+                boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                double tickDamage = damageCalculator.calculateDamage(caster, target, "Physical", finalBleedDamage, crit);
+
+                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
+                changeResourceHandler.subtractHealthFromEntity(target, tickDamage, caster,crit);
+
+                ticks ++;
+
+                if(ticks >= 10){
+                    this.cancel();
+                }
+
+            }
+        }.runTaskTimer(main, 20, 20);
+    }
+
+    public double getSkillDamage(LivingEntity caster){
+        double level = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel())
+                + profileManager.getAnyProfile(caster).getSkillLevels().getSkill_2_Level_Bonus();
+        return baseDamage + ((int)(level/10));
+    }
+
+    public double getBleedDamage(LivingEntity caster){
+        double level = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel())
+                + profileManager.getAnyProfile(caster).getSkillLevels().getSkill_2_Level_Bonus();
+        return baseBleedDamage + ((int)(level/3));
+    }
+
+
+    public boolean usable(LivingEntity caster, LivingEntity target){
+        if(target != null){
+            if(target instanceof Player){
+                if(!pvpManager.pvpLogic(caster, (Player) target)){
+                    return false;
+                }
+            }
+
+            if(!(target instanceof Player)){
+                if(!pveChecker.pveLogic(target)){
+                    return false;
+                }
+            }
+
+            double distance = caster.getLocation().distance(target.getLocation());
+
+            if(distance > range){
+                return false;
+            }
+        }
+
+        if(target == null){
+            return false;
+        }
+
+
+        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+    }
+}

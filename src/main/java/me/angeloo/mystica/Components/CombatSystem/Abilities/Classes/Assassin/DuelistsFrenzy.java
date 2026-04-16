@@ -1,8 +1,11 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Assassin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.AssassinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerState;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -11,6 +14,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -24,7 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class DuelistsFrenzy {
+public class DuelistsFrenzy extends BaseAbility {
 
     private final Mystica main;
     private final ProfileManager profileManager;
@@ -35,15 +39,13 @@ public class DuelistsFrenzy {
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final CooldownManager cooldownManager;
+    private final PlayerStateManager playerStateManager;
 
-    private final Stealth stealth;
     private final Combo combo;
 
 
-    private final Map<UUID, Boolean> frenzy = new HashMap<>();
-
-
-    public DuelistsFrenzy(Mystica main, AssassinAbilities assassinAbilities, AbilityManager manager){
+    public DuelistsFrenzy(Mystica main, AbilityManager manager){
+        super("duelists_frenzy");
         this.main = main;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
@@ -52,16 +54,16 @@ public class DuelistsFrenzy {
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
-        combo = assassinAbilities.getCombo();
-        stealth = assassinAbilities.getStealth();
+        combo = manager.getCombo();
         cooldownManager = manager.getCooldownManager();
+        playerStateManager = manager.getPlayerStateManager();;
     }
 
-    private final int abilityNumber = -1;
     private final double range = 7;
     private final int baseDamage = 150;
     private final int baseCooldown = 30;
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -75,7 +77,7 @@ public class DuelistsFrenzy {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), -1, (long) (baseCooldown * 1000));
 
     }
 
@@ -180,9 +182,17 @@ public class DuelistsFrenzy {
 
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                         changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
-                        stealth.stealthBonusCheck(caster, target);
-                        applyFrenzy(caster);
-                        cancelTask();
+                        lookup.get(PlayerClass.Assassin, 8).onExternalTrigger(caster, target);
+                        PlayerState state = playerStateManager.get(caster.getUniqueId());
+                        state.set("duelists_frenzy", true);
+                        new BukkitRunnable(){
+                            @Override
+                            public void run(){
+                                state.remove("duelists_frenzy");
+                            }
+                        }.runTaskLater(main, 20*15);
+                        //applyFrenzy(caster);
+                        //cancelTask();
                     }
                 }
 
@@ -216,38 +226,16 @@ public class DuelistsFrenzy {
     }
 
 
-    private void applyFrenzy(LivingEntity caster){
-
-        frenzy.put(caster.getUniqueId(), true);
-
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-                removeFrenzy(caster);
-            }
-        }.runTaskLater(main, 20*15);
-
-    }
-
-    public void removeFrenzy(LivingEntity caster){
-        frenzy.remove(caster.getUniqueId());
-    }
-
-    public boolean getFrenzy(LivingEntity caster){
-        return frenzy.getOrDefault(caster.getUniqueId(),false);
-    }
-
-
-    public int returnWhichItem(Player player){
+    /*public int returnWhichItem(Player player){
 
         if(combo.getComboPoints(player) != 5){
             return 1;
         }
 
         return 0;
-    }
+    }*/
 
-
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
 
         if(target != null){
@@ -279,7 +267,7 @@ public class DuelistsFrenzy {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), -1, statusEffectManager.getHastePercent(caster));
     }
 
 }

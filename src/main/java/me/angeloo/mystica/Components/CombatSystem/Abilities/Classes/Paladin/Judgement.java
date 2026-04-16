@@ -1,8 +1,10 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.PaladinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.AggroManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.FakePlayerTargetManager;
@@ -27,7 +29,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class Judgement {
+public class Judgement extends BaseAbility {
 
     private final Mystica main;
 
@@ -41,12 +43,13 @@ public class Judgement {
     private final ChangeResourceHandler changeResourceHandler;
     private final AggroManager aggroManager;
     private final CooldownManager cooldownManager;
+    private final PlayerStateManager playerStateManager;
 
     private final Purity purity;
-    private final Decision decision;
 
 
-    public Judgement(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
+    public Judgement(Mystica main, AbilityManager manager){
+        super("judgement");
         this.main = main;
         profileManager = main.getProfileManager();
         fakePlayerTargetManager = main.getFakePlayerTargetManager();
@@ -58,14 +61,14 @@ public class Judgement {
         changeResourceHandler = main.getChangeResourceHandler();
         aggroManager = main.getAggroManager();
         cooldownManager = manager.getCooldownManager();
-        decision = paladinAbilities.getDecision();
-        purity = paladinAbilities.getPurity();
+        purity = manager.getPurity();
+        playerStateManager = manager.getPlayerStateManager();
     }
 
-    private final int abilityNumber = 8;
     private final int baseCooldown = 10;
     private final int baseDamage = 30;
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -86,10 +89,10 @@ public class Judgement {
         execute(caster, target);
 
         if(profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Dawn)){
-            purity.add(caster, abilityNumber);
+            purity.add(caster, 8);
         }
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 8, (long) (baseCooldown * 1000));
 
     }
 
@@ -192,7 +195,7 @@ public class Judgement {
                     }
                 }
 
-                decision.removeDecision(caster);
+                playerStateManager.get(caster.getUniqueId()).remove("decision");
             }
 
             private boolean checkValid(LivingEntity target){
@@ -215,7 +218,7 @@ public class Judgement {
 
     private double decisionMultiplier(LivingEntity caster){
 
-        if(decision.getDecision(caster)){
+        if(playerStateManager.get(caster.getUniqueId()).has("decision")){
             return 1.8;
         }
 
@@ -238,7 +241,7 @@ public class Judgement {
         return damage;
     }
 
-
+    @Override
     public boolean usable(LivingEntity caster){
         double baseRange = 15;
         double extraRange = statusEffectManager.getAdditionalRange(caster);
@@ -265,7 +268,7 @@ public class Judgement {
 
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 8, statusEffectManager.getHastePercent(caster));
     }
 
 

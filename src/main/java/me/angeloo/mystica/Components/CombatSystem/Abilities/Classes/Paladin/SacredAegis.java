@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.Immune;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
@@ -26,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class SacredAegis {
+public class SacredAegis extends BaseAbility {
 
     private final Mystica main;
 
@@ -37,6 +38,7 @@ public class SacredAegis {
     private final CooldownManager cooldownManager;
 
     public SacredAegis(Mystica main, AbilityManager manager){
+        super("sacred_aegis");
         this.main = main;
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
@@ -45,11 +47,10 @@ public class SacredAegis {
         cooldownManager = manager.getCooldownManager();
     }
 
-    private final int abilityNumber = 6;
     private final int baseCooldown = 120;
 
+    @Override
     public void use(LivingEntity caster){
-
 
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
@@ -74,7 +75,7 @@ public class SacredAegis {
 
 
         //this is because cooldown is reduced on skill levels
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (getSkillCooldown(caster) * 1000L));
+        cooldownManager.start(caster.getUniqueId(), 6, (long) (getSkillCooldown(caster) * 1000L));
 
     }
 
@@ -212,6 +213,7 @@ public class SacredAegis {
     }
 
 
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
 
@@ -228,7 +230,7 @@ public class SacredAegis {
         }
 
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 6, statusEffectManager.getHastePercent(caster));
     }
 
 }

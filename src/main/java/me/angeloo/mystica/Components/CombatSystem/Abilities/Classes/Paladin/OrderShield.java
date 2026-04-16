@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.PaladinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
@@ -27,7 +28,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
-public class OrderShield {
+public class OrderShield extends BaseAbility {
 
     private final Mystica main;
 
@@ -43,7 +44,8 @@ public class OrderShield {
 
     private final Purity purity;
 
-    public OrderShield(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
+    public OrderShield(Mystica main, AbilityManager manager){
+        super("order_shield");
         this.main = main;
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
@@ -53,15 +55,15 @@ public class OrderShield {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();
-        purity = paladinAbilities.getPurity();
+        purity = manager.getPurity();
         bossCastingManager = main.getBossCastingManager();
     }
 
-    private final int abilityNumber = 5;
     private final int baseCooldown = 15;
     private final double range = 10;
     private final int baseDamage = 35;
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -76,12 +78,12 @@ public class OrderShield {
         execute(caster);
 
         if(profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Dawn)){
-            purity.add(caster, abilityNumber);
+            purity.add(caster, 5);
         }
 
 
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 5, (long) (baseCooldown * 1000));
 
     }
 
@@ -256,6 +258,7 @@ public class OrderShield {
     }
 
 
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -285,7 +288,7 @@ public class OrderShield {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 5, statusEffectManager.getHastePercent(caster));
     }
 
 }

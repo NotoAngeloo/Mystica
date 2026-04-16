@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Elementalist;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.ConjuringForceBuff;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
@@ -18,7 +19,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class ConjuringForce {
+public class ConjuringForce extends BaseAbility {
 
     private final Mystica main;
 
@@ -32,6 +33,7 @@ public class ConjuringForce {
     private final int baseCooldown = 26;
 
     public ConjuringForce(Mystica main, AbilityManager manager){
+        super("conjuring_force");
         this.main = main;
         profileManager = main.getProfileManager();
         pvpManager = main.getPvpManager();
@@ -41,6 +43,7 @@ public class ConjuringForce {
 
     //TODO: conj force adds health if ur in it
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -191,7 +194,7 @@ public class ConjuringForce {
     }
 
 
-
+    @Override
     public boolean usable(LivingEntity caster){
         return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
     }

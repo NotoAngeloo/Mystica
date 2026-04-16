@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnight;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnightAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Shields.GenericShield;
@@ -19,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class BloodShield {
+public class BloodShield extends BaseAbility {
 
     private final Mystica main;
 
@@ -33,19 +34,20 @@ public class BloodShield {
     private final Map<UUID, Integer> shieldTime = new HashMap<>();
 
 
-    public BloodShield(Mystica main, ShadowKnightAbilities shadowKnightAbilities, AbilityManager manager){
+    public BloodShield(Mystica main, AbilityManager manager){
+        super("blood_shield");
         this.main = main;
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        energy = shadowKnightAbilities.getEnergy();
+        energy = manager.getEnergy();
         cooldownManager = manager.getCooldownManager();
     }
 
-    private final int abilityNumber = -1;
     private final int baseCooldown = 50;
     private final int cost = 50;
 
+    @Override
     public void use(LivingEntity caster){
 
         if(shieldTimeActive(caster)){
@@ -62,7 +64,7 @@ public class BloodShield {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), -1, (long) (baseCooldown * 1000));
 
     }
 
@@ -115,7 +117,12 @@ public class BloodShield {
         return shieldTime.getOrDefault(caster.getUniqueId(), 0) > 0;
     }
 
-    public void increaseDuration(LivingEntity caster){
+    @Override
+    public void onExternalTrigger(LivingEntity caster){
+        increaseDuration(caster);
+    }
+
+    private void increaseDuration(LivingEntity caster){
 
         if(!shieldTime.containsKey(caster.getUniqueId())){
             return;
@@ -129,14 +136,14 @@ public class BloodShield {
     }
 
 
-
+    @Override
     public boolean usable(LivingEntity caster){
         if(energy.getCurrentEnergy(caster)<cost){
             return false;
         }
 
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), -1, statusEffectManager.getHastePercent(caster));
     }
 
     /*public int returnWhichItem(Player player){

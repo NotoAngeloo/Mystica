@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Mystic;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.MysticAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
@@ -23,7 +24,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class ArcaneContract {
+public class ArcaneContract extends BaseAbility {
 
     private final Mystica main;
 
@@ -38,11 +39,12 @@ public class ArcaneContract {
     private final Mana mana;
 
 
-    public ArcaneContract(Mystica main, AbilityManager manager, MysticAbilities mysticAbilities){
+    public ArcaneContract(Mystica main, AbilityManager manager){
+        super("arcane_contract");
         this.main = main;
         profileManager = main.getProfileManager();
         mysticaPartyManager = main.getMysticaPartyManager();
-        mana = mysticAbilities.getMana();
+        mana = manager.getMana();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
@@ -51,11 +53,11 @@ public class ArcaneContract {
         gravestoneManager = main.getGravestoneManager();
     }
 
-    private final int abilityNumber = 7;
     private final double range = 10;
     private final int cost = 100;
     private final int baseCooldown = 120;
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -87,7 +89,7 @@ public class ArcaneContract {
             }
 
             //this is unaffected by haste.
-            if(!cooldownManager.isReady(caster.getUniqueId(), abilityNumber, 0)){
+            if(!cooldownManager.isReady(caster.getUniqueId(), 7, 0)){
                 return;
             }
 
@@ -125,7 +127,7 @@ public class ArcaneContract {
             return;
         }
 
-        if(!cooldownManager.isReady(caster.getUniqueId(), abilityNumber, 0)){
+        if(!cooldownManager.isReady(caster.getUniqueId(), 7, 0)){
             return;
         }
 
@@ -192,15 +194,15 @@ public class ArcaneContract {
 
     private void putOnCooldown(UUID id){
 
-        cooldownManager.start(id, abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(id, 7, (long) (baseCooldown * 1000));
     }
 
 
-
+    @Override
     public void useAsCompanion(LivingEntity caster, LivingEntity target){
 
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 7, (long) (baseCooldown * 1000));
 
         Bukkit.getScheduler().runTask(main,()->{
             List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(caster));

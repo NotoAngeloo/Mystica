@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Ranger;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.RangerAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.Haste;
@@ -14,6 +15,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -31,7 +33,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class Relentless {
+public class Relentless extends BaseAbility {
 
     private final Mystica main;
 
@@ -44,11 +46,11 @@ public class Relentless {
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
-    private final StarVolley starVolley;
     private final Focus focus;
 
 
-    public Relentless(Mystica main, AbilityManager manager, RangerAbilities rangerAbilities){
+    public Relentless(Mystica main, AbilityManager manager){
+        super("relentless");
         this.main = main;
         profileManager = main.getProfileManager();
         abilityManager = manager;
@@ -59,15 +61,14 @@ public class Relentless {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();;
-        focus = rangerAbilities.getFocus();
-        starVolley = rangerAbilities.getStarVolley();
+        focus = manager.getFocus();
     }
 
-    private final int abilityNumber = 3;
     private final int baseCooldown = 16;
     private final int baseRange = 20;
     private final int baseDamage = 40;
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -81,7 +82,7 @@ public class Relentless {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 3, (long) (baseCooldown * 1000));
 
     }
 
@@ -205,8 +206,8 @@ public class Relentless {
                             boolean crit = damageCalculator.checkIfCrit(caster, 0);
 
                             if(scout && crit){
-                                starVolley.decreaseCooldown(caster);
-                                statusEffectManager.applyEffect(caster, new Haste(), 2*20, 1.0);
+                                lookup.get(PlayerClass.Ranger,SubClass.Scout,-1).onExternalTrigger(caster);
+                                statusEffectManager.applyEffect(caster, new Haste(), 2*20, 0.1);
                             }
 
                             double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
@@ -272,7 +273,7 @@ public class Relentless {
         return focus.calculateFocusMultipliedDamage(caster, baseDamage) + ((int)(skillLevel/3));
     }
 
-
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -302,7 +303,7 @@ public class Relentless {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 3, statusEffectManager.getHastePercent(caster));
     }
 
 

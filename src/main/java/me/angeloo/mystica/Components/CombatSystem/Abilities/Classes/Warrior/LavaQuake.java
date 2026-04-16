@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Warrior;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.WarriorAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Shields.GenericShield;
@@ -28,7 +29,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class LavaQuake {
+public class LavaQuake extends BaseAbility {
 
     private final Mystica main;
     private final ProfileManager profileManager;
@@ -42,7 +43,8 @@ public class LavaQuake {
     private final Rage rage;
 
 
-    public LavaQuake(Mystica main, AbilityManager manager, WarriorAbilities warriorAbilities){
+    public LavaQuake(Mystica main, AbilityManager manager){
+        super("lava_quake");
         this.main = main;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
@@ -52,13 +54,13 @@ public class LavaQuake {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownManager = manager.getCooldownManager();
-        rage = warriorAbilities.getRage();
+        rage = manager.getRage();
     }
 
-    private final int abilityNumber = 1;
     private final int baseCooldown = 10;
     private final int baseDamage = 25;
 
+    @Override
     public void use(LivingEntity caster){
 
         if(!usable(caster)){
@@ -67,7 +69,7 @@ public class LavaQuake {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 1, (long) (baseCooldown * 1000));
 
     }
 
@@ -234,8 +236,9 @@ public class LavaQuake {
     }
 
 
+    @Override
     public boolean usable(LivingEntity caster){
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 1, statusEffectManager.getHastePercent(caster));
     }
 
 }

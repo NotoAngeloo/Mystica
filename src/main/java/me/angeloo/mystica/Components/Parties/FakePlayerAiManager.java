@@ -75,7 +75,7 @@ public class FakePlayerAiManager {
     }
 
     private void startTamerRotation(LivingEntity companion){
-        RangerAbilities rangerAbilities = abilityManager.getRangerAbilities();
+        /*RangerAbilities rangerAbilities = abilityManager.getRangerAbilities();
 
         profileManager.getAnyProfile(companion).setIfInCombat(true);
 
@@ -196,12 +196,12 @@ public class FakePlayerAiManager {
         }.runTaskTimerAsynchronously(main, 0, 10);
 
         aiTaskMap.put(companion.getUniqueId(), task);
-        profileManager.setCompanionCombat(companion.getUniqueId());
+        profileManager.setCompanionCombat(companion.getUniqueId());*/
     }
 
     private void startTemplarRotation(LivingEntity companion){
 
-        PaladinAbilities paladinAbilities = abilityManager.getPaladinAbilities();
+        /*PaladinAbilities paladinAbilities = abilityManager.getPaladinAbilities();
 
         profileManager.getAnyProfile(companion).setIfInCombat(true);
 
@@ -353,12 +353,12 @@ public class FakePlayerAiManager {
         }.runTaskTimerAsynchronously(main, 0, 10);
 
         aiTaskMap.put(companion.getUniqueId(), task);
-        profileManager.setCompanionCombat(companion.getUniqueId());
+        profileManager.setCompanionCombat(companion.getUniqueId());*/
 
     }
 
     private void startShepardRotation(LivingEntity companion){
-        MysticAbilities mysticAbilities = abilityManager.getMysticAbilities();
+        /*MysticAbilities mysticAbilities = abilityManager.getMysticAbilities();
 
         profileManager.getAnyProfile(companion).setIfInCombat(true);
 
@@ -527,12 +527,12 @@ public class FakePlayerAiManager {
         }.runTaskTimerAsynchronously(main, 0, 10);
 
         aiTaskMap.put(companion.getUniqueId(), task);
-        profileManager.setCompanionCombat(companion.getUniqueId());
+        profileManager.setCompanionCombat(companion.getUniqueId());*/
     }
 
     private void startExecutionerRotation(LivingEntity companion){
 
-        WarriorAbilities warriorAbilities = abilityManager.getWarriorAbilities();
+        /*WarriorAbilities warriorAbilities = abilityManager.getWarriorAbilities();
 
         profileManager.getAnyProfile(companion).setIfInCombat(true);
 
@@ -670,12 +670,12 @@ public class FakePlayerAiManager {
         }.runTaskTimerAsynchronously(main, 0, 10);
 
         aiTaskMap.put(companion.getUniqueId(), task);
-        profileManager.setCompanionCombat(companion.getUniqueId());
+        profileManager.setCompanionCombat(companion.getUniqueId());*/
     }
 
     private void startConjurerRotation(LivingEntity companion){
 
-        ElementalistAbilities elementalistAbilities = abilityManager.getElementalistAbilities();
+        /*ElementalistAbilities elementalistAbilities = abilityManager.getElementalistAbilities();
 
         profileManager.getAnyProfile(companion).setIfInCombat(true);
 
@@ -810,7 +810,7 @@ public class FakePlayerAiManager {
         }.runTaskTimerAsynchronously(main, 0, 10);
 
         aiTaskMap.put(companion.getUniqueId(), task);
-        profileManager.setCompanionCombat(companion.getUniqueId());
+        profileManager.setCompanionCombat(companion.getUniqueId());*/
     }
 
     public void hardStopAiTask(UUID uuid){

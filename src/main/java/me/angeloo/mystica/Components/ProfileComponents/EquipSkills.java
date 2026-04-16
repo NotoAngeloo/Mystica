@@ -4,7 +4,52 @@ import org.bukkit.Bukkit;
 
 public class EquipSkills {
 
+    public static final int EMPTY = 0;
+    private static final int MAX_SLOTS = 8;
+
     private final int[] slots;
+
+    public EquipSkills(int[] slots) {
+        if (slots.length != MAX_SLOTS) {
+            throw new IllegalArgumentException("Slots must be size " + MAX_SLOTS);
+        }
+        this.slots = slots;
+    }
+
+    public int getSkill(int slot) {
+        validateSlot(slot);
+        return slots[slot];
+    }
+
+    public void setSkill(int slot, int skillId) {
+        validateSlot(slot);
+        slots[slot] = skillId;
+    }
+
+    public boolean isEmpty(int slot) {
+        return getSkill(slot) == EMPTY;
+    }
+
+    public int findSlot(int skillId) {
+        for (int i = 0; i < MAX_SLOTS; i++) {
+            if (slots[i] == skillId) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public int size() {
+        return MAX_SLOTS;
+    }
+
+    private void validateSlot(int slot) {
+        if (slot < 0 || slot >= MAX_SLOTS) {
+            throw new IllegalArgumentException("Invalid slot: " + slot);
+        }
+    }
+
+    /*private final int[] slots;
 
     //if taken by 0, there is no skill
 
@@ -89,5 +134,5 @@ public class EquipSkills {
             }
         }
         return -1;
-    }
+    }*/
 }

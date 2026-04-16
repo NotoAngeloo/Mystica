@@ -125,10 +125,13 @@ public class AbilityInventory implements Listener {
                     return;
                 }
 
-                if(equipSkills.whichSlotIsTheSkillEquippedIn(slot+1) != -1){
+                //removed while i rework this
+                /*if(equipSkills.whichSlotIsTheSkillEquippedIn(slot+1) != -1){
                     //Bukkit.getLogger().info("ability " + (slot + 1) + " is equipped in slot "+ equipSkills.whichSlotIsTheSkillEquippedIn(slot+1));
                     equipSkills.setAnySlot(equipSkills.whichSlotIsTheSkillEquippedIn(slot+1), 0);
-                }
+                }*/
+
+
 
                 openAbilityInventory(player, slot);
 
@@ -157,7 +160,8 @@ public class AbilityInventory implements Listener {
                         }
 
                         //Bukkit.getLogger().info("ability " + (slot - 26) + " is equipped in slot "+ equipSkills.whichSlotIsTheSkillEquippedIn(slot-26));
-                        equipSkills.setAnySlot(equipSkills.whichSlotIsTheSkillEquippedIn(slot-26), 0);
+                        //equipSkills.setAnySlot(equipSkills.whichSlotIsTheSkillEquippedIn(slot-26), 0);
+                        equipSkills.setSkill(equipSkills.findSlot(slot-26),0);
                         openAbilityInventory(player, -1);
                         return;
                     }
@@ -179,7 +183,8 @@ public class AbilityInventory implements Listener {
                         int skillNumber = selectSlot+1;
                         int putTheSkillHere = slot - 27;
                         //Bukkit.getLogger().info("put skill " + skillNumber + " in slot " + putTheSkillHere);
-                        equipSkills.setAnySlot(putTheSkillHere, skillNumber);
+                        //equipSkills.setAnySlot(putTheSkillHere, skillNumber);
+                        equipSkills.setSkill(putTheSkillHere, skillNumber);
                         openAbilityInventory(player, -1);
                     }
 

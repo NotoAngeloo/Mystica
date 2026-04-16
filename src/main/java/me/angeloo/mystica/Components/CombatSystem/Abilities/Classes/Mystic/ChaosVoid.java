@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Mystic;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Root;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.Immune;
@@ -21,7 +22,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-public class ChaosVoid {
+public class ChaosVoid extends BaseAbility {
 
     private final Mystica main;
 
@@ -32,6 +33,7 @@ public class ChaosVoid {
     private final CooldownManager cooldownManager;
 
     public ChaosVoid(Mystica main, AbilityManager manager){
+        super("chaos_void");
         this.main = main;
         profileManager = main.getProfileManager();
         abilityManager = manager;
@@ -40,9 +42,9 @@ public class ChaosVoid {
         cooldownManager = manager.getCooldownManager();;
     }
 
-    private final int abilityNumber = 8;
     private final int baseCooldown = 120;
 
+    @Override
     public void use(LivingEntity caster){
 
         if(!usable(caster)){
@@ -51,7 +53,7 @@ public class ChaosVoid {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 8, (long) (baseCooldown * 1000));
     }
 
     private void execute(LivingEntity caster){
@@ -181,9 +183,9 @@ public class ChaosVoid {
     }
 
 
-
+    @Override
     public boolean usable(LivingEntity caster){
-        if (!cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster))){
+        if (!cooldownManager.isReady(caster.getUniqueId(), 8, statusEffectManager.getHastePercent(caster))){
             return false;
         }
 

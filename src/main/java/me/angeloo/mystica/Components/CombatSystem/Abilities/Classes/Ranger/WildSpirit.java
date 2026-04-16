@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Ranger;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.RangerAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.Haste;
@@ -13,6 +14,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -35,7 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class WildSpirit {
+public class WildSpirit extends BaseAbility {
 
     private final Mystica main;
 
@@ -47,12 +49,12 @@ public class WildSpirit {
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
-    private final StarVolley starVolley;
     private final Focus focus;
 
     private final Map<UUID, ArmorStand> wildSpiritMap = new HashMap<>();
 
-    public WildSpirit(Mystica main, AbilityManager manager, RangerAbilities rangerAbilities){
+    public WildSpirit(Mystica main, AbilityManager manager){
+        super("wild_spirit");
         this.main = main;
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
@@ -61,16 +63,15 @@ public class WildSpirit {
         damageCalculator = main.getDamageCalculator();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        cooldownManager = manager.getCooldownManager();;
-        starVolley = rangerAbilities.getStarVolley();
-        focus = rangerAbilities.getFocus();
+        cooldownManager = manager.getCooldownManager();
+        focus = manager.getFocus();
     }
 
-    private final int abilityNumber = 7;
     private final int baseCooldown = 10;
     private final int baseDamage = 10;
 
-    public void sendSignal(LivingEntity caster){
+    @Override
+    public void use(LivingEntity caster){
 
         if(!usable(caster)){
             return;
@@ -78,7 +79,7 @@ public class WildSpirit {
 
         spawn(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 7, (long) (baseCooldown * 1000));
 
     }
 
@@ -248,9 +249,9 @@ public class WildSpirit {
                 boolean crit = damageCalculator.checkIfCrit(caster, 0);
 
                 if(scout && crit){
-                    starVolley.decreaseCooldown(caster);
+                    lookup.get(PlayerClass.Ranger,SubClass.Scout,-1).onExternalTrigger(caster);
 
-                    statusEffectManager.applyEffect(caster, new Haste(), 2*20, 1.0);
+                    statusEffectManager.applyEffect(caster, new Haste(), 2*20, 0.1);
 
                 }
 
@@ -358,13 +359,13 @@ public class WildSpirit {
     }
 
 
-
+    @Override
     public boolean usable(LivingEntity caster){
         if(wildSpiritMap.containsKey(caster.getUniqueId())){
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 7, statusEffectManager.getHastePercent(caster));
     }
 
 }

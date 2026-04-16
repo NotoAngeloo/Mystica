@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnight;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.Guis.Storage.MysticaBagCollection;
@@ -26,7 +27,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class SpectralSteed {
+public class SpectralSteed extends BaseAbility {
 
     private final Mystica main;
     private final ProfileManager profileManager;
@@ -34,15 +35,16 @@ public class SpectralSteed {
     private final CooldownManager cooldownManager;
 
     public SpectralSteed(Mystica main, AbilityManager manager){
+        super("spectral_steed");
         this.main = main;
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
         cooldownManager = manager.getCooldownManager();
     }
 
-    private final int abilityNumber = 7;
     private final int baseCooldown = 20;
 
+    @Override
     public void use(LivingEntity caster){
 
         if(!usable(caster)){
@@ -51,7 +53,7 @@ public class SpectralSteed {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 7, (long) (baseCooldown * 1000));
 
     }
 
@@ -266,9 +268,9 @@ public class SpectralSteed {
         }.runTaskTimer(main, 0, 5);
     }
 
-
+    @Override
     public boolean usable(LivingEntity caster){
-        if(!cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster))){
+        if(!cooldownManager.isReady(caster.getUniqueId(), 7, statusEffectManager.getHastePercent(caster))){
             return false;
         }
 

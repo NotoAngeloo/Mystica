@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Assassin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.AssassinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
@@ -12,6 +13,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.BossManager;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -23,7 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-public class Laceration {
+public class Laceration extends BaseAbility {
 
     private final Mystica main;
     private final ProfileManager profileManager;
@@ -36,11 +38,11 @@ public class Laceration {
     private final PveChecker pveChecker;
     private final CooldownManager cooldownManager;
 
-    private final Stealth stealth;
     private final Combo combo;
 
 
-    public Laceration(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
+    public Laceration(Mystica main, AbilityManager manager){
+        super("laceration");
         this.main = main;
         bossManager = main.getBossManager();
         targetManager = main.getTargetManager();
@@ -51,16 +53,15 @@ public class Laceration {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownManager = manager.getCooldownManager();
-        combo = assassinAbilities.getCombo();
-        stealth = assassinAbilities.getStealth();
+        combo = manager.getCombo();
     }
 
-    private final int abilityNumber = 2;
     private final int baseCooldown = 8;
     private final int baseDamage = 17;
     private final int baseBleedDamage = 3;
     private final double range = 4;
 
+    @Override
     public void use(LivingEntity caster){
 
         targetManager.setTargetToNearestValid(caster, range);
@@ -73,7 +74,7 @@ public class Laceration {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 2, (long) (baseCooldown * 1000));
     }
 
     private void execute(LivingEntity caster){
@@ -119,7 +120,7 @@ public class Laceration {
         double damage = damageCalculator.calculateDamage(caster, target, "Physical", getSkillDamage(caster), crit);
         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
         changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
-        stealth.stealthBonusCheck(caster, target);
+        lookup.get(PlayerClass.Assassin, 8).onExternalTrigger(caster, target);
         combo.addComboPoint(caster);
 
         double finalBleedDamage = bleedDamage;
@@ -178,7 +179,7 @@ public class Laceration {
         return baseBleedDamage + ((int)(level/3));
     }
 
-
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -205,6 +206,6 @@ public class Laceration {
         }
 
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 2, statusEffectManager.getHastePercent(caster));
     }
 }

@@ -1,33 +1,37 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.*;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Elementalist.*;
-import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilitySet;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.Enums.SubClass;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
-public class ElementalistAbilities {
+import java.util.HashMap;
+import java.util.Map;
 
-    private final ProfileManager profileManager;
-    private final Heat heat;
-    private final FieryWing fieryWing;
-    private final ConjuringForce conjuringForce;
-    private final ElementalBreath elementalBreath;
-    private final FieryMagma fieryMagma;
-    private final DescendingInferno descendingInferno;
-    private final ElementalMatrix elemental_matrix;
-    private final IceBolt iceBolt;
-    private final DragonBreathing dragonBreathing;
-    private final WindrushForm windrushForm;
-    private final WindWall windWall;
+public class ElementalistAbilities implements AbilitySet {
+
+
+    /*private final Heat heat;
+    private final Ability fieryWing;
+    private final Ability conjuringForce;
+    private final Ability elementalBreath;
+    private final Ability fieryMagma;
+    private final Ability descendingInferno;
+    private final Ability elemental_matrix;
+    private final Ability iceBolt;
+    private final Ability dragonBreathing;
+    private final Ability windrushForm;
     private final ElementalistBasic elementalistBasic;
+    private final Ability windWall;*/
+
+
+
+    private final Map<Integer, Ability> abilities = new HashMap<>();
 
     public ElementalistAbilities(Mystica main, AbilityManager manager){
-        profileManager = main.getProfileManager();
-        heat = new Heat(main);
-        fieryWing = new FieryWing(main, this, manager);
+        //heat = new Heat(main);
+        /*fieryWing = new FieryWing(main, this, manager);
         conjuringForce = new ConjuringForce(main, manager);
         elementalBreath = new ElementalBreath(main, manager);
         fieryMagma = new FieryMagma(main, manager, this);
@@ -36,11 +40,42 @@ public class ElementalistAbilities {
         iceBolt = new IceBolt(main, manager, this);
         dragonBreathing = new DragonBreathing(main, manager, this);
         windrushForm = new WindrushForm(main, manager, this);
-        windWall = new WindWall(main, manager, this);
-        elementalistBasic = new ElementalistBasic(main);
+        windWall = new WindWall(main, manager, this);*/
+
+        abilities.put(1, new IceBolt(main, manager));
+        abilities.put(2, new FieryMagma(main, manager));
+        abilities.put(3, new DescendingInferno(main, manager));
+        abilities.put(4, new WindrushForm(main, manager));
+        abilities.put(5, new WindWall(main, manager));
+        abilities.put(6, new DragonBreathing(main, manager));
+        abilities.put(7, new ElementalBreath(main, manager));
+        abilities.put(8, new ElementalMatrix(main, manager));
+
+
+
+        //elementalistBasic = new ElementalistBasic(main);
     }
 
-    public void useElementalistAbility(LivingEntity caster, int abilityNumber){
+    @Override
+    public Ability get(int abilityNumber){
+        return abilities.get(abilityNumber);
+    }
+
+    /*public Ability get(int abilityNumber){
+        return switch (abilityNumber){
+            case 1 -> iceBolt;
+            case 2 -> fieryMagma;
+            case 3 -> descendingInferno;
+            case 4 -> windrushForm;
+            case 5 -> windWall;
+            case 6 -> dragonBreathing;
+            case 7 -> elementalBreath;
+            case 8 -> elemental_matrix;
+            default -> null;
+        };
+    }*/
+
+    /*public void useElementalistAbility(LivingEntity caster, int abilityNumber){
 
         switch (abilityNumber) {
             case 1 -> {
@@ -94,21 +129,21 @@ public class ElementalistAbilities {
             }
         }
 
-    }
+    }*/
 
     public void useElementalistBasic(LivingEntity caster){
 
-        elementalistBasic.use(caster);
+        //elementalistBasic.use(caster);
     }
 
 
-    public FieryWing getFieryWing(){
+    /*public FieryWing getFieryWing(){
         return fieryWing;
     }
     public ElementalBreath getElementalBreath() {
         return elementalBreath;
     }
-    public IceBolt getIceBolt(){return iceBolt;}
+    public Ability getIceBolt(){return iceBolt;}
     public DescendingInferno getDescendingInferno(){return descendingInferno;}
     public FieryMagma getFieryMagma(){return fieryMagma;}
     public WindrushForm getWindrushForm() {
@@ -121,5 +156,5 @@ public class ElementalistAbilities {
     public ElementalMatrix getElemental_matrix(){return elemental_matrix;}
     public ConjuringForce getConjuringForce(){return conjuringForce;}
     public ElementalistBasic getElementalistBasic(){return elementalistBasic;}
-    public Heat getHeat(){return heat;}
+    public Heat getHeat(){return heat;}*/
 }

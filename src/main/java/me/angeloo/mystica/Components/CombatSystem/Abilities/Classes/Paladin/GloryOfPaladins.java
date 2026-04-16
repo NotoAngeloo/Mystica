@@ -1,8 +1,10 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.PaladinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -20,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class GloryOfPaladins {
+public class GloryOfPaladins extends BaseAbility {
 
     private final Mystica main;
     private final ProfileManager profileManager;
@@ -28,25 +30,26 @@ public class GloryOfPaladins {
     private final DamageCalculator damageCalculator;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
+    private final PlayerStateManager playerStateManager;
 
     private final Purity purity;
 
-    private final Map<UUID, Integer> buffActiveMap = new HashMap<>();
-
-    public GloryOfPaladins(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
+    public GloryOfPaladins(Mystica main, AbilityManager manager){
+        super("glory_of_paladins");
         this.main = main;
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
         damageCalculator = main.getDamageCalculator();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();
-        purity = paladinAbilities.getPurity();
+        purity = manager.getPurity();
+        playerStateManager = manager.getPlayerStateManager();
     }
 
-    private final int abilityNumber = 6;
     private final int baseCooldown = 12;
     private final int baseDamage = 20;
 
+    @Override
     public void use(LivingEntity caster){
 
         if(!usable(caster)){
@@ -56,12 +59,12 @@ public class GloryOfPaladins {
         execute(caster);
 
         if(profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Dawn)){
-            purity.add(caster, abilityNumber);
+            purity.add(caster, 6);
         }
 
 
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 6, (long) (baseCooldown * 1000));
 
     }
 
@@ -69,22 +72,15 @@ public class GloryOfPaladins {
 
         //increase max hp as well
 
-        buffActiveMap.put(caster.getUniqueId(), 8);
+        playerStateManager.get(caster.getUniqueId()).set("glory_of_paladins", true);
+
         new BukkitRunnable(){
             @Override
             public void run(){
-
-                if(buffActiveMap.get(caster.getUniqueId()) <= 0){
-                    this.cancel();
-                    return;
-                }
-
-                int cooldown = buffActiveMap.get(caster.getUniqueId()) - 1;
-
-                buffActiveMap.put(caster.getUniqueId(), cooldown);
-
+                playerStateManager.get(caster.getUniqueId()).remove("glory_of_paladins");
             }
-        }.runTaskTimer(main, 0,20);
+        }.runTaskAsynchronously(main);
+
 
         new BukkitRunnable(){
             double height = 0;
@@ -95,7 +91,7 @@ public class GloryOfPaladins {
             @Override
             public void run(){
 
-                if(getIfBuffTime(caster) <= 0){
+                if(!playerStateManager.get(caster.getUniqueId()).has("glory_of_paladins")){
                     this.cancel();
                     return;
                 }
@@ -155,9 +151,13 @@ public class GloryOfPaladins {
 
     }
 
-    public void procGlory(LivingEntity caster, LivingEntity livingEntity){
+    public void onExternalTrigger(LivingEntity caster, LivingEntity target){
+        procGlory(caster, target);
+    }
 
-        if(getIfBuffTime(caster) <= 0){
+    private void procGlory(LivingEntity caster, LivingEntity livingEntity){
+
+        if(!playerStateManager.get(caster.getUniqueId()).has("glory_of_paladins")){
             return;
         }
 
@@ -189,18 +189,15 @@ public class GloryOfPaladins {
         return damage;
     }
 
-    public int getIfBuffTime(LivingEntity caster){
-        return buffActiveMap.getOrDefault(caster.getUniqueId(), 0);
-    }
 
 
-
+    @Override
     public boolean usable(LivingEntity caster){
-        if(getIfBuffTime(caster)>0){
+        if(playerStateManager.get(caster.getUniqueId()).has("glory_of_paladins")){
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 6, statusEffectManager.getHastePercent(caster));
     }
 
 }

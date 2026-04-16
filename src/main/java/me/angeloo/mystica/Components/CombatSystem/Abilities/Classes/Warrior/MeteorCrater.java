@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Warrior;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.WarriorAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Stun;
@@ -36,7 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class MeteorCrater {
+public class MeteorCrater extends BaseAbility {
 
     private final Mystica main;
     private final ProfileManager profileManager;
@@ -51,7 +52,8 @@ public class MeteorCrater {
 
     private final Rage rage;
 
-    public MeteorCrater(Mystica main, AbilityManager manager, WarriorAbilities warriorAbilities){
+    public MeteorCrater(Mystica main, AbilityManager manager){
+        super("meteor_crater");
         this.main = main;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
@@ -61,15 +63,15 @@ public class MeteorCrater {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownManager = manager.getCooldownManager();
-        rage = warriorAbilities.getRage();
+        rage = manager.getRage();
         bossCastingManager = main.getBossCastingManager();
     }
 
-    private final int abilityNumber = 4;
     private final int baseCooldown = 2;
     private final int cost = 100;
     private final int baseDamage = 80;
 
+    @Override
     public void use(LivingEntity caster){
 
         if(!usable(caster)){
@@ -81,7 +83,7 @@ public class MeteorCrater {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 4, (long) (baseCooldown * 1000));
 
     }
 
@@ -315,7 +317,7 @@ public class MeteorCrater {
         return baseDamage + ((int)(skillLevel/3));
     }
 
-
+    @Override
     public boolean usable(LivingEntity caster){
         if(rage.getCurrentRage(caster)<cost){
             return false;
@@ -327,7 +329,7 @@ public class MeteorCrater {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 4, statusEffectManager.getHastePercent(caster));
     }
 
     /*public int returnWhichItem(Player player){

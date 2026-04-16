@@ -1,7 +1,9 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Ranger;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
@@ -23,27 +25,26 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class RallyingCry {
+public class RallyingCry extends BaseAbility {
 
     private final Mystica main;
     private final StatusEffectManager statusEffectManager;
     private final CooldownManager cooldownManager;
-
-
-    private final Map<UUID, Integer> buffActiveMap = new HashMap<>();
-
+    private final PlayerStateManager playerStateManager;
 
     public RallyingCry(Mystica main, AbilityManager manager){
+        super("rallying_cry");
         this.main = main;
         statusEffectManager = main.getStatusEffectManager();
         cooldownManager = manager.getCooldownManager();
+        playerStateManager = manager.getPlayerStateManager();
     }
 
-    private final int abilityNumber = 6;
     private final int baseCooldown = 15;
+    public int duration = 11;
 
+    @Override
     public void use(LivingEntity caster){
-
 
         if(!usable(caster)){
             return;
@@ -51,33 +52,21 @@ public class RallyingCry {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 6, (long) (baseCooldown * 1000));
 
     }
 
     private void execute(LivingEntity caster){
 
-        buffActiveMap.put(caster.getUniqueId(), getDuration());
+        playerStateManager.get(caster.getUniqueId()).set("rallying_cry", true);
+
         new BukkitRunnable(){
             @Override
             public void run(){
-
-                if(caster instanceof Player player){
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
-                }
-
-
-                if(buffActiveMap.get(caster.getUniqueId()) <= 0){
-                    this.cancel();
-                    return;
-                }
-
-                int left = buffActiveMap.get(caster.getUniqueId()) - 1;
-
-                buffActiveMap.put(caster.getUniqueId(), left);
-
+                playerStateManager.get(caster.getUniqueId()).remove("rallying_cry");
             }
-        }.runTaskTimer(main, 0,20);
+        }.runTaskLaterAsynchronously(main, duration * 20L);
+
 
         Location start = caster.getLocation();
         ArmorStand armorStand = caster.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);
@@ -122,21 +111,15 @@ public class RallyingCry {
 
     }
 
-    public int getIfBuffTime(LivingEntity caster){
-        return buffActiveMap.getOrDefault(caster.getUniqueId(), 0);
-    }
-
-    public int getDuration(){
-        return 11;
-    }
 
 
+    @Override
     public boolean usable(LivingEntity caster){
-        if(getIfBuffTime(caster)>0){
+        if(playerStateManager.get(caster.getUniqueId()).has("rallying_cry")){
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 6, statusEffectManager.getHastePercent(caster));
     }
 
 }

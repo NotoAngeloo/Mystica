@@ -1,6 +1,8 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Mystic;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityMarkManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.MysticAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.GenericDamageReduction;
@@ -14,33 +16,35 @@ import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
+import java.util.Set;
 
-public class Enlightenment {
+public class Enlightenment extends BaseAbility {
 
     private final ProfileManager profileManager;
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final DamageCalculator damageCalculator;
     private final CooldownManager cooldownManager;
+    private final AbilityMarkManager abilityMarkManager;
 
     private final Mana mana;
-    private final Consolation consolation;
 
-    public Enlightenment(Mystica main, MysticAbilities mysticAbilities, AbilityManager manager){
+    public Enlightenment(Mystica main,AbilityManager manager){
+        super("enlightenment");
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         damageCalculator = main.getDamageCalculator();
-        mana = mysticAbilities.getMana();
-        consolation = mysticAbilities.getConsolation();
+        mana = manager.getMana();
         cooldownManager = manager.getCooldownManager();
+        abilityMarkManager = manager.getAbilityMarkManager();
     }
 
-    private final int abilityNumber = -1;
     private final int baseCooldown = 5;
     private final int cost = 50;
     private final int healPercent = 10;
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -54,12 +58,12 @@ public class Enlightenment {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), -1, (long) (baseCooldown * 1000));
     }
 
     private void execute(LivingEntity caster){
 
-        List<LivingEntity> targets = consolation.getTargets(caster);
+        Set<LivingEntity> targets = abilityMarkManager.getTargets(caster);
         targets.add(caster);
 
         double increment = (2 * Math.PI) / 16; // angle between particles
@@ -121,8 +125,7 @@ public class Enlightenment {
 
         }
 
-        consolation.removeTargets(caster);
-
+        abilityMarkManager.removeTargets(caster);
     }
 
     public double getHealPercent(LivingEntity caster){
@@ -132,12 +135,13 @@ public class Enlightenment {
 
 
 
+    @Override
     public boolean usable(LivingEntity caster){
         if (mana.getCurrentMana(caster)<cost) {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), -1, statusEffectManager.getHastePercent(caster));
     }
 
     /*public int returnWhichItem(Player player){

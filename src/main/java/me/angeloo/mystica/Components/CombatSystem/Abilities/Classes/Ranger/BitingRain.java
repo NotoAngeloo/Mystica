@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Ranger;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.RangerAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.Haste;
@@ -13,6 +14,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -34,7 +36,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class BitingRain {
+public class BitingRain extends BaseAbility {
 
     private final Mystica main;
 
@@ -48,10 +50,9 @@ public class BitingRain {
     private final CooldownManager cooldownManager;
 
     private final Focus focus;
-    private final StarVolley starVolley;
 
-
-    public BitingRain(Mystica main, AbilityManager manager, RangerAbilities rangerAbilities){
+    public BitingRain(Mystica main, AbilityManager manager){
+        super("biting_rain");
         this.main = main;
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
@@ -61,15 +62,14 @@ public class BitingRain {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();
-        focus = rangerAbilities.getFocus();
-        starVolley = rangerAbilities.getStarVolley();
+        focus = manager.getFocus();
     }
 
-    private final int abilityNumber = 1;
     private final int baseCooldown = 10;
     private final double range = 20;
     private final int baseDamage = 20;
 
+    @Override
     public void use(LivingEntity caster){
 
         targetManager.setTargetToNearestValid(caster, range + statusEffectManager.getAdditionalRange(caster));
@@ -82,7 +82,7 @@ public class BitingRain {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 1, (long) (baseCooldown * 1000));
 
     }
 
@@ -206,8 +206,8 @@ public class BitingRain {
                         boolean crit = damageCalculator.checkIfCrit(caster, 0);
 
                         if(scout && crit){
-                            starVolley.decreaseCooldown(caster);
-                            statusEffectManager.applyEffect(caster, new Haste(), 2*20, 1.0);
+                            lookup.get(PlayerClass.Ranger,SubClass.Scout,-1).onExternalTrigger(caster);
+                            statusEffectManager.applyEffect(caster, new Haste(), 2*20, 0.1);
                         }
 
                         double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Physical", finalSkillDamage, crit));
@@ -308,7 +308,7 @@ public class BitingRain {
         return focus.calculateFocusMultipliedDamage(caster, baseDamage) + ((int)(skillLevel/3));
     }
 
-
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -334,7 +334,7 @@ public class BitingRain {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 1, statusEffectManager.getHastePercent(caster));
     }
 
 }

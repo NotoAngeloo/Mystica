@@ -1,8 +1,10 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnight;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnightAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -12,6 +14,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -32,7 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class SpiritualAttack {
+public class SpiritualAttack extends BaseAbility {
 
     private final Mystica main;
     private final ProfileManager profileManager;
@@ -43,11 +46,12 @@ public class SpiritualAttack {
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
+    private final PlayerStateManager playerStateManager;
 
     private final Energy energy;
-    private final SoulReap soulReap;
 
-    public SpiritualAttack(Mystica main, AbilityManager manager, ShadowKnightAbilities abilities){
+    public SpiritualAttack(Mystica main, AbilityManager manager){
+        super("spiritual_attack");
         this.main = main;
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
@@ -57,16 +61,16 @@ public class SpiritualAttack {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();
-        energy = abilities.getEnergy();
-        soulReap = abilities.getSoulReap();
+        energy = manager.getEnergy();
+        playerStateManager = manager.getPlayerStateManager();
     }
 
-    private final int abilityNumber = 2;
     private final int baseCooldown = 3;
     private final double range = 10;
     private final int baseDamage = 30;
     private final int cost = 30;
 
+    @Override
     public void use(LivingEntity caster){
 
         targetManager.setTargetToNearestValid(caster, range + statusEffectManager.getAdditionalRange(caster));
@@ -81,7 +85,7 @@ public class SpiritualAttack {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 2, (long) (baseCooldown * 1000));
 
     }
 
@@ -169,7 +173,7 @@ public class SpiritualAttack {
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
                     if(doom){
-                        soulReap.addSoulMark(caster);
+                        lookup.get(PlayerClass.Shadow_Knight, SubClass.Doom, 5).onExternalTrigger(caster);
                     }
                 }
 
@@ -218,6 +222,7 @@ public class SpiritualAttack {
         return baseDamage + ((int)(skillLevel/3));
     }
 
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -247,7 +252,7 @@ public class SpiritualAttack {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 2, statusEffectManager.getHastePercent(caster));
     }
 
     /*public int returnWhichItem(Player player){

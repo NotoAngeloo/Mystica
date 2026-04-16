@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Assassin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.AssassinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.BladeTempestCrit;
@@ -11,6 +12,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -29,7 +31,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class BladeTempest {
+public class BladeTempest extends BaseAbility {
 
     private final Mystica main;
 
@@ -41,10 +43,10 @@ public class BladeTempest {
     private final PveChecker pveChecker;
     private final CooldownManager cooldownManager;
 
-    private final Stealth stealth;
     private final Combo combo;
 
-    public BladeTempest(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
+    public BladeTempest(Mystica main, AbilityManager manager){
+        super("blade_tempest");
         this.main = main;
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
@@ -53,14 +55,12 @@ public class BladeTempest {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownManager = manager.getCooldownManager();
-        stealth = assassinAbilities.getStealth();
-        combo = assassinAbilities.getCombo();
+        combo = manager.getCombo();
     }
-
-    private final int abilityNumber = 6;
     private final int baseDamage = 30;
     private final int baseCooldown = 17;
 
+    @Override
     public void use(LivingEntity caster){
 
         if(!usable(caster)){
@@ -69,7 +69,7 @@ public class BladeTempest {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 6, (long) (baseCooldown * 1000));
 
     }
 
@@ -161,7 +161,7 @@ public class BladeTempest {
                         if(entity instanceof Player){
                             if(pvpManager.pvpLogic(caster, (Player) entity)){
                                 changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
-                                stealth.stealthBonusCheck(caster, livingEntity);
+                                lookup.get(PlayerClass.Assassin, 8).onExternalTrigger(caster, livingEntity);
                                 hit = true;
                                 if(!trigger[0]){
                                     trigger[0] = true;
@@ -176,7 +176,7 @@ public class BladeTempest {
                         if(pveChecker.pveLogic(livingEntity)){
                             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
                             changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
-                            stealth.stealthBonusCheck(caster, livingEntity);
+                            lookup.get(PlayerClass.Assassin, 8).onExternalTrigger(caster, livingEntity);
                             hit = true;
 
                             if(!trigger[0]){
@@ -207,8 +207,9 @@ public class BladeTempest {
     }
 
 
+    @Override
     public boolean usable(LivingEntity caster){
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 6, statusEffectManager.getHastePercent(caster));
     }
 
 

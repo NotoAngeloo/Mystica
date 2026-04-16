@@ -1,8 +1,10 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Mystic;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.MysticAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -11,6 +13,8 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
+import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -31,7 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class PlagueCurse {
+public class PlagueCurse extends BaseAbility {
 
     private final Mystica main;
 
@@ -43,12 +47,10 @@ public class PlagueCurse {
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
+    private final PlayerStateManager playerStateManager;
 
-    private final EvilSpirit evilSpirit;
-
-    private final Map<UUID, Boolean> curseMap = new HashMap<>();
-
-    public PlagueCurse(Mystica main, AbilityManager manager, MysticAbilities mysticAbilities){
+    public PlagueCurse(Mystica main, AbilityManager manager){
+        super("plague_curse");
         this.main = main;
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
@@ -58,15 +60,15 @@ public class PlagueCurse {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();
+        playerStateManager = manager.getPlayerStateManager();
 
-        evilSpirit = mysticAbilities.getEvilSpirit();
     }
 
-    private final int abilityNumber = 1;
     private final int baseCooldown = 6;
     private final double baseDamage = 30;
     private final double range = 20;
 
+    @Override
     public void use(LivingEntity caster){
 
         targetManager.setTargetToNearestValid(caster, range + statusEffectManager.getAdditionalRange(caster));
@@ -79,13 +81,14 @@ public class PlagueCurse {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 1, (long) (baseCooldown * 1000));
 
     }
 
     private void execute(LivingEntity caster){
 
-        evilSpirit.addChaosShard(caster, 1);
+
+        lookup.get(PlayerClass.Mystic, SubClass.Chaos, -1).onExternalTrigger(caster, 1);
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
@@ -162,7 +165,8 @@ public class PlagueCurse {
                             continue;
                         }
 
-                        if(!getIfCursed(livingEntity)){
+
+                        if(!playerStateManager.get(livingEntity.getUniqueId()).has("plague_curse")){
                             applyCurse(livingEntity);
                         }
 
@@ -198,7 +202,8 @@ public class PlagueCurse {
             }
 
             private void applyCurse(LivingEntity entity){
-                curseMap.put(entity.getUniqueId(), true);
+
+                playerStateManager.get(entity.getUniqueId()).set("plague_curse", true);
 
                 new BukkitRunnable(){
                     int count = 0;
@@ -207,7 +212,7 @@ public class PlagueCurse {
 
                         if(!targetStillValid(entity)){
                             this.cancel();
-                            curseMap.remove(entity.getUniqueId());
+                            playerStateManager.get(entity.getUniqueId()).remove("plague_curse");
                             return;
                         }
 
@@ -226,7 +231,7 @@ public class PlagueCurse {
 
                         if(count >= 10){
                             this.cancel();
-                            curseMap.remove(entity.getUniqueId());
+                            playerStateManager.get(entity.getUniqueId()).remove("plague_curse");
                         }
 
                         count++;
@@ -264,12 +269,9 @@ public class PlagueCurse {
         return baseDamage + ((int)(skillLevel/3));
     }
 
-    public boolean getIfCursed(LivingEntity entity){
-        return curseMap.getOrDefault(entity.getUniqueId(), false);
-    }
 
 
-
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -295,7 +297,7 @@ public class PlagueCurse {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 1, statusEffectManager.getHastePercent(caster));
     }
 
 }

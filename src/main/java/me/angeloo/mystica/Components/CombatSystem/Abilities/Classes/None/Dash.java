@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.None;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Misc.SpeedUp;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
@@ -9,21 +10,22 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class Dash {
+public class Dash extends BaseAbility {
 
     private final Mystica main;
     private final StatusEffectManager statusEffectManager;
     private final CooldownManager cooldownManager;
 
     public Dash(Mystica main, AbilityManager manager){
+        super("dash");
         this.main = main;
         statusEffectManager = main.getStatusEffectManager();
         cooldownManager = manager.getCooldownManager();
     }
 
-    private final int abilityNumber = 2;
     private final int baseCooldown = 20;
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -33,7 +35,7 @@ public class Dash {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 2, (long) (baseCooldown * 1000));
 
     }
 
@@ -58,9 +60,9 @@ public class Dash {
 
     }
 
-
+    @Override
     public boolean usable(LivingEntity caster){
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 2, statusEffectManager.getHastePercent(caster));
     }
 
 }

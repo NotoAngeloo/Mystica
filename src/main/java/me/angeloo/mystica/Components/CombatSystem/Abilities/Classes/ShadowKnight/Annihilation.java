@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnight;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnightAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
@@ -14,6 +15,8 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.BossManager;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
+import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -33,7 +36,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class Annihilation {
+public class Annihilation extends BaseAbility {
 
     private final Mystica main;
 
@@ -48,9 +51,9 @@ public class Annihilation {
     private final CooldownManager cooldownManager;
 
     private final Energy energy;
-    private final Infection infection;
 
-    public Annihilation(Mystica main, ShadowKnightAbilities shadowKnightAbilities, AbilityManager manager){
+    public Annihilation(Mystica main, AbilityManager manager){
+        super("annihilation");
         this.main = main;
         profileManager = main.getProfileManager();
         bossManager = main.getBossManager();
@@ -60,17 +63,16 @@ public class Annihilation {
         damageCalculator = main.getDamageCalculator();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        energy = shadowKnightAbilities.getEnergy();
-        infection = shadowKnightAbilities.getInfection();
+        energy = manager.getEnergy();
         cooldownManager = manager.getCooldownManager();
     }
 
-    private final int abilityNumber = -1;
     private final int baseCooldown = 3;
     private final double range = 8;
     private final int baseDamage = 45;
     private final int cost = 30;
 
+    @Override
     public void use(LivingEntity caster){
 
         targetManager.setTargetToNearestValid(caster, range);
@@ -85,7 +87,7 @@ public class Annihilation {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), -1, (long) (baseCooldown * 1000));
 
     }
 
@@ -210,9 +212,8 @@ public class Annihilation {
                 changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
                 //Bukkit.getLogger().info(String.valueOf(infection.getIfThisPlayerInfectThisEntity(player, target)));
-                if(infection.getIfThisPlayerInfectThisEntity(caster, target)){
-                    infection.infectionEnhancement(caster, target);
-                }
+
+                lookup.get(PlayerClass.Shadow_Knight, SubClass.Doom, 1).onExternalTrigger(caster, target);
             }
 
         }.runTaskTimer(main, 0, 1);
@@ -225,6 +226,7 @@ public class Annihilation {
     }
 
 
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -255,7 +257,7 @@ public class Annihilation {
         }
 
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), -1, statusEffectManager.getHastePercent(caster));
     }
 
     /*public int returnWhichItem(Player player){

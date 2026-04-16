@@ -170,10 +170,7 @@ public class CombatManager {
 
         profileManager.getAnyProfile(player).setIfInCombat(false);
 
-        if(profileManager.getAnyProfile(player).getPlayerClass().equals(PlayerClass.Paladin)){
-            abilityManager.getPaladinAbilities().getPurity().reset(player);
-        }
-
+        abilityManager.resetResource(player);
 
         //player.sendMessage("You are no longer in combat");
 

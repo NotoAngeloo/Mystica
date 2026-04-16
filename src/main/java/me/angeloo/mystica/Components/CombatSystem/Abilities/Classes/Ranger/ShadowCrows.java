@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Ranger;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.RangerAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.Haste;
@@ -15,6 +16,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.BossManager;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -34,7 +36,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class ShadowCrows {
+public class ShadowCrows extends BaseAbility {
 
     private final Mystica main;
 
@@ -48,10 +50,10 @@ public class ShadowCrows {
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
     private final Focus focus;
-    private final StarVolley starVolley;
 
 
-    public ShadowCrows(Mystica main, AbilityManager manager, RangerAbilities rangerAbilities){
+    public ShadowCrows(Mystica main, AbilityManager manager){
+        super("shadow_crows");
         this.main = main;
         profileManager = main.getProfileManager();
         bossManager = main.getBossManager();
@@ -62,15 +64,14 @@ public class ShadowCrows {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();
-        starVolley = rangerAbilities.getStarVolley();
-        focus = rangerAbilities.getFocus();
+        focus = manager.getFocus();
     }
 
-    private final int abilityNumber = 2;
     private final int baseCooldown = 10;
     private final double range = 20;
     private final int baseDamage = 2;
 
+    @Override
     public void use(LivingEntity caster){
 
         targetManager.setTargetToNearestValid(caster, range + statusEffectManager.getAdditionalRange(caster));
@@ -83,7 +84,7 @@ public class ShadowCrows {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 2, (long) (baseCooldown * 1000));
 
     }
 
@@ -219,8 +220,8 @@ public class ShadowCrows {
                             boolean crit = damageCalculator.checkIfCrit(caster, subclassCritBonus(caster));
 
                             if(scout && crit){
-                                starVolley.decreaseCooldown(caster);
-                                statusEffectManager.applyEffect(caster, new Haste(), 2*20, 1.0);
+                                lookup.get(PlayerClass.Ranger,SubClass.Scout,-1).onExternalTrigger(caster);
+                                statusEffectManager.applyEffect(caster, new Haste(), 2*20, 0.1);
                             }
 
                             double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
@@ -271,7 +272,7 @@ public class ShadowCrows {
     }
 
 
-
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -302,7 +303,7 @@ public class ShadowCrows {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 2, statusEffectManager.getHastePercent(caster));
     }
 
 }

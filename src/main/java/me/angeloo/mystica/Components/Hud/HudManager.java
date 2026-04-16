@@ -631,7 +631,7 @@ public class HudManager {
 
         StringBuilder builder = new StringBuilder();
 
-        double currentHeat = abilityManager.getElementalistAbilities().getHeat().getHeat(player);
+        double currentHeat = abilityManager.getHeat().getHeat(player);
         double maxHeat = 100;
         double ratio = currentHeat/maxHeat;
 
@@ -671,7 +671,7 @@ public class HudManager {
     private String getMysticResourceBar(Player player){
         StringBuilder builder = new StringBuilder();
 
-        double currentMana = abilityManager.getMysticAbilities().getMana().getCurrentMana(player);
+        double currentMana = abilityManager.getMana().getCurrentMana(player);
         double maxMana = 100;
         double ratio = currentMana/maxMana;
 
@@ -703,7 +703,7 @@ public class HudManager {
     private String getRangerResourceBar(Player player){
         StringBuilder builder = new StringBuilder();
 
-        double currentFocus = abilityManager.getRangerAbilities().getFocus().getFocus(player);
+        double currentFocus = abilityManager.getFocus().getFocus(player);
         double maxHeat = 10;
         double ratio = currentFocus/maxHeat;
 
@@ -736,7 +736,7 @@ public class HudManager {
     private String getWarriorResourceBar(Player player){
         StringBuilder builder = new StringBuilder();
 
-        double currentRage = abilityManager.getWarriorAbilities().getRage().getCurrentRage(player);
+        double currentRage = abilityManager.getRage().getCurrentRage(player);
         double maxRage = 500;
         double ratio = currentRage/maxRage;
 
@@ -770,9 +770,9 @@ public class HudManager {
     private String getPaladinResourceBar(Player player){
         StringBuilder builder = new StringBuilder();
 
-        int currentPurity = abilityManager.getPaladinAbilities().getPurity().get(player);
+        int currentPurity = abilityManager.getPurity().get(player);
 
-        if(abilityManager.getPaladinAbilities().getPurity().active(player)){
+        if(abilityManager.getPurity().active(player)){
             currentPurity = 3;
         }
 
@@ -809,7 +809,7 @@ public class HudManager {
     private String getShadowKnightResourceBar(Player player){
         StringBuilder builder = new StringBuilder();
 
-        double currentEnergy = abilityManager.getShadowKnightAbilities().getEnergy().getCurrentEnergy(player);
+        double currentEnergy = abilityManager.getEnergy().getCurrentEnergy(player);
         double maxEnergy = 100;
         double ratio = currentEnergy/maxEnergy;
 
@@ -845,7 +845,7 @@ public class HudManager {
 
         builder.append(ChatColor.RESET);
 
-        int currentCombo = abilityManager.getAssassinAbilities().getCombo().getComboPoints(player);
+        int currentCombo = abilityManager.getCombo().getComboPoints(player);
 
         int maxCombo = 4;
 

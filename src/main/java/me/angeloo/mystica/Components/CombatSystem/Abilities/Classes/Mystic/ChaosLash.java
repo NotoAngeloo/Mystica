@@ -1,8 +1,10 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Mystic;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.MysticAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -11,6 +13,8 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
+import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -27,7 +31,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class ChaosLash {
+public class ChaosLash extends BaseAbility {
 
     private final Mystica main;
 
@@ -40,12 +44,11 @@ public class ChaosLash {
     private final ChangeResourceHandler changeResourceHandler;
     private final AbilityManager abilityManager;
     private final CooldownManager cooldownManager;
-
-    private final PlagueCurse plagueCurse;
-    private final EvilSpirit evilSpirit;
+    private final PlayerStateManager playerStateManager;
 
 
-    public ChaosLash(Mystica main, AbilityManager manager, MysticAbilities mysticAbilities){
+    public ChaosLash(Mystica main, AbilityManager manager){
+        super("chaos_lash");
         this.main = main;
         profileManager = main.getProfileManager();
         abilityManager = manager;
@@ -56,15 +59,15 @@ public class ChaosLash {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();
-        evilSpirit = mysticAbilities.getEvilSpirit();
-        plagueCurse = mysticAbilities.getPlagueCurse();
+        playerStateManager = manager.getPlayerStateManager();
+
     }
 
-    private final int abilityNumber = 6;
     private final int baseCooldown = 11;
     private final double baseRange = 20;
     private final double baseDamage = 50;
 
+    @Override
     public void use(LivingEntity caster){
 
         double totalRange = getRange(caster);
@@ -79,7 +82,7 @@ public class ChaosLash {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 6, (long) (baseCooldown * 1000));
 
     }
 
@@ -92,9 +95,10 @@ public class ChaosLash {
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        if(plagueCurse.getIfCursed(target)){
-            evilSpirit.addChaosShard(caster, 2);
+        if(playerStateManager.get(target.getUniqueId()).has("plague_curse")){
+            lookup.get(PlayerClass.Mystic, SubClass.Chaos, -1).onExternalTrigger(caster, 2);
         }
+
 
 
         double castTime = 15;
@@ -287,7 +291,7 @@ public class ChaosLash {
         return baseDamage + ((int)(skillLevel/3));
     }
 
-
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -318,7 +322,7 @@ public class ChaosLash {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 6, statusEffectManager.getHastePercent(caster));
     }
 
 }

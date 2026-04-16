@@ -1,8 +1,10 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Mystic;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.MysticAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -25,7 +27,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-public class ShadowOfDarkness {
+public class ShadowOfDarkness extends BaseAbility {
 
     private final Mystica main;
 
@@ -37,11 +39,10 @@ public class ShadowOfDarkness {
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
+    private final PlayerStateManager playerStateManager;
 
-    private final EvilSpirit evilSpirit;
-
-
-    public ShadowOfDarkness(Mystica main, AbilityManager manager, MysticAbilities mysticAbilities){
+    public ShadowOfDarkness(Mystica main, AbilityManager manager){
+        super("shadow_of_darkness");
         this.main = main;
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
@@ -51,16 +52,15 @@ public class ShadowOfDarkness {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();
-
-        evilSpirit = mysticAbilities.getEvilSpirit();
+        playerStateManager = manager.getPlayerStateManager();
 
     }
 
-    private final int abilityNumber = 2;
     private final int baseCooldown = 22;
     private final double range = 20;
     private final double baseDamage = 25;
 
+    @Override
     public void use(LivingEntity caster){
 
         targetManager.setTargetToNearestValid(caster, range + statusEffectManager.getAdditionalRange(caster));
@@ -73,7 +73,7 @@ public class ShadowOfDarkness {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 2, (long) (baseCooldown * 1000));
 
     }
 
@@ -106,7 +106,16 @@ public class ShadowOfDarkness {
 
         double skillDamage = getSkillDamage(caster);
 
-        int shards = evilSpirit.getChaosShards(caster);
+
+
+
+        int shards = 0;
+
+        if(playerStateManager.get(caster.getUniqueId()).has("chaos_shard")){
+            shards = playerStateManager.get(caster.getUniqueId()).getInt("chaos_shard", 0);
+        }
+
+
 
         skillDamage = skillDamage + (2*shards);
 
@@ -189,8 +198,7 @@ public class ShadowOfDarkness {
         return baseDamage + ((int)(skillLevel/3));
     }
 
-
-
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -216,6 +224,6 @@ public class ShadowOfDarkness {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 2, statusEffectManager.getHastePercent(caster));
     }
 }

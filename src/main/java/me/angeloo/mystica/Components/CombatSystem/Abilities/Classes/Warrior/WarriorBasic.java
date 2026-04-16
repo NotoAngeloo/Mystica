@@ -44,7 +44,7 @@ public class WarriorBasic {
     private final PveChecker pveChecker;
     private final DamageCalculator damageCalculator;
     private final ChangeResourceHandler changeResourceHandler;
-    private final Rage rage;
+    //private final Rage rage;
 
     private final Map<UUID, Integer> basicStageMap = new HashMap<>();
     private final Map<UUID, BukkitTask> basicRunning = new HashMap<>();
@@ -61,7 +61,7 @@ public class WarriorBasic {
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
         changeResourceHandler = main.getChangeResourceHandler();
-        rage = warriorAbilities.getRage();
+        //rage = warriorAbilities.getRage();
     }
 
     public void useBasic(LivingEntity caster){
@@ -266,7 +266,7 @@ public class WarriorBasic {
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster, crit);
-            rage.addRageToEntity(caster, 10);
+            //rage.addRageToEntity(caster, 10);
 
         }
 
@@ -426,7 +426,7 @@ public class WarriorBasic {
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster, crit);
-            rage.addRageToEntity(caster, 10);
+            //rage.addRageToEntity(caster, 10);
         }
 
 

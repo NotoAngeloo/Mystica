@@ -1,7 +1,9 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.Haste;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
@@ -30,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class Representative {
+public class Representative extends BaseAbility {
 
     private final Mystica main;
 
@@ -41,12 +43,10 @@ public class Representative {
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final CooldownManager cooldownManager;
-
-
-    private final Map<UUID, Double> repBuff = new HashMap<>();
-
+    private final PlayerStateManager playerStateManager;
 
     public Representative(Mystica main, AbilityManager manager){
+        super("representative");
         this.main = main;
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
@@ -55,12 +55,13 @@ public class Representative {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownManager = manager.getCooldownManager();
+        playerStateManager = manager.getPlayerStateManager();
     }
 
-    private final int abilityNumber = -1;
     private final int baseCooldown = 30;
     private final int healPower = 25;
 
+    @Override
     public void use(LivingEntity caster){
 
         if(!usable(caster)){
@@ -70,7 +71,7 @@ public class Representative {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), -1, (long) (baseCooldown * 1000));
     }
 
     private void execute(LivingEntity caster){
@@ -80,7 +81,6 @@ public class Representative {
                 return;
             }
         }
-
 
 
         if(profileManager.getAnyProfile(caster).getIfDead()){
@@ -100,7 +100,7 @@ public class Representative {
 
 
         double level = profileManager.getAnyProfile(caster).getStats().getLevel();
-        applyBuff(caster, level);
+        playerStateManager.get(caster.getUniqueId()).set("representative", level);
         statusEffectManager.applyEffect(caster, new Haste(), 10*20, 0.1);
 
         Location center = caster.getLocation().clone();
@@ -175,7 +175,7 @@ public class Representative {
 
                 if(count>=10*20){
                     this.cancel();
-                    removeBuff(caster);
+                    playerStateManager.get(caster.getUniqueId()).remove("representative");
                 }
 
                 count++;
@@ -186,31 +186,6 @@ public class Representative {
         }.runTaskTimer(main, 0, 1);
     }
 
-    private void applyBuff(LivingEntity caster, double amount){
-        repBuff.put(caster.getUniqueId(), amount);
-    }
-
-    private void removeBuff(LivingEntity caster){
-        repBuff.remove(caster.getUniqueId());
-
-        boolean combatStatus = profileManager.getAnyProfile(caster).getIfInCombat();
-
-        if(!combatStatus){
-            return;
-        }
-
-        if(caster instanceof Player){
-            PlayerEquipment playerEquipment = profileManager.getAnyProfile(caster).getPlayerEquipment();
-            ((Player)caster).getInventory().setHelmet(playerEquipment.getHelmet().build());
-        }
-
-
-    }
-
-    public double getAdditionalBonusFromBuff(LivingEntity caster){
-        return repBuff.getOrDefault(caster.getUniqueId(), 0.0);
-    }
-
 
     public double getHealPower(LivingEntity caster){
         double level = profileManager.getAnyProfile(caster).getStats().getLevel();
@@ -218,10 +193,9 @@ public class Representative {
     }
 
 
-
-
+    @Override
     public boolean usable(LivingEntity caster){
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), -1, statusEffectManager.getHastePercent(caster));
     }
 
 }

@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnight;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnightAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.GenericDamageReduction;
@@ -23,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class BurialGround {
+public class BurialGround extends BaseAbility {
 
     private final Mystica main;
     private final ProfileManager profileManager;
@@ -33,19 +34,20 @@ public class BurialGround {
 
     private final Energy energy;
 
-    public BurialGround(Mystica main, AbilityManager manager, ShadowKnightAbilities shadowKnightAbilities){
+    public BurialGround(Mystica main, AbilityManager manager){
+        super("burial_ground");
         this.main = main;
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();;
-        energy = shadowKnightAbilities.getEnergy();
+        energy = manager.getEnergy();
     }
 
-    private final int abilityNumber = 3;
     private final int baseCooldown = 12;
     private final int refund = 10;
 
+    @Override
     public void use(LivingEntity caster){
 
         if(!usable(caster)){
@@ -54,7 +56,7 @@ public class BurialGround {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 3, (long) (baseCooldown * 1000));
 
     }
 
@@ -140,9 +142,9 @@ public class BurialGround {
     }
 
 
-
+    @Override
     public boolean usable(LivingEntity caster){
-        if(!cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster))){
+        if(!cooldownManager.isReady(caster.getUniqueId(), 3, statusEffectManager.getHastePercent(caster))){
             return false;
         }
 

@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Mystic;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.MysticAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Shields.GenericShield;
@@ -27,7 +28,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class Aurora {
+public class Aurora extends BaseAbility {
 
     private final Mystica main;
 
@@ -42,7 +43,8 @@ public class Aurora {
     private final Mana mana;
 
 
-    public Aurora(Mystica main, AbilityManager manager, MysticAbilities mysticAbilities){
+    public Aurora(Mystica main, AbilityManager manager){
+        super("aurora");
         this.main = main;
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
@@ -52,14 +54,14 @@ public class Aurora {
         pveChecker = main.getPveChecker();
         pvpManager = main.getPvpManager();
         cooldownManager = manager.getCooldownManager();
-        mana = mysticAbilities.getMana();
+        mana = manager.getMana();
     }
 
-    private final int abilityNumber = 6;
     private final int baseCooldown = 15;
     private final double range = 20;
     private final int cost = 100;
 
+    @Override
     public void use(LivingEntity caster){
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
@@ -76,7 +78,7 @@ public class Aurora {
 
         execute(caster, target);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 6, (long) (baseCooldown * 1000));
     }
 
     private void  execute(LivingEntity caster, LivingEntity target){
@@ -195,7 +197,7 @@ public class Aurora {
 
     }
 
-
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
 
@@ -231,7 +233,7 @@ public class Aurora {
         }
 
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 6, statusEffectManager.getHastePercent(caster));
     }
 
     /*public int returnWhichItem(Player player){

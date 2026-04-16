@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Warrior;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.WarriorAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.KnockUp;
@@ -32,7 +33,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class MagmaSpikes {
+public class MagmaSpikes extends BaseAbility {
 
     private final Mystica main;
     private final ProfileManager profileManager;
@@ -46,7 +47,8 @@ public class MagmaSpikes {
     private final Rage rage;
 
 
-    public MagmaSpikes(Mystica main, AbilityManager manager, WarriorAbilities warriorAbilities){
+    public MagmaSpikes(Mystica main, AbilityManager manager){
+        super("magma_spikes");
         this.main = main;
         profileManager = main.getProfileManager();
         abilityManager = manager;
@@ -56,13 +58,13 @@ public class MagmaSpikes {
         pveChecker = main.getPveChecker();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();
-        rage = warriorAbilities.getRage();
+        rage = manager.getRage();
     }
 
-    private final int abilityNumber = 7;
     private final int baseCooldown = 20;
     private final int baseDamage = 50;
 
+    @Override
     public void use(LivingEntity caster){
 
         if(!usable(caster)){
@@ -71,7 +73,7 @@ public class MagmaSpikes {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 7, (long) (baseCooldown * 1000));
 
     }
 
@@ -377,9 +379,9 @@ public class MagmaSpikes {
         return baseDamage + ((int)(skillLevel/3));
     }
 
-
+    @Override
     public boolean usable(LivingEntity caster){
-        if(!cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster))){
+        if(!cooldownManager.isReady(caster.getUniqueId(), 7, statusEffectManager.getHastePercent(caster))){
             return false;
         }
 

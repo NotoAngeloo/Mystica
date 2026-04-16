@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Warrior;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.FlamingSigilAttack;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.FlamingSigilHealth;
@@ -28,7 +29,7 @@ import org.bukkit.util.BoundingBox;
 
 import java.util.*;
 
-public class FlamingSigil {
+public class FlamingSigil extends BaseAbility {
 
     private final Mystica main;
 
@@ -39,6 +40,7 @@ public class FlamingSigil {
     private final CooldownManager cooldownManager;
 
     public FlamingSigil(Mystica main, AbilityManager manager){
+        super("flaming_sigil");
         this.main = main;
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
@@ -47,10 +49,10 @@ public class FlamingSigil {
         cooldownManager = manager.getCooldownManager();
     }
 
-    private final int abilityNumber = 6;
     private final int baseCooldown = 10;
     private final int buffAmount = 5;
 
+    @Override
     public void use(LivingEntity caster){
 
         if(!usable(caster)){
@@ -59,7 +61,7 @@ public class FlamingSigil {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 6, (long) (baseCooldown * 1000));
     }
 
     private void execute(LivingEntity caster){
@@ -183,9 +185,9 @@ public class FlamingSigil {
     }
 
 
-
+    @Override
     public boolean usable(LivingEntity caster){
-        if (!cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster))) {
+        if (!cooldownManager.isReady(caster.getUniqueId(), 6, statusEffectManager.getHastePercent(caster))) {
             return false;
         }
 

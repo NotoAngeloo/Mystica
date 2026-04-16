@@ -18,7 +18,7 @@ import java.util.UUID;
 public class Mana {
 
     private final ProfileManager profileManager;
-    private final CooldownDisplayer cooldownDisplayer;
+
 
     private final Map<UUID, Long> lastManaed = new HashMap<>();
 
@@ -26,9 +26,8 @@ public class Mana {
 
     private final int maxMana = 500;
 
-    public Mana(Mystica main, AbilityManager manager){
+    public Mana(Mystica main){
         profileManager = main.getProfileManager();
-        cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
     //here change it

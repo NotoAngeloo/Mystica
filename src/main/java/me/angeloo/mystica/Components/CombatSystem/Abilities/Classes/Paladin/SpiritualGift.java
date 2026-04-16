@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.PaladinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.Haste;
@@ -18,7 +19,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class SpiritualGift {
+public class SpiritualGift extends BaseAbility {
 
     private final Mystica main;
 
@@ -34,7 +35,8 @@ public class SpiritualGift {
     private final Purity purity;
 
 
-    public SpiritualGift(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
+    public SpiritualGift(Mystica main, AbilityManager manager){
+        super("spiritual_gift");
         this.main = main;
         profileManager = main.getProfileManager();
         damageCalculator = main.getDamageCalculator();
@@ -44,13 +46,13 @@ public class SpiritualGift {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();
-        purity = paladinAbilities.getPurity();
+        purity = manager.getPurity();
     }
 
-    private final int abilityNumber = 5;
     private final int baseCooldown = 20;
     private final int healPower = 5;
 
+    @Override
     public void use(LivingEntity caster){
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
@@ -76,7 +78,7 @@ public class SpiritualGift {
 
         execute(caster, target);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 5, (long) (baseCooldown * 1000));
 
     }
 
@@ -174,6 +176,7 @@ public class SpiritualGift {
     }
 
 
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
 
@@ -193,7 +196,7 @@ public class SpiritualGift {
         }
 
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 5, statusEffectManager.getHastePercent(caster));
     }
 
 

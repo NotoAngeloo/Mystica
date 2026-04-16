@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Assassin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.AssassinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
@@ -11,6 +12,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -25,7 +27,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
-public class Assault {
+public class Assault extends BaseAbility {
 
     private final Mystica main;
     private final ProfileManager profileManager;
@@ -37,11 +39,11 @@ public class Assault {
     private final PveChecker pveChecker;
     private final CooldownManager cooldownManager;
 
-    private final Stealth stealth;
     private final Combo combo;
 
 
-    public Assault(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
+    public Assault(Mystica main, AbilityManager manager){
+        super("assault");
         this.main = main;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
@@ -51,15 +53,14 @@ public class Assault {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownManager = manager.getCooldownManager();
-        stealth = assassinAbilities.getStealth();
-        combo = assassinAbilities.getCombo();
+        combo = manager.getCombo();
     }
 
-    private final int abilityNumber = 1;
     private final double range = 4;
     private final int baseCooldown = 4;
     private final int baseDamage = 30;
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -75,7 +76,7 @@ public class Assault {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 1, (long) (baseCooldown * 1000));
 
     }
 
@@ -154,7 +155,8 @@ public class Assault {
 
                     combo.addComboPoint(caster);
 
-                    stealth.stealthBonusCheck(caster, target);
+                    lookup.get(PlayerClass.Assassin, 8).onExternalTrigger(caster, target);
+
 
                     cancelTask();
                 }
@@ -216,7 +218,7 @@ public class Assault {
         }
 
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 1, statusEffectManager.getHastePercent(caster));
     }
 
 

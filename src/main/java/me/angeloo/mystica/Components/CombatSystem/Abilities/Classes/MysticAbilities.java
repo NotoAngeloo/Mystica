@@ -1,18 +1,18 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes;
 
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Ability;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Mystic.*;
-import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilitySet;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.Enums.SubClass;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
-public class MysticAbilities {
+public class MysticAbilities implements AbilitySet {
 
-    private final ProfileManager profileManager;
-    private final Mana mana;
+    /*private final Mana mana;
     private final Consolation consolation;
     private final EvilSpirit evilSpirit;
     private final PlagueCurse plagueCurse;
@@ -32,11 +32,12 @@ public class MysticAbilities {
     private final LightSigil lightSigil;
     private final ArcaneMissiles arcaneMissiles;
     private final Enlightenment enlightenment;
-    private final MysticBasic mysticBasic;
+    private final MysticBasic mysticBasic;*/
+
+    private final Map<Integer, Ability> abilities = new HashMap<>();
 
     public MysticAbilities(Mystica main, AbilityManager manager){
-        profileManager = main.getProfileManager();
-        mana = new Mana(main, manager);
+        /*mana = new Mana(main);
         consolation = new Consolation(main);
         evilSpirit = new EvilSpirit(main, manager);
         plagueCurse = new PlagueCurse(main, manager, this);
@@ -56,10 +57,25 @@ public class MysticAbilities {
         lightSigil = new LightSigil(main, manager, this);
         arcaneMissiles = new ArcaneMissiles(main, manager);
         enlightenment = new Enlightenment(main, this, manager);
-        mysticBasic = new MysticBasic(main, this);
+        mysticBasic = new MysticBasic(main, this);*/
+
+        abilities.put(1, new ArcaneShield(main, manager));
+        abilities.put(2, new PurifyingBlast(main, manager));
+        abilities.put(3, new ForceOfWill(main, manager));
+        abilities.put(4, new Dreadfall(main, manager));
+        abilities.put(5, new Warp(main, manager));
+        abilities.put(6, new Aurora(main, manager));
+        abilities.put(7, new ArcaneContract(main, manager));
+        abilities.put(8, new LightSigil(main, manager));
     }
 
-    public void useMysticAbility(LivingEntity caster, int abilityNumber){
+    @Override
+    public Ability get(int abilityNumber){
+        return abilities.get(abilityNumber);
+    }
+
+
+    /*public void useMysticAbility(LivingEntity caster, int abilityNumber){
 
         if(evilSpirit.getIfEvilSpirit(caster)){
             return;
@@ -200,5 +216,5 @@ public class MysticAbilities {
     public ArcaneMissiles getArcaneMissiles(){return arcaneMissiles;}
     public Enlightenment getEnlightenment(){return enlightenment;}
     public Consolation getConsolation(){return consolation;}
-    public Mana getMana(){return mana;}
+    public Mana getMana(){return mana;}*/
 }

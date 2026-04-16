@@ -1,8 +1,11 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Elementalist;
 
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Ability;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ElementalistAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -11,6 +14,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -26,7 +30,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-public class IceBolt {
+public class IceBolt extends BaseAbility {
 
     private final Mystica main;
 
@@ -37,14 +41,16 @@ public class IceBolt {
     private final DamageCalculator damageCalculator;
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
-    private final ElementalBreath elementalBreath;
     private final CooldownManager cooldownManager;
+    private final PlayerStateManager playerStateManager;
 
     private final Heat heat;
 
 
-    public IceBolt(Mystica main, AbilityManager manager, ElementalistAbilities elementalistAbilities){
+    public IceBolt(Mystica main, AbilityManager manager){
+        super("ice_bolt");
         this.main = main;
+        this.heat = manager.getHeat();
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
@@ -53,15 +59,17 @@ public class IceBolt {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();
-        elementalBreath = elementalistAbilities.getElementalBreath();
-        heat = elementalistAbilities.getHeat();
+        playerStateManager = manager.getPlayerStateManager();
+        //elementalBreath = elementalistAbilities.getElementalBreath();
+        //heat = elementalistAbilities.getHeat();
     }
 
-    private final int abilityNumber = 1;
+
     private final int baseCooldown = 7;
     private final double range = 20;
     private final double baseDamage = 20;
 
+    @Override
     public void use(LivingEntity caster){
 
         targetManager.setTargetToNearestValid(caster, range + statusEffectManager.getAdditionalRange(caster));
@@ -74,7 +82,7 @@ public class IceBolt {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 1, (long) (baseCooldown * 1000));
 
     }
 
@@ -94,7 +102,7 @@ public class IceBolt {
 
         boolean conjurer = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Conjurer);
 
-        boolean breathActive = elementalBreath.getIfBuffTime(caster)>0;
+        boolean breathActive = playerStateManager.get(caster.getUniqueId()).has("elemental_breath");
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
@@ -227,10 +235,7 @@ public class IceBolt {
     }
 
 
-    public void resetCooldown(LivingEntity caster){
-        cooldownManager.clear(caster.getUniqueId(), abilityNumber);
-    }
-
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -261,7 +266,7 @@ public class IceBolt {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 1, statusEffectManager.getHastePercent(caster));
     }
 
 }

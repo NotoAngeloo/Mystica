@@ -1,6 +1,8 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityMarkManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
@@ -18,7 +20,7 @@ import org.bukkit.util.BoundingBox;
 
 import java.util.*;
 
-public class JusticeMark {
+public class JusticeMark extends BaseAbility {
 
     private final Mystica main;
     private final TargetManager targetManager;
@@ -26,22 +28,24 @@ public class JusticeMark {
     private final StatusEffectManager statusEffectManager;
     private final PvpManager pvpManager;
     private final CooldownManager cooldownManager;
+    private final AbilityMarkManager abilityMarkManager;
 
-    private final Map<UUID, List<LivingEntity>> marked = new HashMap<>();
 
     public JusticeMark(Mystica main, AbilityManager manager){
+        super("justice_mark");
         this.main = main;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
         pvpManager = main.getPvpManager();
         cooldownManager = manager.getCooldownManager();
+        abilityMarkManager = manager.getAbilityMarkManager();
     }
 
-    private final int abilityNumber = 8;
     private final int baseCooldown = 15;
     private final double range = 10;
 
+    @Override
     public void use(LivingEntity caster){
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
@@ -56,7 +60,7 @@ public class JusticeMark {
 
         execute(caster, target);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 8, (long) (baseCooldown * 1000));
 
     }
 
@@ -99,12 +103,14 @@ public class JusticeMark {
 
         List<LivingEntity> affected = validPlayers.subList(0, Math.min(5, validPlayers.size()));
 
-        marked.put(caster.getUniqueId(), affected);
+        Set<LivingEntity> marked = new HashSet<>(affected);
+
+        abilityMarkManager.applyAll(caster, marked);
 
         new BukkitRunnable(){
             @Override
             public void run(){
-                marked.remove(caster.getUniqueId());
+                abilityMarkManager.removeTargets(caster);
             }
         }.runTaskLater(main, 20*8);
 
@@ -112,22 +118,8 @@ public class JusticeMark {
 
     }
 
-    public boolean markProc(LivingEntity caster, LivingEntity target){
 
-        if(!marked.containsKey(caster.getUniqueId())){
-            return false;
-        }
-
-        List<LivingEntity> targets = marked.get(caster.getUniqueId());
-
-        return targets.contains(target);
-    }
-
-    public List<LivingEntity> getMarkedTargets(LivingEntity caster){
-        return marked.getOrDefault(caster.getUniqueId(), new ArrayList<>());
-    }
-
-
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
 
@@ -143,6 +135,6 @@ public class JusticeMark {
         }
 
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 8, statusEffectManager.getHastePercent(caster));
     }
 }

@@ -1,8 +1,11 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.PaladinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerState;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -26,7 +29,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
-public class TorahSword {
+public class TorahSword extends BaseAbility {
 
     private final Mystica main;
 
@@ -38,13 +41,12 @@ public class TorahSword {
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
+    private final PlayerStateManager playerStateManager;
 
     private final Purity purity;
-    private final Decision decision;
-    private final Judgement judgement;
 
-
-    public TorahSword(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
+    public TorahSword(Mystica main, AbilityManager manager){
+        super("torah_sword");
         this.main = main;
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
@@ -54,16 +56,15 @@ public class TorahSword {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();
-        decision = paladinAbilities.getDecision();
-        judgement = paladinAbilities.getJudgement();
-        purity = paladinAbilities.getPurity();
+        purity = manager.getPurity();
+        playerStateManager = manager.getPlayerStateManager();
     }
 
-    private final int abilityNumber = 1;
     private final int baseCooldown = 10;
     private final int baseDamage = 7;
     private final double range = 10;
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -78,11 +79,11 @@ public class TorahSword {
         execute(caster);
 
         if(profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Dawn)){
-            purity.add(caster, abilityNumber);
+            purity.add(caster, 1);
         }
 
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 1, (long) (baseCooldown * 1000));
 
     }
 
@@ -212,7 +213,7 @@ public class TorahSword {
 
                     if(crit&&dawn){
                         cooldownManager.clear(caster.getUniqueId(), 8);
-                        decision.applyDecision(caster);
+                        playerStateManager.get(caster.getUniqueId()).set("decision", true);
                     }
 
                     double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
@@ -232,7 +233,7 @@ public class TorahSword {
 
                     if(crit&&dawn){
                         cooldownManager.clear(caster.getUniqueId(), 8);
-                        decision.applyDecision(caster);
+                        playerStateManager.get(caster.getUniqueId()).set("decision", true);
                     }
 
                     double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
@@ -254,7 +255,7 @@ public class TorahSword {
 
                     if(crit&&dawn){
                         cooldownManager.clear(caster.getUniqueId(), 8);
-                        decision.applyDecision(caster);
+                        playerStateManager.get(caster.getUniqueId()).set("decision", true);
                     }
 
                     double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
@@ -301,6 +302,7 @@ public class TorahSword {
     }
 
 
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -326,7 +328,7 @@ public class TorahSword {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 1, statusEffectManager.getHastePercent(caster));
     }
 
 }

@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Assassin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.AssassinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.PierceBuff;
@@ -27,7 +28,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
-public class Pierce {
+public class Pierce extends BaseAbility {
 
     private final MysticaEquipment weapon;
     private final Mystica main;
@@ -40,10 +41,10 @@ public class Pierce {
     private final PveChecker pveChecker;
     private final CooldownManager cooldownManager;
 
-    private final Stealth stealth;
     private final Combo combo;
 
-    public Pierce(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
+    public Pierce(Mystica main, AbilityManager manager){
+        super("pierce");
         this.main = main;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
@@ -53,16 +54,15 @@ public class Pierce {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownManager = manager.getCooldownManager();
-        combo = assassinAbilities.getCombo();
-        stealth = assassinAbilities.getStealth();
+        combo = manager.getCombo();
         weapon = new MysticaEquipment(EquipmentSlot.WEAPON, PlayerClass.Assassin, 1);
     }
 
-    private final int abilityNumber = 4;
     private final int baseCooldown = 4;
     private final int baseDamage = 40;
     private final double range = 4;
 
+    @Override
     public void use(LivingEntity caster){
 
         targetManager.setTargetToNearestValid(caster, range);
@@ -78,7 +78,7 @@ public class Pierce {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 4, (long) (baseCooldown * 1000));
 
     }
 
@@ -149,7 +149,7 @@ public class Pierce {
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
-                    stealth.stealthBonusCheck(caster, target);
+                    lookup.get(PlayerClass.Assassin, 8).onExternalTrigger(caster, target);
 
                     statusEffectManager.applyEffect(caster, new PierceBuff(), null, null);
                 }
@@ -188,16 +188,17 @@ public class Pierce {
 
 
 
-    public int returnWhichItem(Player player){
+    /*public int returnWhichItem(Player player){
 
         if(combo.getComboPoints(player) == 0){
             return 1;
         }
 
         return 0;
-    }
+    }*/
 
 
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -228,7 +229,7 @@ public class Pierce {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 4, statusEffectManager.getHastePercent(caster));
     }
 
 }

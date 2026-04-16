@@ -1,8 +1,10 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Elementalist;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ElementalistAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -11,6 +13,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -30,7 +33,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class DescendingInferno {
+public class DescendingInferno extends BaseAbility {
 
     private final Mystica main;
 
@@ -42,18 +45,19 @@ public class DescendingInferno {
     private final ChangeResourceHandler changeResourceHandler;
     private final StatusEffectManager statusEffectManager;
     private final CooldownManager cooldownManager;
+    private final PlayerStateManager playerStateManager;
 
     private final Heat heat;
-    private final FieryWing fieryWing;
-    private final ElementalBreath elementalBreath;
+    //private final FieryWing fieryWing;
+    //private final ElementalBreath elementalBreath;
 
 
-    private final int abilityNumber = 3;
     private final double range = 20;
     private final double baseCooldown = 10;
     private final double baseDamage = 20;
 
-    public DescendingInferno(Mystica main, AbilityManager manager, ElementalistAbilities elementalistAbilities){
+    public DescendingInferno(Mystica main, AbilityManager manager){
+        super("descending_inferno");
         this.main = main;
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
@@ -62,13 +66,15 @@ public class DescendingInferno {
         damageCalculator = main.getDamageCalculator();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        heat = elementalistAbilities.getHeat();
-        fieryWing = elementalistAbilities.getFieryWing();
-        elementalBreath = elementalistAbilities.getElementalBreath();
+        playerStateManager = manager.getPlayerStateManager();
+        this.heat = manager.getHeat();
+        //fieryWing = elementalistAbilities.getFieryWing();
+        //elementalBreath = elementalistAbilities.getElementalBreath();
         cooldownManager = manager.getCooldownManager();
 
     }
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -82,7 +88,7 @@ public class DescendingInferno {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 3, (long) (baseCooldown * 1000));
 
     }
 
@@ -204,9 +210,12 @@ public class DescendingInferno {
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                         changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
-                        if(elementalBreath.getIfBuffTime(caster) > 0){
+
+                        if(playerStateManager.get(caster.getUniqueId()).has("elemental_breath")){
                             explodeFireball(caster);
                         }
+
+
                     }
                 }
 
@@ -240,7 +249,7 @@ public class DescendingInferno {
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                         changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
-                        if(elementalBreath.getIfBuffTime(caster) > 0){
+                        if(playerStateManager.get(caster.getUniqueId()).has("elemental_breath")){
                             explodeFireball(caster);
                         }
                     }
@@ -270,7 +279,7 @@ public class DescendingInferno {
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                         changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
-                        if(elementalBreath.getIfBuffTime(caster) > 0){
+                        if(playerStateManager.get(caster.getUniqueId()).has("elemental_breath")){
                             explodeFireball(caster);
                         }
                     }
@@ -280,7 +289,7 @@ public class DescendingInferno {
 
                     inflamedAlready = true;
 
-                    fieryWing.addInflame(caster);
+                    lookup.get(PlayerClass.Elementalist, SubClass.Pyromancer, -1).onExternalTrigger(caster);
                 }
 
                 //check if all 3 are gone before canceling
@@ -383,7 +392,7 @@ public class DescendingInferno {
         return baseDamage + ((int)(skillLevel/3));
     }
 
-
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -414,7 +423,7 @@ public class DescendingInferno {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 3, statusEffectManager.getHastePercent(caster));
     }
 
 

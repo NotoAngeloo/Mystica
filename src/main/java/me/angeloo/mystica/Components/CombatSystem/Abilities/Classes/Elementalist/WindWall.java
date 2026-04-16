@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Elementalist;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ElementalistAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Shields.WindWallShield;
@@ -18,7 +19,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-public class WindWall {
+public class WindWall extends BaseAbility {
 
     private final Mystica main;
 
@@ -28,17 +29,18 @@ public class WindWall {
 
     private final Heat heat;
 
-    private final int abilityNumber = 5;
     private final int baseCooldown = 21;
 
-    public WindWall(Mystica main, AbilityManager manager, ElementalistAbilities elementalistAbilities){
+    public WindWall(Mystica main, AbilityManager manager){
+        super("wind_wall");
         this.main = main;
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
-        heat = elementalistAbilities.getHeat();
+        this.heat = manager.getHeat();
         cooldownManager = manager.getCooldownManager();
     }
 
+    @Override
     public void use(LivingEntity caster) {
 
 
@@ -52,7 +54,7 @@ public class WindWall {
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_5_Level_Bonus();
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 5, (long) (baseCooldown * 1000));
     }
 
     private void execute(LivingEntity caster){
@@ -135,8 +137,9 @@ public class WindWall {
 
     }
 
+    @Override
     public boolean usable(LivingEntity caster){
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 5, statusEffectManager.getHastePercent(caster));
     }
 
 }

@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnight;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnightAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
@@ -12,6 +13,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.*;
@@ -29,7 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class Bloodsucker {
+public class Bloodsucker extends BaseAbility {
 
     private final Mystica main;
 
@@ -43,11 +45,10 @@ public class Bloodsucker {
     private final CooldownManager cooldownManager;
 
     private final Energy energy;
-    private final BloodShield bloodShield;
 
 
-
-    public Bloodsucker(Mystica main, AbilityManager manager, ShadowKnightAbilities abilities){
+    public Bloodsucker(Mystica main, AbilityManager manager){
+        super("bloodsucker");
         this.main = main;
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
@@ -57,16 +58,15 @@ public class Bloodsucker {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();;
-        energy = abilities.getEnergy();
-        bloodShield = abilities.getBloodShield();
+        energy = manager.getEnergy();
     }
 
-    private final int abilityNumber = 4;
     private final int baseCooldown = 15;
     private final double range = 10;
     private final int cost = 20;
     private final int baseDamage = 30;
 
+    @Override
     public void use(LivingEntity caster){
 
         targetManager.setTargetToNearestValid(caster, range + statusEffectManager.getAdditionalRange(caster));
@@ -81,7 +81,7 @@ public class Bloodsucker {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 4, (long) (baseCooldown * 1000));
 
     }
 
@@ -115,7 +115,7 @@ public class Bloodsucker {
 
 
         if(blood){
-            bloodShield.increaseDuration(caster);
+            lookup.get(PlayerClass.Shadow_Knight, SubClass.Blood, -1).onExternalTrigger(caster);
         }
 
 
@@ -219,6 +219,7 @@ public class Bloodsucker {
     }
 
 
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -252,7 +253,7 @@ public class Bloodsucker {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(),4, statusEffectManager.getHastePercent(caster));
     }
 
     /*public int returnWhichItem(Player player){

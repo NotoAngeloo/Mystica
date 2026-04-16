@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Warrior;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.WarriorAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.AggroManager;
@@ -34,7 +35,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class SearingChains {
+public class SearingChains extends BaseAbility {
 
     private final Mystica main;
     private final ProfileManager profileManager;
@@ -49,7 +50,8 @@ public class SearingChains {
     private final Rage rage;
 
 
-    public SearingChains(Mystica main, AbilityManager manager, WarriorAbilities warriorAbilities){
+    public SearingChains(Mystica main, AbilityManager manager){
+        super("searing_chains");
         this.main = main;
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
@@ -60,13 +62,13 @@ public class SearingChains {
         changeResourceHandler = main.getChangeResourceHandler();
         aggroManager = main.getAggroManager();
         cooldownManager = manager.getCooldownManager();
-        rage = warriorAbilities.getRage();
+        rage = manager.getRage();
     }
 
-    private final int abilityNumber = 2;
     private final int baseCooldown = 12;
     private final int baseDamage = 25;
 
+    @Override
     public void use(LivingEntity caster){
 
         if(!usable(caster)){
@@ -75,7 +77,7 @@ public class SearingChains {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 2, (long) (baseCooldown * 1000));
 
     }
 
@@ -455,13 +457,17 @@ public class SearingChains {
 
     }
 
-    public void tryToDecreaseCooldown(LivingEntity caster){
+    public void onExternalTrigger(LivingEntity caster){
+        tryToDecreaseCooldown(caster);
+    }
+
+    private void tryToDecreaseCooldown(LivingEntity caster){
 
         if(!profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Gladiator)){
             return;
         }
 
-        cooldownManager.reduceCooldownFlat(caster.getUniqueId(), abilityNumber, 2);
+        cooldownManager.reduceCooldownFlat(caster.getUniqueId(), 2, 2);
 
     }
 
@@ -472,9 +478,9 @@ public class SearingChains {
         return baseDamage + ((int)(skillLevel/3));
     }
 
-
+    @Override
     public boolean usable(LivingEntity caster){
-        if(!cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster))){
+        if(!cooldownManager.isReady(caster.getUniqueId(), 2, statusEffectManager.getHastePercent(caster))){
             return false;
         }
 

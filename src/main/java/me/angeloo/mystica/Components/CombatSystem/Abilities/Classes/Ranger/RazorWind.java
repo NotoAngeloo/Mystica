@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Ranger;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.RangerAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.Haste;
@@ -13,6 +14,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -32,7 +34,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class RazorWind {
+public class RazorWind extends BaseAbility {
 
     private final Mystica main;
 
@@ -45,11 +47,11 @@ public class RazorWind {
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
-    private final StarVolley starVolley;
     private final Focus focus;
 
 
-    public RazorWind(Mystica main, AbilityManager manager, RangerAbilities rangerAbilities){
+    public RazorWind(Mystica main, AbilityManager manager){
+        super("razor_wind");
         this.main = main;
         profileManager = main.getProfileManager();
         abilityManager = manager;
@@ -60,15 +62,14 @@ public class RazorWind {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();;
-        starVolley = rangerAbilities.getStarVolley();
-        focus = rangerAbilities.getFocus();
+        focus = manager.getFocus();
     }
 
-    private final int abilityNumber = 4;
     private final int baseCooldown = 16;
     private final int baseRange = 20;
     private final int baseDamage = 40;
 
+    @Override
     public void use(LivingEntity caster){
 
         targetManager.setTargetToNearestValid(caster, getRange(caster));
@@ -81,7 +82,7 @@ public class RazorWind {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 4, (long) (baseCooldown * 1000));
     }
 
     private double getRange(LivingEntity caster){
@@ -275,8 +276,8 @@ public class RazorWind {
                                 boolean crit = damageCalculator.checkIfCrit(caster, subclassCritBonus(caster));
 
                                 if(scout && crit){
-                                    starVolley.decreaseCooldown(caster);
-                                    statusEffectManager.applyEffect(caster, new Haste(), 2*20, 1.0);
+                                    lookup.get(PlayerClass.Ranger,SubClass.Scout,-1).onExternalTrigger(caster);
+                                    statusEffectManager.applyEffect(caster, new Haste(), 2*20, 0.1);
                                 }
 
                                 double damage = damageCalculator.calculateDamage(caster, target, "Physical", skillDamage, crit);
@@ -329,6 +330,7 @@ public class RazorWind {
     }
 
 
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -358,7 +360,7 @@ public class RazorWind {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 4, statusEffectManager.getHastePercent(caster));
     }
 
 }

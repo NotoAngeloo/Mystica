@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Mystic;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
@@ -20,7 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-public class ForceOfWill {
+public class ForceOfWill extends BaseAbility {
 
     private final Mystica main;
 
@@ -35,6 +36,7 @@ public class ForceOfWill {
     private final CooldownManager cooldownManager;
 
     public ForceOfWill(Mystica main, AbilityManager manager){
+        super("force_of_will");
         this.main = main;
         profileManager = main.getProfileManager();
         abilityManager = manager;
@@ -47,11 +49,11 @@ public class ForceOfWill {
         cooldownManager = manager.getCooldownManager();
     }
 
-    private final int abilityNumber = 3;
     private final int baseCooldown = 15;
     private final int baseDamage = 35;
     private final double baseRange = 20;
 
+    @Override
     public void use(LivingEntity caster){
 
         targetManager.setTargetToNearestValid(caster, getRange(caster));
@@ -63,7 +65,7 @@ public class ForceOfWill {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 3, (long) (baseCooldown * 1000));
     }
 
     /*private void passThroughDamage(LivingEntity caster, LivingEntity target){
@@ -339,6 +341,7 @@ public class ForceOfWill {
     }
 
 
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
 
         if(target == null){
@@ -367,6 +370,6 @@ public class ForceOfWill {
             }
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 3, statusEffectManager.getHastePercent(caster));
     }
 }

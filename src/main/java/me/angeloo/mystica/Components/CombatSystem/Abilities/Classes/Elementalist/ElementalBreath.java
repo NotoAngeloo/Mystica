@@ -1,7 +1,10 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Elementalist;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerState;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
@@ -19,26 +22,29 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class ElementalBreath {
+public class ElementalBreath extends BaseAbility {
 
     private final Mystica main;
     private final ProfileManager profileManager;
     private final StatusEffectManager statusEffectManager;
     private final CooldownManager cooldownManager;
+    private final PlayerStateManager playerStateManager;
 
     private final Map<UUID, Integer> buffActiveMap = new HashMap<>();
 
     public ElementalBreath(Mystica main, AbilityManager manager){
+        super("elemental_breath");
         this.main = main;
         profileManager = main.getProfileManager();
         statusEffectManager =  main.getStatusEffectManager();
         cooldownManager = manager.getCooldownManager();
+        playerStateManager = manager.getPlayerStateManager();;
     }
 
-    private final int abilityNumber = 7;
     private final int baseCooldown = 120;
     private final int baseDuration = 15;
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -48,7 +54,7 @@ public class ElementalBreath {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 7, (long) (baseCooldown * 1000));
     }
 
     public int getDuration(LivingEntity caster){
@@ -61,6 +67,10 @@ public class ElementalBreath {
     }
 
     private void execute(LivingEntity caster){
+
+
+        PlayerState state = playerStateManager.get(caster.getUniqueId());
+        state.set("elemental_breath", true);
 
         buffActiveMap.put(caster.getUniqueId(), getDuration(caster));
         if(caster instanceof Player player){
@@ -77,6 +87,7 @@ public class ElementalBreath {
 
                 if(buffActiveMap.get(caster.getUniqueId()) <= 0){
                     this.cancel();
+                    state.remove("elemental_breath");
                     return;
                 }
 
@@ -155,19 +166,19 @@ public class ElementalBreath {
 
     }
 
-    public int getIfBuffTime(LivingEntity caster){
+    private int getIfBuffTime(LivingEntity caster){
         return buffActiveMap.getOrDefault(caster.getUniqueId(), 0);
     }
 
 
-
+    @Override
     public boolean usable(LivingEntity caster){
 
         if(getIfBuffTime(caster) >= 0){
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 7, statusEffectManager.getHastePercent(caster));
     }
 
 }

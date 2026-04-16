@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.None;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
@@ -19,7 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-public class Kick {
+public class Kick extends BaseAbility {
 
     private final Mystica main;
     private final ProfileManager profileManager;
@@ -32,6 +33,7 @@ public class Kick {
     private final CooldownManager cooldownManager;
 
     public Kick(Mystica main, AbilityManager manager){
+        super("kick");
         this.main = main;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
@@ -43,11 +45,11 @@ public class Kick {
         cooldownManager = manager.getCooldownManager();
     }
 
-    private final int abilityNumber = 1;
     private final double range = 7;
     private final int baseCooldown = 15;
     private final int baseDamage = 20;
 
+    @Override
     public void use(LivingEntity caster){
 
         targetManager.setTargetToNearestValid(caster, range);
@@ -60,7 +62,7 @@ public class Kick {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 1, (long) (baseCooldown * 1000));
 
     }
 
@@ -188,7 +190,7 @@ public class Kick {
 
     }
 
-
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -219,7 +221,7 @@ public class Kick {
         }
 
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 1, statusEffectManager.getHastePercent(caster));
     }
 
 

@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Elementalist;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ElementalistAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
@@ -13,6 +14,8 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.BossManager;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
+import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -31,7 +34,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class FieryMagma {
+public class FieryMagma extends BaseAbility {
 
     private final Mystica main;
 
@@ -43,18 +46,17 @@ public class FieryMagma {
     private final DamageCalculator damageCalculator;
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
-    private final CooldownDisplayer cooldownDisplayer;
     private final CooldownManager cooldownManager;
 
     private final Heat heat;
-    private final FieryWing fieryWing;
+    //private final FieryWing fieryWing;
 
-    private final int abilityNumber = 2;
     private final int baseCooldown = 10;
     private final double range = 20;
     private final double baseDamage = 20;
 
-    public FieryMagma(Mystica main, AbilityManager manager, ElementalistAbilities elementalistAbilities){
+    public FieryMagma(Mystica main, AbilityManager manager){
+        super("fiery_magma");
         this.main = main;
         profileManager = main.getProfileManager();
         bossManager = main.getBossManager();
@@ -64,13 +66,13 @@ public class FieryMagma {
         damageCalculator = main.getDamageCalculator();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        cooldownDisplayer = new CooldownDisplayer(main, manager);
-        fieryWing = elementalistAbilities.getFieryWing();
-        heat = elementalistAbilities.getHeat();
+        //fieryWing = elementalistAbilities.getFieryWing();
+        this.heat = manager.getHeat();
         cooldownManager = manager.getCooldownManager();
     }
 
 
+    @Override
     public void use(LivingEntity caster){
 
         targetManager.setTargetToNearestValid(caster, range + statusEffectManager.getAdditionalRange(caster));
@@ -83,7 +85,7 @@ public class FieryMagma {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 2, (long) (baseCooldown * 1000));
     }
 
     private void execute(LivingEntity caster){
@@ -149,7 +151,9 @@ public class FieryMagma {
 
                 if (distance <= 1) {
 
-                    fieryWing.addInflame(caster);
+                    lookup.get(PlayerClass.Elementalist, SubClass.Pyromancer, -1).onExternalTrigger(caster);
+
+                    //fieryWing.addInflame(caster);
 
 
                     cancelTask();
@@ -267,15 +271,13 @@ public class FieryMagma {
                                     continue;
                                 }
 
-                                if(!(entity instanceof LivingEntity)){
+                                if(!(entity instanceof LivingEntity livingEntity)){
                                     continue;
                                 }
 
                                 if(entity instanceof ArmorStand){
                                     continue;
                                 }
-
-                                LivingEntity livingEntity = (LivingEntity) entity;
 
                                 if(hitBySkill.contains(livingEntity)){
                                     continue;
@@ -320,7 +322,7 @@ public class FieryMagma {
     }
 
 
-
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -346,6 +348,6 @@ public class FieryMagma {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 2, statusEffectManager.getHastePercent(caster));
     }
 }

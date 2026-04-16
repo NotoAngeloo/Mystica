@@ -1,8 +1,11 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Mystic;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityMarkManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.MysticAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Root;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
@@ -27,7 +30,7 @@ import org.bukkit.util.BoundingBox;
 
 import java.util.*;
 
-public class PurifyingBlast {
+public class PurifyingBlast extends BaseAbility {
 
     private final Mystica main;
 
@@ -39,12 +42,14 @@ public class PurifyingBlast {
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final CooldownManager cooldownManager;
+    private final AbilityMarkManager abilityMarkManager;
+    private final PlayerStateManager playerStateManager;
 
     private final Mana mana;
-    private final Consolation consolation;
-    private final Map<UUID, Boolean> instantCast = new HashMap<>();
 
-    public PurifyingBlast(Mystica main, AbilityManager manager, MysticAbilities mysticAbilities){
+
+    public PurifyingBlast(Mystica main, AbilityManager manager){
+        super("purifying_blast");
         this.main = main;
         profileManager = main.getProfileManager();
         abilityManager = manager;
@@ -54,15 +59,16 @@ public class PurifyingBlast {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownManager = manager.getCooldownManager();;
-        mana = mysticAbilities.getMana();
-        consolation = mysticAbilities.getConsolation();
+        mana = manager.getMana();
+        abilityMarkManager = manager.getAbilityMarkManager();
+        playerStateManager = manager.getPlayerStateManager();
     }
 
-    private final int abilityNumber = 2;
     private final int baseCooldown = 5;
     private final int cost = 50;
     private final int baseDamage = 15;
 
+    @Override
     public void use(LivingEntity caster){
 
         if(!usable(caster)){
@@ -73,17 +79,18 @@ public class PurifyingBlast {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 2, (long) (baseCooldown * 1000));
     }
 
     private void execute(LivingEntity caster){
 
         int castTime = 20;
 
-        if(getInstantCast(caster)){
+        if(playerStateManager.get(caster.getUniqueId()).has("instant_blast")){
             blastTask(caster);
             return;
         }
+
 
         statusEffectManager.applyEffect(caster, new Root(), castTime, null);
 
@@ -135,9 +142,8 @@ public class PurifyingBlast {
         boolean arcane = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Arcane);
         boolean shepard = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Shepard);
 
-        if(getInstantCast(caster)){
-            unQueueInstantCast(caster);
-        }
+
+        playerStateManager.get(caster.getUniqueId()).remove("instant_blast");
 
 
         double healPower = getSkillDamage(caster);
@@ -206,7 +212,7 @@ public class PurifyingBlast {
                             double healAmount  = damageCalculator.calculateHealing(caster, finalHealPower, crit);
                             changeResourceHandler.addHealthToEntity(livingEntity, healAmount, caster);
                             if(shepard){
-                                consolation.apply(caster, livingEntity);
+                                abilityMarkManager.apply(caster, livingEntity);
                             }
                         }
 
@@ -221,7 +227,7 @@ public class PurifyingBlast {
                         double healAmount  = damageCalculator.calculateHealing(caster, finalHealPower, crit);
                         changeResourceHandler.addHealthToEntity(livingEntity, healAmount, caster);
                         if(shepard){
-                            consolation.apply(caster, livingEntity);
+                            abilityMarkManager.apply(caster, livingEntity);
                         }
                     }
 
@@ -252,30 +258,6 @@ public class PurifyingBlast {
         }.runTaskTimer(main, 0, 1);
     }
 
-    public void queueInstantCast(LivingEntity caster){
-        instantCast.put(caster.getUniqueId(), true);
-
-        if(caster instanceof Player player){
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
-        }
-
-
-    }
-    public void unQueueInstantCast(LivingEntity caster){
-        instantCast.remove(caster.getUniqueId());
-
-        if(caster instanceof Player player){
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
-
-        }
-
-    }
-
-
-    public boolean getInstantCast(LivingEntity caster){
-        return instantCast.getOrDefault(caster.getUniqueId(), false);
-    }
-
 
     public double getSkillDamage(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
@@ -285,12 +267,13 @@ public class PurifyingBlast {
     }
 
 
+    @Override
     public boolean usable(LivingEntity caster){
         if (mana.getCurrentMana(caster)<cost) {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 2, statusEffectManager.getHastePercent(caster));
     }
 
     /*public int returnWhichItem(Player player){

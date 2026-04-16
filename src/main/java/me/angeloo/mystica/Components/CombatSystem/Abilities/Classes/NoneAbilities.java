@@ -1,25 +1,40 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes;
 
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Ability;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.None.*;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilitySet;
 import me.angeloo.mystica.Mystica;
-import org.bukkit.entity.LivingEntity;
 
-public class NoneAbilities {
+import java.util.HashMap;
+import java.util.Map;
 
-    private final NoneBasic noneBasic;
-    private final Dash dash;
-    private final NoneRoll noneRoll;
-    private final Kick kick;
+public class NoneAbilities implements AbilitySet {
+
+    //private final NoneBasic noneBasic;
+    //private final Dash dash;
+    //private final NoneRoll noneRoll;
+    //private final Kick kick;
+
+    private final Map<Integer, Ability> abilities = new HashMap<>();
 
     public NoneAbilities(Mystica main, AbilityManager manager){
-        noneBasic = new NoneBasic(main);
-        dash = new Dash(main, manager);
-        noneRoll = new NoneRoll(main, manager);
-        kick = new Kick(main, manager);
+        //noneBasic = new NoneBasic(main);
+        //dash = new Dash(main, manager);
+        //noneRoll = new NoneRoll(main, manager);
+        //kick = new Kick(main, manager);
+
+        abilities.put(1, new Kick(main, manager));
+        abilities.put(2, new Dash(main, manager));
+        abilities.put(3, new NoneRoll(main, manager));
     }
 
-    public void useNoneAbility(LivingEntity caster, int abilityNumber){
+    @Override
+    public Ability get(int abilityNumber){
+        return abilities.get(abilityNumber);
+    }
+
+    /*public void useNoneAbility(LivingEntity caster, int abilityNumber){
 
         switch (abilityNumber) {
             case 1 -> {
@@ -40,7 +55,7 @@ public class NoneAbilities {
 
     public void useNoneBasic(LivingEntity caster){
         noneBasic.useBasic(caster);
-    }
+    }*/
 
 
 }

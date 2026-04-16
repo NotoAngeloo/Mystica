@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Elementalist;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
@@ -30,7 +31,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class ElementalMatrix {
+public class ElementalMatrix extends BaseAbility {
 
     private final Mystica main;
 
@@ -47,6 +48,7 @@ public class ElementalMatrix {
 
 
     public ElementalMatrix(Mystica main, AbilityManager manager){
+        super("elemental_matrix");
         this.main = main;
         profileManager = main.getProfileManager();
         bossManager = main.getBossManager();
@@ -61,11 +63,11 @@ public class ElementalMatrix {
 
     }
 
-    private final int abilityNumber = 8;
     private final double range = 20;
     private final int baseCooldown = 10;
     private final int baseDamage = 10;
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -79,7 +81,7 @@ public class ElementalMatrix {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 8, (long) (baseCooldown * 1000));
 
     }
 
@@ -215,15 +217,13 @@ public class ElementalMatrix {
                             continue;
                         }
 
-                        if(!(entity instanceof LivingEntity)){
+                        if(!(entity instanceof LivingEntity livingEntity)){
                             continue;
                         }
 
                         if(entity instanceof ArmorStand){
                             continue;
                         }
-
-                        LivingEntity livingEntity = (LivingEntity) entity;
 
                         if(hitBySkill.contains(livingEntity)){
                             continue;
@@ -283,7 +283,7 @@ public class ElementalMatrix {
     }
 
 
-
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -309,7 +309,7 @@ public class ElementalMatrix {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 8, statusEffectManager.getHastePercent(caster));
     }
 
 }

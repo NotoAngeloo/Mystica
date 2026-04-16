@@ -1,18 +1,17 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes;
 
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Ability;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin.*;
-import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilitySet;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.Enums.SubClass;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
-public class PaladinAbilities {
+import java.util.HashMap;
+import java.util.Map;
 
-    private final ProfileManager profileManager;
+public class PaladinAbilities implements AbilitySet {
 
-    private final Purity purity;
+    /*private final Purity purity;
 
     private final GloryOfPaladins gloryOfPaladins;
     private final PaladinBasic paladinBasic;
@@ -35,12 +34,13 @@ public class PaladinAbilities {
     private final SpiritualGift spiritualGift;
     private final SacredAegis sacredAegis;
     private final ModestCalling modestCalling;
-    private final Representative representative;
+    private final Representative representative;*/
+
+    private final Map<Integer, Ability> abilities = new HashMap<>();
 
     public PaladinAbilities(Mystica main, AbilityManager manager){
-        profileManager = main.getProfileManager();
 
-        purity = new Purity(main);
+        /*purity = new Purity(main);
 
         decision = new Decision();
         justiceMark = new JusticeMark(main, manager);
@@ -64,12 +64,26 @@ public class PaladinAbilities {
         divineInfusion = new DivineInfusion(main, manager, this);
         spiritualGift = new SpiritualGift(main, manager, this);
         sacredAegis = new SacredAegis(main, manager);
-        modestCalling = new ModestCalling(main, manager, this);
+        modestCalling = new ModestCalling(main, manager, this);*/
 
+        abilities.put(1, new TorahSword(main, manager));
+        abilities.put(2, new DivineGuidance(main, manager));
+        abilities.put(3, new ReigningSword(main, manager));
+        abilities.put(4, new CovenantSword(main, manager));
+        abilities.put(5, new OrderShield(main, manager));
+        abilities.put(6, new GloryOfPaladins(main, manager));
+        abilities.put(7, new DuranceOfTruth(main, manager));
+        abilities.put(8, new Judgement(main, manager));
 
     }
 
-    public void usePaladinAbility(LivingEntity caster, int abilityNumber){
+    @Override
+    public Ability get(int abilityNumber){
+        return abilities.get(abilityNumber);
+    }
+
+
+    /*public void usePaladinAbility(LivingEntity caster, int abilityNumber){
 
         SubClass subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
@@ -194,5 +208,5 @@ public class PaladinAbilities {
     public DuranceOfTruth getDuranceOfTruth(){return duranceOfTruth;}
     public SanctityShield getSanctityShield(){return sanctityShield;}
     public LightWell getLightWell(){return lightWell;}
-    public PaladinBasic getPaladinBasic(){return paladinBasic;}
+    public PaladinBasic getPaladinBasic(){return paladinBasic;}*/
 }

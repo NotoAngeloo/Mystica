@@ -1,6 +1,8 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Mystic;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Root;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -25,23 +27,28 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class EvilSpirit {
+public class EvilSpirit extends BaseAbility {
 
     private final Mystica main;
 
     private final ProfileManager profileManager;
     private final StatusEffectManager statusEffectManager;
     private final AbilityManager abilityManager;
-    private final Map<UUID, Integer> chaosShards = new HashMap<>();
-    private final Map<UUID, Boolean> isEvilSpirit = new HashMap<>();
+    private final PlayerStateManager playerStateManager;
+
+
+    //private final Map<UUID, Boolean> isEvilSpirit = new HashMap<>();
 
     public EvilSpirit(Mystica main, AbilityManager manager){
+        super("evil_spirit");
         this.main = main;
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
         abilityManager = manager;
+        playerStateManager = manager.getPlayerStateManager();
     }
 
+    @Override
     public void use(LivingEntity caster){
 
         if(!usable(caster)){
@@ -50,6 +57,8 @@ public class EvilSpirit {
 
         execute(caster);
     }
+
+    //im gonna make this look nicer eventually
 
     private void execute(LivingEntity caster){
 
@@ -159,8 +168,11 @@ public class EvilSpirit {
             return;
         }
 
-        isEvilSpirit.put(caster.getUniqueId(), true);
-        removeShards(caster);
+
+        playerStateManager.get(caster.getUniqueId()).set("evil_spirit", true);
+
+        playerStateManager.get(caster.getUniqueId()).remove("chaos_shard");
+
 
         ItemStack spirit = new ItemStack(Material.SPECTRAL_ARROW);
         ItemMeta meta2 = spirit.getItemMeta();
@@ -181,7 +193,7 @@ public class EvilSpirit {
 
                 if(count >= 30){
                     this.cancel();
-                    isEvilSpirit.put(caster.getUniqueId(), false);
+                    playerStateManager.get(caster.getUniqueId()).remove("evil_spirit");
                     Bukkit.getServer().getPluginManager().callEvent(new RemoveStealthEffectEvent(caster));
                 }
 
@@ -191,21 +203,19 @@ public class EvilSpirit {
 
     }
 
-    public boolean getIfEvilSpirit(LivingEntity caster){
-        return isEvilSpirit.getOrDefault(caster.getUniqueId(), false);
+
+    @Override
+    public void onExternalTrigger(LivingEntity caster, int amount){
+        addChaosShard(caster, amount);
     }
 
-    public int getChaosShards(LivingEntity caster){
-        return chaosShards.getOrDefault(caster.getUniqueId(), 0);
-    }
+    private void addChaosShard(LivingEntity caster, int added){
 
-    public void addChaosShard(LivingEntity caster, int added){
+        int current = 0;
 
-        if(!chaosShards.containsKey(caster.getUniqueId())){
-            chaosShards.put(caster.getUniqueId(), 0);
+        if(playerStateManager.get(caster.getUniqueId()).has("chaos_shard")){
+            current = playerStateManager.get(caster.getUniqueId()).getInt("chaos_shard", 0);
         }
-
-        int current = chaosShards.get(caster.getUniqueId());
 
         current = current + added;
 
@@ -213,7 +223,9 @@ public class EvilSpirit {
             current = 6;
         }
 
-        chaosShards.put(caster.getUniqueId(), current);
+
+        playerStateManager.get(caster.getUniqueId()).set("chaos_shard", current);
+
         if(caster instanceof Player player){
 
             Bukkit.getScheduler().runTask(main, () ->{
@@ -226,27 +238,34 @@ public class EvilSpirit {
 
     }
 
-    public void removeShards(LivingEntity caster){
+    /*public void removeShards(LivingEntity caster){
         chaosShards.put(caster.getUniqueId(), 0);
         if(caster instanceof Player player){
             Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
-    }
+    }*/
 
-    public int returnWhichItem(Player player){
+    /*public int returnWhichItem(Player player){
 
         if(getChaosShards(player) >= 6){
             return 1;
         }
 
         return 0;
-    }
+    }*/
 
+    @Override
     public boolean usable(LivingEntity caster){
-        if(getChaosShards(caster)<6){
+
+        if(!playerStateManager.get(caster.getUniqueId()).has("chaos_shard")){
             return false;
         }
+
+        if(playerStateManager.get(caster.getUniqueId()).getInt("chaos_shard", 0) < 6){
+            return false;
+        }
+
 
         Block block = caster.getLocation().subtract(0,1,0).getBlock();
 

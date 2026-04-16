@@ -1,8 +1,11 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityMarkManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.PaladinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Root;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
@@ -21,12 +24,9 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
-public class MercifulHealing {
+public class MercifulHealing extends BaseAbility {
 
     private final Mystica main;
 
@@ -39,13 +39,13 @@ public class MercifulHealing {
     private final ChangeResourceHandler changeResourceHandler;
     private final AbilityManager abilityManager;
     private final CooldownManager cooldownManager;
+    private final AbilityMarkManager abilityMarkManager;
+    private final PlayerStateManager playerStateManager;
 
     private final Purity purity;
-    private final JusticeMark justiceMark;
 
-    private final Map<UUID, Boolean> moveCast = new HashMap<>();
-
-    public MercifulHealing(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
+    public MercifulHealing(Mystica main, AbilityManager manager){
+        super("merciful_healing");
         this.main = main;
         profileManager = main.getProfileManager();
         damageCalculator = main.getDamageCalculator();
@@ -56,14 +56,15 @@ public class MercifulHealing {
         changeResourceHandler = main.getChangeResourceHandler();
         abilityManager = manager;
         cooldownManager = manager.getCooldownManager();
-        purity = paladinAbilities.getPurity();
-        justiceMark = paladinAbilities.getJusticeMark();
+        purity = manager.getPurity();
+        abilityMarkManager = manager.getAbilityMarkManager();
+        playerStateManager = manager.getPlayerStateManager();
     }
 
-    private final int abilityNumber = 2;
     private final int baseCooldown = 7;
     private final int healPower = 10;
 
+    @Override
     public void use(LivingEntity caster){
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
@@ -78,7 +79,7 @@ public class MercifulHealing {
 
         execute(caster, target);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 2, (long) (baseCooldown * 1000));
 
     }
 
@@ -93,11 +94,10 @@ public class MercifulHealing {
         abilityManager.setCasting(caster, true);
         int castTime = 20;
 
-        if(getMoveCast(caster)){
-            unQueueMoveCast(caster);
+        if(playerStateManager.get(caster.getUniqueId()).has("move_cast")){
+            playerStateManager.get(caster.getUniqueId()).remove("move_cast");
         }
         else{
-
             statusEffectManager.applyEffect(caster, new Root(), castTime, null);
         }
 
@@ -158,14 +158,15 @@ public class MercifulHealing {
 
                 double healAmount = damageCalculator.calculateHealing(caster, getHealPower(caster), crit);
 
-                if(justiceMark.markProc(caster, target)){
+                if(abilityMarkManager.getTargets(caster).contains(target)){
                     markHealInstead(caster, healAmount);
-                    unQueueMoveCast(caster);
+                    playerStateManager.get(caster.getUniqueId()).remove("move_cast");
                     return;
                 }
 
+
                 changeResourceHandler.addHealthToEntity(target, healAmount, caster);
-                unQueueMoveCast(caster);
+                playerStateManager.get(caster.getUniqueId()).remove("move_cast");
 
                 Location center = target.getLocation().clone().add(0,1,0);
 
@@ -201,7 +202,7 @@ public class MercifulHealing {
 
     private void markHealInstead(LivingEntity caster, double healAmount){
 
-        List<LivingEntity> affected = justiceMark.getMarkedTargets(caster);
+        Set<LivingEntity> affected = abilityMarkManager.getTargets(caster);
 
         for(LivingEntity thisPlayer : affected){
             changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, caster);
@@ -221,25 +222,6 @@ public class MercifulHealing {
         }
 
     }
-
-    public void queueMoveCast(LivingEntity caster){
-
-        if(caster instanceof Player player){
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
-        }
-
-        moveCast.put(caster.getUniqueId(), true);
-    }
-    public void unQueueMoveCast(LivingEntity caster){
-        if(caster instanceof Player player){
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
-        }
-        moveCast.remove(caster.getUniqueId());
-    }
-    private boolean getMoveCast(LivingEntity caster){
-        return moveCast.getOrDefault(caster.getUniqueId(), false);
-    }
-
 
     public double getHealPower(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
@@ -288,7 +270,7 @@ public class MercifulHealing {
         }
 
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 2, statusEffectManager.getHastePercent(caster));
     }
 
 }

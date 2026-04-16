@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Ranger;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Misc.SpeedUp;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Shields.GenericShield;
@@ -19,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class Roll {
+public class Roll extends BaseAbility {
 
     private final Mystica main;
 
@@ -28,17 +29,17 @@ public class Roll {
     private final CooldownManager cooldownManager;
 
 
-
     public Roll(Mystica main, AbilityManager manager){
+        super("roll");
         this.main = main;
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
         cooldownManager = manager.getCooldownManager();;
     }
 
-    private final int abilityNumber = 8;
     private final int baseCooldown = 13;
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -48,7 +49,7 @@ public class Roll {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 8, (long) (baseCooldown * 1000));
 
     }
 
@@ -100,9 +101,9 @@ public class Roll {
 
     }
 
-
+    @Override
     public boolean usable(LivingEntity caster){
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 8, statusEffectManager.getHastePercent(caster));
     }
 
 }

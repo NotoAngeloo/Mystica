@@ -1,8 +1,11 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityMarkManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.PaladinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -25,8 +28,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
+import java.util.Set;
 
-public class DecreeHonor {
+public class DecreeHonor extends BaseAbility {
 
     private final Mystica main;
 
@@ -38,13 +42,14 @@ public class DecreeHonor {
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
+    private final AbilityMarkManager abilityMarkManager;
+    private final PlayerStateManager playerStateManager;
 
     private final Purity purity;
-    private final JusticeMark justiceMark;
-    private final MercifulHealing mercifulHealing;
 
 
-    public DecreeHonor(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
+    public DecreeHonor(Mystica main, AbilityManager manager){
+        super("decree_honor");
         this.main = main;
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
@@ -54,17 +59,17 @@ public class DecreeHonor {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();
-        justiceMark = paladinAbilities.getJusticeMark();
-        mercifulHealing = paladinAbilities.getMercifulHealing();
-        purity = paladinAbilities.getPurity();
+        purity = manager.getPurity();
+        abilityMarkManager = manager.getAbilityMarkManager();
+        playerStateManager = manager.getPlayerStateManager();
     }
 
-    private final int abilityNumber = 1;
     private final int baseCooldown = 5;
     private final double range = 10;
     private final int baseDamage = 20;
     private final int healPower = 5;
 
+    @Override
     public void use(LivingEntity caster){
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
@@ -96,7 +101,7 @@ public class DecreeHonor {
 
         execute(caster, target);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 1, (long) (baseCooldown * 1000));
 
     }
 
@@ -171,7 +176,7 @@ public class DecreeHonor {
                 boolean crit = damageCalculator.checkIfCrit(caster, 0);
 
                 if(crit){
-                    mercifulHealing.queueMoveCast(caster);
+                    playerStateManager.get(caster.getUniqueId()).set("move_cast", true);
                 }
 
                 if(target instanceof Player){
@@ -180,10 +185,11 @@ public class DecreeHonor {
 
                         double healAmount  = damageCalculator.calculateHealing(caster, finalHealPower, crit);
 
-                        if(justiceMark.markProc(caster, target)){
+                        if(abilityMarkManager.getTargets(caster).contains(target)){
                             markHealInstead(caster, healAmount);
                             return;
                         }
+
 
                         changeResourceHandler.addHealthToEntity(target, healAmount, caster);
                         return;
@@ -195,7 +201,7 @@ public class DecreeHonor {
                     if(!pveChecker.pveLogic(target)){
                         double healAmount  = damageCalculator.calculateHealing(caster, finalHealPower, crit);
 
-                        if(justiceMark.markProc(caster, target)){
+                        if(abilityMarkManager.getTargets(caster).contains(target)){
                             markHealInstead(caster, healAmount);
                             return;
                         }
@@ -232,7 +238,7 @@ public class DecreeHonor {
 
     private void markHealInstead(LivingEntity caster, double healAmount){
 
-        List<LivingEntity> affected = justiceMark.getMarkedTargets(caster);
+        Set<LivingEntity> affected = abilityMarkManager.getTargets(caster);
 
         for(LivingEntity thisPlayer : affected){
             changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, caster);
@@ -280,9 +286,10 @@ public class DecreeHonor {
         return damage;
     }
 
+    @Override
     public boolean usable(LivingEntity caster){
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 1, statusEffectManager.getHastePercent(caster));
     }
 
 

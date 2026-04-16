@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnight;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnightAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.AggroManager;
@@ -33,7 +34,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class ShadowGrip {
+public class ShadowGrip extends BaseAbility {
 
     private final Mystica main;
 
@@ -49,7 +50,8 @@ public class ShadowGrip {
 
     private final Energy energy;
 
-    public ShadowGrip(Mystica main, AbilityManager manager, ShadowKnightAbilities shadowKnightAbilities){
+    public ShadowGrip(Mystica main, AbilityManager manager){
+        super("shadow_grip");
         this.main = main;
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
@@ -60,15 +62,15 @@ public class ShadowGrip {
         changeResourceHandler = main.getChangeResourceHandler();
         aggroManager = main.getAggroManager();
         cooldownManager = manager.getCooldownManager();
-        energy = shadowKnightAbilities.getEnergy();
+        energy = manager.getEnergy();
     }
 
-    private final int abilityNumber = 6;
     private final int baseCooldown = 10;
     private final double range = 15;
     private final int cost = 30;
     private final int baseDamage = 15;
 
+    @Override
     public void use(LivingEntity caster){
 
         targetManager.setTargetToNearestValid(caster, range + statusEffectManager.getAdditionalRange(caster));
@@ -83,7 +85,7 @@ public class ShadowGrip {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 6, (long) (baseCooldown * 1000));
 
     }
 
@@ -295,7 +297,7 @@ public class ShadowGrip {
         return baseDamage + ((int)(skillLevel/3));
     }
 
-
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -330,7 +332,7 @@ public class ShadowGrip {
         }
 
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 6, statusEffectManager.getHastePercent(caster));
     }
 
     /*public int returnWhichItem(Player player){

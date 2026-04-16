@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Ranger;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.RangerAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.Haste;
@@ -31,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class StarVolley {
+public class StarVolley extends BaseAbility {
 
     private final Mystica main;
 
@@ -45,7 +46,8 @@ public class StarVolley {
     private final Focus focus;
     private final CooldownManager cooldownManager;
 
-    public StarVolley(Mystica main, RangerAbilities rangerAbilities, AbilityManager manager){
+    public StarVolley(Mystica main, AbilityManager manager){
+        super("star_volley");
         this.main = main;
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
@@ -54,18 +56,16 @@ public class StarVolley {
         damageCalculator = main.getDamageCalculator();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        focus = rangerAbilities.getFocus();
+        focus = manager.getFocus();
         cooldownManager = manager.getCooldownManager();;
     }
 
-    private final int abilityNumber = -1;
     private final int baseCooldown = 45;
     private final double range = 20;
     private final int baseDamage = 60;
 
+    @Override
     public void use(LivingEntity caster){
-
-
 
         targetManager.setTargetToNearestValid(caster, range + statusEffectManager.getAdditionalRange(caster));
 
@@ -78,7 +78,7 @@ public class StarVolley {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), -1, (long) (baseCooldown * 1000));
 
     }
 
@@ -158,7 +158,7 @@ public class StarVolley {
                     boolean crit = damageCalculator.checkIfCrit(caster, 0);
 
                     if(crit){
-                        statusEffectManager.applyEffect(caster, new Haste(), 2*20, 1.0);
+                        statusEffectManager.applyEffect(caster, new Haste(), 2*20, 0.1);
                     }
 
                     double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
@@ -178,8 +178,13 @@ public class StarVolley {
 
     }
 
-    public void decreaseCooldown(LivingEntity caster){
-        cooldownManager.reduceCooldownFlat(caster.getUniqueId(), abilityNumber, 2);
+    @Override
+    public void onExternalTrigger(LivingEntity caster){
+        decreaseCooldown(caster);
+    }
+
+    private void decreaseCooldown(LivingEntity caster){
+        cooldownManager.reduceCooldownFlat(caster.getUniqueId(), -1, 2);
     }
 
     public double getSkillDamage(LivingEntity caster){
@@ -188,7 +193,7 @@ public class StarVolley {
     }
 
 
-
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -214,7 +219,7 @@ public class StarVolley {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), -1, statusEffectManager.getHastePercent(caster));
     }
 
 }

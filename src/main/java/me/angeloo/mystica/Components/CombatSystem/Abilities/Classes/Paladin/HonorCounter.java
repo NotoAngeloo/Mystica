@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.PaladinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
@@ -26,7 +27,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
-public class HonorCounter {
+public class HonorCounter extends BaseAbility {
 
     private final Mystica main;
 
@@ -42,7 +43,8 @@ public class HonorCounter {
     private final Purity purity;
 
 
-    public HonorCounter(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
+    public HonorCounter(Mystica main, AbilityManager manager){
+        super("honor_counter");
         this.main = main;
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
@@ -52,14 +54,14 @@ public class HonorCounter {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();;
-        purity = paladinAbilities.getPurity();
+        purity = manager.getPurity();
     }
 
-    private final int abilityNumber = 3;
     private final int baseCooldown = 8;
     private final double range = 6;
     private final int baseDamage = 30;
 
+    @Override
     public void use(LivingEntity caster){
 
         targetManager.setTargetToNearestValid(caster, range);
@@ -72,7 +74,7 @@ public class HonorCounter {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 3, (long) (baseCooldown * 1000));
 
     }
 
@@ -188,6 +190,7 @@ public class HonorCounter {
     }
 
 
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -213,7 +216,7 @@ public class HonorCounter {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 3, statusEffectManager.getHastePercent(caster));
     }
 
 }

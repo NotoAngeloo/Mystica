@@ -1,8 +1,10 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Mystic;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.MysticAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -29,7 +31,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class LightSigil {
+public class LightSigil extends BaseAbility {
 
     private final Mystica main;
 
@@ -40,11 +42,12 @@ public class LightSigil {
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final CooldownManager cooldownManager;
+    private final PlayerStateManager playerStateManager;
 
     private final Mana mana;
-    private final PurifyingBlast purifyingBlast;
 
-    public LightSigil(Mystica main, AbilityManager manager, MysticAbilities mysticAbilities){
+    public LightSigil(Mystica main, AbilityManager manager){
+        super("light_sigil");
         this.main = main;
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
@@ -53,16 +56,17 @@ public class LightSigil {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownManager = manager.getCooldownManager();
-        mana = mysticAbilities.getMana();
-        purifyingBlast = mysticAbilities.getPurifyingBlast();
+        mana = manager.getMana();
+        playerStateManager = manager.getPlayerStateManager();
+
     }
 
-    private final int abilityNumber = 8;
     private final int baseCooldown = 20;
     private final int cost = 20;
     private final int baseDamage = 14;
     private final int baseHealing = 5;
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -74,7 +78,7 @@ public class LightSigil {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 8, (long) (baseCooldown * 1000));
     }
 
     //perhaps made it shoot at enemies too
@@ -83,7 +87,7 @@ public class LightSigil {
 
         boolean shepard = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Shepard);
 
-        purifyingBlast.queueInstantCast(caster);
+        playerStateManager.get(caster.getUniqueId()).set("instant_blast", true);
 
         Location spawnStart = caster.getLocation().clone();
 
@@ -457,7 +461,7 @@ public class LightSigil {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 8, statusEffectManager.getHastePercent(caster));
     }
 
     /*public int returnWhichItem(Player player){

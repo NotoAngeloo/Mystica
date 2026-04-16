@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Warrior;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.GenericDamageReduction;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Shields.GenericShield;
@@ -18,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class GladiatorHeart {
+public class GladiatorHeart extends BaseAbility {
 
     private final Mystica main;
 
@@ -27,16 +28,17 @@ public class GladiatorHeart {
     private final CooldownManager cooldownManager;
 
     public GladiatorHeart(Mystica main, AbilityManager manager){
+        super("gladiator_heart");
         this.main = main;
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
         cooldownManager = manager.getCooldownManager();
     }
 
-    private final int abilityNumber = -1;
     private final int baseCooldown = 12;
     private final int baseShield = 10;
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -46,7 +48,7 @@ public class GladiatorHeart {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), -1, (long) (baseCooldown * 1000));
 
     }
 
@@ -104,9 +106,9 @@ public class GladiatorHeart {
         return  (level + baseShield / maxHealth) * 100;
     }
 
-
+    @Override
     public boolean usable(LivingEntity caster){
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), -1, statusEffectManager.getHastePercent(caster));
     }
 
 }

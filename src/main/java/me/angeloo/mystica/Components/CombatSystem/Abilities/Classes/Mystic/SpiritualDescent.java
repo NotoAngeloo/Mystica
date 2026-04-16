@@ -1,8 +1,10 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Mystic;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.MysticAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -11,6 +13,8 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
+import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -26,7 +30,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 
-public class SpiritualDescent {
+public class SpiritualDescent extends BaseAbility {
 
     private final Mystica main;
 
@@ -39,10 +43,8 @@ public class SpiritualDescent {
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
 
-    private final EvilSpirit evilSpirit;
-
-
-    public SpiritualDescent(Mystica main, AbilityManager manager, MysticAbilities mysticAbilities){
+    public SpiritualDescent(Mystica main, AbilityManager manager){
+        super("spiritual_descent");
         this.main = main;
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
@@ -52,15 +54,13 @@ public class SpiritualDescent {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();
-
-        evilSpirit = mysticAbilities.getEvilSpirit();
     }
 
-    private final int abilityNumber = 4;
     private final int baseCooldown = 16;
     private final double range = 20;
     private final double baseDamage = 5;
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -75,13 +75,13 @@ public class SpiritualDescent {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 4, (long) (baseCooldown * 1000));
 
     }
 
     private void execute(LivingEntity caster){
 
-        evilSpirit.addChaosShard(caster, 1);
+        lookup.get(PlayerClass.Mystic, SubClass.Chaos, -1).onExternalTrigger(caster, 1);
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
@@ -200,7 +200,7 @@ public class SpiritualDescent {
     }
 
 
-
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -226,7 +226,7 @@ public class SpiritualDescent {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 4, statusEffectManager.getHastePercent(caster));
     }
 
 }

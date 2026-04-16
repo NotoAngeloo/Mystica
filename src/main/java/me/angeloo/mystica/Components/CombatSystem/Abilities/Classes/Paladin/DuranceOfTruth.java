@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.PaladinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Silence;
@@ -34,7 +35,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class DuranceOfTruth {
+public class DuranceOfTruth extends BaseAbility {
 
     private final Mystica main;
     private final ProfileManager profileManager;
@@ -48,7 +49,9 @@ public class DuranceOfTruth {
 
     private final Purity purity;
 
-    public DuranceOfTruth(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
+
+    public DuranceOfTruth(Mystica main, AbilityManager manager){
+        super("durance_of_truth");
         this.main = main;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
@@ -58,13 +61,13 @@ public class DuranceOfTruth {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownManager = manager.getCooldownManager();
-        purity = paladinAbilities.getPurity();
+        purity = manager.getPurity();
     }
 
-    private final int abilityNumber = 7;
     private final int baseCooldown = 20;
     private final int baseDamage = 25;
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -79,7 +82,7 @@ public class DuranceOfTruth {
         }
 
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 7, (long) (baseCooldown * 1000));
 
     }
 
@@ -421,9 +424,9 @@ public class DuranceOfTruth {
     }
 
 
-
+    @Override
     public boolean usable(LivingEntity caster){
-        if(!cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster))){
+        if(!cooldownManager.isReady(caster.getUniqueId(), 7, statusEffectManager.getHastePercent(caster))){
             return false;
         }
 

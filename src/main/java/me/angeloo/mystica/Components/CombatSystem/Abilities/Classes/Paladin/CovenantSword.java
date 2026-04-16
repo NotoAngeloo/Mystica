@@ -1,8 +1,10 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.PaladinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -29,7 +31,7 @@ import org.bukkit.util.BoundingBox;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
-public class CovenantSword {
+public class CovenantSword extends BaseAbility {
 
     private final Mystica main;
     private final ProfileManager profileManager;
@@ -41,11 +43,12 @@ public class CovenantSword {
     private final PveChecker pveChecker;
     private final AbilityManager abilityManager;
     private final CooldownManager cooldownManager;
+    private final PlayerStateManager playerStateManager;
 
     private final Purity purity;
-    private final Decision decision;
 
-    public CovenantSword(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
+    public CovenantSword(Mystica main, AbilityManager manager){
+        super("covenant_sword");
         this.main = main;
         abilityManager = manager;
         targetManager = main.getTargetManager();
@@ -56,16 +59,16 @@ public class CovenantSword {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownManager = manager.getCooldownManager();
-        purity = paladinAbilities.getPurity();
-        decision = paladinAbilities.getDecision();
+        purity = manager.getPurity();
+        playerStateManager = manager.getPlayerStateManager();
     }
 
-    private final int abilityNumber = 4;
     private final int baseCooldown = 20;
     private final double range = 8;
     private final int baseDamage = 40;
     private final int tickDamage = 5;
 
+    @Override
     public void use(LivingEntity caster){
 
         if(!usable(caster)){
@@ -75,11 +78,11 @@ public class CovenantSword {
         execute(caster);
 
         if(profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Dawn)){
-            purity.add(caster, abilityNumber);
+            purity.add(caster, 4);
         }
 
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 4, (long) (baseCooldown * 1000));
 
     }
 
@@ -382,7 +385,7 @@ public class CovenantSword {
                 this.cancel();
                 sword.remove();
                 abilityManager.setCasting(caster, false);
-                decision.removeDecision(caster);
+                playerStateManager.get(caster.getUniqueId()).remove("decision");
             }
 
         }.runTaskTimer(main, 0, 1);
@@ -391,7 +394,7 @@ public class CovenantSword {
 
     private double decisionMultiplier(LivingEntity caster){
 
-        if(decision.getDecision(caster)){
+        if(playerStateManager.get(caster.getUniqueId()).has("decision")){
             return 1.8;
         }
 
@@ -412,9 +415,9 @@ public class CovenantSword {
         return damage;
     }
 
-
+    @Override
     public boolean usable(LivingEntity caster){
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 4, statusEffectManager.getHastePercent(caster));
     }
 
 

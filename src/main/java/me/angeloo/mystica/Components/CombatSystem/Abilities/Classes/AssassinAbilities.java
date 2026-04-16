@@ -1,18 +1,18 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes;
 
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Ability;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Assassin.*;
-import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilitySet;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.Enums.SubClass;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
-public class AssassinAbilities {
+import java.util.HashMap;
+import java.util.Map;
 
-    private final ProfileManager profileManager;
+public class AssassinAbilities implements AbilitySet {
 
-    private final Combo combo;
+    /*private final Combo combo;
     private final Stealth stealth;
     private final AssassinBasic assassinBasic;
     private final Assault assault;
@@ -23,11 +23,12 @@ public class AssassinAbilities {
     private final BladeTempest bladeTempest;
     private final FlyingBlade flyingBlade;
     private final DuelistsFrenzy duelistsFrenzy;
-    private final WickedConcoction wickedConcoction;
+    private final WickedConcoction wickedConcoction;*/
+
+    private final Map<Integer, Ability> abilities = new HashMap<>();
 
     public AssassinAbilities(Mystica main, AbilityManager manager){
-        profileManager = main.getProfileManager();
-        combo = new Combo(main, manager);
+        /*combo = new Combo(main, manager);
         stealth = new Stealth(main, manager, this);
         duelistsFrenzy = new DuelistsFrenzy(main, this, manager);
         assassinBasic = new AssassinBasic(main, this);
@@ -38,10 +39,24 @@ public class AssassinAbilities {
         dash = new Dash(main, manager);
         bladeTempest = new BladeTempest(main, manager, this);
         flyingBlade = new FlyingBlade(main, manager, this);
-        wickedConcoction = new WickedConcoction(main, manager, this);
+        wickedConcoction = new WickedConcoction(main, manager, this);*/
+
+        abilities.put(1, new Assault(main, manager));
+        abilities.put(2, new Laceration(main, manager));
+        abilities.put(3, new WeaknessStrike(main, manager));
+        abilities.put(4, new Pierce(main, manager));
+        abilities.put(5, new Dash(main, manager));
+        abilities.put(6, new BladeTempest(main, manager));
+        abilities.put(7, new FlyingBlade(main, manager));
+        abilities.put(8, new Stealth(main, manager));
     }
 
-    public void useAssassinAbility(LivingEntity caster, int abilityNumber){
+    @Override
+    public Ability get(int abilityNumber){
+        return abilities.get(abilityNumber);
+    }
+
+    /*public void useAssassinAbility(LivingEntity caster, int abilityNumber){
 
         switch (abilityNumber) {
             case 1 -> {
@@ -93,13 +108,13 @@ public class AssassinAbilities {
                 return;
             }
         }
-    }
+    }*/
 
     public void useAssassinBasic(LivingEntity caster){
-        assassinBasic.useBasic(caster);
+        //assassinBasic.useBasic(caster);
     }
 
-    public Stealth getStealth(){return stealth;}
+    /*public Stealth getStealth(){return stealth;}
     public Combo getCombo(){return combo;}
     public DuelistsFrenzy getDuelistsFrenzy(){return duelistsFrenzy;}
     public Assault getAssault(){return assault;}
@@ -110,6 +125,6 @@ public class AssassinAbilities {
     public BladeTempest getBladeTempest(){return bladeTempest;}
     public FlyingBlade getFlyingBlade(){return flyingBlade;}
     public WickedConcoction getWickedConcoction(){return wickedConcoction;}
-    public AssassinBasic getAssassinBasic(){return assassinBasic;}
+    public AssassinBasic getAssassinBasic(){return assassinBasic;}*/
 
 }

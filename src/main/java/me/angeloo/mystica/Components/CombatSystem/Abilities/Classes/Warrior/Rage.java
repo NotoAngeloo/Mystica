@@ -17,15 +17,12 @@ public class Rage {
 
     private final ProfileManager profileManager;
 
-    private final CooldownDisplayer cooldownDisplayer;
-
     private final Map<UUID, Integer> manaAmount = new HashMap<>();
 
     private final int maxMana = 500;
 
-    public Rage(Mystica main, AbilityManager manager){
+    public Rage(Mystica main){
         profileManager = main.getProfileManager();
-        cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
 

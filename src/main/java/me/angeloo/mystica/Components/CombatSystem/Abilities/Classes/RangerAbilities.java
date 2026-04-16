@@ -1,18 +1,18 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes;
 
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Ability;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Ranger.*;
-import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilitySet;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.Enums.SubClass;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
-public class RangerAbilities {
+import java.util.HashMap;
+import java.util.Map;
 
-    private final ProfileManager profileManager;
+public class RangerAbilities implements AbilitySet {
 
-    private final Focus focus;
+
+    /*private final Focus focus;
     private final RallyingCry rallyingCry;
     private final WildRoar wildRoar;
     private final StarVolley starVolley;
@@ -23,11 +23,13 @@ public class RangerAbilities {
     private final Roll roll;
     private final ShadowCrows shadowCrows;
     private final BitingRain bitingRain;
-    private final RangerBasic rangerBasic;
+    private final RangerBasic rangerBasic;*/
+
+    private final Map<Integer, Ability> abilities = new HashMap<>();
 
     public RangerAbilities(Mystica main, AbilityManager manager){
-        profileManager = main.getProfileManager();
-        focus = new Focus(main);
+
+        /*ocus = new Focus(main);
         starVolley = new StarVolley(main, this, manager);
         rallyingCry = new RallyingCry(main, manager);
         wildRoar = new WildRoar(main, manager);
@@ -38,10 +40,24 @@ public class RangerAbilities {
         roll = new Roll(main, manager);
         shadowCrows = new ShadowCrows(main, manager, this);
         bitingRain = new BitingRain(main, manager, this);
-        rangerBasic = new RangerBasic(main, this);
+        rangerBasic = new RangerBasic(main, this);*/
+
+        abilities.put(1, new BitingRain(main, manager));
+        abilities.put(2, new ShadowCrows(main, manager));
+        abilities.put(3, new Relentless(main, manager));
+        abilities.put(4, new RazorWind(main, manager));
+        abilities.put(5, new BlessedArrow(main, manager));
+        abilities.put(6, new RallyingCry(main, manager));
+        abilities.put(7, new WildSpirit(main, manager));
+        abilities.put(8, new Roll(main, manager));
     }
 
-    public void useRangerAbility(LivingEntity caster, int abilityNumber){
+    @Override
+    public Ability get(int abilityNumber){
+        return abilities.get(abilityNumber);
+    }
+
+    /*public void useRangerAbility(LivingEntity caster, int abilityNumber){
 
         switch (abilityNumber) {
             case 1 -> {
@@ -117,5 +133,5 @@ public class RangerAbilities {
     public Roll getRoll(){return roll;}
     public WildRoar getWildRoar(){return wildRoar;}
     public RangerBasic getRangerBasic(){return rangerBasic;}
-    public Focus getFocus(){return focus;}
+    public Focus getFocus(){return focus;}*/
 }

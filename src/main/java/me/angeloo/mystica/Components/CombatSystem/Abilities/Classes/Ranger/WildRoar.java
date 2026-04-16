@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Ranger;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.WildRoarBuff;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
@@ -23,7 +24,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 
-public class WildRoar {
+public class WildRoar extends BaseAbility {
 
     private final Mystica main;
     private final ProfileManager profileManager;
@@ -32,6 +33,7 @@ public class WildRoar {
     private final CooldownManager cooldownManager;
 
     public WildRoar(Mystica main, AbilityManager manager){
+        super("wild_roar");
         this.main = main;
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
@@ -39,12 +41,10 @@ public class WildRoar {
         cooldownManager = manager.getCooldownManager();;
     }
 
-    private final int abilityNumber = -1;
     private final int baseCooldown = 30;
 
-
+    @Override
     public void use(LivingEntity caster){
-
 
         if(!usable(caster)){
             return;
@@ -52,7 +52,7 @@ public class WildRoar {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), -1, (long) (baseCooldown * 1000));
 
     }
 
@@ -151,9 +151,8 @@ public class WildRoar {
         return profileManager.getAnyProfile(caster).getStats().getLevel() * 1.25;
     }
 
-
-
+    @Override
     public boolean usable(LivingEntity caster){
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(),-1, statusEffectManager.getHastePercent(caster));
     }
 }

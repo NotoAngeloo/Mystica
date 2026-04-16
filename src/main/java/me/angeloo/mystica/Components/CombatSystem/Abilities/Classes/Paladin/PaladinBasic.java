@@ -46,9 +46,9 @@ public class PaladinBasic {
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
 
-    private final Representative representative;
-    private final JusticeMark justiceMark;
-    private final GloryOfPaladins gloryOfPaladins;
+    //private final Representative representative;
+    //private final JusticeMark justiceMark;
+   // private final GloryOfPaladins gloryOfPaladins;
 
     private final Map<UUID, Integer> basicStageMap = new HashMap<>();
     private final Map<UUID, BukkitTask> basicRunning = new HashMap<>();
@@ -64,9 +64,9 @@ public class PaladinBasic {
         damageCalculator = main.getDamageCalculator();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        representative = paladinAbilities.getRepresentative();
-        gloryOfPaladins = paladinAbilities.getGloryOfPaladins();
-        justiceMark = paladinAbilities.getJusticeMark();
+        //representative = paladinAbilities.getRepresentative();
+        //gloryOfPaladins = paladinAbilities.getGloryOfPaladins();
+        //justiceMark = paladinAbilities.getJusticeMark();
     }
 
     public void useBasic(LivingEntity caster){
@@ -130,10 +130,10 @@ public class PaladinBasic {
 
         double healAmount = damageCalculator.calculateHealing(caster, healPower, crit);
 
-        if(justiceMark.markProc(caster, target)){
+        /*if(justiceMark.markProc(caster, target)){
             markHealInstead(caster, healAmount);
             return;
-        }
+        }*/
 
         changeResourceHandler.addHealthToEntity(target, healAmount, caster);
 
@@ -154,7 +154,7 @@ public class PaladinBasic {
 
     private void markHealInstead(LivingEntity caster, double healAmount){
 
-        List<LivingEntity> affected = justiceMark.getMarkedTargets(caster);
+        /*List<LivingEntity> affected = justiceMark.getMarkedTargets(caster);
 
         for(LivingEntity thisPlayer : affected){
             changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, caster);
@@ -171,7 +171,7 @@ public class PaladinBasic {
 
                 thisPlayer.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1,0, 0, 0, 0);
             }
-        }
+        }*/
 
 
     }
@@ -373,14 +373,14 @@ public class PaladinBasic {
             //fakePlayerTargetManager.setFakePlayerTarget(caster, targetToHit);
 
 
-            boolean crit = damageCalculator.checkIfCrit(caster, 0);
+            /*boolean crit = damageCalculator.checkIfCrit(caster, 0);
             double damage = damageCalculator.calculateDamage(caster, targetToHit, "Physical", getSkillDamage(caster)
                     + representative.getAdditionalBonusFromBuff(caster), crit);
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster, crit);
 
-            gloryOfPaladins.procGlory(caster, targetToHit);
+            gloryOfPaladins.procGlory(caster, targetToHit);*/
 
         }
 

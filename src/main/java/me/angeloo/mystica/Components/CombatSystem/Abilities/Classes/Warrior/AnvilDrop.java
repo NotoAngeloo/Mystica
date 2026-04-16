@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Warrior;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.WarriorAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.KnockUp;
@@ -34,7 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class AnvilDrop {
+public class AnvilDrop extends BaseAbility {
 
     private final Mystica main;
     private final ProfileManager profileManager;
@@ -50,7 +51,8 @@ public class AnvilDrop {
     private final Rage rage;
 
 
-    public AnvilDrop(Mystica main, AbilityManager manager, WarriorAbilities warriorAbilities){
+    public AnvilDrop(Mystica main, AbilityManager manager){
+        super("anvil_drop");
         this.main = main;
         targetManager = main.getTargetManager();
         fakePlayerTargetManager = main.getFakePlayerTargetManager();
@@ -61,13 +63,13 @@ public class AnvilDrop {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownManager = manager.getCooldownManager();
-        rage = warriorAbilities.getRage();
+        rage = manager.getRage();
     }
 
-    private final int abilityNumber = 5;
     private final int baseCooldown = 20;
     private final int baseDamage = 35;
 
+    @Override
     public void use(LivingEntity caster){
 
         if(!usable(caster)){
@@ -76,7 +78,7 @@ public class AnvilDrop {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 5, (long) (baseCooldown * 1000));
 
     }
 
@@ -328,8 +330,9 @@ public class AnvilDrop {
     }
 
 
+    @Override
     public boolean usable(LivingEntity caster){
-        if(!cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster))){
+        if(!cooldownManager.isReady(caster.getUniqueId(), 5, statusEffectManager.getHastePercent(caster))){
             return false;
         }
 

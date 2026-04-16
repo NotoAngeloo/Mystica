@@ -1,7 +1,9 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnight;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -33,7 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class Infection {
+public class Infection extends BaseAbility {
 
     private final Mystica main;
 
@@ -46,6 +48,7 @@ public class Infection {
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
+    private final PlayerStateManager playerStateManager;
 
 
     //player, who they infected
@@ -60,6 +63,7 @@ public class Infection {
     private final Map<UUID, BukkitTask> enhancedTaskMap = new HashMap<>();
 
     public Infection(Mystica main, AbilityManager manager){
+        super("infection");
         this.main = main;
         profileManager = main.getProfileManager();
         bossManager = main.getBossManager();
@@ -70,13 +74,15 @@ public class Infection {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();
+        playerStateManager = manager.getPlayerStateManager();
     }
 
-    private final int abilityNumber = 1;
     private final int baseCooldown = 3;
     private final double range = 10;
     private final int baseDamage = 5;
+    private final int duration = 11;
 
+    @Override
     public void use(LivingEntity caster){
 
         targetManager.setTargetToNearestValid(caster, range + statusEffectManager.getAdditionalRange(caster));
@@ -89,7 +95,7 @@ public class Infection {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 1, (long) (baseCooldown * 1000));
 
     }
 
@@ -194,7 +200,7 @@ public class Infection {
     private void startOrResetInfection(LivingEntity caster, LivingEntity entity){
 
         infectionTarget.put(caster.getUniqueId(), entity);
-        infectionTime.put(caster.getUniqueId(), getDuration());
+        infectionTime.put(caster.getUniqueId(), duration);
 
         if(infectionTask.containsKey(caster.getUniqueId())){
             infectionTask.get(caster.getUniqueId()).cancel();
@@ -236,7 +242,7 @@ public class Infection {
 
                 double skillDamage = getSkillDamage(caster);
 
-                if(getIfEnhanced(caster)){
+                if(playerStateManager.get(caster.getUniqueId()).has("infection_enhanced")){
                     skillDamage = skillDamage * 2;
                 }
 
@@ -252,6 +258,8 @@ public class Infection {
 
                 infectionTime.put(caster.getUniqueId(), timeLeft);
 
+                playerStateManager.get(caster.getUniqueId()).set("reap_bonus_damage", soulReapToRemove(caster));
+
                 if(caster instanceof Player player){
                     Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
                 }
@@ -264,6 +272,7 @@ public class Infection {
                 infectionTime.remove(caster.getUniqueId());
                 infectionTarget.remove(caster.getUniqueId());
                 infectionTask.remove(caster.getUniqueId());
+                playerStateManager.get(caster.getUniqueId()).remove("reap_bonus_damage");
                 if(caster instanceof Player player){
                     Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
                 }
@@ -274,17 +283,12 @@ public class Infection {
         infectionTask.put(caster.getUniqueId(), task);
     }
 
-    public int getPlayerInfectionTime(LivingEntity caster){
+    private int getPlayerInfectionTime(LivingEntity caster){
         return infectionTime.getOrDefault(caster.getUniqueId(), 0);
     }
 
 
-
-    public boolean getIfEnhanced(LivingEntity caster){
-        return enhanced.getOrDefault(caster.getUniqueId(), false);
-    }
-
-    public boolean getIfThisPlayerInfectThisEntity(LivingEntity caster, LivingEntity entity){
+    private boolean getIfThisPlayerInfectThisEntity(LivingEntity caster, LivingEntity entity){
         if(infectionTarget.containsKey(caster.getUniqueId())){
             return infectionTarget.get(caster.getUniqueId()) == entity;
         }
@@ -292,7 +296,16 @@ public class Infection {
         return false;
     }
 
-    public void infectionEnhancement(LivingEntity caster, LivingEntity entity){
+    @Override
+    public void onExternalTrigger(LivingEntity caster, LivingEntity target){
+
+        if(getIfThisPlayerInfectThisEntity(caster, target)){
+            infectionEnhancement(caster, target);
+        }
+
+    }
+
+    private void infectionEnhancement(LivingEntity caster, LivingEntity entity){
         enhanced.put(caster.getUniqueId(), true);
         startOrResetInfection(caster, entity);
 
@@ -318,7 +331,7 @@ public class Infection {
     }
 
 
-    public double soulReapToRemove(LivingEntity caster){
+    private double soulReapToRemove(LivingEntity caster){
 
         double damage = 6;
 
@@ -336,9 +349,6 @@ public class Infection {
         return total;
     }
 
-    public void removeEnhancement(LivingEntity caster){
-        enhanced.put(caster.getUniqueId(), false);
-    }
 
 
     public double getSkillDamage(LivingEntity caster){
@@ -347,7 +357,7 @@ public class Infection {
         return baseDamage + ((int)(skillLevel/3));
     }
 
-
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -377,11 +387,8 @@ public class Infection {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 1, statusEffectManager.getHastePercent(caster));
     }
 
-    public int getDuration(){
-        return 11;
-    }
 
 }

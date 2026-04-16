@@ -90,4 +90,32 @@ public class CooldownManager {
         cooldowns.remove(uuid);
     }
 
+    public CooldownSnapshot getSnapshot(UUID playerId, int abilityNumber, double haste, long now) {
+
+        Map<Integer, CooldownData> playerMap = cooldowns.get(playerId);
+        if (playerMap == null) return new CooldownSnapshot(0, 1.0, true);
+
+        CooldownData data = playerMap.get(abilityNumber);
+        if (data == null) return new CooldownSnapshot(0, 1.0, true);
+
+        // update progress (same logic as before)
+        long delta = now - data.getLastUpdateTime();
+        if (delta > 0) {
+            double rate = (1.0 + haste) / data.getBaseCooldown();
+            data.setProgress(Math.min(1.0, data.getProgress() + rate * delta));
+            data.setLastUpdateTime(now);
+        }
+
+        if (data.getProgress() >= 1.0) {
+            playerMap.remove(abilityNumber);
+            return new CooldownSnapshot(0, 1.0, true);
+        }
+
+        double remainingProgress = 1.0 - data.getProgress();
+        double rate = (1.0 + haste) / data.getBaseCooldown();
+        long remaining = (long)(remainingProgress / rate);
+
+        return new CooldownSnapshot(remaining, data.getProgress(), false);
+    }
+
 }

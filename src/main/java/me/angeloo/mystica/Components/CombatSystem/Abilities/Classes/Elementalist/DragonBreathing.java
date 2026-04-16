@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Elementalist;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ElementalistAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.KnockUp;
@@ -13,6 +14,8 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.BossManager;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
+import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -31,7 +34,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class DragonBreathing {
+public class DragonBreathing extends BaseAbility {
 
     private final Mystica main;
 
@@ -46,15 +49,15 @@ public class DragonBreathing {
     private final CooldownManager cooldownManager;
 
     private final Heat heat;
-    private final FieryWing fieryWing;
+    //private final FieryWing fieryWing;
 
-    private final int abilityNumber = 6;
     private final int baseCooldown = 16;
     private final double range = 20;
     private final double baseDamage = 35;
 
 
-    public DragonBreathing(Mystica main, AbilityManager manager, ElementalistAbilities elementalistAbilities){
+    public DragonBreathing(Mystica main, AbilityManager manager){
+        super("dragon_breathing");
         this.main = main;
         profileManager = main.getProfileManager();
         bossManager = main.getBossManager();
@@ -64,13 +67,14 @@ public class DragonBreathing {
         damageCalculator = main.getDamageCalculator();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        heat = elementalistAbilities.getHeat();
-        fieryWing = elementalistAbilities.getFieryWing();
+        this.heat = manager.getHeat();
+        //fieryWing = elementalistAbilities.getFieryWing();
         cooldownManager = manager.getCooldownManager();
 
     }
 
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -84,7 +88,7 @@ public class DragonBreathing {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 6, (long) (baseCooldown * 1000));
 
     }
 
@@ -198,7 +202,7 @@ public class DragonBreathing {
                             hitBySkill.add(livingEntity);
 
                             if(!inflamed){
-                                fieryWing.addInflame(caster);
+                                lookup.get(PlayerClass.Elementalist, SubClass.Pyromancer, -1).onExternalTrigger(caster);
                                 inflamed = true;
                             }
 
@@ -312,7 +316,7 @@ public class DragonBreathing {
         return baseDamage + ((int)(skillLevel/3));
     }
 
-
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -342,6 +346,6 @@ public class DragonBreathing {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 6, statusEffectManager.getHastePercent(caster));
     }
 }

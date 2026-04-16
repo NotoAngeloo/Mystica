@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Elementalist;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ElementalistAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
@@ -32,7 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class FieryWing {
+public class FieryWing extends BaseAbility {
 
     private final Mystica main;
     private final ProfileManager profileManager;
@@ -49,7 +50,8 @@ public class FieryWing {
     private final Map<UUID, Integer> inflameMap = new HashMap<>();
 
 
-    public FieryWing(Mystica main, ElementalistAbilities elementalistAbilities, AbilityManager manager){
+    public FieryWing(Mystica main, AbilityManager manager){
+        super("fiery_wing");
         this.main = main;
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
@@ -58,15 +60,15 @@ public class FieryWing {
         damageCalculator = main.getDamageCalculator();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        heat = elementalistAbilities.getHeat();
+        this.heat = manager.getHeat();
         cooldownManager = manager.getCooldownManager();
     }
 
-    private final int abilityNumber = -1;
     private final double range = 20;
     private final int baseDamage = 60;
     private final int baseCooldown = 30;
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -81,7 +83,7 @@ public class FieryWing {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), -1, (long) (baseCooldown * 1000));
 
     }
 
@@ -253,7 +255,12 @@ public class FieryWing {
         return inflameMap.get(caster.getUniqueId());
     }
 
-    public void addInflame(LivingEntity caster){
+    @Override
+    public void onExternalTrigger(LivingEntity caster){
+        addInflame(caster);
+    }
+
+    private void addInflame(LivingEntity caster){
 
         boolean pyromancer = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Pyromancer);
 
@@ -293,7 +300,7 @@ public class FieryWing {
         return baseDamage + ((int)(skillLevel/3));
     }
 
-
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -324,7 +331,7 @@ public class FieryWing {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), -1, statusEffectManager.getHastePercent(caster));
     }
 
 }

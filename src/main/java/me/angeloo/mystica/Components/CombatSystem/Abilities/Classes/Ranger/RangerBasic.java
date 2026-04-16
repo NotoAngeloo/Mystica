@@ -42,7 +42,7 @@ public class RangerBasic {
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
 
-    private final RallyingCry rallyingCry;
+    //private final RallyingCry rallyingCry;
 
     private final Map<UUID, BukkitTask> basicRunning = new HashMap<>();
 
@@ -50,19 +50,19 @@ public class RangerBasic {
 
     private final Map<UUID, BukkitTask> removeBasicStageTaskMap = new HashMap<>();
 
-    private final Focus focus;
+    //private final Focus focus;
 
     public RangerBasic(Mystica main, RangerAbilities rangerAbilities){
         this.main = main;
         profileManager = main.getProfileManager();
-        rallyingCry = rangerAbilities.getRallyingCry();
+        //rallyingCry = rangerAbilities.getRallyingCry();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        focus = rangerAbilities.getFocus();
+        //focus = rangerAbilities.getFocus();
     }
 
     public void useBasic(LivingEntity caster){
@@ -397,14 +397,14 @@ public class RangerBasic {
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
-                    if(rallyingCry.getIfBuffTime(caster) > 0){
+                    /*if(rallyingCry.getIfBuffTime(caster) > 0){
                         if(profileManager.getAnyProfile(target).getIsMovable()){
                             Vector awayDirection = target.getLocation().toVector().subtract(caster.getLocation().toVector()).normalize();
                             Vector velocity = awayDirection.multiply(.75).add(new Vector(0, .5, 0));
                             target.setVelocity(velocity);
                             statusEffectManager.applyEffect(target, new KnockUp(), null, null);
                         }
-                    }
+                    }*/
                 }
 
             }
@@ -447,12 +447,13 @@ public class RangerBasic {
 
     public double getSkillDamage(LivingEntity caster){
         double skillDamage = 10;
-        double skillLevel = profileManager.getAnyProfile(caster).getStats().getLevel();
+        return 10; //temp
+        /*double skillLevel = profileManager.getAnyProfile(caster).getStats().getLevel();
         if(rallyingCry.getIfBuffTime(caster) > 0){
             skillDamage = skillDamage * 1.25;
         }
 
-        return focus.calculateFocusMultipliedDamage(caster, skillDamage) + ((int)(skillLevel/3));
+        return focus.calculateFocusMultipliedDamage(caster, skillDamage) + ((int)(skillLevel/3));*/
     }
 
     private int getStage(LivingEntity caster){

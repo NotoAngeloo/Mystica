@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Shields.GenericShield;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
@@ -18,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class SanctityShield {
+public class SanctityShield extends BaseAbility {
 
     private final Mystica main;
 
@@ -28,6 +29,7 @@ public class SanctityShield {
     private final CooldownManager cooldownManager;
 
     public SanctityShield(Mystica main, AbilityManager manager){
+        super("sanctity_shield");
         this.main = main;
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
@@ -35,10 +37,10 @@ public class SanctityShield {
         cooldownManager = manager.getCooldownManager();
     }
 
-    private final int abilityNumber = -1;
     private final int baseCooldown = 12;
     private final int baseShield = 10;
 
+    @Override
     public void use(LivingEntity caster){
 
         if(!usable(caster)){
@@ -47,7 +49,7 @@ public class SanctityShield {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), -1, (long) (baseCooldown * 1000));
 
     }
 
@@ -108,9 +110,9 @@ public class SanctityShield {
         return maxHealth * ((level + 5) /100);
     }
 
-
+    @Override
     public boolean usable(LivingEntity caster){
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), -1, statusEffectManager.getHastePercent(caster));
     }
 
 

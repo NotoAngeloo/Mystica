@@ -1,7 +1,13 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.*;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownData;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Assassin.Combo;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Elementalist.Heat;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Mystic.Mana;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin.Purity;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Ranger.Focus;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnight.Energy;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Warrior.Rage;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.ClassSkillItems.AllSkillItems;
@@ -25,22 +31,33 @@ public class AbilityManager {
     private final ProfileManager profileManager;
     private final CooldownManager cooldownManager;
     private final StatusEffectManager statusEffectManager;
+    private final PlayerStateManager playerStateManager;
+    private final AbilityResolver abilityResolver;
+    private final AbilityMarkManager abilityMarkManager;
 
     private final Map<LivingEntity, Boolean> castMap = new HashMap<>();
     private final Map<LivingEntity, Double> percentCastBar = new HashMap<>();
 
     //private final Map<Player, Boolean> skillRunning = new HashMap<>();
 
-    private final NoneAbilities noneAbilities;
-    private final ElementalistAbilities elementalistAbilities;
-    private final RangerAbilities rangerAbilities;
-    private final MysticAbilities mysticAbilities;
-    private final ShadowKnightAbilities shadowKnightAbilities;
-    private final PaladinAbilities paladinAbilities;
-    private final WarriorAbilities warriorAbilities;
-    private final AssassinAbilities assassinAbilities;
+    private final Combo combo;
+    private final Heat heat;
+    private final Mana mana;
+    private final Purity purity;
+    private final Focus focus;
+    private final Energy energy;
+    private final Rage rage;
 
-    private final AllSkillItems allSkillItems;
+    //private final NoneAbilities noneAbilities;
+    //private final ElementalistAbilities elementalistAbilities;
+    //private final RangerAbilities rangerAbilities;
+    //private final MysticAbilities mysticAbilities;
+    //private final ShadowKnightAbilities shadowKnightAbilities;
+    //private final PaladinAbilities paladinAbilities;
+    //private final WarriorAbilities warriorAbilities;
+    //private final AssassinAbilities assassinAbilities;
+
+    //private final AllSkillItems allSkillItems;
 
     private final CombatManager combatManager;
 
@@ -48,17 +65,30 @@ public class AbilityManager {
         profileManager = main.getProfileManager();
         cooldownManager = new CooldownManager();
         statusEffectManager = main.getStatusEffectManager();
-        allSkillItems = new AllSkillItems(main, this);
-        combatManager = new CombatManager(main, this);
+        playerStateManager = new PlayerStateManager();
+        abilityMarkManager = new AbilityMarkManager(main);
 
-        noneAbilities = new NoneAbilities(main, this);
-        elementalistAbilities = new ElementalistAbilities(main, this);
-        rangerAbilities = new RangerAbilities(main, this);
-        mysticAbilities = new MysticAbilities(main, this);
-        shadowKnightAbilities = new ShadowKnightAbilities(main, this);
-        paladinAbilities = new PaladinAbilities(main, this);
-        warriorAbilities = new WarriorAbilities(main, this);
-        assassinAbilities = new AssassinAbilities(main, this);
+
+        //allSkillItems = new AllSkillItems(main, this);
+        combatManager = new CombatManager(main, this);
+        //put resources here
+        combo = new Combo(main);
+        heat = new Heat(main);
+        mana = new Mana(main);
+        focus = new Focus(main);
+        rage = new Rage(main);
+        energy = new Energy(main);
+        purity = new Purity(main);
+        abilityResolver = new AbilityResolver(main, this);
+
+        //noneAbilities = new NoneAbilities(main, this);
+        //elementalistAbilities = new ElementalistAbilities(main, this);
+        //rangerAbilities = new RangerAbilities(main, this);
+        //mysticAbilities = new MysticAbilities(main, this);
+        //shadowKnightAbilities = new ShadowKnightAbilities(main, this);
+        //paladinAbilities = new PaladinAbilities(main, this);
+        //warriorAbilities = new WarriorAbilities(main, this);
+        //assassinAbilities = new AssassinAbilities(main, this);
     }
 
 
@@ -79,8 +109,11 @@ public class AbilityManager {
         Profile playerProfile = profileManager.getAnyProfile(caster);
 
         PlayerClass clazz = playerProfile.getPlayerClass();
+        SubClass subClass = playerProfile.getPlayerSubclass();
 
-        switch (clazz) {
+        abilityResolver.resolve(clazz, subClass, abilityNumber).use(caster);
+
+        /*switch (clazz) {
             case Elementalist -> {
                 elementalistAbilities.useElementalistAbility(caster, abilityNumber);
                 return;
@@ -113,7 +146,7 @@ public class AbilityManager {
                 noneAbilities.useNoneAbility(caster, abilityNumber);
                 return;
             }
-        }
+        }*/
     }
 
     public void useBasic(LivingEntity caster){
@@ -122,7 +155,7 @@ public class AbilityManager {
             return;
         }
 
-        if(caster instanceof Player player){
+        /*if(caster instanceof Player player){
 
             if(!player.getOpenInventory().getTitle().equalsIgnoreCase("crafting")){
                 return;
@@ -140,14 +173,14 @@ public class AbilityManager {
                 noneAbilities.useNoneBasic(caster);
                 return;
             }
-        }
+        }*/
 
 
         Profile playerProfile = profileManager.getAnyProfile(caster);
 
         PlayerClass clazz = playerProfile.getPlayerClass();
 
-        switch (clazz) {
+        /*switch (clazz) {
             case Elementalist -> {
                 elementalistAbilities.useElementalistBasic(caster);
                 return;
@@ -180,7 +213,7 @@ public class AbilityManager {
                 noneAbilities.useNoneBasic(caster);
                 return;
             }
-        }
+        }*/
     }
 
     public void useUltimate(LivingEntity caster){
@@ -200,7 +233,7 @@ public class AbilityManager {
 
         PlayerClass clazz = playerProfile.getPlayerClass();
 
-        switch (clazz) {
+        /*switch (clazz) {
             case Elementalist -> {
                 elementalistAbilities.useElementalistUltimate(caster);
                 return;
@@ -229,7 +262,7 @@ public class AbilityManager {
                 assassinAbilities.useAssassinUltimate(caster);
                 return;
             }
-        }
+        }*/
     }
 
     public void resetResource(LivingEntity caster){
@@ -239,29 +272,31 @@ public class AbilityManager {
 
         switch (clazz) {
             case Elementalist -> {
-                elementalistAbilities.getHeat().reduceHeat(caster, elementalistAbilities.getHeat().getHeat(caster));
+                heat.reduceHeat(caster, heat.getHeat(caster));
                 return;
             }
             case Ranger -> {
-                rangerAbilities.getFocus().loseFocus(caster);
+                focus.loseFocus(caster);
                 return;
             }
             case Mystic -> {
-                mysticAbilities.getMana().addManaToEntity(caster, 500);
+                mana.addManaToEntity(caster, 500);
                 return;
             }
             case Shadow_Knight -> {
-                shadowKnightAbilities.getEnergy().addEnergyToEntity(caster, 100);
+                energy.addEnergyToEntity(caster, 100);
                 return;
             }
             case Paladin -> {
+                purity.reset(caster);
                 return;
             }
             case Warrior -> {
-                warriorAbilities.getRage().subTractRageFromEntity(caster, warriorAbilities.getRage().getCurrentRage(caster));
+                rage.subTractRageFromEntity(caster, rage.getCurrentRage(caster));
                 return;
             }
             case Assassin -> {
+                combo.removeAnAmountOfPoints(caster, combo.getComboPoints(caster));
                 return;
             }
         }
@@ -275,26 +310,26 @@ public class AbilityManager {
 
         switch (clazz) {
             case Elementalist -> {
-                elementalistAbilities.getHeat().loseHeatNaturally(caster);
+                heat.loseHeatNaturally(caster);
                 return;
             }
             case Ranger -> {
-                rangerAbilities.getFocus().regenFocusNaturally(caster);
+                focus.regenFocusNaturally(caster);
                 return;
             }
             case Mystic -> {
-                mysticAbilities.getMana().regenManaNaturally(caster);
+                mana.regenManaNaturally(caster);
                 return;
             }
             case Shadow_Knight -> {
-                shadowKnightAbilities.getEnergy().regenEnergyNaturally(caster);
+                energy.regenEnergyNaturally(caster);
                 return;
             }
             case Paladin -> {
                 return;
             }
             case Warrior -> {
-                warriorAbilities.getRage().loseRageNaturally(caster);
+                rage.loseRageNaturally(caster);
                 return;
             }
             case Assassin -> {
@@ -302,6 +337,7 @@ public class AbilityManager {
             }
         }
     }
+
 
 
 
@@ -439,25 +475,24 @@ public class AbilityManager {
     public CombatManager getCombatManager(){
         return combatManager;
     }
-    public AllSkillItems getAllSkillItems(){return allSkillItems;}
 
-    public ElementalistAbilities getElementalistAbilities(){return elementalistAbilities;}
+    /*public ElementalistAbilities getElementalistAbilities(){return elementalistAbilities;}
     public RangerAbilities getRangerAbilities(){return rangerAbilities;}
     public MysticAbilities getMysticAbilities(){return mysticAbilities;}
     public ShadowKnightAbilities getShadowKnightAbilities(){return shadowKnightAbilities;}
     public PaladinAbilities getPaladinAbilities(){return paladinAbilities;}
     public WarriorAbilities getWarriorAbilities(){return warriorAbilities;}
-    public AssassinAbilities getAssassinAbilities(){return assassinAbilities;}
+    public AssassinAbilities getAssassinAbilities(){return assassinAbilities;}*/
 
     public void resetAbilityBuffs(LivingEntity caster){
-        mysticAbilities.getEvilSpirit().removeShards(caster);
+        /*mysticAbilities.getEvilSpirit().removeShards(caster);
         mysticAbilities.getPurifyingBlast().unQueueInstantCast(caster);
         mysticAbilities.getConsolation().removeTargets(caster);
         elementalistAbilities.getFieryWing().removeInflame(caster);
         shadowKnightAbilities.getInfection().removeEnhancement(caster);
         shadowKnightAbilities.getSoulReap().removeSoulMarks(caster);
         paladinAbilities.getDecision().removeDecision(caster);
-        assassinAbilities.getCombo().removeAnAmountOfPoints(caster, assassinAbilities.getCombo().getComboPoints(caster));
+        assassinAbilities.getCombo().removeAnAmountOfPoints(caster, assassinAbilities.getCombo().getComboPoints(caster));*/
     }
 
     public boolean getIfCasting(LivingEntity caster){
@@ -485,18 +520,57 @@ public class AbilityManager {
 
 
     public void interruptBasic(LivingEntity caster){
-        elementalistAbilities.getElementalistBasic().stopBasicRunning(caster);
+        /*elementalistAbilities.getElementalistBasic().stopBasicRunning(caster);
         rangerAbilities.getRangerBasic().stopBasicRunning(caster);
         mysticAbilities.getMysticBasic().stopBasicRunning(caster);
         assassinAbilities.getAssassinBasic().stopBasicRunning(caster);
         paladinAbilities.getPaladinBasic().stopBasicRunning(caster);
         shadowKnightAbilities.getShadowKnightBasic().stopBasicRunning(caster);
-        warriorAbilities.getWarriorBasic().stopBasicRunning(caster);
+        warriorAbilities.getWarriorBasic().stopBasicRunning(caster);*/
     }
 
 
     public CooldownManager getCooldownManager(){
         return cooldownManager;
+    }
+
+    public PlayerStateManager getPlayerStateManager(){
+        return playerStateManager;
+    }
+
+    public AbilityResolver getAbilityResolver(){
+        return abilityResolver;
+    }
+
+    public Combo getCombo(){
+        return combo;
+    }
+    public Heat getHeat() {
+        return heat;
+    }
+
+    public Mana getMana() {
+        return mana;
+    }
+
+    public Purity getPurity() {
+        return purity;
+    }
+
+    public Focus getFocus() {
+        return focus;
+    }
+
+    public Energy getEnergy() {
+        return energy;
+    }
+
+    public Rage getRage() {
+        return rage;
+    }
+
+    public AbilityMarkManager getAbilityMarkManager() {
+        return abilityMarkManager;
     }
 
     /*public void hideFromPlayers(LivingEntity armorStand){

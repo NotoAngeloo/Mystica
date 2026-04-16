@@ -175,14 +175,18 @@ public class ProfileManager {
 
 
 
-            config.set(id + ".skill_slots.0", equipSkills.getAnySlot()[0]);
+            for (int i = 0; i < equipSkills.size(); i++) {
+                config.set(id + ".skill_slots." + i, equipSkills.getSkill(i));
+            }
+
+            /*config.set(id + ".skill_slots.0", equipSkills.getAnySlot()[0]);
             config.set(id + ".skill_slots.1", equipSkills.getAnySlot()[1]);
             config.set(id + ".skill_slots.2", equipSkills.getAnySlot()[2]);
             config.set(id + ".skill_slots.3", equipSkills.getAnySlot()[3]);
             config.set(id + ".skill_slots.4", equipSkills.getAnySlot()[4]);
             config.set(id + ".skill_slots.5", equipSkills.getAnySlot()[5]);
             config.set(id + ".skill_slots.6", equipSkills.getAnySlot()[6]);
-            config.set(id + ".skill_slots.7", equipSkills.getAnySlot()[7]);
+            config.set(id + ".skill_slots.7", equipSkills.getAnySlot()[7]);*/
 
             config.set(id + ".boss_level", playerBossLevel.getBossLevel());
 

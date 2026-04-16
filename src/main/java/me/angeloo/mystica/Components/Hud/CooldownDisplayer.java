@@ -17,12 +17,12 @@ public class CooldownDisplayer {
 
     private final ProfileManager profileManager;
     private final AbilityManager abilityManager;
-    private final AllSkillItems allSkillItems;
+    //private final AllSkillItems allSkillItems;
 
     public CooldownDisplayer(Mystica main, AbilityManager manager) {
         profileManager = main.getProfileManager();
         abilityManager = manager;
-        allSkillItems = abilityManager.getAllSkillItems();
+        //allSkillItems = abilityManager.getAllSkillItems();
     }
 
     /*public void initializeItems(Player player){

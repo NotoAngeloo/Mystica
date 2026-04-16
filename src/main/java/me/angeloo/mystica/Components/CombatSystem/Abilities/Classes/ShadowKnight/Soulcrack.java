@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnight;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnightAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.KnockUp;
@@ -36,7 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class Soulcrack {
+public class Soulcrack extends BaseAbility {
 
     private final Mystica main;
     private final AbilityManager abilityManager;
@@ -53,7 +54,8 @@ public class Soulcrack {
     private final Energy energy;
 
 
-    public Soulcrack(Mystica main, AbilityManager manager, ShadowKnightAbilities shadowKnightAbilities){
+    public Soulcrack(Mystica main, AbilityManager manager){
+        super("soulcrack");
         this.main = main;
         abilityManager = manager;
         profileManager = main.getProfileManager();
@@ -63,15 +65,15 @@ public class Soulcrack {
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
         cooldownManager = manager.getCooldownManager();
-        energy = shadowKnightAbilities.getEnergy();
+        energy = manager.getEnergy();
         this.weapon = new MysticaEquipment(EquipmentSlot.WEAPON, PlayerClass.Shadow_Knight, 1);
     }
 
-    private final int abilityNumber = 8;
     private final int baseCooldown = 25;
     private final int baseDamage = 50;
     private final int refund = 50;
 
+    @Override
     public void use(LivingEntity caster){
 
         if(!usable(caster)){
@@ -81,7 +83,7 @@ public class Soulcrack {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 8, (long) (baseCooldown * 1000));
 
     }
 
@@ -260,9 +262,9 @@ public class Soulcrack {
 
 
 
-
+    @Override
     public boolean usable(LivingEntity caster){
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 8, statusEffectManager.getHastePercent(caster));
     }
 
     private void showWeapons(Player player){

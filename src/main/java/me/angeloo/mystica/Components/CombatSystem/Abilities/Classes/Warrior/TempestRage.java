@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Warrior;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.WarriorAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
@@ -31,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class TempestRage {
+public class TempestRage extends BaseAbility {
 
     private final Mystica main;
 
@@ -45,7 +46,8 @@ public class TempestRage {
     private final Rage rage;
 
 
-    public TempestRage(Mystica main, AbilityManager manager, WarriorAbilities warriorAbilities){
+    public TempestRage(Mystica main, AbilityManager manager){
+        super("tempest_rage");
         this.main = main;
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
@@ -54,13 +56,13 @@ public class TempestRage {
         pveChecker = main.getPveChecker();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();
-        rage = warriorAbilities.getRage();
+        rage = manager.getRage();
     }
 
-    private final int abilityNumber = 3;
     private final int baseCooldown = 10;
     private final int baseDamage = 60;
 
+    @Override
     public void use(LivingEntity caster) {
 
         if(!usable(caster)){
@@ -69,7 +71,7 @@ public class TempestRage {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 3, (long) (baseCooldown * 1000));
     }
 
     private void execute(LivingEntity caster){
@@ -203,9 +205,9 @@ public class TempestRage {
         return baseDamage + ((int)(skillLevel/3));
     }
 
-
+    @Override
     public boolean usable(LivingEntity caster){
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 3, statusEffectManager.getHastePercent(caster));
     }
 
 }

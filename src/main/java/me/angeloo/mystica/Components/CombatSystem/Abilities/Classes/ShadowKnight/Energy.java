@@ -16,14 +16,11 @@ import java.util.UUID;
 
 public class Energy {
 
-    private final CooldownDisplayer cooldownDisplayer;
-
     private final Map<UUID, Integer> EnergyAmount = new HashMap<>();
 
     private final int maxEnergy = 100;
 
-    public Energy(Mystica main, AbilityManager manager){
-        cooldownDisplayer = new CooldownDisplayer(main, manager);
+    public Energy(Mystica main){
     }
 
     public void subTractEnergyFromEntity(LivingEntity caster, int cost){

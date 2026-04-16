@@ -45,8 +45,8 @@ public class MysticBasic {
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
 
-    private final Consolation consolation;
-    private final EvilSpirit evilSpirit;
+    //private final Consolation consolation;
+    //private final EvilSpirit evilSpirit;
 
     private final Map<UUID, BukkitTask> basicRunning = new HashMap<>();
 
@@ -60,8 +60,8 @@ public class MysticBasic {
         damageCalculator = main.getDamageCalculator();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        evilSpirit = mysticAbilities.getEvilSpirit();
-        consolation = mysticAbilities.getConsolation();
+        //evilSpirit = mysticAbilities.getEvilSpirit();
+        //consolation = mysticAbilities.getConsolation();
     }
 
     public void useBasic(LivingEntity caster){
@@ -188,7 +188,7 @@ public class MysticBasic {
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        boolean evilSpirit = this.evilSpirit.getIfEvilSpirit(caster);
+        //boolean evilSpirit = this.evilSpirit.getIfEvilSpirit(caster);
 
         Location start = caster.getLocation();
         start.subtract(0, 1, 0);
@@ -206,12 +206,12 @@ public class MysticBasic {
         assert meta != null;
 
 
-        if(!evilSpirit){
+        /*if(!evilSpirit){
             meta.setCustomModelData(2);
         }
         else{
             meta.setCustomModelData(3);
-        }
+        }*/
 
         bolt.setItemMeta(meta);
         assert entityEquipment != null;
@@ -248,19 +248,19 @@ public class MysticBasic {
                 armorStand.teleport(current);
 
 
-                if(evilSpirit){
+                /*if(evilSpirit){
                     caster.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, current, 1, 0, 0, 0, 0);
-                }
+                }*/
 
                 if (distance <= 1) {
 
                     cancelTask();
 
 
-                    if(evilSpirit){
+                    /*if(evilSpirit){
                         aoeAttack();
                         return;
-                    }
+                    }*/
 
                     boolean crit = damageCalculator.checkIfCrit(caster, 0);
                     double damage = damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage, crit);
@@ -599,7 +599,7 @@ public class MysticBasic {
             //Bukkit.getLogger().info("adding " + healAmount + " to " + target);
 
             if(shepard){
-                consolation.apply(caster, target);
+                //consolation.apply(caster, target);
             }
 
 

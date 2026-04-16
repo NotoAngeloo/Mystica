@@ -28,6 +28,7 @@ import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
+import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.StealthTargetBlacklist;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.*;
@@ -745,7 +746,7 @@ public class GeneralEventListener implements Listener {
         Location to = event.getTo();
         assert to != null;
         if (from.getX() != to.getX() || from.getY() != to.getY() || from.getZ() != to.getZ()) {
-            abilityManager.getRangerAbilities().getFocus().loseFocus(player);
+            abilityManager.getFocus().loseFocus(player);
         }
 
     }
@@ -889,11 +890,14 @@ public class GeneralEventListener implements Listener {
                     }
                 }
 
-                abilityManager.getWarriorAbilities().getSearingChains().tryToDecreaseCooldown(defender);
-                abilityManager.getAssassinAbilities().getStealth().stealthBonusCheck(defender, null);
+                if(profileManager.getAnyProfile(defender).getPlayerClass().equals(PlayerClass.Warrior)){
+                    abilityManager.getRage().addRageToEntity(defender, 10);
+                    abilityManager.getAbilityResolver().resolve(PlayerClass.Warrior, 2).onExternalTrigger(defender);
+                }
 
-                if (profileManager.getAnyProfile(defender).getPlayerClass().equals(PlayerClass.Warrior)) {
-                    abilityManager.getWarriorAbilities().getRage().addRageToEntity(defender, 10);
+
+                if(profileManager.getAnyProfile(defender).getPlayerClass().equals(PlayerClass.Assassin)){
+                    abilityManager.getAbilityResolver().resolve(PlayerClass.Assassin, 8).onExternalTrigger(defender, null);
                 }
 
             }
@@ -1131,7 +1135,10 @@ public class GeneralEventListener implements Listener {
         int newSlot = event.getNewSlot();
 
         EquipSkills equipSkills = profileManager.getAnyProfile(player).getEquipSkills();
-        int abilityNumber = equipSkills.getAnySlot()[newSlot];
+        //int abilityNumber = equipSkills.getAnySlot()[newSlot];
+        int abilityNumber = equipSkills.getSkill(newSlot);
+
+
         //Bukkit.getLogger().info("ability number " + abilityNumber);
         abilityManager.useAbility(player, abilityNumber);
 

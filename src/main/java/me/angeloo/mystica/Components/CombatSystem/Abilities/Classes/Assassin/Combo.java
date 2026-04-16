@@ -18,13 +18,11 @@ import java.util.UUID;
 public class Combo {
 
     private final ProfileManager profileManager;
-    private final CooldownDisplayer cooldownDisplayer;
 
     private final Map<UUID, Integer> comboPoints = new HashMap<>();
 
-    public Combo(Mystica main, AbilityManager manager){
+    public Combo(Mystica main){
         profileManager = main.getProfileManager();
-        cooldownDisplayer = new CooldownDisplayer(main, manager);
     }
 
     public void addComboPoint(LivingEntity caster){

@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Assassin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.AssassinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Stun;
@@ -27,7 +28,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-public class FlyingBlade {
+public class FlyingBlade extends BaseAbility {
 
     private final Mystica main;
 
@@ -43,10 +44,9 @@ public class FlyingBlade {
     private final CooldownManager cooldownManager;
     private final BossCastingManager bossCastingManager;
 
-    private final Stealth stealth;
 
-
-    public FlyingBlade(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
+    public FlyingBlade(Mystica main, AbilityManager manager){
+        super("flying_blade");
         this.main = main;
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
@@ -56,16 +56,15 @@ public class FlyingBlade {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();
-        stealth = assassinAbilities.getStealth();
         this.weapon = new MysticaEquipment(EquipmentSlot.WEAPON, PlayerClass.Assassin, 1);
         bossCastingManager = main.getBossCastingManager();
     }
 
-    private final int abilityNumber = 7;
     private final double range = 15;
     private final int baseCooldown = 15;
     private final int baseDamage = 25;
 
+    @Override
     public void use(LivingEntity caster){
 
         targetManager.setTargetToNearestValid(caster, range + statusEffectManager.getAdditionalRange(caster));
@@ -79,7 +78,7 @@ public class FlyingBlade {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 7, (long) (baseCooldown * 1000));
 
     }
 
@@ -151,7 +150,7 @@ public class FlyingBlade {
                         statusEffectManager.removeEffect(target, "shield");
                     }
 
-                    stealth.stealthBonusCheck(caster, target);
+                    lookup.get(PlayerClass.Assassin, 8).onExternalTrigger(caster, target);
                     bossCastingManager.interrupt(caster, target);
                 }
 
@@ -190,6 +189,7 @@ public class FlyingBlade {
     }
 
 
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
 
 
@@ -221,7 +221,7 @@ public class FlyingBlade {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 7, statusEffectManager.getHastePercent(caster));
     }
 
 

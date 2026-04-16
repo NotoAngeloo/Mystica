@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.PaladinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
@@ -30,7 +31,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class DivineGuidance {
+public class DivineGuidance extends BaseAbility {
 
     private final Mystica main;
     private final ProfileManager profileManager;
@@ -44,7 +45,8 @@ public class DivineGuidance {
     private final Purity purity;
 
 
-    public DivineGuidance(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
+    public DivineGuidance(Mystica main, AbilityManager manager){
+        super("divine_guidance");
         this.main = main;
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
@@ -53,13 +55,13 @@ public class DivineGuidance {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownManager = manager.getCooldownManager();;
-        purity = paladinAbilities.getPurity();
+        purity = manager.getPurity();
     }
 
-    private final int abilityNumber = 2;
     private final int baseCooldown = 12;
     private final int baseDamage = 25;
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -70,12 +72,12 @@ public class DivineGuidance {
         execute(caster);
 
         if(profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Dawn)){
-            purity.add(caster, abilityNumber);
+            purity.add(caster, 2);
         }
 
 
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 2, (long) (baseCooldown * 1000));
 
     }
 
@@ -370,8 +372,9 @@ public class DivineGuidance {
     }
 
 
+    @Override
     public boolean usable(LivingEntity caster){
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 2, statusEffectManager.getHastePercent(caster));
     }
 
 }

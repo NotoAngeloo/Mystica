@@ -1,8 +1,10 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Ranger;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.RangerAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.Haste;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
@@ -13,6 +15,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -33,7 +36,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class BlessedArrow {
+public class BlessedArrow extends BaseAbility {
 
     private final Mystica main;
 
@@ -45,32 +48,31 @@ public class BlessedArrow {
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
+    private final PlayerStateManager playerStateManager;
 
     private final Focus focus;
-    private final StarVolley starVolley;
-    private final RallyingCry rallyingCry;
 
 
-    public BlessedArrow(Mystica main, AbilityManager manager, RangerAbilities rangerAbilities){
+    public BlessedArrow(Mystica main, AbilityManager manager){
+        super("blessed_arrow");
         this.main = main;
         profileManager = main.getProfileManager();
-        rallyingCry = rangerAbilities.getRallyingCry();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        cooldownManager = manager.getCooldownManager();;
-        focus = rangerAbilities.getFocus();
-        starVolley = rangerAbilities.getStarVolley();
+        cooldownManager = manager.getCooldownManager();
+        playerStateManager = manager.getPlayerStateManager();
+        focus = manager.getFocus();
     }
 
-    private final int abilityNumber = 5;
     private final int baseCooldown = 10;
     private final double range = 20;
     private final int baseDamage = 20;
 
+    @Override
     public void use(LivingEntity caster){
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
@@ -84,7 +86,7 @@ public class BlessedArrow {
 
         execute(caster, target);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 5, (long) (baseCooldown * 1000));
 
     }
 
@@ -94,9 +96,10 @@ public class BlessedArrow {
 
         double skillDamage = getSkillDamage(caster);
 
-        if(rallyingCry.getIfBuffTime(caster) > 0){
+        if(playerStateManager.get(caster.getUniqueId()).has("rallying_cry")){
             skillDamage = skillDamage * 1.25;
         }
+
 
 
         double health = (profileManager.getAnyProfile(target).getTotalHealth() + statusEffectManager.getHealthBuffAmount(target)) * 0.25;
@@ -189,8 +192,8 @@ public class BlessedArrow {
                     boolean crit = damageCalculator.checkIfCrit(caster, 0);
 
                     if(scout && crit){
-                        starVolley.decreaseCooldown(caster);
-                        statusEffectManager.applyEffect(caster, new Haste(), 2*20, 1.0);
+                        lookup.get(PlayerClass.Ranger,SubClass.Scout,-1).onExternalTrigger(caster);
+                        statusEffectManager.applyEffect(caster, new Haste(), 2*20, 0.1);
                     }
 
                     double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
@@ -247,7 +250,7 @@ public class BlessedArrow {
         return focus.calculateFocusMultipliedDamage(caster, baseDamage) + ((int)(skillLevel/3));
     }
 
-
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
 
@@ -262,7 +265,7 @@ public class BlessedArrow {
             }
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 5, statusEffectManager.getHastePercent(caster));
     }
 
 }

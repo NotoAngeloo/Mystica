@@ -1,18 +1,18 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes;
 
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Ability;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Warrior.*;
-import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilitySet;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.Enums.SubClass;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
-public class WarriorAbilities {
+import java.util.HashMap;
+import java.util.Map;
 
-    private final ProfileManager profileManager;
+public class WarriorAbilities implements AbilitySet {
 
-    private final Rage rage;
+
+    /*private final Rage rage;
     private final WarriorBasic warriorBasic;
     private final LavaQuake lavaQuake;
     private final SearingChains searingChains;
@@ -23,12 +23,12 @@ public class WarriorAbilities {
     private final BurningBlessing burningBlessing;
     private final MagmaSpikes magmaSpikes;
     private final GladiatorHeart gladiatorHeart;
-    private final DeathGaze deathGaze;
+    private final DeathGaze deathGaze;*/
+
+    private final Map<Integer, Ability> abilities = new HashMap<>();
 
     public WarriorAbilities(Mystica main, AbilityManager manager){
-        profileManager = main.getProfileManager();
-
-        rage = new Rage(main, manager);
+        /*rage = new Rage(main, manager);
         warriorBasic = new WarriorBasic(main, this);
         lavaQuake = new LavaQuake(main, manager, this);
         searingChains = new SearingChains(main, manager, this);
@@ -39,10 +39,25 @@ public class WarriorAbilities {
         burningBlessing = new BurningBlessing(main, manager);
         magmaSpikes = new MagmaSpikes(main, manager, this);
         gladiatorHeart = new GladiatorHeart(main, manager);
-        deathGaze = new DeathGaze(main, this,manager);
+        deathGaze = new DeathGaze(main, this,manager);*/
+
+        abilities.put(1, new LavaQuake(main, manager));
+        abilities.put(2, new SearingChains(main, manager));
+        abilities.put(3, new TempestRage(main, manager));
+        abilities.put(4, new MeteorCrater(main, manager));
+        abilities.put(5, new AnvilDrop(main, manager));
+        abilities.put(6, new FlamingSigil(main, manager));
+        abilities.put(7, new MagmaSpikes(main, manager));
+        abilities.put(8, new BurningBlessing(main, manager));
     }
 
-    public void useWarriorAbility(LivingEntity caster, int abilityNumber){
+    @Override
+    public Ability get(int abilityNumber){
+        return abilities.get(abilityNumber);
+    }
+
+
+    /*public void useWarriorAbility(LivingEntity caster, int abilityNumber){
 
         switch (abilityNumber) {
             case 1 -> {
@@ -112,5 +127,5 @@ public class WarriorAbilities {
     public DeathGaze getDeathGaze(){return deathGaze;}
     public GladiatorHeart getGladiatorHeart(){return gladiatorHeart;}
     public WarriorBasic getWarriorBasic(){return warriorBasic;}
-    public Rage getRage(){return rage;}
+    public Rage getRage(){return rage;}*/
 }

@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.PaladinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Misc.SpeedUp;
@@ -32,7 +33,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class DivineInfusion {
+public class DivineInfusion extends BaseAbility {
 
     private final Mystica main;
 
@@ -47,7 +48,8 @@ public class DivineInfusion {
 
     private final Purity purity;
 
-    public DivineInfusion(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
+    public DivineInfusion(Mystica main, AbilityManager manager){
+        super("divine_infusion");
         this.main = main;
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
@@ -57,14 +59,14 @@ public class DivineInfusion {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();
-        purity = paladinAbilities.getPurity();
+        purity = manager.getPurity();
     }
 
-    private final int abilityNumber = 4;
     private final int baseCooldown = 18;
     private final double range = 10;
     private final int baseDamage = 15;
 
+    @Override
     public void use(LivingEntity caster){
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
@@ -79,7 +81,7 @@ public class DivineInfusion {
 
         execute(caster, target);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 4, (long) (baseCooldown * 1000));
 
     }
 
@@ -264,6 +266,7 @@ public class DivineInfusion {
         return damage;
     }
 
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
 
@@ -276,7 +279,7 @@ public class DivineInfusion {
         }
 
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 4, statusEffectManager.getHastePercent(caster));
     }
 
 }

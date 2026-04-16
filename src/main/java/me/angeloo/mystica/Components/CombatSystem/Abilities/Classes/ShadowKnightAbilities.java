@@ -1,19 +1,19 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes;
 
 
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Ability;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnight.*;
-import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilitySet;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.Enums.SubClass;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
-public class ShadowKnightAbilities {
+import java.util.HashMap;
+import java.util.Map;
 
-    private final ProfileManager profileManager;
+public class ShadowKnightAbilities implements AbilitySet {
 
-    private final Energy energy;
+
+    /*private final Energy energy;
     private final ShadowKnightBasic shadowKnightBasic;
     private final Infection infection;
     private final SpiritualAttack spiritualAttack;
@@ -24,11 +24,12 @@ public class ShadowKnightAbilities {
     private final Bloodsucker bloodsucker;
     private final ShadowGrip shadowGrip;
     private final SpectralSteed spectralSteed;
-    private final Soulcrack soulcrack;
+    private final Soulcrack soulcrack;*/
+
+    private final Map<Integer, Ability> abilities = new HashMap<>();
 
     public ShadowKnightAbilities(Mystica main, AbilityManager manager){
-        profileManager = main.getProfileManager();
-        energy = new Energy(main, manager);
+        /*energy = new Energy(main, manager);
         shadowKnightBasic = new ShadowKnightBasic(main);
         infection = new Infection(main, manager);
         soulReap = new SoulReap(main, manager, this);
@@ -39,10 +40,24 @@ public class ShadowKnightAbilities {
         bloodsucker = new Bloodsucker(main, manager, this);
         shadowGrip = new ShadowGrip(main, manager, this);
         spectralSteed = new SpectralSteed(main, manager);
-        soulcrack = new Soulcrack(main, manager, this);
+        soulcrack = new Soulcrack(main, manager, this);*/
+
+        abilities.put(1, new Infection(main, manager));
+        abilities.put(2, new SpiritualAttack(main, manager));
+        abilities.put(3, new BurialGround(main, manager));
+        abilities.put(4, new Bloodsucker(main, manager));
+        abilities.put(5, new SoulReap(main, manager));
+        abilities.put(6, new ShadowGrip(main, manager));
+        abilities.put(7, new SpectralSteed(main, manager));
+        abilities.put(8, new  Soulcrack(main, manager));
     }
 
-    public void useShadowKnightAbility(LivingEntity caster, int abilityNumber){
+    @Override
+    public Ability get(int abilityNumber){
+        return abilities.get(abilityNumber);
+    }
+
+    /*public void useShadowKnightAbility(LivingEntity caster, int abilityNumber){
 
         switch (abilityNumber) {
             case 1 -> {
@@ -110,6 +125,6 @@ public class ShadowKnightAbilities {
     public Soulcrack getSoulcrack(){return soulcrack;}
     public Annihilation getAnnihilation(){return annihilation;}
     public ShadowKnightBasic getShadowKnightBasic(){return shadowKnightBasic;}
-    public Energy getEnergy(){return energy;}
+    public Energy getEnergy(){return energy;}*/
 
 }

@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Elementalist;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ElementalistAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
@@ -13,7 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-public class WindrushForm {
+public class WindrushForm extends BaseAbility {
 
     private final Mystica main;
 
@@ -23,17 +24,19 @@ public class WindrushForm {
 
     private final Heat heat;
 
-    private final int abilityNumber = 3;
     private final double baseCooldown = 15;
 
-    public WindrushForm(Mystica main, AbilityManager manager, ElementalistAbilities elementalistAbilities){
+
+    public WindrushForm(Mystica main, AbilityManager manager){
+        super("windrush_form");
         this.main = main;
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
-        heat = elementalistAbilities.getHeat();
+        this.heat = manager.getHeat();
         cooldownManager = manager.getCooldownManager();
     }
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -50,7 +53,7 @@ public class WindrushForm {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 4, (long) (baseCooldown * 1000));
     }
 
     private void execute(LivingEntity caster){
@@ -93,9 +96,9 @@ public class WindrushForm {
 
 
 
-
+    @Override
     public boolean usable(LivingEntity caster){
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 4, statusEffectManager.getHastePercent(caster));
     }
 
 }

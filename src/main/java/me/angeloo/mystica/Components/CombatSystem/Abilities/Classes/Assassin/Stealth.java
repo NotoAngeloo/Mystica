@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Assassin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.AssassinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Misc.StealthEffect;
@@ -25,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class Stealth {
+public class Stealth extends BaseAbility {
 
     private final Mystica main;
 
@@ -44,7 +45,8 @@ public class Stealth {
 
     //have to have custom logic for stealth cooldown display
 
-    public Stealth(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
+    public Stealth(Mystica main, AbilityManager manager){
+        super("stealth");
         this.main = main;
         profileManager = main.getProfileManager();
         stealthTargetBlacklist = main.getStealthTargetBlacklist();
@@ -52,14 +54,15 @@ public class Stealth {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();
-        combo = assassinAbilities.getCombo();
+        combo = manager.getCombo();
     }
 
-    private final int abilityNumber = 8;
+
     private final int baseCooldown = 30;
     private final int baseDamage = 50;
 
-    public void toggle(LivingEntity caster){
+    @Override
+    public void use(LivingEntity caster){
 
 
         if(getIfStealthed(caster)){
@@ -69,7 +72,7 @@ public class Stealth {
         }
 
 
-        if(!cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster))){
+        if(!cooldownManager.isReady(caster.getUniqueId(), 8, statusEffectManager.getHastePercent(caster))){
             return;
         }
 
@@ -176,7 +179,7 @@ public class Stealth {
         }
 
         //cooldown triggers regardless if successful in performing a sneak attack or not
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 8, (long) (baseCooldown * 1000));
 
         if(victim==null){
             return;
@@ -190,7 +193,13 @@ public class Stealth {
         changeResourceHandler.subtractHealthFromEntity(victim, damage, caster, crit);
     }
 
-    public void stealthBonusCheck(LivingEntity caster, LivingEntity entity){
+
+    @Override
+    public void onExternalTrigger(LivingEntity caster, LivingEntity target){
+        stealthBonusCheck(caster, target);
+    }
+
+    private void stealthBonusCheck(LivingEntity caster, LivingEntity entity){
 
         if(!getIfStealthed(caster)){
             return;
@@ -210,16 +219,21 @@ public class Stealth {
         return stealthed.getOrDefault(caster.getUniqueId(), false);
     }
 
+    @Override
+    public boolean usable(LivingEntity caster){
+        return cooldownManager.isReady(caster.getUniqueId(), 8, statusEffectManager.getHastePercent(caster));
+    }
+
     //TODO: when making icons, display a different if stealthed
 
-    public int returnWhichItem(Player player){
+    /*public int returnWhichItem(Player player){
 
         if(getIfStealthed(player)){
             return 1;
         }
 
         return 0;
-    }
+    }*/
 
 
 

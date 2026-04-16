@@ -219,7 +219,7 @@ public final class Mystica extends JavaPlugin{
 
         rezTick = new RezTick(this);
         deathManager = new DeathManager(this);
-        allSkillItems = abilityManager.getAllSkillItems();
+        //allSkillItems = abilityManager.getAllSkillItems();
 
 
         hudManager = new HudManager(this);

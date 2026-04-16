@@ -1,6 +1,8 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Mystic;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityMarkManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.MysticAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Shields.GenericShield;
@@ -21,7 +23,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 
-public class ArcaneShield {
+public class ArcaneShield extends BaseAbility {
 
     private final Mystica main;
 
@@ -32,14 +34,15 @@ public class ArcaneShield {
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
+    private final AbilityMarkManager abilityMarkManager;
 
     private final Mana mana;
-    private final Consolation consolation;
 
     private final Map<UUID, Boolean> needToRemove = new HashMap<>();
     private final Map<UUID, BukkitTask> shieldTaskMap = new HashMap<>();
 
-    public ArcaneShield(Mystica main, AbilityManager manager, MysticAbilities mysticAbilities){
+    public ArcaneShield(Mystica main, AbilityManager manager){
+        super("arcane_shield");
         this.main = main;
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
@@ -47,16 +50,16 @@ public class ArcaneShield {
         pvpManager = main.getPvpManager();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        consolation = mysticAbilities.getConsolation();
-        mana = mysticAbilities.getMana();
+        mana = manager.getMana();
         cooldownManager = manager.getCooldownManager();
+        abilityMarkManager = manager.getAbilityMarkManager();
     }
 
-    private int abilityNumber = 1;
     private final double range = 20;
     private final int baseCooldown = 5;
     private final int cost = 25;
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -84,7 +87,7 @@ public class ArcaneShield {
 
         execute(caster, target);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 1, (long) (baseCooldown * 1000));
 
     }
 
@@ -98,11 +101,9 @@ public class ArcaneShield {
 
         if(shepard){
 
-            if(target instanceof Player){
-                if(consolation.getTargets(caster).contains(target)){
-                    targetList.addAll(consolation.getTargets(caster));
-                    consolation.removeTargets(caster);
-                }
+            if(abilityMarkManager.getTargets(caster).contains(target)){
+                targetList.addAll(abilityMarkManager.getTargets(caster));
+                abilityMarkManager.removeTargets(caster);
             }
 
 
@@ -190,6 +191,7 @@ public class ArcaneShield {
 
     }
 
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
 
         if(caster == null){
@@ -229,7 +231,7 @@ public class ArcaneShield {
         }
 
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 1, statusEffectManager.getHastePercent(caster));
     }
 
     /*public int returnWhichItem(Player player){

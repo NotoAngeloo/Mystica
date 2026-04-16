@@ -1,8 +1,10 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.PaladinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Shields.GenericShield;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
@@ -30,7 +32,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class ReigningSword {
+public class ReigningSword extends BaseAbility {
 
     private final Mystica main;
     private final ProfileManager profileManager;
@@ -40,12 +42,13 @@ public class ReigningSword {
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final CooldownManager cooldownManager;
+    private final PlayerStateManager playerStateManager;
 
     private final Purity purity;
-    private final Decision decision;
 
 
-    public ReigningSword(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
+    public ReigningSword(Mystica main, AbilityManager manager){
+        super("reigning_sword");
         this.main = main;
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
@@ -54,14 +57,14 @@ public class ReigningSword {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownManager = manager.getCooldownManager();
-        decision = paladinAbilities.getDecision();
-        purity = paladinAbilities.getPurity();
+        purity = manager.getPurity();
+        playerStateManager = manager.getPlayerStateManager();;
     }
 
-    private final int abilityNumber = 3;
     private final int baseCooldown = 10;
     private final int baseDamage = 25;
 
+    @Override
     public void use(LivingEntity caster){
 
         if(!usable(caster)){
@@ -71,11 +74,11 @@ public class ReigningSword {
         execute(caster);
 
         if(profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Dawn)){
-            purity.add(caster, abilityNumber);
+            purity.add(caster, 3);
         }
 
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 3, (long) (baseCooldown * 1000));
 
     }
 
@@ -226,7 +229,7 @@ public class ReigningSword {
             private void cancelTask(){
                 this.cancel();
                 sword.remove();
-                decision.removeDecision(caster);
+                playerStateManager.get(caster.getUniqueId()).remove("decision");
                 //abilityManager.setSkillRunning(player, false);
             }
 
@@ -236,7 +239,7 @@ public class ReigningSword {
 
     private double decisionMultiplier(LivingEntity caster){
 
-        if(decision.getDecision(caster)){
+        if(playerStateManager.get(caster.getUniqueId()).has("decision")){
             return 1.8;
         }
 
@@ -257,9 +260,9 @@ public class ReigningSword {
         return damage;
     }
 
-
+    @Override
     public boolean usable(LivingEntity caster){
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 3, statusEffectManager.getHastePercent(caster));
     }
 
 }

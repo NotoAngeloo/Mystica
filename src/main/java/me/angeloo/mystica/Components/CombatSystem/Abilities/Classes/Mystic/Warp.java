@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Mystic;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -12,7 +13,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
 
-public class Warp {
+public class Warp extends BaseAbility {
 
     private final ProfileManager profileManager;
     private final TargetManager targetManager;
@@ -20,16 +21,17 @@ public class Warp {
     private final CooldownManager cooldownManager;
 
     public Warp(Mystica main, AbilityManager manager){
+        super("warp");
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
         statusEffectManager = main.getStatusEffectManager();
         cooldownManager = manager.getCooldownManager();
     }
 
-    private final int abilityNumber = 5;
     private final int baseCooldown = 13;
     private final double baseRange = 8;
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -82,14 +84,14 @@ public class Warp {
         newLoc.setY(newLoc.getY());
         caster.teleport(newLoc);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 5, (long) (baseCooldown * 1000));
 
     }
 
 
-
+    @Override
     public boolean usable(LivingEntity caster){
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 5, statusEffectManager.getHastePercent(caster));
     }
 
 }

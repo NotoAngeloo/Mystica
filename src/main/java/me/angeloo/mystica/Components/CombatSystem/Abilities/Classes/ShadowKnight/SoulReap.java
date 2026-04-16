@@ -2,8 +2,10 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnigh
 
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnightAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Root;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
@@ -38,7 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class SoulReap {
+public class SoulReap extends BaseAbility {
 
     private final Mystica main;
 
@@ -52,14 +54,12 @@ public class SoulReap {
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
     private final BossCastingManager bossCastingManager;
-
-
-    private final Map<UUID, Integer> soulMarks = new HashMap<>();
+    private final PlayerStateManager playerStateManager;
 
     private final Energy energy;
-    private final Infection infection;
 
-    public SoulReap(Mystica main, AbilityManager manager, ShadowKnightAbilities shadowKnightAbilities){
+    public SoulReap(Mystica main, AbilityManager manager){
+        super("soul_reap");
         this.main = main;
         profileManager = main.getProfileManager();
         abilityManager = manager;
@@ -70,17 +70,17 @@ public class SoulReap {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();
-        infection = shadowKnightAbilities.getInfection();
-        energy = shadowKnightAbilities.getEnergy();
+        energy = manager.getEnergy();
         bossCastingManager = main.getBossCastingManager();
+        playerStateManager = manager.getPlayerStateManager();
     }
 
-    private final int abilityNumber = 5;
     private final int baseCooldown = 10;
     private final double range = 8;
     private final int baseDamage = 30;
     private final int cost = 30;
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -96,7 +96,7 @@ public class SoulReap {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 5, (long) (baseCooldown * 1000));
     }
 
     private void execute(LivingEntity caster){
@@ -211,13 +211,13 @@ public class SoulReap {
 
                     double extra = 0;
 
-                    if(doom && infection.getIfEnhanced(caster)){
-                        extra = infection.soulReapToRemove(caster);
+                    if(doom && playerStateManager.get(caster.getUniqueId()).has("infection_enhanced")){
+                        extra = playerStateManager.get(caster.getUniqueId()).getInt("reap_bonus_damage", 0);
                     }
 
                     double damage = damageCalculator.calculateDamage(caster, target, "Physical", skillDamage, crit);
                     damage = damage + extra;
-                    removeSoulMarks(caster);
+                    playerStateManager.get(caster.getUniqueId()).remove("soul_mark");
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
                     bossCastingManager.interrupt(caster, target);
@@ -300,22 +300,20 @@ public class SoulReap {
 
     }
 
-    public int getSoulMarks(LivingEntity caster){
 
-        if(!soulMarks.containsKey(caster.getUniqueId())){
-            soulMarks.put(caster.getUniqueId(), 0);
-        }
-
-        return soulMarks.get(caster.getUniqueId());
+    @Override
+    public void onExternalTrigger(LivingEntity caster){
+        addSoulMark(caster);
     }
 
-    public void addSoulMark(LivingEntity caster){
+    private void addSoulMark(LivingEntity caster){
 
         if(caster instanceof Player player){
             Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
-        int stacks = getSoulMarks(caster);
+
+        int stacks = playerStateManager.get(caster.getUniqueId()).getInt("soul_mark", 0);
 
         if(stacks>5){
             return;
@@ -323,23 +321,17 @@ public class SoulReap {
 
         stacks ++;
 
-        soulMarks.put(caster.getUniqueId(), stacks);
+        playerStateManager.get(caster.getUniqueId()).set("soul_mark", stacks);
         if(caster instanceof Player){
             Player player = (Player) caster;
             Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
     }
 
-    public void removeSoulMarks(LivingEntity caster){
-        soulMarks.put(caster.getUniqueId(), 0);
-        if(caster instanceof Player player){
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
-        }
-    }
 
 
     public double getSkillDamage(LivingEntity caster){
-        double skillDamage = baseDamage + (2*getSoulMarks(caster));
+        double skillDamage = baseDamage + (2*playerStateManager.get(caster.getUniqueId()).getInt("soul_mark", 0));
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_5_Level_Bonus();
 
@@ -347,7 +339,7 @@ public class SoulReap {
     }
 
 
-
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -378,7 +370,7 @@ public class SoulReap {
         }
 
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 5, statusEffectManager.getHastePercent(caster));
     }
 
     /*public int returnWhichItem(Player player){

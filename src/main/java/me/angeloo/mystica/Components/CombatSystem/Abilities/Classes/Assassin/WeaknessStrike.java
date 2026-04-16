@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Assassin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.AssassinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
@@ -11,6 +12,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -26,7 +28,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
-public class WeaknessStrike {
+public class WeaknessStrike extends BaseAbility {
 
     private final Mystica main;
     private final ProfileManager profileManager;
@@ -38,11 +40,11 @@ public class WeaknessStrike {
     private final PveChecker pveChecker;
     private final CooldownManager cooldownManager;
 
-    private final Stealth stealth;
     private final Combo combo;
 
 
-    public WeaknessStrike(Mystica main, AbilityManager manager, AssassinAbilities assassinAbilities){
+    public WeaknessStrike(Mystica main, AbilityManager manager){
+        super("weakness_strike");
         this.main = main;
         targetManager = main.getTargetManager();
         profileManager = main.getProfileManager();
@@ -52,15 +54,14 @@ public class WeaknessStrike {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownManager = manager.getCooldownManager();
-        combo = assassinAbilities.getCombo();
-        stealth = assassinAbilities.getStealth();
+        combo = manager.getCombo();
     }
 
-    private final int abilityNumber = 3;
     private final int baseCooldown = 4;
     private final double range = 7;
     private final int baseDamage = 30;
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -73,8 +74,10 @@ public class WeaknessStrike {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 3, (long) (baseCooldown * 1000));
     }
+
+
 
     private void execute(LivingEntity caster){
 
@@ -153,7 +156,7 @@ public class WeaknessStrike {
 
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                         changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
-                        stealth.stealthBonusCheck(caster, target);
+                        lookup.get(PlayerClass.Assassin, 8).onExternalTrigger(caster, target);
 
                         cancelTask();
                     }
@@ -288,6 +291,7 @@ public class WeaknessStrike {
     }
 
 
+
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -318,7 +322,7 @@ public class WeaknessStrike {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 3, statusEffectManager.getHastePercent(caster));
     }
 
 }

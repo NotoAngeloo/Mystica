@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Warrior;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.WarriorAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Pulled;
@@ -31,7 +32,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class DeathGaze {
+public class DeathGaze extends BaseAbility {
 
     private final Mystica main;
     private final ProfileManager profileManager;
@@ -44,7 +45,8 @@ public class DeathGaze {
     private final Rage rage;
     private final CooldownManager cooldownManager;
 
-    public DeathGaze(Mystica main, WarriorAbilities warriorAbilities, AbilityManager manager){
+    public DeathGaze(Mystica main, AbilityManager manager){
+        super("death_gaze");
         this.main = main;
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
@@ -53,15 +55,15 @@ public class DeathGaze {
         damageCalculator = main.getDamageCalculator();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        rage = warriorAbilities.getRage();
+        rage = manager.getRage();
         cooldownManager = manager.getCooldownManager();
     }
 
-    private final int abilityNumber = -1;
     private final double range = 20;
     private final int baseCooldown = 25;
     private final int baseDamage = 40;
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -81,7 +83,7 @@ public class DeathGaze {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), -1, (long) (baseCooldown * 1000));
 
     }
 
@@ -351,6 +353,7 @@ public class DeathGaze {
     }
 
 
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -376,7 +379,7 @@ public class DeathGaze {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), -1, statusEffectManager.getHastePercent(caster));
     }
 
 

@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.PaladinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Sleep;
@@ -32,7 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class ModestCalling {
+public class ModestCalling extends BaseAbility {
 
     private final Mystica main;
 
@@ -47,7 +48,8 @@ public class ModestCalling {
     private final Purity purity;
 
 
-    public ModestCalling(Mystica main, AbilityManager manager, PaladinAbilities paladinAbilities){
+    public ModestCalling(Mystica main, AbilityManager manager){
+        super("modest_calling");
         this.main = main;
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
@@ -57,14 +59,14 @@ public class ModestCalling {
         changeResourceHandler = main.getChangeResourceHandler();
         damageCalculator = main.getDamageCalculator();
         cooldownManager = manager.getCooldownManager();;
-        purity = paladinAbilities.getPurity();
+        purity = manager.getPurity();
     }
 
-    private final int abilityNumber = 7;
     private final int baseCooldown = 11;
     private final double range = 10;
     private final int baseDamage = 20;
 
+    @Override
     public void use(LivingEntity caster){
 
 
@@ -78,7 +80,7 @@ public class ModestCalling {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 7, (long) (baseCooldown * 1000));
 
     }
 
@@ -182,7 +184,7 @@ public class ModestCalling {
     }
 
 
-
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target != null){
             if(target instanceof Player){
@@ -208,7 +210,7 @@ public class ModestCalling {
             return false;
         }
 
-        return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
+        return cooldownManager.isReady(caster.getUniqueId(), 7, statusEffectManager.getHastePercent(caster));
     }
 
 }

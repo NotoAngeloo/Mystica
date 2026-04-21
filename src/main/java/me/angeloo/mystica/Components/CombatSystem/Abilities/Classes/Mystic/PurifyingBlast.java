@@ -82,6 +82,11 @@ public class PurifyingBlast extends BaseAbility {
         cooldownManager.start(caster.getUniqueId(), 2, (long) (baseCooldown * 1000));
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster){
 
         int castTime = 20;

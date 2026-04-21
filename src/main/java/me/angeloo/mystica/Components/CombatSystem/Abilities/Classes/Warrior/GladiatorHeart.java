@@ -52,6 +52,11 @@ public class GladiatorHeart extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster){
 
         double shield = getShieldAmount(caster);

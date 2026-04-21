@@ -86,6 +86,11 @@ public class BitingRain extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster){
 
         boolean scout = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Scout);

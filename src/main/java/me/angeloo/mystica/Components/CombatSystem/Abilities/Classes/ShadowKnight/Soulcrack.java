@@ -87,6 +87,11 @@ public class Soulcrack extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster){
 
         int castTime = 45;

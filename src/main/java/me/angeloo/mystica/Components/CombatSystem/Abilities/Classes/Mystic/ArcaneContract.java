@@ -58,6 +58,11 @@ public class ArcaneContract extends BaseAbility {
     private final int baseCooldown = 120;
 
     @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
+    @Override
     public void use(LivingEntity caster){
 
 

@@ -39,6 +39,11 @@ public class Dash extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster){
 
 

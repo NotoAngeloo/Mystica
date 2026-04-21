@@ -71,6 +71,10 @@ public class FieryMagma extends BaseAbility {
         cooldownManager = manager.getCooldownManager();
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
 
     @Override
     public void use(LivingEntity caster){

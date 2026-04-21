@@ -61,6 +61,11 @@ public class Enlightenment extends BaseAbility {
         cooldownManager.start(caster.getUniqueId(), -1, (long) (baseCooldown * 1000));
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster){
 
         Set<LivingEntity> targets = abilityMarkManager.getTargets(caster);

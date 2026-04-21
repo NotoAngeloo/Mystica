@@ -81,6 +81,11 @@ public class DivineGuidance extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster){
 
         Set<LivingEntity> hitBySkill = new HashSet<>();

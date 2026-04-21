@@ -57,6 +57,11 @@ public class WindWall extends BaseAbility {
         cooldownManager.start(caster.getUniqueId(), 5, (long) (baseCooldown * 1000));
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster){
 
         heat.reduceHeat(caster, 5);

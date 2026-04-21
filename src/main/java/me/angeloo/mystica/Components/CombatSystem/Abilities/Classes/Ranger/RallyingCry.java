@@ -56,6 +56,11 @@ public class RallyingCry extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster){
 
         playerStateManager.get(caster.getUniqueId()).set("rallying_cry", true);

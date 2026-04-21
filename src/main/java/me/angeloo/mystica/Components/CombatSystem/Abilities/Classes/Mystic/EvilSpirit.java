@@ -60,6 +60,11 @@ public class EvilSpirit extends BaseAbility {
 
     //im gonna make this look nicer eventually
 
+    @Override
+    public int cooldown() {
+        return 0;
+    }
+
     private void execute(LivingEntity caster){
 
         //hide player and display animation. when over, put hat on head

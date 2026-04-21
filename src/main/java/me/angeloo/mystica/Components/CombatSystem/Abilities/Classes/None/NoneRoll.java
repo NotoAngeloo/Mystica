@@ -35,6 +35,11 @@ public class NoneRoll extends BaseAbility {
         cooldownManager.start(caster.getUniqueId(), 3, (long) (baseCooldown * 1000));
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster){
 
         Location start = caster.getLocation();

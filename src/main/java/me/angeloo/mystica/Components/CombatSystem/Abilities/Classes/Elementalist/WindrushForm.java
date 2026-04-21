@@ -24,7 +24,7 @@ public class WindrushForm extends BaseAbility {
 
     private final Heat heat;
 
-    private final double baseCooldown = 15;
+    private final int baseCooldown = 15;
 
 
     public WindrushForm(Mystica main, AbilityManager manager){
@@ -49,11 +49,14 @@ public class WindrushForm extends BaseAbility {
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_4_Level_Bonus();
 
 
-
-
         execute(caster);
 
         cooldownManager.start(caster.getUniqueId(), 4, (long) (baseCooldown * 1000));
+    }
+
+    @Override
+    public int cooldown() {
+        return baseCooldown;
     }
 
     private void execute(LivingEntity caster){

@@ -66,6 +66,11 @@ public class ElementalBreath extends BaseAbility {
         return baseDuration + bonus;
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster){
 
 

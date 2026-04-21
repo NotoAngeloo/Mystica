@@ -96,6 +96,11 @@ public class Judgement extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster, LivingEntity target){
 
         boolean templar = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Templar);

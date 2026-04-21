@@ -83,6 +83,11 @@ public class WildSpirit extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void spawn(LivingEntity caster){
 
         Location start = caster.getLocation();

@@ -81,6 +81,11 @@ public class Aurora extends BaseAbility {
         cooldownManager.start(caster.getUniqueId(), 6, (long) (baseCooldown * 1000));
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void  execute(LivingEntity caster, LivingEntity target){
 
         boolean shepard = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Shepard);

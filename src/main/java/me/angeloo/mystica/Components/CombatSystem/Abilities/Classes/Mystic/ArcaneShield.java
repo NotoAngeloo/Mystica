@@ -91,6 +91,11 @@ public class ArcaneShield extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster, LivingEntity target){
 
         Set<LivingEntity> targetList = new HashSet<>();

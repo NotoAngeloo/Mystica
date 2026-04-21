@@ -2,7 +2,6 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Assassin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.AssassinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
@@ -57,7 +56,9 @@ public class Assault extends BaseAbility {
     }
 
     private final double range = 4;
-    private final int baseCooldown = 4;
+
+    public int baseCooldown = 4;
+
     private final int baseDamage = 30;
 
     @Override
@@ -78,6 +79,11 @@ public class Assault extends BaseAbility {
 
         cooldownManager.start(caster.getUniqueId(), 1, (long) (baseCooldown * 1000));
 
+    }
+
+    @Override
+    public int cooldown() {
+        return baseCooldown;
     }
 
     private void execute(LivingEntity caster){

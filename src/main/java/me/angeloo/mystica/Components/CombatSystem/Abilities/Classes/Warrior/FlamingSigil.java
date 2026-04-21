@@ -64,6 +64,11 @@ public class FlamingSigil extends BaseAbility {
         cooldownManager.start(caster.getUniqueId(), 6, (long) (baseCooldown * 1000));
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster){
 
         boolean executioner = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Executioner);

@@ -8,6 +8,7 @@ import me.angeloo.mystica.Components.CombatSystem.GravestoneManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
+import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.BossManager;
@@ -51,13 +52,13 @@ public class HudManager {
     private final AggroManager aggroManager;
 
 
-    private final AllSkillItems allSkillItems;
     private final AbilityManager abilityManager;
     private final StatusEffectManager statusEffectManager;
     private final GravestoneManager gravestoneManager;
     private final TargetManager targetManager;
     private final BossCastingManager bossCastingManager;
     private final IconCalculator iconCalculator;
+    private final AbilityBarRenderer abilityBarRenderer;
 
     private final SkinGrabber skinGrabber;
 
@@ -313,6 +314,9 @@ public class HudManager {
 
     private final Map<UUID, String> resourceBarCache = new ConcurrentHashMap<>();
 
+    //abilities
+    private final Map<UUID, String> abilityBarCache = new ConcurrentHashMap<>();
+
 
     //targeting
     private final String bossResourceBackground = "\uE035";
@@ -359,7 +363,6 @@ public class HudManager {
         damageBoardPlaceholders = new DamageBoardPlaceholders(main);
         mysticaPartyManager = main.getMysticaPartyManager();
         abilityManager = main.getAbilityManager();
-        allSkillItems = main.getAllSkillItems();
         statusEffectManager = main.getStatusEffectManager();
         targetManager = main.getTargetManager();
         bossCastingManager = main.getBossCastingManager();
@@ -368,6 +371,7 @@ public class HudManager {
         iconCalculator = new IconCalculator();
         skinGrabber = new SkinGrabber();
         aggroManager = main.getAggroManager();
+        abilityBarRenderer = new AbilityBarRenderer(main, abilityManager);
     }
 
     public DamageBoardPlaceholders getDamageBoardPlaceholders(){
@@ -442,6 +446,7 @@ public class HudManager {
     //reason this has to update is that entities update their *own* bar information
     public void hudTicker(){
         for(Player player : Bukkit.getOnlinePlayers()){
+            updateSkillCache(player);
             displayActionBar(player);
             updateTargetData(player);
             updateTargetTargetData(player);
@@ -586,6 +591,7 @@ public class HudManager {
 
     public void updateResourceBar(Player player){
 
+        //maybe this is more dynamic in the future
         new BukkitRunnable(){
             @Override
             public void run(){
@@ -866,13 +872,19 @@ public class HudManager {
 
     //#####################################################################################################
 
-    public void updateSkillCache(Player player, int skill){
+    public void updateSkillCache(Player player){
+
+        EquipSkills equipSkills = profileManager.getAnyProfile(player).getEquipSkills();
+        double haste = statusEffectManager.getHastePercent(player);
+
+        long now = System.currentTimeMillis();
 
         new BukkitRunnable(){
             @Override
             public void run(){
 
                 //update from cache
+                abilityBarRenderer.render(player, equipSkills, haste, now);
 
             }
         }.runTaskAsynchronously(main);

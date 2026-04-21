@@ -78,6 +78,11 @@ public class HonorCounter extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster){
 
         LivingEntity target = targetManager.getPlayerTarget(caster);

@@ -85,6 +85,11 @@ public class Bloodsucker extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster){
 
         boolean blood = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Blood);

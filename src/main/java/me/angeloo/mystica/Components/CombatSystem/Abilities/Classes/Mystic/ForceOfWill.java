@@ -68,6 +68,11 @@ public class ForceOfWill extends BaseAbility {
         cooldownManager.start(caster.getUniqueId(), 3, (long) (baseCooldown * 1000));
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     /*private void passThroughDamage(LivingEntity caster, LivingEntity target){
 
         abilityManager.setCasting(caster, true);

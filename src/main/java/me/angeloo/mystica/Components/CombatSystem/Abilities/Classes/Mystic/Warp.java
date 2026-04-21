@@ -88,6 +88,10 @@ public class Warp extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
 
     @Override
     public boolean usable(LivingEntity caster){

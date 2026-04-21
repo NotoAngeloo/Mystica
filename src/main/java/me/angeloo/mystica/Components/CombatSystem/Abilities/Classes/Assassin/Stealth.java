@@ -82,6 +82,11 @@ public class Stealth extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void vanish(LivingEntity caster){
 
         new BukkitRunnable(){

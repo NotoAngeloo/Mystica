@@ -87,6 +87,11 @@ public class TorahSword extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster){
 
         boolean dawn = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Dawn);

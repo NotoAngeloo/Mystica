@@ -47,6 +47,11 @@ public class BurningBlessing extends BaseAbility {
         cooldownManager.start(caster.getUniqueId(), 8, (long) (baseCooldown * 1000));
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster){
 
         statusEffectManager.applyEffect(caster, new BurningBlessingBuff(), null, getBuffAmount(caster));

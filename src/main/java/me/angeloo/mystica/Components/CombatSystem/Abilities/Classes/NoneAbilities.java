@@ -18,6 +18,8 @@ public class NoneAbilities implements AbilitySet {
 
     private final Map<Integer, Ability> abilities = new HashMap<>();
 
+    //TODO: make unspecialized its own thing. take abilties from other classes to use temp
+
     public NoneAbilities(Mystica main, AbilityManager manager){
         //noneBasic = new NoneBasic(main);
         //dash = new Dash(main, manager);

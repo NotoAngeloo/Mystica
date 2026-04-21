@@ -86,6 +86,11 @@ public class CovenantSword extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster){
 
         targetManager.setTargetToNearestValid(caster, range);

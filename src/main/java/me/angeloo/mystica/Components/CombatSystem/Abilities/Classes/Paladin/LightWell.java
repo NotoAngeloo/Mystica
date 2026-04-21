@@ -73,6 +73,11 @@ public class LightWell extends BaseAbility {
         cooldownManager.start(caster.getUniqueId(), -1, (long) (baseCooldown * 1000));
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster){
 
         Location spawnStart = caster.getLocation().clone();

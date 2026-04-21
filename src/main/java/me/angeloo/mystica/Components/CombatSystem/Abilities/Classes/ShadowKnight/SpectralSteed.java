@@ -57,6 +57,11 @@ public class SpectralSteed extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster){
 
         Location spawnLoc = caster.getLocation();

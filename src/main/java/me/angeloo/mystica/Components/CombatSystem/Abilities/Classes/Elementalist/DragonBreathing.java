@@ -92,6 +92,11 @@ public class DragonBreathing extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster){
 
         heat.addHeat(caster, 15);

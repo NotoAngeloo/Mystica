@@ -79,6 +79,10 @@ public class SacredAegis extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
 
     private double getRange(LivingEntity caster){
         double baseRange = 12;

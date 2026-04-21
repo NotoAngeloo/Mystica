@@ -83,6 +83,11 @@ public class MercifulHealing extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private double getRange(LivingEntity caster){
         double baseRange = 10;
         double extraRange = statusEffectManager.getAdditionalRange(caster);

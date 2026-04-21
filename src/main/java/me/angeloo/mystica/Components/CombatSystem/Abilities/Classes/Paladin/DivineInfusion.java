@@ -85,6 +85,11 @@ public class DivineInfusion extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster, LivingEntity target){
 
         Location start = target.getLocation().clone().add(0,4,0);

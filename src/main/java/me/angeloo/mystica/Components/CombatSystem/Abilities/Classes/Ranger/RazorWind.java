@@ -85,6 +85,11 @@ public class RazorWind extends BaseAbility {
         cooldownManager.start(caster.getUniqueId(), 4, (long) (baseCooldown * 1000));
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private double getRange(LivingEntity caster){
         double baseRange = 20;
         double extraRange = statusEffectManager.getAdditionalRange(caster);

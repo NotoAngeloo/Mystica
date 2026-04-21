@@ -79,6 +79,11 @@ public class SpiritualDescent extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster){
 
         lookup.get(PlayerClass.Mystic, SubClass.Chaos, -1).onExternalTrigger(caster, 1);

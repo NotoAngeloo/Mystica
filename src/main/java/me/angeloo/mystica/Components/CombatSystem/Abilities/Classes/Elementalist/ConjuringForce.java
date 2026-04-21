@@ -57,6 +57,11 @@ public class ConjuringForce extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster){
 
         Location start = caster.getLocation().clone();

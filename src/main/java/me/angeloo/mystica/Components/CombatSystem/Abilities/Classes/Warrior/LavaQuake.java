@@ -73,6 +73,11 @@ public class LavaQuake extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster){
 
         double baseRange = 8;

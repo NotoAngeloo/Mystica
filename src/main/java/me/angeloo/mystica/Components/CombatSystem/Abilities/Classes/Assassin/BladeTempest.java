@@ -73,6 +73,11 @@ public class BladeTempest extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster){
 
         boolean duelist = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Duelist);

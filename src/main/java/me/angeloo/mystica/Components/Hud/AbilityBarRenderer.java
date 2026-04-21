@@ -5,14 +5,17 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownMa
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import org.bukkit.entity.Player;
 
 public class AbilityBarRenderer {
 
+    private final ProfileManager profileManager;
     private final AbilityManager abilityManager;
     private final CooldownManager cooldownManager;
 
-    public AbilityBarRenderer(AbilityManager manager){
+    public AbilityBarRenderer(Mystica main, AbilityManager manager){
+        profileManager = main.getProfileManager();
         this.abilityManager = manager;
         this.cooldownManager = manager.getCooldownManager();
     }
@@ -20,6 +23,8 @@ public class AbilityBarRenderer {
     public String render(Player player, EquipSkills equipSkills, double haste, long now){
 
         StringBuilder bar = new StringBuilder();
+
+        PlayerClass playerClass = profileManager.getAnyProfile(player).getPlayerClass();
 
         //place the ultimate ability first
 
@@ -41,12 +46,17 @@ public class AbilityBarRenderer {
             /*TODO: assign a unicode to every ability, depending on class get that unicode.
                 Also create a unicode to display numbers. place number unicode on top of ability unicode. apply negative space
             */
-            //abilityManager.
-
+            bar.append(abilityManager.getAbilityResolver().resolve(playerClass,slot).icon());
+            //abilityManager.getAbilityResolver().resolve(playerClass, slot).
         }
 
+        //place basic last
 
         return String.valueOf(bar);
     }
+
+    /*private String constructMultiLayer(String base, long remaining){
+
+    }*/
 
 }

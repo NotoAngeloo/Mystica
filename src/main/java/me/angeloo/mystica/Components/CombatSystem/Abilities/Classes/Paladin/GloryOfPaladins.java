@@ -68,6 +68,11 @@ public class GloryOfPaladins extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster){
 
         //increase max hp as well

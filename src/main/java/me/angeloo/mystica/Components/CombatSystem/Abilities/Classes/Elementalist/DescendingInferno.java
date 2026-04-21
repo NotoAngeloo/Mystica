@@ -53,7 +53,7 @@ public class DescendingInferno extends BaseAbility {
 
 
     private final double range = 20;
-    private final double baseCooldown = 10;
+    private final int baseCooldown = 10;
     private final double baseDamage = 20;
 
     public DescendingInferno(Mystica main, AbilityManager manager){
@@ -92,6 +92,10 @@ public class DescendingInferno extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
 
     private void execute(LivingEntity caster){
 

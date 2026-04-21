@@ -116,6 +116,11 @@ public class CursingVoice extends BaseAbility {
     }
 
     @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
+    @Override
     public boolean usable(LivingEntity caster, LivingEntity target){
 
         if(target == null){

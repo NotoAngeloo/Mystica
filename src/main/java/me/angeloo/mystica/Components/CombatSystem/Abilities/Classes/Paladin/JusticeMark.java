@@ -64,6 +64,11 @@ public class JusticeMark extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private void execute(LivingEntity caster, LivingEntity target){
 
         Location center = target.getLocation().clone();

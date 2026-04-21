@@ -78,6 +78,11 @@ public class ArcaneMissiles extends BaseAbility {
 
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     private double getRange(LivingEntity caster){
         double extraRange = statusEffectManager.getAdditionalRange(caster);
         return baseRange + extraRange;

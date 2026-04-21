@@ -6,7 +6,6 @@ import me.angeloo.mystica.Utility.Enums.PlayerClass;
 public abstract class BaseAbility implements Ability {
 
     private final String id;
-
     protected AbilityLookup lookup;
 
     protected BaseAbility(String id){

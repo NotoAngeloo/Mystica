@@ -81,6 +81,11 @@ public class LightSigil extends BaseAbility {
         cooldownManager.start(caster.getUniqueId(), 8, (long) (baseCooldown * 1000));
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
+
     //perhaps made it shoot at enemies too
 
     private void execute(LivingEntity caster){

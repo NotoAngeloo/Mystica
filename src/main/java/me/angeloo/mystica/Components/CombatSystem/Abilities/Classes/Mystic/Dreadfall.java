@@ -62,20 +62,21 @@ public class Dreadfall extends BaseAbility {
     private final int baseDamage = 60;
 
     @Override
-    public void use(LivingEntity caster){
+    public boolean use(LivingEntity caster){
 
         targetManager.setTargetToNearestValid(caster, range + statusEffectManager.getAdditionalRange(caster));
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
         if(!usable(caster, target)){
-            return;
+            return false;
         }
 
         execute(caster);
 
         cooldownManager.start(caster.getUniqueId(), 4, (long) (baseCooldown * 1000));
 
+        return true;
     }
 
     @Override

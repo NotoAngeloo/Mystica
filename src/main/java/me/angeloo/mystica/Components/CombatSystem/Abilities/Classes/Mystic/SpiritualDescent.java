@@ -2,9 +2,7 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Mystic;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.MysticAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -61,7 +59,7 @@ public class SpiritualDescent extends BaseAbility {
     private final double baseDamage = 5;
 
     @Override
-    public void use(LivingEntity caster){
+    public boolean use(LivingEntity caster){
 
 
         targetManager.setTargetToNearestValid(caster, range + statusEffectManager.getAdditionalRange(caster));
@@ -69,7 +67,7 @@ public class SpiritualDescent extends BaseAbility {
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
         if(!usable(caster, target)){
-            return;
+            return false;
         }
 
 
@@ -77,6 +75,7 @@ public class SpiritualDescent extends BaseAbility {
 
         cooldownManager.start(caster.getUniqueId(), 4, (long) (baseCooldown * 1000));
 
+        return true;
     }
 
     @Override

@@ -2,7 +2,6 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.PaladinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.AggroManager;
@@ -69,11 +68,11 @@ public class Judgement extends BaseAbility {
     private final int baseDamage = 30;
 
     @Override
-    public void use(LivingEntity caster){
+    public boolean use(LivingEntity caster){
 
 
         if(!usable(caster)){
-            return;
+            return false;
         }
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
@@ -94,6 +93,7 @@ public class Judgement extends BaseAbility {
 
         cooldownManager.start(caster.getUniqueId(), 8, (long) (baseCooldown * 1000));
 
+        return true;
     }
 
     @Override

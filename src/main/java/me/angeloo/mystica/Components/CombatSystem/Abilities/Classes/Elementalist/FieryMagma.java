@@ -2,12 +2,10 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Elementalis
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ElementalistAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
@@ -77,19 +75,20 @@ public class FieryMagma extends BaseAbility {
     }
 
     @Override
-    public void use(LivingEntity caster){
+    public boolean use(LivingEntity caster){
 
         targetManager.setTargetToNearestValid(caster, range + statusEffectManager.getAdditionalRange(caster));
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
         if(!usable(caster, target)){
-            return;
+            return false;
         }
 
         execute(caster);
 
         cooldownManager.start(caster.getUniqueId(), 2, (long) (baseCooldown * 1000));
+        return true;
     }
 
     private void execute(LivingEntity caster){

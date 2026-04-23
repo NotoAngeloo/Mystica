@@ -2,11 +2,9 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnigh
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnightAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.GenericDamageReduction;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
@@ -18,11 +16,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 public class BurialGround extends BaseAbility {
 
@@ -48,16 +41,17 @@ public class BurialGround extends BaseAbility {
     private final int refund = 10;
 
     @Override
-    public void use(LivingEntity caster){
+    public boolean use(LivingEntity caster){
 
         if(!usable(caster)){
-            return;
+            return false;
         }
 
         execute(caster);
 
         cooldownManager.start(caster.getUniqueId(), 3, (long) (baseCooldown * 1000));
 
+        return true;
     }
 
     @Override

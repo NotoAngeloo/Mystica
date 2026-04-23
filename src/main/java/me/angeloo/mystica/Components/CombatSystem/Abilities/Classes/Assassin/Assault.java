@@ -62,7 +62,7 @@ public class Assault extends BaseAbility {
     private final int baseDamage = 30;
 
     @Override
-    public void use(LivingEntity caster){
+    public boolean use(LivingEntity caster){
 
 
         targetManager.setTargetToNearestValid(caster, range);
@@ -71,7 +71,7 @@ public class Assault extends BaseAbility {
 
 
         if(!usable(caster, target)){
-            return;
+            return false;
         }
 
 
@@ -79,6 +79,7 @@ public class Assault extends BaseAbility {
 
         cooldownManager.start(caster.getUniqueId(), 1, (long) (baseCooldown * 1000));
 
+        return true;
     }
 
     @Override

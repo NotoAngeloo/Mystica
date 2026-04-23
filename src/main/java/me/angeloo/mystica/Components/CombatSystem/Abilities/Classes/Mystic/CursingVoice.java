@@ -45,13 +45,13 @@ public class CursingVoice extends BaseAbility {
     private final double range = 15;
 
     @Override
-    public void use(LivingEntity caster){
+    public boolean use(LivingEntity caster){
 
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
         if(!usable(caster, target)){
-            return;
+            return false;
         }
 
         cooldownManager.start(caster.getUniqueId(), 7, (long) (baseCooldown * 1000));
@@ -113,6 +113,7 @@ public class CursingVoice extends BaseAbility {
         }.runTaskTimer(main, 0, 3);
 
 
+        return true;
     }
 
     @Override

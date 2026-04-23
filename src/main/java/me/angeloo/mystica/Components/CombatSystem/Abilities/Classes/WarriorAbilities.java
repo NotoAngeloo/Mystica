@@ -1,9 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.Ability;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.*;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Warrior.*;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilitySet;
 import me.angeloo.mystica.Mystica;
 
 import java.util.HashMap;
@@ -27,7 +25,7 @@ public class WarriorAbilities implements AbilitySet {
 
     private final Map<Integer, Ability> abilities = new HashMap<>();
 
-    public WarriorAbilities(Mystica main, AbilityManager manager){
+    public WarriorAbilities(Mystica main, AbilityManager manager, AbilityLookup lookup){
         /*rage = new Rage(main, manager);
         warriorBasic = new WarriorBasic(main, this);
         lavaQuake = new LavaQuake(main, manager, this);
@@ -49,6 +47,12 @@ public class WarriorAbilities implements AbilitySet {
         abilities.put(6, new FlamingSigil(main, manager));
         abilities.put(7, new MagmaSpikes(main, manager));
         abilities.put(8, new BurningBlessing(main, manager));
+
+        for(Ability ability : abilities.values()){
+            if(ability instanceof BaseAbility base){
+                base.setLookup(lookup);
+            }
+        }
     }
 
     @Override

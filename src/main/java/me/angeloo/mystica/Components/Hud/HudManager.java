@@ -1,9 +1,9 @@
 package me.angeloo.mystica.Components.Hud;
 
+import me.angeloo.mystica.Components.Hud.Abilties.AbilityBarRenderer;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.AggroManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
-import me.angeloo.mystica.Components.CombatSystem.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.CombatSystem.GravestoneManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Components.Profile;
@@ -308,8 +308,6 @@ public class HudManager {
 
     private final String[] comboResource5 = {"\uE02f","\uE030","\uE031","\uE032","\uE033","\uE034"};
 
-    private final Map<UUID, String> actionBarCache = new ConcurrentHashMap<>();
-
     private final Map<UUID, String> healthBarCache = new ConcurrentHashMap<>();
 
     private final Map<UUID, String> resourceBarCache = new ConcurrentHashMap<>();
@@ -463,15 +461,23 @@ public class HudManager {
 
     }
 
-
     private String getActionBar(Player player){
 
+        StringBuilder builder = new StringBuilder();
 
-        if(!actionBarCache.containsKey(player.getUniqueId())){
-            updateActionBar(player);
-        }
+        builder.append(getPlayerHealthBar(player));
 
-        return actionBarCache.getOrDefault(player.getUniqueId(), "");
+        builder.append(ChatColor.RESET);
+
+        builder.append(getPlayerResourceBar(player));
+
+        builder.append(ChatColor.RESET);
+
+        builder.append(getSkillBar(player));
+
+
+
+        return String.valueOf(builder);
     }
 
     private String getPlayerHealthBar(Player player){
@@ -492,26 +498,6 @@ public class HudManager {
         return resourceBarCache.getOrDefault(player.getUniqueId(), "");
     }
 
-    public void updateActionBar(Player player){
-
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-                StringBuilder builder = new StringBuilder();
-
-                builder.append(getPlayerHealthBar(player));
-
-                builder.append(ChatColor.RESET);
-
-                builder.append(getPlayerResourceBar(player));
-
-                actionBarCache.put(player.getUniqueId(), String.valueOf(builder));
-
-                displayActionBar(player);
-            }
-        }.runTaskAsynchronously(main);
-
-    }
 
     public void updateHealthBar(Player player){
 
@@ -582,7 +568,6 @@ public class HudManager {
 
                 healthBarCache.put(player.getUniqueId(), builder.toString());
 
-                updateActionBar(player);
             }
         }.runTaskAsynchronously(main);
 
@@ -626,7 +611,7 @@ public class HudManager {
 
 
                 resourceBarCache.put(player.getUniqueId(), builder.toString());
-                updateActionBar(player);
+
 
             }
         }.runTaskAsynchronously(main);
@@ -882,22 +867,14 @@ public class HudManager {
         new BukkitRunnable(){
             @Override
             public void run(){
-
-                //update from cache
-                abilityBarRenderer.render(player, equipSkills, haste, now);
-
+                abilityBarCache.put(player.getUniqueId(), abilityBarRenderer.render(player, equipSkills, haste, now));
             }
         }.runTaskAsynchronously(main);
 
     }
 
     private String getSkillBar(Player player){
-
-        StringBuilder builder = new StringBuilder();
-
-        //collect from cache
-
-        return String.valueOf(builder);
+        return abilityBarCache.getOrDefault(player.getUniqueId(), "");
     }
 
     //#######################################################################################################
@@ -949,6 +926,7 @@ public class HudManager {
                     entityData.append("\uF80C");
                     //-16
                     entityData.append("\uF809");
+
 
 
                     int maxNameLength = 141;

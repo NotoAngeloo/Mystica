@@ -6,8 +6,9 @@ import java.util.UUID;
 
 public class CooldownManager {
 
-    //int is ability number
 
+    private final Map<UUID, Long> globalCooldowns = new HashMap<>();
+    //int is ability number
     private final Map<UUID, Map<Integer, CooldownData>> cooldowns = new HashMap<>();
 
     public void start(UUID uuid, int abilityNumber, long baseCooldown){
@@ -90,7 +91,8 @@ public class CooldownManager {
         cooldowns.remove(uuid);
     }
 
-    public CooldownSnapshot getSnapshot(UUID playerId, int abilityNumber, double haste, long now) {
+    //why did i make this again?
+    /*public CooldownSnapshot getSnapshot(UUID playerId, int abilityNumber, double haste, long now) {
 
         Map<Integer, CooldownData> playerMap = cooldowns.get(playerId);
         if (playerMap == null) return new CooldownSnapshot(0, 1.0, true);
@@ -116,6 +118,29 @@ public class CooldownManager {
         long remaining = (long)(remainingProgress / rate);
 
         return new CooldownSnapshot(remaining, data.getProgress(), false);
+    }*/
+
+    public boolean isOnGlobalCooldown(UUID playerId, long now) {
+        Long end = globalCooldowns.get(playerId);
+        return end != null && end > now;
+    }
+
+    public long getGlobalRemaining(UUID playerId, long now) {
+        Long end = globalCooldowns.get(playerId);
+        if (end == null) return 0;
+        return Math.max(0, end - now);
+    }
+
+    public void applyGlobalCooldown(UUID playerId, double haste, long now, int baseGcdMillis) {
+
+        double adjusted = baseGcdMillis / (1.0 + haste);
+
+        //.25 sec
+        adjusted = Math.max(250, adjusted);
+
+        long endTime = now + (long) adjusted;
+
+        globalCooldowns.put(playerId, endTime);
     }
 
 }

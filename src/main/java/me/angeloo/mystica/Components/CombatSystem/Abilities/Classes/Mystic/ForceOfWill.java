@@ -54,18 +54,19 @@ public class ForceOfWill extends BaseAbility {
     private final double baseRange = 20;
 
     @Override
-    public void use(LivingEntity caster){
+    public boolean use(LivingEntity caster){
 
         targetManager.setTargetToNearestValid(caster, getRange(caster));
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
         if(!usable(caster, target)){
-            return;
+            return false;
         }
 
         execute(caster);
 
         cooldownManager.start(caster.getUniqueId(), 3, (long) (baseCooldown * 1000));
+        return true;
     }
 
     @Override

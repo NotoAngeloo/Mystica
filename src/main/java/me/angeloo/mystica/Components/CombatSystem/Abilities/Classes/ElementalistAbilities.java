@@ -29,18 +29,7 @@ public class ElementalistAbilities implements AbilitySet {
 
     private final Map<Integer, Ability> abilities = new HashMap<>();
 
-    public ElementalistAbilities(Mystica main, AbilityManager manager){
-        //heat = new Heat(main);
-        /*fieryWing = new FieryWing(main, this, manager);
-        conjuringForce = new ConjuringForce(main, manager);
-        elementalBreath = new ElementalBreath(main, manager);
-        fieryMagma = new FieryMagma(main, manager, this);
-        descendingInferno = new DescendingInferno(main, manager, this);
-        elemental_matrix = new ElementalMatrix(main, manager);
-        iceBolt = new IceBolt(main, manager, this);
-        dragonBreathing = new DragonBreathing(main, manager, this);
-        windrushForm = new WindrushForm(main, manager, this);
-        windWall = new WindWall(main, manager, this);*/
+    public ElementalistAbilities(Mystica main, AbilityManager manager, AbilityLookup lookup){
 
         abilities.put(1, new IceBolt(main, manager));
         abilities.put(2, new FieryMagma(main, manager));
@@ -51,7 +40,11 @@ public class ElementalistAbilities implements AbilitySet {
         abilities.put(7, new ElementalBreath(main, manager));
         abilities.put(8, new ElementalMatrix(main, manager));
 
-
+        for(Ability ability : abilities.values()){
+            if(ability instanceof BaseAbility base){
+                base.setLookup(lookup);
+            }
+        }
 
         //elementalistBasic = new ElementalistBasic(main);
     }

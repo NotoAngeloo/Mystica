@@ -44,17 +44,18 @@ public class ConjuringForce extends BaseAbility {
     //TODO: conj force adds health if ur in it
 
     @Override
-    public void use(LivingEntity caster){
+    public boolean use(LivingEntity caster){
 
 
         if(!usable(caster)) {
-            return;
+            return false;
         }
 
         execute(caster);
 
         cooldownManager.start(caster.getUniqueId(), abilityNumber, (long) (baseCooldown * 1000));
 
+        return true;
     }
 
     @Override

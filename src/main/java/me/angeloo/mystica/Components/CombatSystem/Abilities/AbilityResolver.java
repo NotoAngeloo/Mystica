@@ -21,7 +21,9 @@ import org.checkerframework.checker.units.qual.A;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AbilityResolver{
+public class AbilityResolver implements AbilityLookup{
+
+
 
     private final Map<PlayerClass, AbilitySet> classAbilities = new HashMap<>();
     private final Map<SubClass, Map<Integer, Ability>> subclassOverrides = new HashMap<>();
@@ -30,16 +32,25 @@ public class AbilityResolver{
 
     public AbilityResolver(Mystica main, AbilityManager manager) {
 
-        classAbilities.put(PlayerClass.Elementalist,
-                new ElementalistAbilities(main, manager));
+        AbilityLookup lookup = this;
+
         classAbilities.put(PlayerClass.Assassin,
-                new AssassinAbilities(main, manager));
+                new AssassinAbilities(main, manager, lookup));
+        classAbilities.put(PlayerClass.Elementalist,
+                new ElementalistAbilities(main, manager, lookup));
         classAbilities.put(PlayerClass.Mystic,
-                new MysticAbilities(main, manager));
+                new MysticAbilities(main, manager, lookup));
         classAbilities.put(PlayerClass.NONE,
-                new NoneAbilities(main, manager));
+                new NoneAbilities(main, manager, lookup));
+        classAbilities.put(PlayerClass.Paladin,
+                new PaladinAbilities(main, manager, lookup));
         classAbilities.put(PlayerClass.Ranger,
-                new PaladinAbilities(main, manager));
+                new PaladinAbilities(main, manager, lookup));
+        classAbilities.put(PlayerClass.Shadow_Knight,
+                new ShadowKnightAbilities(main, manager, lookup));
+        classAbilities.put(PlayerClass.Warrior,
+                new WarriorAbilities(main, manager, lookup));
+
 
 
         registerOverrides(main, manager);
@@ -102,6 +113,20 @@ public class AbilityResolver{
         divineOverrides.put(8, new JusticeMark(main, manager));
         subclassOverrides.put(SubClass.Divine, divineOverrides);
 
+
+
+        for(SubClass subClass : subclassOverrides.keySet()){
+
+            for(Ability ability : subclassOverrides.get(subClass).values()){
+                if(ability instanceof BaseAbility base){
+                    base.setLookup(this);
+                }
+            }
+
+        }
+
+
+
     }
 
     private void registerUltimates(Mystica main, AbilityManager manager){
@@ -123,4 +148,13 @@ public class AbilityResolver{
         ultimates.put(SubClass.Executioner, new DeathGaze(main, manager));
     }
 
+    @Override
+    public Ability get(PlayerClass clazz, SubClass subClass, int abilityNumber) {
+        return resolve(clazz, subClass, abilityNumber);
+    }
+
+    @Override
+    public Ability get(PlayerClass clazz, int abilityNumber) {
+        return resolve(clazz, abilityNumber);
+    }
 }

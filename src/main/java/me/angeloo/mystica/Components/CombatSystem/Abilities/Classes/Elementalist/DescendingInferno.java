@@ -2,7 +2,6 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Elementalis
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ElementalistAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
@@ -75,7 +74,7 @@ public class DescendingInferno extends BaseAbility {
     }
 
     @Override
-    public void use(LivingEntity caster){
+    public boolean use(LivingEntity caster){
 
 
         targetManager.setTargetToNearestValid(caster, range + statusEffectManager.getAdditionalRange(caster));
@@ -83,13 +82,14 @@ public class DescendingInferno extends BaseAbility {
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
         if(!usable(caster, target)){
-            return;
+            return false;
         }
 
         execute(caster);
 
         cooldownManager.start(caster.getUniqueId(), 3, (long) (baseCooldown * 1000));
 
+        return true;
     }
 
     @Override
@@ -294,6 +294,7 @@ public class DescendingInferno extends BaseAbility {
                     inflamedAlready = true;
 
                     lookup.get(PlayerClass.Elementalist, SubClass.Pyromancer, -1).onExternalTrigger(caster);
+
                 }
 
                 //check if all 3 are gone before canceling

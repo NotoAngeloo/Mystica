@@ -2,7 +2,6 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Assassin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.AssassinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.ConcoctionBuff;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.ConcoctionDebuff;
@@ -62,12 +61,12 @@ public class WickedConcoction extends BaseAbility {
     private final int baseHealing = 10;
 
     @Override
-    public void use(LivingEntity caster){
+    public boolean use(LivingEntity caster){
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
         if(!usable(caster, target)){
-            return;
+            return false;
         }
 
         if(target instanceof Player){
@@ -85,6 +84,7 @@ public class WickedConcoction extends BaseAbility {
 
 
         cooldownManager.start(caster.getUniqueId(), -1, (long) (baseCooldown * 1000));
+        return true;
     }
 
     @Override

@@ -6,9 +6,13 @@ public interface Ability {
 
     String getId();
 
-    void use(LivingEntity caster);
+    boolean use(LivingEntity caster);
 
     int cooldown();
+
+    default int getGlobalCooldownMillis() {
+        return 1000; // default 1 second
+    }
 
     //this is for rez effects which work different as companions
     default void useAsCompanion(LivingEntity caster, LivingEntity target){

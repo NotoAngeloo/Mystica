@@ -3,7 +3,6 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityMarkManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.PaladinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
@@ -27,7 +26,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.List;
 import java.util.Set;
 
 public class DecreeHonor extends BaseAbility {
@@ -70,7 +68,7 @@ public class DecreeHonor extends BaseAbility {
     private final int healPower = 5;
 
     @Override
-    public void use(LivingEntity caster){
+    public boolean use(LivingEntity caster){
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
@@ -79,7 +77,7 @@ public class DecreeHonor extends BaseAbility {
             double distance = caster.getLocation().distance(target.getLocation());
 
             if(distance > range + statusEffectManager.getAdditionalRange(caster)){
-                return;
+                return false;
             }
 
             if(target instanceof Player){
@@ -95,7 +93,7 @@ public class DecreeHonor extends BaseAbility {
         }
 
         if(!usable(caster)){
-            return;
+            return false;
         }
 
 
@@ -103,6 +101,7 @@ public class DecreeHonor extends BaseAbility {
 
         cooldownManager.start(caster.getUniqueId(), 1, (long) (baseCooldown * 1000));
 
+        return true;
     }
 
     @Override

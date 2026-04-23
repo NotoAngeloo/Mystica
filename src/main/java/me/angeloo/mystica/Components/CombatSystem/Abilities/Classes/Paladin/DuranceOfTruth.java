@@ -2,7 +2,6 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.PaladinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Silence;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.GenericDamageReduction;
@@ -68,11 +67,11 @@ public class DuranceOfTruth extends BaseAbility {
     private final int baseDamage = 25;
 
     @Override
-    public void use(LivingEntity caster){
+    public boolean use(LivingEntity caster){
 
 
         if(!usable(caster)){
-            return;
+            return false;
         }
 
         execute(caster);
@@ -84,6 +83,7 @@ public class DuranceOfTruth extends BaseAbility {
 
         cooldownManager.start(caster.getUniqueId(), 7, (long) (baseCooldown * 1000));
 
+        return true;
     }
 
     @Override

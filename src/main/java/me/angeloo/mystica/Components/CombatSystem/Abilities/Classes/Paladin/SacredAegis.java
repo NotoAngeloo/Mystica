@@ -7,7 +7,6 @@ import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifier
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Location;
@@ -19,13 +18,8 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 public class SacredAegis extends BaseAbility {
 
@@ -50,13 +44,13 @@ public class SacredAegis extends BaseAbility {
     private final int baseCooldown = 120;
 
     @Override
-    public void use(LivingEntity caster){
+    public boolean use(LivingEntity caster){
 
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
         if(!usable(caster, target)){
-            return;
+            return false;
         }
 
         if(target == null){
@@ -77,6 +71,7 @@ public class SacredAegis extends BaseAbility {
         //this is because cooldown is reduced on skill levels
         cooldownManager.start(caster.getUniqueId(), 6, (long) (getSkillCooldown(caster) * 1000L));
 
+        return true;
     }
 
     @Override

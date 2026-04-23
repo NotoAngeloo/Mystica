@@ -59,7 +59,7 @@ public class ArcaneMissiles extends BaseAbility {
     private final double baseRange = 20;
 
     @Override
-    public void use(LivingEntity caster){
+    public boolean use(LivingEntity caster){
 
         double totalRange = getRange(caster);
 
@@ -68,7 +68,7 @@ public class ArcaneMissiles extends BaseAbility {
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
         if(!usable(caster, target)){
-            return;
+            return false;
         }
 
 
@@ -76,6 +76,7 @@ public class ArcaneMissiles extends BaseAbility {
 
         cooldownManager.start(caster.getUniqueId(), -1, (long) (baseCooldown * 1000));
 
+        return true;
     }
 
     @Override

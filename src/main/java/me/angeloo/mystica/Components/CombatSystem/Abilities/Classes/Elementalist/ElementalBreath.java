@@ -45,16 +45,17 @@ public class ElementalBreath extends BaseAbility {
     private final int baseDuration = 15;
 
     @Override
-    public void use(LivingEntity caster){
+    public boolean use(LivingEntity caster){
 
 
         if(!usable(caster)){
-            return;
+            return false;
         }
 
         execute(caster);
 
         cooldownManager.start(caster.getUniqueId(), 7, (long) (baseCooldown * 1000));
+        return true;
     }
 
     public int getDuration(LivingEntity caster){
@@ -82,6 +83,7 @@ public class ElementalBreath extends BaseAbility {
             Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
+        //this is probably effecting when players can use this skill
         new BukkitRunnable(){
             @Override
             public void run(){

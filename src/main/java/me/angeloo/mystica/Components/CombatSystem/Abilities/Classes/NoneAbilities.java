@@ -1,9 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.Ability;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.*;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.None.*;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilitySet;
 import me.angeloo.mystica.Mystica;
 
 import java.util.HashMap;
@@ -20,7 +18,7 @@ public class NoneAbilities implements AbilitySet {
 
     //TODO: make unspecialized its own thing. take abilties from other classes to use temp
 
-    public NoneAbilities(Mystica main, AbilityManager manager){
+    public NoneAbilities(Mystica main, AbilityManager manager, AbilityLookup lookup){
         //noneBasic = new NoneBasic(main);
         //dash = new Dash(main, manager);
         //noneRoll = new NoneRoll(main, manager);
@@ -29,6 +27,12 @@ public class NoneAbilities implements AbilitySet {
         abilities.put(1, new Kick(main, manager));
         abilities.put(2, new Dash(main, manager));
         abilities.put(3, new NoneRoll(main, manager));
+
+        for(Ability ability : abilities.values()){
+            if(ability instanceof BaseAbility base){
+                base.setLookup(lookup);
+            }
+        }
     }
 
     @Override

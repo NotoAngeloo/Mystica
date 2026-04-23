@@ -2,7 +2,6 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.PaladinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
@@ -17,10 +16,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 public class GloryOfPaladins extends BaseAbility {
 
@@ -50,10 +45,10 @@ public class GloryOfPaladins extends BaseAbility {
     private final int baseDamage = 20;
 
     @Override
-    public void use(LivingEntity caster){
+    public boolean use(LivingEntity caster){
 
         if(!usable(caster)){
-            return;
+            return false;
         }
 
         execute(caster);
@@ -66,6 +61,12 @@ public class GloryOfPaladins extends BaseAbility {
 
         cooldownManager.start(caster.getUniqueId(), 6, (long) (baseCooldown * 1000));
 
+        return true;
+    }
+
+    @Override
+    public int cooldown() {
+        return baseCooldown;
     }
 
     private void execute(LivingEntity caster){

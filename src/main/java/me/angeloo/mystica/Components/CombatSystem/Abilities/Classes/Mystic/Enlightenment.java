@@ -3,7 +3,6 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Mystic;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityMarkManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.MysticAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.GenericDamageReduction;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
@@ -15,7 +14,6 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 
-import java.util.List;
 import java.util.Set;
 
 public class Enlightenment extends BaseAbility {
@@ -45,12 +43,12 @@ public class Enlightenment extends BaseAbility {
     private final int healPercent = 10;
 
     @Override
-    public void use(LivingEntity caster){
+    public boolean use(LivingEntity caster){
 
 
 
         if(!usable(caster)){
-            return;
+            return false;
         }
 
         mana.subTractManaFromEntity(caster, cost);
@@ -59,6 +57,12 @@ public class Enlightenment extends BaseAbility {
         execute(caster);
 
         cooldownManager.start(caster.getUniqueId(), -1, (long) (baseCooldown * 1000));
+        return true;
+    }
+
+    @Override
+    public int cooldown() {
+        return baseCooldown;
     }
 
     private void execute(LivingEntity caster){

@@ -2,7 +2,6 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Elementalis
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ElementalistAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -24,7 +23,7 @@ public class WindrushForm extends BaseAbility {
 
     private final Heat heat;
 
-    private final double baseCooldown = 15;
+    private final int baseCooldown = 15;
 
 
     public WindrushForm(Mystica main, AbilityManager manager){
@@ -37,23 +36,27 @@ public class WindrushForm extends BaseAbility {
     }
 
     @Override
-    public void use(LivingEntity caster){
+    public boolean use(LivingEntity caster){
 
 
 
         if(!usable(caster)){
-            return;
+            return false;
         }
 
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_4_Level_Bonus();
 
 
-
-
         execute(caster);
 
         cooldownManager.start(caster.getUniqueId(), 4, (long) (baseCooldown * 1000));
+        return true;
+    }
+
+    @Override
+    public int cooldown() {
+        return baseCooldown;
     }
 
     private void execute(LivingEntity caster){

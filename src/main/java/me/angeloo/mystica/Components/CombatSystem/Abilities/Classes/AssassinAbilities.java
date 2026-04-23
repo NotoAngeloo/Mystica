@@ -1,9 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.Ability;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.*;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Assassin.*;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilitySet;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.entity.LivingEntity;
 
@@ -27,7 +25,7 @@ public class AssassinAbilities implements AbilitySet {
 
     private final Map<Integer, Ability> abilities = new HashMap<>();
 
-    public AssassinAbilities(Mystica main, AbilityManager manager){
+    public AssassinAbilities(Mystica main, AbilityManager manager, AbilityLookup lookup){
         /*combo = new Combo(main, manager);
         stealth = new Stealth(main, manager, this);
         duelistsFrenzy = new DuelistsFrenzy(main, this, manager);
@@ -49,6 +47,12 @@ public class AssassinAbilities implements AbilitySet {
         abilities.put(6, new BladeTempest(main, manager));
         abilities.put(7, new FlyingBlade(main, manager));
         abilities.put(8, new Stealth(main, manager));
+
+        for(Ability ability : abilities.values()){
+            if(ability instanceof BaseAbility base){
+                base.setLookup(lookup);
+            }
+        }
     }
 
     @Override

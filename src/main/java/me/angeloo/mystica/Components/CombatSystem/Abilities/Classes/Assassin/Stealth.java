@@ -2,7 +2,6 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Assassin;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.AssassinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Misc.StealthEffect;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
@@ -62,24 +61,30 @@ public class Stealth extends BaseAbility {
     private final int baseDamage = 50;
 
     @Override
-    public void use(LivingEntity caster){
+    public boolean use(LivingEntity caster){
 
 
         if(getIfStealthed(caster)){
             reveal(caster);
             //cooldownDisplayer.displayCooldown(caster, 8);
-            return;
+            return false;
         }
 
 
         if(!cooldownManager.isReady(caster.getUniqueId(), 8, statusEffectManager.getHastePercent(caster))){
-            return;
+            return false;
         }
 
         //cooldownDisplayer.displayCooldown(caster, 8);
 
         vanish(caster);
 
+        return true;
+    }
+
+    @Override
+    public int cooldown() {
+        return baseCooldown;
     }
 
     private void vanish(LivingEntity caster){

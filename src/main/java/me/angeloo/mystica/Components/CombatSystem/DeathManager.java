@@ -157,7 +157,7 @@ public class DeathManager {
 
         if(target instanceof Player player){
             player.setGameMode(GameMode.SURVIVAL);
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(""));
+            //player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(""));
             //Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(target, BarType.Resource));
             player.getInventory().clear();
             displayWeapons.displayArmor(player);

@@ -2,7 +2,6 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Mystic;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.MysticAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.GravestoneManager;
@@ -58,44 +57,49 @@ public class ArcaneContract extends BaseAbility {
     private final int baseCooldown = 120;
 
     @Override
-    public void use(LivingEntity caster){
+    public int cooldown() {
+        return baseCooldown;
+    }
+
+    @Override
+    public boolean use(LivingEntity caster){
 
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
         if(target == null){
-            return;
+            return false;
         }
 
         double distance = caster.getLocation().distance(target.getLocation());
 
         if(distance>range + statusEffectManager.getAdditionalRange(caster)){
-            return;
+            return false;
         }
 
 
         if(!gravestoneManager.isGravestone(target)){
 
             if(!profileManager.getAnyProfile(target).fakePlayer()){
-                return;
+                return false;
             }
 
             if(pveChecker.pveLogic(target)){
-                return;
+                return false;
             }
 
             if(!profileManager.getAnyProfile(target).getIfDead()){
-                return;
+                return false;
             }
 
             //this is unaffected by haste.
             if(!cooldownManager.isReady(caster.getUniqueId(), 7, 0)){
-                return;
+                return false;
             }
 
 
             if(mana.getCurrentMana(caster)<cost){
-                return;
+                return false;
             }
 
             mana.subTractManaFromEntity(caster, cost);
@@ -107,33 +111,33 @@ public class ArcaneContract extends BaseAbility {
 
             execute(caster, target);
 
-            return;
+            return false;
         }
 
         Player actualTarget = gravestoneManager.getPlayer(target);
 
         if(pveChecker.pveLogic(actualTarget)){
-            return;
+            return false;
         }
 
 
 
         if(pvpManager.pvpLogic(caster, actualTarget)){
-            return;
+            return false;
         }
 
 
         if(!profileManager.getAnyProfile(actualTarget).getIfDead()){
-            return;
+            return false;
         }
 
         if(!cooldownManager.isReady(caster.getUniqueId(), 7, 0)){
-            return;
+            return false;
         }
 
 
         if(mana.getCurrentMana(caster)<cost){
-            return;
+            return false;
         }
 
         mana.subTractManaFromEntity(caster, cost);
@@ -146,6 +150,7 @@ public class ArcaneContract extends BaseAbility {
 
         execute(caster, actualTarget);
 
+        return true;
     }
 
     private void execute(LivingEntity caster, LivingEntity target){

@@ -2,7 +2,6 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Elementalis
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ElementalistAbilities;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Shields.WindWallShield;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
@@ -41,12 +40,12 @@ public class WindWall extends BaseAbility {
     }
 
     @Override
-    public void use(LivingEntity caster) {
+    public boolean use(LivingEntity caster) {
 
 
 
         if(!usable(caster)) {
-            return;
+            return false;
         }
 
         execute(caster);
@@ -55,6 +54,12 @@ public class WindWall extends BaseAbility {
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_5_Level_Bonus();
 
         cooldownManager.start(caster.getUniqueId(), 5, (long) (baseCooldown * 1000));
+        return true;
+    }
+
+    @Override
+    public int cooldown() {
+        return baseCooldown;
     }
 
     private void execute(LivingEntity caster){

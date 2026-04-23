@@ -108,10 +108,34 @@ public class AbilityManager {
 
         Profile playerProfile = profileManager.getAnyProfile(caster);
 
+        long now = System.currentTimeMillis();
+
+        if(cooldownManager.isOnGlobalCooldown(caster.getUniqueId(), now)){
+            return;
+        }
+
         PlayerClass clazz = playerProfile.getPlayerClass();
         SubClass subClass = playerProfile.getPlayerSubclass();
 
-        abilityResolver.resolve(clazz, subClass, abilityNumber).use(caster);
+        Ability ability = abilityResolver.resolve(clazz, subClass, abilityNumber);
+
+        if(ability == null){
+            return;
+        }
+
+        //perhaps in future make this "AbilityResult" enum to explain *why* failed, but that is out of scope atm
+
+        boolean success = ability.use(caster);
+
+        if(!success){
+            return;
+        }
+
+        int gcd = ability.getGlobalCooldownMillis();
+
+        if(gcd > 0){
+            cooldownManager.applyGlobalCooldown(caster.getUniqueId(), statusEffectManager.getHastePercent(caster), now, gcd);
+        }
 
         /*switch (clazz) {
             case Elementalist -> {

@@ -1,9 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.Ability;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.*;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Ranger.*;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilitySet;
 import me.angeloo.mystica.Mystica;
 
 import java.util.HashMap;
@@ -27,7 +25,7 @@ public class RangerAbilities implements AbilitySet {
 
     private final Map<Integer, Ability> abilities = new HashMap<>();
 
-    public RangerAbilities(Mystica main, AbilityManager manager){
+    public RangerAbilities(Mystica main, AbilityManager manager, AbilityLookup lookup){
 
         /*ocus = new Focus(main);
         starVolley = new StarVolley(main, this, manager);
@@ -50,6 +48,13 @@ public class RangerAbilities implements AbilitySet {
         abilities.put(6, new RallyingCry(main, manager));
         abilities.put(7, new WildSpirit(main, manager));
         abilities.put(8, new Roll(main, manager));
+
+        for(Ability ability : abilities.values()){
+            if(ability instanceof BaseAbility base){
+                base.setLookup(lookup);
+            }
+        }
+
     }
 
     @Override

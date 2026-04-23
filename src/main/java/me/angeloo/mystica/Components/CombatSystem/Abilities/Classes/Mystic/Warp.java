@@ -32,11 +32,11 @@ public class Warp extends BaseAbility {
     private final double baseRange = 8;
 
     @Override
-    public void use(LivingEntity caster){
+    public boolean use(LivingEntity caster){
 
 
         if(!usable(caster)){
-            return;
+            return false;
         }
 
         double maxDistance = baseRange + statusEffectManager.getAdditionalRange(caster);
@@ -65,7 +65,7 @@ public class Warp extends BaseAbility {
 
             if(distance <= maxDistance){
                 caster.teleport(target);
-                return;
+                return false;
             }
         }
 
@@ -86,8 +86,13 @@ public class Warp extends BaseAbility {
 
         cooldownManager.start(caster.getUniqueId(), 5, (long) (baseCooldown * 1000));
 
+        return true;
     }
 
+    @Override
+    public int cooldown() {
+        return baseCooldown;
+    }
 
     @Override
     public boolean usable(LivingEntity caster){

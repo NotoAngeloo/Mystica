@@ -23,10 +23,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 public class EvilSpirit extends BaseAbility {
 
     private final Mystica main;
@@ -49,16 +45,22 @@ public class EvilSpirit extends BaseAbility {
     }
 
     @Override
-    public void use(LivingEntity caster){
+    public boolean use(LivingEntity caster){
 
         if(!usable(caster)){
-            return;
+            return false;
         }
 
         execute(caster);
+        return true;
     }
 
     //im gonna make this look nicer eventually
+
+    @Override
+    public int cooldown() {
+        return 0;
+    }
 
     private void execute(LivingEntity caster){
 

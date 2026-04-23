@@ -63,7 +63,7 @@ public class RezTick{
                     return;
                 }
 
-                String rezMessage = "Left Click to Respawn";
+                /*String rezMessage = "Left Click to Respawn";
 
 
                 if(partyInCombat(player)){
@@ -76,14 +76,13 @@ public class RezTick{
                     }
                 }
 
-                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(rezMessage));
+                //player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(rezMessage));*/
 
 
 
             }
 
         }.runTaskTimerAsynchronously(main, 0, 20);
-
 
 
         rezTasks.put(player.getUniqueId(), rezTask);

@@ -26,20 +26,26 @@ public class Dash extends BaseAbility {
     private final int baseCooldown = 33;
 
     @Override
-    public void use(LivingEntity caster){
+    public boolean use(LivingEntity caster){
 
         //figure something else later
         if(!(caster instanceof Player player)){
-            return;
+            return false;
         }
 
         if(!usable(caster)){
-            return;
+            return false;
         }
 
         execute(player);
 
         cooldownManager.start(caster.getUniqueId(), 5, (long) (baseCooldown * 1000));
+        return true;
+    }
+
+    @Override
+    public int cooldown() {
+        return baseCooldown;
     }
 
     private void execute(Player player){

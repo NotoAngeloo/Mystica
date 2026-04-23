@@ -60,7 +60,7 @@ public class HealthAbsorb extends BaseAbility {
     private final double baseDamage = 25;
 
     @Override
-    public void use(LivingEntity caster){
+    public boolean use(LivingEntity caster){
 
         double totalRange = getRange(caster);
 
@@ -69,13 +69,19 @@ public class HealthAbsorb extends BaseAbility {
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
         if(!usable(caster, target)){
-            return;
+            return false;
         }
 
         execute(caster);
 
         cooldownManager.start(caster.getUniqueId(), 3, (long) (baseCooldown * 1000));
 
+        return true;
+    }
+
+    @Override
+    public int cooldown() {
+        return baseCooldown;
     }
 
     private double getRange(LivingEntity caster){

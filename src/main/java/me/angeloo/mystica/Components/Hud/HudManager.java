@@ -1,13 +1,14 @@
 package me.angeloo.mystica.Components.Hud;
 
+import me.angeloo.mystica.Components.Hud.Abilties.AbilityBarRenderer;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.AggroManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
-import me.angeloo.mystica.Components.CombatSystem.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.CombatSystem.GravestoneManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
+import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.BossManager;
@@ -51,13 +52,13 @@ public class HudManager {
     private final AggroManager aggroManager;
 
 
-    private final AllSkillItems allSkillItems;
     private final AbilityManager abilityManager;
     private final StatusEffectManager statusEffectManager;
     private final GravestoneManager gravestoneManager;
     private final TargetManager targetManager;
     private final BossCastingManager bossCastingManager;
     private final IconCalculator iconCalculator;
+    private final AbilityBarRenderer abilityBarRenderer;
 
     private final SkinGrabber skinGrabber;
 
@@ -307,11 +308,12 @@ public class HudManager {
 
     private final String[] comboResource5 = {"\uE02f","\uE030","\uE031","\uE032","\uE033","\uE034"};
 
-    private final Map<UUID, String> actionBarCache = new ConcurrentHashMap<>();
-
     private final Map<UUID, String> healthBarCache = new ConcurrentHashMap<>();
 
     private final Map<UUID, String> resourceBarCache = new ConcurrentHashMap<>();
+
+    //abilities
+    private final Map<UUID, String> abilityBarCache = new ConcurrentHashMap<>();
 
 
     //targeting
@@ -359,7 +361,6 @@ public class HudManager {
         damageBoardPlaceholders = new DamageBoardPlaceholders(main);
         mysticaPartyManager = main.getMysticaPartyManager();
         abilityManager = main.getAbilityManager();
-        allSkillItems = main.getAllSkillItems();
         statusEffectManager = main.getStatusEffectManager();
         targetManager = main.getTargetManager();
         bossCastingManager = main.getBossCastingManager();
@@ -368,6 +369,7 @@ public class HudManager {
         iconCalculator = new IconCalculator();
         skinGrabber = new SkinGrabber();
         aggroManager = main.getAggroManager();
+        abilityBarRenderer = new AbilityBarRenderer(main, abilityManager);
     }
 
     public DamageBoardPlaceholders getDamageBoardPlaceholders(){
@@ -442,6 +444,7 @@ public class HudManager {
     //reason this has to update is that entities update their *own* bar information
     public void hudTicker(){
         for(Player player : Bukkit.getOnlinePlayers()){
+            updateSkillCache(player);
             displayActionBar(player);
             updateTargetData(player);
             updateTargetTargetData(player);
@@ -458,15 +461,23 @@ public class HudManager {
 
     }
 
-
     private String getActionBar(Player player){
 
+        StringBuilder builder = new StringBuilder();
 
-        if(!actionBarCache.containsKey(player.getUniqueId())){
-            updateActionBar(player);
-        }
+        builder.append(getPlayerHealthBar(player));
 
-        return actionBarCache.getOrDefault(player.getUniqueId(), "");
+        builder.append(ChatColor.RESET);
+
+        builder.append(getPlayerResourceBar(player));
+
+        builder.append(ChatColor.RESET);
+
+        builder.append(getSkillBar(player));
+
+
+
+        return String.valueOf(builder);
     }
 
     private String getPlayerHealthBar(Player player){
@@ -487,26 +498,6 @@ public class HudManager {
         return resourceBarCache.getOrDefault(player.getUniqueId(), "");
     }
 
-    public void updateActionBar(Player player){
-
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-                StringBuilder builder = new StringBuilder();
-
-                builder.append(getPlayerHealthBar(player));
-
-                builder.append(ChatColor.RESET);
-
-                builder.append(getPlayerResourceBar(player));
-
-                actionBarCache.put(player.getUniqueId(), String.valueOf(builder));
-
-                displayActionBar(player);
-            }
-        }.runTaskAsynchronously(main);
-
-    }
 
     public void updateHealthBar(Player player){
 
@@ -577,7 +568,6 @@ public class HudManager {
 
                 healthBarCache.put(player.getUniqueId(), builder.toString());
 
-                updateActionBar(player);
             }
         }.runTaskAsynchronously(main);
 
@@ -586,6 +576,7 @@ public class HudManager {
 
     public void updateResourceBar(Player player){
 
+        //maybe this is more dynamic in the future
         new BukkitRunnable(){
             @Override
             public void run(){
@@ -620,7 +611,7 @@ public class HudManager {
 
 
                 resourceBarCache.put(player.getUniqueId(), builder.toString());
-                updateActionBar(player);
+
 
             }
         }.runTaskAsynchronously(main);
@@ -866,26 +857,24 @@ public class HudManager {
 
     //#####################################################################################################
 
-    public void updateSkillCache(Player player, int skill){
+    public void updateSkillCache(Player player){
+
+        EquipSkills equipSkills = profileManager.getAnyProfile(player).getEquipSkills();
+        double haste = statusEffectManager.getHastePercent(player);
+
+        long now = System.currentTimeMillis();
 
         new BukkitRunnable(){
             @Override
             public void run(){
-
-                //update from cache
-
+                abilityBarCache.put(player.getUniqueId(), abilityBarRenderer.render(player, equipSkills, haste, now));
             }
         }.runTaskAsynchronously(main);
 
     }
 
     private String getSkillBar(Player player){
-
-        StringBuilder builder = new StringBuilder();
-
-        //collect from cache
-
-        return String.valueOf(builder);
+        return abilityBarCache.getOrDefault(player.getUniqueId(), "");
     }
 
     //#######################################################################################################
@@ -937,6 +926,7 @@ public class HudManager {
                     entityData.append("\uF80C");
                     //-16
                     entityData.append("\uF809");
+
 
 
                     int maxNameLength = 141;

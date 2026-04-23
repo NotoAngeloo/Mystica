@@ -93,7 +93,6 @@ public class MercifulHealing extends BaseAbility {
 
     private void execute(LivingEntity caster, LivingEntity target){
 
-        abilityManager.setCasting(caster, true);
         int castTime = 20;
 
         if(playerStateManager.get(caster.getUniqueId()).has("move_cast")){
@@ -102,6 +101,8 @@ public class MercifulHealing extends BaseAbility {
         else{
             statusEffectManager.applyEffect(caster, new Root(), castTime, null);
         }
+
+        abilityManager.setSkillCurrentlyCasting(caster, statusBarIcon());
 
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
@@ -112,14 +113,14 @@ public class MercifulHealing extends BaseAbility {
                 if(caster instanceof Player){
                     if(!((Player)caster).isOnline()){
                         this.cancel();
-                        abilityManager.setCasting(caster, false);
+                        abilityManager.stopCasting(caster);
                         statusEffectManager.removeEffect(caster, "root");
                     }
                 }
 
                 if(!statusEffectManager.canCast(caster)){
                     this.cancel();
-                    abilityManager.setCasting(caster, false);
+                    abilityManager.stopCasting(caster);
                     statusEffectManager.removeEffect(caster, "root");
                     return;
                 }
@@ -134,7 +135,7 @@ public class MercifulHealing extends BaseAbility {
 
                 if(distanceToTarget>getRange(caster)){
                     this.cancel();
-                    abilityManager.setCasting(caster, false);
+                    abilityManager.stopCasting(caster);
                     statusEffectManager.removeEffect(caster, "root");
                     return;
                 }
@@ -144,7 +145,7 @@ public class MercifulHealing extends BaseAbility {
 
                 if(ran >= castTime){
                     this.cancel();
-                    abilityManager.setCasting(caster, false);
+                    abilityManager.stopCasting(caster);
                     healTarget(target);
                     statusEffectManager.removeEffect(caster, "root");
                 }

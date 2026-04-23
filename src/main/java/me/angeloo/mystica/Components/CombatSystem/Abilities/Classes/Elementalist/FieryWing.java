@@ -285,9 +285,7 @@ public class FieryWing extends BaseAbility {
 
         inflameMap.put(caster.getUniqueId(), stacks);
 
-        if(caster instanceof Player player){
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
-        }
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(caster, BarType.Status));
 
     }
 
@@ -295,9 +293,6 @@ public class FieryWing extends BaseAbility {
     public void removeInflame(LivingEntity caster){
         inflameMap.put(caster.getUniqueId(), 0);
 
-        if(caster instanceof Player player){
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
-        }
     }
 
     public double getSkillDamage(LivingEntity caster){

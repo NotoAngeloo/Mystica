@@ -97,8 +97,7 @@ public class PurifyingBlast extends BaseAbility {
 
         statusEffectManager.applyEffect(caster, new Root(), castTime, null);
 
-
-        abilityManager.setCasting(caster, true);
+        abilityManager.setSkillCurrentlyCasting(caster, statusBarIcon());
 
         new BukkitRunnable(){
             int count = 0;
@@ -108,27 +107,25 @@ public class PurifyingBlast extends BaseAbility {
                 if(caster instanceof Player){
                     if(!((Player)caster).isOnline()){
                         this.cancel();
-                        abilityManager.setCasting(caster, false);
+                        abilityManager.stopCasting(caster);
                         return;
                     }
                 }
 
                 if(!statusEffectManager.canCast(caster)){
                     this.cancel();
-                    abilityManager.setCasting(caster, false);
+                    abilityManager.stopCasting(caster);
                     return;
                 }
 
                 double percent = ((double) count / castTime) * 100;
 
-                if(caster instanceof Player){
-                    abilityManager.setCastBar((Player) caster, percent);
-                }
 
+                abilityManager.setCastBar(caster, percent);
 
                 if(count >= castTime){
                     this.cancel();
-                    abilityManager.setCasting(caster, false);
+                    abilityManager.stopCasting(caster);
                     blastTask(caster);
                 }
 

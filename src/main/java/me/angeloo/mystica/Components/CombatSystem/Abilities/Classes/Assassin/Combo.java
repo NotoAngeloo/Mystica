@@ -43,16 +43,11 @@ public class Combo {
 
         comboPoints.put(caster.getUniqueId(), current);
 
-        if(caster instanceof Player){
-            Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
-        }
 
         //cooldownDisplayer.displayCooldown(caster, 3);
         //cooldownDisplayer.displayCooldown(caster, 4);
 
-        if(caster instanceof Player){
-            Player player = (Player) caster;
+        if(caster instanceof Player player){
             Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource));
         }
     }
@@ -66,18 +61,13 @@ public class Combo {
         comboPoints.put(caster.getUniqueId(), newAmount);
 
 
-        if(caster instanceof Player){
-            Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
-        }
-
-
         //cooldownDisplayer.displayCooldown(caster, 3);
         //cooldownDisplayer.displayCooldown(caster, 4);
 
         if(caster instanceof Player){
             Player player = (Player) caster;
             Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
         return current;

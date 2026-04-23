@@ -39,8 +39,10 @@ public interface Ability {
 
     }
 
-    default String icon(){
+    default String skillBarIcon(){
         return "\ue1d3";
     }
+
+    default String statusBarIcon(){return "\ue219";}
 
 }

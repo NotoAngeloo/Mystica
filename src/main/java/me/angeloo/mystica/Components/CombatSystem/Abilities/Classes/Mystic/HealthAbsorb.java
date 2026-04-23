@@ -101,7 +101,7 @@ public class HealthAbsorb extends BaseAbility {
 
         skillDamage = skillDamage / castTime;
 
-        abilityManager.setCasting(caster, true);
+        abilityManager.setSkillCurrentlyCasting(caster, statusBarIcon());
 
         double finalSkillDamage = skillDamage;
         double finalCastTime = castTime;
@@ -284,8 +284,7 @@ public class HealthAbsorb extends BaseAbility {
             private void cancelTask() {
                 this.cancel();
                 removeArmorStands(armorStands);
-                abilityManager.setCasting(caster, false);
-                abilityManager.setCastBar(caster, 0);
+                abilityManager.stopCasting(caster);
             }
 
 

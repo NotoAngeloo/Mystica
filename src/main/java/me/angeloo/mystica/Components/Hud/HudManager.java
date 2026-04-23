@@ -315,6 +315,13 @@ public class HudManager {
     //abilities
     private final Map<UUID, String> abilityBarCache = new ConcurrentHashMap<>();
 
+    //casting
+
+    private final String playerCastBarBackground = "\ue1ef";
+    private final String[] playerCastBar = {"\uE218","\uE217","\uE216","\uE215","\uE214","\uE213","\uE212","\uE211","\uE210","\uE20F","\uE20E","\uE20D","\uE20C","\uE20B","\uE20A","\uE209","\uE208","\uE207","\uE206","\uE205","\uE204","\uE203","\uE202","\uE201","\uE200","\uE1FF","\uE1FE","\uE1FD","\uE1FC","\uE1FB","\uE1FA","\uE1F9","\uE1F8","\uE1F7","\uE1F6","\uE1F5","\uE1F4","\uE1F3","\uE1F2","\uE1F1","\uE1F0"};
+
+    private final Map<UUID, String> castBarCache = new ConcurrentHashMap<>();
+
 
     //targeting
     private final String bossResourceBackground = "\uE035";
@@ -475,7 +482,10 @@ public class HudManager {
 
         builder.append(getSkillBar(player));
 
+        // cast bar
+        builder.append(getCastBar(player));
 
+        //status effects
 
         return String.valueOf(builder);
     }
@@ -875,6 +885,79 @@ public class HudManager {
 
     private String getSkillBar(Player player){
         return abilityBarCache.getOrDefault(player.getUniqueId(), "");
+    }
+
+    //########################################################################################################
+
+    public void updateCastBar(Player player){
+
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                StringBuilder castBar = new StringBuilder();
+
+                double percent = abilityManager.getCastPercent(player);
+
+                if(percent==0){
+                    castBarCache.put(player.getUniqueId(), String.valueOf(castBar));
+                    return;
+                }
+
+                //this moves to the front
+                //-256
+                castBar.append("\uF80D");
+                //+49
+                castBar.append("\uF82A\uF829\uF821");
+
+                double ratio = percent / 100;
+
+                int amount = (int) Math.ceil(ratio * 40);
+
+                if(amount <=0){
+                    amount = 0;
+                }
+
+                if(amount>=40){
+                    amount = 40;
+                }
+
+                //+53, to make it centered
+                castBar.append("\uF82A\uF829\uF825");
+
+                //put icon first
+                castBar.append(abilityManager.getSkillCurrentlyCasting(player));
+
+                castBar.append(playerCastBarBackground);
+                //-83
+                castBar.append("\uF80B\uF809\uF803");
+
+                castBar.append(ChatColor.GRAY);
+
+                castBar.append(playerCastBar[amount]);
+
+                //now i need to add padding
+                int maxLength = 207 - 53; //bar lengths minus offset spacing
+                int padding = maxLength - 83 - 17; //cast bar size plus icon width, 17
+                // pad remaining space
+
+                for (int i = 0; i < PIXELS.length; i++) {
+
+                    while (padding >= PIXELS[i]) {
+                        castBar.append(GLYPHS[i]);
+                        padding -= PIXELS[i];
+                    }
+
+                }
+
+                castBarCache.put(player.getUniqueId(), String.valueOf(castBar));
+
+            }
+        }.runTaskAsynchronously(main);
+
+    }
+
+    private String getCastBar(Player player){
+        return castBarCache.getOrDefault(player.getUniqueId(), "");
     }
 
     //#######################################################################################################
@@ -1791,111 +1874,6 @@ public class HudManager {
         //return String.valueOf(offset);
     }
 
-
-    //####################################################################################################
-
-    public void displayCastBar(Player player){
-
-        /*
-
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-
-                if(!player.isOnline()){
-                    return;
-                }
-
-                if(!abilityManager.getIfCasting(player) && Objects.equals(getBossWarning(player), " ")){
-                    //Bukkit.getLogger().info("player stop casting");
-                    player.sendTitle("", "", 0, 1, 0);
-                    return;
-                }
-
-                if(abilityManager.getCastPercent(player) == 0 && Objects.equals(getBossWarning(player), " ")){
-                    //Bukkit.getLogger().info("player stop casting");
-                    player.sendTitle("", "", 0, 1, 0);
-                    return;
-                }
-
-                StringBuilder castBarString = new StringBuilder();
-
-                if(abilityManager.getIfCasting(player) && abilityManager.getCastPercent(player) != 0){
-                    double percent =  abilityManager.getCastPercent(player);
-
-                    double ratio = percent / 100;
-
-                    int amount = (int) Math.ceil(ratio * 20);
-
-                    if(amount <=0){
-                        amount = 0;
-                    }
-
-                    if(amount>=20){
-                        amount = 20;
-                    }
-
-                    //Bukkit.getLogger().info(String.valueOf(amount));
-
-                    castBarString.append(castBar[amount]);
-                }
-
-                //warningmessage in first slot later
-                player.sendTitle(getBossWarning(player), String.valueOf(castBarString), 0, 5, 0);
-            }
-        }.runTaskAsynchronously(main);
-
-        */
-
-    }
-
-
-
-
-    public void editTeamBar(Player player){
-
-
-        BossBar teamBar = profileManager.getPlayerTeamBar(player);
-
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-                teamBar.setTitle(createTeamDataString(player));
-            }
-        }.runTaskAsynchronously(main);
-
-
-    }
-    public void editStatusBar(Player player){
-        BossBar statusBar = profileManager.getPlayerStatusBar(player);
-
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-
-                statusBar.setTitle(createStatusString(player));
-            }
-        }.runTaskAsynchronously(main);
-
-
-    }
-
-    /*private String createPlayerDataString(Player player){
-
-        StringBuilder playerResources = new StringBuilder();
-
-        //-512space
-        playerResources.append("\uF80E");
-
-        // +60 space
-        playerResources.append("\uF82A\uF829\uF828\uF824");
-
-        playerResources.append(createEntityDataString(player, player));
-
-
-        return String.valueOf(playerResources);
-
-    }*/
 
 
 

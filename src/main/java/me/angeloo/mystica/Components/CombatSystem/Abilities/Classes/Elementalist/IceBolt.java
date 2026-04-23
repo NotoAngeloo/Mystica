@@ -272,4 +272,5 @@ public class IceBolt extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 1, statusEffectManager.getHastePercent(caster));
     }
 
+
 }

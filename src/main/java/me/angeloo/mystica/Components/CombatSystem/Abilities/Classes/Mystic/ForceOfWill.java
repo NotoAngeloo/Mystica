@@ -214,12 +214,13 @@ public class ForceOfWill extends BaseAbility {
 
         boolean arcane = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Shepard);
 
-        abilityManager.setCasting(caster, true);
         double castTime = 4;
         castTime = castTime - statusEffectManager.getHastePercent(caster);
         castTime = castTime * 20;
 
         double skillDamage = getSkillDamage(caster)/castTime;
+
+        abilityManager.setSkillCurrentlyCasting(caster, statusBarIcon());
 
         double finalCastTime = castTime;
         new BukkitRunnable(){
@@ -231,19 +232,14 @@ public class ForceOfWill extends BaseAbility {
                 if(caster instanceof Player){
                     if(!((Player)caster).isOnline()){
                         this.cancel();
-                        abilityManager.setCasting(caster, false);
-                        abilityManager.setCastBar(caster, 0);
+                        abilityManager.stopCasting(caster);
                         return;
                     }
                 }
 
                 if(!statusEffectManager.canCast(caster)){
                     this.cancel();
-                    abilityManager.setCasting(caster, false);
-
-                    if(caster instanceof Player){
-                        abilityManager.setCastBar(caster, 0);
-                    }
+                    abilityManager.stopCasting(caster);
 
                     return;
                 }
@@ -259,15 +255,13 @@ public class ForceOfWill extends BaseAbility {
 
                 if(distanceToTarget>getRange(caster)){
                     this.cancel();
-                    abilityManager.setCasting(caster, false);
-                    abilityManager.setCastBar(caster, 0);
+                    abilityManager.stopCasting(caster);
                     return;
                 }
 
                 if (!sameWorld(start, targetWasLoc)) {
                     this.cancel();
-                    abilityManager.setCasting(caster, false);
-                    abilityManager.setCastBar(caster, 0);
+                    abilityManager.stopCasting(caster);
                     return;
                 }
 
@@ -289,8 +283,7 @@ public class ForceOfWill extends BaseAbility {
 
                 if(count >= finalCastTime){
                     this.cancel();
-                    abilityManager.setCasting(caster, false);
-                    abilityManager.setCastBar(caster, 0);
+                    abilityManager.stopCasting(caster);
                 }
 
                 boolean crit = damageCalculator.checkIfCrit(caster, 0);

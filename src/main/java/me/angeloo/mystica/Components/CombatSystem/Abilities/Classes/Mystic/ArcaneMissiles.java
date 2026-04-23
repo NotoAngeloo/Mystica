@@ -323,12 +323,6 @@ public class ArcaneMissiles extends BaseAbility {
             private void cancelTask(){
                 this.cancel();
                 removeStands();
-                abilityManager.setCasting(caster, false);
-
-                if(caster instanceof Player){
-                    abilityManager.setCastBar((Player) caster, 0);
-                }
-
             }
 
             private void removeStands(){

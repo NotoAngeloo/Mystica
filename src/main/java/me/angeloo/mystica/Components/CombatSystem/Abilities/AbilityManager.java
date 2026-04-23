@@ -25,6 +25,7 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class AbilityManager {
 
@@ -35,8 +36,8 @@ public class AbilityManager {
     private final AbilityResolver abilityResolver;
     private final AbilityMarkManager abilityMarkManager;
 
-    private final Map<LivingEntity, Boolean> castMap = new HashMap<>();
-    private final Map<LivingEntity, Double> percentCastBar = new HashMap<>();
+    private final Map<UUID, Double> percentCastBar = new HashMap<>();
+    private final Map<UUID, String> skillCurrentlyCasting = new HashMap<>();
 
     //private final Map<Player, Boolean> skillRunning = new HashMap<>();
 
@@ -363,150 +364,10 @@ public class AbilityManager {
     }
 
 
-
-
-    /*public int getModelDataAddition(Player player, int abilityNumber){
-
-        Profile playerProfile = profileManager.getAnyProfile(player);
-
-        PlayerClass clazz = playerProfile.getPlayerClass();
-        SubClass subclass = profileManager.getAnyProfile(player).getPlayerSubclass();
-
-
-        switch (clazz) {
-            case Elementalist, Paladin, Ranger -> {
-
-                return 0;
-            }
-            case Shadow_Knight -> {
-
-                if (abilityNumber == 2) {
-                    return shadowKnightAbilities.getSpiritualAttack().returnWhichItem(player);
-                }
-
-                if (abilityNumber == 4) {
-                    return shadowKnightAbilities.getBloodsucker().returnWhichItem(player);
-                }
-
-                if (abilityNumber == 5) {
-                    return shadowKnightAbilities.getSoulReap().returnWhichItem(player);
-                }
-
-                if (abilityNumber == 6) {
-                    return shadowKnightAbilities.getShadowGrip().returnWhichItem(player);
-                }
-
-                if (abilityNumber == -1) {
-
-                    if (subclass.equals(SubClass.Blood)) {
-                        return shadowKnightAbilities.getBloodShield().returnWhichItem(player);
-                    }
-
-                    if (subclass.equals(SubClass.Doom)) {
-                        return shadowKnightAbilities.getAnnihilation().returnWhichItem(player);
-                    }
-
-                }
-
-                return 0;
-            }
-            case Warrior -> {
-
-                if (abilityNumber == 4) {
-                    return warriorAbilities.getMeteorCrater().returnWhichItem(player);
-                }
-
-                return 0;
-            }
-            case Mystic -> {
-
-                if (subclass.equals(SubClass.Chaos)) {
-
-                    if (abilityNumber == -1) {
-                        return mysticAbilities.getChaosMysticModelData(player);
-                    }
-
-
-                }
-
-                if (!subclass.equals(SubClass.Chaos)) {
-
-                    if (abilityNumber == 1) {
-                        return mysticAbilities.getArcaneShield().returnWhichItem(player);
-                    }
-
-                    if (abilityNumber == 2) {
-                        return mysticAbilities.getPurifyingBlast().returnWhichItem(player);
-                    }
-
-                    if (abilityNumber == 6) {
-                        return mysticAbilities.getAurora().returnWhichItem(player);
-                    }
-
-                    if (abilityNumber == 7) {
-                        return mysticAbilities.getArcaneContract().returnWhichItem(player);
-                    }
-
-                    if (abilityNumber == 8) {
-                        return mysticAbilities.getLightSigil().returnWhichItem(player);
-                    }
-
-                    if (subclass.equals(SubClass.Shepard)) {
-                        if (abilityNumber == -1) {
-                            return mysticAbilities.getEnlightenment().returnWhichItem(player);
-                        }
-                    }
-
-
-                }
-
-
-                return 0;
-            }
-            case Assassin -> {
-
-
-                if (abilityNumber == 3) {
-                    return assassinAbilities.getWeaknessStrike().returnWhichItem(player);
-                }
-
-                if (abilityNumber == 4) {
-                    return assassinAbilities.getPierce().returnWhichItem(player);
-                }
-
-                if (abilityNumber == 8) {
-                    return assassinAbilities.getStealth().returnWhichItem(player);
-                }
-
-                if (abilityNumber == -1) {
-
-                    if (subclass.equals(SubClass.Duelist)) {
-                        return assassinAbilities.getDuelistsFrenzy().returnWhichItem(player);
-                    }
-
-                    return 0;
-                }
-
-
-                return 0;
-            }
-        }
-
-
-        return 0;
-    }*/
-
     public CombatManager getCombatManager(){
         return combatManager;
     }
 
-    /*public ElementalistAbilities getElementalistAbilities(){return elementalistAbilities;}
-    public RangerAbilities getRangerAbilities(){return rangerAbilities;}
-    public MysticAbilities getMysticAbilities(){return mysticAbilities;}
-    public ShadowKnightAbilities getShadowKnightAbilities(){return shadowKnightAbilities;}
-    public PaladinAbilities getPaladinAbilities(){return paladinAbilities;}
-    public WarriorAbilities getWarriorAbilities(){return warriorAbilities;}
-    public AssassinAbilities getAssassinAbilities(){return assassinAbilities;}*/
 
     public void resetAbilityBuffs(LivingEntity caster){
         /*mysticAbilities.getEvilSpirit().removeShards(caster);
@@ -520,28 +381,30 @@ public class AbilityManager {
     }
 
     public boolean getIfCasting(LivingEntity caster){
-        return castMap.getOrDefault(caster, false);
-    }
-    public void setCasting(LivingEntity caster, boolean casting){
-        castMap.put(caster, casting);
-        if(caster instanceof Player player){
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
-        }
 
+        if(percentCastBar.containsKey(caster.getUniqueId())){
+            return percentCastBar.get(caster.getUniqueId()) > 0;
+        }
+        return false;
     }
+
     public void setCastBar(LivingEntity caster, double percent){
-
-        if(!(caster instanceof Player player)){
-            return;
-        }
-
-        percentCastBar.put(caster, percent);
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Cast));
+        percentCastBar.put(caster.getUniqueId(), percent);
+        Bukkit.getPluginManager().callEvent(new HudUpdateEvent(caster, BarType.Cast));
     }
     public double getCastPercent(Player player){
-        return percentCastBar.getOrDefault(player, 0.0);
+        return percentCastBar.getOrDefault(player.getUniqueId(), 0.0);
     }
-
+    public void stopCasting(LivingEntity caster){
+        setCastBar(caster, 0);
+        Bukkit.getPluginManager().callEvent(new HudUpdateEvent(caster, BarType.Cast));
+    }
+    public String getSkillCurrentlyCasting(LivingEntity caster){
+        return skillCurrentlyCasting.getOrDefault(caster.getUniqueId(), "");
+    }
+    public void setSkillCurrentlyCasting(LivingEntity caster, String skillIcon){
+        skillCurrentlyCasting.put(caster.getUniqueId(), skillIcon);
+    }
 
     public void interruptBasic(LivingEntity caster){
         /*elementalistAbilities.getElementalistBasic().stopBasicRunning(caster);

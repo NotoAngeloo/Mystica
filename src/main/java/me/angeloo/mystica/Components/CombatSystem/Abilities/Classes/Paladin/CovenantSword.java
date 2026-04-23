@@ -159,9 +159,7 @@ public class CovenantSword extends BaseAbility {
 
         sword.teleport(start);
 
-
-
-        abilityManager.setCasting(caster, true);
+        abilityManager.setSkillCurrentlyCasting(caster, statusBarIcon());
 
         boolean finalTargeted = targeted;
         double finalSkillDamage = getSkillDamage(caster);
@@ -389,7 +387,7 @@ public class CovenantSword extends BaseAbility {
             private void cancelTask(){
                 this.cancel();
                 sword.remove();
-                abilityManager.setCasting(caster, false);
+                abilityManager.stopCasting(caster);
                 playerStateManager.get(caster.getUniqueId()).remove("decision");
             }
 

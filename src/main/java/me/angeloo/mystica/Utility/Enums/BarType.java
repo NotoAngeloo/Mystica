@@ -4,11 +4,11 @@ public enum BarType {
 
     Resource,
     Target,
-    Status,
-    Cast,
     Dps,
     WhomeverTarget,
     Health,
-    SelfInfo
+    SelfInfo,
+    Cast,
+    Status
 
 }

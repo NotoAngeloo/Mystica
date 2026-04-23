@@ -70,8 +70,6 @@ public class ChaosVoid extends BaseAbility {
         statusEffectManager.applyEffect(caster, new Root(), castTime, null);
 
         Location start = caster.getLocation().clone();
-
-        abilityManager.setCasting(caster, true);
         statusEffectManager.applyEffect(caster, new Immune(), castTime, null);
 
         double healAmount = (profileManager.getAnyProfile(caster).getTotalHealth() + statusEffectManager.getHealthBuffAmount(caster)) / 10;
@@ -89,6 +87,7 @@ public class ChaosVoid extends BaseAbility {
             Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
+        abilityManager.setSkillCurrentlyCasting(caster, statusBarIcon());
 
         new BukkitRunnable(){
             final Location loc = start.clone();
@@ -158,20 +157,12 @@ public class ChaosVoid extends BaseAbility {
 
                 double percent = ((double) ran / castTime) * 100;
 
-                if(caster instanceof Player){
-                    abilityManager.setCastBar((Player) caster, percent);
-                }
-
+                abilityManager.setCastBar(caster, percent);
 
 
                 if(ran >= castTime){
                     this.cancel();
-                    abilityManager.setCasting(caster, false);
-
-                    if(caster instanceof Player){
-                        abilityManager.setCastBar(caster, 0);
-                    }
-
+                    abilityManager.stopCasting(caster);
 
                     //doesn't actually need to have the effect to call the event and remove stealth
                     Bukkit.getServer().getPluginManager().callEvent(new RemoveStealthEffectEvent(caster));

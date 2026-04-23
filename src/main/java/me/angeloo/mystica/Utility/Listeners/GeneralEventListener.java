@@ -942,16 +942,6 @@ public class GeneralEventListener implements Listener {
                     //Bukkit.getLogger().info("update target");
                     return;
                 }
-                case Status -> {
-                    //hudManager.editStatusBar(player);
-                    //Bukkit.getLogger().info("update status");
-                    return;
-                }
-                case Cast -> {
-                    //hudManager.displayCastBar(player);
-                    //Bukkit.getLogger().info("update cast");
-                    return;
-                }
                 case Dps -> {
                     //hudManager.getDamageBoardPlaceholders().updateDamageBoardValues(player);
                     //Bukkit.getLogger().info("update dps");
@@ -960,6 +950,14 @@ public class GeneralEventListener implements Listener {
                 case Health -> {
                     hudManager.updateHealthBar(player);
                     //Bukkit.getLogger().info("update health");
+                    return;
+                }
+                case Cast -> {
+                    hudManager.updateCastBar(player);
+                    return;
+                }
+                //TODO:go through abilities that should add an icon
+                case Status -> {
                     return;
                 }
 
@@ -1731,7 +1729,6 @@ public class GeneralEventListener implements Listener {
             player.getInventory().setChestplate(null);
             player.getInventory().setLeggings(null);
             player.getInventory().setBoots(null);
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
         aggroManager.removeHighPriorityTarget(caster.getUniqueId());
@@ -1752,10 +1749,6 @@ public class GeneralEventListener implements Listener {
         }
 
         boolean deathStatus = profileManager.getAnyProfile(caster).getIfDead();
-
-        if(caster instanceof Player player){
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
-        }
 
 
         if(!deathStatus){

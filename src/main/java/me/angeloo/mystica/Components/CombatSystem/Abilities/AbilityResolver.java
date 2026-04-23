@@ -36,18 +36,25 @@ public class AbilityResolver implements AbilityLookup{
 
         classAbilities.put(PlayerClass.Assassin,
                 new AssassinAbilities(main, manager, lookup));
+
         classAbilities.put(PlayerClass.Elementalist,
                 new ElementalistAbilities(main, manager, lookup));
+
         classAbilities.put(PlayerClass.Mystic,
                 new MysticAbilities(main, manager, lookup));
+
         classAbilities.put(PlayerClass.NONE,
                 new NoneAbilities(main, manager, lookup));
+
         classAbilities.put(PlayerClass.Paladin,
                 new PaladinAbilities(main, manager, lookup));
+
         classAbilities.put(PlayerClass.Ranger,
-                new PaladinAbilities(main, manager, lookup));
+                new RangerAbilities(main, manager, lookup));
+
         classAbilities.put(PlayerClass.Shadow_Knight,
                 new ShadowKnightAbilities(main, manager, lookup));
+
         classAbilities.put(PlayerClass.Warrior,
                 new WarriorAbilities(main, manager, lookup));
 

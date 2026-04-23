@@ -149,7 +149,7 @@ public class MagmaSpikes extends BaseAbility {
                         }
                         if(count==1){
                             spawnLargeStands(start);
-                            abilityManager.setCasting(caster, false);
+                            abilityManager.stopCasting(caster);
                         }
 
                         double increment = (2 * Math.PI) / 16; // angle between particles

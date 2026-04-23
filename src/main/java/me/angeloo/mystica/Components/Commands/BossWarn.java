@@ -84,7 +84,7 @@ public class BossWarn implements CommandExecutor {
                 int left = time;
                 @Override
                 public void run(){
-                    Bukkit.getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Cast));
+                    //Bukkit.getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Cast));
 
                     if(left <= 0){
                         this.cancel();

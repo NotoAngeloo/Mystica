@@ -79,22 +79,26 @@ public class ElementalBreath extends BaseAbility {
         state.set("elemental_breath", true);
 
         buffActiveMap.put(caster.getUniqueId(), getDuration(caster));
+
         if(caster instanceof Player player){
             Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
+
 
         //this is probably effecting when players can use this skill
         new BukkitRunnable(){
             @Override
             public void run(){
 
-                if(caster instanceof Player player){
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
-                }
 
                 if(buffActiveMap.get(caster.getUniqueId()) <= 0){
                     this.cancel();
                     state.remove("elemental_breath");
+
+                    if(caster instanceof Player player){
+                        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
+                    }
+
                     return;
                 }
 

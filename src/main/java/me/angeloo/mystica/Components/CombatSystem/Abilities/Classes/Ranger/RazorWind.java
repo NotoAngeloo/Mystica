@@ -85,7 +85,6 @@ public class RazorWind extends BaseAbility {
     }
 
     private double getRange(LivingEntity caster){
-        double baseRange = 20;
         double extraRange = statusEffectManager.getAdditionalRange(caster);
         return baseRange + extraRange;
     }
@@ -102,12 +101,11 @@ public class RazorWind extends BaseAbility {
 
         castTime = castTime - statusEffectManager.getHastePercent(caster);
 
-        abilityManager.setCasting(caster, true);
-
         if(caster instanceof Player){
             ((Player)caster).setWalkSpeed(0.05f);
         }
 
+        abilityManager.setSkillCurrentlyCasting(caster, statusBarIcon());
 
         double finalCastTime = castTime;
         new BukkitRunnable(){
@@ -119,7 +117,7 @@ public class RazorWind extends BaseAbility {
                 if(caster instanceof Player){
                     if(!((Player)caster).isOnline()){
                         this.cancel();
-                        abilityManager.setCasting(caster, false);
+                        abilityManager.stopCasting(caster);
                         ((Player)caster).setWalkSpeed(.3f);
                         return;
                     }
@@ -127,7 +125,7 @@ public class RazorWind extends BaseAbility {
 
                 if(!statusEffectManager.canCast(caster)){
                     this.cancel();
-                    abilityManager.setCasting(caster, false);
+                    abilityManager.stopCasting(caster);
 
                     if(caster instanceof Player){
                         ((Player)caster).setWalkSpeed(.3f);
@@ -146,7 +144,7 @@ public class RazorWind extends BaseAbility {
 
                 if(distanceToTarget>getRange(caster)){
                     this.cancel();
-                    abilityManager.setCasting(caster, false);
+                    abilityManager.stopCasting(caster);
                     if(caster instanceof Player){
                         ((Player)caster).setWalkSpeed(.3f);
                     }
@@ -159,7 +157,7 @@ public class RazorWind extends BaseAbility {
 
                 if(count >= finalCastTime){
                     this.cancel();
-                    abilityManager.setCasting(caster, false);
+                    abilityManager.stopCasting(caster);
                     if(caster instanceof Player){
                         ((Player)caster).setWalkSpeed(.3f);
                     }

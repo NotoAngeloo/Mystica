@@ -75,8 +75,6 @@ public class EvilSpirit extends BaseAbility {
 
         Location current = caster.getLocation().clone();
 
-        abilityManager.setCasting(caster, true);
-
         caster.setInvisible(true);
 
         if(caster instanceof Player player){
@@ -88,6 +86,8 @@ public class EvilSpirit extends BaseAbility {
             player.getInventory().setBoots(null);
             Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
+
+        abilityManager.setSkillCurrentlyCasting(caster, statusBarIcon());
 
         new BukkitRunnable(){
             final Location loc = current.clone();
@@ -129,18 +129,11 @@ public class EvilSpirit extends BaseAbility {
 
                 double percent = ((double) ran / castTime) * 100;
 
-                if(caster instanceof Player){
-                    abilityManager.setCastBar(caster, percent);
-                }
-
+                abilityManager.setCastBar(caster, percent);
 
                 if(ran >= castTime){
                     this.cancel();
-                    abilityManager.setCasting(caster, false);
-
-                    if(caster instanceof Player){
-                        abilityManager.setCastBar(caster, 0);
-                    }
+                    abilityManager.stopCasting(caster);
 
                     evilSpiritTime(caster);
                 }

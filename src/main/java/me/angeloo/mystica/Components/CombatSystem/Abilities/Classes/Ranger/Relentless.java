@@ -106,12 +106,11 @@ public class Relentless extends BaseAbility {
 
         double skillDamage = getSkillDamage(caster);
 
-        abilityManager.setCasting(caster, true);
-
         if(caster instanceof Player){
             statusEffectManager.applyEffect(caster, new SpeedUp(), null, 0.5);
         }
 
+        abilityManager.setSkillCurrentlyCasting(caster, statusBarIcon());
 
         double finalSkillDamage = skillDamage / castTime;
         double finalCastTime = castTime;
@@ -250,8 +249,7 @@ public class Relentless extends BaseAbility {
             private void cancelTask(){
                 this.cancel();
                 removeStands();
-                abilityManager.setCasting(caster, false);
-                abilityManager.setCastBar(caster, 0);
+                abilityManager.stopCasting(caster);
 
                 if(caster instanceof Player){
                     statusEffectManager.removeEffect(caster, "speed_up");

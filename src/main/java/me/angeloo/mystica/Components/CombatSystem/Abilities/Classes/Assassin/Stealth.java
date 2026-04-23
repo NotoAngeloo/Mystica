@@ -116,7 +116,8 @@ public class Stealth extends BaseAbility {
                     statusEffectManager.applyEffect(caster, new StealthEffect(), null, null);
                     stealthTargetBlacklist.add(caster);
                     stealthed.put(caster.getUniqueId(), true);
-                    if (caster instanceof Player player) {
+
+                    if(caster instanceof Player player){
                         Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
                     }
 

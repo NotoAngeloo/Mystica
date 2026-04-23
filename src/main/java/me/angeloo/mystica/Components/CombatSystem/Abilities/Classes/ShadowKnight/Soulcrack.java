@@ -134,7 +134,8 @@ public class Soulcrack extends BaseAbility {
 
         manaRestoration = manaRestoration/ (double) castTime;
 
-        abilityManager.setCasting(caster, true);
+        abilityManager.setSkillCurrentlyCasting(caster, statusBarIcon());
+
         double finalSkillDamage = skillDamage;
         double finalManaRestoration = manaRestoration;
         new BukkitRunnable(){
@@ -240,8 +241,7 @@ public class Soulcrack extends BaseAbility {
 
             private void cancelTask() {
                 this.cancel();
-                abilityManager.setCasting(caster, false);
-                abilityManager.setCastBar(caster, 0);
+                abilityManager.stopCasting(caster);
                 armorStand.remove();
                 if(caster instanceof Player player){
                     showWeapons(player);

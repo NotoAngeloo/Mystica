@@ -10,10 +10,6 @@ import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 public class AbilityBarRenderer {
 
     private final ProfileManager profileManager;
@@ -62,7 +58,7 @@ public class AbilityBarRenderer {
 
 
         if(ultimate != null){
-            String icon = ultimate.icon();
+            String icon = ultimate.skillBarIcon();
             bar.append(icon);
 
             long abilityRemaining = cooldownManager.getRemaining(
@@ -115,7 +111,7 @@ public class AbilityBarRenderer {
                 continue;
             }
 
-            String icon = ability.icon();
+            String icon = ability.skillBarIcon();
 
             bar.append(icon);
 
@@ -177,8 +173,6 @@ public class AbilityBarRenderer {
 
         //resources 207 pixel wide. 17x12 = 204, 3 pixel off
         //need to offset -17 per abilityCount
-        //resources 207 pixel wide. perhaps add positive space to make up the difference
-        //was 207 before
         int maxLength = 190;
         int padding = maxLength - (count * 17);
 

@@ -130,6 +130,8 @@ public class SoulReap extends BaseAbility {
 
         EntityEquipment entityEquipment = armorStand.getEquipment();
 
+        abilityManager.setSkillCurrentlyCasting(caster, statusBarIcon());
+
         ItemStack item = new ItemStack(Material.REDSTONE);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
@@ -137,8 +139,6 @@ public class SoulReap extends BaseAbility {
         item.setItemMeta(meta);
         assert entityEquipment != null;
         entityEquipment.setItemInOffHand(item);
-
-        abilityManager.setCasting(caster, true);
         new BukkitRunnable(){
             final Location hitBoxCenter = target.getLocation().clone();
             final Location center = target.getLocation().clone();
@@ -290,8 +290,7 @@ public class SoulReap extends BaseAbility {
             private void cancelTask() {
                 this.cancel();
                 armorStand.remove();
-                abilityManager.setCasting(caster, false);
-                abilityManager.setCastBar(caster, 0);
+                abilityManager.stopCasting(caster);
                 statusEffectManager.removeEffect(caster, "root");
             }
 

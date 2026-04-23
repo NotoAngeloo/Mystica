@@ -104,7 +104,7 @@ public class ChaosLash extends BaseAbility {
             lookup.get(PlayerClass.Mystic, SubClass.Chaos, -1).onExternalTrigger(caster, 2);
         }
 
-
+        abilityManager.setSkillCurrentlyCasting(caster, statusBarIcon());
 
         double castTime = 15;
         castTime = castTime - statusEffectManager.getHastePercent(caster);
@@ -113,7 +113,6 @@ public class ChaosLash extends BaseAbility {
 
         skillDamage = skillDamage / castTime;
 
-        abilityManager.setCasting(caster, true);
         double finalSkillDamage = skillDamage;
         double finalCastTime = castTime;
         new BukkitRunnable(){
@@ -272,12 +271,7 @@ public class ChaosLash extends BaseAbility {
             private void cancelTask(){
                 this.cancel();
                 removeStands();
-                abilityManager.setCasting(caster, false);
-
-                if(caster instanceof Player){
-                    abilityManager.setCastBar((Player) caster, 0);
-                }
-
+                abilityManager.stopCasting(caster);
             }
 
             private void removeStands(){

@@ -117,9 +117,6 @@ public class Stealth extends BaseAbility {
                     stealthTargetBlacklist.add(caster);
                     stealthed.put(caster.getUniqueId(), true);
 
-                    if(caster instanceof Player player){
-                        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
-                    }
 
                     revealAfterTime(caster);
 
@@ -170,19 +167,12 @@ public class Stealth extends BaseAbility {
         statusEffectManager.removeEffect(caster, "stealth");
         stealthTargetBlacklist.remove(caster);
         stealthed.put(caster.getUniqueId(), false);
-        if(caster instanceof Player player){
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
-        }
-
     }
 
     private void forceReveal(LivingEntity caster, LivingEntity victim){
         statusEffectManager.removeEffect(caster, "stealth");
         stealthTargetBlacklist.remove(caster);
         stealthed.put(caster.getUniqueId(), false);
-        if(caster instanceof Player player){
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
-        }
 
         //cooldown triggers regardless if successful in performing a sneak attack or not
         cooldownManager.start(caster.getUniqueId(), 8, (long) (baseCooldown * 1000));

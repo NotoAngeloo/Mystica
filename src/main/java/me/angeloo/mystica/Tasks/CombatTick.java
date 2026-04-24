@@ -1,6 +1,5 @@
 package me.angeloo.mystica.Tasks;
 
-import me.angeloo.mystica.CustomEvents.UltimateStatusChageEvent;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.CombatManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -46,7 +45,6 @@ public class CombatTick {
 
                 Bukkit.getScheduler().runTask(main, () -> {
                     abilityManager.incrementResource(player);
-                    Bukkit.getServer().getPluginManager().callEvent(new UltimateStatusChageEvent(player));
                     if(!profileManager.getCompanions(player).isEmpty()){
                         List<UUID> companions = profileManager.getCompanions(player);
                         for(UUID companion : companions){

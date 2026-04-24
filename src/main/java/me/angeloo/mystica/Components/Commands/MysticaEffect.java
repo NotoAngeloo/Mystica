@@ -74,6 +74,8 @@ public class MysticaEffect implements CommandExecutor {
             String type = args[2];
             int amount = Integer.parseInt(args[3]);
 
+            //needs to be a better way to do this melme
+
             switch (type.toLowerCase()) {
                 //crush amount = %damage of their health
 

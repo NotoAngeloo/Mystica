@@ -186,7 +186,6 @@ public class CombatManager {
             player.setInvisible(false);
             sheathWeapon(player);
         }
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
     }
 
     public void unSheathWeapon(LivingEntity caster){

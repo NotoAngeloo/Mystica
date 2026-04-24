@@ -138,40 +138,6 @@ public class AbilityManager {
             cooldownManager.applyGlobalCooldown(caster.getUniqueId(), statusEffectManager.getHastePercent(caster), now, gcd);
         }
 
-        /*switch (clazz) {
-            case Elementalist -> {
-                elementalistAbilities.useElementalistAbility(caster, abilityNumber);
-                return;
-            }
-            case Ranger -> {
-                rangerAbilities.useRangerAbility(caster, abilityNumber);
-                return;
-            }
-            case Mystic -> {
-                mysticAbilities.useMysticAbility(caster, abilityNumber);
-                return;
-            }
-            case Shadow_Knight -> {
-                shadowKnightAbilities.useShadowKnightAbility(caster, abilityNumber);
-                return;
-            }
-            case Paladin -> {
-                paladinAbilities.usePaladinAbility(caster, abilityNumber);
-                return;
-            }
-            case Warrior -> {
-                warriorAbilities.useWarriorAbility(caster, abilityNumber);
-                return;
-            }
-            case Assassin -> {
-                assassinAbilities.useAssassinAbility(caster, abilityNumber);
-                return;
-            }
-            case NONE -> {
-                noneAbilities.useNoneAbility(caster, abilityNumber);
-                return;
-            }
-        }*/
     }
 
     public void useBasic(LivingEntity caster){
@@ -256,38 +222,31 @@ public class AbilityManager {
 
         Profile playerProfile = profileManager.getAnyProfile(caster);
 
-        PlayerClass clazz = playerProfile.getPlayerClass();
+        long now = System.currentTimeMillis();
 
-        /*switch (clazz) {
-            case Elementalist -> {
-                elementalistAbilities.useElementalistUltimate(caster);
-                return;
-            }
-            case Ranger -> {
-                rangerAbilities.useRangerUltimate(caster);
-                return;
-            }
-            case Mystic -> {
-                mysticAbilities.useMysticUltimate(caster);
-                return;
-            }
-            case Shadow_Knight -> {
-                shadowKnightAbilities.useShadowKnightUltimate(caster);
-                return;
-            }
-            case Paladin -> {
-                paladinAbilities.usePaladinUltimate(caster);
-                return;
-            }
-            case Warrior -> {
-                warriorAbilities.useWarriorUltimate(caster);
-                return;
-            }
-            case Assassin -> {
-                assassinAbilities.useAssassinUltimate(caster);
-                return;
-            }
-        }*/
+        PlayerClass clazz = playerProfile.getPlayerClass();
+        SubClass subClass = playerProfile.getPlayerSubclass();
+
+        Ability ability = abilityResolver.resolve(clazz, subClass, -1);
+
+        if(ability == null){
+            return;
+        }
+
+        //perhaps in future make this "AbilityResult" enum to explain *why* failed, but that is out of scope atm
+
+        boolean success = ability.use(caster);
+
+        if(!success){
+            return;
+        }
+
+        int gcd = ability.getGlobalCooldownMillis();
+
+        if(gcd > 0){
+            cooldownManager.applyGlobalCooldown(caster.getUniqueId(), statusEffectManager.getHastePercent(caster), now, gcd);
+        }
+
     }
 
     public void resetResource(LivingEntity caster){

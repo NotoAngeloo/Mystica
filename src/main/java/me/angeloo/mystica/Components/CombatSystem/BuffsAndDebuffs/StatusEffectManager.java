@@ -20,6 +20,8 @@ public class StatusEffectManager {
 
     public void applyEffect(LivingEntity entity, StatusEffect effect, @Nullable Integer duration, @Nullable Double magnitude) {
 
+        //Bukkit.getLogger().info("trying to apply " + effect.getId());
+
         if (effect.requireDurationDeclaration() && duration == null) {
             throw new IllegalArgumentException(
                     effect.getId() + " requires a custom duration, but none was provided."
@@ -92,7 +94,6 @@ public class StatusEffectManager {
                 case ADDITIVE -> {
                     existing.magnitude += shieldInstance.magnitude;
                     existing.remainingTicks = Math.max(existing.remainingTicks, shieldInstance.remainingTicks);
-
                     //Bukkit.getLogger().info("adding to shield: " + shieldInstance.magnitude);
                     shieldInstance.onApply(entity);
                     break;
@@ -139,8 +140,12 @@ public class StatusEffectManager {
             }
 
             case ADDITIVE -> {
+                //Bukkit.getLogger().info("applying armor break, old mag: " + existing.magnitude);
                 existing.magnitude += newInstance.magnitude;
+                //Bukkit.getLogger().info("new mag: " + existing.magnitude);
                 existing.remainingTicks = Math.max(existing.remainingTicks, newInstance.remainingTicks);
+
+
                 break;
             }
         }
@@ -174,9 +179,6 @@ public class StatusEffectManager {
 
         effectMap.clear();
 
-        if(entity instanceof Player player){
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
-        }
 
     }
 
@@ -461,6 +463,23 @@ public class StatusEffectManager {
     public Map<String, StatusInstance> getInstanceMap(LivingEntity entity){
         return active.get(entity.getUniqueId());
     }
+
+    /*public int getEffectAmount(LivingEntity entity){
+        int amount = 0;
+        //if has shield, subtract 1
+
+        if(getInstanceMap(entity)==null){
+            return amount;
+        }
+
+        amount += getInstanceMap(entity).size();
+
+        if(hasShield(entity)){
+            amount--;
+        }
+
+        return amount;
+    }*/
 
 
 }

@@ -306,10 +306,6 @@ public class SoulReap extends BaseAbility {
 
     private void addSoulMark(LivingEntity caster){
 
-        if(caster instanceof Player player){
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
-        }
-
 
         int stacks = playerStateManager.get(caster.getUniqueId()).getInt("soul_mark", 0);
 
@@ -320,10 +316,6 @@ public class SoulReap extends BaseAbility {
         stacks ++;
 
         playerStateManager.get(caster.getUniqueId()).set("soul_mark", stacks);
-        if(caster instanceof Player){
-            Player player = (Player) caster;
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
-        }
     }
 
 

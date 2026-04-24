@@ -956,10 +956,6 @@ public class GeneralEventListener implements Listener {
                     hudManager.updateCastBar(player);
                     return;
                 }
-                //TODO:go through abilities that should add an icon
-                case Status -> {
-                    return;
-                }
 
             }
         }
@@ -999,21 +995,6 @@ public class GeneralEventListener implements Listener {
 
 
     }
-
-
-
-
-    @EventHandler
-    public void ultimateStatusChange(UltimateStatusChageEvent event){
-        Player player = event.getPlayer();
-
-        if(rezTick.running(player)){
-            return;
-        }
-
-        hudManager.displayUltimate(player);
-    }
-
 
     @EventHandler
     public void allEntityDamage(EntityDamageEvent event){

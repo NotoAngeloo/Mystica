@@ -41,17 +41,14 @@ public class StatusInstance {
 
     // Hooks called by manager
     public void onApply(LivingEntity entity) {
-        updateHud(entity);
         effect.onApply(entity, this);
     }
 
     public void onTick(LivingEntity entity) {
-        updateHud(entity);
         effect.onTick(entity, this);
     }
 
     public void onRemove(LivingEntity entity) {
-        updateHud(entity);
         effect.onRemove(entity, this);
     }
 
@@ -67,12 +64,10 @@ public class StatusInstance {
         this.remainingTicks = 0;
     }
 
-    private void updateHud(LivingEntity entity) {
-        if (entity instanceof Player player) {
-            Bukkit.getServer().getPluginManager().callEvent(
-                    new HudUpdateEvent(player, BarType.Status)
-            );
-        }
+    //USEFUL FOR GETTING AMOUNT OF STACKING EFFECTS
+    public double getInstanceMagnitude(){
+        return this.magnitude;
     }
+
 
 }

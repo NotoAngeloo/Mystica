@@ -84,7 +84,6 @@ public class ChaosVoid extends BaseAbility {
             player.getInventory().setChestplate(null);
             player.getInventory().setLeggings(null);
             player.getInventory().setBoots(null);
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
         abilityManager.setSkillCurrentlyCasting(caster, statusBarIcon());

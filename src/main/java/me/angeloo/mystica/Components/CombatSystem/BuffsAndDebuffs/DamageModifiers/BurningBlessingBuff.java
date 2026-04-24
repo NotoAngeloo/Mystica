@@ -11,11 +11,6 @@ public class BurningBlessingBuff implements StatusEffect {
     }
 
     @Override
-    public String getIcon() {
-        return "\uE026";
-    }
-
-    @Override
     public StatusStackType stackType(){
         return StatusStackType.REPLACE_SMALLER;
     }

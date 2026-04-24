@@ -8,7 +8,6 @@ import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectMa
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.CustomEvents.RemoveStealthEffectEvent;
-import me.angeloo.mystica.CustomEvents.UltimateStatusChageEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Enums.BarType;
 import org.bukkit.Bukkit;
@@ -84,7 +83,6 @@ public class EvilSpirit extends BaseAbility {
             player.getInventory().setChestplate(null);
             player.getInventory().setLeggings(null);
             player.getInventory().setBoots(null);
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
         abilityManager.setSkillCurrentlyCasting(caster, statusBarIcon());
@@ -220,16 +218,6 @@ public class EvilSpirit extends BaseAbility {
 
 
         playerStateManager.get(caster.getUniqueId()).set("chaos_shard", current);
-
-        if(caster instanceof Player player){
-
-            Bukkit.getScheduler().runTask(main, () ->{
-                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
-                Bukkit.getServer().getPluginManager().callEvent(new UltimateStatusChageEvent((Player) caster));
-            });
-
-
-        }
 
     }
 

@@ -10,10 +10,6 @@ public class FlamingSigilHealth implements StatusEffect {
         return "flaming_sigil_health";
     }
 
-    @Override
-    public String getIcon() {
-        return "\uE026";
-    }
 
     @Override
     public StatusStackType stackType(){

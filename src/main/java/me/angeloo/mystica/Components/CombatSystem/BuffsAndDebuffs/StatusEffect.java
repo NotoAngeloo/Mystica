@@ -20,7 +20,7 @@ public interface StatusEffect {
     default int getPriority() { return 5; }
 
     /** Unicode icon */
-    default String getIcon() { return "\uF829"; } // default icon
+    default String getIcon() { return "\ue219"; } // default icon
 
     /** Does this effect stack (e.g., adds values) or refresh duration? */
     default StatusStackType stackType() { return StatusStackType.REPLACE; }

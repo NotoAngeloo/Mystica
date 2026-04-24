@@ -6,6 +6,7 @@ import me.angeloo.mystica.Components.CombatSystem.AggroManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.GravestoneManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
+import me.angeloo.mystica.Components.Hud.StatusEffects.StatusEffectRenderer;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
@@ -59,6 +60,7 @@ public class HudManager {
     private final BossCastingManager bossCastingManager;
     private final IconCalculator iconCalculator;
     private final AbilityBarRenderer abilityBarRenderer;
+    private final StatusEffectRenderer statusEffectRenderer;
 
     private final SkinGrabber skinGrabber;
 
@@ -377,6 +379,7 @@ public class HudManager {
         skinGrabber = new SkinGrabber();
         aggroManager = main.getAggroManager();
         abilityBarRenderer = new AbilityBarRenderer(main, abilityManager);
+        statusEffectRenderer = new StatusEffectRenderer(statusEffectManager);
     }
 
     public DamageBoardPlaceholders getDamageBoardPlaceholders(){
@@ -427,25 +430,6 @@ public class HudManager {
 
     }
 
-    public void displayUltimate(Player player){
-
-        /*
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-                StringBuilder hotBar = new StringBuilder();
-
-                String statusString = getUltimateStatus(player);
-
-                hotBar.append(statusString);
-
-                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(String.valueOf(hotBar)));
-            }
-        }.runTaskAsynchronously(main);*/
-
-
-    }
-
     //######################################################################################################
 
     //reason this has to update is that entities update their *own* bar information
@@ -472,6 +456,28 @@ public class HudManager {
 
         StringBuilder builder = new StringBuilder();
 
+        //use pixels
+
+        int width = statusEffectRenderer.getStatusWidth(player);
+
+        // pad remaining space
+
+        for (int i = 0; i < PIXELS.length; i++) {
+
+            while (width >= PIXELS[i]) {
+                builder.append(GLYPHS[i]);
+                width -= PIXELS[i];
+            }
+
+        }
+
+        /*if(width!=0){
+            builder.append("\uF829\uF821".repeat(Math.max(0, 17 / width)));
+        }*/
+        //+17 for each status effect to keep centered
+
+        //stops working once radials are in the mix
+
         builder.append(getPlayerHealthBar(player));
 
         builder.append(ChatColor.RESET);
@@ -482,10 +488,13 @@ public class HudManager {
 
         builder.append(getSkillBar(player));
 
-        // cast bar
+        builder.append(ChatColor.RESET);
+
         builder.append(getCastBar(player));
 
-        //status effects
+        builder.append(ChatColor.RESET);
+
+        builder.append(getStatusEffectString(player));
 
         return String.valueOf(builder);
     }
@@ -959,6 +968,14 @@ public class HudManager {
     private String getCastBar(Player player){
         return castBarCache.getOrDefault(player.getUniqueId(), "");
     }
+
+    //######################################################################################################
+
+    //should work for bosses and players
+    private String getStatusEffectString(LivingEntity entity){
+        return statusEffectRenderer.render(entity);
+    }
+
 
     //#######################################################################################################
 

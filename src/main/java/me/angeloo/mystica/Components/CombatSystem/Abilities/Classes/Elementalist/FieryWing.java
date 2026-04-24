@@ -285,8 +285,6 @@ public class FieryWing extends BaseAbility {
 
         inflameMap.put(caster.getUniqueId(), stacks);
 
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(caster, BarType.Status));
-
     }
 
 

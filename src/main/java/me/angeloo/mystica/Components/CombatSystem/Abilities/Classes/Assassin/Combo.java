@@ -64,10 +64,8 @@ public class Combo {
         //cooldownDisplayer.displayCooldown(caster, 3);
         //cooldownDisplayer.displayCooldown(caster, 4);
 
-        if(caster instanceof Player){
-            Player player = (Player) caster;
+        if(caster instanceof Player player){
             Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource));
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
         }
 
         return current;

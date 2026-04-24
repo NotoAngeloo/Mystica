@@ -82,7 +82,7 @@ public class Roll extends BaseAbility {
 
         //also give a shield and increase move speed
         if(caster instanceof Player){
-            statusEffectManager.applyEffect(caster, new SpeedUp(), null, 0.5);
+            statusEffectManager.applyEffect(caster, new SpeedUp(), null, 0.6);
         }
 
 

@@ -265,10 +265,6 @@ public class Infection extends BaseAbility {
 
                 playerStateManager.get(caster.getUniqueId()).set("reap_bonus_damage", soulReapToRemove(caster));
 
-                if(caster instanceof Player player){
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
-                }
-
 
             }
 
@@ -278,9 +274,6 @@ public class Infection extends BaseAbility {
                 infectionTarget.remove(caster.getUniqueId());
                 infectionTask.remove(caster.getUniqueId());
                 playerStateManager.get(caster.getUniqueId()).remove("reap_bonus_damage");
-                if(caster instanceof Player player){
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
-                }
             }
 
         }.runTaskTimer(main, 20, 20);
@@ -318,17 +311,10 @@ public class Infection extends BaseAbility {
             enhancedTaskMap.get(caster.getUniqueId()).cancel();
         }
 
-        if(caster instanceof Player player){
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
-        }
-
         BukkitTask task = new BukkitRunnable(){
             @Override
             public void run(){
                 enhanced.remove(caster.getUniqueId());
-                if(caster instanceof Player player){
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Status));
-                }
             }
         }.runTaskLater(main, 20*10);
 

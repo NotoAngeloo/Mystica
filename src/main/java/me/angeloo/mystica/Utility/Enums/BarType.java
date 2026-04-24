@@ -8,7 +8,6 @@ public enum BarType {
     WhomeverTarget,
     Health,
     SelfInfo,
-    Cast,
-    Status
+    Cast
 
 }

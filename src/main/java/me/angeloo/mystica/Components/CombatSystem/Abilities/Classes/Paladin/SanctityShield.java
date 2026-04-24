@@ -58,7 +58,7 @@ public class SanctityShield extends BaseAbility {
         double healAmount = getHealAmount(caster);
         double shield = getShieldAmount(caster);
 
-        statusEffectManager.applyEffect(caster, new GenericShield(), null, shield);
+        statusEffectManager.applyEffect(caster, new GenericShield(), null, shield, caster);
 
 
         new BukkitRunnable(){

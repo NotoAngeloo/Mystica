@@ -140,8 +140,8 @@ public class FlamingSigil extends BaseAbility {
                     }
 
                     if(entity == caster){
-                        statusEffectManager.applyEffect(caster, new FlamingSigilAttack(), null, finalBuffAmount);
-                        statusEffectManager.applyEffect(caster, new FlamingSigilHealth(), null, finalBuffAmount);
+                        statusEffectManager.applyEffect(caster, new FlamingSigilAttack(), null, finalBuffAmount, caster);
+                        statusEffectManager.applyEffect(caster, new FlamingSigilHealth(), null, finalBuffAmount, caster);
                         hitBySkill.add(caster);
                         continue;
                     }
@@ -161,11 +161,11 @@ public class FlamingSigil extends BaseAbility {
 
 
                     if(executioner){
-                        statusEffectManager.applyEffect(thisEntity, new FlamingSigilAttack(), null, finalBuffAmount);
+                        statusEffectManager.applyEffect(thisEntity, new FlamingSigilAttack(), null, finalBuffAmount, caster);
                     }
 
                     if(gladiator){
-                        statusEffectManager.applyEffect(thisEntity, new FlamingSigilHealth(), null, finalBuffAmount);
+                        statusEffectManager.applyEffect(thisEntity, new FlamingSigilHealth(), null, finalBuffAmount, caster);
                     }
 
                     hitBySkill.add(thisEntity);

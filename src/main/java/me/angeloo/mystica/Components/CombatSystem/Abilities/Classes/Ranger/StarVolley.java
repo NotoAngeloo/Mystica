@@ -157,7 +157,7 @@ public class StarVolley extends BaseAbility {
                     boolean crit = damageCalculator.checkIfCrit(caster, 0);
 
                     if(crit){
-                        statusEffectManager.applyEffect(caster, new Haste(), 2*20, 0.1);
+                        statusEffectManager.applyEffect(caster, new Haste(), 2*20, 0.1, caster);
                     }
 
                     double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);

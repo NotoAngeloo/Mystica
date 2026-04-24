@@ -4,19 +4,17 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageOverTime.Infection_Standard;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusInstance;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
-import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
-import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.BossManager;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
-import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -30,9 +28,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class Infection extends BaseAbility {
 
@@ -51,15 +47,15 @@ public class Infection extends BaseAbility {
 
 
     //player, who they infected
-    private final Map<UUID, LivingEntity> infectionTarget = new HashMap<>();
+    //private final Map<UUID, LivingEntity> infectionTarget = new HashMap<>();
     //player, timeleft
-    private final Map<UUID, Integer> infectionTime = new HashMap<>();
+    //private final Map<UUID, Integer> infectionTime = new HashMap<>();
     //player, task
-    private final Map<UUID, BukkitTask> infectionTask = new HashMap<>();
+    //private final Map<UUID, BukkitTask> infectionTask = new HashMap<>();
 
 
-    private final Map<UUID, Boolean> enhanced = new HashMap<>();
-    private final Map<UUID, BukkitTask> enhancedTaskMap = new HashMap<>();
+    //private final Map<UUID, Boolean> enhanced = new HashMap<>();
+    //private final Map<UUID, BukkitTask> enhancedTaskMap = new HashMap<>();
 
     public Infection(Mystica main, AbilityManager manager){
         super("infection");
@@ -204,8 +200,42 @@ public class Infection extends BaseAbility {
 
     private void startOrResetInfection(LivingEntity caster, LivingEntity entity){
 
-        infectionTarget.put(caster.getUniqueId(), entity);
+        statusEffectManager.applyEffect(entity, new Infection_Standard(), null, getSkillDamage(caster), caster);
+
+        /*new BukkitRunnable(){
+            @Override
+            public void run(){
+
+                Map<String, StatusInstance> instanceMap = statusEffectManager.getInstanceMap(entity);
+
+                if(instanceMap == null){
+                    this.cancel();
+                    return;
+                }
+
+                StatusInstance instance = instanceMap.get("infection");
+
+                if(instance.getRemainingTicks()<=0){
+                    this.cancel();
+                    return;
+                }
+
+                //can't do async
+
+                if(entity.isDead()){
+                    this.cancel();
+                    statusEffectManager.removeEffect(entity, "infection");
+                    return;
+                }
+
+
+
+            }
+        }.runTaskTimerAsynchronously(main, 0, 20);*/
+
+        /*infectionTarget.put(caster.getUniqueId(), entity);
         infectionTime.put(caster.getUniqueId(), duration);
+
 
         if(infectionTask.containsKey(caster.getUniqueId())){
             infectionTask.get(caster.getUniqueId()).cancel();
@@ -247,6 +277,7 @@ public class Infection extends BaseAbility {
 
                 double skillDamage = getSkillDamage(caster);
 
+
                 if(playerStateManager.get(caster.getUniqueId()).has("infection_enhanced")){
                     skillDamage = skillDamage * 2;
                 }
@@ -278,10 +309,10 @@ public class Infection extends BaseAbility {
 
         }.runTaskTimer(main, 20, 20);
 
-        infectionTask.put(caster.getUniqueId(), task);
+        infectionTask.put(caster.getUniqueId(), task);*/
     }
 
-    private int getPlayerInfectionTime(LivingEntity caster){
+    /*private int getPlayerInfectionTime(LivingEntity caster){
         return infectionTime.getOrDefault(caster.getUniqueId(), 0);
     }
 
@@ -338,7 +369,7 @@ public class Infection extends BaseAbility {
         infectionTask.remove(caster.getUniqueId());
 
         return total;
-    }
+    }*/
 
 
 

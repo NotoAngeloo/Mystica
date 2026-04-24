@@ -148,7 +148,7 @@ public class FlyingBlade extends BaseAbility {
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
                     if(profileManager.getAnyProfile(target).getIsMovable()){
-                        statusEffectManager.applyEffect(target, new Stun(), 20, null);
+                        statusEffectManager.applyEffect(target, new Stun(), 20, null, caster);
                     }
 
                     if(target instanceof Player){

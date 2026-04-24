@@ -99,7 +99,7 @@ public class SpiritualGift extends BaseAbility {
         //every 15 levels is a +1
 
         //50% cdr. might be a bit high but fuck it we ball
-        statusEffectManager.applyEffect(target, new Haste(), getDuration(caster), 0.5);
+        statusEffectManager.applyEffect(target, new Haste(), getDuration(caster), 0.5, caster);
 
         double finalHealPower = getHealPower(caster);
         new BukkitRunnable(){

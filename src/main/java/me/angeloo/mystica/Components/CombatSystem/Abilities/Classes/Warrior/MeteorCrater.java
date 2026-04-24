@@ -298,7 +298,7 @@ public class MeteorCrater extends BaseAbility {
                 }
 
                 //should be stun instead
-                statusEffectManager.applyEffect(target, new Stun(), 20, null);
+                statusEffectManager.applyEffect(target, new Stun(), 20, null, caster);
             }
 
             private void cancelTask(){

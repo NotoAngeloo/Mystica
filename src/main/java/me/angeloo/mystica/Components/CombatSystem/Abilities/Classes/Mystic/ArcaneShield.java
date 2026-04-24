@@ -130,7 +130,7 @@ public class ArcaneShield extends BaseAbility {
             double fivePercent = (profileManager.getAnyProfile(thisTarget).getTotalHealth() + statusEffectManager.getHealthBuffAmount(thisTarget)) / 20;
             double shieldAmount = fivePercent + (((double) profileManager.getAnyProfile(caster).getTotalAttack() / 3) + skillLevel);
 
-            statusEffectManager.applyEffect(thisTarget, new GenericShield(), null, shieldAmount);
+            statusEffectManager.applyEffect(thisTarget, new GenericShield(), null, shieldAmount, caster);
 
 
             int shieldDurationInTicks = 20*60;

@@ -17,9 +17,9 @@ public class KnockUp implements StatusEffect {
     }
 
     @Override
-    public StatusInstance createInstance(int duration, double magnitude) {
+    public StatusInstance createInstance(int duration, double magnitude, LivingEntity source) {
         // Use our custom SleepInstance
-        return new KnockUpInstance(this, getDuration(), getMagnitude());
+        return new KnockUpInstance(this, getDuration(), getMagnitude(), source);
     }
 
 }

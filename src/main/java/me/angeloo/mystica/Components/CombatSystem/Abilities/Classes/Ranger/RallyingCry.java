@@ -4,7 +4,9 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ClassSpecific.Rallying_Cry;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,20 +20,20 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class RallyingCry extends BaseAbility {
 
     private final Mystica main;
+    private final ProfileManager profileManager;
     private final StatusEffectManager statusEffectManager;
     private final CooldownManager cooldownManager;
-    private final PlayerStateManager playerStateManager;
 
     public RallyingCry(Mystica main, AbilityManager manager){
         super("rallying_cry");
         this.main = main;
+        profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
         cooldownManager = manager.getCooldownManager();
-        playerStateManager = manager.getPlayerStateManager();
     }
 
     private final int baseCooldown = 15;
-    public int duration = 11;
+    public int baseDuration = 11;
 
     @Override
     public boolean use(LivingEntity caster){
@@ -54,14 +56,7 @@ public class RallyingCry extends BaseAbility {
 
     private void execute(LivingEntity caster){
 
-        playerStateManager.get(caster.getUniqueId()).set("rallying_cry", true);
-
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-                playerStateManager.get(caster.getUniqueId()).remove("rallying_cry");
-            }
-        }.runTaskLaterAsynchronously(main, duration * 20L);
+        statusEffectManager.applyEffect(caster, new Rallying_Cry(), getDuration(caster) * 20, null, caster);
 
 
         Location start = caster.getLocation();
@@ -107,11 +102,17 @@ public class RallyingCry extends BaseAbility {
 
     }
 
+    private int getDuration(LivingEntity caster){
 
+        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_6_Level_Bonus();
+
+        return baseDuration + ((int)(skillLevel/3));
+    }
 
     @Override
     public boolean usable(LivingEntity caster){
-        if(playerStateManager.get(caster.getUniqueId()).has("rallying_cry")){
+        if(statusEffectManager.hasEffect(caster, "rallying_cry")){
             return false;
         }
 

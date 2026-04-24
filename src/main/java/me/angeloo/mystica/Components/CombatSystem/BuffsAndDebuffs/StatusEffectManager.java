@@ -16,9 +16,11 @@ import java.util.UUID;
 public class StatusEffectManager {
 
 
+    private CombatContext combatContext;
+
     private final Map<UUID, Map<String, StatusInstance>> active = new HashMap<>();
 
-    public void applyEffect(LivingEntity entity, StatusEffect effect, @Nullable Integer duration, @Nullable Double magnitude) {
+    public void applyEffect(LivingEntity entity, StatusEffect effect, @Nullable Integer duration, @Nullable Double magnitude, @Nullable LivingEntity source) {
 
         //Bukkit.getLogger().info("trying to apply " + effect.getId());
 
@@ -50,7 +52,7 @@ public class StatusEffectManager {
 
             //ShieldInstance shieldInstance = new ShieldInstance(effect, resolvedDuration, resolvedMagnitude);
 
-            StatusInstance shieldInstance = effect.createShieldInstance(resolvedDuration, resolvedMagnitude);
+            StatusInstance shieldInstance = effect.createShieldInstance(resolvedDuration, resolvedMagnitude, source);
 
             // If none exists, simply add
             if (existing == null) {
@@ -105,7 +107,7 @@ public class StatusEffectManager {
         }
 
         // --- Create new instance object now that correct values are known ---
-        StatusInstance newInstance = effect.createInstance(resolvedDuration, resolvedMagnitude);
+        StatusInstance newInstance = effect.createInstance(resolvedDuration, resolvedMagnitude, source);
 
 
         // If none exists, simply add
@@ -232,7 +234,8 @@ public class StatusEffectManager {
 
             while (it.hasNext()) {
                 StatusInstance inst = it.next();
-                inst.onTick(entity);
+                inst.livedTicks ++;
+                inst.onTick(entity, combatContext);
 
                 // Only tick down if duration is positive
                 if (inst.getRemainingTicks() > 0) {
@@ -464,6 +467,23 @@ public class StatusEffectManager {
         return active.get(entity.getUniqueId());
     }
 
+    public int getStackAmount(LivingEntity entity, String identifier){
+
+        Map<String, StatusInstance> statusInstanceMap = getInstanceMap(entity);
+
+        if(statusInstanceMap == null){
+            return 0;
+        }
+
+        StatusInstance instance = statusInstanceMap.get(identifier);
+
+        if(instance == null){
+            return 0;
+        }
+
+        return (int)instance.magnitude;
+    }
+
     /*public int getEffectAmount(LivingEntity entity){
         int amount = 0;
         //if has shield, subtract 1
@@ -481,5 +501,8 @@ public class StatusEffectManager {
         return amount;
     }*/
 
+    public void setCombatContext(CombatContext combatContext){
+        this.combatContext = combatContext;
+    }
 
 }

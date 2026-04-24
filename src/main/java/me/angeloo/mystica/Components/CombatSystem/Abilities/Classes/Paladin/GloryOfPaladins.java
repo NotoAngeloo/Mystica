@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ClassSpecific.Glory_Of_Paladins;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -25,7 +26,6 @@ public class GloryOfPaladins extends BaseAbility {
     private final DamageCalculator damageCalculator;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
-    private final PlayerStateManager playerStateManager;
 
     private final Purity purity;
 
@@ -38,7 +38,6 @@ public class GloryOfPaladins extends BaseAbility {
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();
         purity = manager.getPurity();
-        playerStateManager = manager.getPlayerStateManager();
     }
 
     private final int baseCooldown = 12;
@@ -71,16 +70,9 @@ public class GloryOfPaladins extends BaseAbility {
 
     private void execute(LivingEntity caster){
 
-        //increase max hp as well
+        //TODO:increase max hp as well
 
-        playerStateManager.get(caster.getUniqueId()).set("glory_of_paladins", true);
-
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-                playerStateManager.get(caster.getUniqueId()).remove("glory_of_paladins");
-            }
-        }.runTaskAsynchronously(main);
+        statusEffectManager.applyEffect(caster, new Glory_Of_Paladins(), null, null, caster);
 
 
         new BukkitRunnable(){
@@ -92,7 +84,7 @@ public class GloryOfPaladins extends BaseAbility {
             @Override
             public void run(){
 
-                if(!playerStateManager.get(caster.getUniqueId()).has("glory_of_paladins")){
+                if(!statusEffectManager.hasEffect(caster, "glory_of_paladins")){
                     this.cancel();
                     return;
                 }
@@ -158,7 +150,7 @@ public class GloryOfPaladins extends BaseAbility {
 
     private void procGlory(LivingEntity caster, LivingEntity livingEntity){
 
-        if(!playerStateManager.get(caster.getUniqueId()).has("glory_of_paladins")){
+        if(!statusEffectManager.hasEffect(caster, "glory_of_paladins")){
             return;
         }
 
@@ -194,7 +186,7 @@ public class GloryOfPaladins extends BaseAbility {
 
     @Override
     public boolean usable(LivingEntity caster){
-        if(playerStateManager.get(caster.getUniqueId()).has("glory_of_paladins")){
+        if(statusEffectManager.hasEffect(caster, "glory_of_paladins")){
             return false;
         }
 

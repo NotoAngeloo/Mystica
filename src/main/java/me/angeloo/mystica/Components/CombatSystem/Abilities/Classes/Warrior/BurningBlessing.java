@@ -48,7 +48,7 @@ public class BurningBlessing extends BaseAbility {
 
     private void execute(LivingEntity caster){
 
-        statusEffectManager.applyEffect(caster, new BurningBlessingBuff(), null, getBuffAmount(caster));
+        statusEffectManager.applyEffect(caster, new BurningBlessingBuff(), null, getBuffAmount(caster), caster);
 
         double maxHealth = profileManager.getAnyProfile(caster).getTotalHealth() + statusEffectManager.getHealthBuffAmount(caster);
         double fourth = maxHealth * .25;

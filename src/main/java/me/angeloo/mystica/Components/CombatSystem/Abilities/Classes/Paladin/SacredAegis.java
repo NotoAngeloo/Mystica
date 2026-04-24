@@ -149,7 +149,7 @@ public class SacredAegis extends BaseAbility {
         shield4.setRightArmPose(new EulerAngle(Math.toRadians(0), Math.toRadians(0), Math.toRadians(0)));
         shield4.teleport(shield4spawn);
 
-        statusEffectManager.applyEffect(target, new Immune(), 100, null);
+        statusEffectManager.applyEffect(target, new Immune(), 100, null, caster);
 
 
         new BukkitRunnable(){

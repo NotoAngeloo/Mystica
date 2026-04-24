@@ -110,7 +110,7 @@ public class SoulReap extends BaseAbility {
         Vector initDir = end.toVector().subtract(start.toVector());
 
         caster.teleport(start.clone().setDirection(initDir));
-        statusEffectManager.applyEffect(caster, new Root(), -1, null);
+        statusEffectManager.applyEffect(caster, new Root(), -1, null, caster);
 
         Vector crossProduct = initDir.clone().crossProduct(new Vector(0,1,0)).normalize();
 

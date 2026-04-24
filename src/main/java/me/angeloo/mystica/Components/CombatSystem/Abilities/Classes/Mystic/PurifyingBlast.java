@@ -40,7 +40,6 @@ public class PurifyingBlast extends BaseAbility {
     private final PveChecker pveChecker;
     private final CooldownManager cooldownManager;
     private final AbilityMarkManager abilityMarkManager;
-    private final PlayerStateManager playerStateManager;
 
     private final Mana mana;
 
@@ -58,7 +57,6 @@ public class PurifyingBlast extends BaseAbility {
         cooldownManager = manager.getCooldownManager();;
         mana = manager.getMana();
         abilityMarkManager = manager.getAbilityMarkManager();
-        playerStateManager = manager.getPlayerStateManager();
     }
 
     private final int baseCooldown = 5;
@@ -89,13 +87,13 @@ public class PurifyingBlast extends BaseAbility {
 
         int castTime = 20;
 
-        if(playerStateManager.get(caster.getUniqueId()).has("instant_blast")){
+        if(statusEffectManager.hasEffect(caster, "instant_blast")){
             blastTask(caster);
             return;
         }
 
 
-        statusEffectManager.applyEffect(caster, new Root(), castTime, null);
+        statusEffectManager.applyEffect(caster, new Root(), castTime, null, caster);
 
         abilityManager.setSkillCurrentlyCasting(caster, statusBarIcon());
 
@@ -142,8 +140,7 @@ public class PurifyingBlast extends BaseAbility {
         boolean arcane = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Arcane);
         boolean shepard = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Shepard);
 
-
-        playerStateManager.get(caster.getUniqueId()).remove("instant_blast");
+        statusEffectManager.removeEffect(caster, "instant_blast");
 
 
         double healPower = getSkillDamage(caster);

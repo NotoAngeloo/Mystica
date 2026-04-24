@@ -94,7 +94,7 @@ public class Enlightenment extends BaseAbility {
 
             changeResourceHandler.addHealthToEntity(target, healAmount, caster);
 
-            statusEffectManager.applyEffect(target, new GenericDamageReduction(), 20*10, 0.6);
+            statusEffectManager.applyEffect(target, new GenericDamageReduction(), 20*10, 0.6, caster);
 
             if(caster.getWorld() == target.getWorld()){
                 Location start = caster.getLocation();

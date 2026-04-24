@@ -78,7 +78,7 @@ public class BloodShield extends BaseAbility {
         changeResourceHandler.addHealthToEntity(caster, missing * .5, caster);
 
         double shield = profileManager.getAnyProfile(caster).getCurrentHealth();
-        statusEffectManager.applyEffect(caster, new GenericShield(), null, shield);
+        statusEffectManager.applyEffect(caster, new GenericShield(), null, shield, caster);
 
         shieldTime.put(caster.getUniqueId(), 10);
 

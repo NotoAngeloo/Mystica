@@ -26,7 +26,6 @@ public class ArmorBreak implements StatusEffect {
         return 10 * 20;
     }
 
-    //mag always 1?
     @Override
     public double getMagnitude(){
         return 1;

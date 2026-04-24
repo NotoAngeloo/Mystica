@@ -49,7 +49,7 @@ public class Dash extends BaseAbility {
 
 
         if(caster instanceof Player){
-            statusEffectManager.applyEffect(caster, new SpeedUp(), null, 0.5);
+            statusEffectManager.applyEffect(caster, new SpeedUp(), null, 0.5, caster);
         }
 
 

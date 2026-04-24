@@ -199,7 +199,7 @@ public class MagmaSpikes extends BaseAbility {
                                     if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
                                         Vector velocity = (new Vector(0, .75, 0));
                                         livingEntity.setVelocity(velocity);
-                                        statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, null);
+                                        statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, null, caster);
                                     }
                                 }
                                 continue;
@@ -213,7 +213,7 @@ public class MagmaSpikes extends BaseAbility {
                                 if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
                                     Vector velocity = (new Vector(0, .75, 0));
                                     livingEntity.setVelocity(velocity);
-                                    statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, null);
+                                    statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, null, caster);
                                 }
                             }
 

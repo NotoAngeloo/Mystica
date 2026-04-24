@@ -2,6 +2,7 @@ package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl;
 
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffect;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusInstance;
+import org.bukkit.entity.LivingEntity;
 
 public class Fear implements StatusEffect {
 
@@ -16,9 +17,9 @@ public class Fear implements StatusEffect {
     }
 
     @Override
-    public StatusInstance createInstance(int duration, double magnitude) {
+    public StatusInstance createInstance(int duration, double magnitude, LivingEntity source) {
         // Use our custom SleepInstance
-        return new FearInstance(this, getDuration(), getMagnitude());
+        return new FearInstance(this, getDuration(), getMagnitude(), source);
     }
 
 }

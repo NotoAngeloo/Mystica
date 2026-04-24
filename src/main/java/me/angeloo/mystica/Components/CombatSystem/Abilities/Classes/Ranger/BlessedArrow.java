@@ -41,7 +41,6 @@ public class BlessedArrow extends BaseAbility {
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
-    private final PlayerStateManager playerStateManager;
 
     private final Focus focus;
 
@@ -57,7 +56,6 @@ public class BlessedArrow extends BaseAbility {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();
-        playerStateManager = manager.getPlayerStateManager();
         focus = manager.getFocus();
     }
 
@@ -95,7 +93,7 @@ public class BlessedArrow extends BaseAbility {
 
         double skillDamage = getSkillDamage(caster);
 
-        if(playerStateManager.get(caster.getUniqueId()).has("rallying_cry")){
+        if(statusEffectManager.hasEffect(caster,"rallying_cry")){
             skillDamage = skillDamage * 1.25;
         }
 
@@ -192,7 +190,7 @@ public class BlessedArrow extends BaseAbility {
 
                     if(scout && crit){
                         lookup.get(PlayerClass.Ranger,SubClass.Scout,-1).onExternalTrigger(caster);
-                        statusEffectManager.applyEffect(caster, new Haste(), 2*20, 0.1);
+                        statusEffectManager.applyEffect(caster, new Haste(), 2*20, 0.1, caster);
                     }
 
                     double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);

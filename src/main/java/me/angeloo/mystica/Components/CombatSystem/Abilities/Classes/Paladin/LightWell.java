@@ -295,7 +295,7 @@ public class LightWell extends BaseAbility {
                                 continue;
                             }
 
-                            statusEffectManager.applyEffect(thisPlayer, new WellCrit(), null, null);
+                            statusEffectManager.applyEffect(thisPlayer, new WellCrit(), null, null, caster);
 
                             orb.remove();
                             this.cancel();

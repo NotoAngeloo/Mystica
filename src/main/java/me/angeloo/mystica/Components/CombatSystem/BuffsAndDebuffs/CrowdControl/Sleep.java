@@ -22,9 +22,9 @@ public class Sleep implements StatusEffect {
     }
 
     @Override
-    public StatusInstance createInstance(int duration, double magnitude) {
+    public StatusInstance createInstance(int duration, double magnitude, LivingEntity source) {
         // Use our custom SleepInstance
-        return new SleepInstance(this, getDuration());
+        return new SleepInstance(this, getDuration(), source);
     }
 
 }

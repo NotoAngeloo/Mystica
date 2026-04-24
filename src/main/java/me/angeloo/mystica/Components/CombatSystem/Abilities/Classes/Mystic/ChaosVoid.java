@@ -67,10 +67,10 @@ public class ChaosVoid extends BaseAbility {
         int castTime = 7 * 20;
 
         //if stun doesnt work, maybe ill make a clone of stun
-        statusEffectManager.applyEffect(caster, new Root(), castTime, null);
+        statusEffectManager.applyEffect(caster, new Root(), castTime, null, caster);
 
         Location start = caster.getLocation().clone();
-        statusEffectManager.applyEffect(caster, new Immune(), castTime, null);
+        statusEffectManager.applyEffect(caster, new Immune(), castTime, null, caster);
 
         double healAmount = (profileManager.getAnyProfile(caster).getTotalHealth() + statusEffectManager.getHealthBuffAmount(caster)) / 10;
 

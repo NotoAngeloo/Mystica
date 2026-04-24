@@ -55,8 +55,8 @@ public class GladiatorHeart extends BaseAbility {
 
         double shield = getShieldAmount(caster);
 
-        statusEffectManager.applyEffect(caster, new GenericShield(), null, shield);
-        statusEffectManager.applyEffect(caster, new GenericDamageReduction(), -1, 0.8);
+        statusEffectManager.applyEffect(caster, new GenericShield(), null, shield, caster);
+        statusEffectManager.applyEffect(caster, new GenericDamageReduction(), -1, 0.8, caster);
         //.8 is 20% damage reduction
 
         new BukkitRunnable(){

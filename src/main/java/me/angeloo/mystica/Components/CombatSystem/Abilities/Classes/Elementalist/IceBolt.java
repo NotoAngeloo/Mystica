@@ -39,7 +39,6 @@ public class IceBolt extends BaseAbility {
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
-    private final PlayerStateManager playerStateManager;
 
     private final Heat heat;
 
@@ -56,9 +55,6 @@ public class IceBolt extends BaseAbility {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = manager.getCooldownManager();
-        playerStateManager = manager.getPlayerStateManager();
-        //elementalBreath = elementalistAbilities.getElementalBreath();
-        //heat = elementalistAbilities.getHeat();
     }
 
 
@@ -105,7 +101,7 @@ public class IceBolt extends BaseAbility {
 
         boolean conjurer = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Conjurer);
 
-        boolean breathActive = playerStateManager.get(caster.getUniqueId()).has("elemental_breath");
+        boolean breathActive = statusEffectManager.hasEffect(caster, "elemental_breath");
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 

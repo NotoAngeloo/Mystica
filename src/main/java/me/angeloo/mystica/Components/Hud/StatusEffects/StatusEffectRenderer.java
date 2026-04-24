@@ -73,7 +73,7 @@ public class StatusEffectRenderer {
             if(instance.getEffect().stackType().equals(StatusStackType.ADDITIVE)){
 
                 //get effect mag returns applied mag
-                int stackAmount = (int) instance.getInstanceMagnitude();
+                int stackAmount = manager.getStackAmount(entity, instance.getEffect().getId());
 
                 //don't display more than 20
                 if(stackAmount>20){

@@ -42,7 +42,6 @@ public class CovenantSword extends BaseAbility {
     private final PveChecker pveChecker;
     private final AbilityManager abilityManager;
     private final CooldownManager cooldownManager;
-    private final PlayerStateManager playerStateManager;
 
     private final Purity purity;
 
@@ -59,7 +58,6 @@ public class CovenantSword extends BaseAbility {
         pveChecker = main.getPveChecker();
         cooldownManager = manager.getCooldownManager();
         purity = manager.getPurity();
-        playerStateManager = manager.getPlayerStateManager();
     }
 
     private final int baseCooldown = 20;
@@ -388,7 +386,7 @@ public class CovenantSword extends BaseAbility {
                 this.cancel();
                 sword.remove();
                 abilityManager.stopCasting(caster);
-                playerStateManager.get(caster.getUniqueId()).remove("decision");
+                statusEffectManager.removeEffect(caster,"decision");
             }
 
         }.runTaskTimer(main, 0, 1);
@@ -397,7 +395,7 @@ public class CovenantSword extends BaseAbility {
 
     private double decisionMultiplier(LivingEntity caster){
 
-        if(playerStateManager.get(caster.getUniqueId()).has("decision")){
+        if(statusEffectManager.hasEffect(caster, "decision")){
             return 1.8;
         }
 

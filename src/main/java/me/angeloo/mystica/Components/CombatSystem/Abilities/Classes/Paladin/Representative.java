@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ClassSpecific.RepresentativeBuff;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.Haste;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
@@ -35,7 +36,6 @@ public class Representative extends BaseAbility {
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final CooldownManager cooldownManager;
-    private final PlayerStateManager playerStateManager;
 
     public Representative(Mystica main, AbilityManager manager){
         super("representative");
@@ -47,7 +47,6 @@ public class Representative extends BaseAbility {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         cooldownManager = manager.getCooldownManager();
-        playerStateManager = manager.getPlayerStateManager();
     }
 
     private final int baseCooldown = 30;
@@ -98,8 +97,8 @@ public class Representative extends BaseAbility {
 
 
         double level = profileManager.getAnyProfile(caster).getStats().getLevel();
-        playerStateManager.get(caster.getUniqueId()).set("representative", level);
-        statusEffectManager.applyEffect(caster, new Haste(), 10*20, 0.1);
+        statusEffectManager.applyEffect(caster, new RepresentativeBuff(), null, level, caster);
+        statusEffectManager.applyEffect(caster, new Haste(), 10*20, 0.1, caster);
 
         Location center = caster.getLocation().clone();
 
@@ -173,7 +172,6 @@ public class Representative extends BaseAbility {
 
                 if(count>=10*20){
                     this.cancel();
-                    playerStateManager.get(caster.getUniqueId()).remove("representative");
                 }
 
                 count++;

@@ -210,7 +210,7 @@ public class BitingRain extends BaseAbility {
 
                         if(scout && crit){
                             lookup.get(PlayerClass.Ranger,SubClass.Scout,-1).onExternalTrigger(caster);
-                            statusEffectManager.applyEffect(caster, new Haste(), 2*20, 0.1);
+                            statusEffectManager.applyEffect(caster, new Haste(), 2*20, 0.1, caster);
                         }
 
                         double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Physical", finalSkillDamage, crit));

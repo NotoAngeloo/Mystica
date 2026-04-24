@@ -73,7 +73,7 @@ public class Roll extends BaseAbility {
             shieldAmount*=2;
         }
 
-        statusEffectManager.applyEffect(caster, new GenericShield(), null, shieldAmount);
+        statusEffectManager.applyEffect(caster, new GenericShield(), null, shieldAmount, caster);
 
         double forwardPower = 3;
         double jumpPower = .2;
@@ -82,7 +82,7 @@ public class Roll extends BaseAbility {
 
         //also give a shield and increase move speed
         if(caster instanceof Player){
-            statusEffectManager.applyEffect(caster, new SpeedUp(), null, 0.6);
+            statusEffectManager.applyEffect(caster, new SpeedUp(), null, 0.6, caster);
         }
 
 

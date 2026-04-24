@@ -88,7 +88,7 @@ public class WindWall extends BaseAbility {
         double fourth = profileManager.getAnyProfile(caster).getTotalHealth() + statusEffectManager.getHealthBuffAmount(caster);
         fourth *= 0.25;
 
-        statusEffectManager.applyEffect(caster, new WindWallShield(), null, fourth);
+        statusEffectManager.applyEffect(caster, new WindWallShield(), null, fourth, caster);
 
         new BukkitRunnable(){
             int timeRan = 0;

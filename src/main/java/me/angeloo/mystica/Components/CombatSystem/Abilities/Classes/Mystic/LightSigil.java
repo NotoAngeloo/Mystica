@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ClassSpecific.Instant_Blast;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -41,7 +42,6 @@ public class LightSigil extends BaseAbility {
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final CooldownManager cooldownManager;
-    private final PlayerStateManager playerStateManager;
 
     private final Mana mana;
 
@@ -56,7 +56,6 @@ public class LightSigil extends BaseAbility {
         pveChecker = main.getPveChecker();
         cooldownManager = manager.getCooldownManager();
         mana = manager.getMana();
-        playerStateManager = manager.getPlayerStateManager();
 
     }
 
@@ -92,7 +91,7 @@ public class LightSigil extends BaseAbility {
 
         boolean shepard = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Shepard);
 
-        playerStateManager.get(caster.getUniqueId()).set("instant_blast", true);
+        statusEffectManager.applyEffect(caster, new Instant_Blast(), null, null, caster);
 
         Location spawnStart = caster.getLocation().clone();
 

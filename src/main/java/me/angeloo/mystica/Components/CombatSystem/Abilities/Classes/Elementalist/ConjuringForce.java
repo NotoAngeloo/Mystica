@@ -170,7 +170,7 @@ public class ConjuringForce extends BaseAbility {
                         continue;
                     }
 
-                    statusEffectManager.applyEffect(thisEntity, new ConjuringForceBuff(), null, getBuffAmount(caster));
+                    statusEffectManager.applyEffect(thisEntity, new ConjuringForceBuff(), null, getBuffAmount(caster), caster);
 
                 }
 

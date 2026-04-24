@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl;
 
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CombatContext;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffect;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusInstance;
 import org.bukkit.entity.LivingEntity;
@@ -11,8 +12,8 @@ public class FearInstance extends StatusInstance {
 
     private Vector direction;
 
-    public FearInstance(StatusEffect effect, int duration, double magnitude){
-        super(effect, duration, magnitude);
+    public FearInstance(StatusEffect effect, int duration, double magnitude, LivingEntity source){
+        super(effect, duration, magnitude, source);
     }
 
     @Override
@@ -27,8 +28,8 @@ public class FearInstance extends StatusInstance {
     }
 
     @Override
-    public void onTick(LivingEntity entity){
-        super.onTick(entity);
+    public void onTick(LivingEntity entity, CombatContext combatContext){
+        super.onTick(entity, combatContext);
         entity.setVelocity(direction);
     }
 

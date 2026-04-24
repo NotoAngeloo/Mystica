@@ -90,7 +90,7 @@ public class BurialGround extends BaseAbility {
                     energy.addEnergyToEntity(caster, refund);
 
                     if(blood){
-                        statusEffectManager.applyEffect(caster, new GenericDamageReduction(), -1, 0.8);
+                        statusEffectManager.applyEffect(caster, new GenericDamageReduction(), -1, 0.8, caster);
                     }
                 }
 

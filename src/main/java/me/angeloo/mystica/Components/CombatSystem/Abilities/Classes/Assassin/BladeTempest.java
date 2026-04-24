@@ -83,7 +83,7 @@ public class BladeTempest extends BaseAbility {
         boolean duelist = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Duelist);
 
         if(duelist){
-            statusEffectManager.applyEffect(caster, new BladeTempestCrit(), null, null);
+            statusEffectManager.applyEffect(caster, new BladeTempestCrit(), null, null, caster);
         }
 
         Location start = caster.getLocation().clone();

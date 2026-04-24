@@ -212,14 +212,14 @@ public class DeathGaze extends BaseAbility {
                     double dPull = playerLoc.distance(targetWasLoc);
                     if(valid){
                         //pull
-                        statusEffectManager.applyEffect(target, new Pulled(), null, null);
+                        statusEffectManager.applyEffect(target, new Pulled(), null, null, caster);
 
                         if(dPull <= 1){
                             cancelTask();
                             statusEffectManager.removeEffect(target, "pull");
 
                             if(targetStillValid(target)){
-                                statusEffectManager.applyEffect(target, new Stun(), 20, null);
+                                statusEffectManager.applyEffect(target, new Stun(), 20, null, caster);
                             }
 
                             return;
@@ -262,7 +262,7 @@ public class DeathGaze extends BaseAbility {
                             cancelTask();
 
                             if(targetStillValid(target)){
-                                statusEffectManager.applyEffect(target, new Stun(), 20, null);
+                                statusEffectManager.applyEffect(target, new Stun(), 20, null, caster);
                             }
 
                             return;

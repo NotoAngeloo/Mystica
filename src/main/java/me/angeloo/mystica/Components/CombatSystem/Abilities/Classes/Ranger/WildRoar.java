@@ -104,7 +104,7 @@ public class WildRoar extends BaseAbility {
 
         for(LivingEntity thisEntity : affected){
 
-            statusEffectManager.applyEffect(thisEntity, new WildRoarBuff(), null, getBuffAmount(caster));
+            statusEffectManager.applyEffect(thisEntity, new WildRoarBuff(), null, getBuffAmount(caster), caster);
 
 
             ArmorStand armorStand = caster.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);

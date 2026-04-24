@@ -198,7 +198,7 @@ public class Dreadfall extends BaseAbility {
                                     Vector velocity = (new Vector(0, .5, 0));
                                     livingEntity.setVelocity(velocity);
 
-                                    statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, null);
+                                    statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, null, caster);
                                 }
 
                                 if(arcane && crit){
@@ -217,7 +217,7 @@ public class Dreadfall extends BaseAbility {
                             if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
                                 Vector velocity = (new Vector(0, .5, 0));
                                 livingEntity.setVelocity(velocity);
-                                statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, null);
+                                statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, null, caster);
                             }
 
                             if(arcane && crit){

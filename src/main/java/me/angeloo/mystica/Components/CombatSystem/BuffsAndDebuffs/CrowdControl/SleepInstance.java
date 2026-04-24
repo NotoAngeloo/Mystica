@@ -6,8 +6,8 @@ import org.bukkit.entity.LivingEntity;
 
 public class SleepInstance extends StatusInstance {
 
-    public SleepInstance(StatusEffect effect, int duration) {
-        super(effect, duration, 0); // magnitude can be 0 unless needed
+    public SleepInstance(StatusEffect effect, int duration, LivingEntity source) {
+        super(effect, duration, 0, source); // magnitude can be 0 unless needed
     }
 
     @Override

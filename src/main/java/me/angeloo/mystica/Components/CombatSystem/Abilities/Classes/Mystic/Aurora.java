@@ -176,7 +176,7 @@ public class Aurora extends BaseAbility {
 
                         hitBySkill.add(hitEntity);
 
-                        statusEffectManager.applyEffect(hitEntity, new GenericShield(), null, shieldAmount);
+                        statusEffectManager.applyEffect(hitEntity, new GenericShield(), null, shieldAmount, caster);
 
                         new BukkitRunnable(){
                             @Override

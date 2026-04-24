@@ -32,16 +32,16 @@ public interface StatusEffect {
     default boolean requireMagnitudeDeclaration() { return false; }
 
     /** Create a new instance with custom params (shield amount, multiplier, etc.) */
-    default StatusInstance createInstance(int duration, double magnitude){
-        return new StatusInstance(this, duration, magnitude);
+    default StatusInstance createInstance(int duration, double magnitude, LivingEntity source){
+        return new StatusInstance(this, duration, magnitude, source);
     }
 
-    default ShieldInstance createShieldInstance(int duration, double magnitude){
-        return new ShieldInstance(this, duration, magnitude);
+    default ShieldInstance createShieldInstance(int duration, double magnitude, LivingEntity source){
+        return new ShieldInstance(this, duration, magnitude, source);
     }
 
     default void onApply(LivingEntity entity, StatusInstance instance) {}
-    default void onTick(LivingEntity entity, StatusInstance instance) {}
+    default void onTick(LivingEntity entity, StatusInstance instance, CombatContext combatContext) {}
     default void onRemove(LivingEntity entity, StatusInstance instance) {}
     default void onDamage(LivingEntity entity, StatusInstance instance, double amount) {}
 

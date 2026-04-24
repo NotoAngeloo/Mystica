@@ -5,6 +5,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityMarkManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Misc.Move_Cast;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -41,7 +42,6 @@ public class DecreeHonor extends BaseAbility {
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
     private final AbilityMarkManager abilityMarkManager;
-    private final PlayerStateManager playerStateManager;
 
     private final Purity purity;
 
@@ -59,7 +59,6 @@ public class DecreeHonor extends BaseAbility {
         cooldownManager = manager.getCooldownManager();
         purity = manager.getPurity();
         abilityMarkManager = manager.getAbilityMarkManager();
-        playerStateManager = manager.getPlayerStateManager();
     }
 
     private final int baseCooldown = 5;
@@ -180,7 +179,7 @@ public class DecreeHonor extends BaseAbility {
                 boolean crit = damageCalculator.checkIfCrit(caster, 0);
 
                 if(crit){
-                    playerStateManager.get(caster.getUniqueId()).set("move_cast", true);
+                    statusEffectManager.applyEffect(caster, new Move_Cast(), null, null, caster);
                 }
 
                 if(target instanceof Player){

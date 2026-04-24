@@ -156,7 +156,7 @@ public class Pierce extends BaseAbility {
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
                     lookup.get(PlayerClass.Assassin, 8).onExternalTrigger(caster, target);
 
-                    statusEffectManager.applyEffect(caster, new PierceBuff(), null, null);
+                    statusEffectManager.applyEffect(caster, new PierceBuff(), null, null, caster);
                 }
 
                 rAngle-=15;

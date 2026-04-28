@@ -35,7 +35,7 @@ public class WildRoar extends BaseAbility {
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
         pvpManager = main.getPvpManager();
-        cooldownManager = manager.getCooldownManager();;
+        cooldownManager = main.getCooldownManager();
     }
 
     private final int baseCooldown = 30;

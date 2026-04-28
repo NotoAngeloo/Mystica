@@ -209,16 +209,19 @@ public final class Mystica extends JavaPlugin{
         targetManager = new TargetManager(this);
         dpsManager = new DpsManager(this);
 
+
         changeResourceHandler = new ChangeResourceHandler(this);
         damageCalculator = new DamageCalculator(this);
-        CombatContext combatContext = new CombatContext(damageCalculator, changeResourceHandler);
+        cooldownManager = new CooldownManager();
 
+        CombatContext combatContext = new CombatContext(damageCalculator, changeResourceHandler, cooldownManager);
         statusEffectManager.setCombatContext(combatContext);
 
         abilityManager = new AbilityManager(this);
-        cooldownManager = abilityManager.getCooldownManager();
-        cooldownDisplayer = new CooldownDisplayer(this, abilityManager);
+        //cooldownManager = abilityManager.getCooldownManager();
+        //cooldownDisplayer = new CooldownDisplayer(this, abilityManager);
         combatManager = abilityManager.getCombatManager();
+
 
         rezTick = new RezTick(this);
         deathManager = new DeathManager(this);

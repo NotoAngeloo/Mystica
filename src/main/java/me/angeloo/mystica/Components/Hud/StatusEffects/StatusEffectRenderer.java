@@ -1,14 +1,9 @@
 package me.angeloo.mystica.Components.Hud.StatusEffects;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Shields.ShieldInstance;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffect;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusInstance;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusStackType;
-import me.angeloo.mystica.Components.Hud.Abilties.AbilityRenderState;
-import me.angeloo.mystica.Mystica;
-import org.bukkit.Bukkit;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ApplicationBehavior;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.ArrayList;
@@ -61,7 +56,7 @@ public class StatusEffectRenderer {
 
             StatusEffectRenderState state = new StatusEffectRenderState(instance);
 
-            builder.append(state.getIcon());
+            builder.append(instance.getEffect().getIcon(entity));
 
             if(state.shouldShowRadial()){
                 //-17
@@ -70,7 +65,7 @@ public class StatusEffectRenderer {
             }
 
             //put stack number on top
-            if(instance.getEffect().stackType().equals(StatusStackType.ADDITIVE)){
+            if(instance.getEffect().applicationBehavior().equals(ApplicationBehavior.ADDITIVE)){
 
                 //get effect mag returns applied mag
                 int stackAmount = manager.getStackAmount(entity, instance.getEffect().getId());

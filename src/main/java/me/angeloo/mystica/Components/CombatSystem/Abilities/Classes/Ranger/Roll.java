@@ -28,7 +28,7 @@ public class Roll extends BaseAbility {
         this.main = main;
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
-        cooldownManager = manager.getCooldownManager();;
+        cooldownManager = main.getCooldownManager();
     }
 
     private final int baseCooldown = 13;

@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
@@ -29,8 +30,8 @@ public class CombatManager {
     private final ProfileManager profileManager;
     private final MysticaPartyManager mysticaPartyManager;
     private final AbilityManager abilityManager;
-    private final CooldownDisplayer cooldownDisplayer;
     private final CombatTick combatTick;
+    private final CooldownManager cooldownManager;
 
     private final Map<UUID, Boolean> sheathed = new HashMap<>();
     private final Map<UUID, Long> lastCalledCombat = new HashMap<>();
@@ -42,7 +43,7 @@ public class CombatManager {
         mysticaPartyManager = main.getMysticaPartyManager();
         abilityManager = manager;
         dpsManager = main.getDpsManager();
-        cooldownDisplayer = new CooldownDisplayer(main, manager);
+        cooldownManager = main.getCooldownManager();
         combatTick = new CombatTick(main, this, manager);
     }
 
@@ -179,7 +180,7 @@ public class CombatManager {
 
         //dpsManager.removeDps(player);
         abilityManager.resetAbilityBuffs(player);
-        abilityManager.getCooldownManager().clearAll(player.getUniqueId());
+        cooldownManager.clearAll(player.getUniqueId());
 
 
         if(!profileManager.getAnyProfile(player).getIfDead()){

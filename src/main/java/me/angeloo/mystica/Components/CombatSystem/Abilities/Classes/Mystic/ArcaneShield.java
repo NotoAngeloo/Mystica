@@ -50,7 +50,7 @@ public class ArcaneShield extends BaseAbility {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         mana = manager.getMana();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
         abilityMarkManager = manager.getAbilityMarkManager();
     }
 

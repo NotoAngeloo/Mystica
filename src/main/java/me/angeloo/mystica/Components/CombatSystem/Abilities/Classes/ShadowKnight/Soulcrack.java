@@ -57,7 +57,7 @@ public class Soulcrack extends BaseAbility {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
         energy = manager.getEnergy();
         this.weapon = new MysticaEquipment(EquipmentSlot.WEAPON, PlayerClass.Shadow_Knight, 1);
     }

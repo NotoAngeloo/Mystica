@@ -1,7 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers;
 
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffect;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusStackType;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ApplicationBehavior;
 
 public class WellCrit implements StatusEffect {
 
@@ -21,14 +21,10 @@ public class WellCrit implements StatusEffect {
         return 10;
     }
 
-    @Override
-    public String getIcon() {
-        return "\uE02B";
-    }
 
     @Override
-    public StatusStackType stackType(){
-        return StatusStackType.IGNORE;
+    public ApplicationBehavior applicationBehavior(){
+        return ApplicationBehavior.IGNORE;
     }
 
 }

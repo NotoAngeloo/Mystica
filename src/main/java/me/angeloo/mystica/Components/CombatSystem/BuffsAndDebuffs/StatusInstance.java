@@ -1,10 +1,6 @@
 package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs;
 
-import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
-import me.angeloo.mystica.Utility.Enums.BarType;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 public class StatusInstance {
 
@@ -13,6 +9,9 @@ public class StatusInstance {
     protected int remainingTicks;     // -1 for consumable effects / indefinite duration
     protected int livedTicks = 0; //for damage over time effects to NOT damage every tick sometimes
     protected final LivingEntity source; //source matters for damaging effects
+    protected int stacks = 1;
+
+    private boolean markedForRemoval = false;
 
     public StatusInstance(StatusEffect effect, int duration, double magnitude, LivingEntity source) {
         this.effect = effect;
@@ -43,6 +42,13 @@ public class StatusInstance {
     }
 
     // Hooks called by manager
+
+    //stacking effects
+    public void onApply(LivingEntity entity, CombatContext combatContext, StatusApplicationResult result) {
+        effect.onApply(entity, this, combatContext, result);
+    }
+
+    //non-stacking effects
     public void onApply(LivingEntity entity) {
         effect.onApply(entity, this);
     }
@@ -80,5 +86,20 @@ public class StatusInstance {
         return source;
     }
 
+    public int getStacks(){
+        return stacks;
+    }
+
+    public void editStackCount(int amount){
+        this.stacks += amount;
+    }
+
+    public void markForRemoval(){
+        this.markedForRemoval = true;
+    }
+
+    public boolean isMarkedForRemoval(){
+        return markedForRemoval;
+    }
 
 }

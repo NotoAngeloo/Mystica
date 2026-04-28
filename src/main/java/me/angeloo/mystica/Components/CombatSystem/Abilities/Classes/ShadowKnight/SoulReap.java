@@ -5,6 +5,8 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ClassSpecific.Inflame;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ClassSpecific.Soul_Mark;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Root;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
@@ -47,7 +49,6 @@ public class SoulReap extends BaseAbility {
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
     private final BossCastingManager bossCastingManager;
-    private final PlayerStateManager playerStateManager;
 
     private final Energy energy;
 
@@ -62,10 +63,9 @@ public class SoulReap extends BaseAbility {
         damageCalculator = main.getDamageCalculator();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
         energy = manager.getEnergy();
         bossCastingManager = main.getBossCastingManager();
-        playerStateManager = manager.getPlayerStateManager();
     }
 
     private final int baseCooldown = 10;
@@ -210,13 +210,25 @@ public class SoulReap extends BaseAbility {
 
                     double extra = 0;
 
-                    if(doom && playerStateManager.get(caster.getUniqueId()).has("infection_enhanced")){
-                        extra = playerStateManager.get(caster.getUniqueId()).getInt("reap_bonus_damage", 0);
+                    if(doom && statusEffectManager.hasEffect(target, "infection_enhanced")){
+                        extra = 6;
+                        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
+                                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_1_Level_Bonus();
+                        int time = statusEffectManager.getTicksLeft(target, "infection_enhanced");
+                        //in seconds
+                        time = time / 20;
+                        extra = extra * skillLevel * time;
+
+                        //also remove it
+                        statusEffectManager.removeEffect(target, "infection_enhanced");
                     }
+
 
                     double damage = damageCalculator.calculateDamage(caster, target, "Physical", skillDamage, crit);
                     damage = damage + extra;
-                    playerStateManager.get(caster.getUniqueId()).remove("soul_mark");
+
+                    statusEffectManager.removeEffect(caster, "soul_mark");
+
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
                     bossCastingManager.interrupt(caster, target);
@@ -306,8 +318,13 @@ public class SoulReap extends BaseAbility {
 
     private void addSoulMark(LivingEntity caster){
 
+        if(!profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Doom)){
+            return;
+        }
 
-        int stacks = playerStateManager.get(caster.getUniqueId()).getInt("soul_mark", 0);
+        statusEffectManager.applyEffect(caster, new Soul_Mark(), null, null, caster);
+
+        /*int stacks = playerStateManager.get(caster.getUniqueId()).getInt("soul_mark", 0);
 
         if(stacks>5){
             return;
@@ -315,13 +332,15 @@ public class SoulReap extends BaseAbility {
 
         stacks ++;
 
-        playerStateManager.get(caster.getUniqueId()).set("soul_mark", stacks);
+        playerStateManager.get(caster.getUniqueId()).set("soul_mark", stacks);*/
     }
 
 
 
     public double getSkillDamage(LivingEntity caster){
-        double skillDamage = baseDamage + (2*playerStateManager.get(caster.getUniqueId()).getInt("soul_mark", 0));
+
+        int stacks = statusEffectManager.getStackAmount(caster, "soul_mark");
+        double skillDamage = baseDamage + (2*stacks);
         double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
                 profileManager.getAnyProfile(caster).getSkillLevels().getSkill_5_Level_Bonus();
 
@@ -363,13 +382,5 @@ public class SoulReap extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 5, statusEffectManager.getHastePercent(caster));
     }
 
-    /*public int returnWhichItem(Player player){
-
-        if(energy.getCurrentEnergy(player)<getCost()){
-            return 8;
-        }
-
-        return 0;
-    }*/
 
 }

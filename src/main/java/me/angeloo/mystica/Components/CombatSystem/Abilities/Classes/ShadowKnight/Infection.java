@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageOverTime.Infection_Enhanced;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageOverTime.Infection_Standard;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusInstance;
@@ -35,15 +36,11 @@ public class Infection extends BaseAbility {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final BossManager bossManager;
     private final TargetManager targetManager;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
-    private final DamageCalculator damageCalculator;
     private final StatusEffectManager statusEffectManager;
-    private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
-    private final PlayerStateManager playerStateManager;
 
 
     //player, who they infected
@@ -61,21 +58,16 @@ public class Infection extends BaseAbility {
         super("infection");
         this.main = main;
         profileManager = main.getProfileManager();
-        bossManager = main.getBossManager();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
-        damageCalculator = main.getDamageCalculator();
         statusEffectManager = main.getStatusEffectManager();
-        changeResourceHandler = main.getChangeResourceHandler();
-        cooldownManager = manager.getCooldownManager();
-        playerStateManager = manager.getPlayerStateManager();
+        cooldownManager = main.getCooldownManager();
     }
 
     private final int baseCooldown = 3;
     private final double range = 10;
     private final int baseDamage = 5;
-    private final int duration = 11;
 
     @Override
     public boolean use(LivingEntity caster){
@@ -199,178 +191,24 @@ public class Infection extends BaseAbility {
     }
 
     private void startOrResetInfection(LivingEntity caster, LivingEntity entity){
-
         statusEffectManager.applyEffect(entity, new Infection_Standard(), null, getSkillDamage(caster), caster);
-
-        /*new BukkitRunnable(){
-            @Override
-            public void run(){
-
-                Map<String, StatusInstance> instanceMap = statusEffectManager.getInstanceMap(entity);
-
-                if(instanceMap == null){
-                    this.cancel();
-                    return;
-                }
-
-                StatusInstance instance = instanceMap.get("infection");
-
-                if(instance.getRemainingTicks()<=0){
-                    this.cancel();
-                    return;
-                }
-
-                //can't do async
-
-                if(entity.isDead()){
-                    this.cancel();
-                    statusEffectManager.removeEffect(entity, "infection");
-                    return;
-                }
-
-
-
-            }
-        }.runTaskTimerAsynchronously(main, 0, 20);*/
-
-        /*infectionTarget.put(caster.getUniqueId(), entity);
-        infectionTime.put(caster.getUniqueId(), duration);
-
-
-        if(infectionTask.containsKey(caster.getUniqueId())){
-            infectionTask.get(caster.getUniqueId()).cancel();
-        }
-
-        BukkitTask task = new BukkitRunnable(){
-            @Override
-            public void run(){
-
-                int timeLeft = getPlayerInfectionTime(caster);
-
-                if(timeLeft <=0 ){
-                    cancelTask();
-                    return;
-                }
-
-                if(entity.isDead()){
-                    cancelTask();
-                    return;
-                }
-
-                if(entity instanceof Player){
-
-                    if(profileManager.getAnyProfile(entity).getIfDead()){
-                        cancelTask();
-                        return;
-                    }
-
-                    if(!((Player) entity).isOnline()){
-                        cancelTask();
-                        return;
-                    }
-                }
-
-                if(bossManager.getIfResetProcessing(entity)){
-                    cancelTask();
-                    return;
-                }
-
-                double skillDamage = getSkillDamage(caster);
-
-
-                if(playerStateManager.get(caster.getUniqueId()).has("infection_enhanced")){
-                    skillDamage = skillDamage * 2;
-                }
-
-
-                boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                double damage = damageCalculator.calculateDamage(caster, entity, "Physical", skillDamage, crit);
-                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(entity, caster));
-                changeResourceHandler.subtractHealthFromEntity(entity, damage, caster, crit);
-
-                //Bukkit.getLogger().info("damaging");
-
-                timeLeft --;
-
-                infectionTime.put(caster.getUniqueId(), timeLeft);
-
-                playerStateManager.get(caster.getUniqueId()).set("reap_bonus_damage", soulReapToRemove(caster));
-
-
-            }
-
-            private void cancelTask(){
-                this.cancel();
-                infectionTime.remove(caster.getUniqueId());
-                infectionTarget.remove(caster.getUniqueId());
-                infectionTask.remove(caster.getUniqueId());
-                playerStateManager.get(caster.getUniqueId()).remove("reap_bonus_damage");
-            }
-
-        }.runTaskTimer(main, 20, 20);
-
-        infectionTask.put(caster.getUniqueId(), task);*/
-    }
-
-    /*private int getPlayerInfectionTime(LivingEntity caster){
-        return infectionTime.getOrDefault(caster.getUniqueId(), 0);
-    }
-
-
-    private boolean getIfThisPlayerInfectThisEntity(LivingEntity caster, LivingEntity entity){
-        if(infectionTarget.containsKey(caster.getUniqueId())){
-            return infectionTarget.get(caster.getUniqueId()) == entity;
-        }
-
-        return false;
     }
 
     @Override
     public void onExternalTrigger(LivingEntity caster, LivingEntity target){
 
-        if(getIfThisPlayerInfectThisEntity(caster, target)){
+        if(statusEffectManager.hasEffect(target, "infection")){
             infectionEnhancement(caster, target);
         }
 
     }
 
     private void infectionEnhancement(LivingEntity caster, LivingEntity entity){
-        enhanced.put(caster.getUniqueId(), true);
-        startOrResetInfection(caster, entity);
 
-        if(enhancedTaskMap.containsKey(caster.getUniqueId())){
-            enhancedTaskMap.get(caster.getUniqueId()).cancel();
-        }
+        statusEffectManager.removeEffect(entity, "infection");
 
-        BukkitTask task = new BukkitRunnable(){
-            @Override
-            public void run(){
-                enhanced.remove(caster.getUniqueId());
-            }
-        }.runTaskLater(main, 20*10);
-
-        enhancedTaskMap.put(caster.getUniqueId(), task);
+        statusEffectManager.applyEffect(entity, new Infection_Enhanced(), null, getSkillDamage(caster) * 2, caster);
     }
-
-
-    private double soulReapToRemove(LivingEntity caster){
-
-        double damage = 6;
-
-        double skillLevel = profileManager.getAnyProfile(caster).getSkillLevels().getSkillLevel(profileManager.getAnyProfile(caster).getStats().getLevel()) +
-                profileManager.getAnyProfile(caster).getSkillLevels().getSkill_1_Level_Bonus();
-
-        double time = getPlayerInfectionTime(caster);
-
-        double total = damage * skillLevel * time;
-
-        infectionTime.remove(caster.getUniqueId());
-        infectionTarget.remove(caster.getUniqueId());
-        infectionTask.remove(caster.getUniqueId());
-
-        return total;
-    }*/
-
 
 
     public double getSkillDamage(LivingEntity caster){

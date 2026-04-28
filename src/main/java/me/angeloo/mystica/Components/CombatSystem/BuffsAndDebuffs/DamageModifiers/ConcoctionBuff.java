@@ -1,7 +1,6 @@
 package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers;
 
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffect;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusStackType;
 
 public class ConcoctionBuff implements StatusEffect {
 

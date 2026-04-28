@@ -8,12 +8,11 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 
-public class Infection_Standard implements StatusEffect {
-
+public class Infection_Enhanced implements StatusEffect {
 
     @Override
     public String getId() {
-        return "infection";
+        return "infection_enhanced";
     }
 
     @Override
@@ -44,4 +43,5 @@ public class Infection_Standard implements StatusEffect {
         }
 
     }
+
 }

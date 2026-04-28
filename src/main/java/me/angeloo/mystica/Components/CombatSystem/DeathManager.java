@@ -4,6 +4,7 @@ import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.CustomEvents.AiSignalEvent;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
@@ -39,7 +40,7 @@ public class DeathManager {
     private final StatusEffectManager statusEffectManager;
     private final GravestoneManager gravestoneManager;
     private final DisplayWeapons displayWeapons;
-    private final CooldownDisplayer cooldownDisplayer;
+    private final CooldownManager cooldownManager;
 
     public DeathManager(Mystica main){
         profileManager = main.getProfileManager();
@@ -50,7 +51,7 @@ public class DeathManager {
         statusEffectManager = main.getStatusEffectManager();
         gravestoneManager = main.getGravestoneManager();
         displayWeapons = main.getDisplayWeapons();
-        cooldownDisplayer = main.getCooldownDisplayer();
+        cooldownManager = main.getCooldownManager();
     }
 
 
@@ -124,7 +125,7 @@ public class DeathManager {
         if(!bySkill){
             target.teleport(target.getWorld().getSpawnLocation());
 
-            abilityManager.getCooldownManager().clearAll(target.getUniqueId());
+            cooldownManager.clearAll(target.getUniqueId());
 
             if(target instanceof Player player){
 

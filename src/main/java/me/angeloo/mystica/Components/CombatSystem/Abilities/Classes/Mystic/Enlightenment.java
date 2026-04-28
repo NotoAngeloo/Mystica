@@ -34,7 +34,7 @@ public class Enlightenment extends BaseAbility {
         changeResourceHandler = main.getChangeResourceHandler();
         damageCalculator = main.getDamageCalculator();
         mana = manager.getMana();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
         abilityMarkManager = manager.getAbilityMarkManager();
     }
 

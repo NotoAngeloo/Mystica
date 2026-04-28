@@ -68,7 +68,7 @@ public class DragonBreathing extends BaseAbility {
         changeResourceHandler = main.getChangeResourceHandler();
         this.heat = manager.getHeat();
         //fieryWing = elementalistAbilities.getFieryWing();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
 
     }
 

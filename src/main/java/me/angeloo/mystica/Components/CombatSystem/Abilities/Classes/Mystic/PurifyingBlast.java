@@ -54,7 +54,7 @@ public class PurifyingBlast extends BaseAbility {
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
-        cooldownManager = manager.getCooldownManager();;
+        cooldownManager = main.getCooldownManager();
         mana = manager.getMana();
         abilityMarkManager = manager.getAbilityMarkManager();
     }

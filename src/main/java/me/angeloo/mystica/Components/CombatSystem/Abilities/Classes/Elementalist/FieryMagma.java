@@ -66,7 +66,7 @@ public class FieryMagma extends BaseAbility {
         changeResourceHandler = main.getChangeResourceHandler();
         //fieryWing = elementalistAbilities.getFieryWing();
         this.heat = manager.getHeat();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
     }
 
     @Override

@@ -36,7 +36,7 @@ public class GloryOfPaladins extends BaseAbility {
         statusEffectManager = main.getStatusEffectManager();
         damageCalculator = main.getDamageCalculator();
         changeResourceHandler = main.getChangeResourceHandler();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
         purity = manager.getPurity();
     }
 

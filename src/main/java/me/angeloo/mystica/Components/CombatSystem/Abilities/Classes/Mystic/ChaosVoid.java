@@ -39,7 +39,7 @@ public class ChaosVoid extends BaseAbility {
         abilityManager = manager;
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        cooldownManager = manager.getCooldownManager();;
+        cooldownManager = main.getCooldownManager();
     }
 
     private final int baseCooldown = 120;

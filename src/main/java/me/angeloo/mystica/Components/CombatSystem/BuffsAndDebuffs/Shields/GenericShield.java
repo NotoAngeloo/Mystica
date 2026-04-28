@@ -1,7 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Shields;
 
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffect;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusStackType;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ApplicationBehavior;
 
 public class GenericShield implements StatusEffect {
 
@@ -18,8 +18,8 @@ public class GenericShield implements StatusEffect {
     }
 
     @Override
-    public StatusStackType stackType(){
-        return StatusStackType.ADDITIVE;
+    public ApplicationBehavior applicationBehavior(){
+        return ApplicationBehavior.ADDITIVE;
     }
 
 }

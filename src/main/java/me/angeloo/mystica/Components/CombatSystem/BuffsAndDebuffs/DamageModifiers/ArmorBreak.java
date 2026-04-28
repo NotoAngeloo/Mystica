@@ -1,8 +1,6 @@
 package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers;
 
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffect;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusInstance;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusStackType;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.*;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -17,8 +15,8 @@ public class ArmorBreak implements StatusEffect {
     }
 
     @Override
-    public StatusStackType stackType(){
-        return StatusStackType.ADDITIVE;
+    public ApplicationBehavior applicationBehavior(){
+        return ApplicationBehavior.ADDITIVE;
     }
 
     @Override
@@ -32,7 +30,7 @@ public class ArmorBreak implements StatusEffect {
     }
 
     @Override
-    public void onApply(LivingEntity entity, StatusInstance instance){
+    public void onApply(LivingEntity entity, StatusInstance instance, CombatContext combatContext, StatusApplicationResult statusApplicationResult){
 
         //check amount stacks
 

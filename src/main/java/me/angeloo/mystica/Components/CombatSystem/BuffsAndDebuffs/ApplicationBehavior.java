@@ -1,6 +1,6 @@
 package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs;
 
-public enum StatusStackType {
+public enum ApplicationBehavior {
 
     IGNORE,
     REPLACE,

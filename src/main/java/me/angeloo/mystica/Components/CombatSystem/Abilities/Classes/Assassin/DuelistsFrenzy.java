@@ -50,7 +50,7 @@ public class DuelistsFrenzy extends BaseAbility {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         combo = manager.getCombo();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
     }
 
     private final double range = 7;

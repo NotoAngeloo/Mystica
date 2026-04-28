@@ -15,11 +15,6 @@ public class StatusEffectRenderState {
         this.maxTicks = effect.getDuration(); // authoritative
     }
 
-    public String getIcon() {
-        return effect.getIcon();
-    }
-
-
     public boolean hasDuration() {
         return maxTicks > 0;
     }

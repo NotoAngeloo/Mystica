@@ -51,7 +51,7 @@ public class ModestCalling extends BaseAbility {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         damageCalculator = main.getDamageCalculator();
-        cooldownManager = manager.getCooldownManager();;
+        cooldownManager = main.getCooldownManager();
         purity = manager.getPurity();
     }
 

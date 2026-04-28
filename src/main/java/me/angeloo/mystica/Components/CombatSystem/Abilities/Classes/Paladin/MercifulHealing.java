@@ -50,7 +50,7 @@ public class MercifulHealing extends BaseAbility {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         abilityManager = manager;
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
         purity = manager.getPurity();
         abilityMarkManager = manager.getAbilityMarkManager();
     }

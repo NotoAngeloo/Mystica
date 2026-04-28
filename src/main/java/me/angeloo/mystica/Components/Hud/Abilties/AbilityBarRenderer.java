@@ -40,7 +40,7 @@ public class AbilityBarRenderer {
     public AbilityBarRenderer(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
         this.abilityManager = manager;
-        this.cooldownManager = manager.getCooldownManager();
+        this.cooldownManager = main.getCooldownManager();
     }
 
     public String render(Player player, EquipSkills equipSkills, double haste, long now){
@@ -58,7 +58,7 @@ public class AbilityBarRenderer {
 
 
         if(ultimate != null){
-            String icon = ultimate.skillBarIcon();
+            String icon = ultimate.skillBarIcon(player);
             bar.append(icon);
 
             long abilityRemaining = cooldownManager.getRemaining(
@@ -111,7 +111,7 @@ public class AbilityBarRenderer {
                 continue;
             }
 
-            String icon = ability.skillBarIcon();
+            String icon = ability.skillBarIcon(player);
 
             bar.append(icon);
 

@@ -44,7 +44,7 @@ public class SpiritualGift extends BaseAbility {
         pveChecker = main.getPveChecker();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
         purity = manager.getPurity();
     }
 

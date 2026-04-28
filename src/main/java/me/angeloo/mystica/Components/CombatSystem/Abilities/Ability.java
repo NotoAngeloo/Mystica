@@ -39,7 +39,8 @@ public interface Ability {
 
     }
 
-    default String skillBarIcon(){
+    //reason why is to be able to display greyed out icons under certain conditions
+    default String skillBarIcon(LivingEntity entity){
         return "\ue1d3";
     }
 

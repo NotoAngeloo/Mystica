@@ -64,7 +64,7 @@ public class AbilityManager {
 
     public AbilityManager(Mystica main){
         profileManager = main.getProfileManager();
-        cooldownManager = new CooldownManager();
+        cooldownManager = main.getCooldownManager();
         statusEffectManager = main.getStatusEffectManager();
         playerStateManager = new PlayerStateManager();
         abilityMarkManager = new AbilityMarkManager(main);
@@ -376,9 +376,9 @@ public class AbilityManager {
     }
 
 
-    public CooldownManager getCooldownManager(){
+    /*public CooldownManager getCooldownManager(){
         return cooldownManager;
-    }
+    }*/
 
     public PlayerStateManager getPlayerStateManager(){
         return playerStateManager;

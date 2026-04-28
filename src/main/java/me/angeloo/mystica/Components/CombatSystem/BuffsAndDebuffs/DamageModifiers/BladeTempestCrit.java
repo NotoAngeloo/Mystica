@@ -24,10 +24,6 @@ public class BladeTempestCrit implements StatusEffect {
         return 10;
     }
 
-    @Override
-    public String getIcon() {
-        return "\uE023";
-    }
 
 
 }

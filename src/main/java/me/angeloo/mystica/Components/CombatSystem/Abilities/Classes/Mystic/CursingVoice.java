@@ -38,7 +38,7 @@ public class CursingVoice extends BaseAbility {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         statusEffectManager = main.getStatusEffectManager();
-        cooldownManager = manager.getCooldownManager();;
+        cooldownManager = main.getCooldownManager();
     }
 
     private final int baseCooldown = 45;

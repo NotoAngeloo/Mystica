@@ -20,7 +20,7 @@ public class Dash extends BaseAbility {
         super("dash");
         this.main = main;
         statusEffectManager = main.getStatusEffectManager();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
     }
 
     private final int baseCooldown = 20;

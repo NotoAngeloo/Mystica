@@ -38,7 +38,7 @@ public class SacredAegis extends BaseAbility {
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         statusEffectManager = main.getStatusEffectManager();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
     }
 
     private final int baseCooldown = 120;

@@ -1,7 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers;
 
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffect;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusStackType;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ApplicationBehavior;
 
 public class WildRoarBuff implements StatusEffect {
 
@@ -17,14 +17,10 @@ public class WildRoarBuff implements StatusEffect {
     }
 
     @Override
-    public StatusStackType stackType(){
-        return StatusStackType.REPLACE_SMALLER;
+    public ApplicationBehavior applicationBehavior(){
+        return ApplicationBehavior.REPLACE_SMALLER;
     }
 
-    @Override
-    public String getIcon() {
-        return "\uE029";
-    }
 
     @Override
     public boolean requireMagnitudeDeclaration(){

@@ -61,8 +61,8 @@ public class FieryWing extends BaseAbility {
         damageCalculator = main.getDamageCalculator();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        cooldownManager = main.getCooldownManager();
         this.heat = manager.getHeat();
-        cooldownManager = manager.getCooldownManager();
     }
 
     private final double range = 20;
@@ -268,14 +268,16 @@ public class FieryWing extends BaseAbility {
 
         statusEffectManager.applyEffect(caster, new Inflame(), null, null, caster);
 
-        int stacks = statusEffectManager.getStackAmount(caster, "inflame");
+
+        //this is now all part of the effect itself
+        /*int stacks = statusEffectManager.getStackAmount(caster, "inflame");
 
 
         if(stacks >=4){
             cooldownManager.clear(caster.getUniqueId(), -1);
             statusEffectManager.removeEffect(caster, "inflame");
 
-        }
+        }*/
 
     }
 

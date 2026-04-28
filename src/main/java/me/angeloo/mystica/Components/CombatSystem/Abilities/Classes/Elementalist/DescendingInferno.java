@@ -65,7 +65,7 @@ public class DescendingInferno extends BaseAbility {
         this.heat = manager.getHeat();
         //fieryWing = elementalistAbilities.getFieryWing();
         //elementalBreath = elementalistAbilities.getElementalBreath();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
 
     }
 

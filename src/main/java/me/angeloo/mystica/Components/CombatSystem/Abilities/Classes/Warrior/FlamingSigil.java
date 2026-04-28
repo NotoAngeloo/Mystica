@@ -44,7 +44,7 @@ public class FlamingSigil extends BaseAbility {
         statusEffectManager = main.getStatusEffectManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
     }
 
     private final int baseCooldown = 10;

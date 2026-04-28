@@ -58,7 +58,7 @@ public class SearingChains extends BaseAbility {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         aggroManager = main.getAggroManager();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
         rage = manager.getRage();
     }
 
@@ -314,7 +314,7 @@ public class SearingChains extends BaseAbility {
                                     changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
                                     rage.addRageToEntity(caster, 10);
                                     validCCTargets.add(livingEntity);
-                                    statusEffectManager.applyEffect(livingEntity, new Pulled(), null, null);
+                                    statusEffectManager.applyEffect(livingEntity, new Pulled(), null, null, caster);
                                     targetManager.setPlayerTarget((Player) entity, caster);
                                 }
                                 continue;
@@ -326,7 +326,7 @@ public class SearingChains extends BaseAbility {
                                 rage.addRageToEntity(caster, 10);
                                 if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
                                     validCCTargets.add(livingEntity);
-                                    statusEffectManager.applyEffect(livingEntity, new Pulled(), null, null);
+                                    statusEffectManager.applyEffect(livingEntity, new Pulled(), null, null, caster);
                                 }
                             }
 

@@ -36,7 +36,7 @@ public class JusticeMark extends BaseAbility {
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
         pvpManager = main.getPvpManager();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
         abilityMarkManager = manager.getAbilityMarkManager();
     }
 

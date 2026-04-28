@@ -51,7 +51,7 @@ public class ModestCalling extends BaseAbility {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         damageCalculator = main.getDamageCalculator();
-        cooldownManager = manager.getCooldownManager();;
+        cooldownManager = main.getCooldownManager();
         purity = manager.getPurity();
     }
 
@@ -146,8 +146,8 @@ public class ModestCalling extends BaseAbility {
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
-                    statusEffectManager.applyEffect(target, new ModestDebuff(), null, finalMult);
-                    statusEffectManager.applyEffect(target, new Sleep(), 15*20, null);
+                    statusEffectManager.applyEffect(target, new ModestDebuff(), null, finalMult, caster);
+                    statusEffectManager.applyEffect(target, new Sleep(), 15*20, null, caster);
 
 
                     if(target instanceof Player){

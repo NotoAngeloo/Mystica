@@ -19,11 +19,15 @@ public interface StatusEffect {
     /** Priority for HUD — lower shows first */
     default int getPriority() { return 5; }
 
-    /** Unicode icon */
-    default String getIcon() { return "\ue219"; } // default icon
+    /** Unicode icon */ //soul reap, for example, has a different icon on max stacks
+    default String getIcon(LivingEntity entity) { return "\ue219"; } // default icon
 
     /** Does this effect stack (e.g., adds values) or refresh duration? */
-    default StatusStackType stackType() { return StatusStackType.REPLACE; }
+    default ApplicationBehavior applicationBehavior() { return ApplicationBehavior.REPLACE; }
+
+    //this is
+    default int getMaxStacks() { return 1; }
+    default boolean usesStacks() { return false; }
 
     /** Does it have a multiplier? (like haste) */
     default boolean usesMultiplier() { return false; }
@@ -32,16 +36,24 @@ public interface StatusEffect {
     default boolean requireMagnitudeDeclaration() { return false; }
 
     /** Create a new instance with custom params (shield amount, multiplier, etc.) */
-    default StatusInstance createInstance(int duration, double magnitude){
-        return new StatusInstance(this, duration, magnitude);
+    default StatusInstance createInstance(int duration, double magnitude, LivingEntity source){
+        return new StatusInstance(this, duration, magnitude, source);
     }
 
-    default ShieldInstance createShieldInstance(int duration, double magnitude){
-        return new ShieldInstance(this, duration, magnitude);
+    default ShieldInstance createShieldInstance(int duration, double magnitude, LivingEntity source){
+        return new ShieldInstance(this, duration, magnitude, source);
     }
 
-    default void onApply(LivingEntity entity, StatusInstance instance) {}
-    default void onTick(LivingEntity entity, StatusInstance instance) {}
+    //for stacking effect
+    default void onApply(LivingEntity entity, StatusInstance instance, CombatContext combatContext, StatusApplicationResult statusApplicationResult) {}
+
+    //for not
+    default void onApply(LivingEntity entity, StatusInstance instance){
+
+    }
+
+
+    default void onTick(LivingEntity entity, StatusInstance instance, CombatContext combatContext) {}
     default void onRemove(LivingEntity entity, StatusInstance instance) {}
     default void onDamage(LivingEntity entity, StatusInstance instance, double amount) {}
 

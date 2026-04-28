@@ -4,6 +4,7 @@ import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
 import me.angeloo.mystica.Components.CombatSystem.*;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CombatContext;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Commands.*;
@@ -206,16 +207,21 @@ public final class Mystica extends JavaPlugin{
         fakePlayerTargetManager = new FakePlayerTargetManager(this);
         gravestoneManager = new GravestoneManager();
         targetManager = new TargetManager(this);
-        targetManager = new TargetManager(this);
         dpsManager = new DpsManager(this);
-        changeResourceHandler = new ChangeResourceHandler(this);
 
+
+        changeResourceHandler = new ChangeResourceHandler(this);
         damageCalculator = new DamageCalculator(this);
+        cooldownManager = new CooldownManager();
+
+        CombatContext combatContext = new CombatContext(damageCalculator, changeResourceHandler, cooldownManager);
+        statusEffectManager.setCombatContext(combatContext);
 
         abilityManager = new AbilityManager(this);
-        cooldownManager = abilityManager.getCooldownManager();
-        cooldownDisplayer = new CooldownDisplayer(this, abilityManager);
+        //cooldownManager = abilityManager.getCooldownManager();
+        //cooldownDisplayer = new CooldownDisplayer(this, abilityManager);
         combatManager = abilityManager.getCombatManager();
+
 
         rezTick = new RezTick(this);
         deathManager = new DeathManager(this);

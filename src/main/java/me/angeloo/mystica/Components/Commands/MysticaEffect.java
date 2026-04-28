@@ -113,7 +113,7 @@ public class MysticaEffect implements CommandExecutor {
                     return true;
                 }
                 case "stun" -> {
-                    statusEffectManager.applyEffect(target, new Stun(), amount, null);
+                    statusEffectManager.applyEffect(target, new Stun(), amount, null, caster);
                     return true;
                 }
                 case "unstun" -> {
@@ -127,12 +127,12 @@ public class MysticaEffect implements CommandExecutor {
                         return true;
                     }
 
-                    statusEffectManager.applyEffect(target, new Immune(), amount, null);
+                    statusEffectManager.applyEffect(target, new Immune(), amount, null, caster);
 
                     return true;
                 }
                 case "melt" -> {
-                    statusEffectManager.applyEffect(target, new ArmorBreak(), null, null);
+                    statusEffectManager.applyEffect(target, new ArmorBreak(), null, null, caster);
                     return true;
                 }
                 case "heal_percent" -> {
@@ -142,13 +142,13 @@ public class MysticaEffect implements CommandExecutor {
                     return true;
                 }
                 case "fear" -> {
-                    statusEffectManager.applyEffect(target, new Fear(), amount, null);
+                    statusEffectManager.applyEffect(target, new Fear(), amount, null, caster);
                     return true;
                 }
                 case "fear_if_targeting" -> {
 
                     if (targetManager.isTargeting(target, caster)) {
-                        statusEffectManager.applyEffect(target, new Fear(), amount, null);
+                        statusEffectManager.applyEffect(target, new Fear(), amount, null, caster);
 
                         if (target instanceof Player) {
                             if (!profileManager.getCompanions((Player) target).isEmpty()) {
@@ -159,7 +159,7 @@ public class MysticaEffect implements CommandExecutor {
                                         continue;
                                     }
 
-                                    statusEffectManager.applyEffect(target, new Fear(), amount, null);
+                                    statusEffectManager.applyEffect(target, new Fear(), amount, null, caster);
                                 }
                             }
                         }

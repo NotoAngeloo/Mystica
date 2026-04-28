@@ -48,7 +48,7 @@ public class ArcaneContract extends BaseAbility {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         statusEffectManager = main.getStatusEffectManager();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
         gravestoneManager = main.getGravestoneManager();
     }
 

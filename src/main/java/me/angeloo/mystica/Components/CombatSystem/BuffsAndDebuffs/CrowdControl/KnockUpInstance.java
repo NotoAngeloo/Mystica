@@ -1,13 +1,14 @@
 package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl;
 
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CombatContext;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffect;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusInstance;
 import org.bukkit.entity.LivingEntity;
 
 public class KnockUpInstance extends StatusInstance {
 
-    public KnockUpInstance(StatusEffect effect, int duration, double magnitude) {
-        super(effect, duration, magnitude); // magnitude could control upward speed
+    public KnockUpInstance(StatusEffect effect, int duration, double magnitude, LivingEntity source) {
+        super(effect, duration, magnitude, source); // magnitude could control upward speed
     }
 
     @Override
@@ -21,8 +22,8 @@ public class KnockUpInstance extends StatusInstance {
     }
 
     @Override
-    public void onTick(LivingEntity entity) {
-        super.onTick(entity);
+    public void onTick(LivingEntity entity, CombatContext combatContext) {
+        super.onTick(entity, combatContext);
         // Check if on ground
         if (entity.isOnGround()) {
             remainingTicks = 0; // mark for removal

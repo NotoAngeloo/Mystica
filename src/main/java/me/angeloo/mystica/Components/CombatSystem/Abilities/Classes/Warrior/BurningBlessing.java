@@ -22,7 +22,7 @@ public class BurningBlessing extends BaseAbility {
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
     }
 
     private final int baseCooldown = 16;
@@ -48,7 +48,7 @@ public class BurningBlessing extends BaseAbility {
 
     private void execute(LivingEntity caster){
 
-        statusEffectManager.applyEffect(caster, new BurningBlessingBuff(), null, getBuffAmount(caster));
+        statusEffectManager.applyEffect(caster, new BurningBlessingBuff(), null, getBuffAmount(caster), caster);
 
         double maxHealth = profileManager.getAnyProfile(caster).getTotalHealth() + statusEffectManager.getHealthBuffAmount(caster);
         double fourth = maxHealth * .25;

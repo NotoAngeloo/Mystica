@@ -38,7 +38,7 @@ public class CursingVoice extends BaseAbility {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         statusEffectManager = main.getStatusEffectManager();
-        cooldownManager = manager.getCooldownManager();;
+        cooldownManager = main.getCooldownManager();
     }
 
     private final int baseCooldown = 45;
@@ -83,7 +83,7 @@ public class CursingVoice extends BaseAbility {
                 if (distance <= 1) {
                     cancelTask();
 
-                    statusEffectManager.applyEffect(target, new Sleep(), 20*10, null);
+                    statusEffectManager.applyEffect(target, new Sleep(), 20*10, null, caster);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                 }

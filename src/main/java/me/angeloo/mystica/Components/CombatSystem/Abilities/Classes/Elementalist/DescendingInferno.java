@@ -44,11 +44,8 @@ public class DescendingInferno extends BaseAbility {
     private final ChangeResourceHandler changeResourceHandler;
     private final StatusEffectManager statusEffectManager;
     private final CooldownManager cooldownManager;
-    private final PlayerStateManager playerStateManager;
 
     private final Heat heat;
-    //private final FieryWing fieryWing;
-    //private final ElementalBreath elementalBreath;
 
 
     private final double range = 20;
@@ -65,11 +62,10 @@ public class DescendingInferno extends BaseAbility {
         damageCalculator = main.getDamageCalculator();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        playerStateManager = manager.getPlayerStateManager();
         this.heat = manager.getHeat();
         //fieryWing = elementalistAbilities.getFieryWing();
         //elementalBreath = elementalistAbilities.getElementalBreath();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
 
     }
 
@@ -215,7 +211,7 @@ public class DescendingInferno extends BaseAbility {
                         changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
 
-                        if(playerStateManager.get(caster.getUniqueId()).has("elemental_breath")){
+                        if(statusEffectManager.hasEffect(caster, "elemental_breath")){
                             explodeFireball(caster);
                         }
 
@@ -253,7 +249,7 @@ public class DescendingInferno extends BaseAbility {
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                         changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
-                        if(playerStateManager.get(caster.getUniqueId()).has("elemental_breath")){
+                        if(statusEffectManager.hasEffect(caster, "elemental_breath")){
                             explodeFireball(caster);
                         }
                     }
@@ -283,7 +279,7 @@ public class DescendingInferno extends BaseAbility {
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                         changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
-                        if(playerStateManager.get(caster.getUniqueId()).has("elemental_breath")){
+                        if(statusEffectManager.hasEffect(caster, "elemental_breath")){
                             explodeFireball(caster);
                         }
                     }

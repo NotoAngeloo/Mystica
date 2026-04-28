@@ -1,5 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Misc;
 
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CombatContext;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusApplicationResult;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffect;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusInstance;
 import me.angeloo.mystica.CustomEvents.ApplyStealthEffectEvent;
@@ -15,7 +17,7 @@ public class StealthEffect implements StatusEffect {
     }
 
     @Override
-    public void onApply(LivingEntity entity, StatusInstance instance){
+    public void onApply(LivingEntity entity, StatusInstance instance, CombatContext combatContext, StatusApplicationResult statusApplicationResult){
         Bukkit.getServer().getPluginManager().callEvent(new ApplyStealthEffectEvent(entity));
     }
 

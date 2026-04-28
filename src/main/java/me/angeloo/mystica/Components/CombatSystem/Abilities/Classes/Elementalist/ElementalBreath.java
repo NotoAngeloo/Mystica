@@ -3,14 +3,10 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Elementalis
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerState;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ClassSpecific.Elemental_Breath;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
-import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.Enums.BarType;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -18,30 +14,26 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 public class ElementalBreath extends BaseAbility {
 
     private final Mystica main;
     private final ProfileManager profileManager;
     private final StatusEffectManager statusEffectManager;
     private final CooldownManager cooldownManager;
-    private final PlayerStateManager playerStateManager;
 
-    private final Map<UUID, Integer> buffActiveMap = new HashMap<>();
+    //private final Map<UUID, Integer> buffActiveMap = new HashMap<>();
 
     public ElementalBreath(Mystica main, AbilityManager manager){
         super("elemental_breath");
         this.main = main;
         profileManager = main.getProfileManager();
         statusEffectManager =  main.getStatusEffectManager();
-        cooldownManager = manager.getCooldownManager();
-        playerStateManager = manager.getPlayerStateManager();;
+        cooldownManager = main.getCooldownManager();
+        ;
     }
 
     private final int baseCooldown = 120;
+    //this is in seconds
     private final int baseDuration = 15;
 
     @Override
@@ -64,7 +56,7 @@ public class ElementalBreath extends BaseAbility {
 
         int bonus = ((int)(skillLevel/3));
 
-        return baseDuration + bonus;
+        return (baseDuration + bonus) * 20;
     }
 
     @Override
@@ -75,30 +67,7 @@ public class ElementalBreath extends BaseAbility {
     private void execute(LivingEntity caster){
 
 
-        PlayerState state = playerStateManager.get(caster.getUniqueId());
-        state.set("elemental_breath", true);
-
-        buffActiveMap.put(caster.getUniqueId(), getDuration(caster));
-
-
-        //this is probably effecting when players can use this skill
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-
-
-                if(buffActiveMap.get(caster.getUniqueId()) <= 0){
-                    this.cancel();
-                    state.remove("elemental_breath");
-
-                    return;
-                }
-
-                int cooldown = buffActiveMap.get(caster.getUniqueId()) - 1;
-
-                buffActiveMap.put(caster.getUniqueId(), cooldown);
-            }
-        }.runTaskTimer(main, 0,20);
+        statusEffectManager.applyEffect(caster,new Elemental_Breath(),getDuration(caster), null, caster);
 
         new BukkitRunnable(){
             double height = 0;
@@ -109,7 +78,7 @@ public class ElementalBreath extends BaseAbility {
             @Override
             public void run(){
 
-                if(getIfBuffTime(caster) <= 0){
+                if(!statusEffectManager.hasEffect(caster, "elemental_breath")){
                     this.cancel();
                     return;
                 }
@@ -169,15 +138,11 @@ public class ElementalBreath extends BaseAbility {
 
     }
 
-    private int getIfBuffTime(LivingEntity caster){
-        return buffActiveMap.getOrDefault(caster.getUniqueId(), 0);
-    }
-
 
     @Override
     public boolean usable(LivingEntity caster){
 
-        if(getIfBuffTime(caster) >= 0){
+        if(statusEffectManager.hasEffect(caster, "elemental_breath")){
             return false;
         }
 

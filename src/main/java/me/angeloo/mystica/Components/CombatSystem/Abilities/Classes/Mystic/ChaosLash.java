@@ -43,8 +43,6 @@ public class ChaosLash extends BaseAbility {
     private final ChangeResourceHandler changeResourceHandler;
     private final AbilityManager abilityManager;
     private final CooldownManager cooldownManager;
-    private final PlayerStateManager playerStateManager;
-
 
     public ChaosLash(Mystica main, AbilityManager manager){
         super("chaos_lash");
@@ -57,8 +55,7 @@ public class ChaosLash extends BaseAbility {
         damageCalculator = main.getDamageCalculator();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        cooldownManager = manager.getCooldownManager();
-        playerStateManager = manager.getPlayerStateManager();
+        cooldownManager = main.getCooldownManager();
 
     }
 
@@ -100,7 +97,7 @@ public class ChaosLash extends BaseAbility {
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        if(playerStateManager.get(target.getUniqueId()).has("plague_curse")){
+        if(statusEffectManager.hasEffect(target, "plague_curse")){
             lookup.get(PlayerClass.Mystic, SubClass.Chaos, -1).onExternalTrigger(caster, 2);
         }
 

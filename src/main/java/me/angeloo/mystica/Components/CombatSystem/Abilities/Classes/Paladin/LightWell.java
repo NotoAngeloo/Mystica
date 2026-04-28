@@ -49,7 +49,7 @@ public class LightWell extends BaseAbility {
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
     }
 
     private final int baseCooldown = 30;
@@ -295,7 +295,7 @@ public class LightWell extends BaseAbility {
                                 continue;
                             }
 
-                            statusEffectManager.applyEffect(thisPlayer, new WellCrit(), null, null);
+                            statusEffectManager.applyEffect(thisPlayer, new WellCrit(), null, null, caster);
 
                             orb.remove();
                             this.cancel();

@@ -57,7 +57,7 @@ public class DivineInfusion extends BaseAbility {
         damageCalculator = main.getDamageCalculator();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
         purity = manager.getPurity();
     }
 
@@ -214,11 +214,11 @@ public class DivineInfusion extends BaseAbility {
 
                             if(thisEntity instanceof Player){
 
-                                statusEffectManager.applyEffect(thisEntity, new SpeedUp(), null, 0.5);
+                                statusEffectManager.applyEffect(thisEntity, new SpeedUp(), null, 0.5, caster);
 
                             }
 
-                            statusEffectManager.applyEffect(thisEntity, new GenericShield(), null, amount);
+                            statusEffectManager.applyEffect(thisEntity, new GenericShield(), null, amount, caster);
 
                             removeBuffsLater(thisEntity, amount);
                         }

@@ -59,7 +59,7 @@ public class DuranceOfTruth extends BaseAbility {
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
         purity = manager.getPurity();
     }
 
@@ -233,7 +233,7 @@ public class DuranceOfTruth extends BaseAbility {
                                 double fivePercent = (profileManager.getAnyProfile(caster).getTotalHealth() + statusEffectManager.getHealthBuffAmount(caster)) * .05;
                                 changeResourceHandler.addHealthToEntity(caster, fivePercent, caster);
 
-                                statusEffectManager.applyEffect(caster, new GenericDamageReduction(), 20, 0.95);
+                                statusEffectManager.applyEffect(caster, new GenericDamageReduction(), 20, 0.95, caster);
                             }
 
                             continue;
@@ -269,7 +269,7 @@ public class DuranceOfTruth extends BaseAbility {
                            continue;
                         }
 
-                        statusEffectManager.applyEffect(hitEntity, new Silence(), 20*3, null);
+                        statusEffectManager.applyEffect(hitEntity, new Silence(), 20*3, null, caster);
                         toRemove.add(hitEntity);
                     }
 

@@ -52,7 +52,7 @@ public class Aurora extends BaseAbility {
         damageCalculator = main.getDamageCalculator();
         pveChecker = main.getPveChecker();
         pvpManager = main.getPvpManager();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
         mana = manager.getMana();
     }
 
@@ -176,7 +176,7 @@ public class Aurora extends BaseAbility {
 
                         hitBySkill.add(hitEntity);
 
-                        statusEffectManager.applyEffect(hitEntity, new GenericShield(), null, shieldAmount);
+                        statusEffectManager.applyEffect(hitEntity, new GenericShield(), null, shieldAmount, caster);
 
                         new BukkitRunnable(){
                             @Override

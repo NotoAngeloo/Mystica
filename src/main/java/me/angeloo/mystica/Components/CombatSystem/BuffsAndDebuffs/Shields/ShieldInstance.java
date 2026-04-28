@@ -14,8 +14,8 @@ public class ShieldInstance extends StatusInstance {
     //private double amount;
     private double excess = 0;
 
-    public ShieldInstance(StatusEffect effect, int duration, double amount){
-        super(effect, duration, amount);
+    public ShieldInstance(StatusEffect effect, int duration, double amount, LivingEntity source){
+        super(effect, duration, amount, source);
         //this.amount = amount;
     }
 

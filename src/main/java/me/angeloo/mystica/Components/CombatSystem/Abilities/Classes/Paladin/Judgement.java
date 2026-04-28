@@ -42,7 +42,6 @@ public class Judgement extends BaseAbility {
     private final ChangeResourceHandler changeResourceHandler;
     private final AggroManager aggroManager;
     private final CooldownManager cooldownManager;
-    private final PlayerStateManager playerStateManager;
 
     private final Purity purity;
 
@@ -59,9 +58,8 @@ public class Judgement extends BaseAbility {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         aggroManager = main.getAggroManager();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
         purity = manager.getPurity();
-        playerStateManager = manager.getPlayerStateManager();
     }
 
     private final int baseCooldown = 10;
@@ -200,7 +198,7 @@ public class Judgement extends BaseAbility {
                     }
                 }
 
-                playerStateManager.get(caster.getUniqueId()).remove("decision");
+                statusEffectManager.removeEffect(caster, "decision");
             }
 
             private boolean checkValid(LivingEntity target){
@@ -223,7 +221,7 @@ public class Judgement extends BaseAbility {
 
     private double decisionMultiplier(LivingEntity caster){
 
-        if(playerStateManager.get(caster.getUniqueId()).has("decision")){
+        if(statusEffectManager.hasEffect(caster, "decision")){
             return 1.8;
         }
 

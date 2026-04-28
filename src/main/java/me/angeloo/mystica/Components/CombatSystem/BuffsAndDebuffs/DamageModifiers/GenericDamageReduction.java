@@ -1,7 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers;
 
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffect;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusStackType;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ApplicationBehavior;
 
 public class GenericDamageReduction implements StatusEffect {
 
@@ -12,8 +12,8 @@ public class GenericDamageReduction implements StatusEffect {
 
     //Smaller is better, means they take less
     @Override
-    public StatusStackType stackType(){
-        return StatusStackType.REPLACE_LARGER;
+    public ApplicationBehavior applicationBehavior(){
+        return ApplicationBehavior.REPLACE_LARGER;
     }
 
     @Override

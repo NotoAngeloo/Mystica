@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ClassSpecific.Plague_Curse;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -42,7 +43,6 @@ public class PlagueCurse extends BaseAbility {
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
-    private final PlayerStateManager playerStateManager;
 
     public PlagueCurse(Mystica main, AbilityManager manager){
         super("plague_curse");
@@ -54,8 +54,7 @@ public class PlagueCurse extends BaseAbility {
         damageCalculator = main.getDamageCalculator();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        cooldownManager = manager.getCooldownManager();
-        playerStateManager = manager.getPlayerStateManager();
+        cooldownManager = main.getCooldownManager();
 
     }
 
@@ -166,10 +165,8 @@ public class PlagueCurse extends BaseAbility {
                             continue;
                         }
 
+                        applyCurse(livingEntity);
 
-                        if(!playerStateManager.get(livingEntity.getUniqueId()).has("plague_curse")){
-                            applyCurse(livingEntity);
-                        }
 
                         boolean crit = damageCalculator.checkIfCrit(caster, 0);
                         double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Magical", finalSkillDamage, crit));
@@ -204,7 +201,7 @@ public class PlagueCurse extends BaseAbility {
 
             private void applyCurse(LivingEntity entity){
 
-                playerStateManager.get(entity.getUniqueId()).set("plague_curse", true);
+                statusEffectManager.applyEffect(entity, new Plague_Curse(), null, null, caster);
 
                 new BukkitRunnable(){
                     int count = 0;
@@ -213,7 +210,7 @@ public class PlagueCurse extends BaseAbility {
 
                         if(!targetStillValid(entity)){
                             this.cancel();
-                            playerStateManager.get(entity.getUniqueId()).remove("plague_curse");
+                            statusEffectManager.removeEffect(entity, "plague_curse");
                             return;
                         }
 
@@ -232,7 +229,6 @@ public class PlagueCurse extends BaseAbility {
 
                         if(count >= 10){
                             this.cancel();
-                            playerStateManager.get(entity.getUniqueId()).remove("plague_curse");
                         }
 
                         count++;

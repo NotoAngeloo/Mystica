@@ -50,7 +50,7 @@ public class LavaQuake extends BaseAbility {
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
         rage = manager.getRage();
     }
 
@@ -140,7 +140,7 @@ public class LavaQuake extends BaseAbility {
         double maxHealth = profileManager.getAnyProfile(caster).getTotalHealth();
         double shield = maxHealth * .1;
 
-        statusEffectManager.applyEffect(caster, new GenericShield(), null, shield);
+        statusEffectManager.applyEffect(caster, new GenericShield(), null, shield, caster);
 
         Set<LivingEntity> hitBySkill = new HashSet<>();
 

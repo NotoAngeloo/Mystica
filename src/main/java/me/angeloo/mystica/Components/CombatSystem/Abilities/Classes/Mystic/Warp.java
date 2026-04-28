@@ -25,7 +25,7 @@ public class Warp extends BaseAbility {
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
         statusEffectManager = main.getStatusEffectManager();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
     }
 
     private final int baseCooldown = 13;

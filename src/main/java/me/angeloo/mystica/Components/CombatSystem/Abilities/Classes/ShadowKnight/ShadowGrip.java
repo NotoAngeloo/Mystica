@@ -54,7 +54,7 @@ public class ShadowGrip extends BaseAbility {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         aggroManager = main.getAggroManager();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
         energy = manager.getEnergy();
     }
 
@@ -220,7 +220,7 @@ public class ShadowGrip extends BaseAbility {
 
                     if(targetStillValid(target) && profileManager.getAnyProfile(target).getIsMovable()){
                         pulled = true;
-                        statusEffectManager.applyEffect(target, new Pulled(), null, null);
+                        statusEffectManager.applyEffect(target, new Pulled(), null, null, caster);
                     }
 
                     going = false;

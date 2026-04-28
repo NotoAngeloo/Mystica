@@ -52,7 +52,7 @@ public class Pierce extends BaseAbility {
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
         combo = manager.getCombo();
         weapon = new MysticaEquipment(EquipmentSlot.WEAPON, PlayerClass.Assassin, 1);
     }
@@ -156,7 +156,7 @@ public class Pierce extends BaseAbility {
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
                     lookup.get(PlayerClass.Assassin, 8).onExternalTrigger(caster, target);
 
-                    statusEffectManager.applyEffect(caster, new PierceBuff(), null, null);
+                    statusEffectManager.applyEffect(caster, new PierceBuff(), null, null, caster);
                 }
 
                 rAngle-=15;

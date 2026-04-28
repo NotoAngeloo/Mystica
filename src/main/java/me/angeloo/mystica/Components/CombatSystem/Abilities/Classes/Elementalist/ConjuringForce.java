@@ -38,7 +38,7 @@ public class ConjuringForce extends BaseAbility {
         profileManager = main.getProfileManager();
         pvpManager = main.getPvpManager();
         statusEffectManager = main.getStatusEffectManager();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
     }
 
     //TODO: conj force adds health if ur in it
@@ -170,7 +170,7 @@ public class ConjuringForce extends BaseAbility {
                         continue;
                     }
 
-                    statusEffectManager.applyEffect(thisEntity, new ConjuringForceBuff(), null, getBuffAmount(caster));
+                    statusEffectManager.applyEffect(thisEntity, new ConjuringForceBuff(), null, getBuffAmount(caster), caster);
 
                 }
 

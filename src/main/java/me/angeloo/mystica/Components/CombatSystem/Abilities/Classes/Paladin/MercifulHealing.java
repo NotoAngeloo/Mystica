@@ -36,7 +36,6 @@ public class MercifulHealing extends BaseAbility {
     private final AbilityManager abilityManager;
     private final CooldownManager cooldownManager;
     private final AbilityMarkManager abilityMarkManager;
-    private final PlayerStateManager playerStateManager;
 
     private final Purity purity;
 
@@ -51,10 +50,9 @@ public class MercifulHealing extends BaseAbility {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         abilityManager = manager;
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
         purity = manager.getPurity();
         abilityMarkManager = manager.getAbilityMarkManager();
-        playerStateManager = manager.getPlayerStateManager();
     }
 
     private final int baseCooldown = 7;
@@ -95,11 +93,11 @@ public class MercifulHealing extends BaseAbility {
 
         int castTime = 20;
 
-        if(playerStateManager.get(caster.getUniqueId()).has("move_cast")){
-            playerStateManager.get(caster.getUniqueId()).remove("move_cast");
+        if(statusEffectManager.hasEffect(caster, "move_cast")){
+            statusEffectManager.removeEffect(caster, "move_cast");
         }
         else{
-            statusEffectManager.applyEffect(caster, new Root(), castTime, null);
+            statusEffectManager.applyEffect(caster, new Root(), castTime, null, caster);
         }
 
         abilityManager.setSkillCurrentlyCasting(caster, statusBarIcon());
@@ -163,13 +161,13 @@ public class MercifulHealing extends BaseAbility {
 
                 if(abilityMarkManager.getTargets(caster).contains(target)){
                     markHealInstead(caster, healAmount);
-                    playerStateManager.get(caster.getUniqueId()).remove("move_cast");
+                    statusEffectManager.removeEffect(caster,"move_cast");
                     return;
                 }
 
 
                 changeResourceHandler.addHealthToEntity(target, healAmount, caster);
-                playerStateManager.get(caster.getUniqueId()).remove("move_cast");
+                statusEffectManager.removeEffect(caster,"move_cast");
 
                 Location center = target.getLocation().clone().add(0,1,0);
 

@@ -31,7 +31,7 @@ public class ToggleImmunity implements CommandExecutor {
             return true;
         }
 
-        statusEffectManager.applyEffect(player, new Immune(), -1, null);
+        statusEffectManager.applyEffect(player, new Immune(), -1, null, player);
 
         player.sendMessage("applied immunity");
 

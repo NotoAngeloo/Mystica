@@ -55,7 +55,7 @@ public class AnvilDrop extends BaseAbility {
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
         rage = manager.getRage();
     }
 
@@ -315,7 +315,7 @@ public class AnvilDrop extends BaseAbility {
             if(profileManager.getAnyProfile(targetToHit).getIsMovable()){
                 Vector velocity = (new Vector(0, .75, 0));
                 targetToHit.setVelocity(velocity);
-                statusEffectManager.applyEffect(targetToHit, new KnockUp(), null, null);
+                statusEffectManager.applyEffect(targetToHit, new KnockUp(), null, null, caster);
             }
         }
     }

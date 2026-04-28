@@ -1,8 +1,6 @@
 package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Misc;
 
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffect;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusInstance;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusStackType;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.*;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -14,7 +12,7 @@ public class SpeedUp implements StatusEffect {
     }
 
     @Override
-    public void onApply(LivingEntity entity, StatusInstance instance){
+    public void onApply(LivingEntity entity, StatusInstance instance, CombatContext combatContext, StatusApplicationResult statusApplicationResult){
 
         if(!(entity instanceof Player player)){
             return;
@@ -39,8 +37,8 @@ public class SpeedUp implements StatusEffect {
     }
 
     @Override
-    public StatusStackType stackType(){
-        return StatusStackType.REPLACE_SMALLER;
+    public ApplicationBehavior applicationBehavior(){
+        return ApplicationBehavior.REPLACE_SMALLER;
     }
 
 }

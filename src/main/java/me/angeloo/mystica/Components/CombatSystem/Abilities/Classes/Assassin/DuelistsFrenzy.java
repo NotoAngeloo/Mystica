@@ -5,6 +5,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerState;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ClassSpecific.Duelists_Frenzy;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -34,7 +35,6 @@ public class DuelistsFrenzy extends BaseAbility {
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final CooldownManager cooldownManager;
-    private final PlayerStateManager playerStateManager;
 
     private final Combo combo;
 
@@ -50,8 +50,7 @@ public class DuelistsFrenzy extends BaseAbility {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         combo = manager.getCombo();
-        cooldownManager = manager.getCooldownManager();
-        playerStateManager = manager.getPlayerStateManager();;
+        cooldownManager = main.getCooldownManager();
     }
 
     private final double range = 7;
@@ -184,16 +183,8 @@ public class DuelistsFrenzy extends BaseAbility {
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                         changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
                         lookup.get(PlayerClass.Assassin, 8).onExternalTrigger(caster, target);
-                        PlayerState state = playerStateManager.get(caster.getUniqueId());
-                        state.set("duelists_frenzy", true);
-                        new BukkitRunnable(){
-                            @Override
-                            public void run(){
-                                state.remove("duelists_frenzy");
-                            }
-                        }.runTaskLater(main, 20*15);
-                        //applyFrenzy(caster);
-                        //cancelTask();
+
+                        statusEffectManager.applyEffect(caster, new Duelists_Frenzy(), null, null, caster);
                     }
                 }
 

@@ -1,11 +1,8 @@
 package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs;
 
-import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
-import me.angeloo.mystica.Utility.Enums.BarType;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -16,9 +13,11 @@ import java.util.UUID;
 public class StatusEffectManager {
 
 
+    private CombatContext combatContext;
+
     private final Map<UUID, Map<String, StatusInstance>> active = new HashMap<>();
 
-    public void applyEffect(LivingEntity entity, StatusEffect effect, @Nullable Integer duration, @Nullable Double magnitude) {
+    public void applyEffect(LivingEntity entity, StatusEffect effect, @Nullable Integer duration, @Nullable Double magnitude, @Nullable LivingEntity source) {
 
         //Bukkit.getLogger().info("trying to apply " + effect.getId());
 
@@ -48,24 +47,18 @@ public class StatusEffectManager {
         if(effect.getId().equalsIgnoreCase("shield")){
 
 
-            //ShieldInstance shieldInstance = new ShieldInstance(effect, resolvedDuration, resolvedMagnitude);
-
-            StatusInstance shieldInstance = effect.createShieldInstance(resolvedDuration, resolvedMagnitude);
+            StatusInstance shieldInstance = effect.createShieldInstance(resolvedDuration, resolvedMagnitude, source);
 
             // If none exists, simply add
             if (existing == null) {
                 map.put(effect.getId(), shieldInstance);
                 shieldInstance.onApply(entity);
 
-                //effect mag 0?????
-                //Bukkit.getLogger().info("applying shield, mag = " + shieldInstance.magnitude);
-                //Bukkit.getLogger().info("effect mag = " + shieldInstance.effect.getMagnitude());
-
                 return;
             }
 
             // Apply stacking logic:
-            switch (effect.stackType()) {
+            switch (effect.applicationBehavior()) {
 
                 case REPLACE -> {
                     map.put(effect.getId(), shieldInstance);
@@ -105,7 +98,7 @@ public class StatusEffectManager {
         }
 
         // --- Create new instance object now that correct values are known ---
-        StatusInstance newInstance = effect.createInstance(resolvedDuration, resolvedMagnitude);
+        StatusInstance newInstance = effect.createInstance(resolvedDuration, resolvedMagnitude, source);
 
 
         // If none exists, simply add
@@ -116,7 +109,7 @@ public class StatusEffectManager {
         }
 
         // Apply stacking logic:
-        switch (effect.stackType()) {
+        switch (effect.applicationBehavior()) {
 
             case REPLACE -> {
                 map.put(effect.getId(), newInstance);
@@ -140,10 +133,39 @@ public class StatusEffectManager {
             }
 
             case ADDITIVE -> {
-                //Bukkit.getLogger().info("applying armor break, old mag: " + existing.magnitude);
-                existing.magnitude += newInstance.magnitude;
-                //Bukkit.getLogger().info("new mag: " + existing.magnitude);
-                existing.remainingTicks = Math.max(existing.remainingTicks, newInstance.remainingTicks);
+
+                if(effect.usesStacks()){
+
+                    int maxStacks = effect.getMaxStacks();
+
+                    boolean addedStack = false;
+                    boolean reachedMax = false;
+                    boolean alreadyMax = false;
+
+                    if(existing.getStacks() < maxStacks){
+                        existing.editStackCount(1);
+                        addedStack = true;
+
+                        if(existing.getStacks() == maxStacks){
+                            reachedMax = true;
+                        }
+                    }
+                    else{
+                        alreadyMax = true;
+                    }
+
+                    //refresh duration
+                    existing.remainingTicks = Math.max(existing.remainingTicks, newInstance.remainingTicks);
+
+                    StatusApplicationResult result = new StatusApplicationResult(addedStack, reachedMax, alreadyMax);
+                    existing.onApply(entity, combatContext, result);
+                }
+                else{
+                    existing.magnitude += newInstance.magnitude;
+                    existing.remainingTicks = Math.max(existing.remainingTicks, newInstance.remainingTicks);
+                    //Bukkit.getLogger().info("new mag: " + existing.magnitude);
+                }
+
 
 
                 break;
@@ -198,26 +220,13 @@ public class StatusEffectManager {
 
     public void reduceShield(LivingEntity entity, double amount){
 
-        //Bukkit.getLogger().info("calling reduction");
 
         //this differs than above for good reason
         if(!hasEffect(entity, "shield")){
             return;
         }
-
-        //Bukkit.getLogger().info("reduction succeeded");
-
         StatusInstance instance = getInstanceMap(entity).get("shield");
         instance.onDamage(entity, amount);
-
-        //why does this magnitude change and the others don't
-        //Bukkit.getLogger().info("from effect: " + instance.getEffect().getMagnitude());
-
-
-        //ondamage doesnt reduce the magnitude?
-
-        //Bukkit.getLogger().info("new mag = " + instance.magnitude);
-        //Bukkit.getLogger().info("from map: " + getInstanceMap(entity).get("shield").magnitude);
 
     }
 
@@ -232,7 +241,14 @@ public class StatusEffectManager {
 
             while (it.hasNext()) {
                 StatusInstance inst = it.next();
-                inst.onTick(entity);
+                inst.livedTicks ++;
+                inst.onTick(entity, combatContext);
+
+                if(inst.isMarkedForRemoval()){
+                    inst.onRemove(entity);
+                    it.remove();
+                    continue;
+                }
 
                 // Only tick down if duration is positive
                 if (inst.getRemainingTicks() > 0) {
@@ -464,6 +480,39 @@ public class StatusEffectManager {
         return active.get(entity.getUniqueId());
     }
 
+    public int getStackAmount(LivingEntity entity, String identifier){
+
+        Map<String, StatusInstance> statusInstanceMap = getInstanceMap(entity);
+
+        if(statusInstanceMap == null){
+            return 0;
+        }
+
+        StatusInstance instance = statusInstanceMap.get(identifier);
+
+        if(instance == null){
+            return 0;
+        }
+
+        return instance.stacks;
+    }
+
+    public int getTicksLeft(LivingEntity entity, String identifier){
+        Map<String, StatusInstance> statusInstanceMap = getInstanceMap(entity);
+
+        if(statusInstanceMap == null){
+            return 0;
+        }
+
+        StatusInstance instance = statusInstanceMap.get(identifier);
+
+        if(instance == null){
+            return 0;
+        }
+
+        return instance.getRemainingTicks();
+    }
+
     /*public int getEffectAmount(LivingEntity entity){
         int amount = 0;
         //if has shield, subtract 1
@@ -481,5 +530,8 @@ public class StatusEffectManager {
         return amount;
     }*/
 
+    public void setCombatContext(CombatContext combatContext){
+        this.combatContext = combatContext;
+    }
 
 }

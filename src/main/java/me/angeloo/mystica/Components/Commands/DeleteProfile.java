@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.Commands;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
@@ -19,10 +20,12 @@ public class DeleteProfile implements CommandExecutor {
     private final MysticaPartyManager mysticaPartyManager;
     private final StatusEffectManager statusEffectManager;
     private final AbilityManager abilityManager;
+    private final CooldownManager cooldownManager;
 
     public DeleteProfile(Mystica main){
         profileManager = main.getProfileManager();
         abilityManager = main.getAbilityManager();
+        cooldownManager = main.getCooldownManager();;
         statusEffectManager = main.getStatusEffectManager();
         mysticaPartyManager = main.getMysticaPartyManager();
     }
@@ -50,7 +53,7 @@ public class DeleteProfile implements CommandExecutor {
 
         //mysticaPartyManager.removeFromMysticaPartyMap(player);
         abilityManager.resetAbilityBuffs(player);
-        abilityManager.getCooldownManager().clearAll(player.getUniqueId());
+        cooldownManager.clearAll(player.getUniqueId());
         statusEffectManager.clear(player);
         profileManager.removePlayerProfile(player);
 

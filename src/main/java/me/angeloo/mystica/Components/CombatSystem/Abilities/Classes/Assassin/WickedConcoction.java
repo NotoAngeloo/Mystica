@@ -52,7 +52,7 @@ public class WickedConcoction extends BaseAbility {
         damageCalculator = main.getDamageCalculator();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
     }
 
     private final double range = 15;
@@ -170,7 +170,7 @@ public class WickedConcoction extends BaseAbility {
                         changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
                         lookup.get(PlayerClass.Assassin, 8).onExternalTrigger(caster, target);
 
-                        statusEffectManager.applyEffect(target, new ConcoctionDebuff(), null, null);
+                        statusEffectManager.applyEffect(target, new ConcoctionDebuff(), null, null, caster);
                         return;
                     }
 
@@ -179,7 +179,7 @@ public class WickedConcoction extends BaseAbility {
                     changeResourceHandler.addHealthToEntity(target, healAmount, caster);
 
                     //statusEffectManager.applyEffect(target, new GenericDamageReduction(), 20*15,0.95);
-                    statusEffectManager.applyEffect(target, new ConcoctionBuff(), null, null);
+                    statusEffectManager.applyEffect(target, new ConcoctionBuff(), null, null, caster);
 
 
                 }

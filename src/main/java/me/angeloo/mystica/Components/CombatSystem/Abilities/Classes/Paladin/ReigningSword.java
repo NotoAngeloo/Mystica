@@ -41,7 +41,6 @@ public class ReigningSword extends BaseAbility {
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final CooldownManager cooldownManager;
-    private final PlayerStateManager playerStateManager;
 
     private final Purity purity;
 
@@ -55,9 +54,8 @@ public class ReigningSword extends BaseAbility {
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
         purity = manager.getPurity();
-        playerStateManager = manager.getPlayerStateManager();;
     }
 
     private final int baseCooldown = 10;
@@ -127,7 +125,7 @@ public class ReigningSword extends BaseAbility {
             shield = shield * 1.2;
         }
 
-        statusEffectManager.applyEffect(caster, new GenericShield(), null, shield);
+        statusEffectManager.applyEffect(caster, new GenericShield(), null, shield, caster);
 
         double finalShield = shield;
         new BukkitRunnable(){
@@ -234,8 +232,7 @@ public class ReigningSword extends BaseAbility {
             private void cancelTask(){
                 this.cancel();
                 sword.remove();
-                playerStateManager.get(caster.getUniqueId()).remove("decision");
-                //abilityManager.setSkillRunning(player, false);
+                statusEffectManager.removeEffect(caster, "decision");
             }
 
         }.runTaskTimer(main, 0, 1);
@@ -244,7 +241,7 @@ public class ReigningSword extends BaseAbility {
 
     private double decisionMultiplier(LivingEntity caster){
 
-        if(playerStateManager.get(caster.getUniqueId()).has("decision")){
+        if(statusEffectManager.hasEffect(caster, "decision")){
             return 1.8;
         }
 

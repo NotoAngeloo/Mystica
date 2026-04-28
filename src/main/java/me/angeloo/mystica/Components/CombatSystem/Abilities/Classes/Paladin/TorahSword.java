@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ClassSpecific.Decision;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -39,7 +40,6 @@ public class TorahSword extends BaseAbility {
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
-    private final PlayerStateManager playerStateManager;
 
     private final Purity purity;
 
@@ -53,9 +53,8 @@ public class TorahSword extends BaseAbility {
         damageCalculator = main.getDamageCalculator();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
         purity = manager.getPurity();
-        playerStateManager = manager.getPlayerStateManager();
     }
 
     private final int baseCooldown = 10;
@@ -217,7 +216,7 @@ public class TorahSword extends BaseAbility {
 
                     if(crit&&dawn){
                         cooldownManager.clear(caster.getUniqueId(), 8);
-                        playerStateManager.get(caster.getUniqueId()).set("decision", true);
+                        statusEffectManager.applyEffect(caster, new Decision(), null, null, caster);
                     }
 
                     double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
@@ -237,7 +236,7 @@ public class TorahSword extends BaseAbility {
 
                     if(crit&&dawn){
                         cooldownManager.clear(caster.getUniqueId(), 8);
-                        playerStateManager.get(caster.getUniqueId()).set("decision", true);
+                        statusEffectManager.applyEffect(caster, new Decision(), null, null, caster);
                     }
 
                     double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
@@ -259,7 +258,7 @@ public class TorahSword extends BaseAbility {
 
                     if(crit&&dawn){
                         cooldownManager.clear(caster.getUniqueId(), 8);
-                        playerStateManager.get(caster.getUniqueId()).set("decision", true);
+                        statusEffectManager.applyEffect(caster, new Decision(), null, null, caster);
                     }
 
                     double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);

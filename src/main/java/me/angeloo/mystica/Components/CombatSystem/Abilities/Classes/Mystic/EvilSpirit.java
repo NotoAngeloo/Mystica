@@ -66,7 +66,7 @@ public class EvilSpirit extends BaseAbility {
         //hide player and display animation. when over, put hat on head
         int castTime = 25;
 
-        statusEffectManager.applyEffect(caster, new Root(), castTime, null);
+        statusEffectManager.applyEffect(caster, new Root(), castTime, null, caster);
 
 
         Location spawnStart = caster.getLocation().clone();
@@ -202,6 +202,7 @@ public class EvilSpirit extends BaseAbility {
         addChaosShard(caster, amount);
     }
 
+    //make this a resource to have a bar in the future
     private void addChaosShard(LivingEntity caster, int added){
 
         int current = 0;

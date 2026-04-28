@@ -3,7 +3,9 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Elementalis
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ClassSpecific.Inflame;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusInstance;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -46,7 +48,7 @@ public class FieryWing extends BaseAbility {
 
     private final Heat heat;
 
-    private final Map<UUID, Integer> inflameMap = new HashMap<>();
+    //private final Map<UUID, Integer> inflameMap = new HashMap<>();
 
 
     public FieryWing(Mystica main, AbilityManager manager){
@@ -59,8 +61,8 @@ public class FieryWing extends BaseAbility {
         damageCalculator = main.getDamageCalculator();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        cooldownManager = main.getCooldownManager();
         this.heat = manager.getHeat();
-        cooldownManager = manager.getCooldownManager();
     }
 
     private final double range = 20;
@@ -251,15 +253,6 @@ public class FieryWing extends BaseAbility {
 
     }
 
-    public int getInflame(LivingEntity caster){
-
-        if(!inflameMap.containsKey(caster.getUniqueId())){
-            inflameMap.put(caster.getUniqueId(), 0);
-        }
-
-        return inflameMap.get(caster.getUniqueId());
-    }
-
     @Override
     public void onExternalTrigger(LivingEntity caster){
         addInflame(caster);
@@ -273,25 +266,22 @@ public class FieryWing extends BaseAbility {
             return;
         }
 
-        int stacks = getInflame(caster);
+        statusEffectManager.applyEffect(caster, new Inflame(), null, null, caster);
 
-        stacks ++;
+
+        //this is now all part of the effect itself
+        /*int stacks = statusEffectManager.getStackAmount(caster, "inflame");
+
 
         if(stacks >=4){
             cooldownManager.clear(caster.getUniqueId(), -1);
-            removeInflame(caster);
-            return;
-        }
+            statusEffectManager.removeEffect(caster, "inflame");
 
-        inflameMap.put(caster.getUniqueId(), stacks);
+        }*/
 
     }
 
 
-    public void removeInflame(LivingEntity caster){
-        inflameMap.put(caster.getUniqueId(), 0);
-
-    }
 
     public double getSkillDamage(LivingEntity caster){
         double skillLevel = profileManager.getAnyProfile(caster).getStats().getLevel();

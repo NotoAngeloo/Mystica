@@ -56,7 +56,7 @@ public class Annihilation extends BaseAbility {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         energy = manager.getEnergy();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
     }
 
     private final int baseCooldown = 3;
@@ -208,9 +208,6 @@ public class Annihilation extends BaseAbility {
                 double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                 changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
-
-                //Bukkit.getLogger().info(String.valueOf(infection.getIfThisPlayerInfectThisEntity(player, target)));
-
                 lookup.get(PlayerClass.Shadow_Knight, SubClass.Doom, 1).onExternalTrigger(caster, target);
             }
 

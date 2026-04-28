@@ -52,7 +52,7 @@ public class Stealth extends BaseAbility {
         damageCalculator = main.getDamageCalculator();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
         combo = manager.getCombo();
     }
 
@@ -113,7 +113,7 @@ public class Stealth extends BaseAbility {
                 caster.getWorld().spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, particleLocation, 10, 0.3, 0.5, 0.3, 0.05);
 
                 if(count >= 5){
-                    statusEffectManager.applyEffect(caster, new StealthEffect(), null, null);
+                    statusEffectManager.applyEffect(caster, new StealthEffect(), null, null, caster);
                     stealthTargetBlacklist.add(caster);
                     stealthed.put(caster.getUniqueId(), true);
 

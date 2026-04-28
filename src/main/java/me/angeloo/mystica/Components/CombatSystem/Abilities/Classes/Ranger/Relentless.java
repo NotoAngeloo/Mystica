@@ -57,7 +57,7 @@ public class Relentless extends BaseAbility {
         damageCalculator = main.getDamageCalculator();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        cooldownManager = manager.getCooldownManager();;
+        cooldownManager = main.getCooldownManager();
         focus = manager.getFocus();
     }
 
@@ -107,7 +107,7 @@ public class Relentless extends BaseAbility {
         double skillDamage = getSkillDamage(caster);
 
         if(caster instanceof Player){
-            statusEffectManager.applyEffect(caster, new SpeedUp(), null, 0.5);
+            statusEffectManager.applyEffect(caster, new SpeedUp(), null, 0.5, caster);
         }
 
         abilityManager.setSkillCurrentlyCasting(caster, statusBarIcon());
@@ -209,7 +209,7 @@ public class Relentless extends BaseAbility {
 
                             if(scout && crit){
                                 lookup.get(PlayerClass.Ranger,SubClass.Scout,-1).onExternalTrigger(caster);
-                                statusEffectManager.applyEffect(caster, new Haste(), 2*20, 0.1);
+                                statusEffectManager.applyEffect(caster, new Haste(), 2*20, 0.1, caster);
                             }
 
                             double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);

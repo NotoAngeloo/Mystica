@@ -35,7 +35,7 @@ public class WildRoar extends BaseAbility {
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
         pvpManager = main.getPvpManager();
-        cooldownManager = manager.getCooldownManager();;
+        cooldownManager = main.getCooldownManager();
     }
 
     private final int baseCooldown = 30;
@@ -104,7 +104,7 @@ public class WildRoar extends BaseAbility {
 
         for(LivingEntity thisEntity : affected){
 
-            statusEffectManager.applyEffect(thisEntity, new WildRoarBuff(), null, getBuffAmount(caster));
+            statusEffectManager.applyEffect(thisEntity, new WildRoarBuff(), null, getBuffAmount(caster), caster);
 
 
             ArmorStand armorStand = caster.getWorld().spawn(start.clone().subtract(0,5,0), ArmorStand.class);

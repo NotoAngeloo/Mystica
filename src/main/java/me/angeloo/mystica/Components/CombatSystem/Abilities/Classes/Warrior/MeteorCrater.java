@@ -55,7 +55,7 @@ public class MeteorCrater extends BaseAbility {
         damageCalculator = main.getDamageCalculator();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
         rage = manager.getRage();
         bossCastingManager = main.getBossCastingManager();
     }
@@ -298,7 +298,7 @@ public class MeteorCrater extends BaseAbility {
                 }
 
                 //should be stun instead
-                statusEffectManager.applyEffect(target, new Stun(), 20, null);
+                statusEffectManager.applyEffect(target, new Stun(), 20, null, caster);
             }
 
             private void cancelTask(){

@@ -20,7 +20,7 @@ public class Dash extends BaseAbility {
         super("dash");
         this.main = main;
         statusEffectManager = main.getStatusEffectManager();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
     }
 
     private final int baseCooldown = 33;
@@ -51,7 +51,7 @@ public class Dash extends BaseAbility {
     private void execute(Player player){
 
 
-        statusEffectManager.applyEffect(player, new SpeedUp(), null, 0.7);
+        statusEffectManager.applyEffect(player, new SpeedUp(), null, 0.7, player);
 
         new BukkitRunnable(){
             @Override

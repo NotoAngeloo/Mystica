@@ -57,7 +57,7 @@ public class Soulcrack extends BaseAbility {
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
         energy = manager.getEnergy();
         this.weapon = new MysticaEquipment(EquipmentSlot.WEAPON, PlayerClass.Shadow_Knight, 1);
     }
@@ -216,7 +216,7 @@ public class Soulcrack extends BaseAbility {
                                 Vector awayDirection = entity.getLocation().toVector().subtract(caster.getLocation().toVector()).normalize();
                                 Vector velocity = awayDirection.multiply(.75).add(new Vector(0, .5, 0));
                                 livingEntity.setVelocity(velocity);
-                                statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, null);
+                                statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, null, caster);
                             }
 
                         }
@@ -231,7 +231,7 @@ public class Soulcrack extends BaseAbility {
                             Vector awayDirection = entity.getLocation().toVector().subtract(caster.getLocation().toVector()).normalize();
                             Vector velocity = awayDirection.multiply(.75).add(new Vector(0, .5, 0));
                             livingEntity.setVelocity(velocity);
-                            statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, null);
+                            statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, null, caster);
                         }
 
                     }

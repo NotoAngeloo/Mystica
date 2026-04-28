@@ -17,7 +17,7 @@ public class NoneRoll extends BaseAbility {
     public NoneRoll(Mystica main, AbilityManager manager){
         super("none_roll");
         statusEffectManager = main.getStatusEffectManager();
-        cooldownManager = manager.getCooldownManager();
+        cooldownManager = main.getCooldownManager();
     }
 
     private final int baseCooldown = 9;

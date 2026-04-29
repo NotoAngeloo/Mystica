@@ -106,7 +106,6 @@ public class AbilityResolver implements AbilityLookup{
     public BasicAttackDefinition resolveBasic(PlayerClass clazz, SubClass subClass){
 
 
-
         if(subclassBasic.get(subClass)!=null){
             return subclassBasic.get(subClass);
         }
@@ -128,8 +127,7 @@ public class AbilityResolver implements AbilityLookup{
         chaosOverrides.put(7, new CursingVoice(main, manager));
         chaosOverrides.put(8, new ChaosVoid(main, manager));
         subclassOverrides.put(SubClass.Chaos, chaosOverrides);
-
-        //subclassBasic.put(SubClass.Chaos, )
+        subclassBasic.put(SubClass.Chaos, new ChaosBasic(main, manager));
 
         Map<Integer, Ability> divineOverrides = new HashMap<>();
         divineOverrides.put(1, new DecreeHonor(main, manager));

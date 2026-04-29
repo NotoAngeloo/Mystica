@@ -2,6 +2,7 @@ package me.angeloo.mystica.Components.Hud.Abilties;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Ability;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BasicAttacks.BasicAttackDefinition;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -51,11 +52,12 @@ public class AbilityBarRenderer {
         PlayerClass playerClass = profileManager.getAnyProfile(player).getPlayerClass();
         SubClass subClass = profileManager.getAnyProfile(player).getPlayerSubclass();
 
+        long gcdRemaining = cooldownManager.getGlobalRemaining(player.getUniqueId(), now);
+
         int count = 0;
 
         //place the ultimate ability first
         Ability ultimate = abilityManager.getAbilityResolver().get(playerClass, subClass, -1);
-
 
         if(ultimate != null){
             String icon = ultimate.skillBarIcon(player);
@@ -69,7 +71,6 @@ public class AbilityBarRenderer {
             );
 
             long abilityBase = ultimate.cooldown() * 1000L;
-            long gcdRemaining = cooldownManager.getGlobalRemaining(player.getUniqueId(), now);
             long gcdBase = (long) (ultimate.getGlobalCooldownMillis() / (1.0 + haste));
 
             double abilityPct = abilityRemaining / (double) abilityBase;
@@ -95,7 +96,6 @@ public class AbilityBarRenderer {
 
             count++;
         }
-
 
         for(int slot = 0;slot<equipSkills.size();slot++){
 
@@ -124,7 +124,6 @@ public class AbilityBarRenderer {
 
 
             long abilityBase = ability.cooldown() * 1000L;
-            long gcdRemaining = cooldownManager.getGlobalRemaining(player.getUniqueId(), now);
             long gcdBase = (long) (ability.getGlobalCooldownMillis() / (1.0 + haste));
 
             double abilityPct = abilityRemaining / (double) abilityBase;
@@ -153,26 +152,87 @@ public class AbilityBarRenderer {
 
         //place basic last
 
-        //dont add to count, since for sure
+        BasicAttackDefinition basic = abilityManager.getAbilityResolver().resolveBasic(playerClass, subClass);
 
-        //int totalWidth = 17 * renderCount;
+        if(basic != null){
+            String icon = basic.skillBarIcon(player);
+            bar.append(icon);
+            //basic doesn't have gcd, so im making it 1 sec here to fit in my renderstate
+            long gcdBase = (long) (1000 / (1.0 + haste));
 
-        //int centerOffset = -(totalWidth / 2);
+            AbilityRenderState state = new AbilityRenderState(gcdRemaining, gcdBase);
 
+            //-17
+            bar.append("\uF809\uF801");
+
+            String glyph = getRadialGlyph(state);
+            bar.append(glyph);
+
+            //-17
+            bar.append("\uF809\uF801");
+
+            bar.append(KEYBIND_LMB);
+            count++;
+        }
+
+        ////////////////////////////
+
+        //temp for testing
+        //when have new targeter, change the logic
+        bar.append("\ue1d3");
         //-17
-        //offset.append("\uF809\uF801");
+        bar.append("\uF809\uF801");
+        bar.append(KEYBIND_LMB);
+        count++;
 
+        //////////////////////////
+        //anchor -207
         //-256
         offset.append("\uF80D");
         //+49
-        //offset.append("\uF82A\uF829\uF821");
-        //+32
-        //offset.append("\uF82A");
+        offset.append("\uF82A\uF829\uF821");
+
+
+        int totalWidth = 207;
+        int contentWidth = count * 17;
+        int remaining = totalWidth - contentWidth;
+
+        int leftPad = remaining / 2;
+        int rightPad = remaining - leftPad;
+
+        //try to have equal offset and padding no matter how many "count"
+
+        for(int i = 0; i< PIXELS.length;i++){
+            while (leftPad>=PIXELS[i]){
+                offset.append(GLYPHS[i]);
+                leftPad -= PIXELS[i];
+            }
+        }
+
+        for(int i = 0; i< PIXELS.length;i++){
+            while (rightPad>=PIXELS[i]){
+                bar.append(GLYPHS[i]);
+                rightPad -= PIXELS[i];
+            }
+        }
+
+        offset.append(bar);
+
+        return String.valueOf(offset);
+
+        /*//-190, total offset, same as max length
+        //-256
+        offset.append("\uF80D");
         //+66
         offset.append("\uF82B\uF822");
 
+
+        /////////////////////////////
+
         //resources 207 pixel wide. 17x12 = 204, 3 pixel off
         //need to offset -17 per abilityCount
+
+        //max length is 207 - 17 (ability width)
         int maxLength = 190;
         int padding = maxLength - (count * 17);
 
@@ -187,7 +247,7 @@ public class AbilityBarRenderer {
 
         offset.append(bar);
 
-        return String.valueOf(offset);
+        return String.valueOf(offset);*/
     }
 
     private String getRadialGlyph(AbilityRenderState state) {

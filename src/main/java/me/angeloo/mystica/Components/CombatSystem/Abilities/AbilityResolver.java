@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities;
 
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BasicAttacks.BasicAttackDefinition;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.*;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Assassin.DuelistsFrenzy;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Assassin.WickedConcoction;
@@ -16,6 +17,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Warrior.Glad
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
+import org.bukkit.Bukkit;
 import org.checkerframework.checker.units.qual.A;
 
 import java.util.HashMap;
@@ -24,11 +26,11 @@ import java.util.Map;
 public class AbilityResolver implements AbilityLookup{
 
 
-
     private final Map<PlayerClass, AbilitySet> classAbilities = new HashMap<>();
     private final Map<SubClass, Map<Integer, Ability>> subclassOverrides = new HashMap<>();
     private final Map<SubClass, Ability> ultimates = new HashMap<>();
 
+    private final Map<SubClass, BasicAttackDefinition> subclassBasic = new HashMap<>();
 
     public AbilityResolver(Mystica main, AbilityManager manager) {
 
@@ -64,23 +66,12 @@ public class AbilityResolver implements AbilityLookup{
         registerUltimates(main, manager);
     }
 
-    public Ability resolve(PlayerClass clazz,
-                           int abilityNumber){
-
-        if(abilityNumber == -1){
-            return null;
-            //becuse cant get ultimate from this method
-        }
-
-        AbilitySet set = classAbilities.get(clazz);
-
-        return set.get(abilityNumber);
-    }
-
+    //the reason ultimate ability is at -1 is that cooldown manager
     public Ability resolve(PlayerClass clazz,
                            SubClass subClass,
                            int abilityNumber){
 
+        //just in case
         if(abilityNumber == -1){
             return ultimates.get(subClass);
         }
@@ -96,6 +87,35 @@ public class AbilityResolver implements AbilityLookup{
         return set.get(abilityNumber);
     }
 
+    public Ability resolve(PlayerClass clazz,
+                           int abilityNumber){
+
+        if(abilityNumber == -1){
+            return null;
+        }
+
+        AbilitySet set = classAbilities.get(clazz);
+
+        return set.get(abilityNumber);
+    }
+
+    public Ability resolveUltimate(SubClass subClass){
+        return ultimates.get(subClass);
+    }
+
+    public BasicAttackDefinition resolveBasic(PlayerClass clazz, SubClass subClass){
+
+
+
+        if(subclassBasic.get(subClass)!=null){
+            return subclassBasic.get(subClass);
+        }
+
+        return classAbilities.get(clazz).getBasic();
+    }
+
+
+
     private void registerOverrides(Mystica main, AbilityManager manager){
 
         Map<Integer, Ability> chaosOverrides = new HashMap<>();
@@ -108,6 +128,8 @@ public class AbilityResolver implements AbilityLookup{
         chaosOverrides.put(7, new CursingVoice(main, manager));
         chaosOverrides.put(8, new ChaosVoid(main, manager));
         subclassOverrides.put(SubClass.Chaos, chaosOverrides);
+
+        //subclassBasic.put(SubClass.Chaos, )
 
         Map<Integer, Ability> divineOverrides = new HashMap<>();
         divineOverrides.put(1, new DecreeHonor(main, manager));
@@ -153,6 +175,13 @@ public class AbilityResolver implements AbilityLookup{
         ultimates.put(SubClass.Blood, new BloodShield(main, manager));
         ultimates.put(SubClass.Gladiator, new GladiatorHeart(main, manager));
         ultimates.put(SubClass.Executioner, new DeathGaze(main, manager));
+
+        for(Ability ultimate : ultimates.values()){
+            if(ultimate instanceof BaseAbility base){
+                base.setLookup(this);
+            }
+        }
+
     }
 
     @Override
@@ -164,4 +193,6 @@ public class AbilityResolver implements AbilityLookup{
     public Ability get(PlayerClass clazz, int abilityNumber) {
         return resolve(clazz, abilityNumber);
     }
+
+
 }

@@ -1,5 +1,9 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Assassin;
 
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityLookup;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BasicAttacks.BasicAttackDefinition;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.AssassinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.FakePlayerTargetManager;
@@ -10,6 +14,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -30,10 +35,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class AssassinBasic {
+public class AssassinBasic implements BasicAttackDefinition{
 
     private final Mystica main;
-
 
     private final ProfileManager profileManager;
     private final StatusEffectManager statusEffectManager;
@@ -44,14 +48,11 @@ public class AssassinBasic {
     private final DamageCalculator damageCalculator;
     private final ChangeResourceHandler changeResourceHandler;
 
-    private final Map<UUID, Boolean> evenOdd = new HashMap<>();
-    private final Map<UUID, BukkitTask> basicRunning = new HashMap<>();
+    private final AbilityLookup lookup;
 
-    //private final Stealth stealth;
-    //private final Combo combo;
-    //private final DuelistsFrenzy duelistsFrenzy;
+    private final Combo combo;
 
-    public AssassinBasic(Mystica main, AssassinAbilities assassinAbilities){
+    public AssassinBasic(Mystica main, AbilityManager manager, AbilityLookup lookup){
         this.main = main;
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
@@ -61,52 +62,41 @@ public class AssassinBasic {
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
         changeResourceHandler = main.getChangeResourceHandler();
-        //stealth = assassinAbilities.getStealth();
-        //combo = assassinAbilities.getCombo();
-        //duelistsFrenzy = assassinAbilities.getDuelistsFrenzy();
-    }
-
-    public void useBasic(LivingEntity caster){
-
-        if(getIfBasicRunning(caster)){
-            return;
-        }
-
-        executeBasic(caster);
+        this.lookup = lookup;
+        combo = manager.getCombo();
 
     }
 
-    private void executeBasic(LivingEntity caster){
 
-        basicRunning.put(caster.getUniqueId(), null);
-        BukkitTask task = new BukkitRunnable(){
-            @Override
-            public void run(){
-
-                if(!statusEffectManager.canBasic(caster)){
-                    this.cancel();
-                    stopBasicRunning(caster);
-                    return;
-                }
-
-                if(targetManager.getPlayerTarget(caster) != null){
-                    if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)).getIfDead()){
-                        this.cancel();
-                        stopBasicRunning(caster);
-                        return;
-                    }
-                }
-
-
-                basicStage(caster);
-
-
-            }
-        }.runTaskTimer(main, 0, 8);
-        basicRunning.put(caster.getUniqueId(), task);
-
-
+    //all the same for now
+    @Override
+    public boolean performStage(LivingEntity caster, int stage) {
+        basicStage(caster);
+        //because it will always succeed
+        return true;
     }
+
+    @Override
+    public int getMaxStages(LivingEntity caster) {
+        return 1;
+    }
+
+    //every 8 ticks
+    @Override
+    public int getStageDelay(LivingEntity caster, int stage) {
+        return 8;
+    }
+
+    @Override
+    public boolean canStart(LivingEntity caster) {
+        return statusEffectManager.canBasic(caster);
+    }
+
+    @Override
+    public boolean canContinue(LivingEntity caster, int nextStage) {
+        return statusEffectManager.canBasic(caster);
+    }
+
 
     private void basicStage(LivingEntity caster){
         Location start = caster.getLocation().clone();
@@ -218,10 +208,14 @@ public class AssassinBasic {
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster, crit);
 
-            /*stealth.stealthBonusCheck(caster, targetToHit);
-            if(duelistsFrenzy.getFrenzy(caster)){
+            lookup.get(PlayerClass.Assassin, 8).onExternalTrigger(caster, targetToHit);
+
+
+            //perhaps only if has an equipment set
+            if(statusEffectManager.hasEffect(caster, "duelists_frenzy")){
                 combo.addComboPoint(caster);
-            }*/
+            }
+
         }
 
 
@@ -277,24 +271,12 @@ public class AssassinBasic {
 
     }
 
-    private boolean getIfEvenOdd(Player player){
-        return evenOdd.getOrDefault(player.getUniqueId(), false);
-    }
 
-    private boolean getIfBasicRunning(LivingEntity caster){
-        return basicRunning.containsKey(caster.getUniqueId());
-    }
-
-    public void stopBasicRunning(LivingEntity caster){
-        if(basicRunning.containsKey(caster.getUniqueId())){
-            basicRunning.get(caster.getUniqueId()).cancel();
-            basicRunning.remove(caster.getUniqueId());
-        }
-    }
 
     public double getSkillDamage(LivingEntity caster){
         double level = profileManager.getAnyProfile(caster).getStats().getLevel();
         return 14 + ((int)(level/3));
     }
+
 
 }

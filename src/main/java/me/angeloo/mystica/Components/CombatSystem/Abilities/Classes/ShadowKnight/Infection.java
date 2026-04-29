@@ -65,7 +65,7 @@ public class Infection extends BaseAbility {
         cooldownManager = main.getCooldownManager();
     }
 
-    private final int baseCooldown = 3;
+    private final int baseCooldown = 0;
     private final double range = 10;
     private final int baseDamage = 5;
 

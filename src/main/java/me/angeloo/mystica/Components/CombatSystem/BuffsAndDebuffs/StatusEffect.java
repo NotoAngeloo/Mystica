@@ -20,14 +20,15 @@ public interface StatusEffect {
     default int getPriority() { return 5; }
 
     /** Unicode icon */ //soul reap, for example, has a different icon on max stacks
-    default String getIcon(LivingEntity entity) { return "\ue219"; } // default icon
+    default String getIcon(LivingEntity entity, StatusInstance instance) { return "\ue219"; } // default icon
 
     /** Does this effect stack (e.g., adds values) or refresh duration? */
     default ApplicationBehavior applicationBehavior() { return ApplicationBehavior.REPLACE; }
 
-    //this is
     default int getMaxStacks() { return 1; }
     default boolean usesStacks() { return false; }
+    //because soul reap at max stacks shouldn't display stacks
+    default boolean displayStackCount(LivingEntity entity, StatusInstance instance){return true;}
 
     /** Does it have a multiplier? (like haste) */
     default boolean usesMultiplier() { return false; }

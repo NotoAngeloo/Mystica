@@ -68,7 +68,7 @@ public class BladeTempest extends BaseAbility {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), 6, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 6, baseCooldown * 1000);
 
         return true;
     }

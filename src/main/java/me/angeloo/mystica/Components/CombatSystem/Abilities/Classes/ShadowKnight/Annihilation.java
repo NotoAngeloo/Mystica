@@ -59,6 +59,8 @@ public class Annihilation extends BaseAbility {
         cooldownManager = main.getCooldownManager();
     }
 
+    //TODO: change this ability
+
     private final int baseCooldown = 3;
     private final double range = 8;
     private final int baseDamage = 45;

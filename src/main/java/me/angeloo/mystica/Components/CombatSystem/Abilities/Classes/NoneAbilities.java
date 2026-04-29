@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.*;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BasicAttacks.BasicAttackDefinition;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.None.*;
 import me.angeloo.mystica.Mystica;
 
@@ -9,10 +10,6 @@ import java.util.Map;
 
 public class NoneAbilities implements AbilitySet {
 
-    //private final NoneBasic noneBasic;
-    //private final Dash dash;
-    //private final NoneRoll noneRoll;
-    //private final Kick kick;
 
     private final Map<Integer, Ability> abilities = new HashMap<>();
 
@@ -40,28 +37,10 @@ public class NoneAbilities implements AbilitySet {
         return abilities.get(abilityNumber);
     }
 
-    /*public void useNoneAbility(LivingEntity caster, int abilityNumber){
-
-        switch (abilityNumber) {
-            case 1 -> {
-                kick.use(caster);
-                return;
-            }
-            case 2 -> {
-                dash.use(caster);
-                return;
-            }
-            case 3 -> {
-                noneRoll.use(caster);
-                return;
-            }
-        }
+    @Override
+    public BasicAttackDefinition getBasic() {
+        return null;
     }
-
-
-    public void useNoneBasic(LivingEntity caster){
-        noneBasic.useBasic(caster);
-    }*/
 
 
 }

@@ -185,6 +185,8 @@ public class DuelistsFrenzy extends BaseAbility {
                         lookup.get(PlayerClass.Assassin, 8).onExternalTrigger(caster, target);
 
                         statusEffectManager.applyEffect(caster, new Duelists_Frenzy(), null, null, caster);
+
+                        cancelTask();
                     }
                 }
 
@@ -218,14 +220,6 @@ public class DuelistsFrenzy extends BaseAbility {
     }
 
 
-    /*public int returnWhichItem(Player player){
-
-        if(combo.getComboPoints(player) != 5){
-            return 1;
-        }
-
-        return 0;
-    }*/
 
     @Override
     public boolean usable(LivingEntity caster, LivingEntity target){

@@ -58,7 +58,7 @@ public class SpiritualAttack extends BaseAbility {
         playerStateManager = manager.getPlayerStateManager();
     }
 
-    private final int baseCooldown = 3;
+    private final int baseCooldown = 0;
     private final double range = 10;
     private final int baseDamage = 30;
     private final int cost = 30;

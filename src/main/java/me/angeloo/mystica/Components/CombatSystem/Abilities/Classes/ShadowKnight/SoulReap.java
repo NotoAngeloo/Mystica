@@ -68,7 +68,7 @@ public class SoulReap extends BaseAbility {
         bossCastingManager = main.getBossCastingManager();
     }
 
-    private final int baseCooldown = 10;
+    private final int baseCooldown = 0;
     private final double range = 8;
     private final int baseDamage = 30;
     private final int cost = 30;

@@ -3,6 +3,7 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Elementalis
 
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BasicAttacks.BasicAttackDefinition;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -27,7 +28,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class ElementalistBasic {
+public class ElementalistBasic implements BasicAttackDefinition {
 
     private final Mystica main;
 
@@ -39,11 +40,6 @@ public class ElementalistBasic {
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
 
-    private final Map<UUID, Integer> basicStageMap = new HashMap<>();
-
-    private final Map<UUID, BukkitTask> basicRunning = new HashMap<>();
-
-    private final Map<UUID, BukkitTask> removeBasicStageTaskMap = new HashMap<>();
 
     public ElementalistBasic(Mystica main){
         this.main = main;
@@ -56,31 +52,65 @@ public class ElementalistBasic {
         changeResourceHandler = main.getChangeResourceHandler();
     }
 
-    public void use(LivingEntity caster){
-
-
-        if(!basicStageMap.containsKey(caster.getUniqueId())){
-            basicStageMap.put(caster.getUniqueId(), 1);
-        }
-
-        if(getIfBasicRunning(caster)){
-            return;
-        }
-
-
-        double totalRange = getRange(caster);
-
-        targetManager.setTargetToNearestValid(caster, totalRange);
+    @Override
+    public boolean performStage(LivingEntity caster, int stage) {
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        if(!usable(caster, target)){
-            return;
+        if(target == null){
+            double totalRange = getRange(caster);
+            targetManager.setTargetToNearestValid(caster, totalRange);
+            target = targetManager.getPlayerTarget(caster);
         }
 
+        if(!usable(caster, target)){
+            return false;
+        }
 
-        executeBasic(caster);
+        //triggers animations on companions
+        if(MythicBukkit.inst().getAPIHelper().isMythicMob(caster.getUniqueId())){
+            AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).getEntity();
+            MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).signalMob(abstractEntity, "basic");
+        }
 
+        switch (stage) {
+            case 1 -> {
+                basicStage1(caster);
+            }
+            case 2 -> {
+                basicStage2(caster);
+            }
+            case 3 ->{
+                basicStage3(caster);
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public int getMaxStages(LivingEntity caster) {
+        return 3;
+    }
+
+    @Override
+    public int getStageDelay(LivingEntity caster, int stage) {
+
+        if(stage==3){
+            return 20;
+        }
+
+        return 10;
+    }
+
+    @Override
+    public boolean canStart(LivingEntity caster) {
+        return statusEffectManager.canBasic(caster);
+    }
+
+    @Override
+    public boolean canContinue(LivingEntity caster, int nextStage) {
+        return statusEffectManager.canBasic(caster);
     }
 
     private double getRange(LivingEntity caster){
@@ -88,118 +118,11 @@ public class ElementalistBasic {
         return  range + statusEffectManager.getAdditionalRange(caster);
     }
 
-    private void executeBasic(LivingEntity caster){
 
-        BukkitTask task = new BukkitRunnable(){
-            @Override
-            public void run(){
-
-                LivingEntity target = targetManager.getPlayerTarget(caster);
-
-                if(target == null || target.isDead()){
-                    this.cancel();
-                    stopBasicRunning(caster);
-                    return;
-                }
-
-                if(!statusEffectManager.canBasic(caster)){
-                    this.cancel();
-                    stopBasicRunning(caster);
-                    return;
-                }
-
-                if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)).getIfDead() || profileManager.getAnyProfile(caster).getIfDead()){
-                    this.cancel();
-                    stopBasicRunning(caster);
-                    return;
-                }
-
-                double totalRange = getRange(caster);
-
-                targetManager.setTargetToNearestValid(caster, totalRange);
-
-                target = targetManager.getPlayerTarget(caster);
-
-                if(target == null){
-                    stopBasicRunning(caster);
-                    return;
-                }
-
-                if (target instanceof Player) {
-                    if (!pvpManager.pvpLogic(caster, (Player) target)) {
-                        stopBasicRunning(caster);
-                        return;
-                    }
-                }
-
-                if(!(target instanceof Player)){
-                    if(!pveChecker.pveLogic(target)){
-                        stopBasicRunning(caster);
-                        return;
-                    }
-                }
-
-                double distance = caster.getLocation().distance(target.getLocation());
-
-                if(distance > totalRange){
-                    stopBasicRunning(caster);
-                    return;
-                }
-
-                if(distance<1){
-                    stopBasicRunning(caster);
-                    return;
-                }
-
-                if(MythicBukkit.inst().getAPIHelper().isMythicMob(caster.getUniqueId())){
-                    AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).getEntity();
-                    MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).signalMob(abstractEntity, "basic");
-                }
-
-                tryToRemoveBasicStage(caster);
-                switch (getStage(caster)) {
-                    case 1 -> {
-                        basicStage1(caster);
-                    }
-                    case 2 -> {
-                        basicStage2(caster);
-                    }
-                    case 3 -> {
-                        basicStage3(caster);
-                    }
-                    case 4 -> {
-                        basicStage4(caster);
-                    }
-                }
-            }
-        }.runTaskTimer(main, 0, 10);
-        basicRunning.put(caster.getUniqueId(), task);
-
-
-    }
-
-    private void tryToRemoveBasicStage(LivingEntity caster){
-
-        if(removeBasicStageTaskMap.containsKey(caster.getUniqueId())){
-            removeBasicStageTaskMap.get(caster.getUniqueId()).cancel();
-        }
-
-        BukkitTask task = new BukkitRunnable(){
-            @Override
-            public void run(){
-                basicStageMap.remove(caster.getUniqueId());
-            }
-        }.runTaskLater(main, 50);
-
-        removeBasicStageTaskMap.put(caster.getUniqueId(), task);
-
-    }
 
     private void basicStage1(LivingEntity caster){
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
-
-        basicStageMap.put(caster.getUniqueId(), 2);
 
         Location start = caster.getLocation();
         start.subtract(0, 1, 0);
@@ -299,7 +222,6 @@ public class ElementalistBasic {
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        basicStageMap.put(caster.getUniqueId(), 3);
 
         Location start = caster.getLocation();
         start.subtract(0, 1, 0);
@@ -396,16 +318,10 @@ public class ElementalistBasic {
 
     }
 
-    private void basicStage4(LivingEntity caster){
-        basicStageMap.put(caster.getUniqueId(), 1);
-    }
 
     private void basicStage3(LivingEntity caster){
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
-
-        basicStageMap.put(caster.getUniqueId(), 4);
-
 
         double finalSkillDamage = getSkillDamage(caster);
         new BukkitRunnable(){
@@ -532,16 +448,6 @@ public class ElementalistBasic {
 
     }
 
-    private boolean getIfBasicRunning(LivingEntity caster){
-        return basicRunning.containsKey(caster.getUniqueId());
-    }
-
-    public void stopBasicRunning(LivingEntity caster){
-        if(basicRunning.containsKey(caster.getUniqueId())){
-            basicRunning.get(caster.getUniqueId()).cancel();
-            basicRunning.remove(caster.getUniqueId());
-        }
-    }
 
     public double getSkillDamage(LivingEntity caster){
 
@@ -551,6 +457,18 @@ public class ElementalistBasic {
 
     public boolean usable(LivingEntity caster, LivingEntity target){
         if(target == null){
+            return false;
+        }
+
+        if(profileManager.getAnyProfile(caster).getIfDead()){
+            return false;
+        }
+
+        if(profileManager.getAnyProfile(target).getIfDead()){
+            return false;
+        }
+
+        if(!statusEffectManager.canBasic(caster)){
             return false;
         }
 
@@ -566,21 +484,17 @@ public class ElementalistBasic {
             }
         }
 
+
         double distance = caster.getLocation().distance(target.getLocation());
 
         if(distance > getRange(caster)){
             return false;
         }
 
-        if(distance<1){
-            return false;
-        }
-
-        return true;
+        return !(distance < 1);
     }
 
-    private int getStage(LivingEntity caster){
-        return basicStageMap.getOrDefault(caster.getUniqueId(), 1);
-    }
+
+
 
 }

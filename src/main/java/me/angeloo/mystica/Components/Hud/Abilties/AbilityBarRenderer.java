@@ -105,7 +105,7 @@ public class AbilityBarRenderer {
                 continue;
             }
 
-            Ability ability = abilityManager.getAbilityResolver().resolve(playerClass, abilityNumber);
+            Ability ability = abilityManager.getAbilityResolver().resolve(playerClass, subClass, abilityNumber);
 
             if(ability == null){
                 continue;

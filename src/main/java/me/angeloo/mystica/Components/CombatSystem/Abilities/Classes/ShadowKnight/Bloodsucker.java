@@ -74,13 +74,14 @@ public class Bloodsucker extends BaseAbility {
 
         execute(caster);
 
-        cooldownManager.start(caster.getUniqueId(), 4, (long) (baseCooldown * 1000));
+        cooldownManager.start(caster.getUniqueId(), 4, baseCooldown * 1000);
 
         return true;
     }
 
     @Override
     public int cooldown() {
+
         return baseCooldown;
     }
 

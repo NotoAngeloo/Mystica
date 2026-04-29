@@ -31,9 +31,6 @@ public class StatusEffectRenderer {
     public String render(LivingEntity entity){
         StringBuilder builder = new StringBuilder();
 
-        //but first, get self contained ability buffs
-
-
 
         Map<String, StatusInstance> statusInstanceMap = manager.getInstanceMap(entity);
 
@@ -56,7 +53,7 @@ public class StatusEffectRenderer {
 
             StatusEffectRenderState state = new StatusEffectRenderState(instance);
 
-            builder.append(instance.getEffect().getIcon(entity));
+            builder.append(instance.getEffect().getIcon(entity, instance));
 
             if(state.shouldShowRadial()){
                 //-17
@@ -65,23 +62,25 @@ public class StatusEffectRenderer {
             }
 
             //put stack number on top
-            if(instance.getEffect().applicationBehavior().equals(ApplicationBehavior.ADDITIVE)){
+            if(instance.getEffect().usesStacks()){
 
-                //get effect mag returns applied mag
-                int stackAmount = manager.getStackAmount(entity, instance.getEffect().getId());
+                if(instance.getEffect().displayStackCount(entity, instance)){
+                    int stackAmount = manager.getStackAmount(entity, instance.getEffect().getId());
 
-                //don't display more than 20
-                if(stackAmount>20){
-                    stackAmount = 20;
-                }
+                    //don't display more than 20
+                    if(stackAmount>20){
+                        stackAmount = 20;
+                    }
 
-                if(stackAmount>1){
-                    //-17
-                    builder.append("\uF809\uF801");
-                    builder.append(STACKS[stackAmount-2]);
+                    if(stackAmount>1){
+                        //-17
+                        builder.append("\uF809\uF801");
+                        builder.append(STACKS[stackAmount-2]);
+                    }
                 }
 
             }
+
 
         }
 

@@ -2,6 +2,8 @@ package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ClassSpecific
 
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffect;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ApplicationBehavior;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusInstance;
+import org.bukkit.entity.LivingEntity;
 
 public class Soul_Mark implements StatusEffect {
 
@@ -33,6 +35,11 @@ public class Soul_Mark implements StatusEffect {
     @Override
     public boolean usesStacks() {
         return true;
+    }
+
+    @Override
+    public boolean displayStackCount(LivingEntity entity, StatusInstance instance){
+        return instance.getStacks() < getMaxStacks();
     }
 
 

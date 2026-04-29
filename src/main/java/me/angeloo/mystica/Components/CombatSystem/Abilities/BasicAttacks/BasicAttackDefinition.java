@@ -18,4 +18,8 @@ public interface BasicAttackDefinition {
         return true;
     }
 
+    default String skillBarIcon(LivingEntity entity){
+        return "\ue1d3";
+    }
+
 }

@@ -14,7 +14,11 @@ public class ShadowKnightAbilities implements AbilitySet {
 
     private final Map<Integer, Ability> abilities = new HashMap<>();
 
+    private final BasicAttackDefinition basic;
+
     public ShadowKnightAbilities(Mystica main, AbilityManager manager, AbilityLookup lookup){
+
+        basic = new ShadowKnightBasic(main, manager, lookup);
 
         abilities.put(1, new Infection(main, manager));
         abilities.put(2, new SpiritualAttack(main, manager));
@@ -41,7 +45,7 @@ public class ShadowKnightAbilities implements AbilitySet {
 
     @Override
     public BasicAttackDefinition getBasic() {
-        return null;
+        return basic;
     }
 
 

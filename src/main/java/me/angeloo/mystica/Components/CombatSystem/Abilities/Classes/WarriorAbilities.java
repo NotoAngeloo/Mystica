@@ -13,8 +13,11 @@ public class WarriorAbilities implements AbilitySet {
 
     private final Map<Integer, Ability> abilities = new HashMap<>();
 
+    private final BasicAttackDefinition basic;
+
     public WarriorAbilities(Mystica main, AbilityManager manager, AbilityLookup lookup){
 
+        basic = new WarriorBasic(main,manager, lookup);
 
         abilities.put(1, new LavaQuake(main, manager));
         abilities.put(2, new SearingChains(main, manager));
@@ -39,7 +42,7 @@ public class WarriorAbilities implements AbilitySet {
 
     @Override
     public BasicAttackDefinition getBasic() {
-        return null;
+        return basic;
     }
 
 

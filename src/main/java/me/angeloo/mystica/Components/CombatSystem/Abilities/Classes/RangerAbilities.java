@@ -13,8 +13,11 @@ public class RangerAbilities implements AbilitySet {
 
     private final Map<Integer, Ability> abilities = new HashMap<>();
 
+    private final BasicAttackDefinition basic;
+
     public RangerAbilities(Mystica main, AbilityManager manager, AbilityLookup lookup){
 
+        basic = new RangerBasic(main, manager, lookup);
 
         abilities.put(1, new BitingRain(main, manager));
         abilities.put(2, new ShadowCrows(main, manager));
@@ -40,7 +43,7 @@ public class RangerAbilities implements AbilitySet {
 
     @Override
     public BasicAttackDefinition getBasic() {
-        return null;
+        return basic;
     }
 
 

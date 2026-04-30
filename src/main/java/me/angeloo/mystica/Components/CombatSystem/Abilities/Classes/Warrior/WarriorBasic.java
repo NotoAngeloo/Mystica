@@ -2,7 +2,9 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Warrior;
 
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.WarriorAbilities;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityLookup;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BasicAttacks.BasicAttackDefinition;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.FakePlayerTargetManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
@@ -28,11 +30,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-public class WarriorBasic {
+public class WarriorBasic implements BasicAttackDefinition {
 
     private final Mystica main;
 
@@ -44,14 +42,10 @@ public class WarriorBasic {
     private final PveChecker pveChecker;
     private final DamageCalculator damageCalculator;
     private final ChangeResourceHandler changeResourceHandler;
-    //private final Rage rage;
+    private final Rage rage;
 
-    private final Map<UUID, Integer> basicStageMap = new HashMap<>();
-    private final Map<UUID, BukkitTask> basicRunning = new HashMap<>();
 
-    private final Map<UUID, BukkitTask> removeBasicStageTaskMap = new HashMap<>();
-
-    public WarriorBasic(Mystica main, WarriorAbilities warriorAbilities){
+    public WarriorBasic(Mystica main, AbilityManager manager, AbilityLookup lookup){
         this.main = main;
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
@@ -61,106 +55,61 @@ public class WarriorBasic {
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
         changeResourceHandler = main.getChangeResourceHandler();
-        //rage = warriorAbilities.getRage();
-    }
-
-    public void useBasic(LivingEntity caster){
-
-        if(!basicStageMap.containsKey(caster.getUniqueId())){
-            basicStageMap.put(caster.getUniqueId(), 1);
-        }
-
-        if(getIfBasicRunning(caster)){
-            return;
-        }
-
-        executeBasic(caster);
+        rage = manager.getRage();
 
     }
 
-    private void tryToRemoveBasicStage(LivingEntity caster){
+    @Override
+    public boolean performStage(LivingEntity caster, int stage) {
 
-        if(removeBasicStageTaskMap.containsKey(caster.getUniqueId())){
-            removeBasicStageTaskMap.get(caster.getUniqueId()).cancel();
+
+        //triggers animations on companions
+        if(MythicBukkit.inst().getAPIHelper().isMythicMob(caster.getUniqueId())){
+            AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).getEntity();
+            MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).signalMob(abstractEntity, "basic");
         }
 
-        BukkitTask task = new BukkitRunnable(){
-            @Override
-            public void run(){
-                basicStageMap.remove(caster.getUniqueId());
+        switch (stage){
+            case 1,3 ->{
+                basicStage1(caster);
             }
-        }.runTaskLater(main, 50);
-
-        removeBasicStageTaskMap.put(caster.getUniqueId(), task);
-
-    }
-
-    private void executeBasic(LivingEntity caster){
-
-        basicRunning.put(caster.getUniqueId(), null);
-        BukkitTask task = new BukkitRunnable(){
-            @Override
-            public void run(){
-
-                if(!statusEffectManager.canBasic(caster)){
-                    this.cancel();
-                    stopBasicRunning(caster);
-                    return;
-                }
-
-
-
-                if(profileManager.getAnyProfile(caster).getIfDead()){
-                    this.cancel();
-                    stopBasicRunning(caster);
-                    return;
-                }
-
-                if(targetManager.getPlayerTarget(caster) != null){
-                    if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)).getIfDead() || targetManager.getPlayerTarget(caster).isDead()){
-                        this.cancel();
-                        stopBasicRunning(caster);
-                        return;
-                    }
-                }
-
-                if(MythicBukkit.inst().getAPIHelper().isMythicMob(caster.getUniqueId())){
-                    AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).getEntity();
-                    MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).signalMob(abstractEntity, "basic");
-                }
-
-                tryToRemoveBasicStage(caster);
-                switch (getStage(caster)) {
-                    case 1 -> {
-                        basicStage1(caster, 2);
-                    }
-                    case 2 -> {
-                        basicStage2(caster, 3);
-                    }
-                    case 3 -> {
-                        basicStage1(caster, 4);
-                    }
-                    case 4 -> {
-                        basicStage2(caster, 5);
-                    }
-                    case 5 -> {
-                        basicStage4(caster);
-                    }
-                }
-
+            case 2,4->{
+                basicStage2(caster);
             }
-        }.runTaskTimer(main, 0, 10);
-        basicRunning.put(caster.getUniqueId(), task);
+        }
 
+
+        return true;
     }
 
-    private void basicStage4(LivingEntity caster){
-        basicStageMap.put(caster.getUniqueId(), 1);
+    @Override
+    public int getMaxStages(LivingEntity caster) {
+        return 4;
     }
 
-    private void basicStage1(LivingEntity caster, int newStage){
+    @Override
+    public int getStageDelay(LivingEntity caster, int stage) {
 
-        basicStageMap.put(caster.getUniqueId(), newStage);
+        if(stage==4){
+            return 20;
+        }
+
+        return 10;
+    }
+
+    @Override
+    public boolean canStart(LivingEntity caster) {
+        return statusEffectManager.canBasic(caster);
+    }
+
+    @Override
+    public boolean canContinue(LivingEntity caster, int nextStage) {
+        return statusEffectManager.canBasic(caster);
+    }
+
+
+    private void basicStage1(LivingEntity caster){
+
 
         Location start = caster.getLocation().clone().subtract(0,3,0);
 
@@ -266,7 +215,7 @@ public class WarriorBasic {
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster, crit);
-            //rage.addRageToEntity(caster, 10);
+            rage.addRageToEntity(caster, 10);
 
         }
 
@@ -317,9 +266,7 @@ public class WarriorBasic {
 
     }
 
-    private void basicStage2(LivingEntity caster, int newStage){
-
-        basicStageMap.put(caster.getUniqueId(), newStage);
+    private void basicStage2(LivingEntity caster){
 
         Location start = caster.getLocation().clone().subtract(0,3,0);
 
@@ -426,7 +373,7 @@ public class WarriorBasic {
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster, crit);
-            //rage.addRageToEntity(caster, 10);
+            rage.addRageToEntity(caster, 10);
         }
 
 
@@ -478,24 +425,12 @@ public class WarriorBasic {
 
     }
 
-    private boolean getIfBasicRunning(LivingEntity caster){
-        return basicRunning.containsKey(caster.getUniqueId());
-    }
-
-    public void stopBasicRunning(LivingEntity caster){
-        if(basicRunning.containsKey(caster.getUniqueId())){
-            basicRunning.get(caster.getUniqueId()).cancel();
-            basicRunning.remove(caster.getUniqueId());
-        }
-    }
 
     public double getSkillDamage(LivingEntity caster){
         double level = profileManager.getAnyProfile(caster).getStats().getLevel();
         return 14 + ((int)(level/3));
     }
 
-    private int getStage(LivingEntity caster){
-        return basicStageMap.getOrDefault(caster.getUniqueId(), 1);
-    }
+
 
 }

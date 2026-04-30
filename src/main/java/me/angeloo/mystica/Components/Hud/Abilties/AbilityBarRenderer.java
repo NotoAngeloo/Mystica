@@ -38,6 +38,10 @@ public class AbilityBarRenderer {
 
     private final String KEYBIND_LMB = "\ue1ee";
 
+    private final String KEYBIND_RMB = "\ue23e";
+
+    private final String KEYBIND_SCROLL = "\ue23f";
+
     public AbilityBarRenderer(Mystica main, AbilityManager manager){
         profileManager = main.getProfileManager();
         this.abilityManager = manager;
@@ -182,7 +186,7 @@ public class AbilityBarRenderer {
         bar.append("\ue1d3");
         //-17
         bar.append("\uF809\uF801");
-        bar.append(KEYBIND_LMB);
+        bar.append(KEYBIND_RMB);
         count++;
 
         //////////////////////////

@@ -2,7 +2,9 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Ranger;
 
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.RangerAbilities;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityLookup;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BasicAttacks.BasicAttackDefinition;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.KnockUp;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
@@ -23,14 +25,9 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-public class RangerBasic {
+public class RangerBasic implements BasicAttackDefinition {
 
     private final Mystica main;
 
@@ -41,76 +38,80 @@ public class RangerBasic {
     private final DamageCalculator damageCalculator;
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final Focus focus;
 
-    //private final RallyingCry rallyingCry;
-
-    private final Map<UUID, BukkitTask> basicRunning = new HashMap<>();
-
-    private final Map<UUID, Integer> basicStageMap = new HashMap<>();
-
-    private final Map<UUID, BukkitTask> removeBasicStageTaskMap = new HashMap<>();
-
-    //private final Focus focus;
-
-    public RangerBasic(Mystica main, RangerAbilities rangerAbilities){
+    public RangerBasic(Mystica main, AbilityManager manager, AbilityLookup lookup){
         this.main = main;
         profileManager = main.getProfileManager();
-        //rallyingCry = rangerAbilities.getRallyingCry();
         targetManager = main.getTargetManager();
         pvpManager = main.getPvpManager();
         pveChecker = main.getPveChecker();
         damageCalculator = main.getDamageCalculator();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
-        //focus = rangerAbilities.getFocus();
+        focus = manager.getFocus();
     }
 
-    public void useBasic(LivingEntity caster){
-
-        if(!basicStageMap.containsKey(caster.getUniqueId())){
-            basicStageMap.put(caster.getUniqueId(), 1);
-        }
-
-        if(getIfBasicRunning(caster)){
-            return;
-        }
-
-
-        double totalRange = getRange(caster);
-
-        targetManager.setTargetToNearestValid(caster, totalRange);
+    @Override
+    public boolean performStage(LivingEntity caster, int stage) {
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
         if(target == null){
-            return;
+            double totalRange = getRange(caster);
+            targetManager.setTargetToNearestValid(caster, totalRange);
+            target = targetManager.getPlayerTarget(caster);
         }
 
-        if (target instanceof Player) {
-            if (!pvpManager.pvpLogic(caster, (Player) target)) {
-                return;
+        if(!usable(caster, target)){
+            return false;
+        }
+
+        //triggers animations on companions
+        if(MythicBukkit.inst().getAPIHelper().isMythicMob(caster.getUniqueId())){
+            AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).getEntity();
+            MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).signalMob(abstractEntity, "basic");
+        }
+
+
+        switch (stage) {
+            case 1 -> {
+                basicStage1(caster);
+            }
+            case 2 -> {
+                basicStage1(caster);
+            }
+            case 3 ->{
+                basicStage2(caster);
             }
         }
 
-        if(!(target instanceof Player)){
-            if(!pveChecker.pveLogic(target)){
-                return;
-            }
+        return true;
+    }
+
+    @Override
+    public int getMaxStages(LivingEntity caster) {
+        return 3;
+    }
+
+    @Override
+    public int getStageDelay(LivingEntity caster, int stage) {
+
+        if(stage==3){
+            return 20;
         }
 
-        double distance = caster.getLocation().distance(target.getLocation());
+        return 10;
+    }
 
-        if(distance > totalRange){
-            return;
-        }
+    @Override
+    public boolean canStart(LivingEntity caster) {
+        return statusEffectManager.canBasic(caster);
+    }
 
-
-        if(distance<1){
-            return;
-        }
-
-        executeBasic(caster);
-
+    @Override
+    public boolean canContinue(LivingEntity caster, int nextStage) {
+        return statusEffectManager.canBasic(caster);
     }
 
     private double getRange(LivingEntity caster){
@@ -119,126 +120,11 @@ public class RangerBasic {
         return  baseRange + extraRange;
     }
 
-    private void executeBasic(LivingEntity caster){
 
-
-        BukkitTask task = new BukkitRunnable(){
-            @Override
-            public void run(){
-
-                if(!statusEffectManager.canBasic(caster)){
-                    this.cancel();
-                    stopBasicRunning(caster);
-                    return;
-                }
-
-                if(targetManager.getPlayerTarget(caster) != null){
-                    if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)).getIfDead()){
-                        this.cancel();
-                        stopBasicRunning(caster);
-                        return;
-                    }
-                }
-
-
-                double totalRange = getRange(caster);
-
-                targetManager.setTargetToNearestValid(caster, totalRange);
-
-                LivingEntity target = targetManager.getPlayerTarget(caster);
-
-                if(target == null){
-                    this.cancel();
-                    stopBasicRunning(caster);
-                    return;
-                }
-
-                if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)).getIfDead() || profileManager.getAnyProfile(caster).getIfDead()){
-                    this.cancel();
-                    stopBasicRunning(caster);
-                    return;
-                }
-
-                if (target instanceof Player) {
-                    if (!pvpManager.pvpLogic(caster, (Player) target)) {
-                        stopBasicRunning(caster);
-                        return;
-                    }
-                }
-
-                if(!(target instanceof Player)){
-                    if(!pveChecker.pveLogic(target)){
-                        stopBasicRunning(caster);
-                        return;
-                    }
-                }
-
-                double distance = caster.getLocation().distance(target.getLocation());
-
-                if(distance > totalRange){
-                    stopBasicRunning(caster);
-                    return;
-                }
-
-                if(distance<1){
-                    stopBasicRunning(caster);
-                    return;
-                }
-
-                if(MythicBukkit.inst().getAPIHelper().isMythicMob(caster.getUniqueId())){
-                    AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).getEntity();
-                    MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).signalMob(abstractEntity, "basic");
-                }
-
-                tryToRemoveBasicStage(caster);
-                switch (getStage(caster)) {
-                    case 1 -> {
-                        basicStage1(caster, 2);
-                    }
-                    case 2 -> {
-                        basicStage1(caster, 3);
-                    }
-                    case 3 -> {
-                        basicStage2(caster);
-                    }
-                    case 4 -> {
-                        basicStage3(caster);
-                    }
-                }
-
-            }
-        }.runTaskTimer(main, 0, 10);
-        basicRunning.put(caster.getUniqueId(), task);
-
-
-    }
-
-    private void tryToRemoveBasicStage(LivingEntity caster){
-
-        if(removeBasicStageTaskMap.containsKey(caster.getUniqueId())){
-            removeBasicStageTaskMap.get(caster.getUniqueId()).cancel();
-        }
-
-        BukkitTask task = new BukkitRunnable(){
-            @Override
-            public void run(){
-                basicStageMap.remove(caster.getUniqueId());
-            }
-        }.runTaskLater(main, 50);
-
-        removeBasicStageTaskMap.put(caster.getUniqueId(), task);
-
-    }
-
-    private void basicStage3(LivingEntity caster){
-        basicStageMap.put(caster.getUniqueId(), 1);
-    }
-
-    private void basicStage1(LivingEntity caster, int newStage){
+    private void basicStage1(LivingEntity caster){
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        basicStageMap.put(caster.getUniqueId(), newStage);
 
         Location start = caster.getLocation();
         start.subtract(0, 1, 0);
@@ -334,7 +220,6 @@ public class RangerBasic {
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        basicStageMap.put(caster.getUniqueId(), 4);
 
         Location start = caster.getLocation();
         start.subtract(0, 1, 0);
@@ -397,14 +282,15 @@ public class RangerBasic {
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
-                    /*if(rallyingCry.getIfBuffTime(caster) > 0){
+                    if(statusEffectManager.hasEffect(caster, "rallying_cry")) {
                         if(profileManager.getAnyProfile(target).getIsMovable()){
                             Vector awayDirection = target.getLocation().toVector().subtract(caster.getLocation().toVector()).normalize();
                             Vector velocity = awayDirection.multiply(.75).add(new Vector(0, .5, 0));
                             target.setVelocity(velocity);
-                            statusEffectManager.applyEffect(target, new KnockUp(), null, null);
+                            statusEffectManager.applyEffect(target, new KnockUp(), null, null, caster);
                         }
-                    }*/
+                    }
+
                 }
 
             }
@@ -434,29 +320,54 @@ public class RangerBasic {
 
     }
 
-    private boolean getIfBasicRunning(LivingEntity caster){
-        return basicRunning.containsKey(caster.getUniqueId());
-    }
-
-    public void stopBasicRunning(LivingEntity caster){
-        if(basicRunning.containsKey(caster.getUniqueId())){
-            basicRunning.get(caster.getUniqueId()).cancel();
-            basicRunning.remove(caster.getUniqueId());
-        }
-    }
 
     public double getSkillDamage(LivingEntity caster){
         double skillDamage = 10;
-        return 10; //temp
-        /*double skillLevel = profileManager.getAnyProfile(caster).getStats().getLevel();
-        if(rallyingCry.getIfBuffTime(caster) > 0){
+        double skillLevel = profileManager.getAnyProfile(caster).getStats().getLevel();
+
+        if(statusEffectManager.hasEffect(caster, "rallying_cry")) {
             skillDamage = skillDamage * 1.25;
         }
 
-        return focus.calculateFocusMultipliedDamage(caster, skillDamage) + ((int)(skillLevel/3));*/
+        return focus.calculateFocusMultipliedDamage(caster, skillDamage) + ((int)(skillLevel/3));
     }
 
-    private int getStage(LivingEntity caster){
-        return basicStageMap.getOrDefault(caster.getUniqueId(), 1);
+    public boolean usable(LivingEntity caster, LivingEntity target){
+        if(target == null){
+            return false;
+        }
+
+        if(profileManager.getAnyProfile(caster).getIfDead()){
+            return false;
+        }
+
+        if(profileManager.getAnyProfile(target).getIfDead()){
+            return false;
+        }
+
+        if(!statusEffectManager.canBasic(caster)){
+            return false;
+        }
+
+        if (target instanceof Player) {
+            if (!pvpManager.pvpLogic(caster, (Player) target)) {
+                return false;
+            }
+        }
+
+        if(!(target instanceof Player)){
+            if(!pveChecker.pveLogic(target)){
+                return false;
+            }
+        }
+
+
+        double distance = caster.getLocation().distance(target.getLocation());
+
+        if(distance > getRange(caster)){
+            return false;
+        }
+
+        return !(distance < 1);
     }
 }

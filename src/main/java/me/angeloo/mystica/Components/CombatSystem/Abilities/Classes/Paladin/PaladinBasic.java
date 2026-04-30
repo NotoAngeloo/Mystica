@@ -2,6 +2,10 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin;
 
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityLookup;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityMarkManager;
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BasicAttacks.BasicAttackDefinition;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.PaladinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
@@ -11,6 +15,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -29,12 +34,9 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
-public class PaladinBasic {
+public class PaladinBasic implements BasicAttackDefinition {
 
     private final Mystica main;
 
@@ -45,17 +47,14 @@ public class PaladinBasic {
     private final DamageCalculator damageCalculator;
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
+    private final AbilityMarkManager abilityMarkManager;
+    private final AbilityLookup lookup;
 
     //private final Representative representative;
     //private final JusticeMark justiceMark;
    // private final GloryOfPaladins gloryOfPaladins;
 
-    private final Map<UUID, Integer> basicStageMap = new HashMap<>();
-    private final Map<UUID, BukkitTask> basicRunning = new HashMap<>();
-
-    private final Map<UUID, BukkitTask> removeBasicStageTaskMap = new HashMap<>();
-
-    public PaladinBasic(Mystica main, PaladinAbilities paladinAbilities){
+    public PaladinBasic(Mystica main, AbilityManager manager, AbilityLookup lookup){
         this.main = main;
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
@@ -64,57 +63,86 @@ public class PaladinBasic {
         damageCalculator = main.getDamageCalculator();
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
+        abilityMarkManager = manager.getAbilityMarkManager();
+        this.lookup = lookup;
         //representative = paladinAbilities.getRepresentative();
         //gloryOfPaladins = paladinAbilities.getGloryOfPaladins();
         //justiceMark = paladinAbilities.getJusticeMark();
     }
 
-    public void useBasic(LivingEntity caster){
+    @Override
+    public boolean performStage(LivingEntity caster, int stage) {
+        LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        if(!basicStageMap.containsKey(caster.getUniqueId())){
-            basicStageMap.put(caster.getUniqueId(), 1);
-        }
+        //if not divine, payer basic amnway
+        if(profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Divine)){
 
-        if(getIfBasicRunning(caster)){
-            return;
-        }
+            //if its null, player will basic anyway and heal self
+            if(target != null){
 
-        executeBasic(caster);
+                //if target is enemy, basic and heal self
+                if(!pveChecker.pveLogic(target)){
+                    //check healing
 
-    }
-
-    private void tryToRemoveBasicStage(LivingEntity caster){
-
-        if(removeBasicStageTaskMap.containsKey(caster.getUniqueId())){
-            removeBasicStageTaskMap.get(caster.getUniqueId()).cancel();
-        }
-
-        BukkitTask task = new BukkitRunnable(){
-            @Override
-            public void run(){
-
-                if(!statusEffectManager.canBasic(caster)){
-                    this.cancel();
-                    stopBasicRunning(caster);
-                    return;
-                }
-
-                if(targetManager.getPlayerTarget(caster) != null){
-                    if(profileManager.getAnyProfile(targetManager.getPlayerTarget(caster)).getIfDead()){
-                        this.cancel();
-                        stopBasicRunning(caster);
-                        return;
+                    if(!healingUsable(caster, target)){
+                        return false;
                     }
+
+                    //triggers animations on companions
+                    if(MythicBukkit.inst().getAPIHelper().isMythicMob(caster.getUniqueId())){
+                        AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).getEntity();
+                        MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).signalMob(abstractEntity, "basic");
+                    }
+
+                    healTarget(caster, target);
+
+                    return true;
                 }
 
-
-                basicStageMap.remove(caster.getUniqueId());
             }
-        }.runTaskLater(main, 50);
 
-        removeBasicStageTaskMap.put(caster.getUniqueId(), task);
 
+        }
+
+
+        //triggers animations on companions
+        if(MythicBukkit.inst().getAPIHelper().isMythicMob(caster.getUniqueId())){
+            AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).getEntity();
+            MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).signalMob(abstractEntity, "basic");
+        }
+
+        basicStage1(caster, stage+1);
+
+
+        return true;
     }
+
+    @Override
+    public int getMaxStages(LivingEntity caster) {
+        return 4;
+    }
+
+    @Override
+    public int getStageDelay(LivingEntity caster, int stage) {
+
+        if(stage==4){
+            return 30;
+        }
+
+        return 15;
+    }
+
+    @Override
+    public boolean canStart(LivingEntity caster) {
+        return statusEffectManager.canBasic(caster);
+    }
+
+    @Override
+    public boolean canContinue(LivingEntity caster, int nextStage) {
+        return statusEffectManager.canBasic(caster);
+    }
+
+
 
     private double getRange(LivingEntity caster){
         double baseRange = 10;
@@ -130,10 +158,14 @@ public class PaladinBasic {
 
         double healAmount = damageCalculator.calculateHealing(caster, healPower, crit);
 
-        /*if(justiceMark.markProc(caster, target)){
-            markHealInstead(caster, healAmount);
+
+        Set<LivingEntity> marked = abilityMarkManager.getTargets(caster);
+
+        if(marked.contains(target)){
+            markHealInstead(caster, healAmount, marked);
             return;
-        }*/
+        }
+
 
         changeResourceHandler.addHealthToEntity(target, healAmount, caster);
 
@@ -152,11 +184,10 @@ public class PaladinBasic {
 
     }
 
-    private void markHealInstead(LivingEntity caster, double healAmount){
+    private void markHealInstead(LivingEntity caster, double healAmount, Set<LivingEntity> marked){
 
-        /*List<LivingEntity> affected = justiceMark.getMarkedTargets(caster);
 
-        for(LivingEntity thisPlayer : affected){
+        for(LivingEntity thisPlayer : marked){
             changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, caster);
 
             Location center = thisPlayer.getLocation().clone().add(0,1,0);
@@ -171,130 +202,14 @@ public class PaladinBasic {
 
                 thisPlayer.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1,0, 0, 0, 0);
             }
-        }*/
+        }
 
 
     }
 
-    private void executeBasic(LivingEntity caster){
-
-        SubClass subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
-
-        basicRunning.put(caster.getUniqueId(), null);
-        BukkitTask task = new BukkitRunnable(){
-            @Override
-            public void run(){
-
-                if(caster.isDead() || profileManager.getAnyProfile(caster).getIfDead()){
-                    stopBasicRunning(caster);
-                    this.cancel();
-                    return;
-                }
-
-                if(targetManager.getPlayerTarget(caster) != null && targetManager.getPlayerTarget(caster).isDead()){
-                    stopBasicRunning(caster);
-                    this.cancel();
-                    return;
-                }
-
-
-                if(subclass.equals(SubClass.Divine)){
-
-                    if(targetManager.getPlayerTarget(caster) == null){
-                        healTarget(caster, caster);
-                        return;
-                    }
-
-                    if(targetManager.getPlayerTarget(caster) instanceof Player){
-                        Player target = (Player) targetManager.getPlayerTarget(caster);
-
-                        if(!pvpManager.pvpLogic(caster, target)){
-
-                            Location playerLocation = caster.getLocation();
-                            Location targetLocation = target.getLocation();
-
-                            double distance = playerLocation.distance(targetLocation);
-
-                            if (distance > getRange(caster)) {
-                                stopBasicRunning(caster);
-                                return;
-                            }
-
-                            healTarget(caster, target);
-                            return;
-                        }
-                    }
-
-                    if(!(targetManager.getPlayerTarget(caster) instanceof Player)){
-
-                        LivingEntity target = targetManager.getPlayerTarget(caster);
-
-                        if(!pveChecker.pveLogic(target)){
-
-                            Location playerLocation = caster.getLocation();
-                            Location targetLocation = target.getLocation();
-
-                            double distance = playerLocation.distance(targetLocation);
-
-                            if (distance > getRange(caster)) {
-                                stopBasicRunning(caster);
-                                return;
-                            }
-
-                            healTarget(caster, target);
-
-                            if(MythicBukkit.inst().getAPIHelper().isMythicMob(caster.getUniqueId())){
-                                AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).getEntity();
-                                MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).signalMob(abstractEntity, "basic");
-                            }
-
-                            return;
-                        }
-                    }
-
-                }
-
-                if(MythicBukkit.inst().getAPIHelper().isMythicMob(caster.getUniqueId())){
-                    AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).getEntity();
-                    MythicBukkit.inst().getAPIHelper().getMythicMobInstance(caster).signalMob(abstractEntity, "basic");
-                }
-
-                tryToRemoveBasicStage(caster);
-
-                switch (getStage(caster)) {
-                    case 1 -> {
-                        basicStage1(caster, 2);
-                    }
-                    case 2 -> {
-                        basicStage1(caster, 3);
-                    }
-                    case 3 -> {
-                        basicStage1(caster, 4);
-                    }
-                    case 4 -> {
-                        basicStage1(caster, 5);
-                    }
-                    case 5 -> {
-                        basicStage5(caster);
-
-                    }
-                }
-
-            }
-        }.runTaskTimer(main, 0, 15);
-        basicRunning.put(caster.getUniqueId(), task);
-
-
-
-    }
-
-    private void basicStage5(LivingEntity caster){
-        basicStageMap.put(caster.getUniqueId(), 1);
-    }
 
     private void basicStage1(LivingEntity caster, int newStage){
 
-        basicStageMap.put(caster.getUniqueId(), newStage);
 
         Vector direction = caster.getLocation().getDirection().setY(0).normalize();
 
@@ -372,15 +287,24 @@ public class PaladinBasic {
             //this is gone because paladin companions kept losing target and stopped taunting
             //fakePlayerTargetManager.setFakePlayerTarget(caster, targetToHit);
 
+            double bonus = 0;
 
-            /*boolean crit = damageCalculator.checkIfCrit(caster, 0);
+            if(statusEffectManager.hasEffect(caster, "representative")){
+                bonus = statusEffectManager.getMagnitude(caster, "representative");
+            }
+
+            boolean crit = damageCalculator.checkIfCrit(caster, 0);
             double damage = damageCalculator.calculateDamage(caster, targetToHit, "Physical", getSkillDamage(caster)
-                    + representative.getAdditionalBonusFromBuff(caster), crit);
+                    + bonus, crit);
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster, crit);
 
-            gloryOfPaladins.procGlory(caster, targetToHit);*/
+            //because divine has a different set of skills
+            if(!profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Divine)){
+                lookup.get(PlayerClass.Paladin, 6).onExternalTrigger(caster, targetToHit);
+            }
+
 
         }
 
@@ -446,24 +370,40 @@ public class PaladinBasic {
 
 
 
-    private boolean getIfBasicRunning(LivingEntity caster){
-        return basicRunning.containsKey(caster.getUniqueId());
-    }
-
-    public void stopBasicRunning(LivingEntity caster){
-        if(basicRunning.containsKey(caster.getUniqueId())){
-            basicRunning.get(caster.getUniqueId()).cancel();
-            basicRunning.remove(caster.getUniqueId());
-        }
-    }
-
     public double getSkillDamage(LivingEntity caster){
         double level = profileManager.getAnyProfile(caster).getStats().getLevel();
         return 10 + ((int)(level/3));
     }
 
-    private int getStage(LivingEntity caster){
-        return basicStageMap.getOrDefault(caster.getUniqueId(), 1);
+
+    //decide which basic to use later
+    private boolean healingUsable(LivingEntity caster, LivingEntity target){
+
+        if(profileManager.getAnyProfile(caster).getIfDead()){
+            return false;
+        }
+
+        if(profileManager.getAnyProfile(target).getIfDead()){
+            return false;
+        }
+
+        if(!statusEffectManager.canBasic(caster)){
+            return false;
+        }
+
+        //always can
+        if(target==caster){
+            return true;
+        }
+
+        //only if healing
+        double distance = caster.getLocation().distance(target.getLocation());
+
+        if(distance > getRange(caster)){
+            return false;
+        }
+
+        return !(distance < 1);
     }
 
 }

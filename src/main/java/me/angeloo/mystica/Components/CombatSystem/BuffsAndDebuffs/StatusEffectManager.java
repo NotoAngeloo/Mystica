@@ -497,6 +497,22 @@ public class StatusEffectManager {
         return instance.stacks;
     }
 
+    public double getMagnitude(LivingEntity entity, String identifier){
+        Map<String, StatusInstance> statusInstanceMap = getInstanceMap(entity);
+
+        if(statusInstanceMap == null){
+            return 0;
+        }
+
+        StatusInstance instance = statusInstanceMap.get(identifier);
+
+        if(instance == null){
+            return 0;
+        }
+
+        return instance.magnitude;
+    }
+
     public int getTicksLeft(LivingEntity entity, String identifier){
         Map<String, StatusInstance> statusInstanceMap = getInstanceMap(entity);
 

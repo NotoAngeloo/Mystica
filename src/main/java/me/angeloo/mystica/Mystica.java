@@ -218,8 +218,6 @@ public final class Mystica extends JavaPlugin{
         statusEffectManager.setCombatContext(combatContext);
 
         abilityManager = new AbilityManager(this);
-        //cooldownManager = abilityManager.getCooldownManager();
-        //cooldownDisplayer = new CooldownDisplayer(this, abilityManager);
         combatManager = abilityManager.getCombatManager();
 
 

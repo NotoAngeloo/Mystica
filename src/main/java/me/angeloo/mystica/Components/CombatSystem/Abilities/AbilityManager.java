@@ -14,6 +14,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownMa
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.CombatSystem.CombatManager;
+import me.angeloo.mystica.Components.CombatSystem.Targeting.TargetingEngine;
 import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -38,6 +39,7 @@ public class AbilityManager {
     private final AbilityResolver abilityResolver;
     private final AbilityMarkManager abilityMarkManager;
     private final BasicAttackEngine basicAttackEngine;
+    private final TargetingEngine targetingEngine;
 
     private final Map<UUID, Double> percentCastBar = new HashMap<>();
     private final Map<UUID, String> skillCurrentlyCasting = new HashMap<>();
@@ -61,6 +63,7 @@ public class AbilityManager {
         statusEffectManager = main.getStatusEffectManager();
         playerStateManager = new PlayerStateManager();
         abilityMarkManager = new AbilityMarkManager(main);
+        targetingEngine = new TargetingEngine(main);
 
 
         combatManager = new CombatManager(main, this);
@@ -353,6 +356,10 @@ public class AbilityManager {
 
     public AbilityMarkManager getAbilityMarkManager() {
         return abilityMarkManager;
+    }
+
+    public TargetingEngine getTargetingEngine(){
+        return targetingEngine;
     }
 
     /*public void hideFromPlayers(LivingEntity armorStand){

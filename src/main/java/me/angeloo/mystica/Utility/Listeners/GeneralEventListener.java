@@ -7,6 +7,8 @@ import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import me.angeloo.mystica.Components.CombatSystem.*;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.CombatSystem.Targeting.TargetingContext;
+import me.angeloo.mystica.Components.CombatSystem.Targeting.TargetingEngine;
 import me.angeloo.mystica.Components.Guis.Abilities.AbilityInventory;
 import me.angeloo.mystica.Components.Guis.Equipment.EquipmentInventory;
 import me.angeloo.mystica.Components.Guis.Party.PartyInventory;
@@ -28,8 +30,6 @@ import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
-import me.angeloo.mystica.Utility.Enums.SubClass;
-import me.angeloo.mystica.Utility.Logic.StealthTargetBlacklist;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -49,7 +49,6 @@ import org.bukkit.inventory.*;
 
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.BoundingBox;
-import org.bukkit.util.Vector;
 
 import java.util.*;
 
@@ -65,7 +64,6 @@ public class GeneralEventListener implements Listener {
     private final ProfileManager profileManager;
     private final MysticaPartyManager mysticaPartyManager;
     private final PathingManager pathingManager;
-    private final StealthTargetBlacklist stealthTargetBlacklist;
     private final AggroTick aggroTick;
     private final AggroManager aggroManager;
     private final PvpManager pvpManager;
@@ -82,6 +80,8 @@ public class GeneralEventListener implements Listener {
     private final GearReader gearReader;
     private final ClassSetter classSetter;
     private final GravestoneManager gravestoneManager;
+
+    private final TargetingEngine targetingEngine;
 
     private final PartyInventory partyInventory;
 
@@ -109,7 +109,6 @@ public class GeneralEventListener implements Listener {
         pathingManager = main.getPathingManager();
         itemGetter = main.getItemGetter();
         fakePlayerAiManager = main.getFakePlayerAiManager();
-        stealthTargetBlacklist = main.getStealthTargetBlacklist();
         aggroTick = main.getAggroTick();
         DpsManager dpsManager = main.getDpsManager();
         aggroManager = main.getAggroManager();
@@ -132,6 +131,7 @@ public class GeneralEventListener implements Listener {
         partyInventory = main.getPartyInventory();
         cooldownDisplayer = main.getCooldownDisplayer();
         rezTick = main.getRezTick();
+        targetingEngine = abilityManager.getTargetingEngine();
     }
 
     @EventHandler
@@ -276,6 +276,10 @@ public class GeneralEventListener implements Listener {
         Player player = event.getPlayer();
 
         if (player.getGameMode() == GameMode.CREATIVE) {
+            return;
+        }
+
+        if(event.getClickedBlock()==null){
             return;
         }
 
@@ -1111,6 +1115,11 @@ public class GeneralEventListener implements Listener {
             return;
         }
 
+        //this now is team targeting
+        if(player.isSneaking()){
+            return;
+        }
+
         int newSlot = event.getNewSlot();
 
         EquipSkills equipSkills = profileManager.getAnyProfile(player).getEquipSkills();
@@ -1125,7 +1134,38 @@ public class GeneralEventListener implements Listener {
             player.getInventory().setHeldItemSlot(8);
         });
 
+    }
 
+    @EventHandler
+    public void scrollTarget(PlayerItemHeldEvent event){
+
+        Player player = event.getPlayer();
+
+        if(profileManager.getAnyProfile(player).getIfDead()){
+            return;
+        }
+
+        if(!player.isSneaking()){
+            return;
+        }
+
+        int newSlot = event.getNewSlot();
+
+        if(newSlot==0){
+            //Bukkit.getLogger().info("down");
+            LivingEntity target = targetingEngine.cycleParty(player, 1);
+            targetManager.setPlayerTarget(player, target);
+        }
+
+        if(newSlot==7){
+            //Bukkit.getLogger().info("up");
+            LivingEntity target = targetingEngine.cycleParty(player, -1);
+            targetManager.setPlayerTarget(player, target);
+        }
+
+        Bukkit.getScheduler().runTask(main, ()->{
+            player.getInventory().setHeldItemSlot(8);
+        });
     }
 
     @EventHandler
@@ -1134,13 +1174,7 @@ public class GeneralEventListener implements Listener {
 
         Player player = event.getPlayer();
 
-        boolean combatStatus = profileManager.getAnyProfile(player).getIfInCombat();
         boolean deathStatus = profileManager.getAnyProfile(player).getIfDead();
-
-        if(!combatStatus){
-            targetManager.setPlayerTarget(player, null);
-            return;
-        }
 
         if(deathStatus){
             targetManager.setPlayerTarget(player, null);
@@ -1212,20 +1246,12 @@ public class GeneralEventListener implements Listener {
     }
 
     @EventHandler
-    public void removeTargetOrTeamTarget(PlayerDropItemEvent event){
+    public void removeTarget(PlayerDropItemEvent event){
 
         Player player = event.getPlayer();
         abilityManager.interruptBasic(player);
 
-        boolean teamTarget = player.isSneaking();
-
-        if(teamTarget){
-            targetManager.setTeamTarget(player);
-        }
-        else{
-            targetManager.setPlayerTarget(player, null);
-        }
-
+        targetManager.setPlayerTarget(player, null);
 
 
         if(player.getGameMode() != GameMode.CREATIVE){
@@ -1240,173 +1266,25 @@ public class GeneralEventListener implements Listener {
     @EventHandler
     public void targetEntity(PlayerInteractEvent event){
 
+        //on right click
         if(event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK){
             return;
         }
 
-
         Player player = event.getPlayer();
         abilityManager.interruptBasic(player);
-
 
         double baseRange = 20;
         double bonusRange = statusEffectManager.getAdditionalRange(player);
         double totalRange = baseRange + bonusRange;
 
+        boolean prioritizePlayer = player.isSneaking();
 
-        boolean inCombat = profileManager.getAnyProfile(player).getIfInCombat();
-        boolean prioritizePlayer = !inCombat || player.isSneaking();
+        TargetingContext context = new TargetingContext(totalRange, prioritizePlayer);
 
-        Vector direction = player.getEyeLocation().getDirection();
-        double x = direction.getX() * totalRange;
-        double y = direction.getY() * totalRange;
-        double z = direction.getZ() * totalRange;
-        Location start = player.getEyeLocation();
-        Location end = start.clone().add(x, y, z);
-        BoundingBox boundingBox = BoundingBox.of(start, end);
-        double closestDistanceSquaredMob = Double.MAX_VALUE;
-        double closestDistanceSquaredPlayer = Double.MAX_VALUE;
-        Entity theClosestMob = null;
-        Entity theClosestPlayer = null;
+        LivingEntity target = targetingEngine.cycleTarget(player, context);
 
-        if(prioritizePlayer){
-
-            for(Entity entity : player.getWorld().getNearbyEntities(boundingBox)){
-
-                if(entity==player){
-                    continue;
-                }
-
-                LivingEntity livingEntity = (LivingEntity) entity;
-
-                double distanceSquared = entity.getLocation().distanceSquared(player.getLocation());
-
-                if(MythicBukkit.inst().getAPIHelper().isMythicMob(entity.getUniqueId())){
-
-                    if(profileManager.getAnyProfile(livingEntity).getIfObject()){
-                        if(gravestoneManager.isGravestone(entity)){
-                            if(distanceSquared < closestDistanceSquaredPlayer){
-                                theClosestPlayer  = entity;
-                                closestDistanceSquaredPlayer = distanceSquared;
-                            }
-                        }
-                        continue;
-                    }
-
-
-                    if(profileManager.getAnyProfile(livingEntity).fakePlayer()){
-                        if(distanceSquared < closestDistanceSquaredPlayer){
-                            theClosestPlayer  = entity;
-                            closestDistanceSquaredPlayer = distanceSquared;
-                        }
-                    }
-
-                    if(distanceSquared < closestDistanceSquaredMob){
-                        theClosestMob  = entity;
-                        closestDistanceSquaredMob = distanceSquared;
-                    }
-
-                    continue;
-                }
-
-                if(profileManager.getAnyProfile(livingEntity).getIfDead()){
-                    continue;
-                }
-
-                if(entity instanceof Player){
-                    if(pvpManager.pvpLogic(player, (Player)entity) && stealthTargetBlacklist.get((Player)entity)){
-                        continue;
-                    }
-                }
-
-                if(distanceSquared < closestDistanceSquaredPlayer){
-                    theClosestPlayer = entity;
-                    closestDistanceSquaredPlayer = distanceSquared;
-                }
-
-
-            }
-
-            if(theClosestPlayer != null){
-                targetManager.setPlayerTarget(player, (LivingEntity) theClosestPlayer);
-                return;
-            }
-
-            if(theClosestMob != null){
-                targetManager.setPlayerTarget(player, (LivingEntity) theClosestMob);
-            }
-
-            return;
-        }
-
-        //non player prior
-        for(Entity entity : player.getWorld().getNearbyEntities(boundingBox)){
-
-            if(entity==player){
-                continue;
-            }
-
-            LivingEntity livingEntity = (LivingEntity) entity;
-
-            double distanceSquared = entity.getLocation().distanceSquared(player.getLocation());
-
-            if(MythicBukkit.inst().getAPIHelper().isMythicMob(entity.getUniqueId())){
-
-                if(profileManager.getAnyProfile(livingEntity).getIfObject()){
-                    if(gravestoneManager.isGravestone(entity)){
-                        if(distanceSquared < closestDistanceSquaredPlayer){
-                            theClosestPlayer  = entity;
-                            closestDistanceSquaredPlayer = distanceSquared;
-                        }
-                    }
-
-                    continue;
-
-                }
-
-                if(profileManager.getAnyProfile(livingEntity).fakePlayer()){
-                    if(distanceSquared < closestDistanceSquaredPlayer){
-                        theClosestPlayer  = entity;
-                        closestDistanceSquaredPlayer = distanceSquared;
-                    }
-                    continue;
-                }
-
-                if(distanceSquared < closestDistanceSquaredMob){
-                    theClosestMob  = entity;
-                    closestDistanceSquaredMob = distanceSquared;
-                }
-
-                continue;
-            }
-
-            if(profileManager.getAnyProfile(livingEntity).getIfDead()){
-                continue;
-            }
-
-            if(entity instanceof Player){
-                if(pvpManager.pvpLogic(player, (Player)entity) && stealthTargetBlacklist.get((Player)entity)){
-                    continue;
-                }
-            }
-
-            if(distanceSquared < closestDistanceSquaredPlayer){
-                theClosestPlayer = entity;
-                closestDistanceSquaredPlayer = distanceSquared;
-            }
-
-
-        }
-
-        if(theClosestMob != null){
-            targetManager.setPlayerTarget(player, (LivingEntity) theClosestMob);
-            return;
-        }
-
-        if(theClosestPlayer != null){
-            targetManager.setPlayerTarget(player, (LivingEntity) theClosestPlayer);
-        }
-
+        targetManager.setPlayerTarget(player, target);
 
     }
 
@@ -1496,6 +1374,9 @@ public class GeneralEventListener implements Listener {
         }
 
         profileManager.getAnyProfile(livingEntity).setIfDead(true);
+
+        //check if player targeting, then remove
+        targetManager.clearWhoTargetsMe(livingEntity);
 
         if(profileManager.getAnyProfile(livingEntity).fakePlayer()){
             Player companionPlayer = profileManager.getCompanionsPlayer(livingEntity);

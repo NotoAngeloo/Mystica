@@ -1,6 +1,5 @@
-package me.angeloo.mystica.Tasks;
+package me.angeloo.mystica.Components.EntityBehavior;
 
-import me.angeloo.mystica.Components.CombatSystem.AggroManager;
 import me.angeloo.mystica.Components.CombatSystem.CombatManager;
 import me.angeloo.mystica.Components.CombatSystem.DpsManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;

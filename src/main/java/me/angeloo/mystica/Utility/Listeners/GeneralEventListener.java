@@ -9,6 +9,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.Targeting.TargetingContext;
 import me.angeloo.mystica.Components.CombatSystem.Targeting.TargetingEngine;
+import me.angeloo.mystica.Components.EntityBehavior.AggroManager;
 import me.angeloo.mystica.Components.Guis.Abilities.AbilityInventory;
 import me.angeloo.mystica.Components.Guis.Equipment.EquipmentInventory;
 import me.angeloo.mystica.Components.Guis.Party.PartyInventory;
@@ -19,10 +20,10 @@ import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
 import me.angeloo.mystica.CustomEvents.*;
-import me.angeloo.mystica.Components.Parties.FakePlayerAiManager;
+import me.angeloo.mystica.Components.EntityBehavior.FakePlayerAiManager;
 import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Tasks.AggroTick;
+import me.angeloo.mystica.Components.EntityBehavior.AggroTick;
 import me.angeloo.mystica.Tasks.RezTick;
 import me.angeloo.mystica.Utility.*;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
@@ -48,7 +49,6 @@ import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.inventory.*;
 
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.util.BoundingBox;
 
 import java.util.*;
 
@@ -627,7 +627,6 @@ public class GeneralEventListener implements Listener {
         }
 
         LivingEntity entity = event.getEntityWhoDied();
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(entity, WhomeverTarget));
 
         Yield yield = profileManager.getAnyProfile(entity).getYield();
 
@@ -969,33 +968,6 @@ public class GeneralEventListener implements Listener {
             return;
         }
 
-        if(barType.equals(WhomeverTarget)){
-
-            Location center = entity.getLocation();
-
-            BoundingBox hitBox = new BoundingBox(
-                    center.getX() - 50,
-                    center.getY() - 50,
-                    center.getZ() - 50,
-                    center.getX() + 50,
-                    center.getY() + 50,
-                    center.getZ() + 50
-            );
-
-            for (Entity thisEntity : entity.getWorld().getNearbyEntities(hitBox)) {
-
-                if(!(thisEntity instanceof Player player)){
-                    continue;
-                }
-
-                if(targetManager.isTargeting(player, entity)){
-                    Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, Target));
-                }
-
-            }
-
-
-        }
 
 
     }

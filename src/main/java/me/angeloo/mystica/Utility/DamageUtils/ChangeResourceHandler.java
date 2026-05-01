@@ -2,10 +2,9 @@ package me.angeloo.mystica.Utility.DamageUtils;
 
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
-import me.angeloo.mystica.Components.CombatSystem.AggroManager;
+import me.angeloo.mystica.Components.EntityBehavior.AggroManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Shields.ShieldInstance;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusInstance;
 import me.angeloo.mystica.Components.CombatSystem.DpsManager;
 import me.angeloo.mystica.Components.Profile;
@@ -266,7 +265,6 @@ public class ChangeResourceHandler {
             }
 
             Bukkit.getServer().getPluginManager().callEvent(new MysticaPlayerDeathEvent(entity));
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(entity, BarType.WhomeverTarget));
 
         }
     }
@@ -561,7 +559,6 @@ public class ChangeResourceHandler {
         double actualMaxHealth = profileManager.getAnyProfile(player).getTotalHealth();
         profileManager.getAnyProfile(player).setCurrentHealth(actualMaxHealth);
         player.setHealth(20);
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.WhomeverTarget));
     }
 
 
@@ -607,7 +604,7 @@ public class ChangeResourceHandler {
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(player, false));
 
         lastDamaged.put(player.getUniqueId(), (System.currentTimeMillis()/1000));
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.WhomeverTarget));
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.SelfInfo));
     }
 
     private void killFakePlayerNoMatterWhat(LivingEntity entity){
@@ -635,7 +632,7 @@ public class ChangeResourceHandler {
             AbstractEntity abstractEntity = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).getEntity();
             Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent(entity, "stop"));
             MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).signalMob(abstractEntity, "die");
-            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(entity, BarType.WhomeverTarget));
+            Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(entity, BarType.SelfInfo));
         }
 
         List<Entity> passengers = entity.getPassengers();

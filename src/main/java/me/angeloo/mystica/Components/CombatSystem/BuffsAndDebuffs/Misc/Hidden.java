@@ -1,13 +1,10 @@
 package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Misc;
 
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
-import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
-import me.angeloo.mystica.Components.CombatSystem.AggroManager;
+import me.angeloo.mystica.Components.EntityBehavior.AggroManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DisplayWeapons;
-import me.angeloo.mystica.Utility.Enums.BarType;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

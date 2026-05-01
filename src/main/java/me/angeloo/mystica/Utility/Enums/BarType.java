@@ -5,7 +5,6 @@ public enum BarType {
     Resource,
     Target,
     Dps,
-    WhomeverTarget,
     Health,
     SelfInfo,
     Cast

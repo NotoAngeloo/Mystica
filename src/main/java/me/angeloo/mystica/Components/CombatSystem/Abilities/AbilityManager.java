@@ -2,7 +2,6 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BasicAttacks.BasicAttackDefinition;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BasicAttacks.BasicAttackEngine;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.*;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Assassin.Combo;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Elementalist.Heat;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Mystic.Mana;
@@ -12,10 +11,9 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnight
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Warrior.Rage;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
-import me.angeloo.mystica.Components.CombatSystem.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.CombatSystem.CombatManager;
 import me.angeloo.mystica.Components.CombatSystem.Targeting.TargetingEngine;
-import me.angeloo.mystica.Components.Profile;
+import me.angeloo.mystica.Components.ProfileComponents.Profile;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;

@@ -1,7 +1,6 @@
-package me.angeloo.mystica.Components;
+package me.angeloo.mystica.Components.ProfileComponents;
 
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
-import me.angeloo.mystica.Components.ProfileComponents.Stats;
 
 public abstract class NonPlayerProfile implements Profile{
 

@@ -1,18 +1,8 @@
 package me.angeloo.mystica.Components.CombatSystem.ClassSkillItems;
 
-import me.angeloo.mystica.Components.Profile;
-import me.angeloo.mystica.Components.ProfileComponents.Skill_Level;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.InventoryItemGetter;
-import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
-import java.awt.*;
-
-import static me.angeloo.mystica.Mystica.levelColor;
 
 public class NoneSkillItems {
 

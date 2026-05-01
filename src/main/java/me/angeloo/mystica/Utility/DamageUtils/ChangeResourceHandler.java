@@ -7,7 +7,7 @@ import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectMa
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Shields.ShieldInstance;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusInstance;
 import me.angeloo.mystica.Components.CombatSystem.DpsManager;
-import me.angeloo.mystica.Components.Profile;
+import me.angeloo.mystica.Components.ProfileComponents.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Components.ProfileComponents.Stats;
 import me.angeloo.mystica.CustomEvents.AiSignalEvent;

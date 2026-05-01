@@ -1,4 +1,4 @@
-package me.angeloo.mystica.Components;
+package me.angeloo.mystica.Components.ProfileComponents;
 
 import me.angeloo.mystica.Components.Guis.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.ProfileComponents.*;

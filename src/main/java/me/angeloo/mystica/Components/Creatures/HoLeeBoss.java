@@ -2,7 +2,7 @@ package me.angeloo.mystica.Components.Creatures;
 
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.Guis.Storage.MysticaBagCollection;
-import me.angeloo.mystica.Components.NonPlayerProfile;
+import me.angeloo.mystica.Components.ProfileComponents.NonPlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;

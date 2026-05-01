@@ -1,7 +1,7 @@
 package me.angeloo.mystica.Utility;
 
 import me.angeloo.mystica.Components.Items.MysticaEquipment;
-import me.angeloo.mystica.Components.Profile;
+import me.angeloo.mystica.Components.ProfileComponents.Profile;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 
 import me.angeloo.mystica.CustomEvents.MaxHealthChangeOutOfCombatEvent;

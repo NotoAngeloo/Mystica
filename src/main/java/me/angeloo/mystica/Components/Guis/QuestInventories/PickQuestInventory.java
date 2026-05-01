@@ -2,7 +2,7 @@ package me.angeloo.mystica.Components.Guis.QuestInventories;
 
 import io.lumine.mythic.api.mobs.MythicMob;
 import me.angeloo.mystica.Components.Guis.InventoryTextGenerator;
-import me.angeloo.mystica.Components.PlayerProfile;
+import me.angeloo.mystica.Components.ProfileComponents.PlayerProfile;
 import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
 import me.angeloo.mystica.Components.Quests.Quest;
 import me.angeloo.mystica.Components.Quests.QuestManager;

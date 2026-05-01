@@ -2,7 +2,7 @@ package me.angeloo.mystica.Utility;
 
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
-import me.angeloo.mystica.Components.Profile;
+import me.angeloo.mystica.Components.ProfileComponents.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Mystica;
@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import static me.angeloo.mystica.Utility.Enums.BarType.SelfInfo;
-import static me.angeloo.mystica.Utility.Enums.BarType.Target;
 
 public class BossManager {
 

@@ -1,7 +1,7 @@
 package me.angeloo.mystica.Components.Creatures;
 
 
-import me.angeloo.mystica.Components.FakePlayerProfile;
+import me.angeloo.mystica.Components.ProfileComponents.FakePlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.Stats;
 import me.angeloo.mystica.CustomEvents.CompanionSpawnEvent;
 import me.angeloo.mystica.Components.Parties.MysticaPartyManager;

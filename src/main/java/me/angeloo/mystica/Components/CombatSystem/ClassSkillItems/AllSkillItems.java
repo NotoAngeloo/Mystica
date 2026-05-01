@@ -1,13 +1,8 @@
 package me.angeloo.mystica.Components.CombatSystem.ClassSkillItems;
 
-import me.angeloo.mystica.Components.Profile;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 
 public class AllSkillItems {

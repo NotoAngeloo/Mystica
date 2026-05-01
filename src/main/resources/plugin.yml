@@ -111,6 +111,10 @@ commands:
     description: opens npc gui for available quests and otherwise
     usage: /OpenNpcGui <player> <uuid>
     permission: developer
+  Circle:
+    description: spawn a mechanic circle
+    usage: /circle <radius> <duration>
+    permission: developer
 
 permissions:
   developer:

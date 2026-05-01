@@ -3,7 +3,7 @@ package me.angeloo.mystica.Components.Guis.Misc;
 import io.lumine.mythic.api.mobs.MythicMob;
 import me.angeloo.mystica.Components.Guis.Abilities.ClassSelectInventory;
 import me.angeloo.mystica.Components.Guis.Equipment.EquipmentUpgradeManager;
-import me.angeloo.mystica.Components.PlayerProfile;
+import me.angeloo.mystica.Components.ProfileComponents.PlayerProfile;
 import me.angeloo.mystica.Components.Guis.QuestInventories.PickQuestInventory;
 import me.angeloo.mystica.Components.Guis.QuestInventories.QuestAcceptInventory;
 import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;

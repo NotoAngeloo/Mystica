@@ -7,7 +7,7 @@ import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectMa
 import me.angeloo.mystica.Components.CombatSystem.GravestoneManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Components.Hud.StatusEffects.StatusEffectRenderer;
-import me.angeloo.mystica.Components.Profile;
+import me.angeloo.mystica.Components.ProfileComponents.Profile;
 import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -1726,9 +1726,9 @@ public class HudManager {
 
             //temp comment out to see full thing
             //-512 space
-            //teamData.append("\uF80E");
+            teamData.append("\uF80E");
             //-100
-            //teamData.append("\uF80B\uF80A\uF804");
+            teamData.append("\uF80B\uF80A\uF804");
 
             int slot = 0;
             for (LivingEntity member : mysticaParty) {
@@ -1774,9 +1774,9 @@ public class HudManager {
         StringBuilder offset = new StringBuilder();
 
         //-512 space
-        //teamData.append("\uF80E");
+        teamData.append("\uF80E");
         //-100space
-        //teamData.append("\uF80B\uF80A\uF804");
+        teamData.append("\uF80B\uF80A\uF804");
 
         int slot = 0;
         for (LivingEntity member : mysticaParty) {

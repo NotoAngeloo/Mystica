@@ -1,6 +1,6 @@
 package me.angeloo.mystica.Components.Guis.Abilities;
 
-import me.angeloo.mystica.Components.Profile;
+import me.angeloo.mystica.Components.ProfileComponents.Profile;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.CustomEvents.MaxHealthChangeOutOfCombatEvent;
 import me.angeloo.mystica.Utility.DisplayWeapons;

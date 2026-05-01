@@ -12,7 +12,7 @@ import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.CustomEvents.MysticaPlayerDeathEvent;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Components.Profile;
+import me.angeloo.mystica.Components.ProfileComponents.Profile;
 import me.angeloo.mystica.Tasks.RezTick;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DisplayWeapons;

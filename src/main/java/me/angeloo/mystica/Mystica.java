@@ -52,6 +52,7 @@ import me.angeloo.mystica.Utility.Logic.PveChecker;
 import me.angeloo.mystica.Utility.Logic.StealthTargetBlacklist;
 import me.angeloo.mystica.Utility.MatchMaking.MatchMakingManager;
 //import net.playavalon.mythicdungeons.api.MythicDungeonsService;
+import me.angeloo.mystica.Utility.MechanicCircle.CircleCommand;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -288,6 +289,7 @@ public final class Mystica extends JavaPlugin{
         getCommand("BossWarn").setExecutor(new BossWarn(this));
         getCommand("MysticaQuest").setExecutor(new MysticaQuest(this));
         getCommand("OpenNpcGui").setExecutor(new OpenNpcGui(this));
+        getCommand("circle").setExecutor(new CircleCommand(this));
 
 
         this.getServer().getPluginManager().registerEvents(classSelectInventory, this);

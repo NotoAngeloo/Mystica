@@ -59,14 +59,8 @@ public class Roll extends BaseAbility {
 
         Vector direction = start.getDirection().normalize();
 
-        double shieldAmount = (profileManager.getAnyProfile(caster).getTotalHealth() + statusEffectManager.getHealthBuffAmount(caster)) / 4;
+        double shieldAmount = (profileManager.getAnyProfile(caster).getTotalHealth() + statusEffectManager.getHealthBuffAmount(caster)) / 2;
 
-        if(caster instanceof Player){
-            if(((Player)caster).isSneaking()){
-                direction.multiply(-1);
-                shieldAmount*=2;
-            }
-        }
 
         if(profileManager.getAnyProfile(caster).fakePlayer()){
             direction.multiply(-1);

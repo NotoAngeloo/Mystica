@@ -35,7 +35,6 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Boss;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -88,7 +87,7 @@ public class ProfileManager {
         this.main = main;
         bossManager = new BossManager(main, this);
         this.questManager = main.getQuestManager();
-        mysticaPartyManager = new MysticaPartyManager(main, this);
+        mysticaPartyManager = new MysticaPartyManager(this);
         creaturesAndCharactersManager = new CreaturesAndCharactersManager(main, this, mysticaPartyManager);
 
 

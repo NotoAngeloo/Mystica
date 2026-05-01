@@ -2,7 +2,7 @@ package me.angeloo.mystica.Components.Commands;
 
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.CustomEvents.AiSignalEvent;
-import me.angeloo.mystica.Components.Parties.FakePlayerAiManager;
+import me.angeloo.mystica.Components.EntityBehavior.FakePlayerAiManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

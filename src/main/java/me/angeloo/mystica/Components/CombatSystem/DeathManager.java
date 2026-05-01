@@ -6,6 +6,7 @@ import io.lumine.mythic.bukkit.MythicBukkit;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.EntityBehavior.AggroManager;
 import me.angeloo.mystica.CustomEvents.AiSignalEvent;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.CustomEvents.MysticaPlayerDeathEvent;
@@ -16,9 +17,6 @@ import me.angeloo.mystica.Tasks.RezTick;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.Enums.BarType;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -108,7 +106,6 @@ public class DeathManager {
         //dpsManager.removeDps(player);
         Bukkit.getServer().getPluginManager().callEvent(new MysticaPlayerDeathEvent(player));
         rezTick.startRezTickFor(player);
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.WhomeverTarget));
     }
 
     public void playerNowLive(LivingEntity target, Boolean bySkill, LivingEntity entityWhoCastSkill){
@@ -174,7 +171,6 @@ public class DeathManager {
             target.setAI(true);
         }
 
-        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(target, BarType.WhomeverTarget));
         Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(target, BarType.SelfInfo));
 
     }

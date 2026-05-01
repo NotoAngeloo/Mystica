@@ -15,15 +15,13 @@ import java.util.*;
 
 public class MysticaPartyManager {
 
-    private final Mystica main;
     private final ProfileManager profileManager;
 
     private final Map<UUID, List<LivingEntity>> mPartyMap = new HashMap<>();
     private final Map<UUID, PlayerParty> pPartyMap = new HashMap<>();
 
 
-    public MysticaPartyManager(Mystica main, ProfileManager profileManager){
-        this.main = main;
+    public MysticaPartyManager(ProfileManager profileManager){
         this.profileManager = profileManager;
     }
 

@@ -9,6 +9,8 @@ import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectMa
 import me.angeloo.mystica.Components.CombatSystem.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Commands.*;
 import me.angeloo.mystica.Components.Creatures.CreaturesAndCharactersManager;
+import me.angeloo.mystica.Components.EntityBehavior.AggroManager;
+import me.angeloo.mystica.Components.EntityBehavior.AggroTick;
 import me.angeloo.mystica.Components.Guis.Abilities.AbilityInventory;
 import me.angeloo.mystica.Components.Guis.Abilities.ClassSelectInventory;
 import me.angeloo.mystica.Components.Guis.Abilities.SpecInventory;
@@ -31,7 +33,7 @@ import me.angeloo.mystica.Components.Items.MysticalCrystal;
 import me.angeloo.mystica.Components.Items.SoulStone;
 import me.angeloo.mystica.Components.Items.StackableItemRegistry;
 import me.angeloo.mystica.Components.Quests.QuestManager;
-import me.angeloo.mystica.Components.Parties.FakePlayerAiManager;
+import me.angeloo.mystica.Components.EntityBehavior.FakePlayerAiManager;
 import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
 import me.angeloo.mystica.NMS.Common.PacketInterface;
 import me.angeloo.mystica.NMS.NMSVersion;
@@ -218,8 +220,6 @@ public final class Mystica extends JavaPlugin{
         statusEffectManager.setCombatContext(combatContext);
 
         abilityManager = new AbilityManager(this);
-        //cooldownManager = abilityManager.getCooldownManager();
-        //cooldownDisplayer = new CooldownDisplayer(this, abilityManager);
         combatManager = abilityManager.getCombatManager();
 
 

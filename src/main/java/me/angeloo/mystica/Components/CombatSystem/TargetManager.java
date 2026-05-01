@@ -19,13 +19,13 @@ import java.util.*;
 public class TargetManager {
 
     private final GravestoneManager gravestoneManager;
-    private final MysticaPartyManager mysticaPartyManager;
     private final FakePlayerTargetManager fakePlayerTargetManager;
     private final StealthTargetBlacklist stealthTargetBlacklist;
     private final PvpManager pvpManager;
     private final PveChecker pveChecker;
     private final Map<UUID, LivingEntity> playerTarget = new HashMap<>();
 
+    private final Map<UUID, Set<UUID>> reverseTargetMap = new HashMap<>();
 
     private final ProfileManager profileManager;
 
@@ -38,9 +38,9 @@ public class TargetManager {
         pveChecker = main.getPveChecker();
         pvpManager = main.getPvpManager();
         profileManager = main.getProfileManager();
-        mysticaPartyManager = main.getMysticaPartyManager();
     }
 
+    //TODO: rework into an ability
 
     public LivingEntity getPlayerTarget(LivingEntity caster){
 
@@ -62,7 +62,13 @@ public class TargetManager {
 
         playerTarget.put(player.getUniqueId(), entity);
 
+        clearReverse(player.getUniqueId());
+
         if(entity != null){
+
+            //reverse map. if player not part of "whos targeting me" set, add them
+            UUID targetId = entity.getUniqueId();
+            reverseTargetMap.computeIfAbsent(targetId, k-> new HashSet<>()).add(player.getUniqueId());
 
             //if they are an enemy
             if(pveChecker.pveLogic(entity)){
@@ -88,6 +94,7 @@ public class TargetManager {
 
     }
 
+    //this is used for abilities that require a target when player doesnt have
     public void setTargetToNearestValid(LivingEntity caster, double radius){
 
 
@@ -168,35 +175,6 @@ public class TargetManager {
 
     }
 
-    public void setTeamTarget(Player player){
-
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(player));
-        mParty.sort(Comparator.comparingDouble(p -> profileManager.getAnyProfile(p).getCurrentHealth()/(double)profileManager.getAnyProfile(p).getTotalHealth()));
-        setPlayerTarget(player, mParty.get(0));
-
-
-    }
-
-
-
-    private void startInterruptBar(Player player, LivingEntity entity){
-
-        /*BossBar interruptBar = Bukkit.createBossBar("",BarColor.PURPLE, BarStyle.SOLID);
-
-        double castMax = bossCastingManager.getCastMax(entity);
-        double castAmount = bossCastingManager.getCastPercent(entity);
-
-        if(castAmount > castMax){
-            castAmount = castMax;
-        }
-
-        interruptBar.setProgress(castAmount/castMax);
-        interruptBar.addPlayer(player);
-        interruptBar.setVisible(true);
-
-        this.interruptBar.put(player.getUniqueId(), interruptBar);*/
-    }
-
 
     public Map<UUID, LivingEntity> getTargetMap(){
         return playerTarget;
@@ -224,7 +202,46 @@ public class TargetManager {
         return bossTarget.getOrDefault(player.getUniqueId(), player.getUniqueId());
     }
 
+    private void clearReverse(UUID playerId){
 
+        LivingEntity oldTarget = playerTarget.get(playerId);
+
+        if(oldTarget != null){
+            UUID oldId = oldTarget.getUniqueId();
+
+            Set<UUID> set = reverseTargetMap.get(oldId);
+
+            if(set != null){
+                set.remove(playerId);
+
+                if(set.isEmpty()){
+                    reverseTargetMap.remove(oldId);
+                }
+            }
+        }
+    }
+
+    public void clearWhoTargetsMe(LivingEntity entity){
+
+        Set<UUID> targeters = reverseTargetMap.get(entity.getUniqueId());
+
+        if(targeters == null){
+            return;
+        }
+
+        for(UUID id : targeters){
+
+            Entity targeter = Bukkit.getEntity(id);
+
+            if(targeter instanceof Player player){
+                setPlayerTarget(player, null);
+            }
+
+        }
+
+        reverseTargetMap.remove(entity.getUniqueId());
+
+    }
 
 
 }

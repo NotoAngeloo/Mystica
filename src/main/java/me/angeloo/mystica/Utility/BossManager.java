@@ -20,6 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static me.angeloo.mystica.Utility.Enums.BarType.SelfInfo;
+import static me.angeloo.mystica.Utility.Enums.BarType.Target;
+
 public class BossManager {
 
     private final Mystica main;
@@ -133,8 +136,6 @@ public class BossManager {
         boss.setAI(false);
         boss.teleport(home);
 
-        Bukkit.getPluginManager().callEvent(new HudUpdateEvent(boss, BarType.WhomeverTarget));
-
         if(MythicBukkit.inst().getAPIHelper().isMythicMob(uuid)){
 
             new BukkitRunnable(){
@@ -169,6 +170,8 @@ public class BossManager {
             }.runTaskTimer(main, 0, 2);
 
         }
+
+        Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(boss, SelfInfo));
 
     }
 

@@ -67,88 +67,22 @@ public class ArcaneContract extends BaseAbility {
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        if(target == null){
-            return false;
-        }
-
-        double distance = caster.getLocation().distance(target.getLocation());
-
-        if(distance>range + statusEffectManager.getAdditionalRange(caster)){
-            return false;
-        }
-
-
-        if(!gravestoneManager.isGravestone(target)){
-
-            if(!profileManager.getAnyProfile(target).fakePlayer()){
-                return false;
-            }
-
-            if(pveChecker.pveLogic(target)){
-                return false;
-            }
-
-            if(!profileManager.getAnyProfile(target).getIfDead()){
-                return false;
-            }
-
-            //this is unaffected by haste.
-            if(!cooldownManager.isReady(caster.getUniqueId(), 7, 0)){
-                return false;
-            }
-
-
-            if(mana.getCurrentMana(caster)<cost){
-                return false;
-            }
-
-            mana.subTractManaFromEntity(caster, cost);
-
-            List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(caster));
-            for(LivingEntity member : mParty){
-                putOnCooldown(member.getUniqueId());
-            }
-
-            execute(caster, target);
-
-            return false;
-        }
-
-        Player actualTarget = gravestoneManager.getPlayer(target);
-
-        if(pveChecker.pveLogic(actualTarget)){
-            return false;
-        }
-
-
-
-        if(pvpManager.pvpLogic(caster, actualTarget)){
-            return false;
-        }
-
-
-        if(!profileManager.getAnyProfile(actualTarget).getIfDead()){
-            return false;
-        }
-
-        if(!cooldownManager.isReady(caster.getUniqueId(), 7, 0)){
-            return false;
-        }
-
-
-        if(mana.getCurrentMana(caster)<cost){
+        if(!usable(caster, target)){
             return false;
         }
 
         mana.subTractManaFromEntity(caster, cost);
-
 
         List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(caster));
         for(LivingEntity member : mParty){
             putOnCooldown(member.getUniqueId());
         }
 
-        execute(caster, actualTarget);
+        if(gravestoneManager.isGravestone(target)){
+            target = gravestoneManager.getPlayer(target);
+        }
+
+        execute(caster, target);
 
         return true;
     }
@@ -197,8 +131,62 @@ public class ArcaneContract extends BaseAbility {
 
     }
 
-    private void putOnCooldown(UUID id){
+    @Override
+    public boolean usable(LivingEntity caster, LivingEntity target) {
 
+        if(target == null){
+            return false;
+        }
+
+        //Bukkit.getLogger().info("target not null");
+
+        double distance = caster.getLocation().distance(target.getLocation());
+
+        if(distance>range + statusEffectManager.getAdditionalRange(caster)){
+            return false;
+        }
+
+        //Bukkit.getLogger().info("distance fine");
+
+        //this is unaffected by haste.
+        if(!cooldownManager.isReady(caster.getUniqueId(), 7, 0)){
+            return false;
+        }
+
+        //Bukkit.getLogger().info("not on cooldown");
+
+        if(mana.getCurrentMana(caster)<cost){
+            return false;
+        }
+
+        //Bukkit.getLogger().info("has mana");
+
+        //not gravestone
+        if(!gravestoneManager.isGravestone(target)){
+
+            //Bukkit.getLogger().info("not gravestone");
+
+            if(profileManager.getAnyProfile(target).fakePlayer()){
+                return false;
+            }
+
+            //Bukkit.getLogger().info("not fake player");
+
+            return profileManager.getAnyProfile(target).getIfDead();
+        }
+
+
+        Player actualTarget = gravestoneManager.getPlayer(target);
+
+        if(pvpManager.pvpLogic(caster, actualTarget)){
+            return false;
+        }
+
+
+        return profileManager.getAnyProfile(actualTarget).getIfDead();
+    }
+
+    private void putOnCooldown(UUID id){
         cooldownManager.start(id, 7, (long) (baseCooldown * 1000));
     }
 
@@ -206,58 +194,72 @@ public class ArcaneContract extends BaseAbility {
     @Override
     public void useAsCompanion(LivingEntity caster, LivingEntity target){
 
+        //Bukkit.getLogger().info("using as companion");
 
         cooldownManager.start(caster.getUniqueId(), 7, (long) (baseCooldown * 1000));
 
-        Bukkit.getScheduler().runTask(main,()->{
-            List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(caster));
-            for(LivingEntity member : mParty){
-                putOnCooldown(member.getUniqueId());
-            }
+        new BukkitRunnable(){
 
-            if(target instanceof Player player){
-                player.sendMessage("Wings: Hey, be more careful!");
-            }
+            @Override
+            public void run(){
 
+                Bukkit.getScheduler().runTask(main,()->{
 
-            Bukkit.getServer().getPluginManager().callEvent(new PlayerRezByPlayerEvent(target, caster));
-            Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent(target, "reset"));
-
-            new BukkitRunnable(){
-                double height = 0;
-                final double radius = 1;
-                double angle = 0;
-                Vector initialDirection;
-
-                @Override
-                public void run(){
-                    Location playerLoc = target.getLocation();
-
-                    if (initialDirection == null) {
-                        initialDirection = playerLoc.getDirection().setY(0).normalize();
-                        initialDirection.rotateAroundY(Math.toRadians(-45));
+                    List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(caster));
+                    for(LivingEntity member : mParty){
+                        putOnCooldown(member.getUniqueId());
                     }
 
-                    Vector direction = initialDirection.clone();
-                    double radians = Math.toRadians(angle);
-
-                    direction.rotateAroundY(radians);
-
-                    double x = playerLoc.getX() + direction.getX() * radius;
-                    double z = playerLoc.getZ() + direction.getZ() * radius;
-
-                    Location particleLoc = new Location(target.getWorld(), x, target.getLocation().getY() + height, z);
-
-                    target.getWorld().spawnParticle(Particle.SPELL_WITCH, particleLoc, 1, 0, 0, 0, 0);
-
-                    height += .05;
-                    angle += 11;
-                    if(height >= 2){
-                        this.cancel();
+                    if(target instanceof Player player){
+                        player.sendMessage("Wings: Hey, be more careful!");
                     }
-                }
-            }.runTaskTimer(main, 0L, 1);
-        });
+
+
+                    Bukkit.getServer().getPluginManager().callEvent(new PlayerRezByPlayerEvent(target, caster));
+                    Bukkit.getServer().getPluginManager().callEvent(new AiSignalEvent(target, "reset"));
+
+                    new BukkitRunnable(){
+                        double height = 0;
+                        final double radius = 1;
+                        double angle = 0;
+                        Vector initialDirection;
+
+                        @Override
+                        public void run(){
+                            Location playerLoc = target.getLocation();
+
+                            if (initialDirection == null) {
+                                initialDirection = playerLoc.getDirection().setY(0).normalize();
+                                initialDirection.rotateAroundY(Math.toRadians(-45));
+                            }
+
+                            Vector direction = initialDirection.clone();
+                            double radians = Math.toRadians(angle);
+
+                            direction.rotateAroundY(radians);
+
+                            double x = playerLoc.getX() + direction.getX() * radius;
+                            double z = playerLoc.getZ() + direction.getZ() * radius;
+
+                            Location particleLoc = new Location(target.getWorld(), x, target.getLocation().getY() + height, z);
+
+                            target.getWorld().spawnParticle(Particle.SPELL_WITCH, particleLoc, 1, 0, 0, 0, 0);
+
+                            height += .05;
+                            angle += 11;
+                            if(height >= 2){
+                                this.cancel();
+                            }
+                        }
+                    }.runTaskTimer(main, 0L, 1);
+                });
+
+            }
+
+        }.runTaskLater(main, 60);
+        //3 seconds later
+
+
 
     }
 

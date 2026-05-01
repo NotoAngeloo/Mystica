@@ -1,4 +1,4 @@
-package me.angeloo.mystica.Components.CombatSystem;
+package me.angeloo.mystica.Components.EntityBehavior;
 
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;

@@ -113,7 +113,7 @@ commands:
     permission: developer
   Circle:
     description: spawn a mechanic circle
-    usage: /circle <radius> <duration>
+    usage: /circle <radius> <duration> <linger> <color> <x,y,z>
     permission: developer
 
 permissions:

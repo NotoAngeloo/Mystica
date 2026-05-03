@@ -23,6 +23,7 @@ public class MechanicCircle {
     private final Location center;
     private final float maxRadiusBlocks;
     private final int durationTicks;
+    private final int lingerTicks;
 
     private final TextDisplay fillDisplay;
     private final TextDisplay outlineDisplay;
@@ -36,6 +37,7 @@ public class MechanicCircle {
                           Location center,
                           float maxRadiusBlocks,
                           int durationTicks,
+                          int lingerTicks,
                           TextDisplay fillDisplay,
                           TextDisplay outlineDisplay){
 
@@ -43,15 +45,19 @@ public class MechanicCircle {
         this.center = center;
         this.maxRadiusBlocks = maxRadiusBlocks;
         this.durationTicks = durationTicks;
+        this.lingerTicks = lingerTicks;
         this.fillDisplay = fillDisplay;
         this.outlineDisplay = outlineDisplay;
     }
 
-    //no color default red
+
+
     public static MechanicCircle spawn(Mystica main,
                                        Location center,
                                        float maxScale,
-                                       int durationTicks){
+                                       int durationTicks,
+                                       int lingerTicks,
+                                       ChatColor color){
 
         World world = center.getWorld();
         assert world != null;
@@ -59,20 +65,19 @@ public class MechanicCircle {
         TextDisplay outline = (TextDisplay) world.spawnEntity(center, EntityType.TEXT_DISPLAY);
         TextDisplay fill = (TextDisplay) world.spawnEntity(center, EntityType.TEXT_DISPLAY);
 
-        setUpDisplay(outline, "\ue241", ChatColor.RED);
-        setUpDisplay(fill, "\ue240", ChatColor.RED);
+        setUpDisplay(outline, "\ue241", color);
+        setUpDisplay(fill, "\ue240", color);
 
         // fill starts at 0
         setScale(fill, 0.01f);
         setScale(outline, maxScale);
 
-        return new MechanicCircle(main, center, maxScale, durationTicks, fill, outline);
+        return new MechanicCircle(main, center, maxScale, durationTicks, lingerTicks, fill, outline);
     }
 
     private static void setUpDisplay(TextDisplay display, String text, ChatColor color){
 
         display.setText(color + text);
-
 
         display.setBillboard(Display.Billboard.FIXED);
         display.setSeeThrough(true);
@@ -100,19 +105,25 @@ public class MechanicCircle {
             public void run() {
                 tick++;
 
-                float progress = tick / (float) durationTicks;
+                // Phase 1: Growing
+                if (tick <= durationTicks) {
 
-                if (progress >= 1f) {
-                    destroy();
-                    cancel();
+                    float progress = tick / (float) durationTicks;
+                    float eased = easeOutCubic(progress);
+                    float scale = maxRadiusBlocks * eased;
+
+                    setScale(fillDisplay, scale);
                     return;
                 }
 
-                float eased = easeOutCubic(progress);
-                float currentBlocks = maxRadiusBlocks * eased;
+                // Phase 2: Linger (do nothing, just exist)
+                if (tick <= durationTicks + lingerTicks) {
+                    return;
+                }
 
-                setScale(fillDisplay, currentBlocks);
-
+                // Phase 3: Cleanup
+                destroy();
+                cancel();
             }
         };
 

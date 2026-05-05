@@ -53,6 +53,7 @@ import me.angeloo.mystica.Utility.Logic.StealthTargetBlacklist;
 import me.angeloo.mystica.Utility.MatchMaking.MatchMakingManager;
 //import net.playavalon.mythicdungeons.api.MythicDungeonsService;
 import me.angeloo.mystica.Utility.MechanicCircle.CircleCommand;
+import me.angeloo.mystica.Utility.TextRenderer.*;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -61,7 +62,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class Mystica extends JavaPlugin{
 
@@ -71,6 +74,8 @@ public final class Mystica extends JavaPlugin{
 
     private ProfileManager profileManager;
     private ProfileFileWriter profileFileWriter;
+
+    private CharGlyphAtlas charGlyphAtlas;
 
     private CreaturesAndCharactersManager creaturesAndCharactersManager;
 
@@ -172,6 +177,19 @@ public final class Mystica extends JavaPlugin{
         StackableItemRegistry.register("SOUL STONE", SoulStone::deserialize);
         StackableItemRegistry.register("BAG", BagItem::deserialize);
         StackableItemRegistry.register("MYSTICAL CRYSTAL", MysticalCrystal::deserialize);
+
+        PixelGlyphRegistry pixelGlyphRegistry = new PixelGlyphRegistry();
+        AsciiFontAtlas fontAtlas = new AsciiFontAtlas();
+        Map<Character, PixelMatrix> glyphMap = fontAtlas.getGlyphs();
+        charGlyphAtlas = new CharGlyphAtlas();
+
+        for(Character c : glyphMap.keySet()){
+            charGlyphAtlas.register(c, glyphMap.get(c));
+        }
+        //Bukkit.getLogger().info(glyphMap.keySet().size() + " chars registered");
+
+        CharGlyphPreComputer.precomputeAll(charGlyphAtlas, pixelGlyphRegistry);
+
 
         pathingManager = new PathingManager(this);
         pathingManager.createOrLoadFolder();
@@ -544,6 +562,10 @@ public final class Mystica extends JavaPlugin{
 
     public CooldownManager getCooldownManager(){
         return cooldownManager;
+    }
+
+    public CharGlyphAtlas getCharGlyphAtlas(){
+        return charGlyphAtlas;
     }
 
     @NotNull

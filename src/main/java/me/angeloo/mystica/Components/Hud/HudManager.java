@@ -16,7 +16,7 @@ import me.angeloo.mystica.Utility.BossManager;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Logic.DamageBoardPlaceholders;
 import me.angeloo.mystica.Utility.Enums.SubClass;
-import me.angeloo.mystica.Utility.TextRenderer.CharacterRenderer;
+import me.angeloo.mystica.Utility.TextRenderer.CharGlyphAtlas;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -65,7 +65,7 @@ public class HudManager {
     private final SkinGrabber skinGrabber;
 
     //temp, maybe
-    private final CharacterRenderer characterRenderer;
+    private final CharGlyphAtlas charGlyphAtlas;
 
     //this is updated when needed. when a player requests data about x entity, grabs it from here
     private final Map<UUID, String> entityBarData = new HashMap<>();
@@ -355,7 +355,7 @@ public class HudManager {
         statusEffectRenderer = new StatusEffectRenderer(statusEffectManager);
 
         //maybe temp?
-        characterRenderer = new CharacterRenderer();
+        charGlyphAtlas = main.getCharGlyphAtlas();
     }
 
     public DamageBoardPlaceholders getDamageBoardPlaceholders(){
@@ -379,7 +379,8 @@ public class HudManager {
                 profileManager.setPlayerTargetBar(player, targetBar);*/
 
                 //pixel renderer
-                BossBar targetBar = Bukkit.createBossBar(characterRenderer.drawA(-348), BarColor.WHITE, BarStyle.SOLID);
+                BossBar targetBar = Bukkit.createBossBar(charGlyphAtlas.get('e').get(-100), BarColor.WHITE, BarStyle.SOLID);
+                //BossBar targetBar = Bukkit.createBossBar(characterRenderer.getCharGlyph('e', -50), BarColor.WHITE, BarStyle.SOLID);
                 targetBar.addPlayer(player);
                 targetBar.setVisible(true);
                 profileManager.setPlayerTargetBar(player, targetBar);

@@ -16,6 +16,7 @@ import me.angeloo.mystica.Utility.BossManager;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Logic.DamageBoardPlaceholders;
 import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Utility.TextRenderer.CharacterRenderer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -62,6 +63,9 @@ public class HudManager {
     private final StatusEffectRenderer statusEffectRenderer;
 
     private final SkinGrabber skinGrabber;
+
+    //temp, maybe
+    private final CharacterRenderer characterRenderer;
 
     //this is updated when needed. when a player requests data about x entity, grabs it from here
     private final Map<UUID, String> entityBarData = new HashMap<>();
@@ -349,6 +353,9 @@ public class HudManager {
         aggroManager = main.getAggroManager();
         abilityBarRenderer = new AbilityBarRenderer(main, abilityManager);
         statusEffectRenderer = new StatusEffectRenderer(statusEffectManager);
+
+        //maybe temp?
+        characterRenderer = new CharacterRenderer();
     }
 
     public DamageBoardPlaceholders getDamageBoardPlaceholders(){
@@ -365,7 +372,14 @@ public class HudManager {
             @Override
             public void run(){
                 //bar 1, target
-                BossBar targetBar = Bukkit.createBossBar(getTargetData(target), BarColor.WHITE, BarStyle.SOLID);
+                //comment out to test pixel renderer
+                /*BossBar targetBar = Bukkit.createBossBar(getTargetData(target), BarColor.WHITE, BarStyle.SOLID);
+                targetBar.addPlayer(player);
+                targetBar.setVisible(true);
+                profileManager.setPlayerTargetBar(player, targetBar);*/
+
+                //pixel renderer
+                BossBar targetBar = Bukkit.createBossBar(characterRenderer.drawA(-348), BarColor.WHITE, BarStyle.SOLID);
                 targetBar.addPlayer(player);
                 targetBar.setVisible(true);
                 profileManager.setPlayerTargetBar(player, targetBar);
@@ -928,8 +942,8 @@ public class HudManager {
 
     public void updateTargetData(Player player){
         BossBar targetBar = profileManager.getPlayerTargetBar(player);
-        LivingEntity target = targetManager.getPlayerTarget(player);
-        targetBar.setTitle(getTargetData(target));
+        //LivingEntity target = targetManager.getPlayerTarget(player);
+        //targetBar.setTitle(getTargetData(target));
     }
 
     private String getTargetData(LivingEntity entity){

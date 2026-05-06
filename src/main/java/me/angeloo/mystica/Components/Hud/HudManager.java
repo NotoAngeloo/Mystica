@@ -1,22 +1,24 @@
 package me.angeloo.mystica.Components.Hud;
 
-import me.angeloo.mystica.Components.Hud.Abilties.AbilityBarRenderer;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.EntityBehavior.AggroManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.GravestoneManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
+import me.angeloo.mystica.Components.EntityBehavior.AggroManager;
+import me.angeloo.mystica.Components.Hud.Abilties.AbilityBarRenderer;
 import me.angeloo.mystica.Components.Hud.StatusEffects.StatusEffectRenderer;
-import me.angeloo.mystica.Components.ProfileComponents.Profile;
 import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
+import me.angeloo.mystica.Components.ProfileComponents.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.BossManager;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
-import me.angeloo.mystica.Utility.Logic.DamageBoardPlaceholders;
 import me.angeloo.mystica.Utility.Enums.SubClass;
-import me.angeloo.mystica.Utility.TextRenderer.CharacterRenderer;
+import me.angeloo.mystica.Utility.Logic.DamageBoardPlaceholders;
+import me.angeloo.mystica.Utility.TextRenderer.LayoutEngine;
+import me.angeloo.mystica.Utility.TextRenderer.LineData;
+import me.angeloo.mystica.Utility.TextRenderer.StringRenderer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -28,18 +30,10 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static me.angeloo.mystica.Mystica.assassinColor;
-import static me.angeloo.mystica.Mystica.mysticColor;
-import static me.angeloo.mystica.Mystica.elementalistColor;
-import static me.angeloo.mystica.Mystica.rangerColor;
-import static me.angeloo.mystica.Mystica.paladinColor;
-import static me.angeloo.mystica.Mystica.warriorColor;
-import static me.angeloo.mystica.Mystica.shadowKnightColor;
+import static me.angeloo.mystica.Mystica.*;
 
 
 public class HudManager {
@@ -64,8 +58,8 @@ public class HudManager {
 
     private final SkinGrabber skinGrabber;
 
-    //temp, maybe
-    private final CharacterRenderer characterRenderer;
+    private final LayoutEngine layoutEngine;
+    private final StringRenderer stringRenderer;
 
     //this is updated when needed. when a player requests data about x entity, grabs it from here
     private final Map<UUID, String> entityBarData = new HashMap<>();
@@ -353,9 +347,8 @@ public class HudManager {
         aggroManager = main.getAggroManager();
         abilityBarRenderer = new AbilityBarRenderer(main, abilityManager);
         statusEffectRenderer = new StatusEffectRenderer(statusEffectManager);
-
-        //maybe temp?
-        characterRenderer = new CharacterRenderer();
+        layoutEngine = main.getLayoutEngine();
+        stringRenderer = main.getStringRenderer();
     }
 
     public DamageBoardPlaceholders getDamageBoardPlaceholders(){
@@ -373,16 +366,23 @@ public class HudManager {
             public void run(){
                 //bar 1, target
                 //comment out to test pixel renderer
-                /*BossBar targetBar = Bukkit.createBossBar(getTargetData(target), BarColor.WHITE, BarStyle.SOLID);
-                targetBar.addPlayer(player);
-                targetBar.setVisible(true);
-                profileManager.setPlayerTargetBar(player, targetBar);*/
-
-                //pixel renderer
-                BossBar targetBar = Bukkit.createBossBar(characterRenderer.drawA(-348), BarColor.WHITE, BarStyle.SOLID);
+                BossBar targetBar = Bukkit.createBossBar(getTargetData(target), BarColor.WHITE, BarStyle.SOLID);
                 targetBar.addPlayer(player);
                 targetBar.setVisible(true);
                 profileManager.setPlayerTargetBar(player, targetBar);
+
+                //pixel renderer
+                //List<StringGlyph> stringGlyphs = layoutEngine.layout(List.of("line one","","","","","","line two"));
+                /*List<LineData> data = List.of(
+                        new LineData("h", 10),
+                        new LineData("a new line is 10 pixels lower", 10)
+
+                );
+                BossBar targetBar = Bukkit.createBossBar(stringRenderer.render(layoutEngine.layout(data), -50), BarColor.WHITE, BarStyle.SOLID);
+                //BossBar targetBar = Bukkit.createBossBar(characterRenderer.getCharGlyph('e', -50), BarColor.WHITE, BarStyle.SOLID);
+                targetBar.addPlayer(player);
+                targetBar.setVisible(true);
+                profileManager.setPlayerTargetBar(player, targetBar);*/
 
                 //bar 2, target's target
                 BossBar targetTargetBar = Bukkit.createBossBar(getTargetTargetData(target), BarColor.WHITE, BarStyle.SOLID);
@@ -942,8 +942,8 @@ public class HudManager {
 
     public void updateTargetData(Player player){
         BossBar targetBar = profileManager.getPlayerTargetBar(player);
-        //LivingEntity target = targetManager.getPlayerTarget(player);
-        //targetBar.setTitle(getTargetData(target));
+        LivingEntity target = targetManager.getPlayerTarget(player);
+        targetBar.setTitle(getTargetData(target));
     }
 
     private String getTargetData(LivingEntity entity){

@@ -62,7 +62,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -75,7 +74,8 @@ public final class Mystica extends JavaPlugin{
     private ProfileManager profileManager;
     private ProfileFileWriter profileFileWriter;
 
-    private CharGlyphAtlas charGlyphAtlas;
+    private LayoutEngine layoutEngine;
+    private StringRenderer stringRenderer;
 
     private CreaturesAndCharactersManager creaturesAndCharactersManager;
 
@@ -181,7 +181,7 @@ public final class Mystica extends JavaPlugin{
         PixelGlyphRegistry pixelGlyphRegistry = new PixelGlyphRegistry();
         AsciiFontAtlas fontAtlas = new AsciiFontAtlas();
         Map<Character, PixelMatrix> glyphMap = fontAtlas.getGlyphs();
-        charGlyphAtlas = new CharGlyphAtlas();
+        CharGlyphAtlas charGlyphAtlas = new CharGlyphAtlas();
 
         for(Character c : glyphMap.keySet()){
             charGlyphAtlas.register(c, glyphMap.get(c));
@@ -190,6 +190,8 @@ public final class Mystica extends JavaPlugin{
 
         CharGlyphPreComputer.precomputeAll(charGlyphAtlas, pixelGlyphRegistry);
 
+        layoutEngine = new LayoutEngine(charGlyphAtlas);
+        stringRenderer = new StringRenderer();
 
         pathingManager = new PathingManager(this);
         pathingManager.createOrLoadFolder();
@@ -564,8 +566,12 @@ public final class Mystica extends JavaPlugin{
         return cooldownManager;
     }
 
-    public CharGlyphAtlas getCharGlyphAtlas(){
-        return charGlyphAtlas;
+    public StringRenderer getStringRenderer(){
+        return stringRenderer;
+    }
+
+    public LayoutEngine getLayoutEngine(){
+        return layoutEngine;
     }
 
     @NotNull

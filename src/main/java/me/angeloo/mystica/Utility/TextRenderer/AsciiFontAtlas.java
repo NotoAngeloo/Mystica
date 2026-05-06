@@ -11,7 +11,7 @@ public class AsciiFontAtlas {
 
     public AsciiFontAtlas(){
 
-        glyphs.put('0', new PixelMatrix(new byte[]{
+        glyphs.put('0', new PixelMatrix('0',new byte[]{
                 (byte)0b01110000,
                 (byte)0b10001000,
                 (byte)0b10011000,
@@ -22,7 +22,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('1', new PixelMatrix(new byte[]{
+        glyphs.put('1', new PixelMatrix('1',new byte[]{
                 (byte)0b00100000,
                 (byte)0b01100000,
                 (byte)0b00100000,
@@ -33,7 +33,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('2', new PixelMatrix(new byte[]{
+        glyphs.put('2', new PixelMatrix('2',new byte[]{
                 (byte)0b01110000,
                 (byte)0b10001000,
                 (byte)0b00001000,
@@ -44,7 +44,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('3', new PixelMatrix(new byte[]{
+        glyphs.put('3', new PixelMatrix('3',new byte[]{
                 (byte)0b01110000,
                 (byte)0b10001000,
                 (byte)0b00001000,
@@ -55,7 +55,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('4', new PixelMatrix(new byte[]{
+        glyphs.put('4', new PixelMatrix('4',new byte[]{
                 (byte)0b00011000,
                 (byte)0b00101000,
                 (byte)0b01001000,
@@ -66,7 +66,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('5', new PixelMatrix(new byte[]{
+        glyphs.put('5', new PixelMatrix('5',new byte[]{
                 (byte)0b11111000,
                 (byte)0b10000000,
                 (byte)0b11110000,
@@ -77,7 +77,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('6', new PixelMatrix(new byte[]{
+        glyphs.put('6', new PixelMatrix('6',new byte[]{
                 (byte)0b00110000,
                 (byte)0b01000000,
                 (byte)0b10000000,
@@ -88,7 +88,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('7', new PixelMatrix(new byte[]{
+        glyphs.put('7', new PixelMatrix('7',new byte[]{
                 (byte)0b11111000,
                 (byte)0b10001000,
                 (byte)0b00001000,
@@ -99,7 +99,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('8', new PixelMatrix(new byte[]{
+        glyphs.put('8', new PixelMatrix('8',new byte[]{
                 (byte)0b01110000,
                 (byte)0b10001000,
                 (byte)0b10001000,
@@ -110,7 +110,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('9', new PixelMatrix(new byte[]{
+        glyphs.put('9', new PixelMatrix('9',new byte[]{
                 (byte)0b01110000,
                 (byte)0b10001000,
                 (byte)0b10001000,
@@ -121,7 +121,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('a', new PixelMatrix(new byte[]{
+        glyphs.put('a', new PixelMatrix('a',new byte[]{
                 (byte)0b00000000,
                 (byte)0b00000000,
                 (byte)0b01110000,
@@ -132,7 +132,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('`', new PixelMatrix(new byte[]{
+        glyphs.put('`', new PixelMatrix('`',new byte[]{
                 (byte)0b10000000,
                 (byte)0b01000000,
                 (byte)0b00000000,
@@ -143,7 +143,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('&', new PixelMatrix(new byte[]{
+        glyphs.put('&', new PixelMatrix('&',new byte[]{
                 (byte)0b00100000,
                 (byte)0b01010000,
                 (byte)0b00100000,
@@ -154,7 +154,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('*', new PixelMatrix(new byte[]{
+        glyphs.put('*', new PixelMatrix('*',new byte[]{
                 (byte)0b10100000,
                 (byte)0b01000000,
                 (byte)0b10100000,
@@ -165,7 +165,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('@', new PixelMatrix(new byte[]{
+        glyphs.put('@', new PixelMatrix('@',new byte[]{
                 (byte)0b00000000,
                 (byte)0b01111000,
                 (byte)0b10000100,
@@ -176,7 +176,7 @@ public class AsciiFontAtlas {
                 (byte)0b01111000,
         }));
 
-        glyphs.put('b', new PixelMatrix(new byte[]{
+        glyphs.put('b', new PixelMatrix('b',new byte[]{
                 (byte)0b10000000,
                 (byte)0b10000000,
                 (byte)0b10110000,
@@ -187,7 +187,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('|', new PixelMatrix(new byte[]{
+        glyphs.put('|', new PixelMatrix('|',new byte[]{
                 (byte)0b10000000,
                 (byte)0b10000000,
                 (byte)0b10000000,
@@ -198,7 +198,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('\\', new PixelMatrix(new byte[]{
+        glyphs.put('\\', new PixelMatrix('\\',new byte[]{
                 (byte)0b10000000,
                 (byte)0b01000000,
                 (byte)0b01000000,
@@ -209,7 +209,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('c', new PixelMatrix(new byte[]{
+        glyphs.put('c', new PixelMatrix('c',new byte[]{
                 (byte)0b00000000,
                 (byte)0b00000000,
                 (byte)0b01110000,
@@ -220,7 +220,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('A', new PixelMatrix(new byte[]{
+        glyphs.put('A', new PixelMatrix('A',new byte[]{
                 (byte)0b01110000,
                 (byte)0b10001000,
                 (byte)0b11111000,
@@ -231,7 +231,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('^', new PixelMatrix(new byte[]{
+        glyphs.put('^', new PixelMatrix('^',new byte[]{
                 (byte)0b00100000,
                 (byte)0b01010000,
                 (byte)0b10001000,
@@ -242,7 +242,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('B', new PixelMatrix(new byte[]{
+        glyphs.put('B', new PixelMatrix('B',new byte[]{
                 (byte)0b11110000,
                 (byte)0b10001000,
                 (byte)0b11110000,
@@ -253,7 +253,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('C', new PixelMatrix(new byte[]{
+        glyphs.put('C', new PixelMatrix('C',new byte[]{
                 (byte)0b01110000,
                 (byte)0b10001000,
                 (byte)0b10000000,
@@ -264,7 +264,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('D', new PixelMatrix(new byte[]{
+        glyphs.put('D', new PixelMatrix('D',new byte[]{
                 (byte)0b11110000,
                 (byte)0b10001000,
                 (byte)0b10001000,
@@ -275,7 +275,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('E', new PixelMatrix(new byte[]{
+        glyphs.put('E', new PixelMatrix('E',new byte[]{
                 (byte)0b11111000,
                 (byte)0b10000000,
                 (byte)0b11100000,
@@ -286,7 +286,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('F', new PixelMatrix(new byte[]{
+        glyphs.put('F', new PixelMatrix('F',new byte[]{
                 (byte)0b11111000,
                 (byte)0b10000000,
                 (byte)0b11100000,
@@ -297,7 +297,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('G', new PixelMatrix(new byte[]{
+        glyphs.put('G', new PixelMatrix('G',new byte[]{
                 (byte)0b01111000,
                 (byte)0b10000000,
                 (byte)0b10011000,
@@ -308,7 +308,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('H', new PixelMatrix(new byte[]{
+        glyphs.put('H', new PixelMatrix('H',new byte[]{
                 (byte)0b10001000,
                 (byte)0b10001000,
                 (byte)0b11111000,
@@ -319,7 +319,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('I', new PixelMatrix(new byte[]{
+        glyphs.put('I', new PixelMatrix('I',new byte[]{
                 (byte)0b11100000,
                 (byte)0b01000000,
                 (byte)0b01000000,
@@ -330,7 +330,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('J', new PixelMatrix(new byte[]{
+        glyphs.put('J', new PixelMatrix('J',new byte[]{
                 (byte)0b00001000,
                 (byte)0b00001000,
                 (byte)0b00001000,
@@ -341,7 +341,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('K', new PixelMatrix(new byte[]{
+        glyphs.put('K', new PixelMatrix('K',new byte[]{
                 (byte)0b10001000,
                 (byte)0b10010000,
                 (byte)0b11100000,
@@ -352,7 +352,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('L', new PixelMatrix(new byte[]{
+        glyphs.put('L', new PixelMatrix('L',new byte[]{
                 (byte)0b10000000,
                 (byte)0b10000000,
                 (byte)0b10000000,
@@ -363,7 +363,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('M', new PixelMatrix(new byte[]{
+        glyphs.put('M', new PixelMatrix('M',new byte[]{
                 (byte)0b10001000,
                 (byte)0b11011000,
                 (byte)0b10101000,
@@ -374,7 +374,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('N', new PixelMatrix(new byte[]{
+        glyphs.put('N', new PixelMatrix('N',new byte[]{
                 (byte)0b10001000,
                 (byte)0b11001000,
                 (byte)0b10101000,
@@ -385,7 +385,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('O', new PixelMatrix(new byte[]{
+        glyphs.put('O', new PixelMatrix('O',new byte[]{
                 (byte)0b01110000,
                 (byte)0b10001000,
                 (byte)0b10001000,
@@ -396,7 +396,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put(':', new PixelMatrix(new byte[]{
+        glyphs.put(':', new PixelMatrix(':',new byte[]{
                 (byte)0b00000000,
                 (byte)0b00000000,
                 (byte)0b10000000,
@@ -407,7 +407,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put(',', new PixelMatrix(new byte[]{
+        glyphs.put(',', new PixelMatrix(',',new byte[]{
                 (byte)0b00000000,
                 (byte)0b00000000,
                 (byte)0b00000000,
@@ -418,7 +418,7 @@ public class AsciiFontAtlas {
                 (byte)0b10000000,
         }));
 
-        glyphs.put('P', new PixelMatrix(new byte[]{
+        glyphs.put('P', new PixelMatrix('P',new byte[]{
                 (byte)0b11110000,
                 (byte)0b10001000,
                 (byte)0b11110000,
@@ -429,7 +429,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('Q', new PixelMatrix(new byte[]{
+        glyphs.put('Q', new PixelMatrix('Q',new byte[]{
                 (byte)0b01110000,
                 (byte)0b10001000,
                 (byte)0b10001000,
@@ -440,7 +440,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('R', new PixelMatrix(new byte[]{
+        glyphs.put('R', new PixelMatrix('R',new byte[]{
                 (byte)0b11110000,
                 (byte)0b10001000,
                 (byte)0b11110000,
@@ -451,7 +451,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('S', new PixelMatrix(new byte[]{
+        glyphs.put('S', new PixelMatrix('S',new byte[]{
                 (byte)0b01111000,
                 (byte)0b10000000,
                 (byte)0b01110000,
@@ -462,7 +462,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('T', new PixelMatrix(new byte[]{
+        glyphs.put('T', new PixelMatrix('T',new byte[]{
                 (byte)0b11111000,
                 (byte)0b00100000,
                 (byte)0b00100000,
@@ -473,7 +473,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('U', new PixelMatrix(new byte[]{
+        glyphs.put('U', new PixelMatrix('U',new byte[]{
                 (byte)0b10001000,
                 (byte)0b10001000,
                 (byte)0b10001000,
@@ -484,7 +484,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('{', new PixelMatrix(new byte[]{
+        glyphs.put('{', new PixelMatrix('{',new byte[]{
                 (byte)0b00100000,
                 (byte)0b01000000,
                 (byte)0b01000000,
@@ -495,7 +495,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('}', new PixelMatrix(new byte[]{
+        glyphs.put('}', new PixelMatrix('}',new byte[]{
                 (byte)0b10000000,
                 (byte)0b01000000,
                 (byte)0b01000000,
@@ -506,7 +506,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('V', new PixelMatrix(new byte[]{
+        glyphs.put('V', new PixelMatrix('V',new byte[]{
                 (byte)0b10001000,
                 (byte)0b10001000,
                 (byte)0b10001000,
@@ -517,7 +517,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('W', new PixelMatrix(new byte[]{
+        glyphs.put('W', new PixelMatrix('W',new byte[]{
                 (byte)0b10001000,
                 (byte)0b10001000,
                 (byte)0b10001000,
@@ -528,7 +528,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('X', new PixelMatrix(new byte[]{
+        glyphs.put('X', new PixelMatrix('X',new byte[]{
                 (byte)0b10001000,
                 (byte)0b01010000,
                 (byte)0b00100000,
@@ -539,7 +539,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('Y', new PixelMatrix(new byte[]{
+        glyphs.put('Y', new PixelMatrix('Y',new byte[]{
                 (byte)0b10001000,
                 (byte)0b01010000,
                 (byte)0b00100000,
@@ -550,7 +550,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('Z', new PixelMatrix(new byte[]{
+        glyphs.put('Z', new PixelMatrix('Z',new byte[]{
                 (byte)0b11111000,
                 (byte)0b00001000,
                 (byte)0b00010000,
@@ -561,7 +561,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('d', new PixelMatrix(new byte[]{
+        glyphs.put('d', new PixelMatrix('d',new byte[]{
                 (byte)0b00001000,
                 (byte)0b00001000,
                 (byte)0b01101000,
@@ -572,7 +572,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('-', new PixelMatrix(new byte[]{
+        glyphs.put('-', new PixelMatrix('-',new byte[]{
                 (byte)0b00000000,
                 (byte)0b00000000,
                 (byte)0b00000000,
@@ -583,7 +583,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('$', new PixelMatrix(new byte[]{
+        glyphs.put('$', new PixelMatrix('$',new byte[]{
                 (byte)0b00100000,
                 (byte)0b01111000,
                 (byte)0b10000000,
@@ -594,7 +594,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('e', new PixelMatrix(new byte[]{
+        glyphs.put('e', new PixelMatrix('e',new byte[]{
                 (byte)0b00000000,
                 (byte)0b00000000,
                 (byte)0b01110000,
@@ -605,7 +605,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('=', new PixelMatrix(new byte[]{
+        glyphs.put('=', new PixelMatrix('=',new byte[]{
                 (byte)0b00000000,
                 (byte)0b00000000,
                 (byte)0b11111000,
@@ -616,7 +616,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('!', new PixelMatrix(new byte[]{
+        glyphs.put('!', new PixelMatrix('!',new byte[]{
                 (byte)0b10000000,
                 (byte)0b10000000,
                 (byte)0b10000000,
@@ -627,7 +627,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('f', new PixelMatrix(new byte[]{
+        glyphs.put('f', new PixelMatrix('f',new byte[]{
                 (byte)0b00110000,
                 (byte)0b01000000,
                 (byte)0b11110000,
@@ -638,7 +638,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('g', new PixelMatrix(new byte[]{
+        glyphs.put('g', new PixelMatrix('g',new byte[]{
                 (byte)0b00000000,
                 (byte)0b00000000,
                 (byte)0b01111000,
@@ -649,7 +649,7 @@ public class AsciiFontAtlas {
                 (byte)0b11110000,
         }));
 
-        glyphs.put('h', new PixelMatrix(new byte[]{
+        glyphs.put('h', new PixelMatrix('h',new byte[]{
                 (byte)0b10000000,
                 (byte)0b10000000,
                 (byte)0b10110000,
@@ -660,7 +660,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('#', new PixelMatrix(new byte[]{
+        glyphs.put('#', new PixelMatrix('#',new byte[]{
                 (byte)0b01010000,
                 (byte)0b01010000,
                 (byte)0b11111000,
@@ -671,7 +671,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('i', new PixelMatrix(new byte[]{
+        glyphs.put('i', new PixelMatrix('i',new byte[]{
                 (byte)0b10000000,
                 (byte)0b00000000,
                 (byte)0b10000000,
@@ -682,7 +682,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('j', new PixelMatrix(new byte[]{
+        glyphs.put('j', new PixelMatrix('j',new byte[]{
                 (byte)0b00001000,
                 (byte)0b00000000,
                 (byte)0b00001000,
@@ -693,7 +693,7 @@ public class AsciiFontAtlas {
                 (byte)0b01110000,
         }));
 
-        glyphs.put('k', new PixelMatrix(new byte[]{
+        glyphs.put('k', new PixelMatrix('k',new byte[]{
                 (byte)0b10000000,
                 (byte)0b10000000,
                 (byte)0b10010000,
@@ -704,7 +704,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('l', new PixelMatrix(new byte[]{
+        glyphs.put('l', new PixelMatrix('l',new byte[]{
                 (byte)0b10000000,
                 (byte)0b10000000,
                 (byte)0b10000000,
@@ -715,7 +715,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('[', new PixelMatrix(new byte[]{
+        glyphs.put('[', new PixelMatrix('[',new byte[]{
                 (byte)0b11100000,
                 (byte)0b10000000,
                 (byte)0b10000000,
@@ -726,7 +726,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('<', new PixelMatrix(new byte[]{
+        glyphs.put('<', new PixelMatrix('<',new byte[]{
                 (byte)0b00010000,
                 (byte)0b00100000,
                 (byte)0b01000000,
@@ -737,7 +737,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('m', new PixelMatrix(new byte[]{
+        glyphs.put('m', new PixelMatrix('m',new byte[]{
                 (byte)0b00000000,
                 (byte)0b00000000,
                 (byte)0b11010000,
@@ -748,7 +748,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('>', new PixelMatrix(new byte[]{
+        glyphs.put('>', new PixelMatrix('>',new byte[]{
                 (byte)0b10000000,
                 (byte)0b01000000,
                 (byte)0b00100000,
@@ -759,7 +759,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('n', new PixelMatrix(new byte[]{
+        glyphs.put('n', new PixelMatrix('n',new byte[]{
                 (byte)0b00000000,
                 (byte)0b00000000,
                 (byte)0b11110000,
@@ -770,7 +770,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('o', new PixelMatrix(new byte[]{
+        glyphs.put('o', new PixelMatrix('o',new byte[]{
                 (byte)0b00000000,
                 (byte)0b00000000,
                 (byte)0b01110000,
@@ -781,7 +781,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('p', new PixelMatrix(new byte[]{
+        glyphs.put('p', new PixelMatrix('p',new byte[]{
                 (byte)0b00000000,
                 (byte)0b00000000,
                 (byte)0b10110000,
@@ -792,7 +792,7 @@ public class AsciiFontAtlas {
                 (byte)0b10000000,
         }));
 
-        glyphs.put('(', new PixelMatrix(new byte[]{
+        glyphs.put('(', new PixelMatrix('(',new byte[]{
                 (byte)0b00100000,
                 (byte)0b01000000,
                 (byte)0b10000000,
@@ -803,7 +803,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put(')', new PixelMatrix(new byte[]{
+        glyphs.put(')', new PixelMatrix(')',new byte[]{
                 (byte)0b10000000,
                 (byte)0b01000000,
                 (byte)0b00100000,
@@ -814,7 +814,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('%', new PixelMatrix(new byte[]{
+        glyphs.put('%', new PixelMatrix('%',new byte[]{
                 (byte)0b10001000,
                 (byte)0b10010000,
                 (byte)0b00010000,
@@ -825,7 +825,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('.', new PixelMatrix(new byte[]{
+        glyphs.put('.', new PixelMatrix('.',new byte[]{
                 (byte)0b00000000,
                 (byte)0b00000000,
                 (byte)0b00000000,
@@ -836,7 +836,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('+', new PixelMatrix(new byte[]{
+        glyphs.put('+', new PixelMatrix('+',new byte[]{
                 (byte)0b00000000,
                 (byte)0b00100000,
                 (byte)0b00100000,
@@ -847,7 +847,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('q', new PixelMatrix(new byte[]{
+        glyphs.put('q', new PixelMatrix('q',new byte[]{
                 (byte)0b00000000,
                 (byte)0b00000000,
                 (byte)0b01101000,
@@ -858,7 +858,7 @@ public class AsciiFontAtlas {
                 (byte)0b00001000,
         }));
 
-        glyphs.put('?', new PixelMatrix(new byte[]{
+        glyphs.put('?', new PixelMatrix('?',new byte[]{
                 (byte)0b01110000,
                 (byte)0b10001000,
                 (byte)0b00001000,
@@ -869,7 +869,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('"', new PixelMatrix(new byte[]{
+        glyphs.put('"', new PixelMatrix('"',new byte[]{
                 (byte)0b10100000,
                 (byte)0b10100000,
                 (byte)0b00000000,
@@ -880,7 +880,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('r', new PixelMatrix(new byte[]{
+        glyphs.put('r', new PixelMatrix('r',new byte[]{
                 (byte)0b00000000,
                 (byte)0b00000000,
                 (byte)0b10110000,
@@ -891,7 +891,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put(']', new PixelMatrix(new byte[]{
+        glyphs.put(']', new PixelMatrix(']',new byte[]{
                 (byte)0b11100000,
                 (byte)0b00100000,
                 (byte)0b00100000,
@@ -902,7 +902,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('s', new PixelMatrix(new byte[]{
+        glyphs.put('s', new PixelMatrix('s',new byte[]{
                 (byte)0b00000000,
                 (byte)0b00000000,
                 (byte)0b01111000,
@@ -913,7 +913,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put(';', new PixelMatrix(new byte[]{
+        glyphs.put(';', new PixelMatrix(';',new byte[]{
                 (byte)0b00000000,
                 (byte)0b00000000,
                 (byte)0b10000000,
@@ -924,7 +924,7 @@ public class AsciiFontAtlas {
                 (byte)0b10000000,
         }));
 
-        glyphs.put('/', new PixelMatrix(new byte[]{
+        glyphs.put('/', new PixelMatrix('/',new byte[]{
                 (byte)0b00001000,
                 (byte)0b00010000,
                 (byte)0b00010000,
@@ -935,7 +935,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('\'', new PixelMatrix(new byte[]{
+        glyphs.put('\'', new PixelMatrix('\'',new byte[]{
                 (byte)0b10000000,
                 (byte)0b10000000,
                 (byte)0b00000000,
@@ -946,7 +946,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('t', new PixelMatrix(new byte[]{
+        glyphs.put('t', new PixelMatrix('t',new byte[]{
                 (byte)0b01000000,
                 (byte)0b01000000,
                 (byte)0b11100000,
@@ -957,7 +957,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('~', new PixelMatrix(new byte[]{
+        glyphs.put('~', new PixelMatrix('~',new byte[]{
                 (byte)0b01100100,
                 (byte)0b10011000,
                 (byte)0b00000000,
@@ -968,7 +968,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('u', new PixelMatrix(new byte[]{
+        glyphs.put('u', new PixelMatrix('u',new byte[]{
                 (byte)0b00000000,
                 (byte)0b00000000,
                 (byte)0b10001000,
@@ -979,7 +979,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('_', new PixelMatrix(new byte[]{
+        glyphs.put('_', new PixelMatrix('_',new byte[]{
                 (byte)0b00000000,
                 (byte)0b00000000,
                 (byte)0b00000000,
@@ -990,7 +990,7 @@ public class AsciiFontAtlas {
                 (byte)0b11111000,
         }));
 
-        glyphs.put('v', new PixelMatrix(new byte[]{
+        glyphs.put('v', new PixelMatrix('v',new byte[]{
                 (byte)0b00000000,
                 (byte)0b00000000,
                 (byte)0b10001000,
@@ -1001,7 +1001,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('w', new PixelMatrix(new byte[]{
+        glyphs.put('w', new PixelMatrix('w',new byte[]{
                 (byte)0b00000000,
                 (byte)0b00000000,
                 (byte)0b10001000,
@@ -1012,7 +1012,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('x', new PixelMatrix(new byte[]{
+        glyphs.put('x', new PixelMatrix('x',new byte[]{
                 (byte)0b00000000,
                 (byte)0b00000000,
                 (byte)0b10001000,
@@ -1023,7 +1023,7 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
-        glyphs.put('y', new PixelMatrix(new byte[]{
+        glyphs.put('y', new PixelMatrix('y',new byte[]{
                 (byte)0b00000000,
                 (byte)0b00000000,
                 (byte)0b10001000,
@@ -1034,7 +1034,7 @@ public class AsciiFontAtlas {
                 (byte)0b11110000,
         }));
 
-        glyphs.put('z', new PixelMatrix(new byte[]{
+        glyphs.put('z', new PixelMatrix('z',new byte[]{
                 (byte)0b00000000,
                 (byte)0b00000000,
                 (byte)0b11111000,
@@ -1042,6 +1042,17 @@ public class AsciiFontAtlas {
                 (byte)0b00100000,
                 (byte)0b01000000,
                 (byte)0b11111000,
+                (byte)0b00000000,
+        }));
+
+        glyphs.put(' ', new PixelMatrix(' ',new byte[]{
+                (byte)0b00000000,
+                (byte)0b00000000,
+                (byte)0b00000000,
+                (byte)0b00000000,
+                (byte)0b00000000,
+                (byte)0b00000000,
+                (byte)0b00000000,
                 (byte)0b00000000,
         }));
 

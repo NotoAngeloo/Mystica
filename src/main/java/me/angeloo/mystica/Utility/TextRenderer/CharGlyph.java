@@ -32,17 +32,25 @@ public class CharGlyph {
     }
 
     public String get(int ascent) {
+
+        /*if(rendered.get(ascent)==null){
+            Bukkit.getLogger().info("string for ascent " + ascent +" is null");
+        }*/
+
         return rendered.getOrDefault(ascent, "");
     }
 
-    // your existing render logic goes here
+
     private String render(PixelMatrix matrix, PixelGlyphRegistry registry, int baseAscent) {
 
         StringBuilder sb = new StringBuilder();
 
+        int maxWidth = 0;
+
         for (int y = 0; y < 8; y++) {
 
             int lastFilled = -1;
+
 
             for (int x = 7; x >= 0; x--) {
                 if (matrix.isFilled(x, y)) {
@@ -51,7 +59,26 @@ public class CharGlyph {
                 }
             }
 
-            if (lastFilled == -1) continue;
+            int currentWidth = (lastFilled == -1) ? 0 : lastFilled + 1;
+            maxWidth = Math.max(maxWidth, currentWidth);
+
+            //  IMPORTANT: still handle empty rows for alignment later
+            if (lastFilled == -1) {
+
+                // still apply reverse spacing for empty rows
+                if (y != 7) {
+                    sb.append(REVERSE_GLYPH[0]);
+                }
+
+                // still handle final row logic
+                if (y == 7) {
+                    if (maxWidth > 0) {
+                        sb.append(ADVANCE_GLYPH[maxWidth]);
+                    }
+                }
+
+                continue;
+            }
 
             int x = 0;
             int spaces = 0;
@@ -64,7 +91,6 @@ public class CharGlyph {
                     continue;
                 }
 
-                // 4. flush spaces BEFORE drawing pixel
                 if (spaces > 0) {
                     sb.append(ADVANCE_GLYPH[spaces]);
                     spaces = 0;
@@ -72,24 +98,34 @@ public class CharGlyph {
 
                 int ascent = baseAscent - y;
 
-                //Bukkit.getLogger().info("trying to get unicode for ascent "+ ascent);
-
                 sb.append(registry.get(ascent).getUnicode());
+                //-1
                 sb.append("\uF801");
 
                 x++;
             }
 
-            // 6. track width
-            int currentWidth = lastFilled + 1;
-            // 7. reset X for next row
             if (y != 7) {
                 sb.append(REVERSE_GLYPH[currentWidth]);
-                //append current width
+            }
 
+            if (y == 7) {
+
+                int adjustment = maxWidth - currentWidth;
+
+                if (adjustment > 0) {
+                    sb.append(ADVANCE_GLYPH[adjustment]);
+                }
             }
         }
 
+        //characters need to have space between eachother
+        sb.append("\uF821");
+
         return sb.toString();
+    }
+
+    public char getChar(){
+        return matrix.getChar();
     }
 }

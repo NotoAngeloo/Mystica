@@ -1,11 +1,15 @@
 package me.angeloo.mystica.Utility.TextRenderer;
 
+import org.bukkit.Bukkit;
+
 public class PixelMatrix {
 
+    private final char c;
     private final byte[] rows; //8 bits per row
     private final int width;
 
-    public PixelMatrix(byte[] rows){
+    public PixelMatrix(char c, byte[] rows){
+        this.c = c;
         this.rows = rows;
         this.width = computeWidth(rows);
     }
@@ -31,14 +35,24 @@ public class PixelMatrix {
             // find rightmost 1 bit
             int lastFilled = 7 - Integer.numberOfTrailingZeros(value);
 
-            int width = lastFilled + 1;
+            //was +1, changed to +2 because adding a space at the end of each
+            int width = lastFilled + 2;
 
             if (width > max) {
                 max = width;
             }
         }
 
+        //this is because of the space character
+        if(max==0){
+            return 3;
+        }
+
         return max;
+    }
+
+    public char getChar(){
+        return c;
     }
 
 }

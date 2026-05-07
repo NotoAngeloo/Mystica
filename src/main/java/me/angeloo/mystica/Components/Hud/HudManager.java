@@ -321,6 +321,11 @@ public class HudManager {
     private final String[] teamResource3 = {"\uE17F","\uE17E","\uE17D","\uE17C","\uE17B","\uE17A","\uE179","\uE178","\uE177","\uE176","\uE175","\uE174","\uE173","\uE172","\uE171","\uE170","\uE16F","\uE16E","\uE16D","\uE16C","\uE16B","\uE16A","\uE169","\uE168","\uE167","\uE166","\uE165","\uE164","\uE163","\uE162","\uE161","\uE160","\uE15F","\uE15E","\uE15D","\uE15C","\uE15B","\uE15A","\uE159","\uE158","\uE157"};
     private final Map<UUID, String> teamResource3Cache = new ConcurrentHashMap<>();
 
+    private final Map<UUID, String> teamNameCache0 = new ConcurrentHashMap<>();
+    private final Map<UUID, String> teamNameCache1 = new ConcurrentHashMap<>();
+    private final Map<UUID, String> teamNameCache2 = new ConcurrentHashMap<>();
+    private final Map<UUID, String> teamNameCache3 = new ConcurrentHashMap<>();
+
     //squad data
 
     //0-8
@@ -1505,6 +1510,8 @@ public class HudManager {
         StringBuilder builder2 = new StringBuilder();
         StringBuilder builder3 = new StringBuilder();
 
+        String name = entity.getName();
+        name = name.replaceAll("§.", "");
 
         //append face to builders
         if(entity instanceof Player player){
@@ -1591,6 +1598,26 @@ public class HudManager {
         builder0.append(ChatColor.WHITE);
         builder0.append(teamResource0[shieldAmount]);
 
+
+        int maxNameLength = 101;
+
+        //-101
+        builder0.append("\uF80B\uF80A\uF805");
+        String nameString0 = getTeamNameString(name, entity.getUniqueId(), 0);
+        builder0.append(nameString0);
+        int width = stringRenderer.getWidth(nameString0);
+        int padding = maxNameLength - width;
+
+        // pad remaining space
+        for (int i = 0; i < PIXELS.length; i++) {
+
+            while (padding >= PIXELS[i]) {
+                builder0.append(GLYPHS[i]);
+                padding -= PIXELS[i];
+            }
+
+        }
+
         teamResource0Cache.put(entity.getUniqueId(),String.valueOf(builder0));
 
 
@@ -1606,6 +1633,25 @@ public class HudManager {
         builder1.append(ChatColor.WHITE);
         builder1.append(teamResource1[shieldAmount]);
 
+
+        //-101
+        builder1.append("\uF80B\uF80A\uF805");
+        String nameString1 = getTeamNameString(name, entity.getUniqueId(), 1);
+        builder1.append(nameString1);
+        width = stringRenderer.getWidth(nameString1);
+        padding = maxNameLength - width;
+
+        // pad remaining space
+        for (int i = 0; i < PIXELS.length; i++) {
+
+            while (padding >= PIXELS[i]) {
+                builder1.append(GLYPHS[i]);
+                padding -= PIXELS[i];
+            }
+
+        }
+
+
         teamResource1Cache.put(entity.getUniqueId(),String.valueOf(builder1));
 
         builder2.append(teamResourceBackground2);
@@ -1620,6 +1666,24 @@ public class HudManager {
         builder2.append(ChatColor.WHITE);
         builder2.append(teamResource2[shieldAmount]);
 
+        //-101
+        builder2.append("\uF80B\uF80A\uF805");
+        String nameString2 = getTeamNameString(name, entity.getUniqueId(), 2);
+        builder2.append(nameString2);
+        width = stringRenderer.getWidth(nameString2);
+        padding = maxNameLength - width;
+
+        // pad remaining space
+        for (int i = 0; i < PIXELS.length; i++) {
+
+            while (padding >= PIXELS[i]) {
+                builder2.append(GLYPHS[i]);
+                padding -= PIXELS[i];
+            }
+
+        }
+
+
         teamResource2Cache.put(entity.getUniqueId(),String.valueOf(builder2));
 
         builder3.append(teamResourceBackground3);
@@ -1633,6 +1697,23 @@ public class HudManager {
 
         builder3.append(ChatColor.WHITE);
         builder3.append(teamResource3[shieldAmount]);
+
+        //-101
+        builder3.append("\uF80B\uF80A\uF805");
+        String nameString3 = getTeamNameString(name, entity.getUniqueId(), 3);
+        builder3.append(nameString3);
+        width = stringRenderer.getWidth(nameString3);
+        padding = maxNameLength - width;
+
+        // pad remaining space
+        for (int i = 0; i < PIXELS.length; i++) {
+
+            while (padding >= PIXELS[i]) {
+                builder3.append(GLYPHS[i]);
+                padding -= PIXELS[i];
+            }
+
+        }
 
         teamResource3Cache.put(entity.getUniqueId(),String.valueOf(builder3));
 
@@ -1724,6 +1805,68 @@ public class HudManager {
         squadResource2Cache.put(entity.getUniqueId(),String.valueOf(builder2));
 
     }
+
+    private String getTeamNameString(String name, UUID uuid, int slot){
+
+        switch (slot) {
+            case 0 -> {
+
+                if (!teamNameCache0.containsKey(uuid)) {
+                    //render it
+                    renderTeamNames(name, uuid);
+                }
+
+                return teamNameCache0.get(uuid);
+            }
+            case 1 -> {
+
+                if (!teamNameCache1.containsKey(uuid)) {
+                    //render it
+                    renderTeamNames(name, uuid);
+                }
+
+                return teamNameCache1.get(uuid);
+            }
+            case 2 -> {
+
+                if (!teamNameCache2.containsKey(uuid)) {
+                    //render it
+                    renderTeamNames(name, uuid);
+                }
+
+                return teamNameCache2.get(uuid);
+            }
+            case 3 -> {
+
+                if (!teamNameCache3.containsKey(uuid)) {
+                    //render it
+                    renderTeamNames(name, uuid);
+                }
+
+                return teamNameCache3.get(uuid);
+            }
+        }
+
+
+
+        return "";
+    }
+
+    private void renderTeamNames(String name, UUID uuid){
+
+        List<LineData> data = List.of(
+                new LineData(name, 0)
+
+        );
+
+        teamNameCache0.put(uuid, stringRenderer.render(layoutEngine.layout(data), -4));
+        teamNameCache1.put(uuid, stringRenderer.render(layoutEngine.layout(data), -34));
+        teamNameCache2.put(uuid, stringRenderer.render(layoutEngine.layout(data), -64));
+        teamNameCache3.put(uuid, stringRenderer.render(layoutEngine.layout(data), -94));
+
+
+    }
+
 
 
     private String createTeamDataString(Player player) {

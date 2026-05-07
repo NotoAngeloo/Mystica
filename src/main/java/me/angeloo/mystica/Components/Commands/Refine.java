@@ -23,12 +23,10 @@ public class Refine implements CommandExecutor {
 
         if(args.length == 0){
 
-            if(!(sender instanceof Player)){
+            if(!(sender instanceof Player player)){
                 sender.sendMessage("only players");
                 return true;
             }
-
-            Player player = (Player) sender;
 
 
             refineInventory.openRefineInventory(player);

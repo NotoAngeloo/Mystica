@@ -9,6 +9,9 @@ import me.angeloo.mystica.Components.Guis.CustomInventoryManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Enums.EquipmentEnhancementType;
+import me.angeloo.mystica.Utility.TextRenderer.LayoutEngine;
+import me.angeloo.mystica.Utility.TextRenderer.LineData;
+import me.angeloo.mystica.Utility.TextRenderer.StringRenderer;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -22,6 +25,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class RefineInventory implements Listener {
@@ -29,17 +33,42 @@ public class RefineInventory implements Listener {
     private final ProfileManager profileManager;
     private final EquipmentUpgradeManager manager;
     private final CustomInventoryManager inventoryManager;
+    private final StringRenderer stringRenderer;
+    private final LayoutEngine layoutEngine;
 
 
     public RefineInventory(Mystica main, EquipmentUpgradeManager manager){
         profileManager = main.getProfileManager();
         this.manager = manager;
         inventoryManager = main.getInventoryManager();
+        layoutEngine = main.getLayoutEngine();
+        stringRenderer = main.getStringRenderer();
     }
 
     public void openRefineInventory(Player player){
 
-        String title = ChatColor.WHITE + "\uF807" + "\uE0B4" + "\uF828";
+        List<LineData> data = List.of(
+                new LineData("time to test how much this lags", 10),
+                new LineData("time to test how much this lags", 10),
+                new LineData("time to test how much this lags", 10),
+                new LineData("time to test how much this lags", 10),
+                new LineData("time to test how much this lags", 10),
+                new LineData("time to test how much this lags", 10),
+                new LineData("time to test how much this lags", 10),
+                new LineData("time to test how much this lags", 10),
+                new LineData("time to test how much this lags", 10),
+                new LineData("time to test how much this lags", 10),
+                new LineData("time to test how much this lags", 10)
+
+        );
+
+        String title = stringRenderer.render(layoutEngine.layout(data), 0);
+
+        Inventory inv = Bukkit.createInventory(null, 9*6, title);
+
+        player.openInventory(inv);
+
+        /*String title = ChatColor.WHITE + "\uF807" + "\uE0B4" + "\uF828";
 
 
         title = inventoryManager.addBagPng(title);
@@ -51,7 +80,7 @@ public class RefineInventory implements Listener {
 
         profileManager.getAnyProfile(player).getMysticaBagCollection().getBag(inventoryManager.getBagIndex(player)).displayBagItems(player);
 
-        inventoryManager.setEnhancementTypeIndex(player, EquipmentEnhancementType.Refine);
+        inventoryManager.setEnhancementTypeIndex(player, EquipmentEnhancementType.Refine);*/
     }
 
     @EventHandler

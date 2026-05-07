@@ -2,9 +2,13 @@ package me.angeloo.mystica.Utility.TextRenderer;
 
 import org.bukkit.Bukkit;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class StringRenderer {
+
+    private final Map<String, Integer> widthMap = new HashMap<>();
 
     private static final int[] PIXELS = {64, 32, 16, 8, 4, 2, 1};
 
@@ -46,10 +50,11 @@ public class StringRenderer {
                 sb.append(glyph.get(currentAscent));
             }
 
+            int width = line.getWidth();
+            widthMap.put(sb.toString(), width);
 
             if(lines.getLast()!=line){
                 //append negative depending on space of line
-                int width = line.getWidth();
 
                 for (int i = 0; i < PIXELS.length; i++) {
 
@@ -66,9 +71,14 @@ public class StringRenderer {
 
         }
 
-        Bukkit.getLogger().info("string length is " + sb.toString().length());
+        //Bukkit.getLogger().info("string length is " + sb.toString().length());
 
         return sb.toString();
+    }
+
+    public int getWidth(String text){
+
+        return widthMap.getOrDefault(text, 0);
     }
 
 }

@@ -12,6 +12,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -309,7 +310,7 @@ public class LightSigil extends BaseAbility {
                     cancelTask();
 
                     boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                    double damage = damageCalculator.calculateDamage(caster, damagedEntity, "Magical", finalSkillDamage, crit);
+                    double damage = damageCalculator.calculateDamage(caster, damagedEntity, DamageType.Magical, finalSkillDamage, crit, 0);
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(damagedEntity, caster));
                     changeResourceHandler.subtractHealthFromEntity(damagedEntity, damage, caster, crit);
 
@@ -468,13 +469,13 @@ public class LightSigil extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 8, statusEffectManager.getHastePercent(caster));
     }
 
-    /*public int returnWhichItem(Player player){
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
 
-        if(mana.getCurrentMana(player)<getCost()){
-            return 7;
+        if (mana.getCurrentMana(entity)<cost) {
+            return "\ue3db";
         }
 
-        return 0;
-    }*/
-
+        return "\ue3da";
+    }
 }

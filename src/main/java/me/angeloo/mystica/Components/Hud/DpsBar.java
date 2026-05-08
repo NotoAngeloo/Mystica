@@ -22,34 +22,27 @@ public class DpsBar {
 
         PlayerClass playerClass = profileManager.getAnyProfile(entity).getPlayerClass();
 
-        switch (playerClass){
-            case Assassin:{
+        switch (playerClass) {
+            case Assassin -> {
                 bar.append(ChatColor.of(assassinColor));
-                break;
             }
-            case Elementalist:{
+            case Elementalist -> {
                 bar.append(ChatColor.of(elementalistColor));
-                break;
             }
-            case Mystic:{
+            case Mystic -> {
                 bar.append(ChatColor.of(mysticColor));
-                break;
             }
-            case Paladin:{
+            case Paladin -> {
                 bar.append(ChatColor.of(paladinColor));
-                break;
             }
-            case Ranger:{
+            case Ranger -> {
                 bar.append(ChatColor.of(rangerColor));
-                break;
             }
-            case Shadow_Knight:{
+            case Shadow_Knight -> {
                 bar.append(ChatColor.of(shadowKnightColor));
-                break;
             }
-            case Warrior:{
+            case Warrior -> {
                 bar.append(ChatColor.of(warriorColor));
-                break;
             }
         }
 
@@ -67,46 +60,36 @@ public class DpsBar {
 
         //Bukkit.getLogger().info(entity.getName() + "top: " + top + " dps: " + dps +" ratio: "+ratio +  " amount: " + amount);
 
-        switch (amount){
-            case 10:{
-                bar.append("\uE04F");
-                break;
+        switch (amount) {
+            case 10 -> {
+                bar.append("\ue3aa");
             }
-            case 9:{
-                bar.append("\uE050");
-                break;
+            case 9 -> {
+                bar.append("\ue3ab");
             }
-            case 8:{
-                bar.append("\uE051");
-                break;
+            case 8 -> {
+                bar.append("\ue3ac");
             }
-            case 7:{
-                bar.append("\uE052");
-                break;
+            case 7 -> {
+                bar.append("\ue3ad");
             }
-            case 6:{
-                bar.append("\uE053");
-                break;
+            case 6 -> {
+                bar.append("\ue3ae");
             }
-            case 5:{
-                bar.append("\uE055");
-                break;
+            case 5 -> {
+                bar.append("\ue3af");
             }
-            case 4:{
-                bar.append("\uE056");
-                break;
+            case 4 -> {
+                bar.append("\ue3b0");
             }
-            case 3:{
-                bar.append("\uE057");
-                break;
+            case 3 -> {
+                bar.append("\ue3b1");
             }
-            case 2:{
-                bar.append("\uE05A");
-                break;
+            case 2 -> {
+                bar.append("\ue3b2");
             }
-            case 1:{
-                bar.append("\uE05B");
-                break;
+            case 1 -> {
+                bar.append("\ue3b3");
             }
         }
 

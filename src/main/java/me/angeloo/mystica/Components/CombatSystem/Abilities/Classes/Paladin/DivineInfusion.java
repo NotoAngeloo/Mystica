@@ -13,6 +13,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -177,7 +178,7 @@ public class DivineInfusion extends BaseAbility {
                             }
 
                             boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                            double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Physical", finalSkillDamage, crit));
+                            double damage = (damageCalculator.calculateDamage(caster, livingEntity, DamageType.Physical, finalSkillDamage, crit, 0));
 
                             if(livingEntity instanceof Player thisPlayer){
 

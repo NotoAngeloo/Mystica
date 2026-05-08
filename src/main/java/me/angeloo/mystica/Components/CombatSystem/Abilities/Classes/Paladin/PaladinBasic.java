@@ -15,6 +15,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
@@ -294,8 +295,8 @@ public class PaladinBasic implements BasicAttackDefinition {
             }
 
             boolean crit = damageCalculator.checkIfCrit(caster, 0);
-            double damage = damageCalculator.calculateDamage(caster, targetToHit, "Physical", getSkillDamage(caster)
-                    + bonus, crit);
+            double damage = damageCalculator.calculateDamage(caster, targetToHit, DamageType.Physical, getSkillDamage(caster)
+                    + bonus, crit, 0);
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster, crit);

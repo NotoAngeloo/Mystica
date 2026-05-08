@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -85,7 +86,7 @@ public class MysticaDamage implements CommandExecutor {
 
                     int skillLevel = (int) Math.ceil(((double) level / 5));
 
-                    double damage = damageCalculator.calculateGettingDamaged(target, caster, "physical", amount * skillLevel);
+                    double damage = damageCalculator.calculateGettingDamaged(target, caster, DamageType.Physical, amount * skillLevel);
 
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, false);
                     return true;
@@ -96,7 +97,7 @@ public class MysticaDamage implements CommandExecutor {
 
                     int skillLevel = (int) Math.ceil(((double) level / 5));
 
-                    double damage = damageCalculator.calculateGettingDamaged(target, caster, "magical", amount * skillLevel);
+                    double damage = damageCalculator.calculateGettingDamaged(target, caster, DamageType.Magical, amount * skillLevel);
 
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, false);
                     return true;

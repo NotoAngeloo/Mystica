@@ -11,6 +11,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -32,7 +33,7 @@ public class Kick extends BaseAbility {
     private final PveChecker pveChecker;
     private final CooldownManager cooldownManager;
 
-    public Kick(Mystica main, AbilityManager manager){
+    public Kick(Mystica main){
         super("kick");
         this.main = main;
         targetManager = main.getTargetManager();
@@ -138,7 +139,7 @@ public class Kick extends BaseAbility {
 
                         //also damage
                         boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                        double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
+                        double damage = damageCalculator.calculateDamage(caster, target, DamageType.Physical, finalSkillDamage, crit, 0);
 
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                         changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);

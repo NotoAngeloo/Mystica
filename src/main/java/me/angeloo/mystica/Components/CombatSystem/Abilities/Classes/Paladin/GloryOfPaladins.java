@@ -10,6 +10,7 @@ import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -84,6 +85,11 @@ public class GloryOfPaladins extends BaseAbility {
             @Override
             public void run(){
 
+                if(caster.isDead()){
+                    this.cancel();
+                    return;
+                }
+
                 if(!statusEffectManager.hasEffect(caster, "glory_of_paladins")){
                     this.cancel();
                     return;
@@ -156,7 +162,7 @@ public class GloryOfPaladins extends BaseAbility {
 
 
         boolean crit = damageCalculator.checkIfCrit(caster, 0);
-        double damage = damageCalculator.calculateDamage(caster, livingEntity, "Physical", getSkillDamage(caster), crit);
+        double damage = damageCalculator.calculateDamage(caster, livingEntity, DamageType.Physical, getSkillDamage(caster), crit,0);
 
         changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
 

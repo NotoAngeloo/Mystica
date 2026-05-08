@@ -13,6 +13,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -164,7 +165,7 @@ public class WickedConcoction extends BaseAbility {
 
                     if(!finalHeal){
 
-                        double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
+                        double damage = damageCalculator.calculateDamage(caster, target, DamageType.Physical, finalSkillDamage, crit, 0);
 
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                         changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
@@ -236,4 +237,8 @@ public class WickedConcoction extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), -1, statusEffectManager.getHastePercent(caster));
     }
 
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue3c3";
+    }
 }

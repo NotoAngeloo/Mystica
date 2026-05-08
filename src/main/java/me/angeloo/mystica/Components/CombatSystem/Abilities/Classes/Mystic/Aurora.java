@@ -241,13 +241,14 @@ public class Aurora extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 6, statusEffectManager.getHastePercent(caster));
     }
 
-    /*public int returnWhichItem(Player player){
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
 
-        if(mana.getCurrentMana(player)<getCost()){
-            return 7;
+        if (mana.getCurrentMana(entity)<cost) {
+            return "\ue3d5";
         }
 
-        return 0;
-    }*/
 
+        return "\ue3d4";
+    }
 }

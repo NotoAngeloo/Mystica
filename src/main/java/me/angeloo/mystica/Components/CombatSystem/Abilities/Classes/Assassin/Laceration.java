@@ -12,6 +12,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.BossManager;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
@@ -122,7 +123,7 @@ public class Laceration extends BaseAbility {
 
 
         boolean crit = damageCalculator.checkIfCrit(caster, 0);
-        double damage = damageCalculator.calculateDamage(caster, target, "Physical", getSkillDamage(caster), crit);
+        double damage = damageCalculator.calculateDamage(caster, target, DamageType.Physical, getSkillDamage(caster), crit, 0);
         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
         changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
         lookup.get(PlayerClass.Assassin, 8).onExternalTrigger(caster, target);
@@ -157,7 +158,7 @@ public class Laceration extends BaseAbility {
                 }
 
                 boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                double tickDamage = damageCalculator.calculateDamage(caster, target, "Physical", finalBleedDamage, crit);
+                double tickDamage = damageCalculator.calculateDamage(caster, target, DamageType.Physical, finalBleedDamage, crit, 0);
 
                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                 changeResourceHandler.subtractHealthFromEntity(target, tickDamage, caster,crit);
@@ -212,5 +213,10 @@ public class Laceration extends BaseAbility {
 
 
         return cooldownManager.isReady(caster.getUniqueId(), 2, statusEffectManager.getHastePercent(caster));
+    }
+
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue3bc";
     }
 }

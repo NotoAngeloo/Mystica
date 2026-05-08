@@ -13,6 +13,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -305,7 +306,7 @@ public class AnvilDrop extends BaseAbility {
             }
 
             boolean crit = damageCalculator.checkIfCrit(caster, bonus);
-            double damage = damageCalculator.calculateDamage(caster, targetToHit, "Physical", skillDamage, crit);
+            double damage = damageCalculator.calculateDamage(caster, targetToHit, DamageType.Physical, skillDamage, crit, 0);
 
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster, crit);

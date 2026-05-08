@@ -12,6 +12,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
@@ -166,7 +167,7 @@ public class SpiritualAttack extends BaseAbility {
                     cancelTask();
 
                     boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                    double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
+                    double damage = damageCalculator.calculateDamage(caster, target, DamageType.Physical, finalSkillDamage, crit, 0);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);

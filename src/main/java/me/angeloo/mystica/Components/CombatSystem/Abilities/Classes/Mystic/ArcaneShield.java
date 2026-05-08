@@ -239,13 +239,13 @@ public class ArcaneShield extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 1, statusEffectManager.getHastePercent(caster));
     }
 
-    /*public int returnWhichItem(Player player){
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
 
-        if(mana.getCurrentMana(player)<cost){
-            return 10;
+        if(mana.getCurrentMana(entity) < cost){
+            return "\ue3d3";
         }
 
-        return 0;
-    }*/
-
+        return "\ue3d2";
+    }
 }

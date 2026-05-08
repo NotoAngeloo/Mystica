@@ -11,6 +11,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
@@ -158,7 +159,7 @@ public class SpiritualDescent extends BaseAbility {
                                 }
 
                                 boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                                double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Magical", finalSkillDamage, crit));
+                                double damage = (damageCalculator.calculateDamage(caster, livingEntity, DamageType.Magical, finalSkillDamage, crit, 0));
 
                                 //pvp logic
                                 if(entity instanceof Player){

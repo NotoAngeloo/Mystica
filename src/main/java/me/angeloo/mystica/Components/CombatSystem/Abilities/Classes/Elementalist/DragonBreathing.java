@@ -13,6 +13,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.BossManager;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
@@ -48,7 +49,6 @@ public class DragonBreathing extends BaseAbility {
     private final CooldownManager cooldownManager;
 
     private final Heat heat;
-    //private final FieryWing fieryWing;
 
     private final int baseCooldown = 16;
     private final double range = 20;
@@ -212,7 +212,7 @@ public class DragonBreathing extends BaseAbility {
                             }
 
                             boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                            double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Magical", finalSkillDamage, crit));
+                            double damage = (damageCalculator.calculateDamage(caster, livingEntity, DamageType.Magical, finalSkillDamage, crit,0));
 
                             //pvp logic
                             if(entity instanceof Player){
@@ -290,7 +290,7 @@ public class DragonBreathing extends BaseAbility {
                         }
 
                         boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                        double tickDamage = damageCalculator.calculateDamage(caster, entity, "Magical", burnDamage, crit);
+                        double tickDamage = damageCalculator.calculateDamage(caster, entity, DamageType.Magical, burnDamage, crit, 0);
 
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(entity, caster));
                         changeResourceHandler.subtractHealthFromEntity(entity, tickDamage, caster, crit);
@@ -352,5 +352,10 @@ public class DragonBreathing extends BaseAbility {
         }
 
         return cooldownManager.isReady(caster.getUniqueId(), 6, statusEffectManager.getHastePercent(caster));
+    }
+
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue3c6";
     }
 }

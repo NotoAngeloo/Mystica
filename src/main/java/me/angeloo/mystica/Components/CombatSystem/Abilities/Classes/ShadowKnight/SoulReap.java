@@ -19,6 +19,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.BarType;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -132,6 +133,12 @@ public class SoulReap extends BaseAbility {
 
         abilityManager.setSkillCurrentlyCasting(caster, statusBarIcon());
 
+        double crit_bonus = 0;
+
+        if(doom){
+            crit_bonus = 1.2;
+        }
+
         ItemStack item = new ItemStack(Material.REDSTONE);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
@@ -139,6 +146,7 @@ public class SoulReap extends BaseAbility {
         item.setItemMeta(meta);
         assert entityEquipment != null;
         entityEquipment.setItemInOffHand(item);
+        double finalCrit_bonus = crit_bonus;
         new BukkitRunnable(){
             final Location hitBoxCenter = target.getLocation().clone();
             final Location center = target.getLocation().clone();
@@ -224,7 +232,7 @@ public class SoulReap extends BaseAbility {
                     }
 
 
-                    double damage = damageCalculator.calculateDamage(caster, target, "Physical", skillDamage, crit);
+                    double damage = damageCalculator.calculateDamage(caster, target, DamageType.Physical, skillDamage, crit, finalCrit_bonus);
                     damage = damage + extra;
 
                     statusEffectManager.removeEffect(caster, "soul_mark");

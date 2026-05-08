@@ -11,6 +11,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -204,7 +205,7 @@ public class ArcaneMissiles extends BaseAbility {
                             cancelTask();
 
                             boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                            double damage = damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage, crit);
+                            double damage = damageCalculator.calculateDamage(caster, target, DamageType.Magical, finalSkillDamage, crit, 1.2);
 
                             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                             changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
@@ -266,7 +267,7 @@ public class ArcaneMissiles extends BaseAbility {
                             cancelTask();
 
                             boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                            double damage = damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage, crit);
+                            double damage = damageCalculator.calculateDamage(caster, target, DamageType.Magical, finalSkillDamage, crit, 1.2);
 
                             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                             changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
@@ -376,4 +377,8 @@ public class ArcaneMissiles extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), -1, statusEffectManager.getHastePercent(caster));
     }
 
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue3d1";
+    }
 }

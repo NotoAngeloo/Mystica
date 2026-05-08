@@ -36,6 +36,11 @@ public class Mana {
 
     public void subTractManaFromEntity(LivingEntity caster, int cost){
 
+        //free casts if not in combat
+        if(!profileManager.getAnyProfile(caster).getIfInCombat()){
+            return;
+        }
+
         int currentMana = getCurrentMana(caster);
         int newCurrentMana = currentMana - cost;
         if(newCurrentMana < 0){
@@ -44,11 +49,6 @@ public class Mana {
         manaAmount.put(caster.getUniqueId(), newCurrentMana);
         lastManaed.put(caster.getUniqueId(), (System.currentTimeMillis()/1000));
 
-        //cooldownDisplayer.displayCooldown(caster, 1);
-        //cooldownDisplayer.displayCooldown(caster, 2);
-        //cooldownDisplayer.displayCooldown(caster, 6);
-        //cooldownDisplayer.displayCooldown(caster, 7);
-        //cooldownDisplayer.displayCooldown(caster, 8);
 
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(caster, true));
 
@@ -66,11 +66,6 @@ public class Mana {
         }
         manaAmount.put(entity.getUniqueId(), newCurrentMana);
 
-        //cooldownDisplayer.displayCooldown(entity, 1);
-        //cooldownDisplayer.displayCooldown(entity, 2);
-        //cooldownDisplayer.displayCooldown(entity, 6);
-        //cooldownDisplayer.displayCooldown(entity , 7);
-        //cooldownDisplayer.displayCooldown(entity, 8);
 
         Bukkit.getServer().getPluginManager().callEvent(new HealthChangeEvent(entity, true));
 

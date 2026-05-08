@@ -13,6 +13,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.BossManager;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -190,7 +191,7 @@ public class ElementalMatrix extends BaseAbility {
                     //tick damage
 
                     boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                    double damage = (damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage / ticks, crit));
+                    double damage = (damageCalculator.calculateDamage(caster, target, DamageType.Magical, finalSkillDamage / ticks, crit, 0));
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
                 }
@@ -238,7 +239,7 @@ public class ElementalMatrix extends BaseAbility {
                         hitBySkill.add(livingEntity);
 
                         boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                        double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Magical", finalSkillDamage, crit));
+                        double damage = (damageCalculator.calculateDamage(caster, livingEntity, DamageType.Magical, finalSkillDamage, crit, 0));
 
                         //pvp logic
                         if(entity instanceof Player){
@@ -318,4 +319,8 @@ public class ElementalMatrix extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 8, statusEffectManager.getHastePercent(caster));
     }
 
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue3c9";
+    }
 }

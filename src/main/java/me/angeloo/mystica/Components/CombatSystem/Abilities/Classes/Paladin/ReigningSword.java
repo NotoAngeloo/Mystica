@@ -12,6 +12,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -203,8 +204,8 @@ public class ReigningSword extends BaseAbility {
                     }
 
                     boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                    double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Physical", finalSkillDamage
-                            * bonus * decisionMultiplier(caster), crit));
+                    double damage = (damageCalculator.calculateDamage(caster, livingEntity, DamageType.Physical, finalSkillDamage
+                            * bonus * decisionMultiplier(caster), crit, 0));
 
 
                     //pvp logic

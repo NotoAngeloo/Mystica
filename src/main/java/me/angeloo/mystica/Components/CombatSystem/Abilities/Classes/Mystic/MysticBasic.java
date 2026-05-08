@@ -15,6 +15,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -248,7 +249,7 @@ public class MysticBasic implements BasicAttackDefinition {
                         cancelTask();
 
                         boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                        double damage = damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage, crit);
+                        double damage = damageCalculator.calculateDamage(caster, target, DamageType.Magical, finalSkillDamage, crit, 0);
 
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                         changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
@@ -352,5 +353,8 @@ public class MysticBasic implements BasicAttackDefinition {
         return !(distance < 1);
     }
 
-
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue3dc";
+    }
 }

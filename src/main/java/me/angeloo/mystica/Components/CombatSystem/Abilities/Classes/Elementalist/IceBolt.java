@@ -12,6 +12,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -144,12 +145,15 @@ public class IceBolt extends BaseAbility {
             skillDamage = skillDamage * (1 + percent);
         }
 
+        double critBonus = 0;
 
         if(breathActive){
             skillDamage = skillDamage * 2;
+            critBonus = 1.2;
         }
 
         double finalSkillDamage = skillDamage;
+        double finalCritBonus = critBonus;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
             int count = 0;
@@ -194,7 +198,7 @@ public class IceBolt extends BaseAbility {
                     cancelTask();
 
                     boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                    double damage = damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage, crit);
+                    double damage = damageCalculator.calculateDamage(caster, target, DamageType.Magical, finalSkillDamage, crit, finalCritBonus);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
@@ -268,5 +272,8 @@ public class IceBolt extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 1, statusEffectManager.getHastePercent(caster));
     }
 
-
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue3cc";
+    }
 }

@@ -13,15 +13,15 @@ import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
 
-public class Warp extends BaseAbility {
+public class VoidWalk extends BaseAbility {
 
     private final ProfileManager profileManager;
     private final TargetManager targetManager;
     private final StatusEffectManager statusEffectManager;
     private final CooldownManager cooldownManager;
 
-    public Warp(Mystica main, AbilityManager manager){
-        super("warp");
+    public VoidWalk(Mystica main){
+        super("void_walk");
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
         statusEffectManager = main.getStatusEffectManager();
@@ -99,4 +99,8 @@ public class Warp extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 5, statusEffectManager.getHastePercent(caster));
     }
 
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue3df";
+    }
 }

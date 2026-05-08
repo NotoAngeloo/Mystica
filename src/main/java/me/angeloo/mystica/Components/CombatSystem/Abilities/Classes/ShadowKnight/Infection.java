@@ -43,18 +43,7 @@ public class Infection extends BaseAbility {
     private final CooldownManager cooldownManager;
 
 
-    //player, who they infected
-    //private final Map<UUID, LivingEntity> infectionTarget = new HashMap<>();
-    //player, timeleft
-    //private final Map<UUID, Integer> infectionTime = new HashMap<>();
-    //player, task
-    //private final Map<UUID, BukkitTask> infectionTask = new HashMap<>();
-
-
-    //private final Map<UUID, Boolean> enhanced = new HashMap<>();
-    //private final Map<UUID, BukkitTask> enhancedTaskMap = new HashMap<>();
-
-    public Infection(Mystica main, AbilityManager manager){
+    public Infection(Mystica main){
         super("infection");
         this.main = main;
         profileManager = main.getProfileManager();

@@ -380,18 +380,6 @@ public class HudManager {
                 targetBar.setVisible(true);
                 profileManager.setPlayerTargetBar(player, targetBar);
 
-                //pixel renderer
-                //List<StringGlyph> stringGlyphs = layoutEngine.layout(List.of("line one","","","","","","line two"));
-                /*List<LineData> data = List.of(
-                        new LineData("h", 10),
-                        new LineData("a new line is 10 pixels lower", 10)
-
-                );
-                BossBar targetBar = Bukkit.createBossBar(stringRenderer.render(layoutEngine.layout(data), -50), BarColor.WHITE, BarStyle.SOLID);
-                //BossBar targetBar = Bukkit.createBossBar(characterRenderer.getCharGlyph('e', -50), BarColor.WHITE, BarStyle.SOLID);
-                targetBar.addPlayer(player);
-                targetBar.setVisible(true);
-                profileManager.setPlayerTargetBar(player, targetBar);*/
 
                 //bar 2, target's target
                 BossBar targetTargetBar = Bukkit.createBossBar(getTargetTargetData(target), BarColor.WHITE, BarStyle.SOLID);
@@ -422,6 +410,7 @@ public class HudManager {
             updateTargetData(player);
             updateTargetTargetData(player);
             updateTeamData(player);
+            damageBoardPlaceholders.updateDamageBoardValues(player);
         }
     }
 
@@ -652,7 +641,7 @@ public class HudManager {
         StringBuilder builder = new StringBuilder();
 
         double currentMana = abilityManager.getMana().getCurrentMana(player);
-        double maxMana = 100;
+        double maxMana = 500;
         double ratio = currentMana/maxMana;
 
         int amount = (int) Math.ceil(ratio * 40);
@@ -2003,7 +1992,7 @@ public class HudManager {
             slot++;
 
 
-            //idk why this is, but it works and prevents squad infro from drifting
+            //idk why this is, but it works and prevents squad info from drifting
             if (slot >= 5) {
                 //-1
                 offset.append("\uF801");

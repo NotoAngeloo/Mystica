@@ -5,7 +5,6 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.BasicAttacks.BasicAt
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Elementalist.*;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilitySet;
 import me.angeloo.mystica.Mystica;
-import org.bukkit.entity.LivingEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +26,7 @@ public class ElementalistAbilities implements AbilitySet {
         abilities.put(4, new WindrushForm(main, manager));
         abilities.put(5, new WindWall(main, manager));
         abilities.put(6, new DragonBreathing(main, manager));
-        abilities.put(7, new ElementalBreath(main, manager));
+        abilities.put(7, new ElementalBreath(main));
         abilities.put(8, new ElementalMatrix(main, manager));
 
         for(Ability ability : abilities.values()){

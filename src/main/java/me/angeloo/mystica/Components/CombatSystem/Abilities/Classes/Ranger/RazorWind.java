@@ -12,6 +12,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
@@ -107,7 +108,14 @@ public class RazorWind extends BaseAbility {
 
         abilityManager.setSkillCurrentlyCasting(caster, statusBarIcon());
 
+        double crit_bonus = 0;
+
+        if(scout){
+            crit_bonus = 1.2;
+        }
+
         double finalCastTime = castTime;
+        double finalCrit_bonus = crit_bonus;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone();
             int count = 0;
@@ -277,7 +285,7 @@ public class RazorWind extends BaseAbility {
                                     statusEffectManager.applyEffect(caster, new Haste(), 2*20, 0.1, caster);
                                 }
 
-                                double damage = damageCalculator.calculateDamage(caster, target, "Physical", skillDamage, crit);
+                                double damage = damageCalculator.calculateDamage(caster, target, DamageType.Physical, skillDamage, crit, finalCrit_bonus);
 
                                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                                 changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);

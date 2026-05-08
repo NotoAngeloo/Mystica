@@ -5,6 +5,7 @@ import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffect;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusInstance;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ApplicationBehavior;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 
@@ -37,7 +38,7 @@ public class Infection_Standard implements StatusEffect {
         if(instance.getLivedTicks()%20==0){
             LivingEntity caster = instance.getSource();
             boolean crit = combatContext.getDamageCalculator().checkIfCrit(caster, 0);
-            double damage = combatContext.getDamageCalculator().calculateDamage(caster, entity, "Physical", getMagnitude(), crit);
+            double damage = combatContext.getDamageCalculator().calculateDamage(caster, entity, DamageType.Physical, getMagnitude(), crit, 0);
             combatContext.getChangeResourceHandler().subtractHealthFromEntity(entity, damage, caster, crit);
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(entity, caster));
 

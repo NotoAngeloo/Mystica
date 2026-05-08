@@ -14,6 +14,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -178,7 +179,7 @@ public class DuelistsFrenzy extends BaseAbility {
 
                         //also damage
                         boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                        double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
+                        double damage = damageCalculator.calculateDamage(caster, target, DamageType.Physical, finalSkillDamage, crit, 1.2);
 
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                         changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
@@ -256,4 +257,14 @@ public class DuelistsFrenzy extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), -1, statusEffectManager.getHastePercent(caster));
     }
 
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+
+        if(combo.getComboPoints(entity)!=5){
+            return "\ue3ba";
+        }
+
+
+        return "\ue3b9";
+    }
 }

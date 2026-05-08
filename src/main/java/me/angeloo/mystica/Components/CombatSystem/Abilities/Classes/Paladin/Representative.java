@@ -37,7 +37,7 @@ public class Representative extends BaseAbility {
     private final PveChecker pveChecker;
     private final CooldownManager cooldownManager;
 
-    public Representative(Mystica main, AbilityManager manager){
+    public Representative(Mystica main){
         super("representative");
         this.main = main;
         profileManager = main.getProfileManager();
@@ -90,9 +90,9 @@ public class Representative extends BaseAbility {
         meta.setCustomModelData(13);
         wings.setItemMeta(meta);
 
-        if(caster instanceof Player){
+        /*if(caster instanceof Player){
             ((Player)caster).getInventory().setHelmet(wings);
-        }
+        }*/
 
 
 
@@ -194,4 +194,8 @@ public class Representative extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), -1, statusEffectManager.getHastePercent(caster));
     }
 
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue3ef";
+    }
 }

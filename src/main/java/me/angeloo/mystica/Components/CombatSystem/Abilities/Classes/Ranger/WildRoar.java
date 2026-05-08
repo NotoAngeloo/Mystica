@@ -29,7 +29,7 @@ public class WildRoar extends BaseAbility {
     private final PvpManager pvpManager;
     private final CooldownManager cooldownManager;
 
-    public WildRoar(Mystica main, AbilityManager manager){
+    public WildRoar(Mystica main){
         super("wild_roar");
         this.main = main;
         profileManager = main.getProfileManager();
@@ -157,5 +157,10 @@ public class WildRoar extends BaseAbility {
     @Override
     public boolean usable(LivingEntity caster){
         return cooldownManager.isReady(caster.getUniqueId(),-1, statusEffectManager.getHastePercent(caster));
+    }
+
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue3fd";
     }
 }

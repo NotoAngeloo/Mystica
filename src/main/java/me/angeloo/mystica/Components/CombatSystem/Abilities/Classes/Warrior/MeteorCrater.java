@@ -342,15 +342,15 @@ public class MeteorCrater extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 4, statusEffectManager.getHastePercent(caster));
     }
 
-    /*public int returnWhichItem(Player player){
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
 
-        if(rage.getCurrentRage(player)<getCost()){
-            return 8;
+        if(rage.getCurrentRage(entity)<cost){
+            return "\ue418";
         }
 
-        return 0;
-    }*/
-
+        return "\ue417";
+    }
 }
 
 

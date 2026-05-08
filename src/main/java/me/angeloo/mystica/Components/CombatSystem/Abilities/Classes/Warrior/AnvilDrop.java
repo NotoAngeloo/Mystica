@@ -341,6 +341,8 @@ public class AnvilDrop extends BaseAbility {
         return block.getType() != Material.AIR;
     }
 
-
-
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue410";
+    }
 }

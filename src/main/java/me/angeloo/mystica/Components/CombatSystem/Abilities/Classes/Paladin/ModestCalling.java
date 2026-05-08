@@ -213,4 +213,8 @@ public class ModestCalling extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 7, statusEffectManager.getHastePercent(caster));
     }
 
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue3eb";
+    }
 }

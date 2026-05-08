@@ -266,4 +266,8 @@ public class BlessedArrow extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 5, statusEffectManager.getHastePercent(caster));
     }
 
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue3f5";
+    }
 }

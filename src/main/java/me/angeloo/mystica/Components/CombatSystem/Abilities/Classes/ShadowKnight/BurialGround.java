@@ -152,5 +152,8 @@ public class BurialGround extends BaseAbility {
         return block.getType() != Material.AIR;
     }
 
-
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue405";
+    }
 }

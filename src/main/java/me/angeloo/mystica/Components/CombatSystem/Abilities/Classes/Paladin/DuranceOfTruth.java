@@ -441,4 +441,8 @@ public class DuranceOfTruth extends BaseAbility {
         return block.getType() != Material.AIR;
     }
 
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue3e4";
+    }
 }

@@ -31,7 +31,7 @@ public class SacredAegis extends BaseAbility {
     private final StatusEffectManager statusEffectManager;
     private final CooldownManager cooldownManager;
 
-    public SacredAegis(Mystica main, AbilityManager manager){
+    public SacredAegis(Mystica main){
         super("sacred_aegis");
         this.main = main;
         profileManager = main.getProfileManager();
@@ -232,4 +232,8 @@ public class SacredAegis extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 6, statusEffectManager.getHastePercent(caster));
     }
 
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue3f0";
+    }
 }

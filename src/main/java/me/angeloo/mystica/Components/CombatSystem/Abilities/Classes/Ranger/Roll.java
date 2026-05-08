@@ -23,7 +23,7 @@ public class Roll extends BaseAbility {
     private final CooldownManager cooldownManager;
 
 
-    public Roll(Mystica main, AbilityManager manager){
+    public Roll(Mystica main){
         super("roll");
         this.main = main;
         profileManager = main.getProfileManager();
@@ -100,4 +100,8 @@ public class Roll extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 8, statusEffectManager.getHastePercent(caster));
     }
 
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue3fa";
+    }
 }

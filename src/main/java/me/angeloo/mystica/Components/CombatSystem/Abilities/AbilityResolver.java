@@ -133,7 +133,7 @@ public class AbilityResolver implements AbilityLookup{
         divineOverrides.put(3, new HonorCounter(main, manager));
         divineOverrides.put(4, new DivineInfusion(main, manager));
         divineOverrides.put(5, new SpiritualGift(main, manager));
-        divineOverrides.put(6, new SacredAegis(main, manager));
+        divineOverrides.put(6, new SacredAegis(main));
         divineOverrides.put(7, new ModestCalling(main, manager));
         divineOverrides.put(8, new JusticeMark(main, manager));
         subclassOverrides.put(SubClass.Divine, divineOverrides);
@@ -164,12 +164,12 @@ public class AbilityResolver implements AbilityLookup{
         ultimates.put(SubClass.Chaos, new EvilSpirit(main, manager));
         ultimates.put(SubClass.Templar, new SanctityShield(main));
         ultimates.put(SubClass.Dawn, new LightWell(main, manager));
-        ultimates.put(SubClass.Divine, new Representative(main, manager));
+        ultimates.put(SubClass.Divine, new Representative(main));
         ultimates.put(SubClass.Scout, new StarVolley(main, manager));
-        ultimates.put(SubClass.Tamer, new WildRoar(main, manager));
+        ultimates.put(SubClass.Tamer, new WildRoar(main));
         ultimates.put(SubClass.Doom, new Annihilation(main, manager));
         ultimates.put(SubClass.Blood, new BloodShield(main, manager));
-        ultimates.put(SubClass.Gladiator, new GladiatorHeart(main, manager));
+        ultimates.put(SubClass.Gladiator, new GladiatorHeart(main));
         ultimates.put(SubClass.Executioner, new DeathGaze(main, manager));
 
         for(Ability ultimate : ultimates.values()){

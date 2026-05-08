@@ -17,7 +17,7 @@ public class BurningBlessing extends BaseAbility {
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
 
-    public BurningBlessing(Mystica main, AbilityManager manager){
+    public BurningBlessing(Mystica main){
         super("burning_blessing");
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
@@ -71,4 +71,8 @@ public class BurningBlessing extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 8, statusEffectManager.getHastePercent(caster));
     }
 
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue411";
+    }
 }

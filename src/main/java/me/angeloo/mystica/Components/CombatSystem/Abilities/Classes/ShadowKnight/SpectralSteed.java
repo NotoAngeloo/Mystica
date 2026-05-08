@@ -32,7 +32,7 @@ public class SpectralSteed extends BaseAbility {
     private final StatusEffectManager statusEffectManager;
     private final CooldownManager cooldownManager;
 
-    public SpectralSteed(Mystica main, AbilityManager manager){
+    public SpectralSteed(Mystica main){
         super("spectral_steed");
         this.main = main;
         profileManager = main.getProfileManager();
@@ -283,5 +283,8 @@ public class SpectralSteed extends BaseAbility {
         return block.getType() != Material.AIR;
     }
 
-
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue40d";
+    }
 }

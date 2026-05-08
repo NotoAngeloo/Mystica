@@ -258,13 +258,14 @@ public class Annihilation extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), -1, statusEffectManager.getHastePercent(caster));
     }
 
-    /*public int returnWhichItem(Player player){
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
 
-        if(energy.getCurrentEnergy(player)<getCost()){
-            return 6;
+        if(energy.getCurrentEnergy(entity)<cost){
+            return "\ue400";
         }
 
-        return 0;
-    }*/
 
+        return "\ue3ff";
+    }
 }

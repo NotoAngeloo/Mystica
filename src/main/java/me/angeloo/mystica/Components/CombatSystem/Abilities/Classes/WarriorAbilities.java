@@ -17,16 +17,16 @@ public class WarriorAbilities implements AbilitySet {
 
     public WarriorAbilities(Mystica main, AbilityManager manager, AbilityLookup lookup){
 
-        basic = new WarriorBasic(main,manager, lookup);
+        basic = new WarriorBasic(main,manager);
 
         abilities.put(1, new LavaQuake(main, manager));
         abilities.put(2, new SearingChains(main, manager));
         abilities.put(3, new TempestRage(main, manager));
         abilities.put(4, new MeteorCrater(main, manager));
         abilities.put(5, new AnvilDrop(main, manager));
-        abilities.put(6, new FlamingSigil(main, manager));
+        abilities.put(6, new FlamingSigil(main));
         abilities.put(7, new MagmaSpikes(main, manager));
-        abilities.put(8, new BurningBlessing(main, manager));
+        abilities.put(8, new BurningBlessing(main));
 
         for(Ability ability : abilities.values()){
             if(ability instanceof BaseAbility base){

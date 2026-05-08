@@ -282,6 +282,7 @@ public class CovenantSword extends BaseAbility {
                     }
 
                     cancelTask();
+                    return;
                 }
 
                 double percent = ((Math.abs(angle) + (Math.abs(ea1))) / 195) * 100;
@@ -422,6 +423,8 @@ public class CovenantSword extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 4, statusEffectManager.getHastePercent(caster));
     }
 
-
-
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue3e0";
+    }
 }

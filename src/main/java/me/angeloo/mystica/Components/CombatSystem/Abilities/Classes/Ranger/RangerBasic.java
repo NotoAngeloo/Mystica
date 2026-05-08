@@ -381,4 +381,9 @@ public class RangerBasic implements BasicAttackDefinition {
 
         return !(distance < 1);
     }
+
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue3f7";
+    }
 }

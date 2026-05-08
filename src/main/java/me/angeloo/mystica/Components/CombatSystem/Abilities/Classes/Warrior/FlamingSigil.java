@@ -37,7 +37,7 @@ public class FlamingSigil extends BaseAbility {
     private final PveChecker pveChecker;
     private final CooldownManager cooldownManager;
 
-    public FlamingSigil(Mystica main, AbilityManager manager){
+    public FlamingSigil(Mystica main){
         super("flaming_sigil");
         this.main = main;
         profileManager = main.getProfileManager();
@@ -200,4 +200,8 @@ public class FlamingSigil extends BaseAbility {
         return block.getType() != Material.AIR;
     }
 
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue413";
+    }
 }

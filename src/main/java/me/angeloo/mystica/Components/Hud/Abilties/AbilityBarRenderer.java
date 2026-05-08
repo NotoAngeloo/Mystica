@@ -181,12 +181,22 @@ public class AbilityBarRenderer {
 
         ////////////////////////////
 
-        //temp for testing
-        //when have new targeter, change the logic
-        bar.append("\ue1d3");
-        //-17
-        bar.append("\uF809\uF801");
-        bar.append(KEYBIND_RMB);
+        if(player.isSneaking()){
+            bar.append("\ue3a9");
+            //-17
+            bar.append("\uF809\uF801");
+            bar.append(KEYBIND_SCROLL);
+        }
+        else{
+            bar.append("\ue3a8");
+            //-17
+            bar.append("\uF809\uF801");
+            bar.append(KEYBIND_RMB);
+        }
+
+
+
+
         count++;
 
         //////////////////////////
@@ -224,34 +234,6 @@ public class AbilityBarRenderer {
 
         return String.valueOf(offset);
 
-        /*//-190, total offset, same as max length
-        //-256
-        offset.append("\uF80D");
-        //+66
-        offset.append("\uF82B\uF822");
-
-
-        /////////////////////////////
-
-        //resources 207 pixel wide. 17x12 = 204, 3 pixel off
-        //need to offset -17 per abilityCount
-
-        //max length is 207 - 17 (ability width)
-        int maxLength = 190;
-        int padding = maxLength - (count * 17);
-
-        for (int i = 0; i < PIXELS.length; i++) {
-
-            while (padding >= PIXELS[i]) {
-                bar.append(GLYPHS[i]);
-                padding -= PIXELS[i];
-            }
-
-        }
-
-        offset.append(bar);
-
-        return String.valueOf(offset);*/
     }
 
     private String getRadialGlyph(AbilityRenderState state) {

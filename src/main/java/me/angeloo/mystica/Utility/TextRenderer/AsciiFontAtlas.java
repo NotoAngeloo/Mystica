@@ -1056,6 +1056,17 @@ public class AsciiFontAtlas {
                 (byte)0b00000000,
         }));
 
+        glyphs.put('…', new PixelMatrix('…',new byte[]{
+                (byte)0b00000000,
+                (byte)0b00000000,
+                (byte)0b00000000,
+                (byte)0b00000000,
+                (byte)0b00000000,
+                (byte)0b00000000,
+                (byte)0b10101000,
+                (byte)0b00000000,
+        }));
+
 
         //Bukkit.getLogger().info(glyphs.keySet().size() + " pixel matrices registered");
     }

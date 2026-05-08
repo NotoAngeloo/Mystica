@@ -336,6 +336,10 @@ public class HudManager {
     private final String[] squadResource2 = {"\ue1d2","\ue1d1","\ue1d0","\ue1cf","\ue1ce","\ue1cd","\ue1cc","\ue1cb","\ue1ca"};
     private final Map<UUID, String> squadResource2Cache = new ConcurrentHashMap<>();
 
+    private final Map<UUID, String> squadNameCache0 = new ConcurrentHashMap<>();
+    private final Map<UUID, String> squadNameCache1 = new ConcurrentHashMap<>();
+    private final Map<UUID, String> squadNameCache2 = new ConcurrentHashMap<>();
+
     public HudManager(Mystica main){
         this.main = main;
         profileManager = main.getProfileManager();
@@ -376,18 +380,6 @@ public class HudManager {
                 targetBar.setVisible(true);
                 profileManager.setPlayerTargetBar(player, targetBar);
 
-                //pixel renderer
-                //List<StringGlyph> stringGlyphs = layoutEngine.layout(List.of("line one","","","","","","line two"));
-                /*List<LineData> data = List.of(
-                        new LineData("h", 10),
-                        new LineData("a new line is 10 pixels lower", 10)
-
-                );
-                BossBar targetBar = Bukkit.createBossBar(stringRenderer.render(layoutEngine.layout(data), -50), BarColor.WHITE, BarStyle.SOLID);
-                //BossBar targetBar = Bukkit.createBossBar(characterRenderer.getCharGlyph('e', -50), BarColor.WHITE, BarStyle.SOLID);
-                targetBar.addPlayer(player);
-                targetBar.setVisible(true);
-                profileManager.setPlayerTargetBar(player, targetBar);*/
 
                 //bar 2, target's target
                 BossBar targetTargetBar = Bukkit.createBossBar(getTargetTargetData(target), BarColor.WHITE, BarStyle.SOLID);
@@ -418,6 +410,7 @@ public class HudManager {
             updateTargetData(player);
             updateTargetTargetData(player);
             updateTeamData(player);
+            damageBoardPlaceholders.updateDamageBoardValues(player);
         }
     }
 
@@ -648,7 +641,7 @@ public class HudManager {
         StringBuilder builder = new StringBuilder();
 
         double currentMana = abilityManager.getMana().getCurrentMana(player);
-        double maxMana = 100;
+        double maxMana = 500;
         double ratio = currentMana/maxMana;
 
         int amount = (int) Math.ceil(ratio * 40);
@@ -1488,10 +1481,6 @@ public class HudManager {
 
         }
 
-        /*if(entityBarData.containsKey(entity.getUniqueId())){
-            return entityBarData.get(entity.getUniqueId());
-        }*/
-
         return String.valueOf(builder);
     }
 
@@ -1532,17 +1521,6 @@ public class HudManager {
             builder2.append(profileManager.getCompanionTeamFace(entity.getUniqueId(), 2));
             builder3.append(profileManager.getCompanionTeamFace(entity.getUniqueId(), 3));
 
-            /*Player player = profileManager.getCompanionsPlayer(entity);
-
-            builder0.append(skinGrabber.getTeamFace(player, 0));
-            builder1.append(skinGrabber.getTeamFace(player, 1));
-            builder2.append(skinGrabber.getTeamFace(player, 2));
-            builder3.append(skinGrabber.getTeamFace(player, 3));
-            //+16 for alignment
-            builder0.append("\uF829");
-            builder1.append("\uF829");
-            builder2.append("\uF829");
-            builder3.append("\uF829");*/
         }
 
         //append health
@@ -1942,6 +1920,14 @@ public class HudManager {
                 continue;
             }
 
+
+
+            String name = member.getName();
+            name = name.replaceAll("§.", "");
+
+            int maxNameLength = 21;
+            name = truncateName(name, maxNameLength);
+
             //need to test with them unfort
             /*if(!(member instanceof Player memberPlayer)){
                 //companions not allowed in squads
@@ -1974,29 +1960,50 @@ public class HudManager {
             teamData.append("\uF80A");
             teamData.append(skinGrabber.getSquadFace(memberPlayer, slot));
 
-            // +36
-            teamData.append("\uF82A\uF824");
+
+            //+8 for the face +1 for a space
+            teamData.append("\uF828\uF821");
+            String squadName = getSquadName(name, member.getUniqueId(), slot);
+            teamData.append(squadName);
+            int width = stringRenderer.getWidth(squadName);
+            //do some padding
+            int padding = maxNameLength - width;
+
+            // pad remaining space
+            for (int i = 0; i < PIXELS.length; i++) {
+
+                while (padding >= PIXELS[i]) {
+                    teamData.append(GLYPHS[i]);
+                    //offset.append(GLYPHS[i]);
+                    padding -= PIXELS[i];
+                }
+
+            }
+
+
+            //between health bars
+            //+4
+            teamData.append("\uF824");
+
             //+36
             offset.append("\uF82A\uF824");
 
+
             slot++;
 
-            //this code is bad look away
-            if (slot >= 3) {
-                //+1
-                offset.append("\uF821");
+
+            //idk why this is, but it works and prevents squad info from drifting
+            if (slot >= 5) {
+                //-1
+                offset.append("\uF801");
             }
 
             if (slot == 3 || slot == 6) {
-                //-111
-                teamData.append("\uF80B\uF80A\uF808\uF807");
 
-                //+111
-                //offset.append("\uF82B\uF82A\uF828\uF827");
-
-                //-111
-                offset.append("\uF80B\uF80A\uF808\uF807");
-
+                //-105
+                teamData.append("\uF80B\uF80A\uF808\uF801");
+                //-105
+                offset.append("\uF80B\uF80A\uF808\uF801");
             }
         }
 
@@ -2006,6 +2013,49 @@ public class HudManager {
         return String.valueOf(offset);
 
 
+    }
+
+    private String getSquadName(String name, UUID uuid, int slot){
+
+        switch (slot) {
+            case 0, 1, 2 -> {
+                if (!squadNameCache0.containsKey(uuid)) {
+                    //render it
+                    renderSquadNames(name, uuid);
+                }
+
+                return squadNameCache0.get(uuid);
+            }
+            case 3, 4, 5 -> {
+                if (!squadNameCache1.containsKey(uuid)) {
+                    //render it
+                    renderSquadNames(name, uuid);
+                }
+                return squadNameCache1.get(uuid);
+            }
+            case 6, 8, 7 -> {
+                if (!squadNameCache2.containsKey(uuid)) {
+                    //render it
+                    renderSquadNames(name, uuid);
+                }
+                return squadNameCache2.get(uuid);
+            }
+        }
+
+        return "";
+    }
+
+    private void renderSquadNames(String name, UUID uuid){
+
+
+        List<LineData> data = List.of(
+                new LineData(name, 0)
+
+        );
+
+        squadNameCache0.put(uuid, stringRenderer.render(layoutEngine.layout(data), -89));
+        squadNameCache1.put(uuid, stringRenderer.render(layoutEngine.layout(data), -125));
+        squadNameCache2.put(uuid, stringRenderer.render(layoutEngine.layout(data), -161));
     }
 
 

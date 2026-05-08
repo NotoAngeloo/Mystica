@@ -16,13 +16,11 @@ public class PapiHook extends PlaceholderExpansion {
     private final MysticaEntityGrabber mysticaEntityGrabber;
     private final DamageBoardPlaceholders damageBoardPlaceholders;
     private final ProfileManager profileManager;
-    private final TargetManager targetManager;
 
     public PapiHook(Mystica main){
         mysticaEntityGrabber = new MysticaEntityGrabber(main);
         damageBoardPlaceholders = main.getHudManager().getDamageBoardPlaceholders();
         profileManager = main.getProfileManager();
-        targetManager = main.getTargetManager();
     }
 
     @Override

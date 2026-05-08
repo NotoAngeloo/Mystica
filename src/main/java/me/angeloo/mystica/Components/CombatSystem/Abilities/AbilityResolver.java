@@ -17,8 +17,6 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Warrior.Glad
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
-import org.bukkit.Bukkit;
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -164,7 +162,7 @@ public class AbilityResolver implements AbilityLookup{
         ultimates.put(SubClass.Arcane, new ArcaneMissiles(main, manager));
         ultimates.put(SubClass.Shepard, new Enlightenment(main, manager));
         ultimates.put(SubClass.Chaos, new EvilSpirit(main, manager));
-        ultimates.put(SubClass.Templar, new SanctityShield(main, manager));
+        ultimates.put(SubClass.Templar, new SanctityShield(main));
         ultimates.put(SubClass.Dawn, new LightWell(main, manager));
         ultimates.put(SubClass.Divine, new Representative(main, manager));
         ultimates.put(SubClass.Scout, new StarVolley(main, manager));

@@ -14,6 +14,8 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.DamageType;
+import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -181,7 +183,7 @@ public class RangerBasic implements BasicAttackDefinition {
                     cancelTask();
 
                     boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                    double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
+                    double damage = damageCalculator.calculateDamage(caster, target, DamageType.Physical, finalSkillDamage, crit, 0);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
@@ -220,6 +222,14 @@ public class RangerBasic implements BasicAttackDefinition {
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
+        boolean scout = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Scout);
+        boolean active = statusEffectManager.hasEffect(caster, "rallying_cry");
+
+        double crit_bonus = 0;
+
+        if(scout && active){
+            crit_bonus = 1.2;
+        }
 
         Location start = caster.getLocation();
         start.subtract(0, 1, 0);
@@ -243,6 +253,7 @@ public class RangerBasic implements BasicAttackDefinition {
 
 
         double finalSkillDamage = getSkillDamage(caster);
+        double finalCrit_bonus = crit_bonus;
         new BukkitRunnable(){
             Location targetWasLoc = target.getLocation().clone().subtract(0,1,0);
             @Override
@@ -277,12 +288,12 @@ public class RangerBasic implements BasicAttackDefinition {
                     cancelTask();
 
                     boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                    double damage = damageCalculator.calculateDamage(caster, target, "Physical", finalSkillDamage, crit);
+                    double damage = damageCalculator.calculateDamage(caster, target, DamageType.Physical, finalSkillDamage, crit, finalCrit_bonus);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
-                    if(statusEffectManager.hasEffect(caster, "rallying_cry")) {
+                    if(active) {
                         if(profileManager.getAnyProfile(target).getIsMovable()){
                             Vector awayDirection = target.getLocation().toVector().subtract(caster.getLocation().toVector()).normalize();
                             Vector velocity = awayDirection.multiply(.75).add(new Vector(0, .5, 0));

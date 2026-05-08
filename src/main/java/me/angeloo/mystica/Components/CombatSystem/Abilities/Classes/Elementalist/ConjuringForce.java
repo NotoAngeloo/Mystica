@@ -205,5 +205,8 @@ public class ConjuringForce extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), abilityNumber, statusEffectManager.getHastePercent(caster));
     }
 
-
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue3c4";
+    }
 }

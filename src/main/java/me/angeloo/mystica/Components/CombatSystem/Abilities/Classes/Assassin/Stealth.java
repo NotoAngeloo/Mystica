@@ -12,6 +12,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.BarType;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import me.angeloo.mystica.Utility.Logic.StealthTargetBlacklist;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -183,7 +184,7 @@ public class Stealth extends BaseAbility {
 
 
         boolean crit = damageCalculator.checkIfCrit(caster, 0);
-        double damage = damageCalculator.calculateDamage(caster, victim, "Physical", getSkillDamage(caster), crit);
+        double damage = damageCalculator.calculateDamage(caster, victim, DamageType.Physical, getSkillDamage(caster), crit, 0);
         combo.addComboPoint(caster);
         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(victim, caster));
         changeResourceHandler.subtractHealthFromEntity(victim, damage, caster, crit);
@@ -220,18 +221,14 @@ public class Stealth extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 8, statusEffectManager.getHastePercent(caster));
     }
 
-    //TODO: when making icons, display a different if stealthed
 
-    /*public int returnWhichItem(Player player){
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
 
-        if(getIfStealthed(player)){
-            return 1;
+        if(getIfStealthed(entity)){
+            return "\ue3c0";
         }
 
-        return 0;
-    }*/
-
-
-
-
+        return "\ue3bf";
+    }
 }

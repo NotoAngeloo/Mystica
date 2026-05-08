@@ -21,7 +21,7 @@ public class NoneAbilities implements AbilitySet {
         //noneRoll = new NoneRoll(main, manager);
         //kick = new Kick(main, manager);
 
-        abilities.put(1, new Kick(main, manager));
+        abilities.put(1, new Kick(main));
         abilities.put(2, new Dash(main, manager));
         abilities.put(3, new NoneRoll(main, manager));
 

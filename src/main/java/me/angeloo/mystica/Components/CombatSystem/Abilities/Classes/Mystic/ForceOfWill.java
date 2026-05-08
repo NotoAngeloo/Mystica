@@ -11,6 +11,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -287,7 +288,7 @@ public class ForceOfWill extends BaseAbility {
                 }
 
                 boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                double damage = damageCalculator.calculateDamage(caster, target, "Magical", skillDamage, crit);
+                double damage = damageCalculator.calculateDamage(caster, target, DamageType.Magical, skillDamage, crit, 0);
                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
 
                 if(target instanceof Player){
@@ -370,5 +371,10 @@ public class ForceOfWill extends BaseAbility {
         }
 
         return cooldownManager.isReady(caster.getUniqueId(), 3, statusEffectManager.getHastePercent(caster));
+    }
+
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue3d9";
     }
 }

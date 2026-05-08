@@ -12,6 +12,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.BossManager;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
@@ -47,7 +48,6 @@ public class FieryMagma extends BaseAbility {
     private final CooldownManager cooldownManager;
 
     private final Heat heat;
-    //private final FieryWing fieryWing;
 
     private final int baseCooldown = 10;
     private final double range = 20;
@@ -162,7 +162,7 @@ public class FieryMagma extends BaseAbility {
                     cancelTask();
 
                     boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                    double damage = damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage, crit);
+                    double damage = damageCalculator.calculateDamage(caster, target, DamageType.Magical, finalSkillDamage, crit, 0);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
@@ -235,7 +235,7 @@ public class FieryMagma extends BaseAbility {
                         }
 
                         boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                        double tickDamage = damageCalculator.calculateDamage(caster, target, "Magical", burn, crit);
+                        double tickDamage = damageCalculator.calculateDamage(caster, target, DamageType.Magical, burn, crit, 0);
 
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                         changeResourceHandler.subtractHealthFromEntity(target, tickDamage, caster, crit);
@@ -289,7 +289,7 @@ public class FieryMagma extends BaseAbility {
                                 hitBySkill.add(livingEntity);
 
                                 boolean crit2 = damageCalculator.checkIfCrit(caster, 0);
-                                double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Magical", finalSkillDamage, crit2));
+                                double damage = (damageCalculator.calculateDamage(caster, livingEntity, DamageType.Magical, finalSkillDamage, crit2, 0));
 
                                 //pvp logic
                                 if(entity instanceof Player){
@@ -352,5 +352,10 @@ public class FieryMagma extends BaseAbility {
         }
 
         return cooldownManager.isReady(caster.getUniqueId(), 2, statusEffectManager.getHastePercent(caster));
+    }
+
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue3ca";
     }
 }

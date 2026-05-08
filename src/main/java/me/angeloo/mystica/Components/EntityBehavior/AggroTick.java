@@ -55,6 +55,7 @@ public class AggroTick {
 
                 for(LivingEntity attacker : originalAttackerList){
 
+                    //all attacker in combat
                     Bukkit.getScheduler().runTask(main, () ->{
                         playerCombatManager.startCombatTimer(attacker);
                     });

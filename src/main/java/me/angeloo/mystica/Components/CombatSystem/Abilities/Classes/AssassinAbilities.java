@@ -4,7 +4,6 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.*;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BasicAttacks.BasicAttackDefinition;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Assassin.*;
 import me.angeloo.mystica.Mystica;
-import org.bukkit.entity.LivingEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +23,7 @@ public class AssassinAbilities implements AbilitySet {
         abilities.put(2, new Laceration(main, manager));
         abilities.put(3, new WeaknessStrike(main, manager));
         abilities.put(4, new Pierce(main, manager));
-        abilities.put(5, new Dash(main, manager));
+        abilities.put(5, new Dash(main));
         abilities.put(6, new BladeTempest(main, manager));
         abilities.put(7, new FlyingBlade(main, manager));
         abilities.put(8, new Stealth(main, manager));

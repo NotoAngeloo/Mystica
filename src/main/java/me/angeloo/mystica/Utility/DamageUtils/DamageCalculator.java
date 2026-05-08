@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectMa
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Components.ProfileComponents.Profile;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -19,19 +20,19 @@ public class DamageCalculator {
         statusEffectManager = main.getStatusEffectManager();
     }
 
-    public boolean checkIfCrit(LivingEntity caster, int bonus){
+    public boolean checkIfCrit(LivingEntity caster, int crit_bonus_chance){
 
         Profile playerProfile = profileManager.getAnyProfile(caster);
 
         int random = (int) (Math.random() * 100) + 1;
 
-        bonus = bonus + statusEffectManager.getCritBuffAmount(caster);
+        crit_bonus_chance = crit_bonus_chance + statusEffectManager.getCritBuffAmount(caster);
 
-        if(random <= (playerProfile.getTotalCrit()) + bonus){
+        if(random <= (playerProfile.getTotalCrit()) + crit_bonus_chance){
             statusEffectManager.removeEffect(caster, "light_well");
         }
 
-        return random <= (playerProfile.getTotalCrit()) + bonus;
+        return random <= (playerProfile.getTotalCrit()) + crit_bonus_chance;
     }
 
     public double calculateHealing(LivingEntity healer, double amount, boolean crit){
@@ -69,7 +70,8 @@ public class DamageCalculator {
         return amount;
     }
 
-    public double calculateDamage(LivingEntity damager, LivingEntity entity, String type, double damage, boolean crit){
+    //here, skill crit bonus multiplier can be passed in
+    public double calculateDamage(LivingEntity damager, LivingEntity entity, DamageType type, double damage, boolean crit, double crit_bonus_multiplier){
 
         if(statusEffectManager.hasEffect(entity, "immune")){
             return 0.0;
@@ -81,7 +83,7 @@ public class DamageCalculator {
         double multiplierForCrit = 1;
 
         if(crit){
-            multiplierForCrit = 1.5;
+            multiplierForCrit = 1.5 + (1 * crit_bonus_multiplier);
             //maybe spawn particles on a crit here
         }
 
@@ -92,7 +94,7 @@ public class DamageCalculator {
 
         if(entity instanceof Player){
 
-            if(type.equalsIgnoreCase("Physical")){
+            if(type.equals(DamageType.Physical)){
 
                 attack = playerProfile.getTotalAttack() + attackBonus;
                 defence = enemyProfile.getTotalDefense();
@@ -109,7 +111,7 @@ public class DamageCalculator {
                 }
             }
 
-            if(type.equalsIgnoreCase("Magical")){
+            if(type.equals(DamageType.Magical)){
 
                 attack = playerProfile.getTotalAttack();
                 defence = enemyProfile.getTotalMagicDefense();
@@ -122,7 +124,7 @@ public class DamageCalculator {
 
         if(!(entity instanceof Player)){
 
-            if(type.equalsIgnoreCase("Physical")){
+            if(type.equals(DamageType.Physical)){
 
                 attack = playerProfile.getTotalAttack() + attackBonus;
                 defence = enemyProfile.getStats().getDefense();
@@ -138,7 +140,7 @@ public class DamageCalculator {
                 }
             }
 
-            if(type.equalsIgnoreCase("Magical")){
+            if(type.equals(DamageType.Magical)){
 
                 attack = playerProfile.getTotalAttack();
                 defence = enemyProfile.getStats().getMagic_Defense();
@@ -154,7 +156,7 @@ public class DamageCalculator {
     }
 
 
-    public double calculateGettingDamaged(LivingEntity hitEntity, LivingEntity damager, String type, double damage){
+    public double calculateGettingDamaged(LivingEntity hitEntity, LivingEntity damager, DamageType type, double damage){
 
         if(statusEffectManager.hasEffect(hitEntity, "immune")){
             return 0.0;
@@ -176,7 +178,7 @@ public class DamageCalculator {
         }
 
 
-        if(type.equalsIgnoreCase("Physical")){
+        if(type.equals(DamageType.Physical)){
 
             attack = enemyProfile.getStats().getAttack() + attackBonus;
             defence = playerProfile.getTotalDefense();
@@ -193,7 +195,7 @@ public class DamageCalculator {
 
         }
 
-        if(type.equalsIgnoreCase("Magical")){
+        if(type.equals(DamageType.Magical)){
 
             attack = enemyProfile.getStats().getAttack();
             defence = playerProfile.getTotalMagicDefense();

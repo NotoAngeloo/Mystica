@@ -12,6 +12,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
@@ -97,7 +98,7 @@ public class ChaosLash extends BaseAbility {
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        if(statusEffectManager.hasEffect(target, "plague_curse")){
+        if(statusEffectManager.hasEffect(target, "chaos_lash")){
             lookup.get(PlayerClass.Mystic, SubClass.Chaos, -1).onExternalTrigger(caster, 2);
         }
 
@@ -205,7 +206,7 @@ public class ChaosLash extends BaseAbility {
                             armorStand.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, current.add(0,2,0), 1, 0, 0, 0, 0);
 
                             boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                            double damage = damageCalculator.calculateDamage(caster, target, "Magical", finalSkillDamage, crit);
+                            double damage = damageCalculator.calculateDamage(caster, target, DamageType.Magical, finalSkillDamage, crit, 1.2);
 
                             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                             changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);

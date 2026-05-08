@@ -148,13 +148,13 @@ public class Enlightenment extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), -1, statusEffectManager.getHastePercent(caster));
     }
 
-    /*public int returnWhichItem(Player player){
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
 
-        if(mana.getCurrentMana(player)<getCost()){
-            return 6;
+        if (mana.getCurrentMana(entity)<cost) {
+            return "\ue3d8";
         }
 
-        return 0;
-    }*/
-
+        return "\ue3d7";
+    }
 }

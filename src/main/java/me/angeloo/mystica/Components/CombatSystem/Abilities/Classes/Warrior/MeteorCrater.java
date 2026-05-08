@@ -13,6 +13,8 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.DamageType;
+import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -88,6 +90,14 @@ public class MeteorCrater extends BaseAbility {
 
     private void execute(LivingEntity caster){
 
+        boolean executioner = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Executioner);
+
+        double crit_bonus = 0;
+
+        if(executioner){
+            crit_bonus = 1.2;
+        }
+
         double baseRange = 8;
 
         targetManager.setTargetToNearestValid(caster, baseRange);
@@ -141,6 +151,7 @@ public class MeteorCrater extends BaseAbility {
         //abilityManager.setSkillRunning(player, true);
         double finalSkillDamage = getSkillDamage(caster);
         Vector finalDirection = direction;
+        double finalCrit_bonus = crit_bonus;
         new BukkitRunnable(){
             ArmorStand stand;
             int count = 0;
@@ -260,7 +271,7 @@ public class MeteorCrater extends BaseAbility {
                             bonus = 1.3;
                         }
 
-                        double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Physical", finalSkillDamage * bonus, crit));
+                        double damage = (damageCalculator.calculateDamage(caster, livingEntity, DamageType.Physical, finalSkillDamage * bonus, crit, finalCrit_bonus));
 
                         //pvp logic
                         if(entity instanceof Player){

@@ -20,7 +20,7 @@ public class ShadowKnightAbilities implements AbilitySet {
 
         basic = new ShadowKnightBasic(main, manager, lookup);
 
-        abilities.put(1, new Infection(main, manager));
+        abilities.put(1, new Infection(main));
         abilities.put(2, new SpiritualAttack(main, manager));
         abilities.put(3, new BurialGround(main, manager));
         abilities.put(4, new Bloodsucker(main, manager));

@@ -12,6 +12,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
@@ -258,7 +259,7 @@ public class WildSpirit extends BaseAbility {
 
                 }
 
-                double damage = damageCalculator.calculateDamage(caster, wolfTarget, "Physical", finalSkillDamage, crit);
+                double damage = damageCalculator.calculateDamage(caster, wolfTarget, DamageType.Physical, finalSkillDamage, crit, 0);
 
                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(wolfTarget, caster));
                 changeResourceHandler.subtractHealthFromEntity(wolfTarget, damage, caster, crit);

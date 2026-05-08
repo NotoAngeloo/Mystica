@@ -257,11 +257,16 @@ public class ArcaneContract extends BaseAbility {
             }
 
         }.runTaskLater(main, 60);
-        //3 seconds later
-
-
 
     }
 
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
 
+        if(mana.getCurrentMana(entity)<cost){
+            return "\ue3d0";
+        }
+
+        return "\ue3cf";
+    }
 }

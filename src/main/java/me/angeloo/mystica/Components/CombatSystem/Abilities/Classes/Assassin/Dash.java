@@ -16,7 +16,7 @@ public class Dash extends BaseAbility {
     private final StatusEffectManager statusEffectManager;
     private final CooldownManager cooldownManager;
 
-    public Dash(Mystica main, AbilityManager manager){
+    public Dash(Mystica main){
         super("dash");
         this.main = main;
         statusEffectManager = main.getStatusEffectManager();
@@ -67,4 +67,8 @@ public class Dash extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 5, statusEffectManager.getHastePercent(caster));
     }
 
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue3b8";
+    }
 }

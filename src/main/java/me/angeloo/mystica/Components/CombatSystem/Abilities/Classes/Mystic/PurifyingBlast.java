@@ -13,6 +13,7 @@ import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -198,7 +199,7 @@ public class PurifyingBlast extends BaseAbility {
                     hitBySkill.add(livingEntity);
 
                     boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                    double damage = (damageCalculator.calculateDamage(caster, livingEntity, "Magical", finalSkillDamage, crit));
+                    double damage = (damageCalculator.calculateDamage(caster, livingEntity, DamageType.Magical, finalSkillDamage, crit, 0));
 
                     //pvp logic
                     if(entity instanceof Player){
@@ -273,15 +274,13 @@ public class PurifyingBlast extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 2, statusEffectManager.getHastePercent(caster));
     }
 
-    /*public int returnWhichItem(Player player){
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
 
-        if(mana.getCurrentMana(player)<getCost()){
-
-            //Bukkit.getLogger().info("player doesnt have enough mana, adding model daat by 10");
-
-            return 10;
+        if (mana.getCurrentMana(entity)<cost) {
+            return "\ue3de";
         }
 
-        return 0;
-    }*/
+        return "\ue3dd";
+    }
 }

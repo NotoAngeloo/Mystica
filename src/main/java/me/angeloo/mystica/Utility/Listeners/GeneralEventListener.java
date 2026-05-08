@@ -29,6 +29,7 @@ import me.angeloo.mystica.Utility.*;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.BarType;
+import me.angeloo.mystica.Utility.Enums.DamageType;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import net.md_5.bungee.api.ChatColor;
@@ -934,25 +935,16 @@ public class GeneralEventListener implements Listener {
             switch (barType) {
 
                 case Resource -> {
-                    //hudManager.editResourceBar(player);
                     hudManager.updateResourceBar(player);
-                    //Bukkit.getLogger().info("update resource");
                     return;
                 }
 
                 case Target -> {
                     hudManager.updateTargetData(player);
-                    //Bukkit.getLogger().info("update target");
-                    return;
-                }
-                case Dps -> {
-                    //hudManager.getDamageBoardPlaceholders().updateDamageBoardValues(player);
-                    //Bukkit.getLogger().info("update dps");
                     return;
                 }
                 case Health -> {
                     hudManager.updateHealthBar(player);
-                    //Bukkit.getLogger().info("update health");
                     return;
                 }
                 case Cast -> {
@@ -999,7 +991,7 @@ public class GeneralEventListener implements Listener {
                 }
 
                 damage = 1.0;
-                Double actualDamage = damageCalculator.calculateGettingDamaged(player, attacker, "Physical", damage);
+                Double actualDamage = damageCalculator.calculateGettingDamaged(player, attacker, DamageType.Physical, damage);
                 changeResourceHandler.subtractHealthFromEntity(player, actualDamage, attacker, false);
             }
             else{
@@ -1530,7 +1522,6 @@ public class GeneralEventListener implements Listener {
         for(LivingEntity member : oldMParty){
             if(member instanceof Player player){
                 mysticaPartyManager.updateMysticaParty(player);
-                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, Dps));
             }
 
         }
@@ -1544,8 +1535,6 @@ public class GeneralEventListener implements Listener {
 
         double max = profileManager.getAnyProfile(companion).getTotalHealth();
         changeResourceHandler.addHealthToEntity(companion, max, null);
-
-        Player player = profileManager.getCompanionsPlayer(companion);
 
     }
 

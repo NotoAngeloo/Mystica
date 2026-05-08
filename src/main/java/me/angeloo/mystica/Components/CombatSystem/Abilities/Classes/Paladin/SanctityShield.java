@@ -21,7 +21,7 @@ public class SanctityShield extends BaseAbility {
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
 
-    public SanctityShield(Mystica main, AbilityManager manager){
+    public SanctityShield(Mystica main){
         super("sanctity_shield");
         this.main = main;
         profileManager = main.getProfileManager();

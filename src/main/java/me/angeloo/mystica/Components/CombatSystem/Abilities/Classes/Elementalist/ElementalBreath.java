@@ -23,7 +23,7 @@ public class ElementalBreath extends BaseAbility {
 
     //private final Map<UUID, Integer> buffActiveMap = new HashMap<>();
 
-    public ElementalBreath(Mystica main, AbilityManager manager){
+    public ElementalBreath(Mystica main){
         super("elemental_breath");
         this.main = main;
         profileManager = main.getProfileManager();
@@ -149,4 +149,8 @@ public class ElementalBreath extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 7, statusEffectManager.getHastePercent(caster));
     }
 
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue3c7";
+    }
 }

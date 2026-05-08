@@ -59,7 +59,6 @@ public class DpsManager {
         saved = saved + damage;
         totalDamage.put(entity.getUniqueId(), saved);
 
-        updateDpsMeter(entity);
     }
 
 
@@ -94,18 +93,5 @@ public class DpsManager {
 
 
 
-    private void updateDpsMeter(LivingEntity entity){
-
-        List<LivingEntity> mParty = new ArrayList<>(mysticaPartyManager.getMysticaParty(entity));
-
-        for(LivingEntity member : mParty){
-            if(member instanceof Player){
-                Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(member, BarType.Dps));
-            }
-        }
-
-
-
-    }
 
 }

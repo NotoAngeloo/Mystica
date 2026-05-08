@@ -25,7 +25,7 @@ public class MysticAbilities implements AbilitySet {
         abilities.put(2, new PurifyingBlast(main, manager));
         abilities.put(3, new ForceOfWill(main, manager));
         abilities.put(4, new Dreadfall(main, manager));
-        abilities.put(5, new Warp(main, manager));
+        abilities.put(5, new VoidWalk(main));
         abilities.put(6, new Aurora(main, manager));
         abilities.put(7, new ArcaneContract(main, manager));
         abilities.put(8, new LightSigil(main, manager));

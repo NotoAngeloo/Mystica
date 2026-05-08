@@ -286,4 +286,8 @@ public class Soulcrack extends BaseAbility {
         }
     }
 
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue40a";
+    }
 }

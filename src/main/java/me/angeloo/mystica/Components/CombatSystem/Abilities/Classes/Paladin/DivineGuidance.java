@@ -383,4 +383,8 @@ public class DivineGuidance extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 2, statusEffectManager.getHastePercent(caster));
     }
 
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue3e2";
+    }
 }

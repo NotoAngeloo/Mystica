@@ -46,7 +46,7 @@ public class WarriorBasic implements BasicAttackDefinition {
     private final Rage rage;
 
 
-    public WarriorBasic(Mystica main, AbilityManager manager, AbilityLookup lookup){
+    public WarriorBasic(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
@@ -432,6 +432,8 @@ public class WarriorBasic implements BasicAttackDefinition {
         return 14 + ((int)(level/3));
     }
 
-
-
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue41b";
+    }
 }

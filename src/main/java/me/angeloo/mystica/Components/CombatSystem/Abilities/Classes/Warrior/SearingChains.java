@@ -493,4 +493,8 @@ public class SearingChains extends BaseAbility {
         return block.getType() != Material.AIR;
     }
 
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue419";
+    }
 }

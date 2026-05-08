@@ -257,5 +257,8 @@ public class ShadowKnightBasic implements BasicAttackDefinition {
         return 14 + ((int)(level/3));
     }
 
-
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue409";
+    }
 }

@@ -24,7 +24,7 @@ public class RallyingCry extends BaseAbility {
     private final StatusEffectManager statusEffectManager;
     private final CooldownManager cooldownManager;
 
-    public RallyingCry(Mystica main, AbilityManager manager){
+    public RallyingCry(Mystica main){
         super("rallying_cry");
         this.main = main;
         profileManager = main.getProfileManager();
@@ -119,4 +119,8 @@ public class RallyingCry extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 6, statusEffectManager.getHastePercent(caster));
     }
 
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue3f6";
+    }
 }

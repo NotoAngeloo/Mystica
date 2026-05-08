@@ -24,9 +24,9 @@ public class RangerAbilities implements AbilitySet {
         abilities.put(3, new Relentless(main, manager));
         abilities.put(4, new RazorWind(main, manager));
         abilities.put(5, new BlessedArrow(main, manager));
-        abilities.put(6, new RallyingCry(main, manager));
+        abilities.put(6, new RallyingCry(main));
         abilities.put(7, new WildSpirit(main, manager));
-        abilities.put(8, new Roll(main, manager));
+        abilities.put(8, new Roll(main));
 
         for(Ability ability : abilities.values()){
             if(ability instanceof BaseAbility base){

@@ -274,5 +274,8 @@ public class Judgement extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 8, statusEffectManager.getHastePercent(caster));
     }
 
-
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue3e7";
+    }
 }

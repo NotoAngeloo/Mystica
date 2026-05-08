@@ -335,13 +335,14 @@ public class ShadowGrip extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 6, statusEffectManager.getHastePercent(caster));
     }
 
-    /*public int returnWhichItem(Player player){
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
 
-        if(energy.getCurrentEnergy(player)<getCost()){
-            return 8;
+        if(energy.getCurrentEnergy(entity)<cost){
+            return "\ue408";
         }
 
-        return 0;
-    }*/
 
+        return "\ue407";
+    }
 }

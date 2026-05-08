@@ -239,5 +239,8 @@ public class Infection extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 1, statusEffectManager.getHastePercent(caster));
     }
 
-
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue406";
+    }
 }

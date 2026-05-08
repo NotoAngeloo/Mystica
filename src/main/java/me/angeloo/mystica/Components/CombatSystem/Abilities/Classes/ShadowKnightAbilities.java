@@ -26,7 +26,7 @@ public class ShadowKnightAbilities implements AbilitySet {
         abilities.put(4, new Bloodsucker(main, manager));
         abilities.put(5, new SoulReap(main, manager));
         abilities.put(6, new ShadowGrip(main, manager));
-        abilities.put(7, new SpectralSteed(main, manager));
+        abilities.put(7, new SpectralSteed(main));
         abilities.put(8, new  Soulcrack(main, manager));
 
 

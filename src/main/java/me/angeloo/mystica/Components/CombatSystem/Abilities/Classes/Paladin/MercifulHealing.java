@@ -179,7 +179,7 @@ public class MercifulHealing extends BaseAbility {
                     double z = center.getZ() + (1 * Math.sin(angle));
                     Location loc = new Location(center.getWorld(), x, (center.getY()), z);
 
-                    target.getWorld().spawnParticle(Particle.HEART, loc, 1,0, 0, 0, 0);
+                    target.getWorld().spawnParticle(Particle.WAX_OFF, loc, 1,0, 0, 0, 0);
                 }
 
             }
@@ -274,4 +274,8 @@ public class MercifulHealing extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 2, statusEffectManager.getHastePercent(caster));
     }
 
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue3ea";
+    }
 }

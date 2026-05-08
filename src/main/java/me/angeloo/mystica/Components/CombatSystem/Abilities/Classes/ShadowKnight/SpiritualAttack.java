@@ -40,7 +40,6 @@ public class SpiritualAttack extends BaseAbility {
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
-    private final PlayerStateManager playerStateManager;
 
     private final Energy energy;
 
@@ -56,7 +55,6 @@ public class SpiritualAttack extends BaseAbility {
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = main.getCooldownManager();
         energy = manager.getEnergy();
-        playerStateManager = manager.getPlayerStateManager();
     }
 
     private final int baseCooldown = 0;
@@ -255,13 +253,13 @@ public class SpiritualAttack extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 2, statusEffectManager.getHastePercent(caster));
     }
 
-    /*public int returnWhichItem(Player player){
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
 
-        if(energy.getCurrentEnergy(player)<getCost()){
-            return 9;
+        if(energy.getCurrentEnergy(entity)<cost){
+            return "\ue40f";
         }
 
-        return 0;
-    }*/
-
+        return "\ue40e";
+    }
 }

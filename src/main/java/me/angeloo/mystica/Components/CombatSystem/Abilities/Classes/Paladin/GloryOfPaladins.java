@@ -199,4 +199,8 @@ public class GloryOfPaladins extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 6, statusEffectManager.getHastePercent(caster));
     }
 
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue3e5";
+    }
 }

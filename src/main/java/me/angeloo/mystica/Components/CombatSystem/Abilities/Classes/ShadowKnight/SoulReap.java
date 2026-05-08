@@ -390,5 +390,14 @@ public class SoulReap extends BaseAbility {
         return cooldownManager.isReady(caster.getUniqueId(), 5, statusEffectManager.getHastePercent(caster));
     }
 
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
 
+        if(energy.getCurrentEnergy(entity)<cost){
+            return "\ue40c";
+        }
+
+
+        return "\ue40b";
+    }
 }

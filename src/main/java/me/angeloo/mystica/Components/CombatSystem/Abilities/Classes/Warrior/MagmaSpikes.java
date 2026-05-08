@@ -394,4 +394,8 @@ public class MagmaSpikes extends BaseAbility {
         return block.getType() != Material.AIR;
     }
 
+    @Override
+    public String skillBarIcon(LivingEntity entity) {
+        return "\ue416";
+    }
 }

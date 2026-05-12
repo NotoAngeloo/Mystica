@@ -1,7 +1,6 @@
 package me.angeloo.mystica.Components.ProfileComponents;
 
 import me.angeloo.mystica.Components.Guis.Storage.MysticaBagCollection;
-import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
 import me.angeloo.mystica.Utility.Enums.PlayerClass;
@@ -50,7 +49,7 @@ public interface Profile {
     EquipSkills getEquipSkills();
 
     Boolean getIsPassive();
-    Boolean getIsMovable();
+    Boolean canBeHardCCed();
 
     Boolean getImmortality();
 

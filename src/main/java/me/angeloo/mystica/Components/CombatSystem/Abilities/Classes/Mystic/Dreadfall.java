@@ -195,12 +195,7 @@ public class Dreadfall extends BaseAbility {
                             if(pvpManager.pvpLogic(caster, (Player) entity)){
                                 changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
 
-                                if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
-                                    Vector velocity = (new Vector(0, .5, 0));
-                                    livingEntity.setVelocity(velocity);
-
-                                    statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, null, caster);
-                                }
+                                statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, .5, caster);
 
                                 if(arcane && crit){
                                     double fifteenPercent = (double) profileManager.getAnyProfile(caster).getTotalAttack() * .15;
@@ -215,11 +210,7 @@ public class Dreadfall extends BaseAbility {
                             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
                             changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
 
-                            if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
-                                Vector velocity = (new Vector(0, .5, 0));
-                                livingEntity.setVelocity(velocity);
-                                statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, null, caster);
-                            }
+                            statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, .5, caster);
 
                             if(arcane && crit){
                                 double fifteenPercent = (double) profileManager.getAnyProfile(caster).getTotalAttack() * .15;

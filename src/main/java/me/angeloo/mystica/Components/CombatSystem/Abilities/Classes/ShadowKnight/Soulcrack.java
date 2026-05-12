@@ -213,12 +213,7 @@ public class Soulcrack extends BaseAbility {
                         if(pvpManager.pvpLogic(caster, (Player) entity)){
                             changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
 
-                            if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
-                                Vector awayDirection = entity.getLocation().toVector().subtract(caster.getLocation().toVector()).normalize();
-                                Vector velocity = awayDirection.multiply(.75).add(new Vector(0, .5, 0));
-                                livingEntity.setVelocity(velocity);
-                                statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, null, caster);
-                            }
+                            statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, .5, caster);
 
                         }
                         continue;
@@ -228,12 +223,7 @@ public class Soulcrack extends BaseAbility {
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
                         changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
 
-                        if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
-                            Vector awayDirection = entity.getLocation().toVector().subtract(caster.getLocation().toVector()).normalize();
-                            Vector velocity = awayDirection.multiply(.75).add(new Vector(0, .5, 0));
-                            livingEntity.setVelocity(velocity);
-                            statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, null, caster);
-                        }
+                        statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, .5, caster);
 
                     }
 

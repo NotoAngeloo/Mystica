@@ -271,6 +271,7 @@ public class DuranceOfTruth extends BaseAbility {
                         }
 
                         statusEffectManager.applyEffect(hitEntity, new Silence(), 20*3, null, caster);
+
                         toRemove.add(hitEntity);
                     }
 

@@ -2,6 +2,8 @@ package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifie
 
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffect;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ApplicationBehavior;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusInstance;
+import org.bukkit.entity.LivingEntity;
 
 public class ModestDebuff implements StatusEffect {
 
@@ -23,4 +25,13 @@ public class ModestDebuff implements StatusEffect {
     @Override
     public int getDuration(){return 20*10;}
 
+    @Override
+    public int getPriority() {
+        return 4;
+    }
+
+    @Override
+    public String getIcon(LivingEntity entity, StatusInstance instance) {
+        return "\ue431";
+    }
 }

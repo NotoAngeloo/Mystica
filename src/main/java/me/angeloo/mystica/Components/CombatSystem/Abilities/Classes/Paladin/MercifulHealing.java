@@ -278,4 +278,9 @@ public class MercifulHealing extends BaseAbility {
     public String skillBarIcon(LivingEntity entity) {
         return "\ue3ea";
     }
+
+    @Override
+    public String statusBarIcon() {
+        return "\ue43a";
+    }
 }

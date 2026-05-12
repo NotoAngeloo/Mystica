@@ -325,10 +325,8 @@ public class SearingChains extends BaseAbility {
                                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
                                 changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster,crit);
                                 rage.addRageToEntity(caster, 10);
-                                if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
-                                    validCCTargets.add(livingEntity);
-                                    statusEffectManager.applyEffect(livingEntity, new Pulled(), null, null, caster);
-                                }
+                                validCCTargets.add(livingEntity);
+                                statusEffectManager.applyEffect(livingEntity, new Pulled(), null, null, caster);
                             }
 
                         }

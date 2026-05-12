@@ -148,8 +148,8 @@ public class ModestCalling extends BaseAbility {
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
                     statusEffectManager.applyEffect(target, new ModestDebuff(), null, finalMult, caster);
-                    statusEffectManager.applyEffect(target, new Sleep(), 15*20, null, caster);
 
+                    statusEffectManager.applyEffect(target, new Sleep(), 15*20, null, caster);
 
                     if(target instanceof Player){
                         statusEffectManager.removeEffect(target, "shield");

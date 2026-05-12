@@ -48,7 +48,12 @@ public class StatusEffectRenderer {
         for(StatusInstance instance : instances){
 
             if(instance instanceof ShieldInstance){
-                continue;
+
+                //special icon
+                if(!instance.getEffect().getId().equalsIgnoreCase("wind_wall")){
+                    continue;
+                }
+
             }
 
             StatusEffectRenderState state = new StatusEffectRenderState(instance);

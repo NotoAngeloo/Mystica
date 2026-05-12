@@ -1,6 +1,8 @@
-package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers;
+package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ClassSpecific;
 
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffect;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusInstance;
+import org.bukkit.entity.LivingEntity;
 
 public class BladeTempestCrit implements StatusEffect {
 
@@ -16,7 +18,7 @@ public class BladeTempestCrit implements StatusEffect {
 
     @Override
     public int getPriority() {
-        return 0;
+        return 2;
     }
 
     @Override
@@ -24,6 +26,8 @@ public class BladeTempestCrit implements StatusEffect {
         return 10;
     }
 
-
-
+    @Override
+    public String getIcon(LivingEntity entity, StatusInstance instance) {
+        return "\ue420";
+    }
 }

@@ -29,4 +29,18 @@ public class Sleep implements StatusEffect {
         return new SleepInstance(this, getDuration(), source);
     }
 
+    @Override
+    public int getPriority() {
+        return 4;
+    }
+
+    @Override
+    public String getIcon(LivingEntity entity, StatusInstance instance) {
+        return "\ue42a";
+    }
+
+    @Override
+    public boolean isHardCC() {
+        return true;
+    }
 }

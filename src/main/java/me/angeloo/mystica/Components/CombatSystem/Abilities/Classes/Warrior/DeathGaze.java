@@ -180,7 +180,7 @@ public class DeathGaze extends BaseAbility {
                     assert equipment != null;
                     equipment.setHelmet(hook);
 
-                    if(profileManager.getAnyProfile(target).getIsMovable()){
+                    if(profileManager.getAnyProfile(target).canBeHardCCed()){
                         valid = true;
                     }
                     //and damage here

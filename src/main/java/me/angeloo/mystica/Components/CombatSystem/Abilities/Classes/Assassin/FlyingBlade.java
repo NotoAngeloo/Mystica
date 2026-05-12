@@ -148,9 +148,7 @@ public class FlyingBlade extends BaseAbility {
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
-                    if(profileManager.getAnyProfile(target).getIsMovable()){
-                        statusEffectManager.applyEffect(target, new Stun(), 20, null, caster);
-                    }
+                    statusEffectManager.applyEffect(target, new Stun(), 20, null, caster);
 
                     if(target instanceof Player){
                         statusEffectManager.removeEffect(target, "shield");

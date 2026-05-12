@@ -22,7 +22,7 @@ public class Inflame implements StatusEffect {
 
     @Override
     public int getPriority(){
-        return 1;
+        return 2;
     }
 
     @Override
@@ -50,5 +50,10 @@ public class Inflame implements StatusEffect {
 
         }
 
+    }
+
+    @Override
+    public String getIcon(LivingEntity entity, StatusInstance instance) {
+        return "\ue425";
     }
 }

@@ -294,12 +294,7 @@ public class RangerBasic implements BasicAttackDefinition {
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
 
                     if(active) {
-                        if(profileManager.getAnyProfile(target).getIsMovable()){
-                            Vector awayDirection = target.getLocation().toVector().subtract(caster.getLocation().toVector()).normalize();
-                            Vector velocity = awayDirection.multiply(.75).add(new Vector(0, .5, 0));
-                            target.setVelocity(velocity);
-                            statusEffectManager.applyEffect(target, new KnockUp(), null, null, caster);
-                        }
+                        statusEffectManager.applyEffect(target, new KnockUp(), null, .5, caster);
                     }
 
                 }

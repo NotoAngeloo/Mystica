@@ -168,7 +168,7 @@ public class FakePlayerProfile implements Profile {
     }
 
     @Override
-    public Boolean getIsMovable() {
+    public Boolean canBeHardCCed() {
         return true;
     }
 

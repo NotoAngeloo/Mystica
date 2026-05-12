@@ -45,4 +45,13 @@ public class Infection_Enhanced implements StatusEffect {
 
     }
 
+    @Override
+    public int getPriority() {
+        return 2;
+    }
+
+    @Override
+    public String getIcon(LivingEntity entity, StatusInstance instance) {
+        return "\ue435";
+    }
 }

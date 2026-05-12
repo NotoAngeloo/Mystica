@@ -23,4 +23,13 @@ public class Silence implements StatusEffect {
         return true;
     }
 
+    @Override
+    public int getPriority() {
+        return 4;
+    }
+
+    @Override
+    public boolean isHardCC() {
+        return true;
+    }
 }

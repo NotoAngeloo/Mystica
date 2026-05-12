@@ -3,6 +3,7 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Elementalis
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageOverTime.Combust;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -156,9 +157,6 @@ public class FieryMagma extends BaseAbility {
 
                     lookup.get(PlayerClass.Elementalist, SubClass.Pyromancer, -1).onExternalTrigger(caster);
 
-                    //fieryWing.addInflame(caster);
-
-
                     cancelTask();
 
                     boolean crit = damageCalculator.checkIfCrit(caster, 0);
@@ -204,111 +202,7 @@ public class FieryMagma extends BaseAbility {
             }
 
             private void startBurningTask(){
-
-                double burn = finalSkillDamage * .1;
-
-                new BukkitRunnable(){
-                    int ticks = 0;
-                    @Override
-                    public void run(){
-
-                        if(bossManager.getIfResetProcessing(target)){
-                            this.cancel();
-                            return;
-                        }
-
-                        if(target.isDead()){
-                            this.cancel();
-                            return;
-                        }
-
-                        if(target instanceof Player){
-                            if(!((Player)target).isOnline()){
-                                this.cancel();
-                                return;
-                            }
-
-                            if(profileManager.getAnyProfile(target).getIfDead()){
-                                this.cancel();
-                                return;
-                            }
-                        }
-
-                        boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                        double tickDamage = damageCalculator.calculateDamage(caster, target, DamageType.Magical, burn, crit, 0);
-
-                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
-                        changeResourceHandler.subtractHealthFromEntity(target, tickDamage, caster, crit);
-
-                        ticks ++;
-
-
-                        if(ticks >=3){
-                            this.cancel();
-                            //explode
-                            Set<LivingEntity> hitBySkill = new HashSet<>();
-
-                            BoundingBox hitBox = new BoundingBox(
-                                    target.getLocation().getX() - 4,
-                                    target.getLocation().getY() - 2,
-                                    target.getLocation().getZ() - 4,
-                                    target.getLocation().getX() + 4,
-                                    target.getLocation().getY() + 4,
-                                    target.getLocation().getZ() + 4
-                            );
-
-                            double increment = (2 * Math.PI) / 16; // angle between particles
-
-                            for (int i = 0; i < 16; i++) {
-                                double angle = i * increment;
-                                double x = target.getLocation().getX() + (4 * Math.cos(angle));
-                                double z = target.getLocation().getZ() + (4 * Math.sin(angle));
-                                Location loc = new Location(target.getWorld(), x, (target.getLocation().getY()), z);
-
-                                target.getWorld().spawnParticle(Particle.FLAME, loc, 1,0, 0, 0, 0);
-                            }
-
-                            for (Entity entity : caster.getWorld().getNearbyEntities(hitBox)) {
-
-                                if(entity == caster){
-                                    continue;
-                                }
-
-                                if(!(entity instanceof LivingEntity livingEntity)){
-                                    continue;
-                                }
-
-                                if(entity instanceof ArmorStand){
-                                    continue;
-                                }
-
-                                if(hitBySkill.contains(livingEntity)){
-                                    continue;
-                                }
-
-                                hitBySkill.add(livingEntity);
-
-                                boolean crit2 = damageCalculator.checkIfCrit(caster, 0);
-                                double damage = (damageCalculator.calculateDamage(caster, livingEntity, DamageType.Magical, finalSkillDamage, crit2, 0));
-
-                                //pvp logic
-                                if(entity instanceof Player){
-                                    if(pvpManager.pvpLogic(caster, (Player) entity)){
-                                        changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit2);
-                                    }
-                                    continue;
-                                }
-
-                                if(pveChecker.pveLogic(livingEntity)){
-                                    Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
-                                    changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit2);
-                                }
-
-                            }
-
-                        }
-                    }
-                }.runTaskTimer(main, 0, 20);
+                statusEffectManager.applyEffect(target, new Combust(), null, finalSkillDamage, caster);
 
             }
 

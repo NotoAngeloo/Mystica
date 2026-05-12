@@ -22,7 +22,7 @@ public class StealthEffect implements StatusEffect {
     }
 
     @Override
-    public void onRemove(LivingEntity entity, StatusInstance instance){
+    public void onRemoveEffects(LivingEntity entity, StatusInstance instance, CombatContext combatContext){
         Bukkit.getServer().getPluginManager().callEvent(new RemoveStealthEffectEvent(entity));
     }
 

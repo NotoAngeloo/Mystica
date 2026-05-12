@@ -158,7 +158,7 @@ public class AbilityResolver implements AbilityLookup{
         ultimates.put(SubClass.Duelist, new DuelistsFrenzy(main, manager));
         ultimates.put(SubClass.Alchemist, new WickedConcoction(main, manager));
         ultimates.put(SubClass.Pyromancer, new FieryWing(main, manager));
-        ultimates.put(SubClass.Conjurer, new ConjuringForce(main, manager));
+        ultimates.put(SubClass.Conjurer, new ConjuringForce(main));
         ultimates.put(SubClass.Arcane, new ArcaneMissiles(main, manager));
         ultimates.put(SubClass.Shepard, new Enlightenment(main, manager));
         ultimates.put(SubClass.Chaos, new EvilSpirit(main, manager));

@@ -312,4 +312,9 @@ public class Relentless extends BaseAbility {
     public String skillBarIcon(LivingEntity entity) {
         return "\ue3f9";
     }
+
+    @Override
+    public String statusBarIcon() {
+        return "\ue43c";
+    }
 }

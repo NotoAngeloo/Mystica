@@ -76,7 +76,7 @@ public class Roll extends BaseAbility {
 
         //also give a shield and increase move speed
         if(caster instanceof Player){
-            statusEffectManager.applyEffect(caster, new SpeedUp(), null, 0.6, caster);
+            statusEffectManager.applyEffect(caster, new SpeedUp(), 100, 0.6, caster);
         }
 
 
@@ -85,10 +85,6 @@ public class Roll extends BaseAbility {
         new BukkitRunnable(){
             @Override
             public void run(){
-                if(caster instanceof Player){
-                    statusEffectManager.removeEffect(caster, "speed_up");
-                }
-
                 statusEffectManager.reduceShield(caster, finalShieldAmount);
             }
         }.runTaskLater(main, 100);

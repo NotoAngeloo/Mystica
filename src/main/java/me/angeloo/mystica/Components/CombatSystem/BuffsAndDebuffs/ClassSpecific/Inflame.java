@@ -45,7 +45,7 @@ public class Inflame implements StatusEffect {
                 return;
             }
 
-            context.getCooldownManager().clear(entity.getUniqueId(), -1);
+            context.cooldownManager().clear(entity.getUniqueId(), -1);
             instance.markForRemoval();
 
         }

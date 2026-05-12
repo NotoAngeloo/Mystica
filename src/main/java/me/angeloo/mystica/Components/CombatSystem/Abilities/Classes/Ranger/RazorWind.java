@@ -372,4 +372,9 @@ public class RazorWind extends BaseAbility {
     public String skillBarIcon(LivingEntity entity) {
         return "\ue3f8";
     }
+
+    @Override
+    public String statusBarIcon() {
+        return "\ue43d";
+    }
 }

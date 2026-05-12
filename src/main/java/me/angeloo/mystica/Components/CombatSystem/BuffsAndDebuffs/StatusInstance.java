@@ -6,6 +6,7 @@ public class StatusInstance {
 
     protected final StatusEffect effect;
     protected double magnitude; // fixed or per-instance bonus
+    protected int startingDurationTicks; //this is used for the hud displayer
     protected int remainingTicks;     // -1 for consumable effects / indefinite duration
     protected int livedTicks = 0; //for damage over time effects to NOT damage every tick sometimes
     protected final LivingEntity source; //source matters for damaging effects
@@ -15,6 +16,7 @@ public class StatusInstance {
 
     public StatusInstance(StatusEffect effect, int duration, double magnitude, LivingEntity source) {
         this.effect = effect;
+        this.startingDurationTicks = duration;
         this.remainingTicks = duration;
         this.magnitude = magnitude;
         this.source = source;
@@ -26,6 +28,10 @@ public class StatusInstance {
 
     public int getRemainingTicks() {
         return remainingTicks;
+    }
+
+    public int getStartingDurationTicks(){
+        return startingDurationTicks;
     }
 
     /**
@@ -57,8 +63,13 @@ public class StatusInstance {
         effect.onTick(entity, this, combatContext);
     }
 
-    public void onRemove(LivingEntity entity) {
-        effect.onRemove(entity, this);
+    //for effects that deal damage on expire
+    public void onRemoveEffects(LivingEntity entity, CombatContext combatContext) {
+        effect.onRemoveEffects(entity, this, combatContext);
+    }
+
+    public void onRemove(LivingEntity entity){
+        effect.onRemove(entity);
     }
 
     /**

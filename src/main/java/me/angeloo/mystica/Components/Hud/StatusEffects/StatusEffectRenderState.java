@@ -12,7 +12,8 @@ public class StatusEffectRenderState {
     public StatusEffectRenderState(StatusInstance instance) {
         this.effect = instance.getEffect();
         this.remainingTicks = instance.getRemainingTicks();
-        this.maxTicks = effect.getDuration(); // authoritative
+        this.maxTicks = instance.getStartingDurationTicks();
+        //this.maxTicks = effect.getDuration(); // authoritative
     }
 
     public boolean hasDuration() {

@@ -48,7 +48,7 @@ public class ElementalMatrix extends BaseAbility {
     private final CooldownManager cooldownManager;
 
 
-    public ElementalMatrix(Mystica main, AbilityManager manager){
+    public ElementalMatrix(Mystica main){
         super("elemental_matrix");
         this.main = main;
         profileManager = main.getProfileManager();

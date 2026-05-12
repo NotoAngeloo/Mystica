@@ -49,20 +49,8 @@ public class Dash extends BaseAbility {
 
 
         if(caster instanceof Player){
-            statusEffectManager.applyEffect(caster, new SpeedUp(), null, 0.5, caster);
+            statusEffectManager.applyEffect(caster, new SpeedUp(), 100, 0.5, caster);
         }
-
-
-
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-                if(caster instanceof Player){
-                    statusEffectManager.removeEffect(caster, "speed_up");
-                }
-
-            }
-        }.runTaskLater(main, 100);
 
     }
 

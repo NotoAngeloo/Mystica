@@ -32,7 +32,7 @@ public class ConjuringForce extends BaseAbility {
     private final int baseDamage = 10;
     private final int baseCooldown = 26;
 
-    public ConjuringForce(Mystica main, AbilityManager manager){
+    public ConjuringForce(Mystica main){
         super("conjuring_force");
         this.main = main;
         profileManager = main.getProfileManager();
@@ -41,7 +41,6 @@ public class ConjuringForce extends BaseAbility {
         cooldownManager = main.getCooldownManager();
     }
 
-    //TODO: conj force adds health if ur in it
 
     @Override
     public boolean use(LivingEntity caster){

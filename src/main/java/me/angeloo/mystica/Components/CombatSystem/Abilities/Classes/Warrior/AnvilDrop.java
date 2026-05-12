@@ -313,11 +313,7 @@ public class AnvilDrop extends BaseAbility {
             rage.addRageToEntity(caster, 10);
 
             //also knockup
-            if(profileManager.getAnyProfile(targetToHit).getIsMovable()){
-                Vector velocity = (new Vector(0, .75, 0));
-                targetToHit.setVelocity(velocity);
-                statusEffectManager.applyEffect(targetToHit, new KnockUp(), null, null, caster);
-            }
+            statusEffectManager.applyEffect(targetToHit, new KnockUp(), null, .75, caster);
         }
     }
 

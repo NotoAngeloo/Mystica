@@ -1292,6 +1292,7 @@ public class GeneralEventListener implements Listener {
         }
 
         targetManager.setPlayerTarget(player, null);
+        abilityManager.interruptBasic(player);
         combatManager.forceCombatEnd(player);
         Bukkit.getPluginManager().callEvent(new HudUpdateEvent(player, Target));
 

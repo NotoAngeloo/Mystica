@@ -71,7 +71,10 @@ public class PurifyingBlast extends BaseAbility {
             return false;
         }
 
-        mana.subTractManaFromEntity(caster, cost);
+        if(!statusEffectManager.hasEffect(caster, "free_cast")){
+            mana.subTractManaFromEntity(caster, cost);
+        }
+
 
         execute(caster);
 
@@ -88,7 +91,7 @@ public class PurifyingBlast extends BaseAbility {
 
         int castTime = 20;
 
-        if(statusEffectManager.hasEffect(caster, "instant_blast")){
+        if(statusEffectManager.hasEffect(caster, "free_cast")){
             blastTask(caster);
             return;
         }

@@ -41,4 +41,13 @@ public class SpeedUp implements StatusEffect {
         return ApplicationBehavior.REPLACE_SMALLER;
     }
 
+    @Override
+    public String getIcon(LivingEntity entity, StatusInstance instance) {
+        return "\ue421";
+    }
+
+    @Override
+    public int getPriority() {
+        return 4;
+    }
 }

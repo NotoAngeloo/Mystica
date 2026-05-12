@@ -2,6 +2,8 @@ package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifie
 
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffect;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ApplicationBehavior;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusInstance;
+import org.bukkit.entity.LivingEntity;
 
 public class FlamingSigilAttack implements StatusEffect {
 
@@ -31,4 +33,8 @@ public class FlamingSigilAttack implements StatusEffect {
         return true;
     }
 
+    @Override
+    public String getIcon(LivingEntity entity, StatusInstance instance) {
+        return "\ue42e";
+    }
 }

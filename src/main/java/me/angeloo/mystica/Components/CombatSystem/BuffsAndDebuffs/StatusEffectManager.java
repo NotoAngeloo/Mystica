@@ -1,5 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs;
 
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
+import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -12,12 +14,26 @@ import java.util.UUID;
 
 public class StatusEffectManager {
 
-
+    private final ProfileManager profileManager;
     private CombatContext combatContext;
 
     private final Map<UUID, Map<String, StatusInstance>> active = new HashMap<>();
 
+
+
+    public StatusEffectManager(Mystica main){
+        profileManager = main.getProfileManager();
+    }
+
     public void applyEffect(LivingEntity entity, StatusEffect effect, @Nullable Integer duration, @Nullable Double magnitude, @Nullable LivingEntity source) {
+
+        if(effect.isHardCC()){
+
+            if(!profileManager.getAnyProfile(entity).canBeHardCCed()){
+                return;
+            }
+
+        }
 
         //Bukkit.getLogger().info("trying to apply " + effect.getId());
 

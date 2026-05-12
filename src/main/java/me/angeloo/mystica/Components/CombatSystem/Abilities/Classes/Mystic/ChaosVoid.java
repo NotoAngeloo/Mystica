@@ -66,7 +66,6 @@ public class ChaosVoid extends BaseAbility {
 
         int castTime = 7 * 20;
 
-        //if stun doesnt work, maybe ill make a clone of stun
         statusEffectManager.applyEffect(caster, new Root(), castTime, null, caster);
 
         Location start = caster.getLocation().clone();

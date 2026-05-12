@@ -303,12 +303,6 @@ public class MeteorCrater extends BaseAbility {
             }
 
             private void stunEntity(LivingEntity target){
-
-                if(!profileManager.getAnyProfile(target).getIsMovable()){
-                    return;
-                }
-
-                //should be stun instead
                 statusEffectManager.applyEffect(target, new Stun(), 20, null, caster);
             }
 

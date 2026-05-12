@@ -18,8 +18,16 @@ public class Fear implements StatusEffect {
 
     @Override
     public StatusInstance createInstance(int duration, double magnitude, LivingEntity source) {
-        // Use our custom SleepInstance
         return new FearInstance(this, getDuration(), getMagnitude(), source);
     }
 
+    @Override
+    public int getPriority() {
+        return 4;
+    }
+
+    @Override
+    public boolean isHardCC() {
+        return true;
+    }
 }

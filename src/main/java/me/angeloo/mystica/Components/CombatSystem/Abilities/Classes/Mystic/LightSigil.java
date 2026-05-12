@@ -3,8 +3,7 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Mystic;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ClassSpecific.Instant_Blast;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Misc.FreeCast;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -92,7 +91,7 @@ public class LightSigil extends BaseAbility {
 
         boolean shepard = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Shepard);
 
-        statusEffectManager.applyEffect(caster, new Instant_Blast(), null, null, caster);
+        statusEffectManager.applyEffect(caster, new FreeCast(), null, null, caster);
 
         Location spawnStart = caster.getLocation().clone();
 

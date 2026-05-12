@@ -143,7 +143,7 @@ public class CursingVoice extends BaseAbility {
                 return false;
             }
 
-            if(!profileManager.getAnyProfile(target).getIsMovable()){
+            if(!profileManager.getAnyProfile(target).canBeHardCCed()){
                 return false;
             }
         }

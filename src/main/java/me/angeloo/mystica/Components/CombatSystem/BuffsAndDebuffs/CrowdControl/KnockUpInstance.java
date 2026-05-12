@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CombatContext;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffect;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusInstance;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.util.Vector;
 
 public class KnockUpInstance extends StatusInstance {
 
@@ -14,11 +15,9 @@ public class KnockUpInstance extends StatusInstance {
     @Override
     public void onApply(LivingEntity entity) {
         super.onApply(entity);
-        // Prevent movement while airborne
-        // Launch upwards
-        //maybe do it here in future instead of skills
-        //Vector up = new Vector(0, magnitude, 0);
-        //entity.setVelocity(up);
+
+        Vector velocity = (new Vector(0, effect.getMagnitude(), 0));
+        entity.setVelocity(velocity);
     }
 
     @Override
@@ -34,5 +33,7 @@ public class KnockUpInstance extends StatusInstance {
     public void onRemove(LivingEntity entity) {
         super.onRemove(entity);
     }
+
+
 
 }

@@ -427,4 +427,9 @@ public class CovenantSword extends BaseAbility {
     public String skillBarIcon(LivingEntity entity) {
         return "\ue3e0";
     }
+
+    @Override
+    public String statusBarIcon() {
+        return "\ue41c";
+    }
 }

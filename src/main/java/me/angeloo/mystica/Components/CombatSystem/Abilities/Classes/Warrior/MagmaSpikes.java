@@ -197,11 +197,7 @@ public class MagmaSpikes extends BaseAbility {
                                     changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
                                     rage.addRageToEntity(caster, 10);
 
-                                    if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
-                                        Vector velocity = (new Vector(0, .75, 0));
-                                        livingEntity.setVelocity(velocity);
-                                        statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, null, caster);
-                                    }
+                                    statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, .75, caster);
                                 }
                                 continue;
                             }
@@ -211,11 +207,8 @@ public class MagmaSpikes extends BaseAbility {
                                 changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
                                 rage.addRageToEntity(caster, 10);
 
-                                if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
-                                    Vector velocity = (new Vector(0, .75, 0));
-                                    livingEntity.setVelocity(velocity);
-                                    statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, null, caster);
-                                }
+                                statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, .75, caster);
+
                             }
 
                         }

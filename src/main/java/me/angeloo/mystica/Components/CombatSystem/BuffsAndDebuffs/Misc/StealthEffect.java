@@ -26,4 +26,13 @@ public class StealthEffect implements StatusEffect {
         Bukkit.getServer().getPluginManager().callEvent(new RemoveStealthEffectEvent(entity));
     }
 
+    @Override
+    public int getPriority() {
+        return 2;
+    }
+
+    @Override
+    public String getIcon(LivingEntity entity, StatusInstance instance) {
+        return "\ue437";
+    }
 }

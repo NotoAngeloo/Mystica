@@ -220,13 +220,7 @@ public class DragonBreathing extends BaseAbility {
                                     changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
                                     burnTask(livingEntity);
 
-                                    if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
-                                        Vector awayDirection = entity.getLocation().toVector().subtract(loc.toVector()).normalize();
-                                        Vector velocity = awayDirection.multiply(.5).add(new Vector(0, .5, 0));
-                                        livingEntity.setVelocity(velocity);
-
-                                        statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, null, caster);
-                                    }
+                                    statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, .5, caster);
 
                                 }
                                 continue;
@@ -237,12 +231,7 @@ public class DragonBreathing extends BaseAbility {
                                 changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
                                 burnTask(livingEntity);
 
-                                if(profileManager.getAnyProfile(livingEntity).getIsMovable()){
-                                    Vector awayDirection = entity.getLocation().toVector().subtract(loc.toVector()).normalize();
-                                    Vector velocity = awayDirection.multiply(.5).add(new Vector(0, .5, 0));
-                                    livingEntity.setVelocity(velocity);
-                                    statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, null, caster);
-                                }
+                                statusEffectManager.applyEffect(livingEntity, new KnockUp(), null, .5, caster);
 
                             }
                         }

@@ -187,7 +187,7 @@ public class ShadowGrip extends BaseAbility {
                     current.setDirection(opposite);
                     armorStand.teleport(current);
 
-                    if(targetStillValid(target) && profileManager.getAnyProfile(target).getIsMovable()){
+                    if(targetStillValid(target) && profileManager.getAnyProfile(target).canBeHardCCed()){
 
                         if(target instanceof Player){
                             if(profileManager.getAnyProfile(target).getIfDead()){
@@ -219,7 +219,7 @@ public class ShadowGrip extends BaseAbility {
                     //also check and pull creature
                     pullTarget();
 
-                    if(targetStillValid(target) && profileManager.getAnyProfile(target).getIsMovable()){
+                    if(targetStillValid(target)){
                         pulled = true;
                         statusEffectManager.applyEffect(target, new Pulled(), null, null, caster);
                     }

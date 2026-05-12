@@ -5,6 +5,22 @@ import org.bukkit.entity.LivingEntity;
 
 public interface StatusEffect {
 
+    /*
+
+    status effect priority rules:
+
+1: mechanic related effects, such as armor break
+
+2: class rotation required effects such as soul mark or decision
+
+3. team buffs, such as wild roar
+
+4. crowd control and debuffs, for example, stun and modest
+
+5. damage over time, for example burns. EXCEPTION! infection is priority 2.
+
+     */
+
     /** Unique ID like "poison", "generic_shield", "haste" */
     String getId();
 
@@ -51,6 +67,10 @@ public interface StatusEffect {
     //for not
     default void onApply(LivingEntity entity, StatusInstance instance){
 
+    }
+
+    default boolean isHardCC(){
+        return false;
     }
 
 

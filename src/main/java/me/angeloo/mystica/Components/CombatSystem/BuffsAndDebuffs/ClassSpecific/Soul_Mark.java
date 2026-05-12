@@ -24,7 +24,7 @@ public class Soul_Mark implements StatusEffect {
 
     @Override
     public int getPriority(){
-        return 1;
+        return 2;
     }
 
     @Override
@@ -42,5 +42,13 @@ public class Soul_Mark implements StatusEffect {
         return instance.getStacks() < getMaxStacks();
     }
 
+    @Override
+    public String getIcon(LivingEntity entity, StatusInstance instance) {
 
+        if(instance.getStacks() == getMaxStacks()){
+            return "\ue429";
+        }
+
+        return "\ue428";
+    }
 }

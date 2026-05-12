@@ -14,4 +14,8 @@ public class Plague_Curse implements StatusEffect {
         return 10 * 20;
     }
 
+    @Override
+    public int getPriority() {
+        return 2;
+    }
 }

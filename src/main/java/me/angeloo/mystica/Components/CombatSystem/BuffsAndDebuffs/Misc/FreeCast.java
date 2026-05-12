@@ -1,19 +1,14 @@
-package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ClassSpecific;
+package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Misc;
 
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffect;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusInstance;
 import org.bukkit.entity.LivingEntity;
 
-public class Duelists_Frenzy implements StatusEffect {
+public class FreeCast implements StatusEffect {
 
     @Override
     public String getId() {
-        return "duelists_frenzy";
-    }
-
-    @Override
-    public int getDuration(){
-        return 15 * 20;
+        return "free_cast";
     }
 
     @Override
@@ -23,6 +18,6 @@ public class Duelists_Frenzy implements StatusEffect {
 
     @Override
     public String getIcon(LivingEntity entity, StatusInstance instance) {
-        return "\ue422";
+        return "\ue426";
     }
 }

@@ -13,4 +13,14 @@ public class Root implements StatusEffect {
     public boolean requireDurationDeclaration(){
         return true;
     }
+
+    @Override
+    public int getPriority() {
+        return 4;
+    }
+
+    @Override
+    public boolean isHardCC() {
+        return true;
+    }
 }

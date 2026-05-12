@@ -15,4 +15,13 @@ public class Pulled implements StatusEffect {
         return ApplicationBehavior.IGNORE;
     }
 
+    @Override
+    public int getDuration() {
+        return 4;
+    }
+
+    @Override
+    public boolean isHardCC() {
+        return true;
+    }
 }

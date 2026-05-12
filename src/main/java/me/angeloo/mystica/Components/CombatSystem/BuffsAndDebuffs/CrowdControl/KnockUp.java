@@ -24,4 +24,20 @@ public class KnockUp implements StatusEffect {
         return new KnockUpInstance(this, getDuration(), getMagnitude(), source);
     }
 
+    @Override
+    public int getPriority() {
+        return 4;
+    }
+
+    @Override
+    public boolean isHardCC() {
+        return true;
+    }
+
+    @Override
+    public boolean requireMagnitudeDeclaration() {
+        return true;
+    }
+
+
 }

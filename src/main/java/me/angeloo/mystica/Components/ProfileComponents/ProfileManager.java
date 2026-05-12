@@ -405,7 +405,7 @@ public class ProfileManager {
                         }
 
                         @Override
-                        public Boolean getIsMovable() {
+                        public Boolean canBeHardCCed() {
                             return true;
                         }
 
@@ -539,7 +539,7 @@ public class ProfileManager {
             }
 
             @Override
-            public Boolean getIsMovable() {
+            public Boolean canBeHardCCed() {
                 return true;
             }
 
@@ -625,7 +625,7 @@ public class ProfileManager {
             }
 
             @Override
-            public Boolean getIsMovable() {
+            public Boolean canBeHardCCed() {
                 return true;
             }
 

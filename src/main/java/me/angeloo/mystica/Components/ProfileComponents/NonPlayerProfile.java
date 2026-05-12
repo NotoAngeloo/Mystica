@@ -39,7 +39,7 @@ public abstract class NonPlayerProfile implements Profile{
         this.stats = stats;
     }
     @Override
-    public Boolean getIsMovable(){
+    public Boolean canBeHardCCed(){
         return isMovable;
     }
 

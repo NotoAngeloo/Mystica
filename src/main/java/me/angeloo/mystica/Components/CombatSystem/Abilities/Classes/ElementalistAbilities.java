@@ -27,7 +27,7 @@ public class ElementalistAbilities implements AbilitySet {
         abilities.put(5, new WindWall(main, manager));
         abilities.put(6, new DragonBreathing(main, manager));
         abilities.put(7, new ElementalBreath(main));
-        abilities.put(8, new ElementalMatrix(main, manager));
+        abilities.put(8, new ElementalMatrix(main));
 
         for(Ability ability : abilities.values()){
             if(ability instanceof BaseAbility base){

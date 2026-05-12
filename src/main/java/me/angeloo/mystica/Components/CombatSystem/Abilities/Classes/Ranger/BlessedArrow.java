@@ -261,6 +261,10 @@ public class BlessedArrow extends BaseAbility {
             if(distance<1){
                 return false;
             }
+
+            if(profileManager.getAnyProfile(target).getIfDead()){
+                return false;
+            }
         }
 
         return cooldownManager.isReady(caster.getUniqueId(), 5, statusEffectManager.getHastePercent(caster));

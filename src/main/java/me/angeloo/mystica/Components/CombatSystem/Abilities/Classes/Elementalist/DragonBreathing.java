@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.KnockUp;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageOverTime.Burn;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -67,7 +68,6 @@ public class DragonBreathing extends BaseAbility {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         this.heat = manager.getHeat();
-        //fieryWing = elementalistAbilities.getFieryWing();
         cooldownManager = main.getCooldownManager();
 
     }
@@ -251,47 +251,7 @@ public class DragonBreathing extends BaseAbility {
 
             private void burnTask(LivingEntity entity){
                 double burnDamage = finalSkillDamage * .1;
-                new BukkitRunnable(){
-                    int ticks = 0;
-                    @Override
-                    public void run(){
-
-                        if(bossManager.getIfResetProcessing(target)){
-                            this.cancel();
-                            return;
-                        }
-
-                        if(entity.isDead()){
-                            this.cancel();
-                            return;
-                        }
-
-                        if(entity instanceof Player){
-                            if(!((Player)entity).isOnline()){
-                                this.cancel();
-                                return;
-                            }
-
-                            if(profileManager.getAnyProfile(entity).getIfDead()){
-                                this.cancel();
-                                return;
-                            }
-                        }
-
-                        boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                        double tickDamage = damageCalculator.calculateDamage(caster, entity, DamageType.Magical, burnDamage, crit, 0);
-
-                        Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(entity, caster));
-                        changeResourceHandler.subtractHealthFromEntity(entity, tickDamage, caster, crit);
-
-                        ticks ++;
-
-                        if(ticks >=5){
-                            this.cancel();
-                        }
-                    }
-                }.runTaskTimer(main, 0, 20);
-
+                statusEffectManager.applyEffect(entity, new Burn(), null, burnDamage, caster);
             }
 
             private void cancelTask() {

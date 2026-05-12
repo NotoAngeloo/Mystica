@@ -225,7 +225,7 @@ public final class Mystica extends JavaPlugin{
         aggroManager = new AggroManager(this);
         bossCastingManager = new BossCastingManager(this);
 
-        statusEffectManager = new StatusEffectManager();
+        statusEffectManager = new StatusEffectManager(this);
 
         fakePlayerTargetManager = new FakePlayerTargetManager(this);
         gravestoneManager = new GravestoneManager();
@@ -237,7 +237,7 @@ public final class Mystica extends JavaPlugin{
         damageCalculator = new DamageCalculator(this);
         cooldownManager = new CooldownManager();
 
-        CombatContext combatContext = new CombatContext(damageCalculator, changeResourceHandler, cooldownManager);
+        CombatContext combatContext = new CombatContext(damageCalculator, changeResourceHandler, cooldownManager, pvpManager, pveChecker);
         statusEffectManager.setCombatContext(combatContext);
 
         abilityManager = new AbilityManager(this);

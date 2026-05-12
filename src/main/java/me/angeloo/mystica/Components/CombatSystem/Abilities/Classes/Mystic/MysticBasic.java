@@ -344,6 +344,10 @@ public class MysticBasic implements BasicAttackDefinition {
             return true;
         }
 
+        if(caster.getWorld() != target.getWorld()){
+            return false;
+        }
+
         double distance = caster.getLocation().distance(target.getLocation());
 
         if(distance > getRange(caster)){

@@ -35,6 +35,8 @@ public class StatusEffectManager {
 
         }
 
+        //Bukkit.getLogger().info("trying to apply " + effect.getId() +" with magnitude " + magnitude);
+
         //Bukkit.getLogger().info("trying to apply " + effect.getId());
 
         if (effect.requireDurationDeclaration() && duration == null) {
@@ -59,6 +61,8 @@ public class StatusEffectManager {
 
         int resolvedDuration = (duration != null ? duration : effect.getDuration());
         double resolvedMagnitude = (magnitude != null ? magnitude : effect.getMagnitude());
+
+        //Bukkit.getLogger().info("resolved magnitude is " + resolvedMagnitude);
 
         if(effect.getId().equalsIgnoreCase("shield")){
 
@@ -120,9 +124,10 @@ public class StatusEffectManager {
         // If none exists, simply add
         if (existing == null) {
             map.put(effect.getId(), newInstance);
-            //on apply?
+            newInstance.onApply(entity);
             return;
         }
+
 
         // Apply stacking logic:
         switch (effect.applicationBehavior()) {
@@ -261,7 +266,8 @@ public class StatusEffectManager {
                 inst.onTick(entity, combatContext);
 
                 if(inst.isMarkedForRemoval()){
-                    inst.onRemove(entity);
+                    //removing for now
+                    //inst.onRemove(entity, combatContext);
                     it.remove();
                     continue;
                 }
@@ -270,7 +276,7 @@ public class StatusEffectManager {
                 if (inst.getRemainingTicks() > 0) {
                     boolean expired = inst.tickDown();
                     if (expired) {
-                        inst.onRemove(entity);
+                        inst.onRemoveEffects(entity, combatContext);
                         it.remove();
                     }
                 }
@@ -353,6 +359,10 @@ public class StatusEffectManager {
         if(hasEffect(entity, "flaming_sigil_health")){
             health += getInstanceMap(entity).get("flaming_sigil_health").magnitude;
 
+        }
+
+        if(hasEffect(entity, "conjuring_force")){
+            health += getInstanceMap(entity).get("conjuring_force").magnitude;
         }
 
         return health;
@@ -544,23 +554,6 @@ public class StatusEffectManager {
 
         return instance.getRemainingTicks();
     }
-
-    /*public int getEffectAmount(LivingEntity entity){
-        int amount = 0;
-        //if has shield, subtract 1
-
-        if(getInstanceMap(entity)==null){
-            return amount;
-        }
-
-        amount += getInstanceMap(entity).size();
-
-        if(hasShield(entity)){
-            amount--;
-        }
-
-        return amount;
-    }*/
 
     public void setCombatContext(CombatContext combatContext){
         this.combatContext = combatContext;

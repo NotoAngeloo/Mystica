@@ -36,9 +36,9 @@ public class Infection_Enhanced implements StatusEffect {
 
         if(instance.getLivedTicks()%20==0){
             LivingEntity caster = instance.getSource();
-            boolean crit = combatContext.getDamageCalculator().checkIfCrit(caster, 0);
-            double damage = combatContext.getDamageCalculator().calculateDamage(caster, entity, DamageType.Physical, getMagnitude(), crit, 0);
-            combatContext.getChangeResourceHandler().subtractHealthFromEntity(entity, damage, caster, crit);
+            boolean crit = combatContext.damageCalculator().checkIfCrit(caster, 0);
+            double damage = combatContext.damageCalculator().calculateDamage(caster, entity, DamageType.Physical, getMagnitude(), crit, 0);
+            combatContext.changeResourceHandler().subtractHealthFromEntity(entity, damage, caster, crit);
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(entity, caster));
 
         }

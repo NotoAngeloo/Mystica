@@ -397,6 +397,10 @@ public class PaladinBasic implements BasicAttackDefinition {
             return true;
         }
 
+        if(caster.getWorld() != target.getWorld()){
+            return false;
+        }
+
         //only if healing
         double distance = caster.getLocation().distance(target.getLocation());
 

@@ -75,7 +75,9 @@ public interface StatusEffect {
 
 
     default void onTick(LivingEntity entity, StatusInstance instance, CombatContext combatContext) {}
-    default void onRemove(LivingEntity entity, StatusInstance instance) {}
+    default void onRemoveEffects(LivingEntity entity, StatusInstance instance, CombatContext combatContext) {}
+    //non-damage related things
+    default void onRemove(LivingEntity entity){}
     default void onDamage(LivingEntity entity, StatusInstance instance, double amount) {}
 
 }

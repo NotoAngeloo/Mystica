@@ -3,6 +3,7 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Assassin;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageOverTime.Bleed;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -129,48 +130,7 @@ public class Laceration extends BaseAbility {
         lookup.get(PlayerClass.Assassin, 8).onExternalTrigger(caster, target);
         combo.addComboPoint(caster);
 
-        double finalBleedDamage = bleedDamage;
-        new BukkitRunnable(){
-            int ticks = 0;
-            @Override
-            public void run(){
-
-                if(bossManager.getIfResetProcessing(target)){
-                    this.cancel();
-                    return;
-                }
-
-                if(target.isDead()){
-                    this.cancel();
-                    return;
-                }
-
-                if(target instanceof Player){
-                    if(!((Player)target).isOnline()){
-                        this.cancel();
-                        return;
-                    }
-
-                    if(profileManager.getAnyProfile(target).getIfDead()){
-                        this.cancel();
-                        return;
-                    }
-                }
-
-                boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                double tickDamage = damageCalculator.calculateDamage(caster, target, DamageType.Physical, finalBleedDamage, crit, 0);
-
-                Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
-                changeResourceHandler.subtractHealthFromEntity(target, tickDamage, caster,crit);
-
-                ticks ++;
-
-                if(ticks >= 10){
-                    this.cancel();
-                }
-
-            }
-        }.runTaskTimer(main, 20, 20);
+        statusEffectManager.applyEffect(target, new Bleed(), null, bleedDamage, caster);
     }
 
     public double getSkillDamage(LivingEntity caster){

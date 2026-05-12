@@ -49,8 +49,6 @@ public class FieryWing extends BaseAbility {
 
     private final Heat heat;
 
-    //private final Map<UUID, Integer> inflameMap = new HashMap<>();
-
 
     public FieryWing(Mystica main, AbilityManager manager){
         super("fiery_wing");

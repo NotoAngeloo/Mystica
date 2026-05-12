@@ -50,15 +50,7 @@ public class Dash extends BaseAbility {
 
     private void execute(Player player){
 
-
-        statusEffectManager.applyEffect(player, new SpeedUp(), null, 0.7, player);
-
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-                statusEffectManager.removeEffect(player, "speed_up");
-            }
-        }.runTaskLater(main, 100);
+        statusEffectManager.applyEffect(player, new SpeedUp(), 100, 0.7, player);
 
     }
 

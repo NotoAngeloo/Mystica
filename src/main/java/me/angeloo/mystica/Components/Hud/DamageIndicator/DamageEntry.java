@@ -4,6 +4,12 @@ import me.angeloo.mystica.Utility.Enums.DamageType;
 
 public class DamageEntry {
 
+    enum AnimationStage{
+        POP,
+        SETTLE,
+        FADE
+    }
+
     private final int amount;
 
     private final boolean healing;
@@ -39,6 +45,21 @@ public class DamageEntry {
 
     public long getTimestamp() {
         return timestamp;
+    }
+
+    public long age(long now){
+        return now - timestamp;
+    }
+
+    public AnimationStage getStage(long now){
+
+        long age = now - timestamp;
+
+        if(age<80) return AnimationStage.POP;
+
+        if(age<500) return AnimationStage.SETTLE;
+
+        return AnimationStage.FADE;
     }
 
 }

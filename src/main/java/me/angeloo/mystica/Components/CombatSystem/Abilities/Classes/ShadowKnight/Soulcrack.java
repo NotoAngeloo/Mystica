@@ -206,7 +206,7 @@ public class Soulcrack extends BaseAbility {
                     }
 
                     boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                    double damage = damageCalculator.calculateDamage(caster, livingEntity, DamageType.Physical, finalSkillDamage, crit, 0);
+                    double damage = damageCalculator.calculateDamage(caster, livingEntity, DamageType.Magical, finalSkillDamage, crit, 0);
 
                     //pvp logic
                     if(entity instanceof Player){

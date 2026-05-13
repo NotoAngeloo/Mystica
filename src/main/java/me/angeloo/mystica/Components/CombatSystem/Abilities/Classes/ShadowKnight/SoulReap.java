@@ -232,7 +232,7 @@ public class SoulReap extends BaseAbility {
                     }
 
 
-                    double damage = damageCalculator.calculateDamage(caster, target, DamageType.Physical, skillDamage, crit, finalCrit_bonus);
+                    double damage = damageCalculator.calculateDamage(caster, target, DamageType.Magical, skillDamage, crit, finalCrit_bonus);
                     damage = damage + extra;
 
                     statusEffectManager.removeEffect(caster, "soul_mark");
@@ -332,15 +332,6 @@ public class SoulReap extends BaseAbility {
 
         statusEffectManager.applyEffect(caster, new Soul_Mark(), null, null, caster);
 
-        /*int stacks = playerStateManager.get(caster.getUniqueId()).getInt("soul_mark", 0);
-
-        if(stacks>5){
-            return;
-        }
-
-        stacks ++;
-
-        playerStateManager.get(caster.getUniqueId()).set("soul_mark", stacks);*/
     }
 
 

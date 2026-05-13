@@ -71,7 +71,6 @@ public class GeneralEventListener implements Listener {
     private final InventoryItemGetter itemGetter;
     private final TargetManager targetManager;
     private final CombatManager combatManager;
-    private final CooldownDisplayer cooldownDisplayer;
     private final StatusEffectManager statusEffectManager;
     private final AbilityManager abilityManager;
     private final DeathManager deathManager;
@@ -130,7 +129,6 @@ public class GeneralEventListener implements Listener {
         gravestoneManager = main.getGravestoneManager();
         mysticaPartyManager = main.getMysticaPartyManager();
         partyInventory = main.getPartyInventory();
-        cooldownDisplayer = main.getCooldownDisplayer();
         rezTick = main.getRezTick();
         targetingEngine = abilityManager.getTargetingEngine();
     }

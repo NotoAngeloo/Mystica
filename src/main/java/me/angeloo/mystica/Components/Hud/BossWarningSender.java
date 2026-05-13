@@ -66,6 +66,7 @@ public class BossWarningSender {
     //make so some cannot be overwritten
     public void setWarning(Player player, String string, int time, boolean overridable){
 
+
         if(removalTaskMap.containsKey(player.getUniqueId())){
 
             if(warningMap.containsKey(player.getUniqueId())){

@@ -4,6 +4,9 @@ public enum DamageType {
 
     Physical,
     Magical,
-    True
+    True,
+    Heal,
+    Physical_Dot,
+    Magical_Dot
 
 }

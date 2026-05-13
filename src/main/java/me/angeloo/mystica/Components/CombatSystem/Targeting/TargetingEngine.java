@@ -57,7 +57,6 @@ public class TargetingEngine {
 
         List<LivingEntity> merged = mergeCandidates(player, cached, fresh,context);
 
-        // 🔥 APPLY PRIORITY FILTER HERE
         List<LivingEntity> candidates = filterByPriority(merged, context);
 
         if(candidates.isEmpty()){
@@ -73,7 +72,6 @@ public class TargetingEngine {
 
         targetIndex.put(id, index);
 
-        //System.out.println("Candidates: " + candidates.size() + " | Index: " + index);
 
         return candidates.get(index);
     }
@@ -110,7 +108,7 @@ public class TargetingEngine {
 
         if(entity == null) return false;
 
-        if(!entity.isValid()) return false; // 🔥 catches despawned entities
+        if(!entity.isValid()) return false;
 
         if(entity.isDead()) return false;
 
@@ -157,7 +155,6 @@ public class TargetingEngine {
             result.add(target);
         }
 
-        // 🔥 sort by score
         result.sort(Comparator.comparingDouble(t -> scoreTarget(player, t, context)));
 
         return result;
@@ -197,7 +194,6 @@ public class TargetingEngine {
             }
         }
 
-        // 🔥 Tiered selection
         return !high.isEmpty() ? high : low;
     }
 
@@ -207,7 +203,6 @@ public class TargetingEngine {
 
         double score = distance;
 
-        // 🔥 cone priority instead of filter
         if(isWithinFOV(player.getEyeLocation(),
                 player.getEyeLocation().getDirection(),
                 target.getLocation(),
@@ -242,6 +237,7 @@ public class TargetingEngine {
             return null;
         }
 
+        //change this to index of whomever player is currently targeting, if they are in the team
         int index = 0;
 
         if(partyIndex.containsKey(player.getUniqueId())){
@@ -254,7 +250,6 @@ public class TargetingEngine {
 
         partyIndex.put(player.getUniqueId(), index);
 
-        //figure out gravestone
         LivingEntity target = mParty.get(index);
 
         if(target instanceof Player){

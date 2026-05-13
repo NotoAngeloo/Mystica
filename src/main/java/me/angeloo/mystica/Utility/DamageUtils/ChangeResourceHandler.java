@@ -7,6 +7,8 @@ import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectMa
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Shields.ShieldInstance;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusInstance;
 import me.angeloo.mystica.Components.CombatSystem.DpsManager;
+import me.angeloo.mystica.Components.Hud.DamageIndicator.DamageEntry;
+import me.angeloo.mystica.Components.Hud.DamageIndicator.DamageHudManager;
 import me.angeloo.mystica.Components.ProfileComponents.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Components.ProfileComponents.Stats;
@@ -43,6 +45,7 @@ public class ChangeResourceHandler {
     private final Map<UUID, Long> lastDamaged = new HashMap<>();
     private final DpsManager dpsManager;
     private final DamageIndicatorCalculator damageIndicatorCalculator;
+    private final DamageHudManager damageHudManager;
 
     private final Map<UUID, BukkitTask> savedTask = new HashMap<>();
     private final Map<UUID, Double> damageSlot = new HashMap<>();
@@ -58,6 +61,7 @@ public class ChangeResourceHandler {
         statusEffectManager = main.getStatusEffectManager();
         dpsManager = main.getDpsManager();
         damageIndicatorCalculator = new DamageIndicatorCalculator();
+        damageHudManager = main.getDamageHudManager();;
     }
 
     public void subtractHealthFromEntity(LivingEntity entity, Double damage, LivingEntity damager, boolean crit){
@@ -76,9 +80,6 @@ public class ChangeResourceHandler {
 
 
         statusEffectManager.handleDamage(entity, damage);
-        //check shields
-
-
 
         /*if(buffAndDebuffManager.getPassThrough().getIfPassingToPlayer(entity)){
             subtractHealthFromEntity(buffAndDebuffManager.getPassThrough().getPassingToCaster(entity), damage, damager, crit);
@@ -137,10 +138,22 @@ public class ChangeResourceHandler {
             return;
         }
 
-        if(damager instanceof Player){
+        if(damager instanceof Player player){
 
             //temp comment
             //damageIndicatorCalculator.displayDamage((Player)damager, entity, damage, crit);
+
+            //int rounded = (int) Math.round(damage);
+
+            //testing
+            int rounded = 9999;
+            /*if(rounded!=0){
+
+            }*/
+
+            //testing to always crit
+            DamageEntry entry = new DamageEntry(rounded, false, true, System.currentTimeMillis());
+            damageHudManager.addDamage(player, entry);
 
 
             if(seeingRawDamage.getOrDefault(damager.getUniqueId(), false)){

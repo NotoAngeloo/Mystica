@@ -24,6 +24,7 @@ import me.angeloo.mystica.Components.Guis.Party.PartyInventory;
 import me.angeloo.mystica.Components.Guis.Storage.BagEquipmentFunctions;
 import me.angeloo.mystica.Components.Guis.Storage.GenericDiscard;
 import me.angeloo.mystica.Components.Hud.BossCastingManager;
+import me.angeloo.mystica.Components.Hud.DamageIndicator.DamageHudManager;
 import me.angeloo.mystica.Components.Hud.HudManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Components.Guis.QuestInventories.PickQuestInventory;
@@ -88,15 +89,13 @@ public final class Mystica extends JavaPlugin{
 
     private BossManager bossManager;
 
-    private DamageBoardPlaceholders damageBoardPlaceholders;
     private HudManager hudManager;
-    private BossWarningSender bossWarningSender;
+    private DamageHudManager damageHudManager;
 
     private DisplayWeapons displayWeapons;
     private ClassSetter classSetter;
     private GearReader gearReader;
     private InventoryItemGetter inventoryItemGetter;
-    private AllSkillItems allSkillItems;
     private StealthTargetBlacklist stealthTargetBlacklist;
     private FakePlayerTargetManager fakePlayerTargetManager;
     private TargetManager targetManager;
@@ -114,7 +113,6 @@ public final class Mystica extends JavaPlugin{
     private BossCastingManager bossCastingManager;
     private AbilityManager abilityManager;
     private CooldownManager cooldownManager;
-    private CooldownDisplayer cooldownDisplayer;
     private DeathManager deathManager;
     private CustomInventoryManager customInventoryManager;
     private MatchMakingManager matchMakingManager;
@@ -162,6 +160,9 @@ public final class Mystica extends JavaPlugin{
     public static Color uncommonColor = new Color(138, 221, 31);
     public static Color rareColor = new Color(57, 164, 179);
     public static Color epicColor = new Color(72, 18, 143);
+
+    public Mystica() {
+    }
 
     /*public static MythicDungeonsService dungeonsApi(){
         return Bukkit.getServer().getServicesManager().load(MythicDungeonsService.class);
@@ -232,6 +233,7 @@ public final class Mystica extends JavaPlugin{
         targetManager = new TargetManager(this);
         dpsManager = new DpsManager(this);
 
+        damageHudManager = new DamageHudManager();
 
         changeResourceHandler = new ChangeResourceHandler(this);
         damageCalculator = new DamageCalculator(this);
@@ -246,12 +248,9 @@ public final class Mystica extends JavaPlugin{
 
         rezTick = new RezTick(this);
         deathManager = new DeathManager(this);
-        //allSkillItems = abilityManager.getAllSkillItems();
 
 
         hudManager = new HudManager(this);
-        damageBoardPlaceholders = hudManager.getDamageBoardPlaceholders();
-        bossWarningSender = hudManager.getBossWarnings();
 
         fakePlayerAiManager = new FakePlayerAiManager(this);
 
@@ -347,6 +346,7 @@ public final class Mystica extends JavaPlugin{
 
         startStatusEffectTicker();
         startActionBarTicker();
+        startDamageHudTicker();
 
         Bukkit.getLogger().info("Mystica Enabled");
 
@@ -380,10 +380,10 @@ public final class Mystica extends JavaPlugin{
         Bukkit.getScheduler().runTaskTimer(this, statusEffectManager::tick, 1L,1L);
     }
 
-    //was 5
     public void startActionBarTicker(){
         Bukkit.getScheduler().runTaskTimer(this, hudManager::hudTicker, 1L, 1L);
     }
+    public void startDamageHudTicker(){Bukkit.getScheduler().runTaskTimer(this, damageHudManager::tick, 1L, 1L);}
 
     @Override
     public void onDisable() {
@@ -462,7 +462,6 @@ public final class Mystica extends JavaPlugin{
         return combatManager;
     }
 
-
     public AbilityManager getAbilityManager(){
         return abilityManager;
     }
@@ -525,18 +524,9 @@ public final class Mystica extends JavaPlugin{
 
     public AbilityInventory getAbilityInventory(){return abilityInventory;}
 
-    public AllSkillItems getAllSkillItems(){return allSkillItems;}
-
     public HudManager getHudManager() {
         return hudManager;
     }
-
-
-    public CooldownDisplayer getCooldownDisplayer(){
-        return cooldownDisplayer;
-    }
-
-    public BossWarningSender getBossWarnings(){return bossWarningSender;}
 
     public QuestManager getQuestManager(){return questManager;}
 
@@ -572,6 +562,10 @@ public final class Mystica extends JavaPlugin{
 
     public LayoutEngine getLayoutEngine(){
         return layoutEngine;
+    }
+
+    public DamageHudManager getDamageHudManager(){
+        return damageHudManager;
     }
 
     @NotNull

@@ -165,7 +165,7 @@ public class SpiritualAttack extends BaseAbility {
                     cancelTask();
 
                     boolean crit = damageCalculator.checkIfCrit(caster, 0);
-                    double damage = damageCalculator.calculateDamage(caster, target, DamageType.Physical, finalSkillDamage, crit, 0);
+                    double damage = damageCalculator.calculateDamage(caster, target, DamageType.Magical, finalSkillDamage, crit, 0);
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);

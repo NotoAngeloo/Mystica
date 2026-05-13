@@ -44,7 +44,7 @@ public class HudManager {
     private final BossManager bossManager;
     private final MysticaPartyManager mysticaPartyManager;
     private final DamageBoardPlaceholders damageBoardPlaceholders;
-    private final BossWarningSender bossWarningSender;
+    //private final BossWarningSender bossWarningSender;
     private final AggroManager aggroManager;
 
 
@@ -350,7 +350,7 @@ public class HudManager {
         statusEffectManager = main.getStatusEffectManager();
         targetManager = main.getTargetManager();
         bossCastingManager = main.getBossCastingManager();
-        bossWarningSender = new BossWarningSender(main);
+        //bossWarningSender = new BossWarningSender(main);
         gravestoneManager = main.getGravestoneManager();
         skinGrabber = new SkinGrabber();
         aggroManager = main.getAggroManager();
@@ -364,7 +364,7 @@ public class HudManager {
         return damageBoardPlaceholders;
     }
 
-    public BossWarningSender getBossWarnings(){return bossWarningSender;}
+    //public BossWarningSender getBossWarnings(){return bossWarningSender;}
 
     public void innitHud(Player player){
 
@@ -2059,9 +2059,6 @@ public class HudManager {
     }
 
 
-    private String getBossWarning(Player player){
-        return bossWarningSender.getWarning(player);
-    }
 
 
 }

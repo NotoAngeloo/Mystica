@@ -17,11 +17,9 @@ import java.util.UUID;
 public class BossWarn implements CommandExecutor {
 
     private final Mystica main;
-    private final BossWarningSender bossWarningSender;
 
     public BossWarn(Mystica main){
         this.main = main;
-        bossWarningSender = main.getBossWarnings();
     }
 
     @Override
@@ -78,7 +76,7 @@ public class BossWarn implements CommandExecutor {
             }
             String warning = sb.toString();
 
-            bossWarningSender.setWarning(player, warning, time, overridable);
+            //bossWarningSender.setWarning(player, warning, time, overridable);
 
             new BukkitRunnable(){
                 int left = time;

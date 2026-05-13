@@ -45,7 +45,6 @@ public class InventoryEventListener implements Listener {
     private final PartyInventory partyInventory;
     private final AbilityInventory abilityInventory;
     private final DisplayWeapons displayWeapons;
-    private final CooldownDisplayer cooldownDisplayer;
 
     public InventoryEventListener(Mystica main){
         this.main = main;
@@ -56,7 +55,6 @@ public class InventoryEventListener implements Listener {
         partyInventory = main.getPartyInventory();
         abilityInventory = main.getAbilityInventory();
         displayWeapons = main.getDisplayWeapons();
-        cooldownDisplayer = main.getCooldownDisplayer();
         bagEquipmentFunctions = main.getBagEquipmentFunctions();
         genericDiscard = main.getGenericDiscard();
     }

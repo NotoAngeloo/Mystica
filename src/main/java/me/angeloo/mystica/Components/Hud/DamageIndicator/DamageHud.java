@@ -8,9 +8,8 @@ public class DamageHud {
 
     private static final long TICK_MS = 50L;
 
-    //should be 20
     private static final long LIFETIME =
-            40L * TICK_MS;
+            20L * TICK_MS;
 
     private final DamageSlot[] slots =
             new DamageSlot[MAX_SLOTS];
@@ -32,11 +31,26 @@ public class DamageHud {
 
         for(DamageSlot slot : slots) {
 
+            DamageEntry entry = slot.getEntry();
+
+            if(entry==null){
+                continue;
+            }
+
+            //expired
             if(!slot.isActive(now) &&
                     slot.getEntry() != null) {
 
                 slot.clear();
 
+                dirty = true;
+                continue;
+            }
+
+            DamageEntry.AnimationStage current = entry.getStage(now);
+
+            if(current != slot.getLastStage()){
+                slot.setLastStage(current);
                 dirty = true;
             }
         }

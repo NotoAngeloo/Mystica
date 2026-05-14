@@ -57,7 +57,7 @@ public class DamageEntry {
 
         if(age<80) return AnimationStage.POP;
 
-        if(age<500) return AnimationStage.SETTLE;
+        if(age<650) return AnimationStage.SETTLE;
 
         return AnimationStage.FADE;
     }

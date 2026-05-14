@@ -19,7 +19,6 @@ import me.angeloo.mystica.CustomEvents.MysticaPlayerDeathEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.BossManager;
 import me.angeloo.mystica.Utility.DailyData;
-import me.angeloo.mystica.Utility.DamageIndicator.DamageIndicatorCalculator;
 import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import org.bukkit.Bukkit;
@@ -44,7 +43,6 @@ public class ChangeResourceHandler {
     private final StatusEffectManager statusEffectManager;
     private final Map<UUID, Long> lastDamaged = new HashMap<>();
     private final DpsManager dpsManager;
-    private final DamageIndicatorCalculator damageIndicatorCalculator;
     private final DamageHudManager damageHudManager;
 
     private final Map<UUID, BukkitTask> savedTask = new HashMap<>();
@@ -60,7 +58,6 @@ public class ChangeResourceHandler {
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
         dpsManager = main.getDpsManager();
-        damageIndicatorCalculator = new DamageIndicatorCalculator();
         damageHudManager = main.getDamageHudManager();;
     }
 

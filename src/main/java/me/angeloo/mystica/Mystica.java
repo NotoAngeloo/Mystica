@@ -36,11 +36,8 @@ import me.angeloo.mystica.Components.Items.StackableItemRegistry;
 import me.angeloo.mystica.Components.Quests.QuestManager;
 import me.angeloo.mystica.Components.EntityBehavior.FakePlayerAiManager;
 import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
-import me.angeloo.mystica.NMS.Common.PacketInterface;
-import me.angeloo.mystica.NMS.NMSVersion;
 import me.angeloo.mystica.Tasks.*;
 import me.angeloo.mystica.Utility.*;
-import me.angeloo.mystica.Utility.DamageIndicator.DamageIndicatorApi;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Components.Hud.BossWarningSender;
@@ -69,8 +66,6 @@ import java.util.Map;
 public final class Mystica extends JavaPlugin{
 
     private static Mystica plugin;
-
-    private PacketInterface packetManager;
 
     private ProfileManager profileManager;
     private ProfileFileWriter profileFileWriter;
@@ -142,7 +137,6 @@ public final class Mystica extends JavaPlugin{
     private FirstClearManager firstClearManager;
 
     public static final List<Integer> TASKS_ID = new ArrayList<>();
-    private DamageIndicatorApi api;
 
     public static Color assassinColor = new java.awt.Color(214, 61, 207);
     public static Color elementalistColor = new Color(52, 151, 219);
@@ -172,8 +166,6 @@ public final class Mystica extends JavaPlugin{
     public void onEnable() {
 
         plugin = this;
-
-        this.packetManager = NMSVersion.getCurrentVersion().getVersionFactory().create();
 
         StackableItemRegistry.register("SOUL STONE", SoulStone::deserialize);
         StackableItemRegistry.register("BAG", BagItem::deserialize);
@@ -364,16 +356,12 @@ public final class Mystica extends JavaPlugin{
         //border.setSize(size);
 
 
-
-
         try {
             creaturesAndCharactersManager.spawnAllNpcs();
         } catch (InvalidMobTypeException e) {
             throw new RuntimeException(e);
         }
 
-
-        this.api = new DamageIndicatorApi(this);
     }
 
     public void startStatusEffectTicker(){
@@ -568,8 +556,4 @@ public final class Mystica extends JavaPlugin{
         return damageHudManager;
     }
 
-    @NotNull
-    public PacketInterface getPacketInterface(){
-        return packetManager;
-    }
 }

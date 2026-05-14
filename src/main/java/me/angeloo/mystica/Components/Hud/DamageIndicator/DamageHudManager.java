@@ -52,7 +52,7 @@ public class DamageHudManager {
                     renderer.build(hud);
 
             player.sendTitle(
-                    " ",
+                    "",
                     render,
                     0,
                     999999,

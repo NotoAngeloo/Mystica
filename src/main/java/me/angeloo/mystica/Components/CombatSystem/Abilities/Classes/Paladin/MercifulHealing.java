@@ -160,13 +160,13 @@ public class MercifulHealing extends BaseAbility {
                 double healAmount = damageCalculator.calculateHealing(caster, getHealPower(caster), crit);
 
                 if(abilityMarkManager.getTargets(caster).contains(target)){
-                    markHealInstead(caster, healAmount);
+                    markHealInstead(caster, healAmount, crit);
                     statusEffectManager.removeEffect(caster,"move_cast");
                     return;
                 }
 
 
-                changeResourceHandler.addHealthToEntity(target, healAmount, caster);
+                changeResourceHandler.addHealthToEntity(target, healAmount, caster, crit);
                 statusEffectManager.removeEffect(caster,"move_cast");
 
                 Location center = target.getLocation().clone().add(0,1,0);
@@ -201,12 +201,12 @@ public class MercifulHealing extends BaseAbility {
 
     }
 
-    private void markHealInstead(LivingEntity caster, double healAmount){
+    private void markHealInstead(LivingEntity caster, double healAmount, boolean crit){
 
         Set<LivingEntity> affected = abilityMarkManager.getTargets(caster);
 
         for(LivingEntity thisPlayer : affected){
-            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, caster);
+            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, caster, crit);
 
             Location center = thisPlayer.getLocation().clone().add(0,1,0);
 

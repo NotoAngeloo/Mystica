@@ -211,7 +211,7 @@ public class PurifyingBlast extends BaseAbility {
                         }
                         else{
                             double healAmount  = damageCalculator.calculateHealing(caster, finalHealPower, crit);
-                            changeResourceHandler.addHealthToEntity(livingEntity, healAmount, caster);
+                            changeResourceHandler.addHealthToEntity(livingEntity, healAmount, caster, crit);
                             if(shepard){
                                 abilityMarkManager.apply(caster, livingEntity);
                             }
@@ -226,7 +226,7 @@ public class PurifyingBlast extends BaseAbility {
                     }
                     else{
                         double healAmount  = damageCalculator.calculateHealing(caster, finalHealPower, crit);
-                        changeResourceHandler.addHealthToEntity(livingEntity, healAmount, caster);
+                        changeResourceHandler.addHealthToEntity(livingEntity, healAmount, caster, crit);
                         if(shepard){
                             abilityMarkManager.apply(caster, livingEntity);
                         }
@@ -285,5 +285,10 @@ public class PurifyingBlast extends BaseAbility {
         }
 
         return "\ue3dd";
+    }
+
+    @Override
+    public String statusBarIcon() {
+        return "\ue4e7";
     }
 }

@@ -170,7 +170,7 @@ public class GloryOfPaladins extends BaseAbility {
         //chance to restore
         int random = (int) (Math.random() * 100) + 1;
         if(random >= 25){
-            changeResourceHandler.addHealthToEntity(caster, healAmount, caster);
+            changeResourceHandler.addHealthToEntity(caster, healAmount, caster, false);
         }
     }
 

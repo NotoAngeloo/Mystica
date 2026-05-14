@@ -381,4 +381,9 @@ public class ArcaneMissiles extends BaseAbility {
     public String skillBarIcon(LivingEntity entity) {
         return "\ue3d1";
     }
+
+    @Override
+    public String statusBarIcon() {
+        return "\ue4e6";
+    }
 }

@@ -251,7 +251,7 @@ public class HealthAbsorb extends BaseAbility {
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
-                    changeResourceHandler.addHealthToEntity(caster, damage, caster);
+                    changeResourceHandler.addHealthToEntity(caster, damage, caster, crit);
 
                     if(target instanceof Player){
                         statusEffectManager.removeEffect(caster, "shield");

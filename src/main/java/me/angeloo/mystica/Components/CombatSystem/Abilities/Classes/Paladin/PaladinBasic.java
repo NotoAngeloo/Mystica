@@ -163,12 +163,12 @@ public class PaladinBasic implements BasicAttackDefinition {
         Set<LivingEntity> marked = abilityMarkManager.getTargets(caster);
 
         if(marked.contains(target)){
-            markHealInstead(caster, healAmount, marked);
+            markHealInstead(caster, healAmount, marked, crit);
             return;
         }
 
 
-        changeResourceHandler.addHealthToEntity(target, healAmount, caster);
+        changeResourceHandler.addHealthToEntity(target, healAmount, caster, crit);
 
         Location center = target.getLocation().clone().add(0,1,0);
 
@@ -185,11 +185,11 @@ public class PaladinBasic implements BasicAttackDefinition {
 
     }
 
-    private void markHealInstead(LivingEntity caster, double healAmount, Set<LivingEntity> marked){
+    private void markHealInstead(LivingEntity caster, double healAmount, Set<LivingEntity> marked, boolean crit){
 
 
         for(LivingEntity thisPlayer : marked){
-            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, caster);
+            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, caster, crit);
 
             Location center = thisPlayer.getLocation().clone().add(0,1,0);
 

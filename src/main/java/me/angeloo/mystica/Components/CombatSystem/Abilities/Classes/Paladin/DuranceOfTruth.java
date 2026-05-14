@@ -232,7 +232,7 @@ public class DuranceOfTruth extends BaseAbility {
 
                             if(count%20==0){
                                 double fivePercent = (profileManager.getAnyProfile(caster).getTotalHealth() + statusEffectManager.getHealthBuffAmount(caster)) * .05;
-                                changeResourceHandler.addHealthToEntity(caster, fivePercent, caster);
+                                changeResourceHandler.addHealthToEntity(caster, fivePercent, caster, false);
 
                                 statusEffectManager.applyEffect(caster, new GenericDamageReduction(), 20, 0.95, caster);
                             }

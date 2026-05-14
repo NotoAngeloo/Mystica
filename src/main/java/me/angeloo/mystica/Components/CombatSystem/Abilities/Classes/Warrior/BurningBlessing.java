@@ -52,7 +52,7 @@ public class BurningBlessing extends BaseAbility {
 
         double maxHealth = profileManager.getAnyProfile(caster).getTotalHealth() + statusEffectManager.getHealthBuffAmount(caster);
         double fourth = maxHealth * .25;
-        changeResourceHandler.addHealthToEntity(caster, fourth, caster);
+        changeResourceHandler.addHealthToEntity(caster, fourth, caster, false);
 
         //TODO: add icon above head when i have it
 

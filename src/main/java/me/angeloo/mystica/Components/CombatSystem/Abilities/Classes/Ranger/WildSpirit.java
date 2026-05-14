@@ -3,7 +3,7 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Ranger;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.Haste;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Misc.Haste;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -338,7 +338,9 @@ public class WildSpirit extends BaseAbility {
                             profileManager.getAnyProfile(caster).getSkillLevels().getSkill_7_Level_Bonus();
                     double healAmount = (attack * .1) * skillLevel;
 
-                    changeResourceHandler.addHealthToEntity(hitEntity, healAmount, caster);
+                    boolean crit = damageCalculator.checkIfCrit(caster, 0);
+                    healAmount = damageCalculator.calculateHealing(caster, healAmount, crit);
+                    changeResourceHandler.addHealthToEntity(hitEntity, healAmount, caster, crit);
 
                 }
             }

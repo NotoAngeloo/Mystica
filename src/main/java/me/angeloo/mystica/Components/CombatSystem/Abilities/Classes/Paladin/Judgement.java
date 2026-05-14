@@ -166,7 +166,7 @@ public class Judgement extends BaseAbility {
 
                         double healPower = 5;
                         double healAmount = damageCalculator.calculateHealing(caster, healPower, crit);
-                        changeResourceHandler.addHealthToEntity(target, healAmount, caster);
+                        changeResourceHandler.addHealthToEntity(target, healAmount, caster, crit);
                         return;
                     }
 
@@ -176,7 +176,7 @@ public class Judgement extends BaseAbility {
                     if(!pveChecker.pveLogic(target)){
                         double healPower = 5;
                         double healAmount = damageCalculator.calculateHealing(caster, healPower, crit);
-                        changeResourceHandler.addHealthToEntity(target, healAmount, caster);
+                        changeResourceHandler.addHealthToEntity(target, healAmount, caster, crit);
                         return;
                     }
                 }

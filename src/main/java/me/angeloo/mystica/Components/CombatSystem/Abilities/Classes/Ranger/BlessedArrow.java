@@ -3,8 +3,7 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Ranger;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.Haste;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Misc.Haste;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -233,11 +232,13 @@ public class BlessedArrow extends BaseAbility {
 
     }
 
+
+    //TODO: something with the new resource system instead of health
     private void restoreHealthToAlly(LivingEntity target, double amount, LivingEntity caster){
 
         target.getWorld().spawnParticle(Particle.DRIP_WATER, target.getLocation(), 50, .5, 1, .5, 0);
 
-        changeResourceHandler.addHealthToEntity(target, amount, caster);
+        changeResourceHandler.addHealthToEntity(target, amount, caster, false);
     }
 
 

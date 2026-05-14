@@ -1,4 +1,4 @@
-package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers;
+package me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Misc;
 
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffect;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ApplicationBehavior;

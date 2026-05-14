@@ -190,12 +190,12 @@ public class DecreeHonor extends BaseAbility {
                         double healAmount  = damageCalculator.calculateHealing(caster, finalHealPower, crit);
 
                         if(abilityMarkManager.getTargets(caster).contains(target)){
-                            markHealInstead(caster, healAmount);
+                            markHealInstead(caster, healAmount, crit);
                             return;
                         }
 
 
-                        changeResourceHandler.addHealthToEntity(target, healAmount, caster);
+                        changeResourceHandler.addHealthToEntity(target, healAmount, caster, crit);
                         return;
                     }
 
@@ -206,11 +206,11 @@ public class DecreeHonor extends BaseAbility {
                         double healAmount  = damageCalculator.calculateHealing(caster, finalHealPower, crit);
 
                         if(abilityMarkManager.getTargets(caster).contains(target)){
-                            markHealInstead(caster, healAmount);
+                            markHealInstead(caster, healAmount, crit);
                             return;
                         }
 
-                        changeResourceHandler.addHealthToEntity(target, healAmount, caster);
+                        changeResourceHandler.addHealthToEntity(target, healAmount, caster, crit);
                         return;
                     }
                 }
@@ -240,12 +240,12 @@ public class DecreeHonor extends BaseAbility {
         }.runTaskTimer(main, 0, 1);
     }
 
-    private void markHealInstead(LivingEntity caster, double healAmount){
+    private void markHealInstead(LivingEntity caster, double healAmount, boolean crit){
 
         Set<LivingEntity> affected = abilityMarkManager.getTargets(caster);
 
         for(LivingEntity thisPlayer : affected){
-            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, caster);
+            changeResourceHandler.addHealthToEntity(thisPlayer, healAmount, caster, crit);
 
             Location center = thisPlayer.getLocation().clone().add(0,1,0);
 

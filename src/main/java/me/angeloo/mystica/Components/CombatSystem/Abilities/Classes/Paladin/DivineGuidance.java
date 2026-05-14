@@ -222,7 +222,7 @@ public class DivineGuidance extends BaseAbility {
             double healPower = 5;
             boolean crit = damageCalculator.checkIfCrit(caster, 0);
             double healAmount = damageCalculator.calculateHealing(caster, healPower, crit);
-            changeResourceHandler.addHealthToEntity(thisEntity, healAmount, caster);
+            changeResourceHandler.addHealthToEntity(thisEntity, healAmount, caster, crit);
 
             Location center = thisEntity.getLocation().clone().add(0,1,0);
 

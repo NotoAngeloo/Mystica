@@ -113,7 +113,9 @@ public class ElementalMatrix extends BaseAbility {
 
                 double maxHp = profileManager.getAnyProfile(member).getTotalHealth() + statusEffectManager.getHealthBuffAmount(caster);
 
-                changeResourceHandler.addHealthToEntity(member, maxHp * .05, caster);
+                boolean crit = damageCalculator.checkIfCrit(caster, 0);
+
+                changeResourceHandler.addHealthToEntity(member, maxHp * .05, caster, crit);
             }
         }
 

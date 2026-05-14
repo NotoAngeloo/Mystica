@@ -92,7 +92,7 @@ public class Enlightenment extends BaseAbility {
                 cooldownManager.clear(caster.getUniqueId(), 2);
             }
 
-            changeResourceHandler.addHealthToEntity(target, healAmount, caster);
+            changeResourceHandler.addHealthToEntity(target, healAmount, caster, crit);
 
             statusEffectManager.applyEffect(target, new GenericDamageReduction(), 20*10, 0.6, caster);
 

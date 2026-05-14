@@ -138,7 +138,7 @@ public class ChaosVoid extends BaseAbility {
                 }
 
                 if(ran%20 == 0){
-                    changeResourceHandler.addHealthToEntity(caster, healAmount, caster);
+                    changeResourceHandler.addHealthToEntity(caster, healAmount, caster, false);
                     Location center = caster.getLocation().clone().add(0,1,0);
 
                     double increment = (2 * Math.PI) / 16; // angle between particles

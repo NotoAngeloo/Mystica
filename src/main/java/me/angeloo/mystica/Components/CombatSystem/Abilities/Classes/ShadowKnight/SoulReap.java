@@ -240,6 +240,7 @@ public class SoulReap extends BaseAbility {
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
                     bossCastingManager.interrupt(caster, target);
+                    return;
                 }
 
                 double percent = ((double) angle / -1500) * 100;
@@ -390,5 +391,10 @@ public class SoulReap extends BaseAbility {
 
 
         return "\ue40b";
+    }
+
+    @Override
+    public String statusBarIcon() {
+        return "\ue4e8";
     }
 }

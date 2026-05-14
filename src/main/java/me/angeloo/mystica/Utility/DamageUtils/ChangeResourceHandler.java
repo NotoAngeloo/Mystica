@@ -137,20 +137,17 @@ public class ChangeResourceHandler {
 
         if(damager instanceof Player player){
 
-            //temp comment
-            //damageIndicatorCalculator.displayDamage((Player)damager, entity, damage, crit);
-
             //int rounded = (int) Math.round(damage);
 
             //testing
-            int rounded = 9999;
-            /*if(rounded!=0){
+            int rounded = (int)Math.round(damage);
+            if(rounded>0){
+                //testing to always crit
+                DamageEntry entry = new DamageEntry(rounded, false, crit, System.currentTimeMillis());
+                damageHudManager.addDamage(player, entry);
+            }
 
-            }*/
 
-            //testing to always crit
-            DamageEntry entry = new DamageEntry(rounded, false, true, System.currentTimeMillis());
-            damageHudManager.addDamage(player, entry);
 
 
             if(seeingRawDamage.getOrDefault(damager.getUniqueId(), false)){
@@ -339,13 +336,18 @@ public class ChangeResourceHandler {
         lastDamaged.put(player.getUniqueId(), (System.currentTimeMillis()/1000));
     }
 
-    public void addHealthToEntity(LivingEntity entity, Double health, LivingEntity healer){
+    public void addHealthToEntity(LivingEntity entity, Double health, LivingEntity healer, boolean crit){
 
         if(healer != null){
-            if(healer instanceof Player){
+            if(healer instanceof Player player){
                 if(seeingRawDamage.getOrDefault(healer.getUniqueId() ,false)){
                     healer.sendMessage("you heal " + health);
                 }
+
+                int rounded = (int)Math.round(health);
+
+                DamageEntry entry = new DamageEntry(rounded, true, crit, System.currentTimeMillis());
+                damageHudManager.addDamage(player, entry);
             }
         }
 

@@ -115,6 +115,10 @@ commands:
     description: spawn a mechanic circle
     usage: /circle <radius> <duration> <linger> <color> <x,y,z>
     permission: developer
+  TestGui:
+    description: tests new guis
+    usage: /testgui
+    permission: developer
 
 permissions:
   developer:

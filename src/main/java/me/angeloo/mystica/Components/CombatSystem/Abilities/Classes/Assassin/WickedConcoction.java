@@ -177,7 +177,7 @@ public class WickedConcoction extends BaseAbility {
 
                     double healAmount = damageCalculator.calculateHealing(caster, baseHealing, crit);
 
-                    changeResourceHandler.addHealthToEntity(target, healAmount, caster);
+                    changeResourceHandler.addHealthToEntity(target, healAmount, caster, crit);
 
                     //statusEffectManager.applyEffect(target, new GenericDamageReduction(), 20*15,0.95);
                     statusEffectManager.applyEffect(target, new ConcoctionBuff(), null, null, caster);

@@ -288,7 +288,7 @@ public class MysticBasic implements BasicAttackDefinition {
             boolean crit = damageCalculator.checkIfCrit(caster, 0);
             double healAmount  = damageCalculator.calculateHealing(caster, healPower, crit);
 
-            changeResourceHandler.addHealthToEntity(target, healAmount, caster);
+            changeResourceHandler.addHealthToEntity(target, healAmount, caster, crit);
             //Bukkit.getLogger().info("adding " + healAmount + " to " + target);
 
             if(shepard){

@@ -1533,7 +1533,7 @@ public class GeneralEventListener implements Listener {
         LivingEntity companion = event.getCompanion();
 
         double max = profileManager.getAnyProfile(companion).getTotalHealth();
-        changeResourceHandler.addHealthToEntity(companion, max, null);
+        changeResourceHandler.addHealthToEntity(companion, max, null, false);
 
     }
 

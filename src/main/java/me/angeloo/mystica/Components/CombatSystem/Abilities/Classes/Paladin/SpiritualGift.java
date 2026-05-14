@@ -3,7 +3,7 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.Haste;
+import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.Misc.Haste;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -152,7 +152,7 @@ public class SpiritualGift extends BaseAbility {
                 boolean crit = damageCalculator.checkIfCrit(caster, 0);
                 double healAmount = damageCalculator.calculateHealing(caster, finalHealPower, crit);
 
-                changeResourceHandler.addHealthToEntity(target, healAmount, caster);
+                changeResourceHandler.addHealthToEntity(target, healAmount, caster, crit);
             }
 
         }.runTaskTimer(main, 0, 1);

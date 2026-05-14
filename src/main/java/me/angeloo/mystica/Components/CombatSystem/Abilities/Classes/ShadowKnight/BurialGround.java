@@ -8,6 +8,7 @@ import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectMa
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -24,6 +25,7 @@ public class BurialGround extends BaseAbility {
     private final StatusEffectManager statusEffectManager;
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
+    private final DamageCalculator damageCalculator;
 
     private final Energy energy;
 
@@ -35,6 +37,7 @@ public class BurialGround extends BaseAbility {
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = main.getCooldownManager();
         energy = manager.getEnergy();
+        damageCalculator = main.getDamageCalculator();
     }
 
     private final int baseCooldown = 12;
@@ -64,9 +67,6 @@ public class BurialGround extends BaseAbility {
         boolean blood = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Blood);
 
         Location start = caster.getLocation();
-
-
-        double finalHealAmount = getHealPercent(caster);
         new BukkitRunnable(){
             int ran = 0;
             @Override
@@ -86,7 +86,11 @@ public class BurialGround extends BaseAbility {
 
                 if(playerValid()){
 
-                    changeResourceHandler.addHealthToEntity(caster, finalHealAmount, caster);
+                    boolean crit = damageCalculator.checkIfCrit(caster, 0);
+
+                    double healAmount = damageCalculator.calculateHealing(caster, getHealPercent(caster), crit);
+
+                    changeResourceHandler.addHealthToEntity(caster, healAmount, caster, crit);
                     energy.addEnergyToEntity(caster, refund);
 
                     if(blood){

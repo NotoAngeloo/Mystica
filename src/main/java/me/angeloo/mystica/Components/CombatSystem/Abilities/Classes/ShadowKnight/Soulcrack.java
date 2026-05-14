@@ -108,11 +108,17 @@ public class Soulcrack extends BaseAbility {
         ItemStack offhand = weapon.clone();
 
         if(caster instanceof Player){
-            weapon = profileManager.getAnyProfile(caster).getPlayerEquipment().getWeapon().build();
-            ItemMeta offhandItemMeta = offhand.getItemMeta();
-            assert offhandItemMeta != null;
-            offhandItemMeta.setCustomModelData(offhandItemMeta.getCustomModelData() + 1);
-            offhand.setItemMeta(offhandItemMeta);
+
+
+            MysticaEquipment playerWeapon = profileManager.getAnyProfile(caster).getPlayerEquipment().getWeapon();
+            if(playerWeapon != null){
+                weapon = playerWeapon.build();
+                ItemMeta offhandItemMeta = offhand.getItemMeta();
+                assert offhandItemMeta != null;
+                offhandItemMeta.setCustomModelData(offhandItemMeta.getCustomModelData() + 1);
+                offhand.setItemMeta(offhandItemMeta);
+            }
+
         }
 
         assert entityEquipment != null;
@@ -279,5 +285,10 @@ public class Soulcrack extends BaseAbility {
     @Override
     public String skillBarIcon(LivingEntity entity) {
         return "\ue40a";
+    }
+
+    @Override
+    public String statusBarIcon() {
+        return "\ue4e9";
     }
 }

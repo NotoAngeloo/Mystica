@@ -164,7 +164,7 @@ public class Bloodsucker extends BaseAbility {
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
-                    changeResourceHandler.addHealthToEntity(caster, finalHealAmount, caster);
+                    changeResourceHandler.addHealthToEntity(caster, finalHealAmount, caster, crit);
 
                     if(target instanceof Player){
                         statusEffectManager.removeEffect(target, "shield");

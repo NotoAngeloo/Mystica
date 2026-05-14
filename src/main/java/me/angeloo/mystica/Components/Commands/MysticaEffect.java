@@ -34,6 +34,8 @@ public class MysticaEffect implements CommandExecutor {
         targetManager = main.getTargetManager();
     }
 
+    //TODO: make this better. idk how, but its bad now
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
 
@@ -138,7 +140,7 @@ public class MysticaEffect implements CommandExecutor {
                 case "heal_percent" -> {
                     double totalHealth = profileManager.getAnyProfile(target).getTotalHealth();
                     double healed = totalHealth * (amount * .01);
-                    changeResourceHandler.addHealthToEntity(target, healed, caster);
+                    changeResourceHandler.addHealthToEntity(target, healed, caster, false);
                     return true;
                 }
                 case "fear" -> {

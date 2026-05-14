@@ -26,6 +26,10 @@ import me.angeloo.mystica.Components.Guis.Storage.GenericDiscard;
 import me.angeloo.mystica.Components.Hud.BossCastingManager;
 import me.angeloo.mystica.Components.Hud.DamageIndicator.DamageHudManager;
 import me.angeloo.mystica.Components.Hud.HudManager;
+import me.angeloo.mystica.Components.MysticaGui.Assemble.GuiAssembler;
+import me.angeloo.mystica.Components.MysticaGui.GuiManager;
+import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderer;
+import me.angeloo.mystica.Components.MysticaGui.TestGuiCommand;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Components.Guis.QuestInventories.PickQuestInventory;
 import me.angeloo.mystica.Components.Guis.QuestInventories.QuestAcceptInventory;
@@ -309,6 +313,14 @@ public final class Mystica extends JavaPlugin{
 
         //SpecInventory specInventory = abilityInventory.getSpecInventory();
         //this.getServer().getPluginManager().registerEvents(specInventory, this);
+
+        GuiAssembler guiAssembler = new GuiAssembler();
+        GuiRenderer guiRenderer = new GuiRenderer(guiAssembler);
+        GuiManager guiManager = new GuiManager(guiRenderer);
+
+        getCommand("testgui").setExecutor(new TestGuiCommand(guiManager));
+
+        this.getServer().getPluginManager().registerEvents(guiManager, this);
 
         this.getServer().getPluginManager().registerEvents(abilityInventory, this);
         this.getServer().getPluginManager().registerEvents(specInventory, this);

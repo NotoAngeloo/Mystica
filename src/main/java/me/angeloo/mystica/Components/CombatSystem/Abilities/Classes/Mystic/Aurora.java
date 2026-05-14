@@ -167,7 +167,7 @@ public class Aurora extends BaseAbility {
                         if(shepard){
                             boolean crit = damageCalculator.checkIfCrit(caster, 0);
                             double healAmount = damageCalculator.calculateHealing(caster, finalHealPercent, crit);
-                            changeResourceHandler.addHealthToEntity(hitEntity, healAmount, caster);
+                            changeResourceHandler.addHealthToEntity(hitEntity, healAmount, caster, crit);
                         }
 
                         if(hitBySkill.contains(hitEntity)){

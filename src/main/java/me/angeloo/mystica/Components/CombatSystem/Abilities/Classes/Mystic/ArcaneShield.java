@@ -11,6 +11,7 @@ import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
+import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Location;
@@ -34,6 +35,7 @@ public class ArcaneShield extends BaseAbility {
     private final ChangeResourceHandler changeResourceHandler;
     private final CooldownManager cooldownManager;
     private final AbilityMarkManager abilityMarkManager;
+    private final DamageCalculator damageCalculator;
 
     private final Mana mana;
 
@@ -52,6 +54,7 @@ public class ArcaneShield extends BaseAbility {
         mana = manager.getMana();
         cooldownManager = main.getCooldownManager();
         abilityMarkManager = manager.getAbilityMarkManager();
+        damageCalculator = main.getDamageCalculator();
     }
 
     private final double range = 20;
@@ -164,7 +167,7 @@ public class ArcaneShield extends BaseAbility {
                             return;
                         }
 
-                        changeResourceHandler.addHealthToEntity(thisTarget, thirtyPercent, caster);
+                        changeResourceHandler.addHealthToEntity(thisTarget, thirtyPercent, caster, false);
 
                         Location center = thisTarget.getLocation().clone().add(0,1,0);
 

@@ -404,7 +404,7 @@ public class LightSigil extends BaseAbility {
 
                     double healAmount  = damageCalculator.calculateHealing(caster, finalHealPower, crit);
 
-                    changeResourceHandler.addHealthToEntity(healedEntity, healAmount, caster);
+                    changeResourceHandler.addHealthToEntity(healedEntity, healAmount, caster, crit);
 
                     Location center = healedEntity.getLocation().clone().add(0,1,0);
 

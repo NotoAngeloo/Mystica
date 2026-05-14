@@ -238,7 +238,7 @@ public class OrderShield extends BaseAbility {
                     return;
                 }
 
-                changeResourceHandler.addHealthToEntity(caster, amount, caster);
+                changeResourceHandler.addHealthToEntity(caster, amount, caster, false);
 
                 if(count>=5){
                     this.cancel();

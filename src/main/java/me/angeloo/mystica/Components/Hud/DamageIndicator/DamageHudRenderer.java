@@ -1,5 +1,7 @@
 package me.angeloo.mystica.Components.Hud.DamageIndicator;
 
+import net.md_5.bungee.api.ChatColor;
+
 public class DamageHudRenderer {
 
     //+32
@@ -312,11 +314,19 @@ public class DamageHudRenderer {
         int leftPad = remaining / 2;
         int rightPad = remaining - leftPad;
 
+        builder.append(ChatColor.RESET);
+
         // LEFT PAD
         builder.append(buildPositiveSpace(leftPad));
 
         if(crit){
+            builder.append(ChatColor.YELLOW);
             builder.append(critGlyph[row]);
+        }
+
+        if(entry.isHealing()){
+            builder.append(ChatColor.RESET);
+            builder.append(ChatColor.GREEN);
         }
 
         // CONTENT

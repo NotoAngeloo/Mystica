@@ -83,7 +83,7 @@ public class CombatTick {
 
                             double max = profileManager.getAnyProfile(livingEntity).getTotalHealth();
 
-                            changeResourceHandler.addHealthToEntity(livingEntity, max, null);
+                            changeResourceHandler.addHealthToEntity(livingEntity, max, null, false);
                             abilityManager.resetResource(livingEntity);
                         }
                     }

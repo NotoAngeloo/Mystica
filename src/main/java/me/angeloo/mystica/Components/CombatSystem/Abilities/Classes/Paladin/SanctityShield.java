@@ -85,7 +85,7 @@ public class SanctityShield extends BaseAbility {
                     return;
                 }
 
-                changeResourceHandler.addHealthToEntity(caster, healAmount, caster);
+                changeResourceHandler.addHealthToEntity(caster, healAmount, caster, false);
 
                 if(count>=5){
                     this.cancel();

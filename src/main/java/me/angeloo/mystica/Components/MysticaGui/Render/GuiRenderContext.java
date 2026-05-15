@@ -1,21 +1,79 @@
 package me.angeloo.mystica.Components.MysticaGui.Render;
 
-import me.angeloo.mystica.Components.MysticaGui.Command.DrawCommand;
+import me.angeloo.mystica.Components.MysticaGui.DrawCommand.DrawCommand;
+import me.angeloo.mystica.Components.MysticaGui.DrawCommand.SlotDrawCommand.DrawSlotIconCommand;
+import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;
 
 import java.util.*;
 
 public class GuiRenderContext {
 
-    private final Map<RenderLayer, List<DrawCommand>> layers = new EnumMap<>(RenderLayer.class);
+    private final Map<RenderLayer,
+            List<DrawCommand>> layers =
+            new EnumMap<>(RenderLayer.class);
 
-    public void draw(RenderLayer layer, DrawCommand command){
+    public void draw(
+            RenderLayer layer,
+            DrawCommand command
+    ) {
 
-        layers.computeIfAbsent(layer, k-> new ArrayList<>()).add(command);
-
+        layers
+                .computeIfAbsent(
+                        layer,
+                        k -> new ArrayList<>()
+                )
+                .add(command);
     }
 
-    public List<DrawCommand> getLayer(RenderLayer layer){
-        return layers.getOrDefault(layer, Collections.emptyList());
+    /*
+     * ----------------------------------------
+     * BUTTON HELPERS
+     * ----------------------------------------
+     */
+
+    public void drawButton(
+            int slot,
+            Glyph glyph
+    ) {
+
+        draw(
+                RenderLayer.Buttons,
+                new DrawSlotIconCommand(
+                        slot,
+                        glyph
+                )
+        );
+    }
+
+    public void drawButton(
+            int row,
+            int col,
+            Glyph glyph
+    ) {
+
+        int slot =
+                row * 9 + col;
+
+        drawButton(
+                slot,
+                glyph
+        );
+    }
+
+    /*
+     * ----------------------------------------
+     * LAYER ACCESS
+     * ----------------------------------------
+     */
+
+    public List<DrawCommand> getLayer(
+            RenderLayer layer
+    ) {
+
+        return layers.getOrDefault(
+                layer,
+                Collections.emptyList()
+        );
     }
 
 }

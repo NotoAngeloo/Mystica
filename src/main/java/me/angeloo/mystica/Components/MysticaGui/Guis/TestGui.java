@@ -1,7 +1,9 @@
 package me.angeloo.mystica.Components.MysticaGui.Guis;
 
-import me.angeloo.mystica.Components.MysticaGui.Command.DrawIconCommand;
-import me.angeloo.mystica.Components.MysticaGui.Command.DrawTextCommand;
+import me.angeloo.mystica.Components.MysticaGui.DrawCommand.DrawIconCommand;
+
+import me.angeloo.mystica.Components.MysticaGui.DrawCommand.SlotDrawCommand.DrawSlotIconCommand;
+import me.angeloo.mystica.Components.MysticaGui.Font.UiGlyphs;
 import me.angeloo.mystica.Components.MysticaGui.Gui;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderContext;
 import me.angeloo.mystica.Components.MysticaGui.Render.RenderLayer;
@@ -10,17 +12,72 @@ import org.bukkit.entity.Player;
 public class TestGui extends Gui {
 
     @Override
-    public void build(Player player, GuiRenderContext context){
+    public void build(
+            Player player,
+            GuiRenderContext context
+    ) {
 
-        context.draw(RenderLayer.Text,
-                new DrawTextCommand(0, 0, "test"));
+        /*
+         * Row 0
+         */
 
-        context.draw(RenderLayer.Content, new DrawIconCommand(0, 0, "\ue4e5"));
+        context.drawButton(
+                0,
+                UiGlyphs.LEFT_ARROW
+        );
 
-        setButton(0, (p, gui, event) -> {
-            p.sendMessage("clicked");
-        });
+        context.drawButton(
+                1,
+                UiGlyphs.LEFT_ARROW
+        );
 
+        context.drawButton(
+                2,
+                UiGlyphs.LEFT_ARROW
+        );
+
+        context.drawButton(
+                8,
+                UiGlyphs.LEFT_ARROW
+        );
+
+        /*
+         * Row 1
+         */
+
+        context.drawButton(
+                9,
+                UiGlyphs.LEFT_ARROW
+        );
+
+        context.drawButton(
+                10,
+                UiGlyphs.LEFT_ARROW
+        );
+
+        context.drawButton(
+                16,
+                UiGlyphs.LEFT_ARROW
+        );
+
+        context.drawButton(
+                17,
+                UiGlyphs.LEFT_ARROW
+        );
+
+        /*
+         * Row 2
+         */
+
+        context.drawButton(
+                18,
+                UiGlyphs.LEFT_ARROW
+        );
+
+        context.drawButton(
+                27,
+                UiGlyphs.LEFT_ARROW
+        );
     }
 
 }

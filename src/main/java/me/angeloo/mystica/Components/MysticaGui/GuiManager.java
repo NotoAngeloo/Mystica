@@ -19,7 +19,7 @@ import java.util.UUID;
 
 public class GuiManager implements Listener {
 
-    private final Map<UUID, Gui> activeGuis =
+    private final Map<UUID, GuiSession> sessions =
             new HashMap<>();
 
     private final GuiRenderer renderer;
@@ -42,33 +42,52 @@ public class GuiManager implements Listener {
             Gui gui
     ) {
 
-        Gui current =
-                activeGuis.get(player.getUniqueId());
+        close(player);
 
-        if(current != null) {
+        GuiRenderResult result =
+                renderer.render(
+                        player,
+                        gui
+                );
 
-            current.onClose(player);
-        }
+        Inventory inventory =
+                Bukkit.createInventory(
+                        player,
+                        54,
+                        ChatColor.WHITE + result.title()
+                );
 
-        activeGuis.put(
+        GuiSession session =
+                new GuiSession(
+                        gui,
+                        inventory
+                );
+
+        session.setLastRender(result);
+
+        sessions.put(
                 player.getUniqueId(),
-                gui
+                session
         );
 
         gui.onOpen(player);
 
-        render(player);
+        player.openInventory(inventory);
     }
 
     public void close(Player player) {
 
-        Gui gui =
-                activeGuis.remove(
-                        player.getUniqueId()
-                );
+        GuiSession session = sessions.remove(player.getUniqueId());
 
-        if(gui == null)
+        if(session == null){
             return;
+        }
+
+        Gui gui = session.getGui();
+
+        if(gui == null){
+            return;
+        }
 
         gui.onClose(player);
 
@@ -81,16 +100,16 @@ public class GuiManager implements Listener {
      * -----------------------------------------
      */
 
-    public Gui get(Player player) {
+    public GuiSession get(Player player) {
 
-        return activeGuis.get(
+        return sessions.get(
                 player.getUniqueId()
         );
     }
 
     public boolean hasGui(Player player) {
 
-        return activeGuis.containsKey(
+        return sessions.containsKey(
                 player.getUniqueId()
         );
     }
@@ -103,21 +122,35 @@ public class GuiManager implements Listener {
 
     public void render(Player player) {
 
-        Gui gui = get(player);
+        GuiSession session =
+                sessions.get(player.getUniqueId());
 
-        if(gui == null)
+        if (session == null)
             return;
 
-        GuiRenderResult result =
-                renderer.render(
-                        player,
-                        gui
-                );
+        if (!session.isDirty())
+            return;
 
-        openInventory(
-                player,
-                result
-        );
+        Gui gui = session.getGui();
+
+        GuiRenderResult result =
+                renderer.render(player, gui);
+
+        updateTitle(player, result.title());
+
+        session.setLastRender(result);
+
+        session.clearDirty();
+    }
+
+    private void updateTitle(
+            Player player,
+            String title
+    ) {
+
+        /*
+         * Packet inventory title update.
+         */
     }
 
     /*
@@ -158,82 +191,66 @@ public class GuiManager implements Listener {
      */
 
     @EventHandler
-    public void onInventoryClick(
-            InventoryClickEvent event
-    ) {
+    public void onInventoryClick(InventoryClickEvent event) {
 
-        if(!(event.getWhoClicked()
-                instanceof Player player)) {
-
+        if (!(event.getWhoClicked() instanceof Player player))
             return;
-        }
 
-        Gui gui = get(player);
+        GuiSession session = sessions.get(player.getUniqueId());
 
-        if(gui == null)
+        if (session == null)
             return;
 
         event.setCancelled(true);
 
-        gui.handleClick(
-                player,
-                event
-        );
+        session.getGui().handleClick(player, event);
 
-        /*
-         * Optional immediate rerender.
-         */
+        session.markDirty();
 
-        //render(player);
+        render(player);
     }
 
     @EventHandler
-    public void onInventoryDrag(
-            InventoryDragEvent event
-    ) {
+    public void onInventoryDrag(InventoryDragEvent event) {
 
-        if(!(event.getWhoClicked()
-                instanceof Player player)) {
-
+        if (!(event.getWhoClicked() instanceof Player player)) {
             return;
         }
 
-        Gui gui = get(player);
+        GuiSession session = sessions.get(player.getUniqueId());
 
-        if(gui == null)
+        if (session == null) {
             return;
+        }
 
         event.setCancelled(true);
 
-        gui.handleDrag(
-                player,
-                event
-        );
+        session.getGui().handleDrag(player, event);
 
-        //render(player);
+        render(player);
     }
 
     @EventHandler
-    public void onInventoryClose(
-            InventoryCloseEvent event
-    ) {
+    public void onInventoryClose(InventoryCloseEvent event) {
 
-        if(!(event.getPlayer()
-                instanceof Player player)) {
-
+        if (!(event.getPlayer() instanceof Player player)) {
             return;
         }
 
-        Gui gui = get(player);
+        GuiSession session = sessions.remove(player.getUniqueId());
 
-        if(gui == null)
+        if (session == null) {
             return;
+        }
 
-        gui.onClose(player);
 
-        activeGuis.remove(
-                player.getUniqueId()
-        );
+        if (session.isClosing()) {
+            return;
+        }
+
+        session.setClosing(true);
+
+        session.getGui().onClose(player);
     }
 
     @EventHandler

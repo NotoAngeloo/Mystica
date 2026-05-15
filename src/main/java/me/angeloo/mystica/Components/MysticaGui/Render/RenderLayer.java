@@ -3,9 +3,9 @@ package me.angeloo.mystica.Components.MysticaGui.Render;
 public enum RenderLayer {
 
     Background,
-    Content,
+    Buttons,
     Text,
-    Tooltip,
-    Overlay
+    Overlay,
+    Tooltip
 
 }

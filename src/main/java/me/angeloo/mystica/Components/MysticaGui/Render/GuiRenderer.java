@@ -20,21 +20,30 @@ public class GuiRenderer {
             Gui gui
     ) {
 
+        /*
+         * Create fresh render context
+         */
+
         GuiRenderContext context =
                 new GuiRenderContext();
 
         /*
-         * GUI describes itself.
+         * Allow GUI to submit
+         * draw commands
          */
 
-        gui.build(player, context);
+        gui.build(
+                player,
+                context
+        );
 
         /*
-         * Convert render commands into
-         * final unicode/title output.
+         * Assemble final title
          */
 
-        return assembler.assemble(context);
+        return assembler.assemble(
+                context
+        );
     }
 
 }

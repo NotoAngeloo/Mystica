@@ -1,15 +1,23 @@
 package me.angeloo.mystica.Components.MysticaGui.Assemble;
 
-import me.angeloo.mystica.Components.MysticaGui.Command.DrawCommand;
-import me.angeloo.mystica.Components.MysticaGui.Command.DrawIconCommand;
-import me.angeloo.mystica.Components.MysticaGui.Command.DrawTextCommand;
+import me.angeloo.mystica.Components.MysticaGui.DrawCommand.DrawCommand;
+import me.angeloo.mystica.Components.MysticaGui.DrawCommand.TextDrawCommand.DrawTextCommand;
+import me.angeloo.mystica.Components.MysticaGui.DrawCommand.SlotDrawCommand.DrawSlotIconCommand;
+import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;
+import me.angeloo.mystica.Components.MysticaGui.Font.GlyphVariant;
+import me.angeloo.mystica.Components.MysticaGui.Font.UiGlyphs;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderContext;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderResult;
 import me.angeloo.mystica.Components.MysticaGui.Render.RenderLayer;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class GuiAssembler {
+
+    private final ButtonLayerAssembler
+            buttonAssembler =
+            new ButtonLayerAssembler();
 
     public GuiRenderResult assemble(
             GuiRenderContext context
@@ -24,24 +32,19 @@ public class GuiAssembler {
             List<DrawCommand> commands =
                     context.getLayer(layer);
 
-            for(DrawCommand command
-                    : commands) {
+            switch(layer) {
 
-                if(command
-                        instanceof DrawTextCommand text) {
+                case Buttons ->
+                        buttonAssembler.assemble(
+                                builder,
+                                commands
+                        );
 
-                    builder.append(
-                            text.text()
-                    );
-                }
-
-                else if(command
-                        instanceof DrawIconCommand icon) {
-
-                    builder.append(
-                            icon.glyph()
-                    );
-                }
+                case Text ->
+                        assembleText(
+                                builder,
+                                commands
+                        );
             }
         }
 
@@ -50,4 +53,21 @@ public class GuiAssembler {
         );
     }
 
+    private void assembleText(
+            StringBuilder builder,
+            List<DrawCommand> commands
+    ) {
+
+        for(DrawCommand command
+                : commands) {
+
+            if(command
+                    instanceof DrawTextCommand text) {
+
+                builder.append(
+                        text.text()
+                );
+            }
+        }
+    }
 }

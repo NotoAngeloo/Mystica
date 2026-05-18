@@ -11,16 +11,17 @@ import me.angeloo.mystica.Components.MysticaGui.Render.ButtonRenderEntry;
 import java.util.Arrays;
 import java.util.List;
 
+
 public class ButtonLayerAssembler {
 
     private static final int
-            INVENTORY_SIZE = 54;
+            INVENTORY_SIZE = 90;
 
     private static final int
             INVENTORY_COLUMNS = 9;
 
     private static final int
-            INVENTORY_ROWS = 6;
+            INVENTORY_ROWS = 10;
 
     public void assemble(
             StringBuilder builder,

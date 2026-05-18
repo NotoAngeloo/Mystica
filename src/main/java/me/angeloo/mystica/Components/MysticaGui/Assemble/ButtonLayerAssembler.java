@@ -28,8 +28,7 @@ public class ButtonLayerAssembler {
             List<DrawCommand> commands
     ) {
 
-        Glyph[] buffer =
-                createBuffer();
+        Glyph[] buffer = createBuffer();
 
         applyCommands(
                 buffer,
@@ -81,16 +80,14 @@ public class ButtonLayerAssembler {
                 continue;
             }
 
-            int slot =
-                    icon.getSlot();
+            int slot = icon.getSlot();
 
             if(!isValidSlot(slot)) {
 
                 continue;
             }
 
-            buffer[slot] =
-                    icon.glyph();
+            buffer[slot] = icon.glyph();
         }
     }
 
@@ -123,6 +120,85 @@ public class ButtonLayerAssembler {
     }
 
     private void renderRow(
+            StringBuilder builder,
+            Glyph[] buffer,
+            int row
+    ) {
+
+        int col = 0;
+
+        while(col < INVENTORY_COLUMNS) {
+
+            /*
+             * Resolve slot index
+             */
+
+            int slot =
+                    row * INVENTORY_COLUMNS + col;
+
+            /*
+             * Resolve glyph
+             */
+
+            Glyph glyph =
+                    buffer[slot];
+
+            if(glyph == null) {
+
+                glyph =
+                        UiGlyphs.EMPTY_SLOT;
+            }
+
+            /*
+             * Resolve variant
+             */
+
+            GlyphVariant variant =
+                    glyph.getVariant(row);
+
+            if(variant == null) {
+
+                variant =
+                        UiGlyphs.EMPTY_SLOT
+                                .getVariant(row);
+            }
+
+            if(variant == null) {
+
+                col++;
+                continue;
+            }
+
+            /*
+             * Render glyph
+             */
+
+            builder.append(
+                    variant.unicode()
+            );
+
+            /*
+             * Determine how many slots this glyph occupies
+             */
+
+            int slotWidth = Math.max(1, glyph.width() / 16);
+
+            /*
+             * IMPORTANT:
+             * advance column by glyph width
+             */
+
+            col += slotWidth;
+
+            /*
+             * Only add spacing if we are not at row end
+             */
+
+            builder.append(UiSpacing.SLOT_GAP);
+        }
+    }
+
+    /*private void renderRow(
             StringBuilder builder,
             Glyph[] buffer,
             int row
@@ -168,12 +244,12 @@ public class ButtonLayerAssembler {
              * add slot spacing AFTER each icon
              */
 
-            builder.append(
+            /*builder.append(
                     UiSpacing.SLOT_GAP);
 
 
         }
-    }
+    }*/
 
     /*
      * ----------------------------------------

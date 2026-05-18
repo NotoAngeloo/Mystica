@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.MysticaGui;
 
+import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderContext;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -10,8 +11,30 @@ import java.util.Map;
 
 public abstract class Gui {
 
-    protected final Map<Integer, GuiButton> buttons =
-            new HashMap<>();
+    protected final Map<Integer, GuiButton> buttons = new HashMap<>();
+
+    protected void button(
+            GuiRenderContext context,
+            GuiButton button
+    ) {
+
+        /*
+         * Register interactions
+         */
+
+        setButton(
+                button
+        );
+
+        /*
+         * Render ONLY origin slot
+         */
+
+        context.drawButton(
+                button.slot(),
+                button.glyph()
+        );
+    }
 
     /*
      * -----------------------------------------
@@ -76,11 +99,17 @@ public abstract class Gui {
      */
 
     public void setButton(
-            int slot,
             GuiButton button
     ) {
 
-        buttons.put(slot, button);
+        for(int slot
+                : button.interactionSlots()) {
+
+            buttons.put(
+                    slot,
+                    button
+            );
+        }
     }
 
     public void removeButton(int slot) {

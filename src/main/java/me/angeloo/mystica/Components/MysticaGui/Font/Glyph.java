@@ -42,10 +42,10 @@ public class Glyph {
         return variants.get(ascent);
     }
 
-    public int width() {
-
+    public int width(){
         return width;
     }
+
 
     public int height() {
 

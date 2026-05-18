@@ -45,20 +45,7 @@ public class GuiRenderContext {
         );
     }
 
-    public void drawButton(
-            int row,
-            int col,
-            Glyph glyph
-    ) {
 
-        int slot =
-                row * 9 + col;
-
-        drawButton(
-                slot,
-                glyph
-        );
-    }
 
     /*
      * ----------------------------------------

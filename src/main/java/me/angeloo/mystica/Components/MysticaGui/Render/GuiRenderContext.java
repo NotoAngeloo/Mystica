@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.MysticaGui.Render;
 
+import me.angeloo.mystica.Components.MysticaGui.DrawCommand.BakgroundDrawCommand.BackgroundDrawCommand;
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.DrawCommand;
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.SlotDrawCommand.DrawSlotIconCommand;
 import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;
@@ -46,6 +47,13 @@ public class GuiRenderContext {
     }
 
 
+    public void drawBackground(
+            int x,
+            Glyph glyph
+    ){
+        draw(RenderLayer.Background,
+                new BackgroundDrawCommand(x, glyph));
+    }
 
     /*
      * ----------------------------------------

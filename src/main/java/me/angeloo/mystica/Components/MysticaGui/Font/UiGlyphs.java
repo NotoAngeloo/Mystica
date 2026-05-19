@@ -7,6 +7,9 @@ public class UiGlyphs {
 
     //bigger glyphs take into account the empty space between slots
     public static final Glyph BUTTON_2 = new Glyph(32, 32);
+    public static final Glyph BUTTON_3 = new Glyph(48, 48);
+
+    public static final Glyph DEFAULT_BACKGROUND = new Glyph(768, 768);
 
     public static final Glyph EMPTY_SLOT = new Glyph(16, 16);
 
@@ -47,6 +50,9 @@ public class UiGlyphs {
         RIGHT_ARROW.addVariant(9, "\ue4fd");
 
         BUTTON_2.addVariant(0, "\ue4fe");
+        BUTTON_3.addVariant(0, "\ue4ff");
+
+        DEFAULT_BACKGROUND.addVariant(0, "\ue500");
     }
 
 }

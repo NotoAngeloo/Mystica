@@ -7,6 +7,7 @@ import me.angeloo.mystica.Components.MysticaGui.Font.GlyphVariant;
 import me.angeloo.mystica.Components.MysticaGui.Font.UiGlyphs;
 import me.angeloo.mystica.Components.MysticaGui.Font.UiSpacing;
 import me.angeloo.mystica.Components.MysticaGui.Render.ButtonRenderEntry;
+import me.angeloo.mystica.Components.MysticaGui.Render.RenderCursor;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,6 +26,7 @@ public class ButtonLayerAssembler {
 
     public void assemble(
             StringBuilder builder,
+            RenderCursor cursor,
             List<DrawCommand> commands
     ) {
 
@@ -198,58 +200,6 @@ public class ButtonLayerAssembler {
         }
     }
 
-    /*private void renderRow(
-            StringBuilder builder,
-            Glyph[] buffer,
-            int row
-    ) {
-
-        for(int col = 0;
-            col < INVENTORY_COLUMNS;
-            col++) {
-
-            int slot =
-                    row * INVENTORY_COLUMNS + col;
-
-            Glyph glyph =
-                    buffer[slot];
-
-            if(glyph == null) {
-
-                glyph =
-                        UiGlyphs.EMPTY_SLOT;
-            }
-
-            GlyphVariant variant =
-                    glyph.getVariant(row);
-
-            if(variant == null) {
-
-                variant =
-                        UiGlyphs.EMPTY_SLOT
-                                .getVariant(row);
-            }
-
-            if(variant == null) {
-
-                continue;
-            }
-
-            builder.append(
-                    variant.unicode()
-            );
-
-            /*
-             * IMPORTANT:
-             * add slot spacing AFTER each icon
-             */
-
-            /*builder.append(
-                    UiSpacing.SLOT_GAP);
-
-
-        }
-    }*/
 
     /*
      * ----------------------------------------

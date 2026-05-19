@@ -22,7 +22,9 @@ public class TestGui extends Gui {
             GuiRenderContext context
     ) {
 
-        button(
+        context.drawBackground(-256, UiGlyphs.DEFAULT_BACKGROUND);
+
+        /*button(
                 context,
                 new GuiButton() {
                     @Override
@@ -52,24 +54,24 @@ public class TestGui extends Gui {
                         );
                     }
                 }
-        );
+        );*/
 
-        button(
+        /*button(
                 context,
                 new GuiButton() {
                     @Override
                     public int slot() {
-                        return 5;
+                        return 0;
                     }
 
                     @Override
                     public Set<Integer> interactionSlots() {
-                        return Set.of(5,6,14,15);
+                        return Set.of(0,1,2,9,10,11,18,19,20);
                     }
 
                     @Override
                     public Glyph glyph() {
-                        return UiGlyphs.BUTTON_2;
+                        return UiGlyphs.BUTTON_3;
                     }
 
                     @Override
@@ -84,7 +86,7 @@ public class TestGui extends Gui {
                         );
                     }
                 }
-        );
+        );*/
 
         button(
                 context,

@@ -2,22 +2,18 @@ package me.angeloo.mystica.Components.MysticaGui.Assemble;
 
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.DrawCommand;
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.TextDrawCommand.DrawTextCommand;
-import me.angeloo.mystica.Components.MysticaGui.DrawCommand.SlotDrawCommand.DrawSlotIconCommand;
-import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;
-import me.angeloo.mystica.Components.MysticaGui.Font.GlyphVariant;
-import me.angeloo.mystica.Components.MysticaGui.Font.UiGlyphs;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderContext;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderResult;
+import me.angeloo.mystica.Components.MysticaGui.Render.RenderCursor;
 import me.angeloo.mystica.Components.MysticaGui.Render.RenderLayer;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class GuiAssembler {
 
-    private final ButtonLayerAssembler
-            buttonAssembler =
-            new ButtonLayerAssembler();
+    private final ButtonLayerAssembler buttonAssembler = new ButtonLayerAssembler();
+
+    private final BackgroundLayerAssembler backgroundAssembler = new BackgroundLayerAssembler();
 
     public GuiRenderResult assemble(
             GuiRenderContext context
@@ -25,6 +21,8 @@ public class GuiAssembler {
 
         StringBuilder builder =
                 new StringBuilder();
+
+        RenderCursor cursor = new RenderCursor();
 
         for(RenderLayer layer
                 : RenderLayer.values()) {
@@ -34,18 +32,31 @@ public class GuiAssembler {
 
             switch(layer) {
 
+                case Background -> backgroundAssembler.assemble(
+                        builder, cursor, commands
+                );
+
                 case Buttons ->
                         buttonAssembler.assemble(
                                 builder,
+                                cursor,
                                 commands
                         );
 
-                case Text ->
+                /*case Text ->
                         assembleText(
                                 builder,
+                                cursor,
                                 commands
-                        );
+                        );*/
             }
+
+            /*
+             * Restore baseline alignment
+             * after each layer
+             */
+
+            cursor.seek(builder, 0);
         }
 
         return new GuiRenderResult(

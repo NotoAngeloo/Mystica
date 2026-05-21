@@ -35,7 +35,6 @@ public class LayoutEngine {
         return result;
     }
 
-
     private RenderGlyph[] buildGlyphs(String text) {
 
         List<RenderGlyph> out =
@@ -48,8 +47,75 @@ public class LayoutEngine {
             char c = text.charAt(i);
 
             /*
-             * Detect formatting code
+             * Detect formatting
              */
+
+            if(c == '§' && i + 1 < text.length()) {
+
+                char code =
+                        text.charAt(i + 1);
+
+                /*
+                 * Hex color support
+                 *
+                 * Format:
+                 * §x§R§R§G§G§B§B
+                 */
+
+                if(code == 'x'
+                        && i + 13 < text.length()) {
+
+                    activeFormat =
+                            text.substring(i, i + 14);
+
+                    i += 13;
+
+                    continue;
+                }
+
+                /*
+                 * Normal formatting
+                 */
+
+                activeFormat =
+                        "§" + code;
+
+                i++;
+
+                continue;
+            }
+
+            CharGlyph glyph =
+                    atlas.get(c);
+
+            if(glyph != null) {
+
+                out.add(
+                        new RenderGlyph(
+                                glyph,
+                                activeFormat
+                        )
+                );
+            }
+        }
+
+        return out.toArray(
+                new RenderGlyph[0]
+        );
+    }
+
+    /*private RenderGlyph[] buildGlyphs(String text) {
+
+        List<RenderGlyph> out =
+                new ArrayList<>();
+
+        String activeFormat = "";
+
+        for(int i = 0; i < text.length(); i++) {
+
+            char c = text.charAt(i);
+
+
 
             if(c == '§' && i + 1 < text.length()) {
 
@@ -77,7 +143,7 @@ public class LayoutEngine {
         return out.toArray(
                 new RenderGlyph[0]
         );
-    }
+    }*/
 
 
 

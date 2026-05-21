@@ -6,14 +6,24 @@ import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderContext;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderResult;
 import me.angeloo.mystica.Components.MysticaGui.Render.RenderCursor;
 import me.angeloo.mystica.Components.MysticaGui.Render.RenderLayer;
+import me.angeloo.mystica.Mystica;
 
 import java.util.List;
 
 public class GuiAssembler {
 
-    private final ButtonLayerAssembler buttonAssembler = new ButtonLayerAssembler();
 
-    private final BackgroundLayerAssembler backgroundAssembler = new BackgroundLayerAssembler();
+    private final BackgroundLayerAssembler backgroundAssembler;
+    private final IconLayerAssembler iconLayerAssembler;
+    private final ButtonLayerAssembler buttonAssembler ;
+    private final TextLayerAssembler textLayerAssembler;
+
+    public GuiAssembler(Mystica main){
+        backgroundAssembler = new BackgroundLayerAssembler();
+        iconLayerAssembler  = new IconLayerAssembler();
+        buttonAssembler = new ButtonLayerAssembler();
+        textLayerAssembler = new TextLayerAssembler(main);
+    }
 
     public GuiRenderResult assemble(
             GuiRenderContext context
@@ -36,6 +46,8 @@ public class GuiAssembler {
                         builder, cursor, commands
                 );
 
+                case Icons -> iconLayerAssembler.assemble(builder, cursor, commands);
+
                 case Buttons ->
                         buttonAssembler.assemble(
                                 builder,
@@ -43,12 +55,7 @@ public class GuiAssembler {
                                 commands
                         );
 
-                /*case Text ->
-                        assembleText(
-                                builder,
-                                cursor,
-                                commands
-                        );*/
+                case Text -> textLayerAssembler.assemble(builder, cursor, commands);
             }
 
             /*
@@ -57,6 +64,7 @@ public class GuiAssembler {
              */
 
             cursor.seek(builder, 0);
+
         }
 
         return new GuiRenderResult(
@@ -64,7 +72,7 @@ public class GuiAssembler {
         );
     }
 
-    private void assembleText(
+    /*private void assembleText(
             StringBuilder builder,
             List<DrawCommand> commands
     ) {
@@ -80,5 +88,5 @@ public class GuiAssembler {
                 );
             }
         }
-    }
+    }*/
 }

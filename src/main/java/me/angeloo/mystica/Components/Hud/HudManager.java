@@ -904,7 +904,7 @@ public class HudManager {
                 castBar.append(playerCastBar[amount]);
 
                 //now i need to add padding
-                int maxLength = 207 - 53; //bar lengths minus offset spacing
+                int maxLength = 207 - 53; //bar lengths minus nextLineOffset spacing
                 int padding = maxLength - 83 - 17; //cast bar size plus icon width, 17
                 // pad remaining space
 
@@ -1974,7 +1974,7 @@ public class HudManager {
 
                 while (padding >= PIXELS[i]) {
                     teamData.append(GLYPHS[i]);
-                    //offset.append(GLYPHS[i]);
+                    //nextLineOffset.append(GLYPHS[i]);
                     padding -= PIXELS[i];
                 }
 

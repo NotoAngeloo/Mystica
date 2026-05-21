@@ -1,4 +1,4 @@
-package me.angeloo.mystica.Components.MysticaGui.DrawCommand.BakgroundDrawCommand;
+package me.angeloo.mystica.Components.MysticaGui.DrawCommand.BackgroundDrawCommand;
 
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.DrawCommand;
 import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;

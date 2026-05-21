@@ -1,6 +1,6 @@
 package me.angeloo.mystica.Components.MysticaGui.Assemble;
 
-import me.angeloo.mystica.Components.MysticaGui.DrawCommand.BakgroundDrawCommand.BackgroundDrawCommand;
+import me.angeloo.mystica.Components.MysticaGui.DrawCommand.BackgroundDrawCommand.BackgroundDrawCommand;
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.DrawCommand;
 import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;
 import me.angeloo.mystica.Components.MysticaGui.Render.RenderCursor;
@@ -23,7 +23,10 @@ public class BackgroundLayerAssembler {
 
             builder.append(glyph.getVariant(0).unicode());
 
-            cursor.advance(glyph.width());
+            //because space
+            cursor.advance(glyph.width()+1);
+
+
         }
 
     }

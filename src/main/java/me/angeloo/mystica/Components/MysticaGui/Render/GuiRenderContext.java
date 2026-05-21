@@ -1,9 +1,12 @@
 package me.angeloo.mystica.Components.MysticaGui.Render;
 
-import me.angeloo.mystica.Components.MysticaGui.DrawCommand.BakgroundDrawCommand.BackgroundDrawCommand;
+import me.angeloo.mystica.Components.MysticaGui.DrawCommand.BackgroundDrawCommand.BackgroundDrawCommand;
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.DrawCommand;
-import me.angeloo.mystica.Components.MysticaGui.DrawCommand.SlotDrawCommand.DrawSlotIconCommand;
+import me.angeloo.mystica.Components.MysticaGui.DrawCommand.DrawIconCommand.DrawIconCommand;
+import me.angeloo.mystica.Components.MysticaGui.DrawCommand.SlotDrawCommand.DrawSlotCommand;
+import me.angeloo.mystica.Components.MysticaGui.DrawCommand.TextDrawCommand.DrawTextCommand;
 import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;
+import me.angeloo.mystica.Utility.TextRenderer.LineData;
 
 import java.util.*;
 
@@ -28,7 +31,7 @@ public class GuiRenderContext {
 
     /*
      * ----------------------------------------
-     * BUTTON HELPERS
+     * HELPERS
      * ----------------------------------------
      */
 
@@ -39,13 +42,12 @@ public class GuiRenderContext {
 
         draw(
                 RenderLayer.Buttons,
-                new DrawSlotIconCommand(
+                new DrawSlotCommand(
                         slot,
                         glyph
                 )
         );
     }
-
 
     public void drawBackground(
             int x,
@@ -53,6 +55,14 @@ public class GuiRenderContext {
     ){
         draw(RenderLayer.Background,
                 new BackgroundDrawCommand(x, glyph));
+    }
+
+    public void drawIcon(int row, int x, Glyph glyph){
+        draw(RenderLayer.Icons, new DrawIconCommand(row, x, glyph));
+    }
+
+    public void drawText(int x, int y, List<LineData> data){
+        draw(RenderLayer.Text, new DrawTextCommand(x, y, data));
     }
 
     /*

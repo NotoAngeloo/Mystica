@@ -2,13 +2,13 @@ package me.angeloo.mystica.Components.MysticaGui.DrawCommand.SlotDrawCommand;
 
 import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;
 
-public class DrawSlotIconCommand implements SlotDrawCommand{
+public class DrawSlotCommand implements SlotDrawCommand{
 
     private final int slot;
 
     private final Glyph glyph;
 
-    public DrawSlotIconCommand(
+    public DrawSlotCommand(
             int slot,
             Glyph glyph
     ) {

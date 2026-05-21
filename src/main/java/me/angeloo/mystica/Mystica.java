@@ -314,7 +314,7 @@ public final class Mystica extends JavaPlugin{
         //SpecInventory specInventory = abilityInventory.getSpecInventory();
         //this.getServer().getPluginManager().registerEvents(specInventory, this);
 
-        GuiAssembler guiAssembler = new GuiAssembler();
+        GuiAssembler guiAssembler = new GuiAssembler(this);
         GuiRenderer guiRenderer = new GuiRenderer(guiAssembler);
         GuiManager guiManager = new GuiManager(guiRenderer);
 

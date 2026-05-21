@@ -1,12 +1,11 @@
 package me.angeloo.mystica.Components.MysticaGui.Assemble;
 
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.DrawCommand;
-import me.angeloo.mystica.Components.MysticaGui.DrawCommand.SlotDrawCommand.DrawSlotIconCommand;
+import me.angeloo.mystica.Components.MysticaGui.DrawCommand.SlotDrawCommand.DrawSlotCommand;
 import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;
 import me.angeloo.mystica.Components.MysticaGui.Font.GlyphVariant;
 import me.angeloo.mystica.Components.MysticaGui.Font.UiGlyphs;
 import me.angeloo.mystica.Components.MysticaGui.Font.UiSpacing;
-import me.angeloo.mystica.Components.MysticaGui.Render.ButtonRenderEntry;
 import me.angeloo.mystica.Components.MysticaGui.Render.RenderCursor;
 
 import java.util.Arrays;
@@ -41,6 +40,8 @@ public class ButtonLayerAssembler {
                 builder,
                 buffer
         );
+
+        cursor.advance(162);
     }
 
     /*
@@ -77,7 +78,7 @@ public class ButtonLayerAssembler {
                 : commands) {
 
             if(!(command
-                    instanceof DrawSlotIconCommand icon)) {
+                    instanceof DrawSlotCommand icon)) {
 
                 continue;
             }
@@ -179,18 +180,18 @@ public class ButtonLayerAssembler {
                     variant.unicode()
             );
 
+
             /*
              * Determine how many slots this glyph occupies
              */
 
-            int slotWidth = Math.max(1, glyph.width() / 16);
 
             /*
              * IMPORTANT:
              * advance column by glyph width
              */
 
-            col += slotWidth;
+            col += glyph.slotWidth();
 
             /*
              * Only add spacing if we are not at row end

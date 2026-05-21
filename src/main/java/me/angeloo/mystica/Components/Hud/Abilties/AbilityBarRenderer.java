@@ -214,7 +214,7 @@ public class AbilityBarRenderer {
         int leftPad = remaining / 2;
         int rightPad = remaining - leftPad;
 
-        //try to have equal offset and padding no matter how many "count"
+        //try to have equal nextLineOffset and padding no matter how many "count"
 
         for(int i = 0; i< PIXELS.length;i++){
             while (leftPad>=PIXELS[i]){

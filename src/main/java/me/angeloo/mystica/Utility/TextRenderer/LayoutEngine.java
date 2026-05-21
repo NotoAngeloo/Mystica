@@ -21,7 +21,7 @@ public class LayoutEngine {
 
             result.add(new StringGlyph(
                     glyphs,
-                    data.offset()
+                    data.nextLineOffset()
             ));
         }
 

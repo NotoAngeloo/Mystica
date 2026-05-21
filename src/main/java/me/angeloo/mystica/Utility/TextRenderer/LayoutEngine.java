@@ -1,5 +1,7 @@
 package me.angeloo.mystica.Utility.TextRenderer;
 
+import org.bukkit.Bukkit;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,37 +13,72 @@ public class LayoutEngine {
         this.atlas = atlas;
     }
 
-    public List<StringGlyph> layout(List<LineData> dataList) {
+    public List<StringGlyph> layout(
+            List<LineData> dataList
+    ) {
 
-        List<StringGlyph> result = new ArrayList<>();
+        List<StringGlyph> result =
+                new ArrayList<>();
 
-        for (LineData data : dataList) {
+        for(LineData data : dataList) {
 
-            CharGlyph[] glyphs = buildGlyphs(data.text());
+            RenderGlyph[] glyphs = buildGlyphs(data.text());
 
-            result.add(new StringGlyph(
-                    glyphs,
-                    data.nextLineOffset()
-            ));
+            result.add(
+                    new StringGlyph(
+                            glyphs,
+                            data.nextLineOffset()
+                    )
+            );
         }
 
         return result;
     }
 
-    private CharGlyph[] buildGlyphs(String text) {
 
-        List<CharGlyph> out = new ArrayList<>();
+    private RenderGlyph[] buildGlyphs(String text) {
 
-        for (int i = 0; i < text.length(); i++) {
+        List<RenderGlyph> out =
+                new ArrayList<>();
+
+        String activeFormat = "";
+
+        for(int i = 0; i < text.length(); i++) {
 
             char c = text.charAt(i);
 
-            CharGlyph g = atlas.get(c);
-            if (g != null) out.add(g);
+            /*
+             * Detect formatting code
+             */
+
+            if(c == '§' && i + 1 < text.length()) {
+
+                activeFormat =
+                        "§" + text.charAt(i + 1);
+
+                i++;
+
+                continue;
+            }
+
+            CharGlyph glyph = atlas.get(c);
+
+            if(glyph != null) {
+
+                out.add(
+                        new RenderGlyph(
+                                glyph,
+                                activeFormat
+                        )
+                );
+            }
         }
 
-        return out.toArray(new CharGlyph[0]);
+        return out.toArray(
+                new RenderGlyph[0]
+        );
     }
+
 
 
 }

@@ -38,6 +38,8 @@ public class TextLayerAssembler {
 
             List<StringGlyph> glyphs = layoutEngine.layout(text.data());
 
+            //builder.append(text.color());
+
             builder.append(stringRenderer.render(glyphs, text.y()));
 
             cursor.advance(glyphs.getLast().getWidth()+1);

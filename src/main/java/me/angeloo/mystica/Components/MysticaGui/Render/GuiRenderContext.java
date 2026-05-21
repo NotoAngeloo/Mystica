@@ -7,6 +7,7 @@ import me.angeloo.mystica.Components.MysticaGui.DrawCommand.SlotDrawCommand.Draw
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.TextDrawCommand.DrawTextCommand;
 import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;
 import me.angeloo.mystica.Utility.TextRenderer.LineData;
+import net.md_5.bungee.api.ChatColor;
 
 import java.util.*;
 

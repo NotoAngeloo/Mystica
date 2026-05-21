@@ -4,10 +4,15 @@ public class UiGlyphs {
 
     public static final Glyph LEFT_ARROW = new Glyph(16, 16, 1);
     public static final Glyph RIGHT_ARROW = new Glyph(16, 16, 1);
+    public static final Glyph UP_ARROW = new Glyph(16, 16, 1);
+    public static final Glyph DOWN_ARROW = new Glyph(16, 16, 1);
 
+    public static final Glyph BUTTON_1 = new Glyph(16, 16, 1);
     //bigger glyphs take into account the empty space between slots
     public static final Glyph BUTTON_2 = new Glyph(34, 34, 2);
     public static final Glyph BUTTON_3 = new Glyph(52, 52, 3);
+
+    public static final Glyph EQUIP_BUTTON = new Glyph(52, 16, 3);
 
     public static final Glyph DEFAULT_BACKGROUND = new Glyph(768, 768, 0);
 
@@ -15,6 +20,9 @@ public class UiGlyphs {
     public static Glyph CONJURER_ICON_2 = new Glyph(34, 34, 2);
 
     public static Glyph CLASS_ART = new Glyph(52, 106, 3);
+
+    public static Glyph ITEM_BANNER_RARE = new Glyph(148, 40, 8);
+    public static Glyph ITEM_TOOLTIP_BACKGROUND = new Glyph(148, 164, 8);
 
     public static final Glyph EMPTY_SLOT = new Glyph(16, 16, 1);
 
@@ -53,8 +61,41 @@ public class UiGlyphs {
         RIGHT_ARROW.addVariant(8, "\ue4fc");
         RIGHT_ARROW.addVariant(9, "\ue4fd");
 
+        UP_ARROW.addVariant(0, "\ue518");
+        UP_ARROW.addVariant(1, "\ue519");
+        UP_ARROW.addVariant(2, "\ue51a");
+        UP_ARROW.addVariant(3, "\ue51b");
+        UP_ARROW.addVariant(4, "\ue51c");
+        UP_ARROW.addVariant(5, "\ue51d");
+        UP_ARROW.addVariant(6, "\ue51e");
+        UP_ARROW.addVariant(7, "\ue51f");
+        UP_ARROW.addVariant(8, "\ue520");
+        UP_ARROW.addVariant(9, "\ue521");
+
+        DOWN_ARROW.addVariant(0, "\ue522");
+        DOWN_ARROW.addVariant(1, "\ue523");
+        DOWN_ARROW.addVariant(2, "\ue524");
+        DOWN_ARROW.addVariant(3, "\ue525");
+        DOWN_ARROW.addVariant(4, "\ue526");
+        DOWN_ARROW.addVariant(5, "\ue527");
+        DOWN_ARROW.addVariant(6, "\ue528");
+        DOWN_ARROW.addVariant(7, "\ue529");
+        DOWN_ARROW.addVariant(8, "\ue52a");
+        DOWN_ARROW.addVariant(9, "\ue52b");
+
         PYROMANCER_ICON_2.addVariant(0, "\ue501");
         CONJURER_ICON_2.addVariant(2, "\ue502");
+
+        BUTTON_1.addVariant(0, "\ue50e");
+        BUTTON_1.addVariant(1, "\ue50f");
+        BUTTON_1.addVariant(2, "\ue510");
+        BUTTON_1.addVariant(3, "\ue511");
+        BUTTON_1.addVariant(4, "\ue512");
+        BUTTON_1.addVariant(5, "\ue513");
+        BUTTON_1.addVariant(6, "\ue514");
+        BUTTON_1.addVariant(7, "\ue515");
+        BUTTON_1.addVariant(8, "\ue516");
+        BUTTON_1.addVariant(9, "\ue517");
 
         BUTTON_2.addVariant(0, "\ue4fe");
         BUTTON_2.addVariant(1, "\ue503");
@@ -74,9 +115,12 @@ public class UiGlyphs {
         BUTTON_3.addVariant(6, "\ue50c");
         //cannot be at 7,8, 9
 
+        EQUIP_BUTTON.addVariant(9, "\ue52e");
 
         CLASS_ART.addVariant(0, "\ue50d");
-        //backgrounds
+
+        ITEM_BANNER_RARE.addVariant(0, "\ue52c");
+        ITEM_TOOLTIP_BACKGROUND.addVariant(0, "\ue52d");
 
         DEFAULT_BACKGROUND.addVariant(0, "\ue500");
     }

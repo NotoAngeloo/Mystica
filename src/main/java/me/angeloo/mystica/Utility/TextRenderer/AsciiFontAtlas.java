@@ -1068,6 +1068,7 @@ public class AsciiFontAtlas {
         }));
 
 
+
         //Bukkit.getLogger().info(glyphs.keySet().size() + " pixel matrices registered");
     }
 

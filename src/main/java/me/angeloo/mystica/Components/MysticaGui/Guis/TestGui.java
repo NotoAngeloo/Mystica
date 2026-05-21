@@ -6,9 +6,11 @@ import me.angeloo.mystica.Components.MysticaGui.Gui;
 import me.angeloo.mystica.Components.MysticaGui.GuiButton;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderContext;
 import me.angeloo.mystica.Utility.TextRenderer.LineData;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Set;
 
@@ -32,8 +34,9 @@ public class TestGui extends Gui {
         context.drawIcon(0, 54, UiGlyphs.CLASS_ART);
 
         List<LineData> data = List.of(
-                new LineData("testing text", 16),
-                new LineData("with multiple lines", 0)
+                new LineData(ChatColor.RED + "string with colors?", 16),
+                new LineData(ChatColor.RED + "string with" + ChatColor.GREEN + " multiple colors?", 16),
+                new LineData(ChatColor.of(new Color(43, 251, 147)) + "string with custom color?", 16)
 
         );
 

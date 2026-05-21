@@ -25,6 +25,7 @@ public class StringRenderer {
     public StringRenderer(){
     }
 
+
     public String render(List<StringGlyph> lines, int baseAscent) {
 
         if(baseAscent>1){
@@ -37,12 +38,25 @@ public class StringRenderer {
 
         for (StringGlyph line : lines) {
 
-            for (CharGlyph glyph : line.getGlyphs()) {
+            String activeFormatting = "";
 
-                //Bukkit.getLogger().info("trying to render '" + glyph.getChar() +"'");
+            for(RenderGlyph renderGlyph : line.getGlyphs()) {
 
-                if (glyph.getChar() == ' ') {
-                    //+3
+                CharGlyph glyph = renderGlyph.glyph();
+
+                /*
+                 * Only emit formatting when changed
+                 */
+
+                if(!renderGlyph.formatting().equals(activeFormatting)) {
+
+                    sb.append(renderGlyph.formatting());
+
+                    activeFormatting = renderGlyph.formatting();
+                }
+
+                if(glyph.getChar() == ' ') {
+
                     sb.append("\uF823");
                     continue;
                 }
@@ -64,7 +78,6 @@ public class StringRenderer {
                     }
 
                 }
-
 
                 currentAscent-=line.getNextLineIn();
             }

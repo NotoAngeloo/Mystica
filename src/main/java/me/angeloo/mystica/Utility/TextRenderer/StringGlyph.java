@@ -2,23 +2,23 @@ package me.angeloo.mystica.Utility.TextRenderer;
 
 public class StringGlyph {
 
-    private final CharGlyph[] glyphs;
+    private final RenderGlyph[] glyphs;
     private final int width;
     private final int nextLineIn;
 
-    public StringGlyph(CharGlyph[] glyphs, int nextLineIn) {
+    public StringGlyph(RenderGlyph[] glyphs, int nextLineIn) {
         this.glyphs = glyphs;
         this.nextLineIn = nextLineIn;
 
         int sum = 0;
-        for (CharGlyph g : glyphs) {
+        for (RenderGlyph g : glyphs) {
             sum += g.getWidth();
         }
 
         this.width = sum;
     }
 
-    public CharGlyph[] getGlyphs() {
+    public RenderGlyph[] getGlyphs() {
         return glyphs;
     }
 

@@ -6,13 +6,11 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CombatContext;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
-import me.angeloo.mystica.Components.CombatSystem.ClassSkillItems.AllSkillItems;
 import me.angeloo.mystica.Components.Commands.*;
 import me.angeloo.mystica.Components.Creatures.CreaturesAndCharactersManager;
 import me.angeloo.mystica.Components.EntityBehavior.AggroManager;
 import me.angeloo.mystica.Components.EntityBehavior.AggroTick;
 import me.angeloo.mystica.Components.Guis.Abilities.AbilityInventory;
-import me.angeloo.mystica.Components.Guis.Abilities.ClassSelectInventory;
 import me.angeloo.mystica.Components.Guis.Abilities.SpecInventory;
 import me.angeloo.mystica.Components.Guis.CustomInventoryManager;
 import me.angeloo.mystica.Components.Guis.Equipment.*;
@@ -27,6 +25,7 @@ import me.angeloo.mystica.Components.Hud.BossCastingManager;
 import me.angeloo.mystica.Components.Hud.DamageIndicator.DamageHudManager;
 import me.angeloo.mystica.Components.Hud.HudManager;
 import me.angeloo.mystica.Components.MysticaGui.Assemble.GuiAssembler;
+import me.angeloo.mystica.Components.MysticaGui.GuiListener;
 import me.angeloo.mystica.Components.MysticaGui.GuiManager;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderer;
 import me.angeloo.mystica.Components.MysticaGui.TestGuiCommand;
@@ -44,12 +43,9 @@ import me.angeloo.mystica.Tasks.*;
 import me.angeloo.mystica.Utility.*;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
-import me.angeloo.mystica.Components.Hud.BossWarningSender;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.Listeners.GeneralEventListener;
 import me.angeloo.mystica.Utility.Listeners.InventoryEventListener;
 import me.angeloo.mystica.Utility.Listeners.MMListeners;
-import me.angeloo.mystica.Utility.Logic.DamageBoardPlaceholders;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import me.angeloo.mystica.Utility.Logic.StealthTargetBlacklist;
 import me.angeloo.mystica.Utility.MatchMaking.MatchMakingManager;
@@ -59,7 +55,6 @@ import me.angeloo.mystica.Utility.TextRenderer.*;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 
 
 import java.awt.Color;
@@ -120,7 +115,6 @@ public final class Mystica extends JavaPlugin{
     private DamageCalculator damageCalculator;
     private ChangeResourceHandler changeResourceHandler;
 
-    private ClassSelectInventory classSelectInventory;
     private AbilityInventory abilityInventory;
     private BagEquipmentFunctions bagEquipmentFunctions;
     private GenericDiscard genericDiscard;
@@ -253,7 +247,6 @@ public final class Mystica extends JavaPlugin{
 
         customInventoryManager = new CustomInventoryManager(this);
 
-        classSelectInventory = new ClassSelectInventory(this);
         abilityInventory = new AbilityInventory(this);
         specInventory = abilityInventory.getSpecInventory();
         bagEquipmentFunctions = new BagEquipmentFunctions(this);
@@ -277,6 +270,10 @@ public final class Mystica extends JavaPlugin{
 
         aggroTick = new AggroTick(this);
 
+        GuiAssembler guiAssembler = new GuiAssembler(this);
+        GuiRenderer guiRenderer = new GuiRenderer(guiAssembler);
+        GuiManager guiManager = new GuiManager(guiRenderer);
+        GuiListener guiListener = new GuiListener(this, guiManager);
 
         getCommand("ToggleGlobalPvp").setExecutor(new ToggleGlobalPvp(this));
         getCommand("SeeRawDamage").setExecutor(new SeeRawDamage(this));
@@ -284,7 +281,7 @@ public final class Mystica extends JavaPlugin{
         getCommand("MysticaEffect").setExecutor(new MysticaEffect(this));
         getCommand("StartFuryTimer").setExecutor(new StartFuryTimer(this));
         getCommand("Equipment").setExecutor(new Equipment(this));
-        getCommand("ClassSelect").setExecutor(new ClassSelect(this));
+        getCommand("ClassSelect").setExecutor(new ClassSelectCommand(guiManager));
         getCommand("GearSwap").setExecutor(new GearSwap());
         getCommand("ToggleImmunity").setExecutor(new ToggleImmunity(this));
         getCommand("Reforge").setExecutor(new Reforge(this));
@@ -307,20 +304,12 @@ public final class Mystica extends JavaPlugin{
         getCommand("circle").setExecutor(new CircleCommand(this));
 
 
-        this.getServer().getPluginManager().registerEvents(classSelectInventory, this);
         this.getServer().getPluginManager().registerEvents(dungeonSelect, this);
 
 
-        //SpecInventory specInventory = abilityInventory.getSpecInventory();
-        //this.getServer().getPluginManager().registerEvents(specInventory, this);
-
-        GuiAssembler guiAssembler = new GuiAssembler(this);
-        GuiRenderer guiRenderer = new GuiRenderer(guiAssembler);
-        GuiManager guiManager = new GuiManager(guiRenderer);
-
         getCommand("testgui").setExecutor(new TestGuiCommand(guiManager));
 
-        this.getServer().getPluginManager().registerEvents(guiManager, this);
+        this.getServer().getPluginManager().registerEvents(guiListener, this);
 
         this.getServer().getPluginManager().registerEvents(abilityInventory, this);
         this.getServer().getPluginManager().registerEvents(specInventory, this);
@@ -536,7 +525,6 @@ public final class Mystica extends JavaPlugin{
 
     public ShopOrQuest getShopOrQuest(){return shopOrQuest;}
 
-    public ClassSelectInventory getClassSelectInventory(){return classSelectInventory;}
 
     public BagEquipmentFunctions getBagEquipmentFunctions(){return bagEquipmentFunctions;}
 

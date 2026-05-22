@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;
 import me.angeloo.mystica.Components.MysticaGui.Font.UiGlyphs;
 import me.angeloo.mystica.Components.MysticaGui.Gui;
 import me.angeloo.mystica.Components.MysticaGui.GuiButton;
+import me.angeloo.mystica.Components.MysticaGui.Pages.GuiPage;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderContext;
 import me.angeloo.mystica.Utility.TextRenderer.LineData;
 import net.md_5.bungee.api.ChatColor;
@@ -19,17 +20,24 @@ import static me.angeloo.mystica.Mystica.*;
 public class TestGui extends Gui {
 
     @Override
+    public GuiPage getInitialPage() {
+        return null;
+    }
+
+    /*@Override
     public void build(
             Player player,
             GuiRenderContext context
     ) {
 
-        context.drawIcon(0, -96, UiGlyphs.ITEM_TOOLTIP_BACKGROUND);
+        //Templating for item display
+
+        /*context.drawIcon(0, -96, UiGlyphs.ITEM_TOOLTIP_BACKGROUND);
 
         context.drawIcon(0, -96, UiGlyphs.ITEM_BANNER_RARE);
 
         //temp art, should be equip icon
-        context.drawIcon(0, -92, UiGlyphs.BUTTON_2);
+        context.drawIcon(0, -92, UiGlyphs.BUTTON_2x2);
 
         //scroll up/down item text
         context.drawIcon(7, 36, UiGlyphs.UP_ARROW);
@@ -50,7 +58,7 @@ public class TestGui extends Gui {
 
                     @Override
                     public Glyph glyph() {
-                        return UiGlyphs.EQUIP_BUTTON;
+                        return UiGlyphs.BUTTON_1x3;
                     }
 
                     @Override
@@ -65,10 +73,16 @@ public class TestGui extends Gui {
                 }
         );
 
+        List<LineData> equipButtonData = List.of(
+                new LineData(ChatColor.BLACK + "Equip", 0)
+        );
+
+        context.drawText(13, -188, equipButtonData);
+
         List<LineData> nameData = List.of(
                 new LineData(ChatColor.of(rareColor) + "Item Name", 12),
-                new LineData(ChatColor.of(new Color(176, 159, 109)) + "Class: " + "Shadow Knight", 12),
-                new LineData(ChatColor.of(new Color(176, 159, 109)) + "Level: " + "1", 16)
+                new LineData(ChatColor.of(menuColor) + "Class: " + "Shadow Knight", 12),
+                new LineData(ChatColor.of(menuColor) + "Level: " + "1", 16)
         );
 
         context.drawText(-54, -5, nameData);
@@ -101,7 +115,7 @@ public class TestGui extends Gui {
 
                     @Override
                     public Glyph glyph() {
-                        return UiGlyphs.BUTTON_2;
+                        return UiGlyphs.BUTTON_2x2;
                     }
 
                     @Override
@@ -131,7 +145,7 @@ public class TestGui extends Gui {
 
                     @Override
                     public Glyph glyph() {
-                        return UiGlyphs.BUTTON_2;
+                        return UiGlyphs.BUTTON_2x2;
                     }
 
                     @Override
@@ -161,7 +175,7 @@ public class TestGui extends Gui {
 
                     @Override
                     public Glyph glyph() {
-                        return UiGlyphs.BUTTON_2;
+                        return UiGlyphs.BUTTON_2x2;
                     }
 
                     @Override
@@ -180,234 +194,10 @@ public class TestGui extends Gui {
 
 
 
-        //-305 is what shift is needed to center a 768 pixel wide glyph
-        //context.drawBackground(-305, UiGlyphs.DEFAULT_BACKGROUND);
+        //templating for class select
 
 
-        /*context.drawIcon(6, -108, UiGlyphs.BUTTON_2);
-        context.drawIcon(6, -54, UiGlyphs.BUTTON_2);
-        context.drawIcon(6, 180, UiGlyphs.BUTTON_2);
-        context.drawIcon(6, 234, UiGlyphs.BUTTON_2);
 
-        context.drawIcon(0, 54, UiGlyphs.CLASS_ART);
-
-        button(
-                context,
-                new GuiButton() {
-                    @Override
-                    public int slot() {
-                        return 7;
-                    }
-
-                    @Override
-                    public Set<Integer> interactionSlots() {
-                        return Set.of(7,8,16,17);
-                    }
-
-                    @Override
-                    public Glyph glyph() {
-                        return UiGlyphs.PYROMANCER_ICON_2;
-                    }
-
-                    @Override
-                    public void click(
-                            Player p,
-                            Gui gui,
-                            InventoryClickEvent event
-                    ) {
-
-
-                    }
-                }
-        );
-
-        button(
-                context,
-                new GuiButton() {
-                    @Override
-                    public int slot() {
-                        return 25;
-                    }
-
-                    @Override
-                    public Set<Integer> interactionSlots() {
-                        return Set.of(25,26,34,35);
-                    }
-
-                    @Override
-                    public Glyph glyph() {
-                        return UiGlyphs.CONJURER_ICON_2;
-                    }
-
-                    @Override
-                    public void click(
-                            Player p,
-                            Gui gui,
-                            InventoryClickEvent event
-                    ) {
-
-
-                    }
-                }
-        );
-
-
-        button(
-                context,
-                new GuiButton() {
-                    @Override
-                    public int slot() {
-                        return 54;
-                    }
-
-                    @Override
-                    public Set<Integer> interactionSlots() {
-                        return Set.of(54,55,45,46);
-                    }
-
-                    @Override
-                    public Glyph glyph() {
-                        return UiGlyphs.BUTTON_2;
-                    }
-
-                    @Override
-                    public void click(
-                            Player p,
-                            Gui gui,
-                            InventoryClickEvent event
-                    ) {
-
-
-                    }
-                }
-        );
-
-        button(
-                context,
-                new GuiButton() {
-                    @Override
-                    public int slot() {
-                        return 61;
-                    }
-
-                    @Override
-                    public Set<Integer> interactionSlots() {
-                        return Set.of(61,62,70,71);
-                    }
-
-                    @Override
-                    public Glyph glyph() {
-                        return UiGlyphs.BUTTON_2;
-                    }
-
-                    @Override
-                    public void click(
-                            Player p,
-                            Gui gui,
-                            InventoryClickEvent event
-                    ) {
-
-
-                    }
-                }
-        );
-
-        button(
-                context,
-                new GuiButton() {
-                    @Override
-                    public int slot() {
-                        return 57;
-                    }
-
-                    @Override
-                    public Set<Integer> interactionSlots() {
-                        return Set.of(57,58,59,66,67,68,75,76,77);
-                    }
-
-                    @Override
-                    public Glyph glyph() {
-                        return UiGlyphs.BUTTON_3;
-                    }
-
-                    @Override
-                    public void click(
-                            Player p,
-                            Gui gui,
-                            InventoryClickEvent event
-                    ) {
-
-
-                    }
-                }
-        );
-
-        button(
-                context,
-                new GuiButton() {
-
-                    @Override
-                    public int slot() {
-                        return 81;
-                    }
-
-                    @Override
-                    public Set<Integer> interactionSlots() {
-                        return Set.of(81);
-                    }
-
-                    @Override
-                    public Glyph glyph() {
-                        return UiGlyphs.LEFT_ARROW;
-                    }
-
-                    @Override
-                    public void click(
-                            Player p,
-                            Gui gui,
-                            InventoryClickEvent event
-                    ) {
-
-
-                    }
-                }
-        );
-
-
-        button(
-                context,
-                new GuiButton() {
-
-                    @Override
-                    public int slot() {
-                        return 89;
-                    }
-
-                    @Override
-                    public Set<Integer> interactionSlots() {
-                        return Set.of(89);
-                    }
-
-                    @Override
-                    public Glyph glyph() {
-
-                        return UiGlyphs.RIGHT_ARROW;
-                    }
-
-                    @Override
-                    public void click(
-                            Player p,
-                            Gui gui,
-                            InventoryClickEvent event
-                    ) {
-
-                        p.closeInventory();
-
-                    }
-                }
-        );*/
-
-
-    }
+    }*/
 
 }

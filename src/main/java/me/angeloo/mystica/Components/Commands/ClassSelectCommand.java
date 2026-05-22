@@ -1,8 +1,8 @@
 package me.angeloo.mystica.Components.Commands;
 
-import me.angeloo.mystica.Components.Guis.Abilities.ClassSelectInventory;
-import me.angeloo.mystica.Components.Guis.CustomInventoryManager;
-import me.angeloo.mystica.Mystica;
+import me.angeloo.mystica.Components.MysticaGui.GuiManager;
+
+import me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -12,14 +12,12 @@ import org.jetbrains.annotations.NotNull;
 
 
 
-public class ClassSelect implements CommandExecutor {
+public class ClassSelectCommand implements CommandExecutor {
 
-    private final ClassSelectInventory classSelectInventory;
-    private final CustomInventoryManager customInventoryManager;
+    private final GuiManager guiManager;
 
-    public ClassSelect(Mystica main){
-        classSelectInventory = new ClassSelectInventory(main);
-        customInventoryManager = main.getInventoryManager();
+    public ClassSelectCommand(GuiManager guiManager){
+        this.guiManager = guiManager;
     }
 
     //figure out how to check player status before doing so, dont want them opening a dungeon
@@ -57,7 +55,7 @@ public class ClassSelect implements CommandExecutor {
         }
 
         if(player != null){
-            classSelectInventory.openClassSelect(player);
+            guiManager.open(player, new ClassSelect(guiManager));
         }
 
 

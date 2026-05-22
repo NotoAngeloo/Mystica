@@ -6,16 +6,53 @@ import me.angeloo.mystica.Components.MysticaGui.DrawCommand.DrawIconCommand.Draw
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.SlotDrawCommand.DrawSlotCommand;
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.TextDrawCommand.DrawTextCommand;
 import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;
+import me.angeloo.mystica.Components.MysticaGui.GuiSession;
 import me.angeloo.mystica.Utility.TextRenderer.LineData;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.entity.Player;
 
 import java.util.*;
 
 public class GuiRenderContext {
 
-    private final Map<RenderLayer,
-            List<DrawCommand>> layers =
+    private final Player player;
+
+    private final GuiSession session;
+
+    private final Map<
+            RenderLayer,
+            List<DrawCommand>
+            > layers =
             new EnumMap<>(RenderLayer.class);
+
+    public GuiRenderContext(
+            Player player,
+            GuiSession session
+    ) {
+
+        this.player = player;
+        this.session = session;
+    }
+
+    /*
+     * ----------------------------------------
+     * Context Access
+     * ----------------------------------------
+     */
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public GuiSession getSession() {
+        return session;
+    }
+
+    /*
+     * ----------------------------------------
+     * Drawing
+     * ----------------------------------------
+     */
 
     public void draw(
             RenderLayer layer,
@@ -32,7 +69,7 @@ public class GuiRenderContext {
 
     /*
      * ----------------------------------------
-     * HELPERS
+     * Helpers
      * ----------------------------------------
      */
 
@@ -53,22 +90,52 @@ public class GuiRenderContext {
     public void drawBackground(
             int x,
             Glyph glyph
-    ){
-        draw(RenderLayer.Background,
-                new BackgroundDrawCommand(x, glyph));
+    ) {
+
+        draw(
+                RenderLayer.Background,
+                new BackgroundDrawCommand(
+                        x,
+                        glyph
+                )
+        );
     }
 
-    public void drawIcon(int row, int x, Glyph glyph){
-        draw(RenderLayer.Icons, new DrawIconCommand(row, x, glyph));
+    public void drawIcon(
+            int row,
+            int x,
+            Glyph glyph
+    ) {
+
+        draw(
+                RenderLayer.Icons,
+                new DrawIconCommand(
+                        row,
+                        x,
+                        glyph
+                )
+        );
     }
 
-    public void drawText(int x, int y, List<LineData> data){
-        draw(RenderLayer.Text, new DrawTextCommand(x, y, data));
+    public void drawText(
+            int x,
+            int y,
+            List<LineData> data
+    ) {
+
+        draw(
+                RenderLayer.Text,
+                new DrawTextCommand(
+                        x,
+                        y,
+                        data
+                )
+        );
     }
 
     /*
      * ----------------------------------------
-     * LAYER ACCESS
+     * Layer Access
      * ----------------------------------------
      */
 

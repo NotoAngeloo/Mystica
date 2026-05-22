@@ -9,10 +9,10 @@ public class UiGlyphs {
 
     public static final Glyph BUTTON_1 = new Glyph(16, 16, 1);
     //bigger glyphs take into account the empty space between slots
-    public static final Glyph BUTTON_2 = new Glyph(34, 34, 2);
-    public static final Glyph BUTTON_3 = new Glyph(52, 52, 3);
+    public static final Glyph BUTTON_2x2 = new Glyph(34, 34, 2);
+    public static final Glyph BUTTON_3x3 = new Glyph(52, 52, 3);
 
-    public static final Glyph EQUIP_BUTTON = new Glyph(52, 16, 3);
+    public static final Glyph BUTTON_1x3 = new Glyph(52, 16, 3);
 
     public static final Glyph DEFAULT_BACKGROUND = new Glyph(768, 768, 0);
 
@@ -20,6 +20,21 @@ public class UiGlyphs {
     public static Glyph CONJURER_ICON_2 = new Glyph(34, 34, 2);
 
     public static Glyph CLASS_ART = new Glyph(52, 106, 3);
+    public static Glyph ASSASSIN_CHARACTER = new Glyph(52, 106, 3);
+    public static Glyph ELEMENTALIST_CHARACTER = new Glyph(52, 106, 3);
+    public static Glyph MYSTIC_CHARACTER = new Glyph(52, 106, 3);
+    public static Glyph PALADIN_CHARACTER = new Glyph(52, 106, 3);
+    public static Glyph RANGER_CHARACTER = new Glyph(52, 106, 3);
+    public static Glyph WARRIOR_CHARACTER = new Glyph(52, 106, 3);
+    public static Glyph SHADOW_KNIGHT_CHARACTER = new Glyph(52, 106, 3);
+
+    public static Glyph ASSASSIN_ICON = new Glyph(34,34,2);
+    public static Glyph ELEMENTALIST_ICON = new Glyph(34,34,2);
+    public static Glyph MYSTIC_ICON = new Glyph(34,34,2);
+    public static Glyph PALADIN_ICON = new Glyph(34,34,2);
+    public static Glyph RANGER_ICON = new Glyph(34,34,2);
+    public static Glyph SHADOW_KNIGHT_ICON = new Glyph(34,34,2);
+    public static Glyph WARRIOR_ICON = new Glyph(34,34,2);
 
     public static Glyph ITEM_BANNER_RARE = new Glyph(148, 40, 8);
     public static Glyph ITEM_TOOLTIP_BACKGROUND = new Glyph(148, 164, 8);
@@ -97,27 +112,42 @@ public class UiGlyphs {
         BUTTON_1.addVariant(8, "\ue516");
         BUTTON_1.addVariant(9, "\ue517");
 
-        BUTTON_2.addVariant(0, "\ue4fe");
-        BUTTON_2.addVariant(1, "\ue503");
-        BUTTON_2.addVariant(2, "\ue504");
-        BUTTON_2.addVariant(3, "\ue505");
-        BUTTON_2.addVariant(4, "\ue506");
+        BUTTON_2x2.addVariant(0, "\ue4fe");
+        BUTTON_2x2.addVariant(1, "\ue503");
+        BUTTON_2x2.addVariant(2, "\ue504");
+        BUTTON_2x2.addVariant(3, "\ue505");
+        BUTTON_2x2.addVariant(4, "\ue506");
         //cannot be at 5 because would be in the gap
-        BUTTON_2.addVariant(6, "\ue507");
-        BUTTON_2.addVariant(7, "\ue508");
+        BUTTON_2x2.addVariant(6, "\ue507");
+        BUTTON_2x2.addVariant(7, "\ue508");
         //cannot be at 8 or 9
 
-        BUTTON_3.addVariant(0, "\ue4ff");
-        BUTTON_3.addVariant(1, "\ue509");
-        BUTTON_3.addVariant(2, "\ue50a");
-        BUTTON_3.addVariant(3, "\ue50b");
+        BUTTON_3x3.addVariant(0, "\ue4ff");
+        BUTTON_3x3.addVariant(1, "\ue509");
+        BUTTON_3x3.addVariant(2, "\ue50a");
+        BUTTON_3x3.addVariant(3, "\ue50b");
         //cannot be at 4, 5
-        BUTTON_3.addVariant(6, "\ue50c");
+        BUTTON_3x3.addVariant(6, "\ue50c");
         //cannot be at 7,8, 9
 
-        EQUIP_BUTTON.addVariant(9, "\ue52e");
+        BUTTON_1x3.addVariant(9, "\ue52e");
 
         CLASS_ART.addVariant(0, "\ue50d");
+        ASSASSIN_CHARACTER.addVariant(0, "\ue537");
+        ELEMENTALIST_CHARACTER.addVariant(0, "\ue52f");
+        MYSTIC_CHARACTER.addVariant(0, "\ue538");
+        PALADIN_CHARACTER.addVariant(0, "\ue539");
+        RANGER_CHARACTER.addVariant(0, "\ue53a");
+        SHADOW_KNIGHT_CHARACTER.addVariant(0, "\ue53b");
+        WARRIOR_CHARACTER.addVariant(0, "\ue53c");
+
+        ASSASSIN_ICON.addVariant(6, "\ue530");
+        ELEMENTALIST_ICON.addVariant(6, "\ue531");
+        MYSTIC_ICON.addVariant(6, "\ue532");
+        PALADIN_ICON.addVariant(6, "\ue533");
+        RANGER_ICON.addVariant(6, "\ue534");
+        SHADOW_KNIGHT_ICON.addVariant(6, "\ue535");
+        WARRIOR_ICON.addVariant(6, "\ue536");
 
         ITEM_BANNER_RARE.addVariant(0, "\ue52c");
         ITEM_TOOLTIP_BACKGROUND.addVariant(0, "\ue52d");

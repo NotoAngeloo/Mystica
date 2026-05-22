@@ -1,26 +1,24 @@
 package me.angeloo.mystica.Components.MysticaGui;
 
+import me.angeloo.mystica.Components.MysticaGui.Pages.GuiPage;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderResult;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderer;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class GuiManager implements Listener {
+public class GuiManager{
 
-    private final Map<UUID, GuiSession> sessions =
-            new HashMap<>();
+    private final Map<UUID, GuiSession> sessions = new HashMap<>();
 
     private final GuiRenderer renderer;
 
@@ -33,7 +31,7 @@ public class GuiManager implements Listener {
 
     /*
      * -----------------------------------------
-     * GUI Lifecycle
+     * Open
      * -----------------------------------------
      */
 
@@ -44,11 +42,45 @@ public class GuiManager implements Listener {
 
         close(player);
 
+        /*
+         * Resolve initial page
+         */
+
+        GuiPage initialPage = gui.getInitialPage();
+
+        /*
+         * Create session FIRST
+         */
+
+        GuiSession session =
+                new GuiSession(
+                        gui,
+                        initialPage
+                );
+
+        /*
+         * Register session
+         */
+
+        sessions.put(
+                player.getUniqueId(),
+                session
+        );
+
+        /*
+         * Render GUI
+         */
+
         GuiRenderResult result =
                 renderer.render(
                         player,
-                        gui
+                        session
                 );
+
+        /*
+         * Create inventory using
+         * rendered title
+         */
 
         Inventory inventory =
                 Bukkit.createInventory(
@@ -57,60 +89,34 @@ public class GuiManager implements Listener {
                         ChatColor.WHITE + result.title()
                 );
 
-        GuiSession session =
-                new GuiSession(
-                        gui,
-                        inventory
-                );
+        /*
+         * Store inventory
+         */
+
+        session.setInventory(
+                inventory
+        );
+
+        /*
+         * Cache render
+         */
 
         session.setLastRender(result);
 
-        sessions.put(
-                player.getUniqueId(),
-                session
-        );
+        session.clearDirty();
+
+        /*
+         * Lifecycle
+         */
 
         gui.onOpen(player);
 
-        player.openInventory(inventory);
-    }
+        /*
+         * Open inventory
+         */
 
-    public void close(Player player) {
-
-        GuiSession session = sessions.remove(player.getUniqueId());
-
-        if(session == null){
-            return;
-        }
-
-        Gui gui = session.getGui();
-
-        if(gui == null){
-            return;
-        }
-
-        gui.onClose(player);
-
-        player.closeInventory();
-    }
-
-    /*
-     * -----------------------------------------
-     * Access
-     * -----------------------------------------
-     */
-
-    public GuiSession get(Player player) {
-
-        return sessions.get(
-                player.getUniqueId()
-        );
-    }
-
-    public boolean hasGui(Player player) {
-
-        return sessions.containsKey(
-                player.getUniqueId()
+        player.openInventory(
+                inventory
         );
     }
 
@@ -120,59 +126,21 @@ public class GuiManager implements Listener {
      * -----------------------------------------
      */
 
-    public void render(Player player) {
 
-        GuiSession session =
-                sessions.get(player.getUniqueId());
+    public void refresh(
+            Player player
+    ) {
 
-        if (session == null)
+        GuiSession session = getSession(player);
+
+        if(session == null)
             return;
 
-        if (!session.isDirty())
-            return;
 
-        Gui gui = session.getGui();
-
-        GuiRenderResult result =
-                renderer.render(player, gui);
-
-        updateTitle(player, result.title());
+        GuiRenderResult result = renderer.render(player, session);
 
         session.setLastRender(result);
-
         session.clearDirty();
-    }
-
-    private void updateTitle(
-            Player player,
-            String title
-    ) {
-
-        /*
-         * Packet inventory title update.
-         */
-    }
-
-    /*
-     * -----------------------------------------
-     * Inventory Opening
-     * -----------------------------------------
-     */
-
-    private void openInventory(
-            Player player,
-            GuiRenderResult result
-    ) {
-
-        /*
-         * TEMPORARY IMPLEMENTATION
-         *
-         * Later:
-         * inventory reuse
-         * packet inventories
-         * title updates
-         * partial rerenders
-         */
 
         Inventory inventory =
                 Bukkit.createInventory(
@@ -181,84 +149,116 @@ public class GuiManager implements Listener {
                         ChatColor.WHITE + result.title()
                 );
 
-        player.openInventory(inventory);
+        session.setInventory(
+                inventory
+        );
+
+
+        //no on open method
+
+        player.openInventory(
+                inventory
+        );
     }
 
     /*
      * -----------------------------------------
-     * Input Events
+     * Close
      * -----------------------------------------
      */
 
-    @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
+    public void close(Player player) {
 
-        if (!(event.getWhoClicked() instanceof Player player))
+
+        GuiSession session =
+                sessions.remove(
+                        player.getUniqueId()
+                );
+
+        if(session == null)
             return;
-
-        GuiSession session = sessions.get(player.getUniqueId());
-
-        if (session == null)
-            return;
-
-        event.setCancelled(true);
-
-        session.getGui().handleClick(player, event);
-
-        session.markDirty();
-
-        render(player);
-    }
-
-    @EventHandler
-    public void onInventoryDrag(InventoryDragEvent event) {
-
-        if (!(event.getWhoClicked() instanceof Player player)) {
-            return;
-        }
-
-        GuiSession session = sessions.get(player.getUniqueId());
-
-        if (session == null) {
-            return;
-        }
-
-        event.setCancelled(true);
-
-        session.getGui().handleDrag(player, event);
-
-        render(player);
-    }
-
-    @EventHandler
-    public void onInventoryClose(InventoryCloseEvent event) {
-
-        if (!(event.getPlayer() instanceof Player player)) {
-            return;
-        }
-
-        GuiSession session = sessions.remove(player.getUniqueId());
-
-        if (session == null) {
-            return;
-        }
-
-
-        if (session.isClosing()) {
-            return;
-        }
 
         session.setClosing(true);
 
         session.getGui().onClose(player);
     }
 
-    @EventHandler
-    public void onQuit(
-            PlayerQuitEvent event
+    /*
+     * -----------------------------------------
+     * Sessions
+     * -----------------------------------------
+     */
+
+    public GuiSession getSession(
+            Player player
     ) {
 
-        close(event.getPlayer());
+        return sessions.get(
+                player.getUniqueId()
+        );
+    }
+
+
+    public void handleClick(Player player, InventoryClickEvent event) {
+
+        GuiSession session = getSession(player);
+
+        //problem, session becomes null after page change
+
+        if(session == null)
+            return;
+
+
+        session.getCurrentPage().handleClick(player, event);
+    }
+
+    public void handleDrag(Player player, InventoryDragEvent event) {
+
+        GuiSession session = getSession(player);
+
+        if(session == null)
+            return;
+
+        session.getCurrentPage()
+                .handleDrag(player, event);
+    }
+
+    public void handleClose(
+            Player player,
+            InventoryCloseEvent event
+    ) {
+
+        GuiSession session = getSession(player);
+
+        if(session == null)
+            return;
+
+        /*
+         * Mark closing to prevent
+         * re-entrancy issues (optional but good)
+         */
+
+        session.setClosing(true);
+
+        /*
+         * Page-level lifecycle
+         */
+
+        session.getCurrentPage().handleClose(player, event);
+
+        /*
+         * Root GUI lifecycle
+         */
+
+        session.getGui().onClose(player);
+
+        /*
+         * Remove session AFTER hooks
+         */
+
+        sessions.remove(
+                player.getUniqueId()
+        );
     }
 
 }

@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.MysticaGui;
 
 import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;
+import me.angeloo.mystica.Components.MysticaGui.Pages.GuiPage;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
@@ -28,7 +29,7 @@ public interface GuiButton {
 
     void click(
             Player player,
-            Gui gui,
+            GuiPage page,
             InventoryClickEvent event
     );
 

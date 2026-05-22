@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.MysticaGui;
 
 import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;
+import me.angeloo.mystica.Components.MysticaGui.Pages.GuiPage;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderContext;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -11,30 +12,6 @@ import java.util.Map;
 
 public abstract class Gui {
 
-    protected final Map<Integer, GuiButton> buttons = new HashMap<>();
-
-    protected void button(
-            GuiRenderContext context,
-            GuiButton button
-    ) {
-
-        /*
-         * Register interactions
-         */
-
-        setButton(
-                button
-        );
-
-        /*
-         * Render ONLY origin slot
-         */
-
-        context.drawButton(
-                button.slot(),
-                button.glyph()
-        );
-    }
 
     /*
      * -----------------------------------------
@@ -52,75 +29,11 @@ public abstract class Gui {
 
     /*
      * -----------------------------------------
-     * Rendering
+     * Pages
      * -----------------------------------------
      */
 
-    public abstract void build(
-            Player player,
-            GuiRenderContext context
-    );
-
-    /*
-     * -----------------------------------------
-     * Input
-     * -----------------------------------------
-     */
-
-    public void handleClick(
-            Player player,
-            InventoryClickEvent event
-    ) {
-
-        GuiButton button =
-                buttons.get(event.getRawSlot());
-
-        if(button == null)
-            return;
-
-        button.click(
-                player,
-                this,
-                event
-        );
-    }
-
-    public void handleDrag(
-            Player player,
-            InventoryDragEvent event
-    ) {
-
-    }
-
-    /*
-     * -----------------------------------------
-     * Buttons
-     * -----------------------------------------
-     */
-
-    public void setButton(
-            GuiButton button
-    ) {
-
-        for(int slot
-                : button.interactionSlots()) {
-
-            buttons.put(
-                    slot,
-                    button
-            );
-        }
-    }
-
-    public void removeButton(int slot) {
-
-        buttons.remove(slot);
-    }
-
-    public void clearButtons() {
-
-        buttons.clear();
-    }
+    public abstract GuiPage getInitialPage();
 
 
 }

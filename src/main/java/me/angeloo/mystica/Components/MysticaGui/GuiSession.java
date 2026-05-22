@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.MysticaGui;
 
+import me.angeloo.mystica.Components.MysticaGui.Pages.GuiPage;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderResult;
 import org.bukkit.inventory.Inventory;
 
@@ -7,7 +8,9 @@ public class GuiSession {
 
     private final Gui gui;
 
-    private final Inventory inventory;
+    private Inventory inventory;
+
+    private GuiPage currentPage;
 
     private GuiRenderResult lastRender;
 
@@ -15,25 +18,52 @@ public class GuiSession {
 
     private boolean closing = false;
 
-    public GuiSession(Gui gui, Inventory inventory){
+    public GuiSession(
+            Gui gui,
+            GuiPage currentPage
+    ) {
+
         this.gui = gui;
-        this.inventory = inventory;
+        this.currentPage = currentPage;
     }
 
-    public Gui getGui(){
+    public Gui getGui() {
         return gui;
     }
 
-    public Inventory getInventory(){
+    public Inventory getInventory() {
         return inventory;
     }
 
-    public GuiRenderResult getLastRender(){
+    public void setInventory(
+            Inventory inventory
+    ) {
+
+        this.inventory = inventory;
+    }
+
+    public GuiPage getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(
+            GuiPage currentPage
+    ) {
+
+        this.currentPage = currentPage;
+
+        markDirty();
+    }
+
+    public GuiRenderResult getLastRender() {
         return lastRender;
     }
 
-    public void setLastRender(GuiRenderResult guiRenderResult){
-        this.lastRender = guiRenderResult;
+    public void setLastRender(
+            GuiRenderResult lastRender
+    ) {
+
+        this.lastRender = lastRender;
     }
 
     public boolean isClosing() {
@@ -49,11 +79,11 @@ public class GuiSession {
     }
 
     public void markDirty() {
-        this.dirty = true;
+        dirty = true;
     }
 
     public void clearDirty() {
-        this.dirty = false;
+        dirty = false;
     }
 
 }

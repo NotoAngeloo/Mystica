@@ -1,7 +1,6 @@
 package me.angeloo.mystica.Components.Guis.Misc;
 
 import io.lumine.mythic.api.mobs.MythicMob;
-import me.angeloo.mystica.Components.Guis.Abilities.ClassSelectInventory;
 import me.angeloo.mystica.Components.Guis.Equipment.EquipmentUpgradeManager;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerProfile;
 import me.angeloo.mystica.Components.Guis.QuestInventories.PickQuestInventory;
@@ -30,7 +29,6 @@ public class ShopOrQuest implements Listener {
     private final ProfileManager profileManager;
     private final CustomInventoryManager customInventoryManager;
     private final EquipmentUpgradeManager equipmentUpgradeManager;
-    private final ClassSelectInventory classSelectInventory;
     private final QuestAcceptInventory questAcceptInventory;
     private final QuestManager questManager;
     private final PickQuestInventory pickQuestInventory;
@@ -46,7 +44,6 @@ public class ShopOrQuest implements Listener {
         profileManager = main.getProfileManager();
         customInventoryManager = main.getInventoryManager();
         equipmentUpgradeManager = main.getEquipmentUpgradeManager();
-        classSelectInventory = main.getClassSelectInventory();
         questAcceptInventory = main.getQuestAcceptInventory();
         questManager = main.getQuestManager();
         pickQuestInventory = main.getPickQuestInventory();
@@ -100,7 +97,7 @@ public class ShopOrQuest implements Listener {
 
             switch (shopType){
                 case ClassSelect -> {
-                    classSelectInventory.openClassSelect(player);
+                    //classSelectInventory.openClassSelect(player);
                     return;
                 }
                 case EnhanceEquipment -> {
@@ -200,7 +197,7 @@ public class ShopOrQuest implements Listener {
 
                 switch (shopType){
                     case ClassSelect -> {
-                        classSelectInventory.openClassSelect(player);
+                        //classSelectInventory.openClassSelect(player);
                         return;
                     }
                 }

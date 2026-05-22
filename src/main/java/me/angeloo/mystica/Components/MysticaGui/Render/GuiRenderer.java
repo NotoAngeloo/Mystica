@@ -2,6 +2,8 @@ package me.angeloo.mystica.Components.MysticaGui.Render;
 
 import me.angeloo.mystica.Components.MysticaGui.Assemble.GuiAssembler;
 import me.angeloo.mystica.Components.MysticaGui.Gui;
+import me.angeloo.mystica.Components.MysticaGui.GuiSession;
+import me.angeloo.mystica.Components.MysticaGui.Pages.GuiPage;
 import org.bukkit.entity.Player;
 
 public class GuiRenderer {
@@ -17,29 +19,19 @@ public class GuiRenderer {
 
     public GuiRenderResult render(
             Player player,
-            Gui gui
+            GuiSession session
     ) {
 
-        /*
-         * Create fresh render context
-         */
-
         GuiRenderContext context =
-                new GuiRenderContext();
+                new GuiRenderContext(
+                        player,
+                        session
+                );
 
-        /*
-         * Allow GUI to submit
-         * draw commands
-         */
-
-        gui.build(
+        session.getCurrentPage().render(
                 player,
                 context
         );
-
-        /*
-         * Assemble final title
-         */
 
         return assembler.assemble(
                 context

@@ -1,4 +1,4 @@
-package me.angeloo.mystica.Components.MysticaGui.Pages;
+package me.angeloo.mystica.Components.MysticaGui.Guis.Pages;
 
 import me.angeloo.mystica.Components.MysticaGui.GuiButton;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderContext;

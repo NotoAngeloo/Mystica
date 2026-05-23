@@ -1,4 +1,4 @@
-package me.angeloo.mystica.Components.MysticaGui.Pages;
+package me.angeloo.mystica.Components.MysticaGui.Guis.Pages.ClassSelect;
 
 import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;
 import me.angeloo.mystica.Components.MysticaGui.Font.UiGlyphs;
@@ -6,19 +6,20 @@ import me.angeloo.mystica.Components.MysticaGui.GuiButton;
 import me.angeloo.mystica.Components.MysticaGui.GuiManager;
 import me.angeloo.mystica.Components.MysticaGui.GuiSession;
 import me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect;
+import me.angeloo.mystica.Components.MysticaGui.Guis.Pages.GuiPage;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderContext;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.Set;
 
-public class ElementalistPage extends GuiPage{
+public class RangerPage extends GuiPage {
 
     private final ClassSelect gui;
 
     private final GuiManager guiManager;
 
-    public ElementalistPage(
+    public RangerPage(
             ClassSelect gui,
             GuiManager guiManager
     ) {
@@ -46,29 +47,19 @@ public class ElementalistPage extends GuiPage{
          * Decorative buttons
          */
 
-        context.drawIcon(
-                6,
-                -108,
-                UiGlyphs.BUTTON_2x2
-        );
+        context.drawIcon(6, -108, UiGlyphs.ELEMENTALIST_ICON);
 
-        context.drawIcon(
-                6,
-                -54,
-                UiGlyphs.BUTTON_2x2
-        );
+        context.drawIcon(6, -54, UiGlyphs.MYSTIC_ICON);
 
-        context.drawIcon(
-                6,
-                180,
-                UiGlyphs.BUTTON_2x2
-        );
+        context.drawIcon(6, 0, UiGlyphs.PALADIN_ICON);
 
-        context.drawIcon(
-                6,
-                234,
-                UiGlyphs.BUTTON_2x2
-        );
+        context.drawIcon(6, 54, UiGlyphs.BUTTON_3x3);
+
+        context.drawIcon(6, 126, UiGlyphs.SHADOW_KNIGHT_ICON);
+
+        context.drawIcon(6, 180, UiGlyphs.WARRIOR_ICON);
+
+        context.drawIcon(6, 234, UiGlyphs.ASSASSIN_ICON);
 
         /*
          * Character art
@@ -77,7 +68,7 @@ public class ElementalistPage extends GuiPage{
         context.drawIcon(
                 0,
                 54,
-                UiGlyphs.ELEMENTALIST_CHARACTER
+                UiGlyphs.RANGER_CHARACTER
         );
 
         /*
@@ -105,7 +96,7 @@ public class ElementalistPage extends GuiPage{
                     @Override
                     public Glyph glyph() {
 
-                        return UiGlyphs.PYROMANCER_ICON_2;
+                        return UiGlyphs.SCOUT_ICON_2;
                     }
 
                     @Override
@@ -115,7 +106,6 @@ public class ElementalistPage extends GuiPage{
                             InventoryClickEvent event
                     ) {
 
-                        //player.sendMessage("pyromancer");
 
                     }
                 }
@@ -143,7 +133,7 @@ public class ElementalistPage extends GuiPage{
                     @Override
                     public Glyph glyph() {
 
-                        return UiGlyphs.CONJURER_ICON_2;
+                        return UiGlyphs.TAMER_ICON_2;
                     }
 
                     @Override
@@ -158,123 +148,6 @@ public class ElementalistPage extends GuiPage{
                 }
         );
 
-        /*
-         * Bottom Left Button
-         */
-
-        button(
-                context,
-                new GuiButton() {
-
-                    @Override
-                    public int slot() {
-                        return 54;
-                    }
-
-                    @Override
-                    public Set<Integer> interactionSlots() {
-
-                        return Set.of(
-                                54, 55,
-                                45, 46
-                        );
-                    }
-
-                    @Override
-                    public Glyph glyph() {
-
-                        return UiGlyphs.BUTTON_2x2;
-                    }
-
-                    @Override
-                    public void click(
-                            Player p,
-                            GuiPage page,
-                            InventoryClickEvent event
-                    ) {
-
-                    }
-                }
-        );
-
-        /*
-         * Bottom Right Button
-         */
-
-        button(
-                context,
-                new GuiButton() {
-
-                    @Override
-                    public int slot() {
-                        return 61;
-                    }
-
-                    @Override
-                    public Set<Integer> interactionSlots() {
-
-                        return Set.of(
-                                61, 62,
-                                70, 71
-                        );
-                    }
-
-                    @Override
-                    public Glyph glyph() {
-
-                        return UiGlyphs.BUTTON_2x2;
-                    }
-
-                    @Override
-                    public void click(
-                            Player p,
-                            GuiPage page,
-                            InventoryClickEvent event
-                    ) {
-
-                    }
-                }
-        );
-
-        /*
-         * Center Button
-         */
-
-        button(
-                context,
-                new GuiButton() {
-
-                    @Override
-                    public int slot() {
-                        return 57;
-                    }
-
-                    @Override
-                    public Set<Integer> interactionSlots() {
-
-                        return Set.of(
-                                57, 58, 59,
-                                66, 67, 68,
-                                75, 76, 77
-                        );
-                    }
-
-                    @Override
-                    public Glyph glyph() {
-
-                        return UiGlyphs.BUTTON_3x3;
-                    }
-
-                    @Override
-                    public void click(
-                            Player p,
-                            GuiPage page,
-                            InventoryClickEvent event
-                    ) {
-
-                    }
-                }
-        );
 
         /*
          * Left Arrow
@@ -308,11 +181,12 @@ public class ElementalistPage extends GuiPage{
                             InventoryClickEvent event
                     ) {
 
-                        GuiSession session =
-                                guiManager.getSession(p);
+                        GuiSession session = guiManager.getSession(p);
 
-                        session.setCurrentPage(gui.getAssassinPage());
+
+                        session.setCurrentPage(gui.getPaladinPage());
                         guiManager.refresh(p);
+
                     }
                 }
         );
@@ -352,7 +226,7 @@ public class ElementalistPage extends GuiPage{
                         GuiSession session =
                                 guiManager.getSession(p);
 
-                        session.setCurrentPage(gui.getAssassinPage());
+                        session.setCurrentPage(gui.getShadowKnightPage());
                         guiManager.refresh(p);
                     }
                 }

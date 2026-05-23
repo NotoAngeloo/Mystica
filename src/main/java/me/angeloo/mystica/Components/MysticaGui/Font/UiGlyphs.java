@@ -16,8 +16,20 @@ public class UiGlyphs {
 
     public static final Glyph DEFAULT_BACKGROUND = new Glyph(768, 768, 0);
 
+    public static Glyph DUELIST_ICON_2 = new Glyph(34, 34, 2);
+    public static Glyph ALCHEMIST_ICON_2 = new Glyph(34, 34, 2);
     public static Glyph PYROMANCER_ICON_2 = new Glyph(34, 34, 2);
     public static Glyph CONJURER_ICON_2 = new Glyph(34, 34, 2);
+    public static Glyph SHEPARD_ICON_2 = new Glyph(34, 34, 2);
+    public static Glyph ARCANE_ICON_2 = new Glyph(34, 34, 2);
+    public static Glyph TEMPLAR_ICON_2 = new Glyph(34, 34, 2);
+    public static Glyph DAWN_ICON_2 = new Glyph(34,34, 2);
+    public static Glyph SCOUT_ICON_2 = new Glyph(34, 34, 2);
+    public static Glyph TAMER_ICON_2 = new Glyph(34,34, 2);
+    public static Glyph DOOM_ICON_2 = new Glyph(34, 34, 2);
+    public static Glyph BLOOD_ICON_2 = new Glyph(34, 34, 2);
+    public static Glyph GLADIATOR_ICON_2 = new Glyph(34, 34,2);
+    public static Glyph EXECUTIONER_ICON_2 = new Glyph(34, 34, 2);
 
     public static Glyph CLASS_ART = new Glyph(52, 106, 3);
     public static Glyph ASSASSIN_CHARACTER = new Glyph(52, 106, 3);
@@ -100,6 +112,18 @@ public class UiGlyphs {
 
         PYROMANCER_ICON_2.addVariant(0, "\ue501");
         CONJURER_ICON_2.addVariant(2, "\ue502");
+        DUELIST_ICON_2.addVariant(0, "\ue53d");
+        ALCHEMIST_ICON_2.addVariant(2, "\ue53e");
+        SHEPARD_ICON_2.addVariant(0, "\ue53f");
+        ARCANE_ICON_2.addVariant(2, "\ue540");
+        TEMPLAR_ICON_2.addVariant(0, "\ue541");
+        DAWN_ICON_2.addVariant(2, "\ue542");
+        SCOUT_ICON_2.addVariant(0, "\ue543");
+        TAMER_ICON_2.addVariant(2, "\ue544");
+        DOOM_ICON_2.addVariant(0, "\ue545");
+        BLOOD_ICON_2.addVariant(2, "\ue546");
+        GLADIATOR_ICON_2.addVariant(0, "\ue547");
+        EXECUTIONER_ICON_2.addVariant(2, "\ue548");
 
         BUTTON_1.addVariant(0, "\ue50e");
         BUTTON_1.addVariant(1, "\ue50f");

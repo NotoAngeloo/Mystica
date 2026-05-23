@@ -1,21 +1,8 @@
 package me.angeloo.mystica.Components.MysticaGui.Guis;
 
-import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;
-import me.angeloo.mystica.Components.MysticaGui.Font.UiGlyphs;
 import me.angeloo.mystica.Components.MysticaGui.Gui;
-import me.angeloo.mystica.Components.MysticaGui.GuiButton;
-import me.angeloo.mystica.Components.MysticaGui.Pages.GuiPage;
-import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderContext;
-import me.angeloo.mystica.Utility.TextRenderer.LineData;
-import net.md_5.bungee.api.ChatColor;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
+import me.angeloo.mystica.Components.MysticaGui.Guis.Pages.GuiPage;
 
-import java.awt.*;
-import java.util.List;
-import java.util.Set;
-
-import static me.angeloo.mystica.Mystica.*;
 
 public class TestGui extends Gui {
 

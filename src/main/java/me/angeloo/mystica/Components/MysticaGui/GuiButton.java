@@ -1,7 +1,7 @@
 package me.angeloo.mystica.Components.MysticaGui;
 
 import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;
-import me.angeloo.mystica.Components.MysticaGui.Pages.GuiPage;
+import me.angeloo.mystica.Components.MysticaGui.Guis.Pages.GuiPage;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 

@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.MysticaGui;
 
-import me.angeloo.mystica.Components.MysticaGui.Pages.GuiPage;
+
+import me.angeloo.mystica.Components.MysticaGui.Guis.Pages.GuiPage;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderResult;
 import org.bukkit.inventory.Inventory;
 

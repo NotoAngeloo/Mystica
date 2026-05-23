@@ -1,9 +1,9 @@
 package me.angeloo.mystica.Components.MysticaGui.Render;
 
 import me.angeloo.mystica.Components.MysticaGui.Assemble.GuiAssembler;
-import me.angeloo.mystica.Components.MysticaGui.Gui;
+
 import me.angeloo.mystica.Components.MysticaGui.GuiSession;
-import me.angeloo.mystica.Components.MysticaGui.Pages.GuiPage;
+
 import org.bukkit.entity.Player;
 
 public class GuiRenderer {

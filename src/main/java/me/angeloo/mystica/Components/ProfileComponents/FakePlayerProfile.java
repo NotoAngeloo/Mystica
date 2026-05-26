@@ -1,9 +1,9 @@
 package me.angeloo.mystica.Components.ProfileComponents;
 
+import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.Guis.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

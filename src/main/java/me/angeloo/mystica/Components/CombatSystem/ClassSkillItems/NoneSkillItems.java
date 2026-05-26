@@ -6,7 +6,7 @@ import me.angeloo.mystica.Utility.InventoryItemGetter;
 
 public class NoneSkillItems {
 
-    private final ProfileManager profileManager;
+    /*private final ProfileManager profileManager;
     private final InventoryItemGetter itemGetter;
 
     public NoneSkillItems(Mystica main){

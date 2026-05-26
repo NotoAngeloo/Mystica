@@ -11,6 +11,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnight
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Warrior.Rage;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.CombatSystem.CombatManager;
 import me.angeloo.mystica.Components.CombatSystem.Targeting.TargetingEngine;
 import me.angeloo.mystica.Components.ProfileComponents.Profile;
@@ -18,7 +19,6 @@ import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Enums.BarType;
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
@@ -201,31 +201,31 @@ public class AbilityManager {
         PlayerClass clazz = playerProfile.getPlayerClass();
 
         switch (clazz) {
-            case Elementalist -> {
+            case ELEMENTALIST -> {
                 heat.reduceHeat(caster, heat.getHeat(caster));
                 return;
             }
-            case Ranger -> {
+            case RANGER -> {
                 focus.loseFocus(caster);
                 return;
             }
-            case Mystic -> {
+            case MYSTIC -> {
                 mana.addManaToEntity(caster, 500);
                 return;
             }
-            case Shadow_Knight -> {
+            case SHADOW_KNIGHT -> {
                 energy.addEnergyToEntity(caster, 100);
                 return;
             }
-            case Paladin -> {
+            case PALADIN -> {
                 purity.reset(caster);
                 return;
             }
-            case Warrior -> {
+            case WARRIOR -> {
                 rage.subTractRageFromEntity(caster, rage.getCurrentRage(caster));
                 return;
             }
-            case Assassin -> {
+            case ASSASSIN -> {
                 combo.removeAnAmountOfPoints(caster, combo.getComboPoints(caster));
                 return;
             }
@@ -239,30 +239,30 @@ public class AbilityManager {
         PlayerClass clazz = playerProfile.getPlayerClass();
 
         switch (clazz) {
-            case Elementalist -> {
+            case ELEMENTALIST -> {
                 heat.loseHeatNaturally(caster);
                 return;
             }
-            case Ranger -> {
+            case RANGER -> {
                 focus.regenFocusNaturally(caster);
                 return;
             }
-            case Mystic -> {
+            case MYSTIC -> {
                 mana.regenManaNaturally(caster);
                 return;
             }
-            case Shadow_Knight -> {
+            case SHADOW_KNIGHT -> {
                 energy.regenEnergyNaturally(caster);
                 return;
             }
-            case Paladin -> {
+            case PALADIN -> {
                 return;
             }
-            case Warrior -> {
+            case WARRIOR -> {
                 rage.loseRageNaturally(caster);
                 return;
             }
-            case Assassin -> {
+            case ASSASSIN -> {
                 return;
             }
         }
@@ -274,16 +274,6 @@ public class AbilityManager {
     }
 
 
-    public void resetAbilityBuffs(LivingEntity caster){
-        /*mysticAbilities.getEvilSpirit().removeShards(caster);
-        mysticAbilities.getPurifyingBlast().unQueueInstantCast(caster);
-        mysticAbilities.getConsolation().removeTargets(caster);
-        elementalistAbilities.getFieryWing().removeInflame(caster);
-        shadowKnightAbilities.getInfection().removeEnhancement(caster);
-        shadowKnightAbilities.getSoulReap().removeSoulMarks(caster);
-        paladinAbilities.getDecision().removeDecision(caster);
-        assassinAbilities.getCombo().removeAnAmountOfPoints(caster, assassinAbilities.getCombo().getComboPoints(caster));*/
-    }
 
     public boolean getIfCasting(LivingEntity caster){
 

@@ -5,6 +5,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Stun;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Components.Hud.BossCastingManager;
@@ -15,7 +16,6 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.EquipmentSlot;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -56,7 +56,7 @@ public class FlyingBlade extends BaseAbility {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = main.getCooldownManager();
-        this.weapon = new MysticaEquipment(EquipmentSlot.WEAPON, PlayerClass.Assassin, 1);
+        this.weapon = new MysticaEquipment(EquipmentSlot.WEAPON, PlayerClass.ASSASSIN, 1);
         bossCastingManager = main.getBossCastingManager();
     }
 
@@ -154,7 +154,7 @@ public class FlyingBlade extends BaseAbility {
                         statusEffectManager.removeEffect(target, "shield");
                     }
 
-                    lookup.get(PlayerClass.Assassin, 8).onExternalTrigger(caster, target);
+                    lookup.get(PlayerClass.ASSASSIN, 8).onExternalTrigger(caster, target);
                     bossCastingManager.interrupt(caster, target);
                 }
 

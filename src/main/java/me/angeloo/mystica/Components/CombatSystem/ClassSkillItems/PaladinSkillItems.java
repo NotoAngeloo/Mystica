@@ -6,11 +6,10 @@ import me.angeloo.mystica.Utility.EquipmentSlot;
 import me.angeloo.mystica.Utility.InventoryItemGetter;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
 
 public class PaladinSkillItems {
 
-    private final MysticaEquipment weapon;
+    /*private final MysticaEquipment weapon;
     private final ProfileManager profileManager;
     private final AbilityManager abilityManager;
     private final InventoryItemGetter itemGetter;

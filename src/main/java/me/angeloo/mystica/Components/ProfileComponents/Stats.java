@@ -1,6 +1,6 @@
 package me.angeloo.mystica.Components.ProfileComponents;
 
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 
 public class Stats {
@@ -59,7 +59,7 @@ public class Stats {
         int crit = 1;
 
         switch (playerClass) {
-            case Assassin -> {
+            case ASSASSIN -> {
                 attack += (level * 2);
                 health += (level * 15);
                 defence += (level);
@@ -77,7 +77,7 @@ public class Stats {
 
 
             }
-            case Elementalist -> {
+            case ELEMENTALIST -> {
 
                 attack += (level * 2);
                 health += (level * 15);
@@ -95,7 +95,7 @@ public class Stats {
                 }
 
             }
-            case Mystic -> {
+            case MYSTIC -> {
 
                 attack += (level * 2);
                 health += (level * 15);
@@ -113,7 +113,7 @@ public class Stats {
                 }
 
             }
-            case Paladin -> {
+            case PALADIN -> {
 
                 attack += (level * 2);
                 health += (level * 15);
@@ -137,7 +137,7 @@ public class Stats {
                 }
 
             }
-            case Ranger -> {
+            case RANGER -> {
                 attack += (level * 2);
                 health += (level * 15);
                 defence += (level);
@@ -155,7 +155,7 @@ public class Stats {
 
 
             }
-            case Shadow_Knight -> {
+            case SHADOW_KNIGHT -> {
                 attack += (level * 2);
                 health += (level * 15);
                 defence += (level);
@@ -175,7 +175,7 @@ public class Stats {
                 }
 
             }
-            case Warrior -> {
+            case WARRIOR -> {
 
                 attack += (level * 2);
                 health += (level * 15);
@@ -196,12 +196,12 @@ public class Stats {
                 }
 
             }
-            case NONE -> {
+            /*case NONE -> {
                 attack += (level * 2);
                 health += (level * 15);
                 defence += (level);
                 magic_defence += (level);
-            }
+            }*/
         }
 
 

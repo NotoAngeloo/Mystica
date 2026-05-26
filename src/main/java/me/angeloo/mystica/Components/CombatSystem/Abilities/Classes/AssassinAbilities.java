@@ -10,7 +10,6 @@ import java.util.Map;
 
 public class AssassinAbilities implements AbilitySet {
 
-    //the base abilities, ultimate is stored elsewhere because it is not base
     private final Map<Integer, Ability> abilities = new HashMap<>();
 
     private final BasicAttackDefinition basic;

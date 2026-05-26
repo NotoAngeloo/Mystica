@@ -7,7 +7,7 @@ import me.angeloo.mystica.Mystica;
 
 public class AllSkillItems {
 
-    private final ProfileManager profileManager;
+    /*private final ProfileManager profileManager;
 
     private final NoneSkillItems noneSkillItems;
     private final ElementalistSkillItems elementalistSkillItems;
@@ -29,7 +29,7 @@ public class AllSkillItems {
         warriorSkillItems = new WarriorSkillItems(main, manager);
         assassinSkillItems = new AssassinSkillItems(main, manager);
 
-    }
+    }/*
 
     /*public ItemStack getPlayerSkill(Player player, int skillNumber){
 

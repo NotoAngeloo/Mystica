@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Utility;
 
+import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.Profile;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
@@ -8,7 +9,6 @@ import me.angeloo.mystica.CustomEvents.MaxHealthChangeOutOfCombatEvent;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Enums.BarType;
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import org.bukkit.Bukkit;
 

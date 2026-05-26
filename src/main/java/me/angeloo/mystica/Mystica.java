@@ -247,16 +247,16 @@ public final class Mystica extends JavaPlugin{
 
         customInventoryManager = new CustomInventoryManager(this);
 
-        abilityInventory = new AbilityInventory(this);
-        specInventory = abilityInventory.getSpecInventory();
-        bagEquipmentFunctions = new BagEquipmentFunctions(this);
-        genericDiscard = new GenericDiscard(this);
-        devBoxInventory = new DevBoxInventory(this);
+        //abilityInventory = new AbilityInventory(this);
+        //specInventory = abilityInventory.getSpecInventory();
+        //bagEquipmentFunctions = new BagEquipmentFunctions(this);
+        //genericDiscard = new GenericDiscard(this);
+        //devBoxInventory = new DevBoxInventory(this);
 
         equipmentUpgradeManager = new EquipmentUpgradeManager(this);
 
 
-        equipmentInventory = new EquipmentInventory(this);
+        //equipmentInventory = new EquipmentInventory(this);
         matchMakingManager = new MatchMakingManager(this);
         invitedInventory = new InvitedInventory(this);
         partyInventory = new PartyInventory(this);
@@ -311,7 +311,7 @@ public final class Mystica extends JavaPlugin{
 
         this.getServer().getPluginManager().registerEvents(guiListener, this);
 
-        this.getServer().getPluginManager().registerEvents(abilityInventory, this);
+        /*this.getServer().getPluginManager().registerEvents(abilityInventory, this);
         this.getServer().getPluginManager().registerEvents(specInventory, this);
         this.getServer().getPluginManager().registerEvents(equipmentUpgradeManager.getIdentifyInventory(), this);
         this.getServer().getPluginManager().registerEvents(equipmentUpgradeManager.getReforgeInventory(), this);
@@ -325,7 +325,7 @@ public final class Mystica extends JavaPlugin{
         this.getServer().getPluginManager().registerEvents(pickQuestInventory,this);
         this.getServer().getPluginManager().registerEvents(bagEquipmentFunctions, this);
         this.getServer().getPluginManager().registerEvents(genericDiscard, this);
-        this.getServer().getPluginManager().registerEvents(devBoxInventory, this);
+        this.getServer().getPluginManager().registerEvents(devBoxInventory, this);*/
 
         this.getServer().getPluginManager().registerEvents(new InventoryEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new GeneralEventListener(this), this);

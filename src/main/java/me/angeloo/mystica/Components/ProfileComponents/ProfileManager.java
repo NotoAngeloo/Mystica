@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.ProfileComponents;
 
+import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.Creatures.CreaturesAndCharactersManager;
 import me.angeloo.mystica.Components.Guis.Storage.MysticaBag;
 import me.angeloo.mystica.Components.Guis.Storage.MysticaBagCollection;
@@ -18,7 +19,6 @@ import me.angeloo.mystica.Utility.BossManager;
 import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.PathingManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.ProfileFileWriter;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import org.bukkit.Bukkit;

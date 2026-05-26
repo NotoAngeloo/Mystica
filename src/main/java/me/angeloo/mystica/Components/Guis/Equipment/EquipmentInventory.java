@@ -11,7 +11,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DisplayWeapons;
 import me.angeloo.mystica.Utility.EquipmentSlot;
 import me.angeloo.mystica.Utility.GearReader;
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -33,7 +33,7 @@ import java.util.List;
 
 public class EquipmentInventory implements Listener {
 
-    private final ProfileManager profileManager;
+    /*private final ProfileManager profileManager;
     private final DisplayWeapons displayWeapons;
     private final CustomInventoryManager customInventoryManager;
     private final InventoryItemGetter inventoryItemGetter;
@@ -476,7 +476,7 @@ public class EquipmentInventory implements Listener {
 
         }
 
-    }
+    }*/
 
 
 

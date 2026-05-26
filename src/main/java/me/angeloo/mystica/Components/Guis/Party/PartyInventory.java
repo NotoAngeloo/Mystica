@@ -234,25 +234,25 @@ public class PartyInventory implements Listener {
 
         switch (profileManager.getAnyProfile(player).getPlayerClass()){
 
-            case Ranger -> {
+            case RANGER -> {
                 classColor = rangerColor;
             }
-            case Warrior ->{
+            case WARRIOR ->{
                 classColor = warriorColor;
             }
-            case Paladin -> {
+            case PALADIN -> {
                 classColor = paladinColor;
             }
-            case Shadow_Knight -> {
+            case SHADOW_KNIGHT -> {
                 classColor = shadowKnightColor;
             }
-            case Elementalist -> {
+            case ELEMENTALIST -> {
                 classColor = elementalistColor;
             }
-            case Mystic -> {
+            case MYSTIC -> {
                 classColor = mysticColor;
             }
-            case Assassin -> {
+            case ASSASSIN -> {
                 classColor = assassinColor;
             }
 
@@ -292,25 +292,25 @@ public class PartyInventory implements Listener {
 
         switch (profileManager.getAnyProfile(player).getPlayerClass()){
 
-            case Ranger -> {
+            case RANGER -> {
                 classColor = rangerColor;
             }
-            case Warrior ->{
+            case WARRIOR ->{
                 classColor = warriorColor;
             }
-            case Paladin -> {
+            case PALADIN -> {
                 classColor = paladinColor;
             }
-            case Shadow_Knight -> {
+            case SHADOW_KNIGHT -> {
                 classColor = shadowKnightColor;
             }
-            case Elementalist -> {
+            case ELEMENTALIST -> {
                 classColor = elementalistColor;
             }
-            case Mystic -> {
+            case MYSTIC -> {
                 classColor = mysticColor;
             }
-            case Assassin -> {
+            case ASSASSIN -> {
                 classColor = assassinColor;
             }
 

@@ -100,7 +100,6 @@ public class DeathManager {
         }
 
 
-        abilityManager.resetAbilityBuffs(player);
         statusEffectManager.clear(player);
         abilityManager.interruptBasic(player);
         //dpsManager.removeDps(player);

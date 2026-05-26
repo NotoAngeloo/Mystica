@@ -21,7 +21,7 @@ import java.util.List;
 
 public class AbilityInventory implements Listener {
 
-    private final ProfileManager profileManager;
+    /*private final ProfileManager profileManager;
     private final DisplayWeapons displayWeapons;
     private final SpecInventory specInventory;
 
@@ -76,7 +76,7 @@ public class AbilityInventory implements Listener {
                 break;
             }
 
-            inv.setItem(i, abilityItem);*/
+            inv.setItem(i, abilityItem);
 
         }
 
@@ -94,7 +94,7 @@ public class AbilityInventory implements Listener {
         player.getInventory().setItem(32, allSkillItems.getPlayerSkill(player, equipSkills.getAnySlot()[5]));
         player.getInventory().setItem(33, allSkillItems.getPlayerSkill(player, equipSkills.getAnySlot()[6]));
         player.getInventory().setItem(34, allSkillItems.getPlayerSkill(player, equipSkills.getAnySlot()[7]));
-        player.getInventory().setItem(35, allSkillItems.getBasic(player));*/
+        player.getInventory().setItem(35, allSkillItems.getBasic(player));
 
 
 
@@ -127,7 +127,7 @@ public class AbilityInventory implements Listener {
                 /*if(equipSkills.whichSlotIsTheSkillEquippedIn(slot+1) != -1){
                     //Bukkit.getLogger().info("ability " + (slot + 1) + " is equipped in slot "+ equipSkills.whichSlotIsTheSkillEquippedIn(slot+1));
                     equipSkills.setAnySlot(equipSkills.whichSlotIsTheSkillEquippedIn(slot+1), 0);
-                }*/
+                }
 
 
 
@@ -218,6 +218,6 @@ public class AbilityInventory implements Listener {
         }
 
         return count;
-    }
+    }*/
 
 }

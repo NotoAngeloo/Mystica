@@ -5,6 +5,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ClassSpecific.PierceBuff;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Components.Items.MysticaEquipment;
@@ -14,7 +15,6 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.EquipmentSlot;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -55,7 +55,7 @@ public class Pierce extends BaseAbility {
         pveChecker = main.getPveChecker();
         cooldownManager = main.getCooldownManager();
         combo = manager.getCombo();
-        weapon = new MysticaEquipment(EquipmentSlot.WEAPON, PlayerClass.Assassin, 1);
+        weapon = new MysticaEquipment(EquipmentSlot.WEAPON, PlayerClass.ASSASSIN, 1);
     }
 
     private final int baseCooldown = 4;
@@ -155,7 +155,7 @@ public class Pierce extends BaseAbility {
 
                     Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                     changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
-                    lookup.get(PlayerClass.Assassin, 8).onExternalTrigger(caster, target);
+                    lookup.get(PlayerClass.ASSASSIN, 8).onExternalTrigger(caster, target);
 
                     statusEffectManager.applyEffect(caster, new PierceBuff(), null, null, caster);
                 }

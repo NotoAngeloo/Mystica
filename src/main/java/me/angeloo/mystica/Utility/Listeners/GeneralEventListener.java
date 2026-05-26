@@ -7,6 +7,7 @@ import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import me.angeloo.mystica.Components.CombatSystem.*;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.CombatSystem.Targeting.TargetingContext;
 import me.angeloo.mystica.Components.CombatSystem.Targeting.TargetingEngine;
 import me.angeloo.mystica.Components.EntityBehavior.AggroManager;
@@ -30,8 +31,6 @@ import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -411,7 +410,7 @@ public class GeneralEventListener implements Listener {
             ItemStack tempItem = item.clone();
             event.setCancelled(true);
             player.setItemOnCursor(null);
-            equipmentInventory.openEquipmentInventory(player);
+            //equipmentInventory.openEquipmentInventory(player);
             player.getInventory().addItem(tempItem);
         }
     }
@@ -436,7 +435,7 @@ public class GeneralEventListener implements Listener {
             player.setItemOnCursor(null);
             displayWeapons.displayArmor(player);
 
-            equipmentInventory.openEquipmentInventory(player);
+            //equipmentInventory.openEquipmentInventory(player);
             player.getInventory().addItem(tempItem);
             return;
         }
@@ -463,7 +462,7 @@ public class GeneralEventListener implements Listener {
                     player.getInventory().setItem(event.getSlot(), null);
                     displayWeapons.displayArmor(player);
 
-                    equipmentInventory.openEquipmentInventory(player);
+                    //equipmentInventory.openEquipmentInventory(player);
                     player.getInventory().addItem(tempItem);
                 }
             }
@@ -740,7 +739,7 @@ public class GeneralEventListener implements Listener {
     public void rangerLoseFocus(PlayerMoveEvent event) {
         Player player = event.getPlayer();
 
-        if (!profileManager.getAnyProfile(player).getPlayerClass().equals(PlayerClass.Ranger)) {
+        if (!profileManager.getAnyProfile(player).getPlayerClass().equals(PlayerClass.RANGER)) {
             return;
         }
 
@@ -892,14 +891,14 @@ public class GeneralEventListener implements Listener {
                     }
                 }
 
-                if(profileManager.getAnyProfile(defender).getPlayerClass().equals(PlayerClass.Warrior)){
+                if(profileManager.getAnyProfile(defender).getPlayerClass().equals(PlayerClass.WARRIOR)){
                     abilityManager.getRage().addRageToEntity(defender, 10);
-                    abilityManager.getAbilityResolver().resolve(PlayerClass.Warrior, 2).onExternalTrigger(defender);
+                    abilityManager.getAbilityResolver().resolve(PlayerClass.WARRIOR, 2).onExternalTrigger(defender);
                 }
 
 
-                if(profileManager.getAnyProfile(defender).getPlayerClass().equals(PlayerClass.Assassin)){
-                    abilityManager.getAbilityResolver().resolve(PlayerClass.Assassin, 8).onExternalTrigger(defender, null);
+                if(profileManager.getAnyProfile(defender).getPlayerClass().equals(PlayerClass.ASSASSIN)){
+                    abilityManager.getAbilityResolver().resolve(PlayerClass.ASSASSIN, 8).onExternalTrigger(defender, null);
                 }
 
             }

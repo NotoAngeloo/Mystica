@@ -6,6 +6,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BasicAttacks.BasicAttackDefinition;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.AssassinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.CombatSystem.FakePlayerTargetManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -15,7 +16,6 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -209,7 +209,7 @@ public class AssassinBasic implements BasicAttackDefinition{
             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(targetToHit, caster));
             changeResourceHandler.subtractHealthFromEntity(targetToHit, damage, caster, crit);
 
-            lookup.get(PlayerClass.Assassin, 8).onExternalTrigger(caster, targetToHit);
+            lookup.get(PlayerClass.ASSASSIN, 8).onExternalTrigger(caster, targetToHit);
 
 
             //perhaps only if has an equipment set

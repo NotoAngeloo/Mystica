@@ -11,7 +11,6 @@ import me.angeloo.mystica.Tasks.CombatTick;
 import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Utility.DisplayWeapons;
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -179,7 +178,6 @@ public class CombatManager {
 
 
         //dpsManager.removeDps(player);
-        abilityManager.resetAbilityBuffs(player);
         cooldownManager.clearAll(player.getUniqueId());
 
 

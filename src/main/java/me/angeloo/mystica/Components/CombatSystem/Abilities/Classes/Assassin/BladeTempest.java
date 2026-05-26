@@ -5,6 +5,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ClassSpecific.BladeTempestCrit;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
@@ -12,7 +13,6 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -167,7 +167,7 @@ public class BladeTempest extends BaseAbility {
                         if(entity instanceof Player){
                             if(pvpManager.pvpLogic(caster, (Player) entity)){
                                 changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
-                                lookup.get(PlayerClass.Assassin, 8).onExternalTrigger(caster, livingEntity);
+                                lookup.get(PlayerClass.ASSASSIN, 8).onExternalTrigger(caster, livingEntity);
                                 hit = true;
                                 if(!trigger[0]){
                                     trigger[0] = true;
@@ -182,7 +182,7 @@ public class BladeTempest extends BaseAbility {
                         if(pveChecker.pveLogic(livingEntity)){
                             Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(livingEntity, caster));
                             changeResourceHandler.subtractHealthFromEntity(livingEntity, damage, caster, crit);
-                            lookup.get(PlayerClass.Assassin, 8).onExternalTrigger(caster, livingEntity);
+                            lookup.get(PlayerClass.ASSASSIN, 8).onExternalTrigger(caster, livingEntity);
                             hit = true;
 
                             if(!trigger[0]){

@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -12,7 +13,6 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.*;
@@ -116,7 +116,7 @@ public class Bloodsucker extends BaseAbility {
 
 
         if(blood){
-            lookup.get(PlayerClass.Shadow_Knight, SubClass.Blood, -1).onExternalTrigger(caster);
+            lookup.get(PlayerClass.SHADOW_KNIGHT, SubClass.Blood, -1).onExternalTrigger(caster);
         }
 
 

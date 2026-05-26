@@ -5,6 +5,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.KnockUp;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
@@ -14,7 +15,6 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.EquipmentSlot;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -60,7 +60,7 @@ public class Soulcrack extends BaseAbility {
         damageCalculator = main.getDamageCalculator();
         cooldownManager = main.getCooldownManager();
         energy = manager.getEnergy();
-        this.weapon = new MysticaEquipment(EquipmentSlot.WEAPON, PlayerClass.Shadow_Knight, 1);
+        this.weapon = new MysticaEquipment(EquipmentSlot.WEAPON, PlayerClass.SHADOW_KNIGHT, 1);
     }
 
     private final int baseCooldown = 25;

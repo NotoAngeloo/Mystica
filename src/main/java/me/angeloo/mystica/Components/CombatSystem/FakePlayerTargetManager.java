@@ -38,7 +38,7 @@ public class FakePlayerTargetManager {
 
         //maybe make this subclass in the future, easy enough to change
         switch (profileManager.getAnyProfile(entity).getPlayerClass()) {
-            case Elementalist, Warrior, Ranger -> {
+            case ELEMENTALIST,WARRIOR,RANGER -> {
 
 
                 if (pveChecker.pveLogic(target) && !profileManager.getAnyProfile(target).getIfObject()) {
@@ -46,7 +46,7 @@ public class FakePlayerTargetManager {
                 }
 
             }
-            case Paladin -> {
+            case PALADIN -> {
 
                 if (targetMap.containsKey(entity.getUniqueId())) {
 

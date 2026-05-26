@@ -7,6 +7,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerState;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ClassSpecific.Duelists_Frenzy;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -15,7 +16,6 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -183,7 +183,7 @@ public class DuelistsFrenzy extends BaseAbility {
 
                         Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                         changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
-                        lookup.get(PlayerClass.Assassin, 8).onExternalTrigger(caster, target);
+                        lookup.get(PlayerClass.ASSASSIN, 8).onExternalTrigger(caster, target);
 
                         statusEffectManager.applyEffect(caster, new Duelists_Frenzy(), null, null, caster);
 

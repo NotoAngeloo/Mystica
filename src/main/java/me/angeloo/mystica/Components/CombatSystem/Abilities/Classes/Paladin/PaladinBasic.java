@@ -8,6 +8,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityMarkManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BasicAttacks.BasicAttackDefinition;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.PaladinAbilities;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -16,7 +17,6 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -303,7 +303,7 @@ public class PaladinBasic implements BasicAttackDefinition {
 
             //because divine has a different set of skills
             if(!profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Divine)){
-                lookup.get(PlayerClass.Paladin, 6).onExternalTrigger(caster, targetToHit);
+                lookup.get(PlayerClass.PALADIN, 6).onExternalTrigger(caster, targetToHit);
             }
 
 

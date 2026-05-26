@@ -6,6 +6,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownMa
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.KnockUp;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageOverTime.Burn;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -15,7 +16,6 @@ import me.angeloo.mystica.Utility.BossManager;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -207,7 +207,7 @@ public class DragonBreathing extends BaseAbility {
                             hitBySkill.add(livingEntity);
 
                             if(!inflamed){
-                                lookup.get(PlayerClass.Elementalist, SubClass.Pyromancer, -1).onExternalTrigger(caster);
+                                lookup.get(PlayerClass.ELEMENTALIST, SubClass.Pyromancer, -1).onExternalTrigger(caster);
                                 inflamed = true;
                             }
 

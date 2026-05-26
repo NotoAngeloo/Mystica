@@ -1,7 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Ability;
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
+
 
 public abstract class BaseAbility implements Ability {
 

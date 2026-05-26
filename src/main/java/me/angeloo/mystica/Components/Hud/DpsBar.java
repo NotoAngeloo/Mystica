@@ -1,8 +1,8 @@
 package me.angeloo.mystica.Components.Hud;
 
+import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.LivingEntity;
 
@@ -23,25 +23,25 @@ public class DpsBar {
         PlayerClass playerClass = profileManager.getAnyProfile(entity).getPlayerClass();
 
         switch (playerClass) {
-            case Assassin -> {
+            case ASSASSIN -> {
                 bar.append(ChatColor.of(assassinColor));
             }
-            case Elementalist -> {
+            case ELEMENTALIST -> {
                 bar.append(ChatColor.of(elementalistColor));
             }
-            case Mystic -> {
+            case MYSTIC -> {
                 bar.append(ChatColor.of(mysticColor));
             }
-            case Paladin -> {
+            case PALADIN -> {
                 bar.append(ChatColor.of(paladinColor));
             }
-            case Ranger -> {
+            case RANGER -> {
                 bar.append(ChatColor.of(rangerColor));
             }
-            case Shadow_Knight -> {
+            case SHADOW_KNIGHT-> {
                 bar.append(ChatColor.of(shadowKnightColor));
             }
-            case Warrior -> {
+            case WARRIOR -> {
                 bar.append(ChatColor.of(warriorColor));
             }
         }

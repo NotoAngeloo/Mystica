@@ -1,12 +1,12 @@
 package me.angeloo.mystica.Components.Creatures;
 
+import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.ProfileComponents.FakePlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.Stats;
 import me.angeloo.mystica.CustomEvents.CompanionSpawnEvent;
 import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
@@ -83,7 +83,7 @@ public class Slippy {
         Stats stats = new Stats(level, attack, health, defence, magic_defence, crit);
 
 
-        FakePlayerProfile fakePlayerProfile = new FakePlayerProfile(false, false, stats, PlayerClass.Elementalist, SubClass.Conjurer);
+        FakePlayerProfile fakePlayerProfile = new FakePlayerProfile(false, false, stats, PlayerClass.ELEMENTALIST, SubClass.Conjurer);
 
         profileManager.addToFakePlayerProfileMap(uuid, fakePlayerProfile);
         profileManager.setCompanionFaces(uuid, "slippy");

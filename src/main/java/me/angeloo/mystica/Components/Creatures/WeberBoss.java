@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Creatures;
 
+import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.Guis.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerProfile;
 import me.angeloo.mystica.Components.ProfileComponents.*;
@@ -8,7 +9,6 @@ import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
 import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;

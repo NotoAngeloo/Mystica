@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.Guis.Abilities;
 
+import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.ProfileComponents.Profile;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.CustomEvents.MaxHealthChangeOutOfCombatEvent;
@@ -8,7 +9,6 @@ import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.InventoryItemGetter;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -29,7 +29,7 @@ import static me.angeloo.mystica.Mystica.*;
 
 public class SpecInventory implements Listener {
 
-    private final ProfileManager profileManager;
+    /*private final ProfileManager profileManager;
     private final DisplayWeapons displayWeapons;
     private final InventoryItemGetter inventoryItemGetter;
     private final AbilityInventory abilityInventory;
@@ -64,7 +64,7 @@ public class SpecInventory implements Listener {
         inv.setItem(29, new ItemStack(Material.WHITE_STAINED_GLASS_PANE));
 
         inv.setItem(33, new ItemStack(Material.WHITE_STAINED_GLASS_PANE));
-        inv.setItem(35, new ItemStack(Material.WHITE_STAINED_GLASS_PANE));*/
+        inv.setItem(35, new ItemStack(Material.WHITE_STAINED_GLASS_PANE));
 
 
         player.openInventory(inv);
@@ -210,7 +210,7 @@ public class SpecInventory implements Listener {
             case Pyromancer -> getPyromancerItem();
             case Conjurer -> getConjurerItem();
             /*case "cryomancer":
-                return getCryomancerItem();*/
+                return getCryomancerItem();
             case Scout -> getScoutItem();
             case Tamer -> getTamerItem();
             case Chaos -> getChaosItem();
@@ -621,7 +621,7 @@ public class SpecInventory implements Listener {
                 ChatColor.of(Color.WHITE) + "If the target is an enemy",
                 ChatColor.of(Color.WHITE) + "they take increased damage",
                 ChatColor.of(Color.WHITE) + "for 15 seconds.");
-    }
+    }*/
 
 
 

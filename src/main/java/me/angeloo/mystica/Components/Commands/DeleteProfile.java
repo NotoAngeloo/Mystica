@@ -52,7 +52,6 @@ public class DeleteProfile implements CommandExecutor {
         }
 
         //mysticaPartyManager.removeFromMysticaPartyMap(player);
-        abilityManager.resetAbilityBuffs(player);
         cooldownManager.clearAll(player.getUniqueId());
         statusEffectManager.clear(player);
         profileManager.removePlayerProfile(player);

@@ -4,6 +4,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -12,7 +13,6 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
@@ -86,7 +86,7 @@ public class SpiritualDescent extends BaseAbility {
 
     private void execute(LivingEntity caster){
 
-        lookup.get(PlayerClass.Mystic, SubClass.Chaos, -1).onExternalTrigger(caster, 1);
+        lookup.get(PlayerClass.MYSTIC, SubClass.Chaos, -1).onExternalTrigger(caster, 1);
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 

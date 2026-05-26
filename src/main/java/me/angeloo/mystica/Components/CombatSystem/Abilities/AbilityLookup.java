@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities;
 
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
+
+import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 
 public interface AbilityLookup {

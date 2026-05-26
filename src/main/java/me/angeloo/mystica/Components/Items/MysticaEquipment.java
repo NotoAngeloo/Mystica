@@ -1,8 +1,8 @@
 package me.angeloo.mystica.Components.Items;
 
 import com.google.gson.Gson;
+import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.EquipmentSlot;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
@@ -200,25 +200,25 @@ public class MysticaEquipment extends MysticaItem{
             }
             case WEAPON -> {
                 switch (playerClass){
-                    case Ranger -> {
+                    case RANGER -> {
                         material = Material.FEATHER;
                     }
-                    case Elementalist -> {
+                    case ELEMENTALIST -> {
                         material = Material.STICK;
                     }
-                    case Mystic -> {
+                    case MYSTIC -> {
                         material = Material.BLAZE_ROD;
                     }
-                    case Assassin -> {
+                    case ASSASSIN -> {
                         material = Material.FLINT;
                     }
-                    case Shadow_Knight -> {
+                    case SHADOW_KNIGHT -> {
                         material = Material.DIAMOND_SWORD;
                     }
-                    case Warrior -> {
+                    case WARRIOR -> {
                         material = Material.BRICK;
                     }
-                    case Paladin -> {
+                    case PALADIN -> {
                         material = Material.IRON_SWORD;
                     }
                     case NONE -> {
@@ -247,25 +247,25 @@ public class MysticaEquipment extends MysticaItem{
         switch (equipmentSlot){
             case WEAPON -> {
                 switch (playerClass){
-                    case Elementalist -> {
+                    case ELEMENTALIST -> {
                         meta.setDisplayName(ChatColor.of(elementalistColor) + "Catalyst");
                     }
-                    case Mystic -> {
+                    case MYSTIC -> {
                         meta.setDisplayName(ChatColor.of(mysticColor) + "Staff");
                     }
-                    case Ranger -> {
+                    case RANGER -> {
                         meta.setDisplayName(ChatColor.of(rangerColor) + "Bow");
                     }
-                    case Shadow_Knight -> {
+                    case SHADOW_KNIGHT -> {
                         meta.setDisplayName(ChatColor.of(shadowKnightColor) + "Greatsword");
                     }
-                    case Paladin -> {
+                    case PALADIN -> {
                         meta.setDisplayName(ChatColor.of(paladinColor) + "Sword");
                     }
-                    case Warrior -> {
+                    case WARRIOR -> {
                         meta.setDisplayName(ChatColor.of(warriorColor) + "Axe");
                     }
-                    case Assassin -> {
+                    case ASSASSIN -> {
                         meta.setDisplayName(ChatColor.of(assassinColor) + "Dagger");
                     }
 
@@ -275,31 +275,31 @@ public class MysticaEquipment extends MysticaItem{
             }
             case HEAD -> {
                 switch (playerClass){
-                    case Elementalist -> {
+                    case ELEMENTALIST -> {
                         meta.setDisplayName(ChatColor.of(elementalistColor) + "Elementalist's Hood");
                         meta.setCustomModelData(1);
                     }
-                    case Ranger -> {
+                    case RANGER -> {
                         meta.setDisplayName(ChatColor.of(rangerColor) + "Ranger's Hood");
                         meta.setCustomModelData(2);
                     }
-                    case Mystic -> {
+                    case MYSTIC -> {
                         meta.setDisplayName(ChatColor.of(mysticColor) + "Mystic's Hood");
                         meta.setCustomModelData(3);
                     }
-                    case Shadow_Knight -> {
+                    case SHADOW_KNIGHT -> {
                         meta.setDisplayName(ChatColor.of(shadowKnightColor) + "Shadow Knight's Helmet");
                         meta.setCustomModelData(4);
                     }
-                    case Paladin -> {
+                    case PALADIN -> {
                         meta.setDisplayName(ChatColor.of(paladinColor) + "Paladin's Helmet");
                         meta.setCustomModelData(5);
                     }
-                    case Warrior -> {
+                    case WARRIOR -> {
                         meta.setDisplayName(ChatColor.of(warriorColor) + "Warrior's Helmet");
                         meta.setCustomModelData(6);
                     }
-                    case Assassin -> {
+                    case ASSASSIN -> {
                         meta.setDisplayName(ChatColor.of(assassinColor) + "Assassin's Scarf");
                         meta.setCustomModelData(7);
                     }
@@ -307,31 +307,31 @@ public class MysticaEquipment extends MysticaItem{
             }
             case CHEST -> {
                 switch (playerClass){
-                    case Elementalist -> {
+                    case ELEMENTALIST -> {
                         meta.setDisplayName(ChatColor.of(elementalistColor) + "Elementalist's Tunic");
                         meta.setCustomModelData(1);
                     }
-                    case Ranger -> {
+                    case RANGER -> {
                         meta.setDisplayName(ChatColor.of(rangerColor) + "Ranger's Tunic");
                         meta.setCustomModelData(2);
                     }
-                    case Mystic -> {
+                    case MYSTIC -> {
                         meta.setDisplayName(ChatColor.of(mysticColor) + "Mystic's Tunic");
                         meta.setCustomModelData(3);
                     }
-                    case Shadow_Knight -> {
+                    case SHADOW_KNIGHT -> {
                         meta.setDisplayName(ChatColor.of(shadowKnightColor) + "Shadow Knight's Plate");
                         meta.setCustomModelData(4);
                     }
-                    case Paladin -> {
+                    case PALADIN -> {
                         meta.setDisplayName(ChatColor.of(paladinColor) + "Paladin's Plate");
                         meta.setCustomModelData(5);
                     }
-                    case Warrior -> {
+                    case WARRIOR -> {
                         meta.setDisplayName(ChatColor.of(warriorColor) + "Warrior's Plate");
                         meta.setCustomModelData(6);
                     }
-                    case Assassin -> {
+                    case ASSASSIN -> {
                         meta.setDisplayName(ChatColor.of(assassinColor) + "Assassin's Tunic");
                         meta.setCustomModelData(7);
                     }
@@ -339,31 +339,31 @@ public class MysticaEquipment extends MysticaItem{
             }
             case LEGS -> {
                 switch (playerClass){
-                    case Elementalist -> {
+                    case ELEMENTALIST -> {
                         meta.setDisplayName(ChatColor.of(elementalistColor) + "Elementalist's Breeches");
                         meta.setCustomModelData(1);
                     }
-                    case Ranger -> {
+                    case RANGER -> {
                         meta.setDisplayName(ChatColor.of(rangerColor) + "Ranger's Breeches");
                         meta.setCustomModelData(2);
                     }
-                    case Mystic -> {
+                    case MYSTIC -> {
                         meta.setDisplayName(ChatColor.of(mysticColor) + "Mystic's Breeches");
                         meta.setCustomModelData(3);
                     }
-                    case Shadow_Knight -> {
+                    case SHADOW_KNIGHT -> {
                         meta.setDisplayName(ChatColor.of(shadowKnightColor) + "Shadow Knight's Breeches");
                         meta.setCustomModelData(4);
                     }
-                    case Paladin -> {
+                    case PALADIN -> {
                         meta.setDisplayName(ChatColor.of(paladinColor) + "Paladin's Breeches");
                         meta.setCustomModelData(5);
                     }
-                    case Warrior -> {
+                    case WARRIOR -> {
                         meta.setDisplayName(ChatColor.of(warriorColor) + "Warrior's Breeches");
                         meta.setCustomModelData(6);
                     }
-                    case Assassin -> {
+                    case ASSASSIN -> {
                         meta.setDisplayName(ChatColor.of(assassinColor) + "Assassin's Breeches");
                         meta.setCustomModelData(6);
                     }
@@ -371,31 +371,31 @@ public class MysticaEquipment extends MysticaItem{
             }
             case BOOTS -> {
                 switch (playerClass){
-                    case Elementalist -> {
+                    case ELEMENTALIST -> {
                         meta.setDisplayName(ChatColor.of(elementalistColor) + "Elementalist's Boots");
                         meta.setCustomModelData(1);
                     }
-                    case Ranger -> {
+                    case RANGER -> {
                         meta.setDisplayName(ChatColor.of(rangerColor) + "Ranger's Boots");
                         meta.setCustomModelData(2);
                     }
-                    case Mystic -> {
+                    case MYSTIC -> {
                         meta.setDisplayName(ChatColor.of(mysticColor) + "Mystic's Boots");
                         meta.setCustomModelData(3);
                     }
-                    case Shadow_Knight -> {
+                    case SHADOW_KNIGHT -> {
                         meta.setDisplayName(ChatColor.of(shadowKnightColor) + "Shadow Knight's Boots");
                         meta.setCustomModelData(4);
                     }
-                    case Paladin -> {
+                    case PALADIN -> {
                         meta.setDisplayName(ChatColor.of(paladinColor) + "Paladin's Boots");
                         meta.setCustomModelData(5);
                     }
-                    case Warrior -> {
+                    case WARRIOR -> {
                         meta.setDisplayName(ChatColor.of(warriorColor) + "Warrior's Boots");
                         meta.setCustomModelData(6);
                     }
-                    case Assassin -> {
+                    case ASSASSIN -> {
                         meta.setDisplayName(ChatColor.of(assassinColor) + "Assassin's Boots");
                         meta.setCustomModelData(7);
                     }

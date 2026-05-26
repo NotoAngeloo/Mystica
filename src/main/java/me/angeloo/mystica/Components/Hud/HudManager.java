@@ -2,6 +2,7 @@ package me.angeloo.mystica.Components.Hud;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.CombatSystem.GravestoneManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Components.EntityBehavior.AggroManager;
@@ -13,7 +14,6 @@ import me.angeloo.mystica.Components.ProfileComponents.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.BossManager;
-import me.angeloo.mystica.Utility.Enums.PlayerClass;
 import me.angeloo.mystica.Utility.Enums.SubClass;
 import me.angeloo.mystica.Utility.Logic.DamageBoardPlaceholders;
 import me.angeloo.mystica.Utility.TextRenderer.LayoutEngine;
@@ -564,25 +564,25 @@ public class HudManager {
                 Profile profile = profileManager.getAnyProfile(player);
 
                 switch (profile.getPlayerClass()){
-                    case Elementalist -> {
+                    case ELEMENTALIST -> {
                         builder.append(getElementalistResource(player));
                     }
-                    case Mystic -> {
+                    case MYSTIC -> {
                         builder.append(getMysticResourceBar(player));
                     }
-                    case Ranger -> {
+                    case RANGER -> {
                         builder.append(getRangerResourceBar(player));
                     }
-                    case Warrior -> {
+                    case WARRIOR -> {
                         builder.append(getWarriorResourceBar(player));
                     }
-                    case Paladin -> {
+                    case PALADIN -> {
                         builder.append(getPaladinResourceBar(player));
                     }
-                    case Shadow_Knight -> {
+                    case SHADOW_KNIGHT -> {
                         builder.append(getShadowKnightResourceBar(player));
                     }
-                    case Assassin -> {
+                    case ASSASSIN -> {
                         builder.append(getAssassinResourceBar(player));
                     }
                 }
@@ -1710,38 +1710,38 @@ public class HudManager {
         PlayerClass playerClass = profileManager.getAnyProfile(entity).getPlayerClass();
 
         switch (playerClass) {
-            case Assassin -> {
+            case ASSASSIN -> {
                 builder0.append(ChatColor.of(assassinColor));
                 builder1.append(ChatColor.of(assassinColor));
                 builder2.append(ChatColor.of(assassinColor));
             }
-            case Elementalist -> {
+            case ELEMENTALIST -> {
                 builder0.append(ChatColor.of(elementalistColor));
                 builder1.append(ChatColor.of(elementalistColor));
                 builder2.append(ChatColor.of(elementalistColor));
             }
-            case Ranger -> {
+            case RANGER -> {
                 builder0.append(ChatColor.of(rangerColor));
                 builder1.append(ChatColor.of(rangerColor));
                 builder2.append(ChatColor.of(rangerColor));
             }
-            case Paladin -> {
+            case PALADIN -> {
                 builder0.append(ChatColor.of(paladinColor));
                 builder1.append(ChatColor.of(paladinColor));
                 builder2.append(ChatColor.of(paladinColor));
             }
-            case Warrior -> {
+            case WARRIOR -> {
                 builder0.append(ChatColor.of(warriorColor));
                 builder1.append(ChatColor.of(warriorColor));
                 builder2.append(ChatColor.of(warriorColor));
             }
-            case Shadow_Knight -> {
+            case SHADOW_KNIGHT -> {
                 builder0.append(ChatColor.of(shadowKnightColor));
                 builder1.append(ChatColor.of(shadowKnightColor));
                 builder2.append(ChatColor.of(shadowKnightColor));
 
             }
-            case Mystic -> {
+            case MYSTIC -> {
                 builder0.append(ChatColor.of(mysticColor));
                 builder1.append(ChatColor.of(mysticColor));
                 builder2.append(ChatColor.of(mysticColor));

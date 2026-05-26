@@ -192,7 +192,7 @@ public class InventoryEventListener implements Listener {
             }
 
             if(skillSlots.contains(slot)){
-                abilityInventory.openAbilityInventory(player, -1);
+                //abilityInventory.openAbilityInventory(player, -1);
                 return;
             }
 

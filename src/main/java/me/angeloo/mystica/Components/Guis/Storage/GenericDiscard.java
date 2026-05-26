@@ -23,7 +23,7 @@ import java.util.*;
 
 public class GenericDiscard implements Listener {
 
-    private final ProfileManager profileManager;
+    /*private final ProfileManager profileManager;
     private final BagEquipmentFunctions bagEquipmentFunctions;
     private final CustomInventoryManager inventoryManager;
 
@@ -202,5 +202,5 @@ public class GenericDiscard implements Listener {
         }
 
         return MysticaItemFormat.OTHER;
-    }
+    }*/
 }

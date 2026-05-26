@@ -6,13 +6,12 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityResolver;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
-import me.angeloo.mystica.Components.CombatSystem.DeathManager;
 import me.angeloo.mystica.Components.CombatSystem.FakePlayerTargetManager;
 import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.Enums.Role;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.Role;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -391,14 +390,14 @@ public class FakePlayerAiManager {
         //cautious means will not jump towards enemy
         boolean aggressive = !getIfCautious(companion);
 
-        var ult = resolver.resolveUltimate(SubClass.Templar);
-        var judgement = resolver.resolve(PlayerClass.PALADIN, SubClass.Templar, 8);
-        var shield = resolver.resolve(PlayerClass.PALADIN, SubClass.Templar, 5);
-        var glory = resolver.resolve(PlayerClass.PALADIN, SubClass.Templar, 6);
-        var torah = resolver.resolve(PlayerClass.PALADIN, SubClass.Templar, 1);
-        var reigning = resolver.resolve(PlayerClass.PALADIN, SubClass.Templar, 3);
-        var guidance = resolver.resolve(PlayerClass.PALADIN, SubClass.Templar, 2);
-        var durance = resolver.resolve(PlayerClass.PALADIN, SubClass.Templar, 7);
+        var ult = resolver.resolveUltimate(SubClass.TEMPLAR);
+        var judgement = resolver.resolve(PlayerClass.PALADIN, SubClass.TEMPLAR, 8);
+        var shield = resolver.resolve(PlayerClass.PALADIN, SubClass.TEMPLAR, 5);
+        var glory = resolver.resolve(PlayerClass.PALADIN, SubClass.TEMPLAR, 6);
+        var torah = resolver.resolve(PlayerClass.PALADIN, SubClass.TEMPLAR, 1);
+        var reigning = resolver.resolve(PlayerClass.PALADIN, SubClass.TEMPLAR, 3);
+        var guidance = resolver.resolve(PlayerClass.PALADIN, SubClass.TEMPLAR, 2);
+        var durance = resolver.resolve(PlayerClass.PALADIN, SubClass.TEMPLAR, 7);
 
         return List.of(
 
@@ -467,14 +466,14 @@ public class FakePlayerAiManager {
 
         boolean cryBuff = statusEffectManager.hasEffect(companion, "rallying_cry");
 
-        var ult = resolver.resolveUltimate(SubClass.Tamer);
-        var shadowCrows = resolver.resolve(PlayerClass.RANGER, SubClass.Tamer, 2);
-        var wildSpirit = resolver.resolve(PlayerClass.RANGER, SubClass.Tamer, 7);
-        var rallyingCry = resolver.resolve(PlayerClass.RANGER, SubClass.Tamer,6);
-        var relentless = resolver.resolve(PlayerClass.RANGER, SubClass.Tamer, 3);
-        var razorWind = resolver.resolve(PlayerClass.RANGER, SubClass.Tamer, 4);
-        var blessedArrow = resolver.resolve(PlayerClass.RANGER, SubClass.Tamer, 5);
-        var bitingRain = resolver.resolve(PlayerClass.RANGER, SubClass.Tamer, 1);
+        var ult = resolver.resolveUltimate(SubClass.TAMER);
+        var shadowCrows = resolver.resolve(PlayerClass.RANGER, SubClass.TAMER, 2);
+        var wildSpirit = resolver.resolve(PlayerClass.RANGER, SubClass.TAMER, 7);
+        var rallyingCry = resolver.resolve(PlayerClass.RANGER, SubClass.TAMER,6);
+        var relentless = resolver.resolve(PlayerClass.RANGER, SubClass.TAMER, 3);
+        var razorWind = resolver.resolve(PlayerClass.RANGER, SubClass.TAMER, 4);
+        var blessedArrow = resolver.resolve(PlayerClass.RANGER, SubClass.TAMER, 5);
+        var bitingRain = resolver.resolve(PlayerClass.RANGER, SubClass.TAMER, 1);
 
         return List.of(
 
@@ -549,14 +548,14 @@ public class FakePlayerAiManager {
         int heat = abilityManager.getHeat().getHeat(companion);
         boolean breathBuff = statusEffectManager.hasEffect(companion, "elemental_breath");
 
-        var ult = resolver.resolveUltimate(SubClass.Conjurer);
-        var elementalBreath = resolver.resolve(PlayerClass.ELEMENTALIST, SubClass.Conjurer, 7);
-        var elementalMatrix = resolver.resolve(PlayerClass.ELEMENTALIST,SubClass.Conjurer, 8);
-        var iceBolt = resolver.resolve(PlayerClass.ELEMENTALIST, SubClass.Conjurer, 1);
-        var descendingInferno = resolver.resolve(PlayerClass.ELEMENTALIST, SubClass.Conjurer, 3);
-        var fieryMagma = resolver.resolve(PlayerClass.ELEMENTALIST, SubClass.Conjurer, 2);
-        var dragonBreathing = resolver.resolve(PlayerClass.ELEMENTALIST, SubClass.Conjurer, 6);
-        var windWall = resolver.resolve(PlayerClass.ELEMENTALIST, SubClass.Conjurer, 5);
+        var ult = resolver.resolveUltimate(SubClass.CONJURER);
+        var elementalBreath = resolver.resolve(PlayerClass.ELEMENTALIST, SubClass.CONJURER, 7);
+        var elementalMatrix = resolver.resolve(PlayerClass.ELEMENTALIST,SubClass.CONJURER, 8);
+        var iceBolt = resolver.resolve(PlayerClass.ELEMENTALIST, SubClass.CONJURER, 1);
+        var descendingInferno = resolver.resolve(PlayerClass.ELEMENTALIST, SubClass.CONJURER, 3);
+        var fieryMagma = resolver.resolve(PlayerClass.ELEMENTALIST, SubClass.CONJURER, 2);
+        var dragonBreathing = resolver.resolve(PlayerClass.ELEMENTALIST, SubClass.CONJURER, 6);
+        var windWall = resolver.resolve(PlayerClass.ELEMENTALIST, SubClass.CONJURER, 5);
 
         return List.of(
 
@@ -626,13 +625,13 @@ public class FakePlayerAiManager {
         boolean aggressive = !getIfCautious(companion);
         boolean needsInterrupt = getIfNeedToInterrupt(companion);
 
-        var ult = resolver.resolveUltimate(SubClass.Executioner);
-        var meteorCrater = resolver.resolve(PlayerClass.WARRIOR, SubClass.Executioner, 4);
-        var flamingSigil = resolver.resolve(PlayerClass.WARRIOR, SubClass.Executioner, 6);
-        var tempestRage = resolver.resolve(PlayerClass.WARRIOR, SubClass.Executioner, 3);
-        var lavaQuake = resolver.resolve(PlayerClass.WARRIOR, SubClass.Executioner, 1);
-        var magmaSpikes = resolver.resolve(PlayerClass.WARRIOR, SubClass.Executioner, 7);
-        var anvilDrop = resolver.resolve(PlayerClass.WARRIOR, SubClass.Executioner, 5);
+        var ult = resolver.resolveUltimate(SubClass.EXECUTIONER);
+        var meteorCrater = resolver.resolve(PlayerClass.WARRIOR, SubClass.EXECUTIONER, 4);
+        var flamingSigil = resolver.resolve(PlayerClass.WARRIOR, SubClass.EXECUTIONER, 6);
+        var tempestRage = resolver.resolve(PlayerClass.WARRIOR, SubClass.EXECUTIONER, 3);
+        var lavaQuake = resolver.resolve(PlayerClass.WARRIOR, SubClass.EXECUTIONER, 1);
+        var magmaSpikes = resolver.resolve(PlayerClass.WARRIOR, SubClass.EXECUTIONER, 7);
+        var anvilDrop = resolver.resolve(PlayerClass.WARRIOR, SubClass.EXECUTIONER, 5);
 
         return List.of(
 
@@ -700,7 +699,7 @@ public class FakePlayerAiManager {
             var profile = profileManager.getAnyProfile(member);
 
             if (profile.getIfDead()) {
-                if (reviveCalc == null && (getRole(member) == Role.Tank || member instanceof Player)) {
+                if (reviveCalc == null && profileManager.getAnyProfile(member).getPlayerSubclass().getRole().equals(Role.TANK) || member instanceof Player) {
                     reviveCalc = member;
                 }
                 continue;
@@ -729,12 +728,12 @@ public class FakePlayerAiManager {
 
         boolean instantBlast = statusEffectManager.hasEffect(companion, "instant_blast");
 
-        var ult = resolver.resolveUltimate(SubClass.Shepard);
-        var arcaneContract = resolver.resolve(PlayerClass.MYSTIC, SubClass.Shepard, 7);
-        var purifyingBlast = resolver.resolve(PlayerClass.MYSTIC, SubClass.Shepard, 2);
-        var aurora = resolver.resolve(PlayerClass.MYSTIC, SubClass.Shepard, 6);
-        var arcaneShield = resolver.resolve(PlayerClass.MYSTIC, SubClass.Shepard, 1);
-        var lightSigil = resolver.resolve(PlayerClass.MYSTIC, SubClass.Shepard, 8);
+        var ult = resolver.resolveUltimate(SubClass.SHEPARD);
+        var arcaneContract = resolver.resolve(PlayerClass.MYSTIC, SubClass.SHEPARD, 7);
+        var purifyingBlast = resolver.resolve(PlayerClass.MYSTIC, SubClass.SHEPARD, 2);
+        var aurora = resolver.resolve(PlayerClass.MYSTIC, SubClass.SHEPARD, 6);
+        var arcaneShield = resolver.resolve(PlayerClass.MYSTIC, SubClass.SHEPARD, 1);
+        var lightSigil = resolver.resolve(PlayerClass.MYSTIC, SubClass.SHEPARD, 8);
 
 
         LivingEntity toRevive = reviveCalc;
@@ -822,22 +821,6 @@ public class FakePlayerAiManager {
         return cautionMap.getOrDefault(entity.getUniqueId(), false);
     }
 
-    private Role getRole(LivingEntity partyMember){
 
-        SubClass subClass = profileManager.getAnyProfile(partyMember).getPlayerSubclass();
-
-        switch (subClass){
-            case Shepard, Divine -> {
-                return Role.Healer;
-            }
-            case Gladiator, Blood, Templar ->{
-                return Role.Tank;
-            }
-            default -> {
-                return Role.Damage;
-            }
-        }
-
-    }
 
 }

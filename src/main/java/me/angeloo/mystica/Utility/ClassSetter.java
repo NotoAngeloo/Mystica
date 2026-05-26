@@ -3,13 +3,15 @@ package me.angeloo.mystica.Utility;
 import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.Items.MysticaEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.Profile;
+import me.angeloo.mystica.Components.ProfileComponents.StatCalculator;
+import me.angeloo.mystica.Components.ProfileComponents.Stats;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 
 import me.angeloo.mystica.CustomEvents.MaxHealthChangeOutOfCombatEvent;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Enums.BarType;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import org.bukkit.Bukkit;
 
 import org.bukkit.entity.Player;
@@ -18,11 +20,13 @@ import org.bukkit.entity.Player;
 
 public class ClassSetter {
 
+    private final StatCalculator statCalculator;
     private final ProfileManager profileManager;
     private final DisplayWeapons displayWeapons;
     private final GearReader gearReader;
 
     public ClassSetter(Mystica main){
+        statCalculator = main.getStatCalculator();
         profileManager = main.getProfileManager();
         displayWeapons = main.getDisplayWeapons();
         gearReader = new GearReader(main);
@@ -41,8 +45,11 @@ public class ClassSetter {
 
         playerProfile.setPlayerClass(playerClass);
 
-        playerProfile.setPlayerSubclass(SubClass.NONE);
-        profileManager.getAnyProfile(player).getStats().setLevelStats(profileManager.getAnyProfile(player).getStats().getLevel(), playerClass, SubClass.NONE);
+        playerProfile.setPlayerSubclass(null);
+        //Stats stats = profileManager.getAnyProfile(player).getStats();
+        Stats stats = statCalculator.calculate(profileManager.getAnyProfile(player).getStats().getLevel(), playerClass, null);
+        profileManager.getAnyProfile(player).setStats(stats);
+        //profileManager.getAnyProfile(player).getStats().setLevelStats(profileManager.getAnyProfile(player).getStats().getLevel(), playerClass, null);
         player.sendMessage("You are now a(n) " + playerClass.name());
 
 

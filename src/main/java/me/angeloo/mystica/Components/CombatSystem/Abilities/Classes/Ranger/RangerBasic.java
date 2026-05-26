@@ -15,7 +15,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -222,7 +222,7 @@ public class RangerBasic implements BasicAttackDefinition {
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        boolean scout = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Scout);
+        boolean scout = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.SCOUT);
         boolean active = statusEffectManager.hasEffect(caster, "rallying_cry");
 
         double crit_bonus = 0;

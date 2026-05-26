@@ -1,11 +1,12 @@
 package me.angeloo.mystica.Utility.DamageUtils;
 
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.CombatSystem.Classes.Role;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Components.ProfileComponents.Profile;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -55,9 +56,7 @@ public class DamageCalculator {
         double multiplierForHealerBonus = 1;
 
 
-
-        if(profileManager.getAnyProfile(healer).getPlayerSubclass().equals(SubClass.Shepard)
-        || profileManager.getAnyProfile(healer).getPlayerSubclass().equals(SubClass.Divine)){
+        if(profileManager.getAnyProfile(healer).getPlayerSubclass().getRole().equals(Role.HEALER)){
             multiplierForHealerBonus = 1.2;
         }
 

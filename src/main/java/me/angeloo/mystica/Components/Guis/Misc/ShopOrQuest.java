@@ -26,7 +26,7 @@ import java.util.*;
 
 public class ShopOrQuest implements Listener {
 
-    private final ProfileManager profileManager;
+    /*private final ProfileManager profileManager;
     private final CustomInventoryManager customInventoryManager;
     private final EquipmentUpgradeManager equipmentUpgradeManager;
     private final QuestAcceptInventory questAcceptInventory;
@@ -212,6 +212,6 @@ public class ShopOrQuest implements Listener {
 
     private MythicMob getNpc(Player player){
         return currentNpc.get(player.getUniqueId());
-    }
+    }*/
 
 }

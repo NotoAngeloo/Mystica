@@ -29,7 +29,7 @@ import java.util.*;
 
 public class QuestAcceptInventory implements Listener {
 
-    private final Mystica main;
+    /*private final Mystica main;
 
     private final ProfileManager profileManager;
 
@@ -483,6 +483,6 @@ public class QuestAcceptInventory implements Listener {
 
     public InventoryTextGenerator getTextGenerator(){
         return this.textGenerator;
-    }
+    }*/
 
 }

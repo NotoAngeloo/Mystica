@@ -7,7 +7,7 @@ import me.angeloo.mystica.CustomEvents.CompanionSpawnEvent;
 import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -84,7 +84,7 @@ public class SammingSins {
 
 
 
-        FakePlayerProfile fakePlayerProfile = new FakePlayerProfile(false, false, stats, PlayerClass.PALADIN, SubClass.Templar);
+        FakePlayerProfile fakePlayerProfile = new FakePlayerProfile(false, false, stats, PlayerClass.PALADIN, SubClass.TEMPLAR);
 
         profileManager.addToFakePlayerProfileMap(uuid, fakePlayerProfile);
         profileManager.setCompanionFaces(uuid, "salmon");

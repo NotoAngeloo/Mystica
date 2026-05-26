@@ -3,7 +3,6 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ClassSpecific.Decision;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
@@ -14,7 +13,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -76,7 +75,7 @@ public class TorahSword extends BaseAbility {
 
         execute(caster);
 
-        if(profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Dawn)){
+        if(profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.DAWN)){
             purity.add(caster, 1);
         }
 
@@ -93,7 +92,7 @@ public class TorahSword extends BaseAbility {
 
     private void execute(LivingEntity caster){
 
-        boolean dawn = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Dawn);
+        boolean dawn = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.DAWN);
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 

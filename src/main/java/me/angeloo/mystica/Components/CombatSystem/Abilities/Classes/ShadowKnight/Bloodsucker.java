@@ -13,7 +13,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
@@ -88,7 +88,7 @@ public class Bloodsucker extends BaseAbility {
 
     private void execute(LivingEntity caster){
 
-        boolean blood = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Blood);
+        boolean blood = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.BLOOD);
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
@@ -116,7 +116,7 @@ public class Bloodsucker extends BaseAbility {
 
 
         if(blood){
-            lookup.get(PlayerClass.SHADOW_KNIGHT, SubClass.Blood, -1).onExternalTrigger(caster);
+            lookup.get(PlayerClass.SHADOW_KNIGHT, SubClass.BLOOD, -1).onExternalTrigger(caster);
         }
 
 
@@ -212,7 +212,7 @@ public class Bloodsucker extends BaseAbility {
     public double getHealPercent(LivingEntity caster){
         double healAmount = (profileManager.getAnyProfile(caster).getTotalHealth()+ statusEffectManager.getHealthBuffAmount(caster)) * .05;
 
-        if(profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Blood)){
+        if(profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.BLOOD)){
             healAmount =  healAmount + (profileManager.getAnyProfile(caster).getTotalHealth() + statusEffectManager.getHealthBuffAmount(caster)) * .1;
         }
 

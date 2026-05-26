@@ -12,10 +12,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class Refine implements CommandExecutor {
 
-    private final RefineInventory refineInventory;
+    //private final RefineInventory refineInventory;
 
     public Refine(Mystica main){
-        refineInventory = main.getEquipmentUpgradeManager().getRefineInventory();
+        //refineInventory = main.getEquipmentUpgradeManager().getRefineInventory();
     }
 
     @Override
@@ -29,7 +29,7 @@ public class Refine implements CommandExecutor {
             }
 
 
-            refineInventory.openRefineInventory(player);
+            //refineInventory.openRefineInventory(player);
 
             return true;
         }

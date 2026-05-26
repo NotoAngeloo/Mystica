@@ -14,7 +14,7 @@ import me.angeloo.mystica.Components.ProfileComponents.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.BossManager;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import me.angeloo.mystica.Utility.Logic.DamageBoardPlaceholders;
 import me.angeloo.mystica.Utility.TextRenderer.LayoutEngine;
 import me.angeloo.mystica.Utility.TextRenderer.LineData;
@@ -818,7 +818,7 @@ public class HudManager {
 
         int maxCombo = 4;
 
-        if(profileManager.getAnyProfile(player).getPlayerSubclass().equals(SubClass.Duelist)){
+        if(profileManager.getAnyProfile(player).getPlayerSubclass().equals(SubClass.DUELIST)){
             maxCombo = 5;
         }
 

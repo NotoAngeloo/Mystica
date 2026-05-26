@@ -37,29 +37,29 @@ public class InventoryEventListener implements Listener {
     private final Mystica main;
 
     private final ProfileManager profileManager;
-    private final BagEquipmentFunctions bagEquipmentFunctions;
+    /*private final BagEquipmentFunctions bagEquipmentFunctions;
     private final GenericDiscard genericDiscard;
     private final InventoryItemGetter itemGetter;
     private final CustomInventoryManager inventoryManager;
     private final DungeonSelect dungeonSelect;
     private final PartyInventory partyInventory;
     private final AbilityInventory abilityInventory;
-    private final DisplayWeapons displayWeapons;
+    private final DisplayWeapons displayWeapons;*/
 
     public InventoryEventListener(Mystica main){
         this.main = main;
         profileManager = main.getProfileManager();
-        itemGetter = main.getItemGetter();
-        inventoryManager = main.getInventoryManager();
+        //itemGetter = main.getItemGetter();
+        /*inventoryManager = main.getInventoryManager();
         dungeonSelect = main.getDungeonSelect();
         partyInventory = main.getPartyInventory();
         abilityInventory = main.getAbilityInventory();
         displayWeapons = main.getDisplayWeapons();
         bagEquipmentFunctions = main.getBagEquipmentFunctions();
-        genericDiscard = main.getGenericDiscard();
+        genericDiscard = main.getGenericDiscard();*/
     }
 
-    @EventHandler
+    /*@EventHandler
     public void bagClicks(InventoryClickEvent event){
 
         if(event.getView().getTitle().equalsIgnoreCase(org.bukkit.ChatColor.WHITE + "\uF808" + "\uE05C")){
@@ -110,7 +110,7 @@ public class InventoryEventListener implements Listener {
 
         }
 
-    }
+    }*/
 
     private MysticaItemFormat getItemType(ItemStack item){
 
@@ -140,7 +140,7 @@ public class InventoryEventListener implements Listener {
         player.setItemOnCursor(null);
     }
 
-    @EventHandler
+    /*@EventHandler
     public void menuClick(InventoryClickEvent event){
 
         Inventory clickedInv = event.getClickedInventory();
@@ -229,12 +229,12 @@ public class InventoryEventListener implements Listener {
 
 
 
-    }
+    }*/
 
 
 
 
-    @EventHandler
+    /*@EventHandler
     public void guiClose(InventoryCloseEvent event){
 
         Player player = (Player) event.getPlayer();
@@ -260,9 +260,9 @@ public class InventoryEventListener implements Listener {
         },1);
 
 
-    }
+    }*/
 
-    @EventHandler
+    /*@EventHandler
     public void clickBagSlot(InventoryClickEvent event){
 
         if(!event.getView().getTitle().contains("\uE05C")){
@@ -293,7 +293,7 @@ public class InventoryEventListener implements Listener {
 
         event.setCancelled(true);
 
-    }
+    }*/
 
 
 }

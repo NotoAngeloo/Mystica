@@ -1,6 +1,5 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Warrior;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.FlamingSigilAttack;
@@ -9,7 +8,7 @@ import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectMa
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -70,8 +69,8 @@ public class FlamingSigil extends BaseAbility {
 
     private void execute(LivingEntity caster){
 
-        boolean executioner = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Executioner);
-        boolean gladiator = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Gladiator);
+        boolean executioner = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.EXECUTIONER);
+        boolean gladiator = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.GLADIATOR);
 
 
 

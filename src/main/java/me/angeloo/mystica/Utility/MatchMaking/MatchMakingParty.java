@@ -1,6 +1,6 @@
 package me.angeloo.mystica.Utility.MatchMaking;
 
-import me.angeloo.mystica.Utility.Enums.Role;
+import me.angeloo.mystica.Components.CombatSystem.Classes.Role;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class MatchMakingParty {
 
-    private final List<MatchMakingPlayer> players;
+    /*private final List<MatchMakingPlayer> players;
 
     public MatchMakingParty(List<MatchMakingPlayer> players){
         this.players = players;
@@ -53,7 +53,7 @@ public class MatchMakingParty {
 
     public boolean containsPlayer(UUID playerId) {
         return players.stream().anyMatch(p -> p.getUuid().equals(playerId));
-    }
+    }*/
 
 
 }

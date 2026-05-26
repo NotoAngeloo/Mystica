@@ -14,11 +14,11 @@ import org.jetbrains.annotations.NotNull;
 public class MysticaQuest implements CommandExecutor {
 
     private final QuestManager questManager;
-    private final QuestAcceptInventory questAcceptInventory;
+    //private final QuestAcceptInventory questAcceptInventory;
 
     public MysticaQuest(Mystica main){
         questManager = main.getQuestManager();
-        questAcceptInventory = main.getQuestAcceptInventory();
+        //questAcceptInventory = main.getQuestAcceptInventory();
     }
 
     @Override
@@ -50,7 +50,7 @@ public class MysticaQuest implements CommandExecutor {
                 return true;
             }
 
-            questAcceptInventory.openQuestAccept(player, quest);
+            //questAcceptInventory.openQuestAccept(player, quest);
 
 
         }

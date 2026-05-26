@@ -20,7 +20,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.BossManager;
 import me.angeloo.mystica.Utility.DailyData;
 import me.angeloo.mystica.Utility.Enums.BarType;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.ArmorStand;
@@ -227,7 +227,7 @@ public class ChangeResourceHandler {
             return;
         }
 
-        if(profileManager.getAnyProfile(entity).getPlayerSubclass().equals(SubClass.Divine)){
+        if(profileManager.getAnyProfile(entity).getPlayerSubclass().equals(SubClass.DIVINE)){
             addToSlot(entity, damage);
             startTask(entity);
         }
@@ -286,7 +286,7 @@ public class ChangeResourceHandler {
             return;
         }
 
-        if(profileManager.getAnyProfile(player).getPlayerSubclass().equals(SubClass.Divine)){
+        if(profileManager.getAnyProfile(player).getPlayerSubclass().equals(SubClass.DIVINE)){
             addToSlot(player, damage);
             startTask(player);
         }

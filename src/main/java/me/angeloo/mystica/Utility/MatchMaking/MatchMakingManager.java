@@ -7,7 +7,7 @@ import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Enums.Dungeon;
-import me.angeloo.mystica.Utility.Enums.Role;
+import me.angeloo.mystica.Components.CombatSystem.Classes.Role;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -19,7 +19,7 @@ import java.util.*;
 
 public class MatchMakingManager {
 
-    private final Mystica main;
+    /*private final Mystica main;
     private final ProfileManager profileManager;
     private final CustomInventoryManager customInventoryManager;
     private final MysticaPartyManager mysticaPartyManager;
@@ -176,7 +176,7 @@ public class MatchMakingManager {
                 //temp comment
                 /*if(!Mystica.dungeonsApi().isPlayerInDungeon(leaderPlayer)){
                     return;
-                }*/
+                }
 
                 if(count<1){
                     count++;
@@ -261,7 +261,7 @@ public class MatchMakingManager {
         }.runTaskTimer(main, 0, 20);
 
 
-    }
+    }*/
 
 
 

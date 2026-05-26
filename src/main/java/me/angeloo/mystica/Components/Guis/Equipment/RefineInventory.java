@@ -30,9 +30,9 @@ import java.util.Set;
 
 public class RefineInventory implements Listener {
 
-    private final ProfileManager profileManager;
+    /*private final ProfileManager profileManager;
     private final EquipmentUpgradeManager manager;
-    private final CustomInventoryManager inventoryManager;
+    //private final CustomInventoryManager inventoryManager;
     private final StringRenderer stringRenderer;
     private final LayoutEngine layoutEngine;
 
@@ -40,7 +40,7 @@ public class RefineInventory implements Listener {
     public RefineInventory(Mystica main, EquipmentUpgradeManager manager){
         profileManager = main.getProfileManager();
         this.manager = manager;
-        inventoryManager = main.getInventoryManager();
+        //inventoryManager = main.getInventoryManager();
         layoutEngine = main.getLayoutEngine();
         stringRenderer = main.getStringRenderer();
     }
@@ -80,7 +80,7 @@ public class RefineInventory implements Listener {
 
         profileManager.getAnyProfile(player).getMysticaBagCollection().getBag(inventoryManager.getBagIndex(player)).displayBagItems(player);
 
-        inventoryManager.setEnhancementTypeIndex(player, EquipmentEnhancementType.Refine);*/
+        inventoryManager.setEnhancementTypeIndex(player, EquipmentEnhancementType.Refine);
     }
 
     @EventHandler
@@ -315,7 +315,7 @@ public class RefineInventory implements Listener {
 
         return tier * 2;
 
-    }
+    }*/
 
 
 

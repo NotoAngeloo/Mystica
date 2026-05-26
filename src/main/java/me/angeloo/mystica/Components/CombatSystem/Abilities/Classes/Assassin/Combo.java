@@ -1,12 +1,10 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Assassin;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Enums.BarType;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -31,7 +29,7 @@ public class Combo {
 
         int max = 4;
 
-        if(profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Duelist)){
+        if(profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.DUELIST)){
             max = 5;
         }
 

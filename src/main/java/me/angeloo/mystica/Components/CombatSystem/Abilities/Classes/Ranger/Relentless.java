@@ -15,7 +15,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -97,7 +97,7 @@ public class Relentless extends BaseAbility {
 
     private void execute(LivingEntity caster){
 
-        boolean scout = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Scout);
+        boolean scout = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.SCOUT);
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
@@ -209,7 +209,7 @@ public class Relentless extends BaseAbility {
                             boolean crit = damageCalculator.checkIfCrit(caster, 0);
 
                             if(scout && crit){
-                                lookup.get(PlayerClass.RANGER,SubClass.Scout,-1).onExternalTrigger(caster);
+                                lookup.get(PlayerClass.RANGER,SubClass.SCOUT,-1).onExternalTrigger(caster);
                                 statusEffectManager.applyEffect(caster, new Haste(), 2*20, 0.1, caster);
                             }
 

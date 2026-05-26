@@ -27,7 +27,7 @@ import java.util.Set;
 
 public class IdentifyInventory implements Listener {
 
-    private final ProfileManager profileManager;
+    /*private final ProfileManager profileManager;
     private final EquipmentUpgradeManager manager;
     private final CustomInventoryManager inventoryManager;
 
@@ -234,7 +234,7 @@ public class IdentifyInventory implements Listener {
         int level = item.getLevel();
 
         return level * ((tier * 3) - 2);
-    }
+    }*/
 
 
 

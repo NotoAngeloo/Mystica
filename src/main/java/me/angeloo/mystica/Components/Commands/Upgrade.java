@@ -11,10 +11,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class Upgrade implements CommandExecutor {
 
-    private final UpgradeInventory upgradeInventory;
+    //private final UpgradeInventory upgradeInventory;
 
     public Upgrade(Mystica main){
-        upgradeInventory = main.getEquipmentUpgradeManager().getUpgradeInventory();
+        //upgradeInventory = main.getEquipmentUpgradeManager().getUpgradeInventory();
     }
 
     @Override
@@ -27,7 +27,7 @@ public class Upgrade implements CommandExecutor {
                 return true;
             }
 
-            upgradeInventory.openUpgradeInventory(player);
+            //upgradeInventory.openUpgradeInventory(player);
 
 
             return true;
@@ -47,7 +47,7 @@ public class Upgrade implements CommandExecutor {
                 return true;
             }
 
-            upgradeInventory.openUpgradeInventory(player);
+            //upgradeInventory.openUpgradeInventory(player);
             return true;
         }
 

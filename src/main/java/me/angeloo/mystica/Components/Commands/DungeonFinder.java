@@ -11,10 +11,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class DungeonFinder implements CommandExecutor {
 
-    private final DungeonSelect dungeonSelect;
+    //private final DungeonSelect dungeonSelect;
 
     public DungeonFinder(Mystica main){
-        dungeonSelect = main.getDungeonSelect();
+        //dungeonSelect = main.getDungeonSelect();
     }
 
     @Override
@@ -29,7 +29,7 @@ public class DungeonFinder implements CommandExecutor {
 
             Player player = (Player) sender;
 
-            dungeonSelect.openDungeonSelect(player);
+            //dungeonSelect.openDungeonSelect(player);
 
             return true;
         }
@@ -48,7 +48,7 @@ public class DungeonFinder implements CommandExecutor {
                 return true;
             }
 
-            dungeonSelect.openDungeonSelect(player);
+            //dungeonSelect.openDungeonSelect(player);
             return true;
         }
 

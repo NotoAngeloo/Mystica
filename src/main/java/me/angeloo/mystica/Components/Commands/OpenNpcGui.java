@@ -16,11 +16,11 @@ import java.util.UUID;
 
 public class OpenNpcGui implements CommandExecutor {
 
-    private final ShopOrQuest shopOrQuest;
+    //private final ShopOrQuest shopOrQuest;
 
 
     public OpenNpcGui(Mystica main){
-        shopOrQuest = main.getShopOrQuest();
+        //shopOrQuest = main.getShopOrQuest();
     }
 
     @Override
@@ -44,7 +44,7 @@ public class OpenNpcGui implements CommandExecutor {
 
             MythicMob mob = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(entity).getType();
 
-            shopOrQuest.open(player, mob);
+            //shopOrQuest.open(player, mob);
 
             //Bukkit.getLogger().info(String.valueOf(mob));
 

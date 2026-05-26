@@ -16,7 +16,7 @@ import me.angeloo.mystica.Utility.BossManager;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -207,7 +207,7 @@ public class DragonBreathing extends BaseAbility {
                             hitBySkill.add(livingEntity);
 
                             if(!inflamed){
-                                lookup.get(PlayerClass.ELEMENTALIST, SubClass.Pyromancer, -1).onExternalTrigger(caster);
+                                lookup.get(PlayerClass.ELEMENTALIST, SubClass.PYROMANCER, -1).onExternalTrigger(caster);
                                 inflamed = true;
                             }
 

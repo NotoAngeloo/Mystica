@@ -15,24 +15,20 @@ import me.angeloo.mystica.Utility.BossManager;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
-
-import java.util.*;
 
 public class FieryMagma extends BaseAbility {
 
@@ -155,7 +151,7 @@ public class FieryMagma extends BaseAbility {
 
                 if (distance <= 1) {
 
-                    lookup.get(PlayerClass.ELEMENTALIST, SubClass.Pyromancer, -1).onExternalTrigger(caster);
+                    lookup.get(PlayerClass.ELEMENTALIST, SubClass.PYROMANCER, -1).onExternalTrigger(caster);
 
                     cancelTask();
 

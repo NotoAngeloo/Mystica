@@ -5,11 +5,12 @@ import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.S
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.ArmorBreak;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.Immune;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.CombatSystem.Classes.Role;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -91,13 +92,11 @@ public class MysticaEffect implements CommandExecutor {
                     SubClass subclass = profileManager.getAnyProfile(target).getPlayerSubclass();
 
 
-                    if (subclass.equals(SubClass.Gladiator)
-                            || subclass.equals(SubClass.Templar)
-                            || subclass.equals(SubClass.Blood)) {
+                    if (subclass.getRole().equals(Role.TANK)) {
                         crushThreshold -= 100;
                     }
 
-                    if (subclass.equals(SubClass.Executioner)) {
+                    if (subclass.equals(SubClass.EXECUTIONER)) {
                         crushThreshold -= 50;
                     }
 

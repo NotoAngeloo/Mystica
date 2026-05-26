@@ -4,8 +4,6 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnigh
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ClassSpecific.Inflame;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ClassSpecific.Soul_Mark;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Root;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
@@ -13,14 +11,12 @@ import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Components.Hud.BossCastingManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
-import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
-import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -101,7 +97,7 @@ public class SoulReap extends BaseAbility {
 
     private void execute(LivingEntity caster){
 
-        boolean doom = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Doom);
+        boolean doom = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.DOOM);
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
@@ -327,7 +323,7 @@ public class SoulReap extends BaseAbility {
 
     private void addSoulMark(LivingEntity caster){
 
-        if(!profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Doom)){
+        if(!profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.DOOM)){
             return;
         }
 

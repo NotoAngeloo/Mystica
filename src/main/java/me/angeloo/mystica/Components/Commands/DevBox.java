@@ -16,10 +16,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class DevBox implements CommandExecutor {
 
-    private final DevBoxInventory devBoxInventory;
+    //private final DevBoxInventory devBoxInventory;
 
     public DevBox(Mystica main){
-        devBoxInventory = main.getDevBoxInventory();
+        //devBoxInventory = main.getDevBoxInventory();
     }
 
     @Override
@@ -32,7 +32,7 @@ public class DevBox implements CommandExecutor {
                 return true;
             }
 
-            devBoxInventory.open(player);
+            //devBoxInventory.open(player);
             return true;
         }
 
@@ -51,7 +51,7 @@ public class DevBox implements CommandExecutor {
             }
 
 
-            devBoxInventory.open(player);
+           // devBoxInventory.open(player);
             return true;
         }
 

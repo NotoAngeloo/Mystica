@@ -14,7 +14,7 @@ import me.angeloo.mystica.Utility.BossManager;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -211,7 +211,7 @@ public class Annihilation extends BaseAbility {
                 double damage = damageCalculator.calculateDamage(caster, target, DamageType.Magical, finalSkillDamage, crit, 0);
                 Bukkit.getServer().getPluginManager().callEvent(new SkillOnEnemyEvent(target, caster));
                 changeResourceHandler.subtractHealthFromEntity(target, damage, caster, crit);
-                lookup.get(PlayerClass.SHADOW_KNIGHT, SubClass.Doom, 1).onExternalTrigger(caster, target);
+                lookup.get(PlayerClass.SHADOW_KNIGHT, SubClass.DOOM, 1).onExternalTrigger(caster, target);
             }
 
         }.runTaskTimer(main, 0, 1);

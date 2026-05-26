@@ -22,7 +22,7 @@ import java.util.Set;
 
 public class DungeonSelect implements Listener {
 
-    private final ProfileManager profileManager;
+    /*private final ProfileManager profileManager;
     private final InventoryTextGenerator textGenerator;
     private final DisplayWeapons displayWeapons;
     private final CustomInventoryManager customInventoryManager;
@@ -84,7 +84,7 @@ public class DungeonSelect implements Listener {
 
         inv.setItem(41, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
         inv.setItem(42, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
-        inv.setItem(43, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));*/
+        inv.setItem(43, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
 
 
         player.openInventory(inv);
@@ -97,7 +97,7 @@ public class DungeonSelect implements Listener {
         player.getInventory().setItem(22, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
 
         player.getInventory().setItem(0, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
-        player.getInventory().setItem(8, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));*/
+        player.getInventory().setItem(8, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
     }
 
     private void openDungeonNotice(Player player){
@@ -137,7 +137,7 @@ public class DungeonSelect implements Listener {
 
         inv.setItem(41, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
         inv.setItem(42, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
-        inv.setItem(43, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));*/
+        inv.setItem(43, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
 
 
         player.openInventory(inv);
@@ -304,7 +304,7 @@ public class DungeonSelect implements Listener {
 
         }
 
-    }
+    }*/
 
 
 }

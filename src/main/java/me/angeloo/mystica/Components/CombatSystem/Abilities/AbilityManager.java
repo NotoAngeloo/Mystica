@@ -19,7 +19,7 @@ import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Enums.BarType;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -103,6 +103,7 @@ public class AbilityManager {
 
         PlayerClass clazz = playerProfile.getPlayerClass();
         SubClass subClass = playerProfile.getPlayerSubclass();
+
 
         Ability ability = abilityResolver.resolve(clazz, subClass, abilityNumber);
 

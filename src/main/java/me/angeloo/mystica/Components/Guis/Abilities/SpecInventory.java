@@ -1,31 +1,6 @@
 package me.angeloo.mystica.Components.Guis.Abilities;
 
-import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
-import me.angeloo.mystica.Components.ProfileComponents.Profile;
-import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
-import me.angeloo.mystica.CustomEvents.MaxHealthChangeOutOfCombatEvent;
-import me.angeloo.mystica.Utility.DisplayWeapons;
-import me.angeloo.mystica.Utility.Enums.BarType;
-import me.angeloo.mystica.Utility.InventoryItemGetter;
-import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
-import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.Enums.SubClass;
-import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
-
-import static me.angeloo.mystica.Mystica.*;
 
 public class SpecInventory implements Listener {
 

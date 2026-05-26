@@ -26,7 +26,7 @@ import java.util.*;
 
 public class UpgradeInventory implements Listener {
 
-    private final ProfileManager profileManager;
+    /*private final ProfileManager profileManager;
     private final EquipmentUpgradeManager manager;
     private final CustomInventoryManager inventoryManager;
 
@@ -290,7 +290,7 @@ public class UpgradeInventory implements Listener {
 
         }
 
-    }
+    }*/
 
 
 }

@@ -3,7 +3,6 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Elementalis
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -13,7 +12,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -100,7 +99,7 @@ public class IceBolt extends BaseAbility {
 
         heat.reduceHeat(caster, 8);
 
-        boolean conjurer = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Conjurer);
+        boolean conjurer = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.CONJURER);
 
         boolean breathActive = statusEffectManager.hasEffect(caster, "elemental_breath");
 

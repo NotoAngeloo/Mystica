@@ -3,8 +3,8 @@ package me.angeloo.mystica.Components.Guis;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Enums.EquipmentEnhancementType;
-import me.angeloo.mystica.Utility.Enums.Role;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.Role;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class CustomInventoryManager {
 
-    private final ProfileManager profileManager;
+    /*private final ProfileManager profileManager;
     private final InventoryTextGenerator textGenerator;
     private final Map<UUID, EquipmentEnhancementType> enhancementTypeIndex = new HashMap<>();
     private final Map<UUID, Integer> bagIndex = new HashMap<>();
@@ -160,6 +160,6 @@ public class CustomInventoryManager {
         }
 
         return enhancementTypeIndex.get(player.getUniqueId());
-    }
+    }*/
 
 }

@@ -33,7 +33,7 @@ import java.util.Set;
 
 public class BagEquipmentFunctions implements Listener {
 
-    private final ProfileManager profileManager;
+    /*private final ProfileManager profileManager;
     private final CustomInventoryManager inventoryManager;
     private final DisplayWeapons displayWeapons;
     private final CustomInventoryManager customInventoryManager;
@@ -244,7 +244,7 @@ public class BagEquipmentFunctions implements Listener {
                 assert meta != null;
                 String json = meta.getPersistentDataContainer().get(key, PersistentDataType.STRING);
                 Gson gson = new Gson();
-                MysticaEquipment equipment = gson.fromJson(json, MysticaEquipment.class);*/
+                MysticaEquipment equipment = gson.fromJson(json, MysticaEquipment.class);
 
                 PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
@@ -294,6 +294,7 @@ public class BagEquipmentFunctions implements Listener {
         }
 
     }
+     */
 
 
 }

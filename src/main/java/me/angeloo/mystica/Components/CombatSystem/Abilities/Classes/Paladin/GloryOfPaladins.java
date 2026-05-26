@@ -3,7 +3,6 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Paladin;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ClassSpecific.Glory_Of_Paladins;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -11,7 +10,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -53,7 +52,7 @@ public class GloryOfPaladins extends BaseAbility {
 
         execute(caster);
 
-        if(profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Dawn)){
+        if(profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.DAWN)){
             purity.add(caster, 6);
         }
 

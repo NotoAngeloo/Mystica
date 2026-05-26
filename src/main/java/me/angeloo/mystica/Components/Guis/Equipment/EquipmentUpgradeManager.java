@@ -4,7 +4,7 @@ import me.angeloo.mystica.Mystica;
 
 public class EquipmentUpgradeManager {
 
-    private final IdentifyInventory identifyInventory;
+    /*private final IdentifyInventory identifyInventory;
     private final ReforgeInventory reforgeInventory;
     private final RefineInventory refineInventory;
     private final UpgradeInventory upgradeInventory;
@@ -31,5 +31,5 @@ public class EquipmentUpgradeManager {
 
     public UpgradeInventory getUpgradeInventory() {
         return upgradeInventory;
-    }
+    }*/
 }

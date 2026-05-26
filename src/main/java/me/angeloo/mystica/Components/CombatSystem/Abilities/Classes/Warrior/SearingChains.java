@@ -14,7 +14,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -127,7 +127,7 @@ public class SearingChains extends BaseAbility {
         }
 
         //later add the talent tree
-        boolean taunt = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Gladiator);
+        boolean taunt = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.GLADIATOR);
 
         if(targeted){
             direction = target.getLocation().toVector().subtract(caster.getLocation().toVector()).setY(0).normalize();
@@ -465,7 +465,7 @@ public class SearingChains extends BaseAbility {
 
     private void tryToDecreaseCooldown(LivingEntity caster){
 
-        if(!profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Gladiator)){
+        if(!profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.GLADIATOR)){
             return;
         }
 

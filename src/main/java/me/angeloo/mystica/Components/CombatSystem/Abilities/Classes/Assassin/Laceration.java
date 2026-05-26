@@ -15,7 +15,7 @@ import me.angeloo.mystica.Utility.BossManager;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -23,7 +23,6 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 public class Laceration extends BaseAbility {
@@ -86,7 +85,7 @@ public class Laceration extends BaseAbility {
 
     private void execute(LivingEntity caster){
 
-        boolean alchemist = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Alchemist);
+        boolean alchemist = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.ALCHEMIST);
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 

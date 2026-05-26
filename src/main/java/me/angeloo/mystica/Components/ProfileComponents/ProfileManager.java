@@ -20,7 +20,7 @@ import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.PathingManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.ProfileFileWriter;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -45,6 +45,9 @@ public class ProfileManager {
     private final BossManager bossManager;
 
     private final QuestManager questManager;
+
+    private final StatCalculator statCalculator;
+
 
     private final MysticaPartyManager mysticaPartyManager;
     private final CreaturesAndCharactersManager creaturesAndCharactersManager;
@@ -81,6 +84,7 @@ public class ProfileManager {
 
     public ProfileManager(Mystica main) {
         this.main = main;
+        statCalculator = main.getStatCalculator();
         bossManager = new BossManager(main, this);
         this.questManager = main.getQuestManager();
         mysticaPartyManager = new MysticaPartyManager(this);
@@ -263,8 +267,9 @@ public class ProfileManager {
                     //stats
                     int level = config.getInt(id + ".stats.level");
 
-                    Stats stats = new Stats(level,50,100,50,50, 1);
-                    stats.setLevelStats(level, playerClass, playerSubclass);
+                    //Stats stats = new Stats(level,50,100,50,50, 1);
+                    //stats.setLevelStats(level, playerClass, playerSubclass);
+                    Stats stats = statCalculator.calculate(level, playerClass, playerSubclass);
 
                     int hp = stats.getHealth();
 
@@ -525,7 +530,7 @@ public class ProfileManager {
                 stats,
                 gearStats,
                 PlayerClass.NONE,
-                SubClass.NONE,
+                null,
                 mysticaBagCollection,
                 playerEquipment,
                 new Skill_Level(0,0,0,0,0,0,0,0),
@@ -611,7 +616,7 @@ public class ProfileManager {
                 stats,
                 gearStats,
                 PlayerClass.NONE,
-                SubClass.NONE,
+                null,
                 mysticaBagCollection,
                 playerEquipment,
                 skillLevel,
@@ -783,7 +788,7 @@ public class ProfileManager {
 
             @Override
             public SubClass getPlayerSubclass() {
-                return SubClass.NONE;
+                return null;
             }
 
             @Override

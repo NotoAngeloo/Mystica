@@ -12,7 +12,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -79,7 +79,7 @@ public class ForceOfWill extends BaseAbility {
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 
-        boolean arcane = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Shepard);
+        boolean arcane = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.SHEPARD);
 
         double castTime = 3;
         castTime = castTime * (1 - statusEffectManager.getHastePercent(caster));

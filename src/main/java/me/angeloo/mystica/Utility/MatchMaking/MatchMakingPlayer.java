@@ -1,6 +1,6 @@
 package me.angeloo.mystica.Utility.MatchMaking;
 
-import me.angeloo.mystica.Utility.Enums.Role;
+import me.angeloo.mystica.Components.CombatSystem.Classes.Role;
 
 import java.util.UUID;
 

@@ -5,18 +5,15 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ClassSpecific.Inflame;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
-import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusInstance;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
-import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
-import me.angeloo.mystica.Utility.Enums.BarType;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -30,10 +27,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 public class FieryWing extends BaseAbility {
 
@@ -259,7 +252,7 @@ public class FieryWing extends BaseAbility {
 
     private void addInflame(LivingEntity caster){
 
-        boolean pyromancer = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Pyromancer);
+        boolean pyromancer = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.PYROMANCER);
 
         if(!pyromancer){
             return;

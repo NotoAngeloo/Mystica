@@ -5,39 +5,93 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilitySet;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilitySetFactory;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.*;
+import me.angeloo.mystica.Components.ProfileComponents.StatProfile;
 import me.angeloo.mystica.Mystica;
+
+import java.util.List;
 
 public enum PlayerClass {
     NONE("Unspecialized",
-            NoneAbilities::new),
+            NoneAbilities::new,
+            List.of(),
+            new StatProfile(2, 15, 1, 1, 0)
+    ),
+
+
     ASSASSIN("Assassin",
-            AssassinAbilities::new),
+            AssassinAbilities::new,
+            List.of(SubClass.DUELIST, SubClass.ALCHEMIST),
+            new StatProfile(2, 15, 1, 1, 0)
+    ),
+
+
     ELEMENTALIST("Elementalist",
-            ElementalistAbilities::new),
+            ElementalistAbilities::new,
+            List.of(SubClass.PYROMANCER, SubClass.CONJURER),
+            new StatProfile(2, 15, 1, 1, 0)
+    ),
+
+
     MYSTIC("Mystic",
-            MysticAbilities::new),
+            MysticAbilities::new,
+            List.of(SubClass.SHEPARD, SubClass.ARCANE, SubClass.CHAOS),
+            new StatProfile(2, 15, 1, 1, 0)
+    ),
+
+
     PALADIN("Paladin",
-            PaladinAbilities::new),
+            PaladinAbilities::new,
+            List.of(SubClass.TEMPLAR, SubClass.DAWN, SubClass.DIVINE),
+            new StatProfile(2, 15, 1, 1, 0)
+    ),
+
+
     RANGER("Ranger",
-            RangerAbilities::new),
+            RangerAbilities::new,
+            List.of(SubClass.SCOUT, SubClass.TAMER),
+            new StatProfile(2, 15, 1, 1, 0)
+    ),
+
+
     SHADOW_KNIGHT("Shadow Knight",
-            ShadowKnightAbilities::new),
+            ShadowKnightAbilities::new,
+            List.of(SubClass.DOOM, SubClass.BLOOD),
+            new StatProfile(2, 15, 1, 1, 0)
+    ),
+
+
     WARRIOR("Warrior",
-            WarriorAbilities::new);
+            WarriorAbilities::new,
+            List.of(SubClass.GLADIATOR, SubClass.EXECUTIONER),
+            new StatProfile(2, 15, 1, 1, 0)
+    );
 
 
     private final String displayName;
-
     private final AbilitySetFactory abilityFactory;
+    private final List<SubClass> subclasses;
+    private final StatProfile statProfile;
 
     PlayerClass(String displayName,
-                AbilitySetFactory abilityFactory){
+                AbilitySetFactory abilityFactory,
+                List<SubClass> subclasses,
+                StatProfile statProfile){
         this.displayName = displayName;
         this.abilityFactory = abilityFactory;
+        this.subclasses = subclasses;
+        this.statProfile = statProfile;
     }
 
     public String getDisplayName() {
         return displayName;
+    }
+
+    public List<SubClass> getSubclasses() {
+        return subclasses;
+    }
+
+    public StatProfile getStatProfile() {
+        return statProfile;
     }
 
     public AbilitySet createAbilities(

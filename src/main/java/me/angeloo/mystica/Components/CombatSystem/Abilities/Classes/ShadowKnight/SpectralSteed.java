@@ -1,6 +1,5 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.ShadowKnight;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
@@ -11,7 +10,7 @@ import me.angeloo.mystica.Components.ProfileComponents.*;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;

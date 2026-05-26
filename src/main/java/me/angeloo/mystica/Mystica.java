@@ -36,6 +36,7 @@ import me.angeloo.mystica.Components.Items.BagItem;
 import me.angeloo.mystica.Components.Items.MysticalCrystal;
 import me.angeloo.mystica.Components.Items.SoulStone;
 import me.angeloo.mystica.Components.Items.StackableItemRegistry;
+import me.angeloo.mystica.Components.ProfileComponents.StatCalculator;
 import me.angeloo.mystica.Components.Quests.QuestManager;
 import me.angeloo.mystica.Components.EntityBehavior.FakePlayerAiManager;
 import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
@@ -108,31 +109,16 @@ public final class Mystica extends JavaPlugin{
     private AbilityManager abilityManager;
     private CooldownManager cooldownManager;
     private DeathManager deathManager;
-    private CustomInventoryManager customInventoryManager;
-    private MatchMakingManager matchMakingManager;
 
     private PveChecker pveChecker;
     private DamageCalculator damageCalculator;
     private ChangeResourceHandler changeResourceHandler;
 
-    private AbilityInventory abilityInventory;
-    private BagEquipmentFunctions bagEquipmentFunctions;
-    private GenericDiscard genericDiscard;
-    private SpecInventory specInventory;
-    private DevBoxInventory devBoxInventory;
-
     private EquipmentUpgradeManager equipmentUpgradeManager;
 
-
-    private EquipmentInventory equipmentInventory;
-    private DungeonSelect dungeonSelect;
-    private InvitedInventory invitedInventory;
-    private PartyInventory partyInventory;
-    private QuestAcceptInventory questAcceptInventory;
-    private PickQuestInventory pickQuestInventory;
-    private ShopOrQuest shopOrQuest;
-
     private FirstClearManager firstClearManager;
+
+    private StatCalculator statCalculator;
 
     public static final List<Integer> TASKS_ID = new ArrayList<>();
 
@@ -190,6 +176,8 @@ public final class Mystica extends JavaPlugin{
         dailyData = new DailyData(this);
         dailyData.createOrLoadFolder();
 
+        statCalculator = new StatCalculator();
+
         profileFileWriter = new ProfileFileWriter(this);
 
         questManager = new QuestManager(this);
@@ -245,7 +233,7 @@ public final class Mystica extends JavaPlugin{
         fakePlayerAiManager = new FakePlayerAiManager(this);
 
 
-        customInventoryManager = new CustomInventoryManager(this);
+        // = new CustomInventoryManager(this);
 
         //abilityInventory = new AbilityInventory(this);
         //specInventory = abilityInventory.getSpecInventory();
@@ -253,17 +241,17 @@ public final class Mystica extends JavaPlugin{
         //genericDiscard = new GenericDiscard(this);
         //devBoxInventory = new DevBoxInventory(this);
 
-        equipmentUpgradeManager = new EquipmentUpgradeManager(this);
+        //equipmentUpgradeManager = new EquipmentUpgradeManager(this);
 
 
-        //equipmentInventory = new EquipmentInventory(this);
+        /*equipmentInventory = new EquipmentInventory(this);
         matchMakingManager = new MatchMakingManager(this);
         invitedInventory = new InvitedInventory(this);
         partyInventory = new PartyInventory(this);
         questAcceptInventory = new QuestAcceptInventory(this);
         pickQuestInventory = new PickQuestInventory(this, questAcceptInventory);
         dungeonSelect = new DungeonSelect(this);
-        shopOrQuest = new ShopOrQuest(this);
+        shopOrQuest = new ShopOrQuest(this);*/
 
         firstClearManager = new FirstClearManager(this);
         firstClearManager.createOrLoadFolder();
@@ -304,7 +292,7 @@ public final class Mystica extends JavaPlugin{
         getCommand("circle").setExecutor(new CircleCommand(this));
 
 
-        this.getServer().getPluginManager().registerEvents(dungeonSelect, this);
+        //this.getServer().getPluginManager().registerEvents(dungeonSelect, this);
 
 
         getCommand("testgui").setExecutor(new TestGuiCommand(guiManager));
@@ -475,10 +463,6 @@ public final class Mystica extends JavaPlugin{
         return pveChecker;
     }
 
-    public CustomInventoryManager getInventoryManager(){
-        return customInventoryManager;
-    }
-
     public ProfileFileWriter getProfileFileWriter(){
         return profileFileWriter;
     }
@@ -491,27 +475,16 @@ public final class Mystica extends JavaPlugin{
 
     public BossCastingManager getBossCastingManager(){return bossCastingManager;}
 
-    public DungeonSelect getDungeonSelect(){return dungeonSelect;}
-
-    public PartyInventory getPartyInventory(){return partyInventory;}
-
-    public InvitedInventory getInvitedInventory(){return invitedInventory;}
-
     public MysticaPartyManager getMysticaPartyManager(){return mysticaPartyManager;}
 
-    public MatchMakingManager getMatchMakingManager(){return matchMakingManager;}
 
     public InventoryItemGetter getItemGetter(){return inventoryItemGetter;}
 
     public EquipmentUpgradeManager getEquipmentUpgradeManager(){return equipmentUpgradeManager;}
 
-    public EquipmentInventory getEquipmentInventory(){return equipmentInventory;}
-
     public GearReader getGearReader(){return gearReader;}
 
     public DisplayWeapons getDisplayWeapons(){return displayWeapons;}
-
-    public AbilityInventory getAbilityInventory(){return abilityInventory;}
 
     public HudManager getHudManager() {
         return hudManager;
@@ -519,20 +492,6 @@ public final class Mystica extends JavaPlugin{
 
     public QuestManager getQuestManager(){return questManager;}
 
-    public QuestAcceptInventory getQuestAcceptInventory(){return questAcceptInventory;}
-
-    public PickQuestInventory getPickQuestInventory(){return pickQuestInventory;}
-
-    public ShopOrQuest getShopOrQuest(){return shopOrQuest;}
-
-
-    public BagEquipmentFunctions getBagEquipmentFunctions(){return bagEquipmentFunctions;}
-
-    public GenericDiscard getGenericDiscard(){return genericDiscard;}
-
-    public DevBoxInventory getDevBoxInventory() {
-        return devBoxInventory;
-    }
 
     public StatusEffectManager getStatusEffectManager(){return statusEffectManager;}
 
@@ -554,6 +513,10 @@ public final class Mystica extends JavaPlugin{
 
     public DamageHudManager getDamageHudManager(){
         return damageHudManager;
+    }
+
+    public StatCalculator getStatCalculator(){
+        return statCalculator;
     }
 
 }

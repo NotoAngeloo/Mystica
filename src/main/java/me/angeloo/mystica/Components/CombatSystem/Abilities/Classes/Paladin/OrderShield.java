@@ -13,7 +13,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -77,7 +77,7 @@ public class OrderShield extends BaseAbility {
 
         execute(caster);
 
-        if(profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Dawn)){
+        if(profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.DAWN)){
             purity.add(caster, 5);
         }
 

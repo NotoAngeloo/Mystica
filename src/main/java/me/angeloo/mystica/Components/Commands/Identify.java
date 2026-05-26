@@ -11,10 +11,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class Identify implements CommandExecutor {
 
-    private final IdentifyInventory identifyInventory;
+    //private final IdentifyInventory identifyInventory;
 
     public Identify(Mystica main){
-        identifyInventory = main.getEquipmentUpgradeManager().getIdentifyInventory();
+        //identifyInventory = main.getEquipmentUpgradeManager().getIdentifyInventory();
     }
 
     @Override
@@ -32,7 +32,7 @@ public class Identify implements CommandExecutor {
             //ItemStack equipment = player.getInventory().getItemInMainHand();
             //player.getInventory().addItem(equipmentManager.identify(player, equipment));
 
-            identifyInventory.openIdentifyInventory(player);
+            //identifyInventory.openIdentifyInventory(player);
 
             return true;
         }
@@ -50,7 +50,7 @@ public class Identify implements CommandExecutor {
                 sender.sendMessage("player not online");
                 return true;
             }
-            identifyInventory.openIdentifyInventory(player);
+            //identifyInventory.openIdentifyInventory(player);
             return true;
         }
 

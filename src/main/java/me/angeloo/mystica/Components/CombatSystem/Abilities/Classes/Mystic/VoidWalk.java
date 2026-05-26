@@ -1,13 +1,12 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Mystic;
 
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -51,7 +50,7 @@ public class VoidWalk extends BaseAbility {
 
         SubClass subclass = profileManager.getAnyProfile(caster).getPlayerSubclass();
 
-        if(subclass.equals(SubClass.Chaos)){
+        if(subclass.equals(SubClass.CHAOS)){
             caster.getWorld().spawnParticle(Particle.GLOW_SQUID_INK, playerLoc, 50, .5, 1, .5, 0);
         }
         else{

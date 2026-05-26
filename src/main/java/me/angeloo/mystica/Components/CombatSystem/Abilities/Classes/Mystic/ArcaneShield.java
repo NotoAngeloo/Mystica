@@ -12,7 +12,7 @@ import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -105,7 +105,7 @@ public class ArcaneShield extends BaseAbility {
         targetList.add(target);
 
 
-        boolean shepard = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Shepard);
+        boolean shepard = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.SHEPARD);
 
         if(shepard){
 

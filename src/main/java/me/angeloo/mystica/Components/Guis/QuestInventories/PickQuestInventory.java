@@ -29,12 +29,12 @@ import java.util.List;
 
 public class PickQuestInventory implements Listener {
 
-    private final Mystica main;
+    /*private final Mystica main;
     private final ProfileManager profileManager;
     private final QuestManager questManager;
     private final DisplayWeapons displayWeapons;
     private final QuestAcceptInventory questAcceptInventory;
-    private InventoryTextGenerator textGenerator;
+    //private InventoryTextGenerator textGenerator;
 
     //private final Map<String, Shop>
 
@@ -44,7 +44,7 @@ public class PickQuestInventory implements Listener {
         questManager = main.getQuestManager();
         displayWeapons = main.getDisplayWeapons();
         this.questAcceptInventory = questAcceptInventory;
-        textGenerator = questAcceptInventory.getTextGenerator();
+        //textGenerator = questAcceptInventory.getTextGenerator();
     }
 
     //which npc does it
@@ -205,6 +205,6 @@ public class PickQuestInventory implements Listener {
         invText.add(mobName);
 
         return textGenerator.getInventoryText(invText);
-    }
+    }*/
 
 }

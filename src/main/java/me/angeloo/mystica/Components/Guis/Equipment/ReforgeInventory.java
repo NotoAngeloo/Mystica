@@ -26,7 +26,7 @@ import java.util.Set;
 
 public class ReforgeInventory implements Listener {
 
-    private final ProfileManager profileManager;
+    /*private final ProfileManager profileManager;
     private final EquipmentUpgradeManager manager;
     private final CustomInventoryManager inventoryManager;
 
@@ -281,7 +281,7 @@ public class ReforgeInventory implements Listener {
 
         }
 
-    }
+    }*/
 
 
 

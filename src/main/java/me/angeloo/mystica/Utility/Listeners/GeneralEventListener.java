@@ -73,8 +73,8 @@ public class GeneralEventListener implements Listener {
     private final StatusEffectManager statusEffectManager;
     private final AbilityManager abilityManager;
     private final DeathManager deathManager;
-    private final EquipmentInventory equipmentInventory;
-    private final AbilityInventory abilityInventory;
+    //private final EquipmentInventory equipmentInventory;
+    //private final AbilityInventory abilityInventory;
     private final DisplayWeapons displayWeapons;
     private final GearReader gearReader;
     private final ClassSetter classSetter;
@@ -82,7 +82,7 @@ public class GeneralEventListener implements Listener {
 
     private final TargetingEngine targetingEngine;
 
-    private final PartyInventory partyInventory;
+    //private final PartyInventory partyInventory;
 
     private final DamageCalculator damageCalculator;
     private final ChangeResourceHandler changeResourceHandler;
@@ -117,8 +117,8 @@ public class GeneralEventListener implements Listener {
         statusEffectManager = main.getStatusEffectManager();
         abilityManager = main.getAbilityManager();
         deathManager = main.getDeathManager();
-        equipmentInventory = main.getEquipmentInventory();
-        abilityInventory = main.getAbilityInventory();
+        //equipmentInventory = main.getEquipmentInventory();
+        //abilityInventory = main.getAbilityInventory();
         displayWeapons = main.getDisplayWeapons();
         damageCalculator = main.getDamageCalculator();
         changeResourceHandler = main.getChangeResourceHandler();
@@ -127,7 +127,7 @@ public class GeneralEventListener implements Listener {
         firstClearManager = main.getFirstClearManager();
         gravestoneManager = main.getGravestoneManager();
         mysticaPartyManager = main.getMysticaPartyManager();
-        partyInventory = main.getPartyInventory();
+        //partyInventory = main.getPartyInventory();
         rezTick = main.getRezTick();
         targetingEngine = abilityManager.getTargetingEngine();
     }
@@ -469,7 +469,7 @@ public class GeneralEventListener implements Listener {
         }
     }
 
-    @EventHandler
+    /*@EventHandler
     public void partyUpdateWhenObserving(PartyUpdateWhenObservingEvent event){
 
         List<LivingEntity> mParty = event.getMParty();
@@ -494,7 +494,7 @@ public class GeneralEventListener implements Listener {
 
         }
 
-    }
+    }*/
 
     @EventHandler
     public void maxHealthChange(MaxHealthChangeOutOfCombatEvent event){

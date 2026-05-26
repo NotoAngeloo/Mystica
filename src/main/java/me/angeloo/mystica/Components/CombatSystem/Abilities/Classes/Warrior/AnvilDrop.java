@@ -14,7 +14,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -207,7 +207,7 @@ public class AnvilDrop extends BaseAbility {
 
     private void knockUp(LivingEntity caster){
 
-        boolean executioner = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.Executioner);
+        boolean executioner = profileManager.getAnyProfile(caster).getPlayerSubclass().equals(SubClass.EXECUTIONER);
 
         double skillDamage = getSkillDamage(caster);
 

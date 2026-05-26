@@ -23,7 +23,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class DevBoxInventory implements Listener {
 
-    private final ProfileManager profileManager;
+    /*private final ProfileManager profileManager;
     private final CustomInventoryManager inventoryManager;
 
     public DevBoxInventory(Mystica main){
@@ -98,6 +98,6 @@ public class DevBoxInventory implements Listener {
             open(player);
             return;
         }
-    }
+    }*/
 
 }

@@ -3,7 +3,6 @@ package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Mystic;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.ClassSpecific.Plague_Curse;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
@@ -15,7 +14,7 @@ import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
 import me.angeloo.mystica.Utility.Enums.DamageType;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -89,7 +88,7 @@ public class PlagueCurse extends BaseAbility {
     private void execute(LivingEntity caster){
 
 
-        lookup.get(PlayerClass.MYSTIC, SubClass.Chaos, -1).onExternalTrigger(caster, 1);
+        lookup.get(PlayerClass.MYSTIC, SubClass.CHAOS, -1).onExternalTrigger(caster, 1);
 
         LivingEntity target = targetManager.getPlayerTarget(caster);
 

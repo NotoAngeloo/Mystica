@@ -15,7 +15,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Warrior.Deat
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.Warrior.GladiatorHeart;
 import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.Enums.SubClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -177,12 +177,12 @@ public class AbilityResolver implements AbilityLookup{
                 new ChaosVoid(main, manager));
 
         subclassOverrides.put(
-                SubClass.Chaos,
+                SubClass.CHAOS,
                 chaosOverrides
         );
 
         subclassBasic.put(
-                SubClass.Chaos,
+                SubClass.CHAOS,
                 new ChaosBasic(main, manager)
         );
 
@@ -218,7 +218,7 @@ public class AbilityResolver implements AbilityLookup{
                 new JusticeMark(main, manager));
 
         subclassOverrides.put(
-                SubClass.Divine,
+                SubClass.DIVINE,
                 divineOverrides
         );
 
@@ -244,82 +244,82 @@ public class AbilityResolver implements AbilityLookup{
     ) {
 
         ultimates.put(
-                SubClass.Duelist,
+                SubClass.DUELIST,
                 new DuelistsFrenzy(main, manager)
         );
 
         ultimates.put(
-                SubClass.Alchemist,
+                SubClass.ALCHEMIST,
                 new WickedConcoction(main, manager)
         );
 
         ultimates.put(
-                SubClass.Pyromancer,
+                SubClass.PYROMANCER,
                 new FieryWing(main, manager)
         );
 
         ultimates.put(
-                SubClass.Conjurer,
+                SubClass.CONJURER,
                 new ConjuringForce(main)
         );
 
         ultimates.put(
-                SubClass.Arcane,
+                SubClass.ARCANE,
                 new ArcaneMissiles(main, manager)
         );
 
         ultimates.put(
-                SubClass.Shepard,
+                SubClass.SHEPARD,
                 new Enlightenment(main, manager)
         );
 
         ultimates.put(
-                SubClass.Chaos,
+                SubClass.CHAOS,
                 new EvilSpirit(main, manager)
         );
 
         ultimates.put(
-                SubClass.Templar,
+                SubClass.TEMPLAR,
                 new SanctityShield(main)
         );
 
         ultimates.put(
-                SubClass.Dawn,
+                SubClass.DAWN,
                 new LightWell(main, manager)
         );
 
         ultimates.put(
-                SubClass.Divine,
+                SubClass.DIVINE,
                 new Representative(main)
         );
 
         ultimates.put(
-                SubClass.Scout,
+                SubClass.SCOUT,
                 new StarVolley(main, manager)
         );
 
         ultimates.put(
-                SubClass.Tamer,
+                SubClass.TAMER,
                 new WildRoar(main)
         );
 
         ultimates.put(
-                SubClass.Doom,
+                SubClass.DOOM,
                 new Annihilation(main, manager)
         );
 
         ultimates.put(
-                SubClass.Blood,
+                SubClass.BLOOD,
                 new BloodShield(main, manager)
         );
 
         ultimates.put(
-                SubClass.Gladiator,
+                SubClass.GLADIATOR,
                 new GladiatorHeart(main)
         );
 
         ultimates.put(
-                SubClass.Executioner,
+                SubClass.EXECUTIONER,
                 new DeathGaze(main, manager)
         );
 

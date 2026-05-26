@@ -8,7 +8,7 @@ import java.util.*;
 public class MatchMaker {
 
 
-    private final List<MatchMakingParty> queue = Collections.synchronizedList(new ArrayList<>());
+    /*private final List<MatchMakingParty> queue = Collections.synchronizedList(new ArrayList<>());
 
     public MatchMaker(){
 
@@ -80,7 +80,7 @@ public class MatchMaker {
                 }
             }
         }
-    }
+    }*/
 
 
 

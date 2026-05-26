@@ -11,11 +11,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class Equipment implements CommandExecutor {
 
-    private final EquipmentInventory equipmentInventory;
+    //private final EquipmentInventory equipmentInventory;
     private final ProfileManager profileManager;
 
     public Equipment(Mystica main){
-        equipmentInventory = main.getEquipmentInventory();
+        //equipmentInventory = main.getEquipmentInventory();
         profileManager = main.getProfileManager();
     }
     @Override

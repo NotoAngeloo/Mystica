@@ -1,16 +1,55 @@
 package me.angeloo.mystica.Components.Items.Equipment;
 
+import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
+import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
+import me.angeloo.mystica.Mystica;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.UUID;
-
 public class EquipmentDisplayRenderer {
+
+    private final ProfileManager profileManager;
+
+    public EquipmentDisplayRenderer(Mystica main){
+        profileManager = main.getProfileManager();
+    }
+
+    public void renderAllArmor(Player player){
+        PlayerEquipment equipment = profileManager.getAnyProfile(player).getPlayerEquipment();
+
+        if(equipment.getHelmet() != null){
+            player.getInventory().setHelmet(render(equipment.getHelmet()));
+        }
+
+        if(equipment.getChestPlate() != null){
+            player.getInventory().setChestplate(render(equipment.getChestPlate()));
+        }
+
+        if(equipment.getLeggings() != null){
+            player.getInventory().setLeggings(render(equipment.getLeggings()));
+        }
+
+        if(equipment.getBoots() != null){
+            player.getInventory().setBoots(render(equipment.getBoots()));
+        }
+    }
+
+    public void renderSheathedWeapons(Player player){
+
+        player.getInventory().setItemInMainHand(renderNothing());
+
+        PlayerEquipment equipment = profileManager.getAnyProfile(player).getPlayerEquipment();
+
+        if(equipment.getWeapon() != null){
+            ItemStack main = render(equipment.getWeapon());
+            ItemStack off = renderOffHandSheathed(main);
+            player.getInventory().setItemInOffHand(off);
+        }
+    }
 
     public ItemStack render(MysticaEquipment item){
         Material material = resolveMaterial(item);
@@ -22,21 +61,70 @@ public class EquipmentDisplayRenderer {
             return stack;
         }
 
-        meta.setDisplayName(
-                resolveDisplayName(item)
-        );
+        meta.setDisplayName(resolveDisplayName(item));
 
         meta.setCustomModelData(resolveModelData(item));
 
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 
         //this prevents hitting things for extra damage
-        AttributeModifier zeroer = new AttributeModifier(UUID.randomUUID(), "generic.attackDamage",
+        /*AttributeModifier zeroer = new AttributeModifier(UUID.randomUUID(), "generic.attackDamage",
                 0, AttributeModifier.Operation.ADD_NUMBER, org.bukkit.inventory.EquipmentSlot.HAND);
-        meta.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE, zeroer);
+        meta.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE, zeroer);*/
 
         stack.setItemMeta(meta);
 
+        return stack;
+    }
+
+    public void renderOffHand(Player player){
+
+        MysticaEquipment weapon = profileManager.getAnyProfile(player).getPlayerEquipment().getWeapon();
+
+        if(weapon==null){
+            return;
+        }
+
+        ItemStack mainHand = render(weapon);
+
+        ItemStack offhand = mainHand.clone();
+        ItemMeta meta = offhand.getItemMeta();
+        if(meta==null){
+            return;
+        }
+        int data = meta.getCustomModelData();
+        data+=1;
+        meta.setCustomModelData(data);
+        offhand.setItemMeta(meta);
+        player.getInventory().setItemInOffHand(offhand);
+    }
+
+    public ItemStack renderOffHandSheathed(ItemStack mainHand){
+        ItemStack offhand = mainHand.clone();
+        ItemMeta meta = offhand.getItemMeta();
+        if(meta==null){
+            return offhand;
+        }
+        int data = meta.getCustomModelData();
+        data+=2;
+        meta.setCustomModelData(data);
+        offhand.setItemMeta(meta);
+        return offhand;
+    }
+
+    public ItemStack renderNothing(){
+        Material material = Material.WHITE_DYE;
+        ItemStack stack = new ItemStack(material);
+        ItemMeta meta = stack.getItemMeta();
+
+        if(meta==null){
+            return stack;
+        }
+
+        meta.setDisplayName(" ");
+        meta.setCustomModelData(1);
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        stack.setItemMeta(meta);
         return stack;
     }
 
@@ -58,34 +146,7 @@ public class EquipmentDisplayRenderer {
             case BOOTS ->
                     Material.CHAINMAIL_BOOTS;
 
-            case WEAPON -> switch (
-                    item.getPlayerClass()
-                    ) {
-
-                case RANGER ->
-                        Material.FEATHER;
-
-                case ELEMENTALIST ->
-                        Material.STICK;
-
-                case MYSTIC ->
-                        Material.BLAZE_ROD;
-
-                case ASSASSIN ->
-                        Material.FLINT;
-
-                case SHADOW_KNIGHT ->
-                        Material.DIAMOND_SWORD;
-
-                case WARRIOR ->
-                        Material.BRICK;
-
-                case PALADIN ->
-                        Material.IRON_SWORD;
-
-                default ->
-                        Material.BARRIER;
-            };
+            case WEAPON -> item.getPlayerClass().getWeaponMaterial();
         };
     }
 

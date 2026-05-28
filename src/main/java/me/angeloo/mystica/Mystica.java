@@ -1,43 +1,32 @@
 package me.angeloo.mystica;
 
 import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
-import me.angeloo.mystica.Components.CombatSystem.*;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CombatContext;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.CombatSystem.*;
 import me.angeloo.mystica.Components.Commands.*;
 import me.angeloo.mystica.Components.Creatures.CreaturesAndCharactersManager;
 import me.angeloo.mystica.Components.EntityBehavior.AggroManager;
 import me.angeloo.mystica.Components.EntityBehavior.AggroTick;
-import me.angeloo.mystica.Components.Guis.Abilities.AbilityInventory;
-import me.angeloo.mystica.Components.Guis.Abilities.SpecInventory;
-import me.angeloo.mystica.Components.Guis.CustomInventoryManager;
-import me.angeloo.mystica.Components.Guis.Equipment.*;
-import me.angeloo.mystica.Components.Guis.Misc.DevBoxInventory;
-import me.angeloo.mystica.Components.Guis.Misc.ShopOrQuest;
-import me.angeloo.mystica.Components.Guis.Party.DungeonSelect;
-import me.angeloo.mystica.Components.Guis.Party.InvitedInventory;
-import me.angeloo.mystica.Components.Guis.Party.PartyInventory;
-import me.angeloo.mystica.Components.Guis.Storage.BagEquipmentFunctions;
-import me.angeloo.mystica.Components.Guis.Storage.GenericDiscard;
+import me.angeloo.mystica.Components.EntityBehavior.FakePlayerAiManager;
+import me.angeloo.mystica.Components.Guis.Equipment.EquipmentUpgradeManager;
 import me.angeloo.mystica.Components.Hud.BossCastingManager;
 import me.angeloo.mystica.Components.Hud.DamageIndicator.DamageHudManager;
 import me.angeloo.mystica.Components.Hud.HudManager;
+import me.angeloo.mystica.Components.Items.Equipment.EquipmentDisplayRenderer;
 import me.angeloo.mystica.Components.MysticaGui.Assemble.GuiAssembler;
 import me.angeloo.mystica.Components.MysticaGui.GuiListener;
 import me.angeloo.mystica.Components.MysticaGui.GuiManager;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderer;
 import me.angeloo.mystica.Components.MysticaGui.TestGuiCommand;
+import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
-import me.angeloo.mystica.Components.Guis.QuestInventories.PickQuestInventory;
-import me.angeloo.mystica.Components.Guis.QuestInventories.QuestAcceptInventory;
-
 import me.angeloo.mystica.Components.ProfileComponents.StatCalculator;
 import me.angeloo.mystica.Components.Quests.QuestManager;
-import me.angeloo.mystica.Components.EntityBehavior.FakePlayerAiManager;
-import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
-import me.angeloo.mystica.Tasks.*;
+import me.angeloo.mystica.Tasks.DailyTick;
+import me.angeloo.mystica.Tasks.RezTick;
 import me.angeloo.mystica.Utility.*;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
 import me.angeloo.mystica.Utility.DamageUtils.DamageCalculator;
@@ -46,18 +35,15 @@ import me.angeloo.mystica.Utility.Listeners.InventoryEventListener;
 import me.angeloo.mystica.Utility.Listeners.MMListeners;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import me.angeloo.mystica.Utility.Logic.StealthTargetBlacklist;
-import me.angeloo.mystica.Utility.MatchMaking.MatchMakingManager;
-//import net.playavalon.mythicdungeons.api.MythicDungeonsService;
 import me.angeloo.mystica.Utility.MechanicCircle.CircleCommand;
 import me.angeloo.mystica.Utility.TextRenderer.*;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.*;
 import java.util.Map;
 
 public final class Mystica extends JavaPlugin{
@@ -115,6 +101,8 @@ public final class Mystica extends JavaPlugin{
     private FirstClearManager firstClearManager;
 
     private StatCalculator statCalculator;
+
+    private EquipmentDisplayRenderer equipmentDisplayRenderer;
 
 
     public static Color menuColor = new Color(176, 159, 109);
@@ -207,6 +195,7 @@ public final class Mystica extends JavaPlugin{
         CombatContext combatContext = new CombatContext(damageCalculator, changeResourceHandler, cooldownManager, pvpManager, pveChecker);
         statusEffectManager.setCombatContext(combatContext);
 
+        equipmentDisplayRenderer = new EquipmentDisplayRenderer(this);
         abilityManager = new AbilityManager(this);
         combatManager = abilityManager.getCombatManager();
 
@@ -218,6 +207,7 @@ public final class Mystica extends JavaPlugin{
         hudManager = new HudManager(this);
 
         fakePlayerAiManager = new FakePlayerAiManager(this);
+
 
 
         // = new CustomInventoryManager(this);
@@ -499,6 +489,10 @@ public final class Mystica extends JavaPlugin{
 
     public StatCalculator getStatCalculator(){
         return statCalculator;
+    }
+
+    public EquipmentDisplayRenderer getEquipmentDisplayRenderer(){
+        return equipmentDisplayRenderer;
     }
 
 }

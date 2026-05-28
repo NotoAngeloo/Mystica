@@ -21,24 +21,6 @@ public class DisplayWeapons {
 
     public void displayArmor(Player player){
 
-        PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
-
-        if(playerEquipment.getHelmet() != null){
-            player.getInventory().setHelmet(playerEquipment.getHelmet().build());
-        }
-
-        if(playerEquipment.getChestPlate() != null){
-            player.getInventory().setChestplate(playerEquipment.getChestPlate().build());
-        }
-
-        if(playerEquipment.getLeggings() != null){
-            player.getInventory().setLeggings(playerEquipment.getLeggings().build());
-        }
-
-        if(playerEquipment.getBoots() != null){
-            player.getInventory().setBoots(playerEquipment.getBoots().build());
-        }
-
 
         ItemStack displayedWeapon = none.build();
 

@@ -62,7 +62,7 @@ public class Soulcrack extends BaseAbility {
         cooldownManager = main.getCooldownManager();
         energy = manager.getEnergy();
 
-        defaultWeapon = new ItemStack(Material.DIAMOND_SWORD);
+        defaultWeapon = new ItemStack(Material.RED_DYE);
         ItemMeta meta = defaultWeapon.getItemMeta();
         assert meta != null;
         meta.setCustomModelData(1);
@@ -110,20 +110,16 @@ public class Soulcrack extends BaseAbility {
 
         EntityEquipment entityEquipment = armorStand.getEquipment();
 
+        //if player has a weapon, change it to that
         ItemStack weapon = defaultWeapon;
         ItemStack offhand = weapon.clone();
 
         if(caster instanceof Player){
-
-
-            MysticaEquipment playerWeapon = profileManager.getAnyProfile(caster).getPlayerEquipment().getWeapon();
-            if(playerWeapon != null){
-                //weapon = playerWeapon.build();
-                ItemMeta offhandItemMeta = offhand.getItemMeta();
-                assert offhandItemMeta != null;
-                offhandItemMeta.setCustomModelData(offhandItemMeta.getCustomModelData() + 1);
-                offhand.setItemMeta(offhandItemMeta);
-            }
+            ItemMeta offhandItemMeta = offhand.getItemMeta();
+            assert offhandItemMeta != null;
+            int modelNumber = offhandItemMeta.getCustomModelData();
+            offhandItemMeta.setCustomModelData(modelNumber + 1);
+            offhand.setItemMeta(offhandItemMeta);
 
         }
 

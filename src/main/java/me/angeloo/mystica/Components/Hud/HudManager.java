@@ -585,6 +585,9 @@ public class HudManager {
                     case ASSASSIN -> {
                         builder.append(getAssassinResourceBar(player));
                     }
+                    case NONE -> {
+                        builder.append(getNoneResourceBar(player));
+                    }
                 }
 
 
@@ -829,6 +832,22 @@ public class HudManager {
         else{
             builder.append(comboResource5[currentCombo]);
         }
+
+        return String.valueOf(builder);
+    }
+
+    //bandaid fix to non-classed players offsetting the ability bar by not having a resource
+    private String getNoneResourceBar(Player player){
+        StringBuilder builder = new StringBuilder();
+
+
+        builder.append(ChatColor.RESET);
+        builder.append(actionBarResourceBackground);
+        //-104
+        builder.append("\uF80B\uF80A\uF808");
+
+        //grab this from the indexer
+        builder.append(actionBarResource[0]);
 
         return String.valueOf(builder);
     }

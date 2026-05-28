@@ -128,7 +128,15 @@ public class ProfileManager {
             config.set(id + ".stats.level", stats.getLevel());
 
             config.set(id + ".class", playerClass.toString());
-            config.set(id + ".subclass", playerSubclass.toString());
+
+            if(playerSubclass != null){
+                config.set(id + ".subclass", playerSubclass.toString());
+            }
+            else{
+                config.set(id + ".subclass", null);
+            }
+
+
 
             int eqSlot = -1;
             for(MysticaItem equipment : playerEquipment.getEquipment()){
@@ -263,14 +271,20 @@ public class ProfileManager {
 
 
                     PlayerClass playerClass = PlayerClass.valueOf(config.getString(id + ".class"));
-                    SubClass playerSubclass = SubClass.valueOf(config.getString(id + ".subclass"));
+
+                    SubClass subClass = null;
+                    String subClassName = config.getString(id + ".subclass");
+
+                    if(subClassName != null){
+                        subClass = SubClass.valueOf(config.getString(id + ".subclass"));
+                    }
 
                     //stats
                     int level = config.getInt(id + ".stats.level");
 
                     //Stats stats = new Stats(level,50,100,50,50, 1);
                     //stats.setLevelStats(level, playerClass, playerSubclass);
-                    Stats stats = statCalculator.calculate(level, playerClass, playerSubclass);
+                    Stats stats = statCalculator.calculate(level, playerClass, subClass);
 
                     int hp = stats.getHealth();
 
@@ -398,7 +412,7 @@ public class ProfileManager {
                             stats,
                             gearStats,
                             playerClass,
-                            playerSubclass,
+                            subClass,
                             mysticaBagCollection,
                             playerEquipment,
                             new Skill_Level(0,0,0,0,0,0,0,0),

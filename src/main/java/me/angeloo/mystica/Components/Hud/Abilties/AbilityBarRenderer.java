@@ -154,7 +154,6 @@ public class AbilityBarRenderer {
             count++;
         }
 
-        //place basic last
 
         BasicAttackDefinition basic = abilityManager.getAbilityResolver().resolveBasic(playerClass, subClass);
 
@@ -193,8 +192,6 @@ public class AbilityBarRenderer {
             bar.append("\uF809\uF801");
             bar.append(KEYBIND_RMB);
         }
-
-
 
 
         count++;

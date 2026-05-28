@@ -177,10 +177,6 @@ public class GeneralEventListener implements Listener {
         targetManager.setPlayerTarget(player, null);
         gearReader.setGearStats(player);
 
-        if(!profileManager.getAnyProfile(player).getIfDead()){
-            //displayWeapons.displayArmor(player);
-            //cooldownDisplayer.initializeItems(player);
-        }
 
         if (!profileManager.getPlayerNameMap().containsKey(player.getName())) {
 

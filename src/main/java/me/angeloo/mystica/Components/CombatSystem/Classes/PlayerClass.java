@@ -7,6 +7,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilitySetFactory;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.*;
 import me.angeloo.mystica.Components.ProfileComponents.StatProfile;
 import me.angeloo.mystica.Mystica;
+import org.bukkit.Material;
 
 import java.awt.*;
 import java.util.List;
@@ -16,7 +17,8 @@ public enum PlayerClass {
             NoneAbilities::new,
             List.of(),
             new StatProfile(2, 15, 1, 1, 0),
-            Color.WHITE
+            Color.WHITE,
+            Material.WHITE_DYE
     ),
 
 
@@ -24,7 +26,8 @@ public enum PlayerClass {
             AssassinAbilities::new,
             List.of(SubClass.DUELIST, SubClass.ALCHEMIST),
             new StatProfile(2, 15, 1, 1, 0),
-            new Color(214, 61, 207)
+            new Color(214, 61, 207),
+            Material.PINK_DYE
     ),
 
 
@@ -32,7 +35,8 @@ public enum PlayerClass {
             ElementalistAbilities::new,
             List.of(SubClass.PYROMANCER, SubClass.CONJURER),
             new StatProfile(2, 15, 1, 1, 0),
-            new Color(52, 151, 219)
+            new Color(52, 151, 219),
+            Material.CYAN_DYE
     ),
 
 
@@ -40,7 +44,8 @@ public enum PlayerClass {
             MysticAbilities::new,
             List.of(SubClass.SHEPARD, SubClass.ARCANE, SubClass.CHAOS),
             new StatProfile(2, 15, 1, 1, 0),
-            new Color(155, 120, 197)
+            new Color(155, 120, 197),
+            Material.PURPLE_DYE
     ),
 
 
@@ -48,7 +53,8 @@ public enum PlayerClass {
             PaladinAbilities::new,
             List.of(SubClass.TEMPLAR, SubClass.DAWN, SubClass.DIVINE),
             new StatProfile(2, 15, 1, 1, 0),
-            new Color(154, 125, 10)
+            new Color(154, 125, 10),
+            Material.YELLOW_DYE
     ),
 
 
@@ -56,7 +62,8 @@ public enum PlayerClass {
             RangerAbilities::new,
             List.of(SubClass.SCOUT, SubClass.TAMER),
             new StatProfile(2, 15, 1, 1, 0),
-            new Color(34, 111, 80)
+            new Color(34, 111, 80),
+            Material.LIME_DYE
     ),
 
 
@@ -64,7 +71,8 @@ public enum PlayerClass {
             ShadowKnightAbilities::new,
             List.of(SubClass.DOOM, SubClass.BLOOD),
             new StatProfile(2, 15, 1, 1, 0),
-            new Color(213, 33, 3)
+            new Color(213, 33, 3),
+            Material.RED_DYE
     ),
 
 
@@ -72,7 +80,8 @@ public enum PlayerClass {
             WarriorAbilities::new,
             List.of(SubClass.GLADIATOR, SubClass.EXECUTIONER),
             new StatProfile(2, 15, 1, 1, 0),
-            new Color(214, 126, 61)
+            new Color(214, 126, 61),
+            Material.ORANGE_DYE
     );
 
 
@@ -81,17 +90,20 @@ public enum PlayerClass {
     private final List<SubClass> subclasses;
     private final StatProfile statProfile;
     private final Color color;
+    private final Material weaponMaterial;
 
     PlayerClass(String displayName,
                 AbilitySetFactory abilityFactory,
                 List<SubClass> subclasses,
                 StatProfile statProfile,
-                Color color){
+                Color color,
+                Material weaponMaterial){
         this.displayName = displayName;
         this.abilityFactory = abilityFactory;
         this.subclasses = subclasses;
         this.statProfile = statProfile;
         this.color = color;
+        this.weaponMaterial = weaponMaterial;
     }
 
     public String getDisplayName() {
@@ -104,6 +116,10 @@ public enum PlayerClass {
 
     public StatProfile getStatProfile() {
         return statProfile;
+    }
+
+    public Material getWeaponMaterial(){
+        return weaponMaterial;
     }
 
     public Color getColor(){

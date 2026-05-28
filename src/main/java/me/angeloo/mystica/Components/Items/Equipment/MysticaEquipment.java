@@ -1,27 +1,31 @@
 package me.angeloo.mystica.Components.Items.Equipment;
 
-import com.google.gson.Gson;
 import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.Items.MysticaItem;
 import me.angeloo.mystica.Components.Items.MysticaItemFormat;
-import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.EquipmentSlot;
-import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 
-import java.util.*;
-
-import static me.angeloo.mystica.Mystica.*;
-import static me.angeloo.mystica.Mystica.rareColor;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public final class MysticaEquipment implements MysticaItem {
+
+    /*
+    model data convention
+    1= mainhand
+    2=offhand (sometimes nothing)
+    3=sheathed
+     */
+
+    //assasin=pink
+    //elementalist=cyan
+    //mystic=purple
+    //paladin=yellow
+    //ranger=lime
+    //shadow_knight=red
+    //warrior=orange
+
 
     private final EquipmentSlot slot;
 

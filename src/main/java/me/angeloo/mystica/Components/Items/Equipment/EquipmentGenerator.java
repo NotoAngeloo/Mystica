@@ -54,7 +54,7 @@ public class EquipmentGenerator {
         return rolls;
     }
 
-    public List<SkillRoll> generateSkillRolls(
+    private List<SkillRoll> generateSkillRolls(
             int tier
     ) {
 

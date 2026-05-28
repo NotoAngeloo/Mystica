@@ -60,7 +60,7 @@ public class Pierce extends BaseAbility {
         cooldownManager = main.getCooldownManager();
         combo = manager.getCombo();
 
-        defaultWeapon = new ItemStack(Material.FLINT);
+        defaultWeapon = new ItemStack(Material.PINK_DYE);
         ItemMeta meta = defaultWeapon.getItemMeta();
         assert meta != null;
         meta.setCustomModelData(1);

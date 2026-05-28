@@ -2,22 +2,16 @@ package me.angeloo.mystica.Components.CombatSystem;
 
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
-import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
-import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
+import me.angeloo.mystica.Components.Items.Equipment.EquipmentDisplayRenderer;
 import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
+import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Tasks.CombatTick;
-import me.angeloo.mystica.Utility.Enums.BarType;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
-import me.angeloo.mystica.Utility.DisplayWeapons;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-
 
 import java.util.*;
 
@@ -25,7 +19,7 @@ public class CombatManager {
 
     private final Mystica main;
     private final DpsManager dpsManager;
-    //private final DisplayWeapons displayWeapons;
+    private final EquipmentDisplayRenderer equipmentDisplayRenderer;
     private final ProfileManager profileManager;
     private final MysticaPartyManager mysticaPartyManager;
     private final AbilityManager abilityManager;
@@ -38,7 +32,7 @@ public class CombatManager {
     public CombatManager(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
-        //displayWeapons = main.getDisplayWeapons();
+        equipmentDisplayRenderer = main.getEquipmentDisplayRenderer();
         mysticaPartyManager = main.getMysticaPartyManager();
         abilityManager = manager;
         dpsManager = main.getDpsManager();
@@ -201,14 +195,8 @@ public class CombatManager {
         PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
         if(playerEquipment.getWeapon() != null){
-            //ItemStack weapon = playerEquipment.getWeapon().build();
-            //ItemStack offhand = weapon.clone();
-            //ItemMeta offhandMeta = offhand.getItemMeta();
-            //assert offhandMeta != null;
-            //offhandMeta.setCustomModelData(offhand.getItemMeta().getCustomModelData() + 1);
-            //offhand.setItemMeta(offhandMeta);
-            //player.getInventory().setItemInMainHand(weapon);
-            //player.getInventory().setItemInOffHand(offhand);
+            player.getInventory().setItemInMainHand(equipmentDisplayRenderer.render(playerEquipment.getWeapon()));
+            equipmentDisplayRenderer.renderOffHand(player);
         }
 
         sheathed.put(player.getUniqueId(), true);
@@ -247,8 +235,8 @@ public class CombatManager {
             return;
         }
 
-        //displayWeapons.displayArmor(player);
-        player.getInventory().setItemInMainHand(null);
+        equipmentDisplayRenderer.renderAllArmor(player);
+        equipmentDisplayRenderer.renderSheathedWeapons(player);
         sheathed.remove(player.getUniqueId());
         abilityManager.interruptBasic(player);
     }

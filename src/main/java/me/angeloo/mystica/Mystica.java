@@ -32,10 +32,7 @@ import me.angeloo.mystica.Components.MysticaGui.TestGuiCommand;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Components.Guis.QuestInventories.PickQuestInventory;
 import me.angeloo.mystica.Components.Guis.QuestInventories.QuestAcceptInventory;
-import me.angeloo.mystica.Components.Items.BagItem;
-import me.angeloo.mystica.Components.Items.MysticalCrystal;
-import me.angeloo.mystica.Components.Items.SoulStone;
-import me.angeloo.mystica.Components.Items.StackableItemRegistry;
+
 import me.angeloo.mystica.Components.ProfileComponents.StatCalculator;
 import me.angeloo.mystica.Components.Quests.QuestManager;
 import me.angeloo.mystica.Components.EntityBehavior.FakePlayerAiManager;
@@ -87,7 +84,6 @@ public final class Mystica extends JavaPlugin{
     private HudManager hudManager;
     private DamageHudManager damageHudManager;
 
-    private DisplayWeapons displayWeapons;
     private ClassSetter classSetter;
     private GearReader gearReader;
     private InventoryItemGetter inventoryItemGetter;
@@ -120,15 +116,6 @@ public final class Mystica extends JavaPlugin{
 
     private StatCalculator statCalculator;
 
-    public static final List<Integer> TASKS_ID = new ArrayList<>();
-
-    public static Color assassinColor = new java.awt.Color(214, 61, 207);
-    public static Color elementalistColor = new Color(52, 151, 219);
-    public static Color mysticColor = new Color(155, 120, 197);
-    public static Color paladinColor = new Color(154, 125, 10);
-    public static Color rangerColor = new Color(34, 111, 80);
-    public static Color shadowKnightColor = new Color(213, 33, 3);
-    public static Color warriorColor = new Color(214, 126, 61);
 
     public static Color menuColor = new Color(176, 159, 109);
     public static Color levelColor = new Color(0,102,0);
@@ -151,9 +138,9 @@ public final class Mystica extends JavaPlugin{
 
         plugin = this;
 
-        StackableItemRegistry.register("SOUL STONE", SoulStone::deserialize);
-        StackableItemRegistry.register("BAG", BagItem::deserialize);
-        StackableItemRegistry.register("MYSTICAL CRYSTAL", MysticalCrystal::deserialize);
+        //StackableItemRegistry.register("SOUL STONE", SoulStone::deserialize);
+        //StackableItemRegistry.register("BAG", BagItem::deserialize);
+        //StackableItemRegistry.register("MYSTICAL CRYSTAL", MysticalCrystal::deserialize);
 
         PixelGlyphRegistry pixelGlyphRegistry = new PixelGlyphRegistry();
         AsciiFontAtlas fontAtlas = new AsciiFontAtlas();
@@ -193,7 +180,7 @@ public final class Mystica extends JavaPlugin{
 
 
         inventoryItemGetter = new InventoryItemGetter();
-        displayWeapons = new DisplayWeapons(this);
+        //displayWeapons = new DisplayWeapons(this);
 
         gearReader = new GearReader(this);
         classSetter = new ClassSetter(this);
@@ -395,9 +382,6 @@ public final class Mystica extends JavaPlugin{
 
     public static Mystica getPlugin(){return plugin;}
 
-    public static List<Integer> getTasksId() {
-        return TASKS_ID;
-    }
 
     public ProfileManager getProfileManager(){
         return profileManager;
@@ -483,8 +467,6 @@ public final class Mystica extends JavaPlugin{
     public EquipmentUpgradeManager getEquipmentUpgradeManager(){return equipmentUpgradeManager;}
 
     public GearReader getGearReader(){return gearReader;}
-
-    public DisplayWeapons getDisplayWeapons(){return displayWeapons;}
 
     public HudManager getHudManager() {
         return hudManager;

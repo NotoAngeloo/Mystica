@@ -1,12 +1,5 @@
 package me.angeloo.mystica.Components.CombatSystem.ClassSkillItems;
 
-import me.angeloo.mystica.Components.Items.MysticaEquipment;
-import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
-import me.angeloo.mystica.Utility.EquipmentSlot;
-import me.angeloo.mystica.Utility.InventoryItemGetter;
-import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
-import me.angeloo.mystica.Mystica;
-
 
 public class MysticSkillItem {
 

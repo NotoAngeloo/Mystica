@@ -20,31 +20,7 @@ public class DpsBar {
 
         StringBuilder bar = new StringBuilder();
 
-        PlayerClass playerClass = profileManager.getAnyProfile(entity).getPlayerClass();
-
-        switch (playerClass) {
-            case ASSASSIN -> {
-                bar.append(ChatColor.of(assassinColor));
-            }
-            case ELEMENTALIST -> {
-                bar.append(ChatColor.of(elementalistColor));
-            }
-            case MYSTIC -> {
-                bar.append(ChatColor.of(mysticColor));
-            }
-            case PALADIN -> {
-                bar.append(ChatColor.of(paladinColor));
-            }
-            case RANGER -> {
-                bar.append(ChatColor.of(rangerColor));
-            }
-            case SHADOW_KNIGHT-> {
-                bar.append(ChatColor.of(shadowKnightColor));
-            }
-            case WARRIOR -> {
-                bar.append(ChatColor.of(warriorColor));
-            }
-        }
+        bar.append(ChatColor.of(profileManager.getAnyProfile(entity).getPlayerClass().getColor()));
 
 
         double ratio =  dps /  top;

@@ -1,6 +1,7 @@
 package me.angeloo.mystica.Components.Guis.Storage;
 
 import me.angeloo.mystica.Components.Items.*;
+import me.angeloo.mystica.Components.Items.Equipment.MysticaEquipment;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -12,7 +13,7 @@ import java.util.Map;
 
 public class MysticaBag{
 
-    private final MysticaBagCollection collection;
+    /*private final MysticaBagCollection collection;
 
     private final List<MysticaItem> bag = new ArrayList<>();
 
@@ -190,7 +191,7 @@ public class MysticaBag{
         }
 
         return equipment;
-    }
+    }*/
 
 
 

@@ -24,7 +24,7 @@ import static me.angeloo.mystica.Mystica.*;
 
 public class InvitedInventory implements Listener {
 
-    private final Mystica main;
+    /*private final Mystica main;
     private final DisplayWeapons displayWeapons;
     private final ProfileManager profileManager;
     private final MysticaPartyManager mysticaPartyManager;
@@ -178,6 +178,6 @@ public class InvitedInventory implements Listener {
             }
 
         }
-    }
+    }*/
 
 }

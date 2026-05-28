@@ -1,7 +1,7 @@
 package me.angeloo.mystica.Utility;
 
 import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
-import me.angeloo.mystica.Components.Items.MysticaEquipment;
+import me.angeloo.mystica.Components.Items.Equipment.MysticaEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
@@ -11,7 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class DisplayWeapons {
 
-    private final MysticaEquipment none;
+    /*private final MysticaEquipment none;
     private final ProfileManager profileManager;
 
     public DisplayWeapons(Mystica main){
@@ -53,7 +53,7 @@ public class DisplayWeapons {
         }
 
         player.getInventory().setItemInOffHand(displayedWeapon);
-    }
+    }*/
 
 
 }

@@ -1,6 +1,6 @@
 package me.angeloo.mystica.Components.Items;
 
-import net.md_5.bungee.api.ChatColor;
+/*import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 
 import java.awt.*;
@@ -60,4 +60,4 @@ public class MysticalCrystal extends StackableItem{
         return new MysticalCrystal(amount);
     }
 
-}
+}*/

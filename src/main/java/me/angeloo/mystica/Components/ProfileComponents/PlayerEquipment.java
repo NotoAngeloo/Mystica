@@ -1,8 +1,6 @@
 package me.angeloo.mystica.Components.ProfileComponents;
 
-import me.angeloo.mystica.Components.Items.MysticaEquipment;
-import me.angeloo.mystica.Components.Items.MysticaItem;
-import org.bukkit.inventory.ItemStack;
+import me.angeloo.mystica.Components.Items.Equipment.MysticaEquipment;
 
 public class PlayerEquipment {
 

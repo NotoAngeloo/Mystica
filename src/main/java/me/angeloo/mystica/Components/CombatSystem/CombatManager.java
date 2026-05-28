@@ -25,7 +25,7 @@ public class CombatManager {
 
     private final Mystica main;
     private final DpsManager dpsManager;
-    private final DisplayWeapons displayWeapons;
+    //private final DisplayWeapons displayWeapons;
     private final ProfileManager profileManager;
     private final MysticaPartyManager mysticaPartyManager;
     private final AbilityManager abilityManager;
@@ -38,7 +38,7 @@ public class CombatManager {
     public CombatManager(Mystica main, AbilityManager manager){
         this.main = main;
         profileManager = main.getProfileManager();
-        displayWeapons = main.getDisplayWeapons();
+        //displayWeapons = main.getDisplayWeapons();
         mysticaPartyManager = main.getMysticaPartyManager();
         abilityManager = manager;
         dpsManager = main.getDpsManager();
@@ -65,7 +65,7 @@ public class CombatManager {
 
             player.closeInventory();
             player.getInventory().clear();
-            displayWeapons.displayArmor(player);
+            //displayWeapons.displayArmor(player);
 
             //cooldownDisplayer.initializeItems(player);
 
@@ -201,14 +201,14 @@ public class CombatManager {
         PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
         if(playerEquipment.getWeapon() != null){
-            ItemStack weapon = playerEquipment.getWeapon().build();
-            ItemStack offhand = weapon.clone();
-            ItemMeta offhandMeta = offhand.getItemMeta();
-            assert offhandMeta != null;
-            offhandMeta.setCustomModelData(offhand.getItemMeta().getCustomModelData() + 1);
-            offhand.setItemMeta(offhandMeta);
-            player.getInventory().setItemInMainHand(weapon);
-            player.getInventory().setItemInOffHand(offhand);
+            //ItemStack weapon = playerEquipment.getWeapon().build();
+            //ItemStack offhand = weapon.clone();
+            //ItemMeta offhandMeta = offhand.getItemMeta();
+            //assert offhandMeta != null;
+            //offhandMeta.setCustomModelData(offhand.getItemMeta().getCustomModelData() + 1);
+            //offhand.setItemMeta(offhandMeta);
+            //player.getInventory().setItemInMainHand(weapon);
+            //player.getInventory().setItemInOffHand(offhand);
         }
 
         sheathed.put(player.getUniqueId(), true);
@@ -247,7 +247,7 @@ public class CombatManager {
             return;
         }
 
-        displayWeapons.displayArmor(player);
+        //displayWeapons.displayArmor(player);
         player.getInventory().setItemInMainHand(null);
         sheathed.remove(player.getUniqueId());
         abilityManager.interruptBasic(player);

@@ -9,7 +9,7 @@ import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Components.Hud.BossCastingManager;
-import me.angeloo.mystica.Components.Items.MysticaEquipment;
+import me.angeloo.mystica.Components.Items.Equipment.MysticaEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
@@ -20,11 +20,13 @@ import me.angeloo.mystica.Utility.EquipmentSlot;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -32,7 +34,7 @@ public class FlyingBlade extends BaseAbility {
 
     private final Mystica main;
 
-    private final MysticaEquipment weapon;
+    private final ItemStack defaultWeapon;
 
     private final ProfileManager profileManager;
     private final TargetManager targetManager;
@@ -56,8 +58,13 @@ public class FlyingBlade extends BaseAbility {
         statusEffectManager = main.getStatusEffectManager();
         changeResourceHandler = main.getChangeResourceHandler();
         cooldownManager = main.getCooldownManager();
-        this.weapon = new MysticaEquipment(EquipmentSlot.WEAPON, PlayerClass.ASSASSIN, 1);
         bossCastingManager = main.getBossCastingManager();
+
+        defaultWeapon = new ItemStack(Material.FLINT);
+        ItemMeta meta = defaultWeapon.getItemMeta();
+        assert meta != null;
+        meta.setCustomModelData(1);
+        defaultWeapon.setItemMeta(meta);
     }
 
     private final double range = 15;
@@ -102,9 +109,9 @@ public class FlyingBlade extends BaseAbility {
         armorStand.setInvulnerable(true);
         armorStand.setMarker(true);
         EntityEquipment entityEquipment = armorStand.getEquipment();
-        ItemStack weapon = this.weapon.build();
+        //ItemStack weapon = this.defaultWeapon.build();
         assert entityEquipment != null;
-        entityEquipment.setHelmet(weapon);
+        entityEquipment.setHelmet(defaultWeapon);
         armorStand.teleport(start);
 
 

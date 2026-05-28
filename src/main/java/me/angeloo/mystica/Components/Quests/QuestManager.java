@@ -140,12 +140,12 @@ public class QuestManager {
                                 for (Map<?, ?> rawMap : itemMaps) {
                                     Map<String, Object> itemMap = new HashMap<>();
                                     rawMap.forEach((k,v) -> itemMap.put(k.toString(), v));
-                                    MysticaItem item = MysticaItem.deserialize(itemMap);
+                                    //MysticaItem item = MysticaItem.deserialize(itemMap);
 
                                     //Bukkit.getLogger().info(String.valueOf(item.serialize()));
 
 
-                                    rewards.add(new ItemReward(item));
+                                    //rewards.add(new ItemReward(item));
                                 }
 
 

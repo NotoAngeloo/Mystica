@@ -37,7 +37,7 @@ public class DeathManager {
     private final AggroManager aggroManager;
     private final StatusEffectManager statusEffectManager;
     private final GravestoneManager gravestoneManager;
-    private final DisplayWeapons displayWeapons;
+    //private final DisplayWeapons displayWeapons;
     private final CooldownManager cooldownManager;
 
     public DeathManager(Mystica main){
@@ -48,7 +48,7 @@ public class DeathManager {
         aggroManager = main.getAggroManager();
         statusEffectManager = main.getStatusEffectManager();
         gravestoneManager = main.getGravestoneManager();
-        displayWeapons = main.getDisplayWeapons();
+        //displayWeapons = main.getDisplayWeapons();
         cooldownManager = main.getCooldownManager();
     }
 
@@ -157,7 +157,7 @@ public class DeathManager {
             //player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(""));
             //Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(target, BarType.Resource));
             player.getInventory().clear();
-            displayWeapons.displayArmor(player);
+            //displayWeapons.displayArmor(player);
             //cooldownDisplayer.initializeItems(player);
         }
 

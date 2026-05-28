@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class StackableItem extends MysticaItem{
+/*public abstract class StackableItem extends MysticaItem{
 
     protected int amount;
 
@@ -83,4 +83,4 @@ public abstract class StackableItem extends MysticaItem{
     }
 
 
-}
+}*/

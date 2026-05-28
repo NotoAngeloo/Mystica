@@ -1,8 +1,7 @@
 package me.angeloo.mystica.Components.Guis.Storage;
 
-import me.angeloo.mystica.Components.Items.MysticaEquipment;
+import me.angeloo.mystica.Components.Items.Equipment.MysticaEquipment;
 import me.angeloo.mystica.Components.Items.MysticaItem;
-import me.angeloo.mystica.Components.Items.StackableItem;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -22,12 +21,12 @@ public class MysticaBagCollection {
             return;
         }
 
-        this.bags.add(new MysticaBag(this));
+        //this.bags.add(new MysticaBag(this));
     }
 
     public void openMysticaBag(Player player, int number){
 
-        bags.get(number).open(player);
+        //bags.get(number).open(player);
 
     }
 
@@ -54,13 +53,13 @@ public class MysticaBagCollection {
             return false;
         }
 
-        MysticaBag bag = bags.get(index);
+        /*MysticaBag bag = bags.get(index);
 
         if(bag.isFull()){
             return false;
         }
 
-        bag.addItem(mysticaItem);
+        bag.addItem(mysticaItem);*/
 
         return true;
     }
@@ -71,11 +70,11 @@ public class MysticaBagCollection {
 
             //find a way to check if ALL full later
 
-            if(bag.isFull()){
+            /*if(bag.isFull()){
                 continue;
             }
 
-            bag.addItem(mysticaItem);
+            bag.addItem(mysticaItem);*/
 
 
         }
@@ -83,7 +82,7 @@ public class MysticaBagCollection {
 
     public void removeItemsFromMultipleBags(MysticaItem item){
 
-        if(item instanceof StackableItem stackableItem){
+        /*if(item instanceof StackableItem stackableItem){
 
             int amountToRemove = stackableItem.getAmount();
 
@@ -108,7 +107,7 @@ public class MysticaBagCollection {
                 break;
             }
 
-        }
+        }*/
 
     }
 
@@ -116,23 +115,22 @@ public class MysticaBagCollection {
 
         int amount = 0;
 
-        for(MysticaBag bag : getBags()){
+        /*for(MysticaBag bag : getBags()){
             amount += bag.getItemAmount(item);
-        }
-
+        }*/
         return amount;
     }
 
     //way to get other item amount??
-    /*public int getSoulStoneAmount(){
+    public int getSoulStoneAmount(){
 
         int amount = 0;
 
-        for(MysticaBag bag : getBags()){
+        /*for(MysticaBag bag : getBags()){
 
             amount += bag.getSoulStoneAmount();
 
-        }
+        }*/
 
         return amount;
     }
@@ -141,22 +139,22 @@ public class MysticaBagCollection {
 
         int amount = 0;
 
-        for(MysticaBag bag : getBags()){
+        /*for(MysticaBag bag : getBags()){
 
             amount += bag.getClassCrystalAmount();
 
-        }
+        }*/
 
         return amount;
-    }*/
+    }
 
     public List<MysticaEquipment> getBagEquipment(){
 
         List<MysticaEquipment> allEquipment = new ArrayList<>();
 
-        for(MysticaBag bag : bags){
+        /*for(MysticaBag bag : bags){
             allEquipment.addAll(bag.getEquipment());
-        }
+        }*/
 
         return allEquipment;
     }

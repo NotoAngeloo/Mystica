@@ -19,7 +19,7 @@ import java.util.Map;
 
 import static me.angeloo.mystica.Mystica.*;
 
-public class UnidentifiedItem extends MysticaItem{
+/*public class UnidentifiedItem extends MysticaItem{
 
 
     private final EquipmentSlot equipmentSlot;
@@ -163,4 +163,4 @@ public class UnidentifiedItem extends MysticaItem{
     }
 
     public EquipmentSlot getEquipmentSlot(){return equipmentSlot;}
-}
+}*/

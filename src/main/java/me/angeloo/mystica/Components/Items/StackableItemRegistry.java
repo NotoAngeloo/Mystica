@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public class StackableItemRegistry {
+/*public class StackableItemRegistry {
 
     private static final Map<String, Function<Map<String, Object>, StackableItem>> registry = new HashMap<>();
 
@@ -23,4 +23,4 @@ public class StackableItemRegistry {
         return deserializer.apply(data);
     }
 
-}
+}*/

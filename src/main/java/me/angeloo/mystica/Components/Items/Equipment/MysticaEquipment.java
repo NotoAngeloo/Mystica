@@ -1,7 +1,9 @@
-package me.angeloo.mystica.Components.Items;
+package me.angeloo.mystica.Components.Items.Equipment;
 
 import com.google.gson.Gson;
 import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
+import me.angeloo.mystica.Components.Items.MysticaItem;
+import me.angeloo.mystica.Components.Items.MysticaItemFormat;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.EquipmentSlot;
 import net.md_5.bungee.api.ChatColor;
@@ -19,15 +21,185 @@ import java.util.*;
 import static me.angeloo.mystica.Mystica.*;
 import static me.angeloo.mystica.Mystica.rareColor;
 
-public class MysticaEquipment extends MysticaItem{
+public final class MysticaEquipment implements MysticaItem {
 
-    public enum StatType{
-        Attack,
-        Health,
-        Defense,
-        Magic_Defense,
-        Crit
+    private final EquipmentSlot slot;
+
+    private final PlayerClass playerClass;
+
+    private final int level;
+    private final int tier;
+
+    private final List<StatRoll> statRolls;
+
+    private final List<SkillRoll> skillRolls;
+
+    public MysticaEquipment(
+            EquipmentSlot slot,
+            PlayerClass playerClass,
+            int level,
+            int tier,
+            List<StatRoll> statRolls,
+            List<SkillRoll> skillRolls
+    ) {
+        this.slot = slot;
+        this.playerClass = playerClass;
+        this.level = level;
+        this.tier = tier;
+
+        this.statRolls = List.copyOf(statRolls);
+        this.skillRolls = List.copyOf(skillRolls);
     }
+
+    @Override
+    public String getId() {
+        return playerClass.getDisplayName() + "_" + slot.name();
+    }
+
+    @Override
+    public MysticaItemFormat format() {
+        return MysticaItemFormat.EQUIPMENT;
+    }
+
+    @Override
+    public boolean questItem() {
+        return false;
+    }
+
+    public EquipmentSlot getSlot() {
+        return slot;
+    }
+
+    public PlayerClass getPlayerClass() {
+        return playerClass;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public List<StatRoll> getStatRolls() {
+        return statRolls;
+    }
+
+    public List<SkillRoll> getSkillRolls() {
+        return skillRolls;
+    }
+
+    //return to this with better names later
+    @Override
+    public String getName() {
+        return switch (slot) {
+            case WEAPON -> switch (playerClass) {
+                case WARRIOR -> "Axe";
+                case PALADIN -> "Sword";
+                case SHADOW_KNIGHT -> "GreatSword";
+                case RANGER -> "Bow";
+                case MYSTIC -> "Staff";
+                case ELEMENTALIST -> "Catalyst";
+                case ASSASSIN -> "Dagger";
+                default -> "Weapon";
+            };
+
+            //this names are specific due to current optifine CIT, will change when i move from that
+            case HEAD -> switch (playerClass) {
+                case ASSASSIN -> "Assassin's Scarf"; //model data for later 7
+                case ELEMENTALIST -> "Elementalist's Hood"; //1
+                case MYSTIC -> "Mystic's Hood"; //3
+                case RANGER -> "Ranger's Hood"; //2
+                case PALADIN -> "Paladin's Helmet"; //5
+                case WARRIOR -> "Warrior's Helmet"; //6
+                case SHADOW_KNIGHT -> "Shadow Knight's Helmet"; //4
+                default -> "Hat";
+            };
+
+            case CHEST -> switch (playerClass) {
+                case ASSASSIN -> "Assassin's Tunic";
+                case WARRIOR -> "Warrior's Plate";
+                case PALADIN -> "Paladin's Plate";
+                case RANGER -> "Ranger's Tunic";
+                case ELEMENTALIST -> "Elementalist's Tunic";
+                case MYSTIC -> "Mystic's Tunic";
+                case SHADOW_KNIGHT -> "Shadow Knight's Plate";
+                default -> "Shirt";
+            };
+
+            case LEGS -> switch (playerClass) {
+                case MYSTIC -> "Mystic's Breeches";
+                case ELEMENTALIST -> "Elementalist's Breeches";
+                case PALADIN -> "Paladin's Breeches";
+                case RANGER -> "Ranger's Breeches";
+                case WARRIOR -> "Warrior's Breeches";
+                case SHADOW_KNIGHT -> "Shadow Knight's Breeches";
+                case ASSASSIN -> "Assassin's Breeches";
+                default -> "Breeches";
+            };
+
+            case BOOTS -> switch (playerClass) {
+                case ASSASSIN -> "Assassin's Boots";
+                case WARRIOR -> "Warrior's Boots";
+                case PALADIN -> "Paladin's Boots";
+                case RANGER -> "Ranger's Boots";
+                case ELEMENTALIST -> "Elementalist's Boots";
+                case MYSTIC -> "Mystic's Boots";
+                case SHADOW_KNIGHT -> "Shadow Knight's Boots";
+                default -> "Boots";
+            };
+        };
+    }
+
+    @Override
+    public Map<String, Object> serialize() {
+
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("id", getId());
+        map.put("slot", slot.name());
+        map.put("class", playerClass.name());
+        map.put("level", level);
+        map.put("tier", tier);
+        map.put("format", format().name());
+
+        // NEW: full roll lists
+        map.put("statRolls", statRolls);
+        map.put("skillRolls", skillRolls);
+
+        return map;
+    }
+
+    public static MysticaEquipment deserialize(Map<String, Object> map) {
+
+        EquipmentSlot slot =
+                EquipmentSlot.valueOf((String) map.get("slot"));
+
+        PlayerClass playerClass =
+                PlayerClass.valueOf((String) map.get("class"));
+
+        int level = (int) map.get("level");
+
+        int tier = (int) map.get("tier");
+
+        List<StatRoll> statRolls = (List<StatRoll>) map.getOrDefault("statRolls", List.of());
+
+        List<SkillRoll> skillRolls = (List<SkillRoll>) map.getOrDefault("skillRolls", List.of());
+
+        return new MysticaEquipment(
+                slot,
+                playerClass,
+                level,
+                tier,
+                statRolls,
+                skillRolls
+        );
+    }
+}
+
+
+
+
+/*public class MysticaEquipment extends MysticaItem{
+
+
 
     //cosmetics later
 
@@ -176,6 +348,7 @@ public class MysticaEquipment extends MysticaItem{
         return this.equipmentSlot.name();
     }
 
+
     @Override
     public ItemStack build(){
 
@@ -248,158 +421,32 @@ public class MysticaEquipment extends MysticaItem{
             case WEAPON -> {
                 switch (playerClass){
                     case ELEMENTALIST -> {
-                        meta.setDisplayName(ChatColor.of(elementalistColor) + "Catalyst");
+                        meta.setDisplayName(ChatColor.of(playerClass.getColor()) + "Catalyst");
                     }
                     case MYSTIC -> {
-                        meta.setDisplayName(ChatColor.of(mysticColor) + "Staff");
+                        meta.setDisplayName(ChatColor.of(playerClass.getColor()) + "Staff");
                     }
                     case RANGER -> {
-                        meta.setDisplayName(ChatColor.of(rangerColor) + "Bow");
+                        meta.setDisplayName(ChatColor.of(playerClass.getColor()) + "Bow");
                     }
                     case SHADOW_KNIGHT -> {
-                        meta.setDisplayName(ChatColor.of(shadowKnightColor) + "Greatsword");
+                        meta.setDisplayName(ChatColor.of(playerClass.getColor()) + "Greatsword");
                     }
                     case PALADIN -> {
-                        meta.setDisplayName(ChatColor.of(paladinColor) + "Sword");
+                        meta.setDisplayName(ChatColor.of(playerClass.getColor()) + "Sword");
                     }
                     case WARRIOR -> {
-                        meta.setDisplayName(ChatColor.of(warriorColor) + "Axe");
+                        meta.setDisplayName(ChatColor.of(playerClass.getColor()) + "Axe");
                     }
                     case ASSASSIN -> {
-                        meta.setDisplayName(ChatColor.of(assassinColor) + "Dagger");
+                        meta.setDisplayName(ChatColor.of(playerClass.getColor()) + "Dagger");
                     }
 
                 }
 
                 meta.setCustomModelData(1);
             }
-            case HEAD -> {
-                switch (playerClass){
-                    case ELEMENTALIST -> {
-                        meta.setDisplayName(ChatColor.of(elementalistColor) + "Elementalist's Hood");
-                        meta.setCustomModelData(1);
-                    }
-                    case RANGER -> {
-                        meta.setDisplayName(ChatColor.of(rangerColor) + "Ranger's Hood");
-                        meta.setCustomModelData(2);
-                    }
-                    case MYSTIC -> {
-                        meta.setDisplayName(ChatColor.of(mysticColor) + "Mystic's Hood");
-                        meta.setCustomModelData(3);
-                    }
-                    case SHADOW_KNIGHT -> {
-                        meta.setDisplayName(ChatColor.of(shadowKnightColor) + "Shadow Knight's Helmet");
-                        meta.setCustomModelData(4);
-                    }
-                    case PALADIN -> {
-                        meta.setDisplayName(ChatColor.of(paladinColor) + "Paladin's Helmet");
-                        meta.setCustomModelData(5);
-                    }
-                    case WARRIOR -> {
-                        meta.setDisplayName(ChatColor.of(warriorColor) + "Warrior's Helmet");
-                        meta.setCustomModelData(6);
-                    }
-                    case ASSASSIN -> {
-                        meta.setDisplayName(ChatColor.of(assassinColor) + "Assassin's Scarf");
-                        meta.setCustomModelData(7);
-                    }
-                }
-            }
-            case CHEST -> {
-                switch (playerClass){
-                    case ELEMENTALIST -> {
-                        meta.setDisplayName(ChatColor.of(elementalistColor) + "Elementalist's Tunic");
-                        meta.setCustomModelData(1);
-                    }
-                    case RANGER -> {
-                        meta.setDisplayName(ChatColor.of(rangerColor) + "Ranger's Tunic");
-                        meta.setCustomModelData(2);
-                    }
-                    case MYSTIC -> {
-                        meta.setDisplayName(ChatColor.of(mysticColor) + "Mystic's Tunic");
-                        meta.setCustomModelData(3);
-                    }
-                    case SHADOW_KNIGHT -> {
-                        meta.setDisplayName(ChatColor.of(shadowKnightColor) + "Shadow Knight's Plate");
-                        meta.setCustomModelData(4);
-                    }
-                    case PALADIN -> {
-                        meta.setDisplayName(ChatColor.of(paladinColor) + "Paladin's Plate");
-                        meta.setCustomModelData(5);
-                    }
-                    case WARRIOR -> {
-                        meta.setDisplayName(ChatColor.of(warriorColor) + "Warrior's Plate");
-                        meta.setCustomModelData(6);
-                    }
-                    case ASSASSIN -> {
-                        meta.setDisplayName(ChatColor.of(assassinColor) + "Assassin's Tunic");
-                        meta.setCustomModelData(7);
-                    }
-                }
-            }
-            case LEGS -> {
-                switch (playerClass){
-                    case ELEMENTALIST -> {
-                        meta.setDisplayName(ChatColor.of(elementalistColor) + "Elementalist's Breeches");
-                        meta.setCustomModelData(1);
-                    }
-                    case RANGER -> {
-                        meta.setDisplayName(ChatColor.of(rangerColor) + "Ranger's Breeches");
-                        meta.setCustomModelData(2);
-                    }
-                    case MYSTIC -> {
-                        meta.setDisplayName(ChatColor.of(mysticColor) + "Mystic's Breeches");
-                        meta.setCustomModelData(3);
-                    }
-                    case SHADOW_KNIGHT -> {
-                        meta.setDisplayName(ChatColor.of(shadowKnightColor) + "Shadow Knight's Breeches");
-                        meta.setCustomModelData(4);
-                    }
-                    case PALADIN -> {
-                        meta.setDisplayName(ChatColor.of(paladinColor) + "Paladin's Breeches");
-                        meta.setCustomModelData(5);
-                    }
-                    case WARRIOR -> {
-                        meta.setDisplayName(ChatColor.of(warriorColor) + "Warrior's Breeches");
-                        meta.setCustomModelData(6);
-                    }
-                    case ASSASSIN -> {
-                        meta.setDisplayName(ChatColor.of(assassinColor) + "Assassin's Breeches");
-                        meta.setCustomModelData(6);
-                    }
-                }
-            }
-            case BOOTS -> {
-                switch (playerClass){
-                    case ELEMENTALIST -> {
-                        meta.setDisplayName(ChatColor.of(elementalistColor) + "Elementalist's Boots");
-                        meta.setCustomModelData(1);
-                    }
-                    case RANGER -> {
-                        meta.setDisplayName(ChatColor.of(rangerColor) + "Ranger's Boots");
-                        meta.setCustomModelData(2);
-                    }
-                    case MYSTIC -> {
-                        meta.setDisplayName(ChatColor.of(mysticColor) + "Mystic's Boots");
-                        meta.setCustomModelData(3);
-                    }
-                    case SHADOW_KNIGHT -> {
-                        meta.setDisplayName(ChatColor.of(shadowKnightColor) + "Shadow Knight's Boots");
-                        meta.setCustomModelData(4);
-                    }
-                    case PALADIN -> {
-                        meta.setDisplayName(ChatColor.of(paladinColor) + "Paladin's Boots");
-                        meta.setCustomModelData(5);
-                    }
-                    case WARRIOR -> {
-                        meta.setDisplayName(ChatColor.of(warriorColor) + "Warrior's Boots");
-                        meta.setCustomModelData(6);
-                    }
-                    case ASSASSIN -> {
-                        meta.setDisplayName(ChatColor.of(assassinColor) + "Assassin's Boots");
-                        meta.setCustomModelData(7);
-                    }
-                }
+
             }
         }
 
@@ -566,78 +613,10 @@ public class MysticaEquipment extends MysticaItem{
         return 2 * level;
     }
 
-    public int getHighStatAmount(StatType statType, int level){
-        switch (statType) {
-            case Attack, Defense, Magic_Defense -> {
-                return getHighAttackOrDefense(level);
-            }
-            case Health -> {
-                return getHighHealth(level);
-            }
-            case Crit -> {
-                return getHighCrit();
-            }
-        }
-        return 0;
-    }
-    public int getLowStatAmount(StatType statType, int level){
-        switch (statType) {
-            case Attack, Defense, Magic_Defense -> {
-                return getLowAttackOrDefense(level);
-            }
-            case Health -> {
-                return getLowHealth(level);
-            }
-            case Crit -> {
-                return getLowCrit();
-            }
-        }
-        return 0;
-    }
 
 
-    private int getLowAttackOrDefense(int level){
-        level--;
-        return 10 * (1 + level);
-    }
-    private int getHighAttackOrDefense(int level){
-        level--;
-        return 20 * (1 + level);
-    }
-    private int getLowHealth(int level){
-        level--;
-        return 5 * (1 + level);
-    }
-    private int getHighHealth(int level){
-        level--;
-        return 10 * (1 + level);
-    }
 
 
-    private int getLowCrit(){
-        return 5;
-    }
-    private int getHighCrit(){
-        return 10;
-    }
-
-    public int getLevel(){
-        return this.level;
-    }
-    public int getTier(){
-
-        int tier = 1;
-
-        if(highStat != null){
-            tier = 2;
-        }
-
-        if(skillOne != null){
-            tier = 3;
-        }
-
-        return tier;
-    }
 
     public EquipmentSlot getEquipmentSlot(){
         return this.equipmentSlot;
@@ -667,5 +646,5 @@ public class MysticaEquipment extends MysticaItem{
         this.level = newLevel;
     }
 
-    public void setPlayerClass(PlayerClass playerClass){this.playerClass = playerClass;}
-}
+    public void setPlayerClass(PlayerClass playerClass){this.playerClass = playerClass;}*/
+

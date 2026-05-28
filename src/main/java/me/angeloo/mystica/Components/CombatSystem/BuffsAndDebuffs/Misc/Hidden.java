@@ -15,13 +15,13 @@ public class Hidden {
     //KEEPING THIS OLD WAY TO HID PLAYERS SINCE IT WOULD BE TOO COMPLICATED TO CHANGE IT
 
     private final Mystica main;
-    private final DisplayWeapons displayWeapons;
+    //private final DisplayWeapons displayWeapons;
     private final ProfileManager profileManager;
     private final AggroManager aggroManager;
 
     public Hidden(Mystica main){
         this.main = main;
-        displayWeapons = main.getDisplayWeapons();
+        //displayWeapons = main.getDisplayWeapons();
         profileManager = main.getProfileManager();
         aggroManager = main.getAggroManager();
     }
@@ -72,7 +72,7 @@ public class Hidden {
 
                 showWeapons((Player) caster);
 
-                displayWeapons.displayArmor((Player) caster);
+                //displayWeapons.displayArmor((Player) caster);
             }
 
 
@@ -89,14 +89,15 @@ public class Hidden {
 
         PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
+        //display weapons
         if(playerEquipment.getWeapon() != null){
-            player.getInventory().setItemInMainHand(playerEquipment.getWeapon().build());
-            ItemStack offhand = playerEquipment.getWeapon().build();
-            ItemMeta offhandItemMeta = offhand.getItemMeta();
-            assert offhandItemMeta != null;
-            offhandItemMeta.setCustomModelData(offhand.getItemMeta().getCustomModelData() + 1);
-            offhand.setItemMeta(offhandItemMeta);
-            player.getInventory().setItemInOffHand(offhand);
+            //player.getInventory().setItemInMainHand(playerEquipment.getWeapon().build());
+            //ItemStack offhand = playerEquipment.getWeapon().build();
+            //ItemMeta offhandItemMeta = offhand.getItemMeta();
+            //assert offhandItemMeta != null;
+            //offhandItemMeta.setCustomModelData(offhand.getItemMeta().getCustomModelData() + 1);
+            //offhand.setItemMeta(offhandItemMeta);
+            //player.getInventory().setItemInOffHand(offhand);
 
         }
 

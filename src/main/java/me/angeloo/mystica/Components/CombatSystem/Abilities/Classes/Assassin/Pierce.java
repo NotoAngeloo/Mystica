@@ -8,7 +8,7 @@ import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectMa
 import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
-import me.angeloo.mystica.Components.Items.MysticaEquipment;
+import me.angeloo.mystica.Components.Items.Equipment.MysticaEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
 import me.angeloo.mystica.Mystica;
@@ -19,18 +19,22 @@ import me.angeloo.mystica.Utility.EquipmentSlot;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
+import java.util.Collections;
+
 public class Pierce extends BaseAbility {
 
-    private final MysticaEquipment weapon;
+    private final ItemStack defaultWeapon;
     private final Mystica main;
     private final ProfileManager profileManager;
     private final TargetManager targetManager;
@@ -55,7 +59,12 @@ public class Pierce extends BaseAbility {
         pveChecker = main.getPveChecker();
         cooldownManager = main.getCooldownManager();
         combo = manager.getCombo();
-        weapon = new MysticaEquipment(EquipmentSlot.WEAPON, PlayerClass.ASSASSIN, 1);
+
+        defaultWeapon = new ItemStack(Material.FLINT);
+        ItemMeta meta = defaultWeapon.getItemMeta();
+        assert meta != null;
+        meta.setCustomModelData(1);
+        defaultWeapon.setItemMeta(meta);
     }
 
     private final int baseCooldown = 4;
@@ -94,7 +103,9 @@ public class Pierce extends BaseAbility {
 
         Location start = caster.getLocation().clone();
 
-        ItemStack weapon = this.weapon.build();
+        ItemStack weapon = this.defaultWeapon;
+
+        //in future, check player equipment to turn this weapon into that
 
         ArmorStand stand = caster.getWorld().spawn(start.clone().subtract(0,10,0), ArmorStand.class);
         stand.setInvisible(true);

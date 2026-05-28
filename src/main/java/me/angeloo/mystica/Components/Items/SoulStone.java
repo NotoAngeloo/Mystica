@@ -15,7 +15,7 @@ import java.util.Map;
 import static me.angeloo.mystica.Mystica.uncommonColor;
 
 
-public class SoulStone extends StackableItem{
+/*public class SoulStone extends StackableItem{
 
 
     public SoulStone(int amount) {
@@ -66,4 +66,4 @@ public class SoulStone extends StackableItem{
     }
 
 
-}
+}*/

@@ -3,8 +3,6 @@ package me.angeloo.mystica.Components.Guis.Storage;
 import me.angeloo.mystica.Components.Guis.CustomInventoryManager;
 import me.angeloo.mystica.Components.Items.MysticaItem;
 import me.angeloo.mystica.Components.Items.MysticaItemFormat;
-import me.angeloo.mystica.Components.Items.StackableItem;
-import me.angeloo.mystica.Components.Items.StackableItemRegistry;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;

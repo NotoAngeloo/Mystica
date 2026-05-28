@@ -1,7 +1,7 @@
 package me.angeloo.mystica.Utility;
 
 import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
-import me.angeloo.mystica.Components.Items.MysticaEquipment;
+import me.angeloo.mystica.Components.Items.Equipment.MysticaEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.Profile;
 import me.angeloo.mystica.Components.ProfileComponents.StatCalculator;
 import me.angeloo.mystica.Components.ProfileComponents.Stats;
@@ -11,7 +11,6 @@ import me.angeloo.mystica.CustomEvents.MaxHealthChangeOutOfCombatEvent;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.Enums.BarType;
-import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import org.bukkit.Bukkit;
 
 import org.bukkit.entity.Player;
@@ -22,13 +21,13 @@ public class ClassSetter {
 
     private final StatCalculator statCalculator;
     private final ProfileManager profileManager;
-    private final DisplayWeapons displayWeapons;
+    //private final DisplayWeapons displayWeapons;
     private final GearReader gearReader;
 
     public ClassSetter(Mystica main){
         statCalculator = main.getStatCalculator();
         profileManager = main.getProfileManager();
-        displayWeapons = main.getDisplayWeapons();
+        //displayWeapons = main.getDisplayWeapons();
         gearReader = new GearReader(main);
     }
 
@@ -59,7 +58,7 @@ public class ClassSetter {
         MysticaEquipment legs = profileManager.getAnyProfile(player).getPlayerEquipment().getLeggings();
         MysticaEquipment boots = profileManager.getAnyProfile(player).getPlayerEquipment().getBoots();
 
-        if(weapon != null){
+        /*if(weapon != null){
             weapon.setPlayerClass(playerClass);
         }
 
@@ -77,11 +76,11 @@ public class ClassSetter {
 
         if(boots != null){
             boots.setPlayerClass(playerClass);
-        }
+        }*/
 
 
 
-        displayWeapons.displayArmor(player);
+        //displayWeapons.displayArmor(player);
         gearReader.setGearStats(player);
         Bukkit.getServer().getPluginManager().callEvent(new MaxHealthChangeOutOfCombatEvent(player));
         Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(player, BarType.Resource));

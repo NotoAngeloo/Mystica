@@ -1709,49 +1709,10 @@ public class HudManager {
         Profile playerProfile = profileManager.getAnyProfile(entity);
         PlayerClass playerClass = profileManager.getAnyProfile(entity).getPlayerClass();
 
-        switch (playerClass) {
-            case ASSASSIN -> {
-                builder0.append(ChatColor.of(assassinColor));
-                builder1.append(ChatColor.of(assassinColor));
-                builder2.append(ChatColor.of(assassinColor));
-            }
-            case ELEMENTALIST -> {
-                builder0.append(ChatColor.of(elementalistColor));
-                builder1.append(ChatColor.of(elementalistColor));
-                builder2.append(ChatColor.of(elementalistColor));
-            }
-            case RANGER -> {
-                builder0.append(ChatColor.of(rangerColor));
-                builder1.append(ChatColor.of(rangerColor));
-                builder2.append(ChatColor.of(rangerColor));
-            }
-            case PALADIN -> {
-                builder0.append(ChatColor.of(paladinColor));
-                builder1.append(ChatColor.of(paladinColor));
-                builder2.append(ChatColor.of(paladinColor));
-            }
-            case WARRIOR -> {
-                builder0.append(ChatColor.of(warriorColor));
-                builder1.append(ChatColor.of(warriorColor));
-                builder2.append(ChatColor.of(warriorColor));
-            }
-            case SHADOW_KNIGHT -> {
-                builder0.append(ChatColor.of(shadowKnightColor));
-                builder1.append(ChatColor.of(shadowKnightColor));
-                builder2.append(ChatColor.of(shadowKnightColor));
+        builder0.append(playerClass.getColor());
+        builder1.append(playerClass.getColor());
+        builder2.append(playerClass.getColor());
 
-            }
-            case MYSTIC -> {
-                builder0.append(ChatColor.of(mysticColor));
-                builder1.append(ChatColor.of(mysticColor));
-                builder2.append(ChatColor.of(mysticColor));
-            }
-            default -> {
-                builder0.append(ChatColor.RESET);
-                builder0.append(ChatColor.RESET);
-                builder0.append(ChatColor.RESET);
-            }
-        }
 
         double actualMaxHealth = playerProfile.getTotalHealth() + statusEffectManager.getHealthBuffAmount(entity);
         double actualCurrentHealth = profileManager.getAnyProfile(entity).getCurrentHealth();

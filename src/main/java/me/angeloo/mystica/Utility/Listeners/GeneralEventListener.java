@@ -75,7 +75,7 @@ public class GeneralEventListener implements Listener {
     private final DeathManager deathManager;
     //private final EquipmentInventory equipmentInventory;
     //private final AbilityInventory abilityInventory;
-    private final DisplayWeapons displayWeapons;
+    //private final DisplayWeapons displayWeapons;
     private final GearReader gearReader;
     private final ClassSetter classSetter;
     private final GravestoneManager gravestoneManager;
@@ -119,7 +119,7 @@ public class GeneralEventListener implements Listener {
         deathManager = main.getDeathManager();
         //equipmentInventory = main.getEquipmentInventory();
         //abilityInventory = main.getAbilityInventory();
-        displayWeapons = main.getDisplayWeapons();
+        //displayWeapons = main.getDisplayWeapons();
         damageCalculator = main.getDamageCalculator();
         changeResourceHandler = main.getChangeResourceHandler();
         gearReader = new GearReader(main);
@@ -178,7 +178,7 @@ public class GeneralEventListener implements Listener {
         gearReader.setGearStats(player);
 
         if(!profileManager.getAnyProfile(player).getIfDead()){
-            displayWeapons.displayArmor(player);
+            //displayWeapons.displayArmor(player);
             //cooldownDisplayer.initializeItems(player);
         }
 
@@ -433,7 +433,7 @@ public class GeneralEventListener implements Listener {
             ItemStack tempItem = item.clone();
             event.setCancelled(true);
             player.setItemOnCursor(null);
-            displayWeapons.displayArmor(player);
+            //displayWeapons.displayArmor(player);
 
             //equipmentInventory.openEquipmentInventory(player);
             player.getInventory().addItem(tempItem);
@@ -460,7 +460,7 @@ public class GeneralEventListener implements Listener {
 
                     ItemStack tempItem = item.clone();
                     player.getInventory().setItem(event.getSlot(), null);
-                    displayWeapons.displayArmor(player);
+                    //displayWeapons.displayArmor(player);
 
                     //equipmentInventory.openEquipmentInventory(player);
                     player.getInventory().addItem(tempItem);
@@ -1293,7 +1293,7 @@ public class GeneralEventListener implements Listener {
         combatManager.forceCombatEnd(player);
         Bukkit.getPluginManager().callEvent(new HudUpdateEvent(player, Target));
 
-        displayWeapons.displayArmor(player);
+        //displayWeapons.displayArmor(player);
 
         gravestoneManager.removeGravestone(player);
 
@@ -1393,7 +1393,7 @@ public class GeneralEventListener implements Listener {
         event.setCancelled(true);
 
         deathManager.playerNowLive(player, false, null);
-        displayWeapons.displayArmor(player);
+        //displayWeapons.displayArmor(player);
     }
 
     @EventHandler
@@ -1420,7 +1420,7 @@ public class GeneralEventListener implements Listener {
         event.setCancelled(true);
 
         deathManager.playerNowLive(player, false, null);
-        displayWeapons.displayArmor(player);
+        //displayWeapons.displayArmor(player);
     }
 
     @EventHandler
@@ -1449,7 +1449,7 @@ public class GeneralEventListener implements Listener {
                 event.getAction() == Action.LEFT_CLICK_BLOCK){
 
             deathManager.playerNowLive(player, false, null);
-            displayWeapons.displayArmor(player);
+            //displayWeapons.displayArmor(player);
         }
 
     }
@@ -1583,7 +1583,7 @@ public class GeneralEventListener implements Listener {
 
                 showWeapons((Player) caster);
 
-                displayWeapons.displayArmor((Player) caster);
+                //displayWeapons.displayArmor((Player) caster);
             }
 
 
@@ -1600,13 +1600,13 @@ public class GeneralEventListener implements Listener {
         PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
         if(playerEquipment.getWeapon() != null){
-            player.getInventory().setItemInMainHand(playerEquipment.getWeapon().build());
-            ItemStack offhand = playerEquipment.getWeapon().build();
-            ItemMeta offhandItemMeta = offhand.getItemMeta();
-            assert offhandItemMeta != null;
-            offhandItemMeta.setCustomModelData(offhand.getItemMeta().getCustomModelData() + 1);
-            offhand.setItemMeta(offhandItemMeta);
-            player.getInventory().setItemInOffHand(offhand);
+            //player.getInventory().setItemInMainHand(playerEquipment.getWeapon().build());
+            //ItemStack offhand = playerEquipment.getWeapon().build();
+            //ItemMeta offhandItemMeta = offhand.getItemMeta();
+            //assert offhandItemMeta != null;
+            //offhandItemMeta.setCustomModelData(offhand.getItemMeta().getCustomModelData() + 1);
+            //offhand.setItemMeta(offhandItemMeta);
+            //player.getInventory().setItemInOffHand(offhand);
 
         }
 

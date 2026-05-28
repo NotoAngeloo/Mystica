@@ -1,10 +1,9 @@
 package me.angeloo.mystica.Utility;
 
-import me.angeloo.mystica.Components.Items.MysticaEquipment;
+import me.angeloo.mystica.Components.Items.Equipment.*;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import org.bukkit.block.data.type.Switch;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -13,9 +12,11 @@ import java.util.Map;
 public class GearReader {
 
     private final ProfileManager profileManager;
+    private final EquipmentStatCalculator statCalculator;
 
     public GearReader(Mystica main){
         profileManager = main.getProfileManager();
+        statCalculator = new EquipmentStatCalculator();
     }
 
     public void setGearStats(Player player){
@@ -45,11 +46,11 @@ public class GearReader {
 
             Map<Object, Integer> stats = new HashMap<>(getGearStats(item));
 
-            attack+=stats.getOrDefault(MysticaEquipment.StatType.Attack, 0);
-            health+=stats.getOrDefault(MysticaEquipment.StatType.Health, 0);
-            defense+=stats.getOrDefault(MysticaEquipment.StatType.Defense, 0);
-            magic_defense+=stats.getOrDefault(MysticaEquipment.StatType.Magic_Defense, 0);
-            crit+=stats.getOrDefault(MysticaEquipment.StatType.Crit, 0);
+            attack+=stats.getOrDefault(StatType.ATTACK, 0);
+            health+=stats.getOrDefault(StatType.HEALTH, 0);
+            defense+=stats.getOrDefault(StatType.DEFENSE, 0);
+            magic_defense+=stats.getOrDefault(StatType.MAGIC_DEFENSE, 0);
+            crit+=stats.getOrDefault(StatType.CRIT, 0);
 
             skill_1+= stats.getOrDefault(1, 0);
             skill_2+= stats.getOrDefault(2, 0);
@@ -84,124 +85,35 @@ public class GearReader {
         int skill_8 = 0;
 
         if(equipment != null){
-            switch (equipment.getEquipmentSlot()){
-                case WEAPON -> {
-                    attack += equipment.getWeaponBaseAttack(equipment.getLevel());
-                    health += equipment.getWeaponBaseHealth(equipment.getLevel());
-                    defense += equipment.getWeaponBaseDefense(equipment.getLevel());
-                    magic_defense += equipment.getWeaponBaseDefense(equipment.getLevel());
+            attack += statCalculator.getBaseStats(equipment).get(StatType.ATTACK);
+            health += statCalculator.getBaseStats(equipment).get(StatType.HEALTH);
+            defense += statCalculator.getBaseStats(equipment).get(StatType.DEFENSE);
+            magic_defense += statCalculator.getBaseStats(equipment).get(StatType.MAGIC_DEFENSE);
+            crit += statCalculator.getBaseStats(equipment).get(StatType.CRIT);
+
+            for (StatRoll roll : equipment.getStatRolls()){
+
+                switch (roll.type()){
+                    case ATTACK -> attack+=roll.amount();
+                    case HEALTH -> health+=roll.amount();
+                    case DEFENSE -> defense+=roll.amount();
+                    case MAGIC_DEFENSE -> magic_defense+=roll.amount();
+                    case CRIT -> crit+=roll.amount();
                 }
-                case HEAD -> {
-                    health += equipment.getHelmetBaseHealth(equipment.getLevel());
-                }
-                case CHEST -> {
-                    health += equipment.getChestBaseHealth(equipment.getLevel());
-                    defense += equipment.getChestBaseDefense(equipment.getLevel());
-                    magic_defense += equipment.getChestBaseDefense(equipment.getLevel());
-                }
-                case LEGS -> {
-                    attack += equipment.getLeggingBaseAttack(equipment.getLevel());
-                }
-                case BOOTS -> {
-                    attack += equipment.getBootsBaseAttack(equipment.getLevel());
-                }
+
             }
 
-            if(equipment.getHighStat() != null){
-                switch (equipment.getHighStat()){
-                    case Attack -> {
-                        attack += equipment.getHighStatAmount(equipment.getHighStat(), equipment.getLevel());
-                    }
-                    case Health -> {
-                        health += equipment.getHighStatAmount(equipment.getHighStat(), equipment.getLevel());
-                    }
-                    case Defense -> {
-                        defense += equipment.getHighStatAmount(equipment.getHighStat(), equipment.getLevel());
-                    }
-                    case Magic_Defense -> {
-                        magic_defense += equipment.getHighStatAmount(equipment.getHighStat(), equipment.getLevel());
-                    }
-                    case Crit -> {
-                        crit += equipment.getHighStatAmount(equipment.getHighStat(), equipment.getLevel());
-                    }
-                }
-            }
 
-            if(equipment.getLowStat() != null){
-                switch (equipment.getLowStat()){
-                    case Attack -> {
-                        attack += equipment.getLowStatAmount(equipment.getLowStat(), equipment.getLevel());
-                    }
-                    case Health -> {
-                        health += equipment.getLowStatAmount(equipment.getLowStat(), equipment.getLevel());
-                    }
-                    case Defense -> {
-                        defense += equipment.getLowStatAmount(equipment.getLowStat(), equipment.getLevel());
-                    }
-                    case Magic_Defense -> {
-                        magic_defense += equipment.getLowStatAmount(equipment.getLowStat(), equipment.getLevel());
-                    }
-                    case Crit -> {
-                        crit += equipment.getLowStatAmount(equipment.getLowStat(), equipment.getLevel());
-                    }
-                }
-            }
-
-            if(equipment.getSkillOne() != null){
-                switch (equipment.getSkillOne().get(0)) {
-                    case 1 -> {
-                        skill_1 += equipment.getSkillOne().get(1);
-                    }
-                    case 2 -> {
-                        skill_2 += equipment.getSkillOne().get(1);
-                    }
-                    case 3 -> {
-                        skill_3 += equipment.getSkillOne().get(1);
-                    }
-                    case 4 -> {
-                        skill_4 += equipment.getSkillOne().get(1);
-                    }
-                    case 5 -> {
-                        skill_5 += equipment.getSkillOne().get(1);
-                    }
-                    case 6 -> {
-                        skill_6 += equipment.getSkillOne().get(1);
-                    }
-                    case 7 -> {
-                        skill_7 += equipment.getSkillOne().get(1);
-                    }
-                    case 8 -> {
-                        skill_8 += equipment.getSkillOne().get(1);
-                    }
-                }
-            }
-
-            if(equipment.getSkillTwo() != null){
-                switch (equipment.getSkillTwo().get(0)) {
-                    case 1 -> {
-                        skill_1 += equipment.getSkillTwo().get(1);
-                    }
-                    case 2 -> {
-                        skill_2 += equipment.getSkillTwo().get(1);
-                    }
-                    case 3 -> {
-                        skill_3 += equipment.getSkillTwo().get(1);
-                    }
-                    case 4 -> {
-                        skill_4 += equipment.getSkillTwo().get(1);
-                    }
-                    case 5 -> {
-                        skill_5 += equipment.getSkillTwo().get(1);
-                    }
-                    case 6 -> {
-                        skill_6 += equipment.getSkillTwo().get(1);
-                    }
-                    case 7 -> {
-                        skill_7 += equipment.getSkillTwo().get(1);
-                    }
-                    case 8 -> {
-                        skill_8 += equipment.getSkillTwo().get(1);
-                    }
+            for(SkillRoll roll : equipment.getSkillRolls()){
+                switch (roll.skillId()){
+                    case 1 -> skill_1+=roll.amount();
+                    case 2 -> skill_2+= roll.amount();
+                    case 3 -> skill_3 += roll.amount();
+                    case 4 -> skill_4 += roll.amount();
+                    case 5 -> skill_5 += roll.amount();
+                    case 6 -> skill_6 += roll.amount();
+                    case 7 -> skill_7 += roll.amount();
+                    case 8 -> skill_8 += roll.amount();
                 }
             }
         }
@@ -210,11 +122,11 @@ public class GearReader {
 
         Map<Object, Integer> statMap = new HashMap<>();
 
-        statMap.put(MysticaEquipment.StatType.Attack, attack);
-        statMap.put(MysticaEquipment.StatType.Health, health);
-        statMap.put(MysticaEquipment.StatType.Defense, defense);
-        statMap.put(MysticaEquipment.StatType.Magic_Defense, magic_defense);
-        statMap.put(MysticaEquipment.StatType.Crit, crit);
+        statMap.put(StatType.ATTACK, attack);
+        statMap.put(StatType.HEALTH, health);
+        statMap.put(StatType.DEFENSE, defense);
+        statMap.put(StatType.MAGIC_DEFENSE, magic_defense);
+        statMap.put(StatType.CRIT, crit);
         statMap.put(1, skill_1);
         statMap.put(2, skill_2);
         statMap.put(3, skill_3);

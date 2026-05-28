@@ -6,7 +6,6 @@ public enum EquipmentSlot {
     CHEST,
     LEGS,
     BOOTS,
-    WEAPON,
-    Random
+    WEAPON
 
 }

@@ -4,7 +4,7 @@ import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.Creatures.CreaturesAndCharactersManager;
 import me.angeloo.mystica.Components.Guis.Storage.MysticaBag;
 import me.angeloo.mystica.Components.Guis.Storage.MysticaBagCollection;
-import me.angeloo.mystica.Components.Items.MysticaEquipment;
+import me.angeloo.mystica.Components.Items.Equipment.MysticaEquipment;
 import me.angeloo.mystica.Components.Items.MysticaItem;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.Components.Quests.Progress.KillObjectiveProgress;
@@ -119,7 +119,7 @@ public class ProfileManager {
 
             String playername = Bukkit.getOfflinePlayer(uuid).getName();
 
-            MysticaBagCollection collection = profile.getMysticaBagCollection();
+            //MysticaBagCollection collection = profile.getMysticaBagCollection();
 
             YamlConfiguration config = profileFileWriter.createOrLoadProfileFile(uuid);
 
@@ -160,14 +160,15 @@ public class ProfileManager {
 
                 Map<String, Object> equipmentData = equipment.serialize();
 
-                config.createSection(id + ".equipment." + equipment.identifier());
+                config.createSection(id + ".equipment." + equipment.getId());
 
                 if(equipmentData == null){
                     continue;
                 }
 
+
                 for(Map.Entry<String, Object> entry : equipmentData.entrySet()){
-                    config.set(id + ".equipment." + equipment.identifier() + "." + entry.getKey(), entry.getValue());
+                    config.set(id + ".equipment." + equipment.getId() + "." + entry.getKey(), entry.getValue());
                 }
 
             }
@@ -190,7 +191,7 @@ public class ProfileManager {
             config.set(id + ".boss_level", playerBossLevel.getBossLevel());
 
 
-            for(int i = 0; i<collection.getMysticaBagAmount(); i++){
+            /*for(int i = 0; i<collection.getMysticaBagAmount(); i++){
                 MysticaBag bag = collection.getBag(i);
 
                 config.createSection(id + ".bag." + i);
@@ -202,7 +203,7 @@ public class ProfileManager {
 
                 config.set(id + ".bag." + i, serializedItems);
 
-            }
+            }*/
 
             Map<String, QuestProgress> questProgressMap = profile.getQuestProgressMap();
 
@@ -294,7 +295,7 @@ public class ProfileManager {
 
                                 MysticaEquipment mysticaEquipment = MysticaEquipment.deserialize(gearMap);
 
-                                switch (mysticaEquipment.getEquipmentSlot()){
+                                switch (mysticaEquipment.getSlot()){
                                     case WEAPON -> {
                                         playerEquipment.setWeapon(mysticaEquipment);
                                     }
@@ -342,10 +343,10 @@ public class ProfileManager {
                     PlayerBossLevel playerBossLevel = new PlayerBossLevel(bossLevel);
 
                     MysticaBagCollection mysticaBagCollection = new MysticaBagCollection(new ArrayList<>());
-                    mysticaBagCollection.addBag();
+                    //mysticaBagCollection.addBag();
 
                     //depending on the bags, add items???
-                    ConfigurationSection allBagsSection = config.getConfigurationSection(id + ".bag");
+                    /*ConfigurationSection allBagsSection = config.getConfigurationSection(id + ".bag");
                     if(allBagsSection != null){
 
                         for(String bagNumber : allBagsSection.getKeys(false)){
@@ -373,7 +374,7 @@ public class ProfileManager {
                         }
 
 
-                    }
+                    }*/
 
                     Map<String, QuestProgress> questProgressMap = new HashMap<>();
 

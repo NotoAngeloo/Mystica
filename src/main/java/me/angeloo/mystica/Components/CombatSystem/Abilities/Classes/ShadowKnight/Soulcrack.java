@@ -7,7 +7,7 @@ import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.K
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
-import me.angeloo.mystica.Components.Items.MysticaEquipment;
+import me.angeloo.mystica.Components.Items.Equipment.MysticaEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.SkillOnEnemyEvent;
@@ -19,6 +19,7 @@ import me.angeloo.mystica.Utility.EquipmentSlot;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -43,7 +44,7 @@ public class Soulcrack extends BaseAbility {
     private final DamageCalculator damageCalculator;
     private final CooldownManager cooldownManager;
 
-    private final MysticaEquipment weapon;
+    private final ItemStack defaultWeapon;
 
     private final Energy energy;
 
@@ -60,7 +61,12 @@ public class Soulcrack extends BaseAbility {
         damageCalculator = main.getDamageCalculator();
         cooldownManager = main.getCooldownManager();
         energy = manager.getEnergy();
-        this.weapon = new MysticaEquipment(EquipmentSlot.WEAPON, PlayerClass.SHADOW_KNIGHT, 1);
+
+        defaultWeapon = new ItemStack(Material.DIAMOND_SWORD);
+        ItemMeta meta = defaultWeapon.getItemMeta();
+        assert meta != null;
+        meta.setCustomModelData(1);
+        defaultWeapon.setItemMeta(meta);
     }
 
     private final int baseCooldown = 25;
@@ -104,7 +110,7 @@ public class Soulcrack extends BaseAbility {
 
         EntityEquipment entityEquipment = armorStand.getEquipment();
 
-        ItemStack weapon = this.weapon.build();
+        ItemStack weapon = defaultWeapon;
         ItemStack offhand = weapon.clone();
 
         if(caster instanceof Player){
@@ -112,7 +118,7 @@ public class Soulcrack extends BaseAbility {
 
             MysticaEquipment playerWeapon = profileManager.getAnyProfile(caster).getPlayerEquipment().getWeapon();
             if(playerWeapon != null){
-                weapon = playerWeapon.build();
+                //weapon = playerWeapon.build();
                 ItemMeta offhandItemMeta = offhand.getItemMeta();
                 assert offhandItemMeta != null;
                 offhandItemMeta.setCustomModelData(offhandItemMeta.getCustomModelData() + 1);
@@ -270,14 +276,15 @@ public class Soulcrack extends BaseAbility {
 
         PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
 
+        //display weapons
         if(playerEquipment.getWeapon() != null){
-            player.getInventory().setItemInMainHand(playerEquipment.getWeapon().build());
-            ItemStack offhand = playerEquipment.getWeapon().build();
-            ItemMeta offhandItemMeta = offhand.getItemMeta();
-            assert offhandItemMeta != null;
-            offhandItemMeta.setCustomModelData(offhand.getItemMeta().getCustomModelData() + 1);
-            offhand.setItemMeta(offhandItemMeta);
-            player.getInventory().setItemInOffHand(offhand);
+            //player.getInventory().setItemInMainHand(playerEquipment.getWeapon().build());
+            //ItemStack offhand = playerEquipment.getWeapon().build();
+            //ItemMeta offhandItemMeta = offhand.getItemMeta();
+            //assert offhandItemMeta != null;
+            //offhandItemMeta.setCustomModelData(offhand.getItemMeta().getCustomModelData() + 1);
+            //offhand.setItemMeta(offhandItemMeta);
+            //player.getInventory().setItemInOffHand(offhand);
 
         }
     }

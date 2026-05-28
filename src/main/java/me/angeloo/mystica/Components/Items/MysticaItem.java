@@ -12,7 +12,20 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Map;
 
-public abstract class MysticaItem {
+public interface MysticaItem {
+
+    String getId();
+
+    String getName();
+
+    MysticaItemFormat format();
+
+    boolean questItem();
+
+    Map<String, Object> serialize();
+}
+
+/*public abstract class MysticaItem {
 
     public abstract MysticaItemFormat format();
 
@@ -94,4 +107,4 @@ public abstract class MysticaItem {
     }
 
 
-}
+}*/

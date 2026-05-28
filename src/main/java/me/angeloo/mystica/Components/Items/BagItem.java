@@ -14,7 +14,7 @@ import java.util.Map;
 import static me.angeloo.mystica.Mystica.rareColor;
 import static me.angeloo.mystica.Mystica.uncommonColor;
 
-public class BagItem extends StackableItem{
+/*public class BagItem extends StackableItem{
 
 
     public BagItem(int amount) {
@@ -58,4 +58,4 @@ public class BagItem extends StackableItem{
         int amount = (int) data.getOrDefault("amount", 1);
         return new SoulStone(amount);
     }
-}
+}*/

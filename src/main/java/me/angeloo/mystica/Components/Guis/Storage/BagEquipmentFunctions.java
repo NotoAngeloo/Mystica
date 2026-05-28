@@ -1,35 +1,6 @@
 package me.angeloo.mystica.Components.Guis.Storage;
 
-import com.google.gson.Gson;
-import io.r2dbc.spi.Parameter;
-import me.angeloo.mystica.Components.Guis.CustomInventoryManager;
-import me.angeloo.mystica.Components.Guis.InventoryTextGenerator;
-import me.angeloo.mystica.Components.Items.MysticaEquipment;
-import me.angeloo.mystica.Components.Items.MysticaItem;
-import me.angeloo.mystica.Components.Items.StackableItem;
-import me.angeloo.mystica.Components.Items.StackableItemRegistry;
-import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
-import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
-import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.DisplayWeapons;
-import me.angeloo.mystica.Utility.EquipmentSlot;
-import me.angeloo.mystica.Utility.GearReader;
-import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 public class BagEquipmentFunctions implements Listener {
 

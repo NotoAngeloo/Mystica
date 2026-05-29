@@ -7,6 +7,7 @@ import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.K
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
+import me.angeloo.mystica.Components.Items.Equipment.EquipmentDisplayRenderer;
 import me.angeloo.mystica.Components.Items.Equipment.MysticaEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
@@ -35,6 +36,7 @@ import org.bukkit.util.Vector;
 public class Soulcrack extends BaseAbility {
 
     private final Mystica main;
+    private final EquipmentDisplayRenderer equipmentDisplayRenderer;
     private final AbilityManager abilityManager;
     private final ProfileManager profileManager;
     private final StatusEffectManager statusEffectManager;
@@ -52,6 +54,7 @@ public class Soulcrack extends BaseAbility {
     public Soulcrack(Mystica main, AbilityManager manager){
         super("soulcrack");
         this.main = main;
+        equipmentDisplayRenderer = main.getEquipmentDisplayRenderer();
         abilityManager = manager;
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
@@ -127,9 +130,8 @@ public class Soulcrack extends BaseAbility {
         entityEquipment.setItemInMainHand(weapon);
         entityEquipment.setItemInOffHand(offhand);
 
-        if(caster instanceof Player){
-            ((Player)caster).getInventory().setItemInMainHand(null);
-            ((Player)caster).getInventory().setItemInOffHand(null);
+        if(caster instanceof Player player){
+            equipmentDisplayRenderer.clearWeapons(player);
         }
 
 
@@ -266,23 +268,12 @@ public class Soulcrack extends BaseAbility {
     }
 
     private void showWeapons(Player player){
+        
         if(profileManager.getAnyProfile(player).getIfDead()){
             return;
         }
 
-        PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
-
-        //display weapons
-        if(playerEquipment.getWeapon() != null){
-            //player.getInventory().setItemInMainHand(playerEquipment.getWeapon().build());
-            //ItemStack offhand = playerEquipment.getWeapon().build();
-            //ItemMeta offhandItemMeta = offhand.getItemMeta();
-            //assert offhandItemMeta != null;
-            //offhandItemMeta.setCustomModelData(offhand.getItemMeta().getCustomModelData() + 1);
-            //offhand.setItemMeta(offhandItemMeta);
-            //player.getInventory().setItemInOffHand(offhand);
-
-        }
+        equipmentDisplayRenderer.showWeapons(player);
     }
 
     @Override

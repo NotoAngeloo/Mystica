@@ -4,27 +4,25 @@ import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
-import me.angeloo.mystica.Components.CombatSystem.*;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
+import me.angeloo.mystica.Components.CombatSystem.*;
 import me.angeloo.mystica.Components.CombatSystem.Targeting.TargetingContext;
 import me.angeloo.mystica.Components.CombatSystem.Targeting.TargetingEngine;
 import me.angeloo.mystica.Components.EntityBehavior.AggroManager;
-import me.angeloo.mystica.Components.Guis.Abilities.AbilityInventory;
-import me.angeloo.mystica.Components.Guis.Equipment.EquipmentInventory;
-import me.angeloo.mystica.Components.Guis.Party.PartyInventory;
+import me.angeloo.mystica.Components.EntityBehavior.AggroTick;
+import me.angeloo.mystica.Components.EntityBehavior.FakePlayerAiManager;
 import me.angeloo.mystica.Components.Hud.HudManager;
+import me.angeloo.mystica.Components.Items.Equipment.EquipmentDisplayRenderer;
+import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
 import me.angeloo.mystica.Components.ProfileComponents.NonPlayerStuff.Yield;
 import me.angeloo.mystica.Components.ProfileComponents.PlayerEquipment;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
 import me.angeloo.mystica.CustomEvents.*;
-import me.angeloo.mystica.Components.EntityBehavior.FakePlayerAiManager;
-import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Components.EntityBehavior.AggroTick;
 import me.angeloo.mystica.Tasks.RezTick;
 import me.angeloo.mystica.Utility.*;
 import me.angeloo.mystica.Utility.DamageUtils.ChangeResourceHandler;
@@ -43,12 +41,15 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
-import org.bukkit.event.inventory.*;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.PluginDisableEvent;
-import org.bukkit.inventory.*;
-
-import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
@@ -79,7 +80,7 @@ public class GeneralEventListener implements Listener {
     private final GearReader gearReader;
     private final ClassSetter classSetter;
     private final GravestoneManager gravestoneManager;
-
+    private final EquipmentDisplayRenderer equipmentDisplayRenderer;
     private final TargetingEngine targetingEngine;
 
     //private final PartyInventory partyInventory;
@@ -128,6 +129,7 @@ public class GeneralEventListener implements Listener {
         gravestoneManager = main.getGravestoneManager();
         mysticaPartyManager = main.getMysticaPartyManager();
         //partyInventory = main.getPartyInventory();
+        equipmentDisplayRenderer = main.getEquipmentDisplayRenderer();
         rezTick = main.getRezTick();
         targetingEngine = abilityManager.getTargetingEngine();
     }
@@ -1207,7 +1209,6 @@ public class GeneralEventListener implements Listener {
 
         Player player = event.getPlayer();
         abilityManager.interruptBasic(player);
-
         targetManager.setPlayerTarget(player, null);
 
 
@@ -1540,12 +1541,8 @@ public class GeneralEventListener implements Listener {
         caster.setInvisible(true);
 
         if(caster instanceof Player player){
-            player.getInventory().setItemInMainHand(null);
-            player.getInventory().setItemInOffHand(null);
-            player.getInventory().setHelmet(null);
-            player.getInventory().setChestplate(null);
-            player.getInventory().setLeggings(null);
-            player.getInventory().setBoots(null);
+            equipmentDisplayRenderer.clearArmor(player);
+            equipmentDisplayRenderer.clearWeapons(player);
         }
 
         aggroManager.removeHighPriorityTarget(caster.getUniqueId());

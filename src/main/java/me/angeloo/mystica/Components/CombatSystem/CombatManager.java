@@ -59,10 +59,8 @@ public class CombatManager {
 
             player.closeInventory();
             player.getInventory().clear();
-            //displayWeapons.displayArmor(player);
-
-            //cooldownDisplayer.initializeItems(player);
-
+            equipmentDisplayRenderer.showWeapons(player);
+            equipmentDisplayRenderer.renderAllArmor(player);
             unSheathWeapon(player);
 
 
@@ -192,19 +190,13 @@ public class CombatManager {
             return;
         }
 
-        PlayerEquipment playerEquipment = profileManager.getAnyProfile(player).getPlayerEquipment();
-
-        if(playerEquipment.getWeapon() != null){
-            player.getInventory().setItemInMainHand(equipmentDisplayRenderer.render(playerEquipment.getWeapon()));
-            equipmentDisplayRenderer.renderOffHand(player);
-        }
+        equipmentDisplayRenderer.showWeapons(player);
 
         sheathed.put(player.getUniqueId(), true);
 
         new BukkitRunnable(){
             @Override
             public void run(){
-
 
                 Player refreshedPlayer = Bukkit.getOfflinePlayer(player.getUniqueId()).getPlayer();
 
@@ -215,7 +207,6 @@ public class CombatManager {
                 if(!refreshedPlayer.isOnline()){
                     return;
                 }
-
 
 
                 sheathWeapon(player);

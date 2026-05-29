@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.CombatSystem.Abilities.Classes.None;
 
+import me.angeloo.mystica.Components.CombatSystem.Abilities.BasicAttacks.BasicAttackDefinition;
 import me.angeloo.mystica.Components.CombatSystem.FakePlayerTargetManager;
 import me.angeloo.mystica.Components.CombatSystem.PvpManager;
 import me.angeloo.mystica.Components.CombatSystem.TargetManager;
@@ -24,9 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class NoneBasic {
-
-    private final Mystica main;
+public class NoneBasic implements BasicAttackDefinition {
 
     private final ProfileManager profileManager;
     private final TargetManager targetManager;
@@ -36,11 +35,7 @@ public class NoneBasic {
     private final DamageCalculator damageCalculator;
     private final ChangeResourceHandler changeResourceHandler;
 
-    private final Map<UUID, Boolean> basicReadyMap = new HashMap<>();
-
-
     public NoneBasic(Mystica main){
-        this.main = main;
 
         profileManager = main.getProfileManager();
         targetManager = main.getTargetManager();
@@ -51,31 +46,24 @@ public class NoneBasic {
         changeResourceHandler = main.getChangeResourceHandler();
     }
 
-    public void useBasic(LivingEntity caster){
 
-        if(!basicReadyMap.containsKey(caster.getUniqueId())){
-            basicReadyMap.put(caster.getUniqueId(), true);
-        }
-
-
-        if(!usable(caster)){
-            return;
-        }
-        executeBasic(caster);
-
+    @Override
+    public boolean performStage(LivingEntity caster, int stage) {
+        basicStage(caster);
+        return true;
     }
 
-    private void executeBasic(LivingEntity caster){
+    @Override
+    public int getMaxStages(LivingEntity caster) {
+        return 1;
+    }
 
-        basicReadyMap.put(caster.getUniqueId(), false);
+    @Override
+    public int getStageDelay(LivingEntity caster, int stage) {
+        return 5;
+    }
 
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-
-                basicReadyMap.put(caster.getUniqueId(), true);
-            }
-        }.runTaskLater(main, 5);
+    private void basicStage(LivingEntity caster){
 
 
         Location start = caster.getLocation().clone();
@@ -168,8 +156,6 @@ public class NoneBasic {
 
     }
 
-    public boolean usable(LivingEntity caster){
-        return basicReadyMap.get(caster.getUniqueId());
-    }
+
 
 }

@@ -7,6 +7,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.AbilityManager;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
 import me.angeloo.mystica.Components.EntityBehavior.AggroManager;
+import me.angeloo.mystica.Components.Items.Equipment.EquipmentDisplayRenderer;
 import me.angeloo.mystica.CustomEvents.AiSignalEvent;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.CustomEvents.MysticaPlayerDeathEvent;
@@ -37,7 +38,7 @@ public class DeathManager {
     private final AggroManager aggroManager;
     private final StatusEffectManager statusEffectManager;
     private final GravestoneManager gravestoneManager;
-    //private final DisplayWeapons displayWeapons;
+    private final EquipmentDisplayRenderer equipmentDisplayRenderer;
     private final CooldownManager cooldownManager;
 
     public DeathManager(Mystica main){
@@ -48,7 +49,7 @@ public class DeathManager {
         aggroManager = main.getAggroManager();
         statusEffectManager = main.getStatusEffectManager();
         gravestoneManager = main.getGravestoneManager();
-        //displayWeapons = main.getDisplayWeapons();
+        equipmentDisplayRenderer = main.getEquipmentDisplayRenderer();
         cooldownManager = main.getCooldownManager();
     }
 
@@ -118,6 +119,8 @@ public class DeathManager {
         target.setVisualFire(false);
         //more effects?
 
+        boolean combat = profileManager.getAnyProfile(target).getIfInCombat();
+
         if(!bySkill){
             target.teleport(target.getWorld().getSpawnLocation());
 
@@ -140,8 +143,6 @@ public class DeathManager {
 
                     }
                 }
-
-                player.getInventory().setItemInMainHand(null);
             }
 
         }
@@ -154,11 +155,16 @@ public class DeathManager {
 
         if(target instanceof Player player){
             player.setGameMode(GameMode.SURVIVAL);
-            //player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(""));
-            //Bukkit.getServer().getPluginManager().callEvent(new HudUpdateEvent(target, BarType.Resource));
             player.getInventory().clear();
-            //displayWeapons.displayArmor(player);
-            //cooldownDisplayer.initializeItems(player);
+            equipmentDisplayRenderer.renderAllArmor(player);
+
+            if(combat){
+                equipmentDisplayRenderer.showWeapons(player);
+            }
+            else{
+                equipmentDisplayRenderer.renderSheathedWeapons(player);
+            }
+
         }
 
 

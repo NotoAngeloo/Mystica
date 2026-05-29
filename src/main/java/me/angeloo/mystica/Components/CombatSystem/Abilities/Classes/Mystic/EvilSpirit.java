@@ -5,6 +5,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.BaseAbility;
 import me.angeloo.mystica.Components.CombatSystem.Abilities.PlayerStateManager;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Root;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.Items.Equipment.EquipmentDisplayRenderer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.CustomEvents.RemoveStealthEffectEvent;
@@ -26,6 +27,7 @@ public class EvilSpirit extends BaseAbility {
 
     private final Mystica main;
 
+    private final EquipmentDisplayRenderer equipmentDisplayRenderer;
     private final ProfileManager profileManager;
     private final StatusEffectManager statusEffectManager;
     private final AbilityManager abilityManager;
@@ -37,6 +39,7 @@ public class EvilSpirit extends BaseAbility {
     public EvilSpirit(Mystica main, AbilityManager manager){
         super("evil_spirit");
         this.main = main;
+        equipmentDisplayRenderer = main.getEquipmentDisplayRenderer();
         profileManager = main.getProfileManager();
         statusEffectManager = main.getStatusEffectManager();
         abilityManager = manager;
@@ -77,12 +80,8 @@ public class EvilSpirit extends BaseAbility {
         caster.setInvisible(true);
 
         if(caster instanceof Player player){
-            player.getInventory().setItemInMainHand(null);
-            player.getInventory().setItemInOffHand(null);
-            player.getInventory().setHelmet(null);
-            player.getInventory().setChestplate(null);
-            player.getInventory().setLeggings(null);
-            player.getInventory().setBoots(null);
+            equipmentDisplayRenderer.clearWeapons(player);
+            equipmentDisplayRenderer.clearArmor(player);
         }
 
         abilityManager.setSkillCurrentlyCasting(caster, statusBarIcon());

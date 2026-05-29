@@ -91,14 +91,16 @@ public class MysticaEffect implements CommandExecutor {
 
                     SubClass subclass = profileManager.getAnyProfile(target).getPlayerSubclass();
 
+                    if(subclass!=null){
+                        if (subclass.getRole().equals(Role.TANK)) {
+                            crushThreshold -= 100;
+                        }
 
-                    if (subclass.getRole().equals(Role.TANK)) {
-                        crushThreshold -= 100;
+                        if (subclass.equals(SubClass.EXECUTIONER)) {
+                            crushThreshold -= 50;
+                        }
                     }
 
-                    if (subclass.equals(SubClass.EXECUTIONER)) {
-                        crushThreshold -= 50;
-                    }
 
                     crushThreshold -= profileManager.getAnyProfile(target).getTotalDefense();
 

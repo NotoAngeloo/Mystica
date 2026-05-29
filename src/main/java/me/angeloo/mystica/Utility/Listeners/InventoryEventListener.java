@@ -11,6 +11,7 @@ import me.angeloo.mystica.Components.Guis.Storage.MysticaBag;
 import me.angeloo.mystica.Components.Guis.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.Items.*;
 import me.angeloo.mystica.Components.Guis.CustomInventoryManager;
+import me.angeloo.mystica.Components.Items.Equipment.EquipmentDisplayRenderer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import me.angeloo.mystica.Utility.DisplayWeapons;
@@ -29,6 +30,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
@@ -37,6 +39,7 @@ public class InventoryEventListener implements Listener {
     private final Mystica main;
 
     private final ProfileManager profileManager;
+    private final EquipmentDisplayRenderer equipmentDisplayRenderer;
     /*private final BagEquipmentFunctions bagEquipmentFunctions;
     private final GenericDiscard genericDiscard;
     private final InventoryItemGetter itemGetter;
@@ -49,6 +52,7 @@ public class InventoryEventListener implements Listener {
     public InventoryEventListener(Mystica main){
         this.main = main;
         profileManager = main.getProfileManager();
+        equipmentDisplayRenderer = main.getEquipmentDisplayRenderer();
         //itemGetter = main.getItemGetter();
         /*inventoryManager = main.getInventoryManager();
         dungeonSelect = main.getDungeonSelect();
@@ -112,155 +116,48 @@ public class InventoryEventListener implements Listener {
 
     }*/
 
-    private MysticaItemFormat getItemType(ItemStack item){
-
-        if(!item.hasItemMeta()){
-            return MysticaItemFormat.OTHER;
-        }
-
-        ItemMeta meta = item.getItemMeta();
-        assert meta != null;
-
-        NamespacedKey equipmentKey = new NamespacedKey(Mystica.getPlugin(), "equipment_data");
-        if(item.getItemMeta().getPersistentDataContainer().has(equipmentKey, PersistentDataType.STRING) ){
-            return MysticaItemFormat.EQUIPMENT;
-        }
-
-        NamespacedKey unidentifiedKey = new NamespacedKey(Mystica.getPlugin(), "unidentified_data");
-        if(item.getItemMeta().getPersistentDataContainer().has(unidentifiedKey, PersistentDataType.STRING) ){
-            return MysticaItemFormat.UNIDENTIFIED;
-        }
-
-        return MysticaItemFormat.OTHER;
-    }
-
     @EventHandler
     public void invOpen(InventoryOpenEvent event){
         Player player = (Player) event.getPlayer();
         player.setItemOnCursor(null);
+        player.getInventory().setItemInMainHand(null);
     }
 
-    /*@EventHandler
-    public void menuClick(InventoryClickEvent event){
-
-        Inventory clickedInv = event.getClickedInventory();
-        if (clickedInv == null) {
-            return;
-        }
-
-        String title = event.getView().getTitle();
-
-        if(!title.equalsIgnoreCase("crafting")){
-            return;
-        }
-
-        event.setCancelled(true);
-
-        Player player = (Player) event.getWhoClicked();
-
-        if(profileManager.getAnyProfile(player).getIfInCombat()){
-            return;
-        }
-
-        int slot = event.getSlot();
-
-        if(event.getClickedInventory().equals(event.getView().getTopInventory())){
-
-            //escape
-            if(slot==1||slot==2||slot==3||slot==4){
-
-                World world = Bukkit.getWorld("world");
-
-                assert world != null;
-                player.teleport(world.getSpawnLocation());
-                return;
-            }
-
-            //settings
-            if(slot==0){
-                return;
-            }
-
-            return;
-        }
-
-        if(event.getClickedInventory().equals(event.getView().getBottomInventory())){
-
-            Set<Integer> skillSlots = new HashSet<>();
-            for(int i=0;i<8;i++){
-                skillSlots.add(i);
-            }
-
-            if(skillSlots.contains(slot)){
-                //abilityInventory.openAbilityInventory(player, -1);
-                return;
-            }
-
-
-            //bag
-            if(slot==18||slot==19||slot==27||slot==28){
-                profileManager.getAnyProfile(player).getMysticaBagCollection().openMysticaBag(player, 0);
-                return;
-            }
-
-            //quests
-            if(slot==20||slot==21||slot==29||slot==30){
-
-                return;
-            }
-
-            //dungeon
-            if(slot==22||slot==23||slot==31||slot==32){
-                dungeonSelect.openDungeonSelect(player);
-                return;
-            }
-
-            //party
-            if(slot==24||slot==25||slot==33||slot==34){
-                partyInventory.openPartyInventory(player);
-                return;
-            }
-
-
-            return;
-        }
 
 
 
 
 
-    }*/
-
-
-
-
-    /*@EventHandler
+    @EventHandler
     public void guiClose(InventoryCloseEvent event){
 
         Player player = (Player) event.getPlayer();
 
-
         if(profileManager.getAnyProfile(player).getIfInCombat()){
             return;
         }
 
-        if(event.getInventory().getType().equals(InventoryType.CRAFTING)){
+        if(profileManager.getAnyProfile(player).getIfDead()){
             return;
         }
 
-        player.getInventory().clear();
-        displayWeapons.displayArmor(player);
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                String openTitle = player.getOpenInventory().getTitle();
 
-        Bukkit.getScheduler().runTaskLaterAsynchronously(main, ()->{
-            InventoryView open = player.getOpenInventory();
+                if(!openTitle.equalsIgnoreCase("crafting")){
+                    return;
+                }
 
-            if(open.getTitle().equalsIgnoreCase("crafting")){
-                //cooldownDisplayer.initializeItems(player);
+                equipmentDisplayRenderer.renderSheathedWeapons(player);
             }
-        },1);
+        }.runTaskLaterAsynchronously(main, 1);
 
 
-    }*/
+
+
+    }
 
     /*@EventHandler
     public void clickBagSlot(InventoryClickEvent event){

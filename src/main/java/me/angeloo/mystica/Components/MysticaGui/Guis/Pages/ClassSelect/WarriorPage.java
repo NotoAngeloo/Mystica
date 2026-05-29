@@ -43,6 +43,8 @@ public class WarriorPage extends GuiPage {
                 UiGlyphs.DEFAULT_BACKGROUND
         );
 
+        context.drawIcon(0, -105, UiGlyphs.WARRIOR_TITLE);
+
         /*
          * Decorative buttons
          */

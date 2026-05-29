@@ -43,6 +43,8 @@ public class PaladinPage extends GuiPage {
                 UiGlyphs.DEFAULT_BACKGROUND
         );
 
+        context.drawIcon(0, -105, UiGlyphs.PALADIN_TITLE);
+
         /*
          * Decorative buttons
          */

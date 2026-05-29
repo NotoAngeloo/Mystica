@@ -43,6 +43,8 @@ public class MysticPage extends GuiPage{
                 UiGlyphs.DEFAULT_BACKGROUND
         );
 
+        context.drawIcon(0, -105, UiGlyphs.MYSTIC_TITLE);
+
         /*
          * Decorative buttons
          */

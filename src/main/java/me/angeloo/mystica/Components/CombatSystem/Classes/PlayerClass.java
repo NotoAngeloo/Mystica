@@ -17,7 +17,7 @@ public enum PlayerClass {
             NoneAbilities::new,
             List.of(),
             new StatProfile(2, 15, 1, 1, 0),
-            Color.WHITE,
+            new Color(148, 140, 127),
             Material.WHITE_DYE
     ),
 

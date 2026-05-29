@@ -13,6 +13,8 @@ public class NoneAbilities implements AbilitySet {
 
     private final Map<Integer, Ability> abilities = new HashMap<>();
 
+    private final BasicAttackDefinition basic;
+
     //TODO: make unspecialized its own thing. take abilties from other classes to use temp
 
     public NoneAbilities(Mystica main, AbilityManager manager, AbilityLookup lookup){
@@ -30,6 +32,8 @@ public class NoneAbilities implements AbilitySet {
                 base.setLookup(lookup);
             }
         }
+
+        basic = new NoneBasic(main);
     }
 
     @Override
@@ -39,7 +43,7 @@ public class NoneAbilities implements AbilitySet {
 
     @Override
     public BasicAttackDefinition getBasic() {
-        return null;
+        return basic;
     }
 
 

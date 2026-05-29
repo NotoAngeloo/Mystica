@@ -227,10 +227,13 @@ public class ChangeResourceHandler {
             return;
         }
 
-        if(profileManager.getAnyProfile(entity).getPlayerSubclass().equals(SubClass.DIVINE)){
+        SubClass subClass = profileManager.getAnyProfile(entity).getPlayerSubclass();
+
+        if(subClass!=null && subClass.equals(SubClass.DIVINE)){
             addToSlot(entity, damage);
             startTask(entity);
         }
+
 
         //this changes bar
         double actualCurrentHealth = profileManager.getAnyProfile(entity).getCurrentHealth();
@@ -286,10 +289,13 @@ public class ChangeResourceHandler {
             return;
         }
 
-        if(profileManager.getAnyProfile(player).getPlayerSubclass().equals(SubClass.DIVINE)){
+        SubClass subClass = profileManager.getAnyProfile(player).getPlayerSubclass();
+
+        if(subClass!=null&&subClass.equals(SubClass.DIVINE)){
             addToSlot(player, damage);
             startTask(player);
         }
+
 
         if(seeingRawDamage.containsKey(player.getUniqueId())){
 

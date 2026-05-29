@@ -6,6 +6,7 @@ import me.angeloo.mystica.Components.CombatSystem.Abilities.Cooldowns.CooldownMa
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.CrowdControl.Root;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.DamageModifiers.Immune;
 import me.angeloo.mystica.Components.CombatSystem.BuffsAndDebuffs.StatusEffectManager;
+import me.angeloo.mystica.Components.Items.Equipment.EquipmentDisplayRenderer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.CustomEvents.HudUpdateEvent;
 import me.angeloo.mystica.CustomEvents.RemoveStealthEffectEvent;
@@ -25,7 +26,7 @@ import org.bukkit.util.Vector;
 public class ChaosVoid extends BaseAbility {
 
     private final Mystica main;
-
+    private final EquipmentDisplayRenderer equipmentDisplayRenderer;
     private final ProfileManager profileManager;
     private final AbilityManager abilityManager;
     private final StatusEffectManager statusEffectManager;
@@ -35,6 +36,7 @@ public class ChaosVoid extends BaseAbility {
     public ChaosVoid(Mystica main, AbilityManager manager){
         super("chaos_void");
         this.main = main;
+        equipmentDisplayRenderer = main.getEquipmentDisplayRenderer();
         profileManager = main.getProfileManager();
         abilityManager = manager;
         statusEffectManager = main.getStatusEffectManager();
@@ -77,12 +79,8 @@ public class ChaosVoid extends BaseAbility {
         caster.setInvisible(true);
 
         if(caster instanceof Player player){
-            player.getInventory().setItemInMainHand(null);
-            player.getInventory().setItemInOffHand(null);
-            player.getInventory().setHelmet(null);
-            player.getInventory().setChestplate(null);
-            player.getInventory().setLeggings(null);
-            player.getInventory().setBoots(null);
+            equipmentDisplayRenderer.clearArmor(player);
+            equipmentDisplayRenderer.clearWeapons(player);
         }
 
         abilityManager.setSkillCurrentlyCasting(caster, statusBarIcon());

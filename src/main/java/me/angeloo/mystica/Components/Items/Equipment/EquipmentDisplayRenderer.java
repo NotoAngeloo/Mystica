@@ -172,6 +172,31 @@ public class EquipmentDisplayRenderer {
 
     }
 
+    public void clearWeapons(Player player){
+        player.getInventory().setItemInMainHand(renderNothing());
+        player.getInventory().setItemInOffHand(renderNothing());
+    }
+
+    public void clearArmor(Player player){
+        player.getInventory().setHelmet(null);
+        player.getInventory().setChestplate(null);
+        player.getInventory().setLeggings(null);
+        player.getInventory().setBoots(null);
+    }
+
+    public void showWeapons(Player player){
+        MysticaEquipment weapon = profileManager.getAnyProfile(player).getPlayerEquipment().getWeapon();
+
+        if(weapon==null){
+            clearWeapons(player);
+            return;
+        }
+
+        ItemStack main = render(weapon);
+        player.getInventory().setItemInMainHand(main);
+        renderOffHand(player);
+    }
+
     private String resolveDisplayName(
             MysticaEquipment item
     ) {

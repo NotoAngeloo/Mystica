@@ -43,6 +43,8 @@ public class ShadowKnightPage extends GuiPage {
                 UiGlyphs.DEFAULT_BACKGROUND
         );
 
+        context.drawIcon(0, -105, UiGlyphs.SHADOW_KNIGHT_TITLE);
+
         /*
          * Decorative buttons
          */

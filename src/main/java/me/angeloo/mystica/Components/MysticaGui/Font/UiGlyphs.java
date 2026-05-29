@@ -40,6 +40,15 @@ public class UiGlyphs {
     public static Glyph WARRIOR_CHARACTER = new Glyph(52, 106, 3);
     public static Glyph SHADOW_KNIGHT_CHARACTER = new Glyph(52, 106, 3);
 
+    //no slot width, not meant to be used like that
+    public static Glyph ASSASSIN_TITLE = new Glyph(79, 27, 0);
+    public static Glyph ELEMENTALIST_TITLE = new Glyph(105, 24, 0);
+    public static Glyph MYSTIC_TITLE = new Glyph(60, 28, 0);
+    public static Glyph PALADIN_TITLE = new Glyph(67, 24, 0);
+    public static Glyph RANGER_TITLE = new Glyph(65, 29, 0);
+    public static Glyph SHADOW_KNIGHT_TITLE = new Glyph(133, 28, 0);
+    public static Glyph WARRIOR_TITLE = new Glyph(75, 24, 0);
+
     public static Glyph ASSASSIN_ICON = new Glyph(34,34,2);
     public static Glyph ELEMENTALIST_ICON = new Glyph(34,34,2);
     public static Glyph MYSTIC_ICON = new Glyph(34,34,2);
@@ -164,6 +173,14 @@ public class UiGlyphs {
         RANGER_CHARACTER.addVariant(0, "\ue53a");
         SHADOW_KNIGHT_CHARACTER.addVariant(0, "\ue53b");
         WARRIOR_CHARACTER.addVariant(0, "\ue53c");
+
+        ASSASSIN_TITLE.addVariant(0, "\ue549");
+        ELEMENTALIST_TITLE.addVariant(0, "\ue54a");
+        MYSTIC_TITLE.addVariant(0, "\ue54b");
+        PALADIN_TITLE.addVariant(0, "\ue54c");
+        RANGER_TITLE.addVariant(0, "\ue54d");
+        SHADOW_KNIGHT_TITLE.addVariant(0, "\ue54e");
+        WARRIOR_TITLE.addVariant(0, "\ue54f");
 
         ASSASSIN_ICON.addVariant(6, "\ue530");
         ELEMENTALIST_ICON.addVariant(6, "\ue531");

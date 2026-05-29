@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.MysticaGui.Guis.Pages.ClassSelect;
 
+import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;
 import me.angeloo.mystica.Components.MysticaGui.Font.UiGlyphs;
 import me.angeloo.mystica.Components.MysticaGui.GuiButton;
@@ -8,9 +9,12 @@ import me.angeloo.mystica.Components.MysticaGui.GuiSession;
 import me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect;
 import me.angeloo.mystica.Components.MysticaGui.Guis.Pages.GuiPage;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderContext;
+import me.angeloo.mystica.Utility.TextRenderer.LineData;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
+import java.util.List;
 import java.util.Set;
 
 public class AssassinPage extends GuiPage {
@@ -28,7 +32,6 @@ public class AssassinPage extends GuiPage {
         this.guiManager = guiManager;
     }
 
-    //TODO:subclass tabs
 
     @Override
     protected void build(
@@ -44,6 +47,15 @@ public class AssassinPage extends GuiPage {
                 -305,
                 UiGlyphs.DEFAULT_BACKGROUND
         );
+
+        context.drawIcon(0, -105, UiGlyphs.ASSASSIN_TITLE);
+
+
+        /*List<LineData> title = List.of(
+                new LineData(ChatColor.of(PlayerClass.ASSASSIN.getColor()) + PlayerClass.ASSASSIN.getDisplayName(), 0)
+        );
+
+        context.drawText(0, 0, title);*/
 
         /*
          * Decorative buttons

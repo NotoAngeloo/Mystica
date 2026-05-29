@@ -43,6 +43,8 @@ public class ElementalistPage extends GuiPage {
                 UiGlyphs.DEFAULT_BACKGROUND
         );
 
+        context.drawIcon(0, -105, UiGlyphs.ELEMENTALIST_TITLE);
+
         /*
          * Decorative buttons
          */

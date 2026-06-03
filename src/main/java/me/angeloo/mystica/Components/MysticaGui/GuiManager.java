@@ -11,6 +11,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -142,7 +143,11 @@ public class GuiManager{
         session.setLastRender(result);
         session.clearDirty();
 
-        Inventory inventory =
+        InventoryView view = player.getOpenInventory();
+
+        view.setTitle(ChatColor.WHITE + result.title());
+
+        /*Inventory inventory =
                 Bukkit.createInventory(
                         player,
                         54,
@@ -151,14 +156,14 @@ public class GuiManager{
 
         session.setInventory(
                 inventory
-        );
+        );*/
 
 
         //no on open method
 
-        player.openInventory(
+        /*player.openInventory(
                 inventory
-        );
+        );*/
     }
 
     /*

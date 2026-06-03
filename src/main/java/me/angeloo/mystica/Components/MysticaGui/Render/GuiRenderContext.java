@@ -1,6 +1,8 @@
 package me.angeloo.mystica.Components.MysticaGui.Render;
 
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.BackgroundDrawCommand.BackgroundDrawCommand;
+import me.angeloo.mystica.Components.MysticaGui.DrawCommand.ContainerCommand.DrawNineSliceCommand;
+import me.angeloo.mystica.Components.MysticaGui.DrawCommand.ContainerCommand.DrawTextContainerCommand;
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.DrawCommand;
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.DrawIconCommand.DrawIconCommand;
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.SlotDrawCommand.DrawSlotCommand;
@@ -8,7 +10,6 @@ import me.angeloo.mystica.Components.MysticaGui.DrawCommand.TextDrawCommand.Draw
 import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;
 import me.angeloo.mystica.Components.MysticaGui.GuiSession;
 import me.angeloo.mystica.Utility.TextRenderer.LineData;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -131,6 +132,24 @@ public class GuiRenderContext {
                         data
                 )
         );
+    }
+
+    //perhaps in future make this able to make a container for non-text
+    public void drawTextContainer(
+            int x,
+            int y,
+            List<String> lines
+    ){
+
+        draw(
+                RenderLayer.Container,
+                new DrawTextContainerCommand(
+                        x,
+                        y,
+                        lines
+                )
+        );
+
     }
 
     /*

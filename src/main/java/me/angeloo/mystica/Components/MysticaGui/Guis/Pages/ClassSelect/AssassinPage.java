@@ -14,6 +14,8 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -51,15 +53,23 @@ public class AssassinPage extends GuiPage {
         context.drawIcon(0, -105, UiGlyphs.ASSASSIN_TITLE);
 
 
-        /*List<LineData> title = List.of(
-                new LineData(ChatColor.of(PlayerClass.ASSASSIN.getColor()) + PlayerClass.ASSASSIN.getDisplayName(), 0)
-        );
+        List<String> description = PlayerClass.ASSASSIN.getDescription();
 
-        context.drawText(0, 0, title);*/
+        context.drawTextContainer(0, 0, description);
+
+        /*List<LineData> datas = new ArrayList<>();
+
+        for(String line : description){
+            LineData data = new LineData(ChatColor.of(Color.BLACK) + line, 8);
+            datas.add(data);
+        }
+
+        context.drawText(-105, -10, datas);*/
 
         /*
          * Decorative buttons
          */
+
 
         context.drawIcon(6, -108, UiGlyphs.RANGER_ICON);
 

@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class StringRenderer {
 
-    private final Map<String, Integer> widthMap = new HashMap<>();
+    private final Map<String, Integer> stringGlyphWidthMap = new HashMap<>();
 
     private static final int[] PIXELS = {64, 32, 16, 8, 4, 2, 1};
 
@@ -65,7 +65,10 @@ public class StringRenderer {
             }
 
             int width = line.getWidth();
-            widthMap.put(sb.toString(), width);
+            stringGlyphWidthMap.put(sb.toString(), width);
+
+            //Bukkit.getLogger().info("placing line: " + line);
+            //stringWidthMap.put(line.getGlyphs()., width);
 
             if(lines.getLast()!=line){
                 //append negative depending on space of line
@@ -89,9 +92,12 @@ public class StringRenderer {
         return sb.toString();
     }
 
-    public int getWidth(String text){
-
-        return widthMap.getOrDefault(text, 0);
+    public int getWidthStringGlyph(String text){
+        return stringGlyphWidthMap.getOrDefault(text, 0);
     }
+
+
+
+
 
 }

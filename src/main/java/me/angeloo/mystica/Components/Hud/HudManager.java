@@ -8,6 +8,7 @@ import me.angeloo.mystica.Components.CombatSystem.TargetManager;
 import me.angeloo.mystica.Components.EntityBehavior.AggroManager;
 import me.angeloo.mystica.Components.Hud.Abilties.AbilityBarRenderer;
 import me.angeloo.mystica.Components.Hud.StatusEffects.StatusEffectRenderer;
+import me.angeloo.mystica.Components.MysticaGui.Font.MinecraftCharWidths;
 import me.angeloo.mystica.Components.Parties.MysticaPartyManager;
 import me.angeloo.mystica.Components.ProfileComponents.EquipSkills;
 import me.angeloo.mystica.Components.ProfileComponents.Profile;
@@ -33,7 +34,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static me.angeloo.mystica.Mystica.*;
 
 
 public class HudManager {
@@ -65,195 +65,7 @@ public class HudManager {
     private final Map<UUID, String> entityBarData = new HashMap<>();
 
 
-    private static final Map<Character, Integer> MINECRAFT_CHAR_WIDTHS = Map.<Character, Integer>ofEntries(
-            Map.entry('!', 1),
-            Map.entry('"', 4),
-            Map.entry('#', 5),
-            Map.entry('$', 5),
-            Map.entry('%', 5),
-            Map.entry('&', 5),
-            Map.entry('\'', 2),
-            Map.entry('(', 4),
-            Map.entry(')', 4),
-            Map.entry('*', 4),
-            Map.entry('+', 5),
-            Map.entry(',', 1),
-            Map.entry('-', 5),
-            Map.entry('.', 1),
-            Map.entry('/', 5),
-            Map.entry('0', 5),
-            Map.entry('1', 5),
-            Map.entry('2', 5),
-            Map.entry('3', 5),
-            Map.entry('4', 5),
-            Map.entry('5', 5),
-            Map.entry('6', 5),
-            Map.entry('7', 5),
-            Map.entry('8', 5),
-            Map.entry('9', 5),
-            Map.entry(':', 1),
-            Map.entry(';', 1),
-            Map.entry('<', 4),
-            Map.entry('=', 5),
-            Map.entry('>', 4),
-            Map.entry('?', 5),
-            Map.entry('@', 6),
-            Map.entry('A', 5),
-            Map.entry('B', 5),
-            Map.entry('C', 5),
-            Map.entry('D', 5),
-            Map.entry('E', 5),
-            Map.entry('F', 5),
-            Map.entry('G', 5),
-            Map.entry('H', 5),
-            Map.entry('I', 3),
-            Map.entry('J', 5),
-            Map.entry('K', 5),
-            Map.entry('L', 5),
-            Map.entry('M', 5),
-            Map.entry('N', 5),
-            Map.entry('O', 5),
-            Map.entry('P', 5),
-            Map.entry('Q', 5),
-            Map.entry('R', 5),
-            Map.entry('S', 5),
-            Map.entry('T', 5),
-            Map.entry('U', 5),
-            Map.entry('V', 5),
-            Map.entry('W', 5),
-            Map.entry('X', 5),
-            Map.entry('Y', 5),
-            Map.entry('Z', 5),
-            Map.entry('[', 3),
-            Map.entry('\\', 5),
-            Map.entry(']', 3),
-            Map.entry('^', 5),
-            Map.entry('_', 5),
-            Map.entry('`', 2),
-            Map.entry('a', 5),
-            Map.entry('b', 5),
-            Map.entry('c', 5),
-            Map.entry('d', 5),
-            Map.entry('e', 5),
-            Map.entry('f', 4),
-            Map.entry('g', 5),
-            Map.entry('h', 5),
-            Map.entry('i', 1),
-            Map.entry('j', 5),
-            Map.entry('k', 4),
-            Map.entry('l', 2),
-            Map.entry('m', 5),
-            Map.entry('n', 5),
-            Map.entry('o', 5),
-            Map.entry('p', 5),
-            Map.entry('q', 5),
-            Map.entry('r', 5),
-            Map.entry('s', 5),
-            Map.entry('t', 3),
-            Map.entry('u', 5),
-            Map.entry('v', 5),
-            Map.entry('w', 5),
-            Map.entry('x', 5),
-            Map.entry('y', 5),
-            Map.entry('z', 5),
-            Map.entry('{', 4),
-            Map.entry('|', 1),
-            Map.entry('}', 4),
-            Map.entry('~', 6),
-            Map.entry('¡', 1),
-            Map.entry('¢', 3),
-            Map.entry('£', 5),
-            Map.entry('¤', 3),
-            Map.entry('¥', 3),
-            Map.entry('¦', 0),
-            Map.entry('§', -2),
-            Map.entry('¨', 2),
-            Map.entry('©', 4),
-            Map.entry('ª', 5),
-            Map.entry('«', 5),
-            Map.entry('¬', 5),
-            Map.entry('®', 6),
-            Map.entry('¯', 3),
-            Map.entry('°', 6),
-            Map.entry('±', 6),
-            Map.entry('²', 5),
-            Map.entry('³', 2),
-            Map.entry('´', 1),
-            Map.entry('µ', 2),
-            Map.entry('¶', 3),
-            Map.entry('·', 5),
-            Map.entry('¸', 1),
-            Map.entry('¹', 1),
-            Map.entry('º', 5),
-            Map.entry('»', 5),
-            Map.entry('¼', 5),
-            Map.entry('½', 5),
-            Map.entry('¾', 3),
-            Map.entry('¿', 5),
-            Map.entry('À', 5),
-            Map.entry('Á', 5),
-            Map.entry('Â', 5),
-            Map.entry('Ã', 3),
-            Map.entry('Ä', 5),
-            Map.entry('Å', 5),
-            Map.entry('Æ', 5),
-            Map.entry('Ç', 5),
-            Map.entry('È', 5),
-            Map.entry('É', 5),
-            Map.entry('Ê', 5),
-            Map.entry('Ë', 5),
-            Map.entry('Ì', 2),
-            Map.entry('Í', 3),
-            Map.entry('Î', 2),
-            Map.entry('Ï', 2),
-            Map.entry('Ð', 3),
-            Map.entry('Ñ', 5),
-            Map.entry('Ò', 3),
-            Map.entry('Ó', 5),
-            Map.entry('Ô', 5),
-            Map.entry('Õ', 5),
-            Map.entry('Ö', 5),
-            Map.entry('×', 3),
-            Map.entry('Ø', 5),
-            Map.entry('Ù', 3),
-            Map.entry('Ú', 5),
-            Map.entry('Û', 3),
-            Map.entry('Ü', 5),
-            Map.entry('Ý', 3),
-            Map.entry('Þ', 3),
-            Map.entry('ß', 5),
-            Map.entry('à', 5),
-            Map.entry('á', 5),
-            Map.entry('â', 5),
-            Map.entry('ã', 5),
-            Map.entry('ä', 5),
-            Map.entry('å', 5),
-            Map.entry('æ', 5),
-            Map.entry('ç', 5),
-            Map.entry('è', 5),
-            Map.entry('é', 5),
-            Map.entry('ê', 5),
-            Map.entry('ë', 5),
-            Map.entry('ì', 2),
-            Map.entry('í', 2),
-            Map.entry('î', 5),
-            Map.entry('ï', 3),
-            Map.entry('ð', 3),
-            Map.entry('ñ', 5),
-            Map.entry('ò', 5),
-            Map.entry('ó', 5),
-            Map.entry('ô', 5),
-            Map.entry('õ', 5),
-            Map.entry('ö', 5),
-            Map.entry('÷', 6),
-            Map.entry('ø', 5),
-            Map.entry('ù', 5),
-            Map.entry('ú', 5),
-            Map.entry('û', 5),
-            Map.entry('ü', 5),
-            Map.entry('ý', 3),
-            Map.entry('þ', 2)
-    );
+
 
     private static final int[] PIXELS = {64, 32, 16, 8, 4, 2, 1};
 
@@ -1042,7 +854,7 @@ public class HudManager {
 
                     int maxNameLength = 141;
                     String name = truncateName(entity.getName(), maxNameLength);
-                    int nameWidth = getPixelWidth(name);
+                    int nameWidth = MinecraftCharWidths.getPixelWidth(name);
                     int padding = maxNameLength - nameWidth;
 
                     entityData.append(name);
@@ -1075,7 +887,7 @@ public class HudManager {
 
                     int maxNameLength = 96;
                     String name = truncateName(entity.getName(), maxNameLength);
-                    int nameWidth = getPixelWidth(name);
+                    int nameWidth = MinecraftCharWidths.getPixelWidth(name);
                     int padding = maxNameLength - nameWidth;
                     entityData.append(name);
 
@@ -1112,7 +924,7 @@ public class HudManager {
                     int maxNameLength = 96;
                     String name = truncateName(entity.getName(), maxNameLength);
                     entityData.append(name);
-                    int nameWidth = getPixelWidth(name);
+                    int nameWidth = MinecraftCharWidths.getPixelWidth(name);
                     int padding = maxNameLength - nameWidth;
 
                     // pad remaining space
@@ -1141,7 +953,8 @@ public class HudManager {
                 int maxNameLength = 96;
                 String name = truncateName(entity.getName(), maxNameLength);
                 entityData.append(name);
-                int nameWidth = getPixelWidth(name);
+                int nameWidth = MinecraftCharWidths.getPixelWidth(name);
+                //int nameWidth = getPixelWidth(name);
                 int padding = maxNameLength - nameWidth;
 
                 // pad remaining space
@@ -1177,7 +990,8 @@ public class HudManager {
 
         for (char c : name.toCharArray()) {
 
-            int charWidth = MINECRAFT_CHAR_WIDTHS.getOrDefault(c, -1) + 1;
+            int charWidth = MinecraftCharWidths.MINECRAFT_CHAR_WIDTHS.getOrDefault(c, -1) +1;
+            //int charWidth = MINECRAFT_CHAR_WIDTHS.getOrDefault(c, -1) + 1;
 
             //4 is … length
             if (width + charWidth + 6 > maxWidth) {
@@ -1193,7 +1007,7 @@ public class HudManager {
     }
 
 
-    int getPixelWidth(String text) {
+    /*int getPixelWidth(String text) {
 
         text = text.replaceAll("§.", "");
 
@@ -1204,7 +1018,7 @@ public class HudManager {
         }
 
         return width;
-    }
+    }*/
 
     private String targetHealthBar(LivingEntity entity){
 
@@ -1602,7 +1416,7 @@ public class HudManager {
         builder0.append("\uF80B\uF80A\uF805");
         String nameString0 = getTeamNameString(name, entity.getUniqueId(), 0);
         builder0.append(nameString0);
-        int width = stringRenderer.getWidth(nameString0);
+        int width = stringRenderer.getWidthStringGlyph(nameString0);
         int padding = maxNameLength - width;
 
         // pad remaining space
@@ -1635,7 +1449,7 @@ public class HudManager {
         builder1.append("\uF80B\uF80A\uF805");
         String nameString1 = getTeamNameString(name, entity.getUniqueId(), 1);
         builder1.append(nameString1);
-        width = stringRenderer.getWidth(nameString1);
+        width = stringRenderer.getWidthStringGlyph(nameString1);
         padding = maxNameLength - width;
 
         // pad remaining space
@@ -1667,7 +1481,7 @@ public class HudManager {
         builder2.append("\uF80B\uF80A\uF805");
         String nameString2 = getTeamNameString(name, entity.getUniqueId(), 2);
         builder2.append(nameString2);
-        width = stringRenderer.getWidth(nameString2);
+        width = stringRenderer.getWidthStringGlyph(nameString2);
         padding = maxNameLength - width;
 
         // pad remaining space
@@ -1699,7 +1513,7 @@ public class HudManager {
         builder3.append("\uF80B\uF80A\uF805");
         String nameString3 = getTeamNameString(name, entity.getUniqueId(), 3);
         builder3.append(nameString3);
-        width = stringRenderer.getWidth(nameString3);
+        width = stringRenderer.getWidthStringGlyph(nameString3);
         padding = maxNameLength - width;
 
         // pad remaining space
@@ -1945,7 +1759,7 @@ public class HudManager {
             teamData.append("\uF828\uF821");
             String squadName = getSquadName(name, member.getUniqueId(), slot);
             teamData.append(squadName);
-            int width = stringRenderer.getWidth(squadName);
+            int width = stringRenderer.getWidthStringGlyph(squadName);
             //do some padding
             int padding = maxNameLength - width;
 

@@ -15,12 +15,14 @@ public class GuiAssembler {
 
     private final BackgroundLayerAssembler backgroundAssembler;
     private final IconLayerAssembler iconLayerAssembler;
+    private final TextContainerAssembler textContainerAssembler;
     private final ButtonLayerAssembler buttonAssembler ;
     private final TextLayerAssembler textLayerAssembler;
 
     public GuiAssembler(Mystica main){
         backgroundAssembler = new BackgroundLayerAssembler();
         iconLayerAssembler  = new IconLayerAssembler();
+        textContainerAssembler = new TextContainerAssembler(main);
         buttonAssembler = new ButtonLayerAssembler();
         textLayerAssembler = new TextLayerAssembler(main);
     }
@@ -48,6 +50,8 @@ public class GuiAssembler {
 
                 case Icons -> iconLayerAssembler.assemble(builder, cursor, commands);
 
+                case Container -> textContainerAssembler.assemble(builder, cursor, commands);
+
                 case Buttons ->
                         buttonAssembler.assemble(
                                 builder,
@@ -72,21 +76,4 @@ public class GuiAssembler {
         );
     }
 
-    /*private void assembleText(
-            StringBuilder builder,
-            List<DrawCommand> commands
-    ) {
-
-        for(DrawCommand command
-                : commands) {
-
-            if(command
-                    instanceof DrawTextCommand text) {
-
-                builder.append(
-                        text.text()
-                );
-            }
-        }
-    }*/
 }

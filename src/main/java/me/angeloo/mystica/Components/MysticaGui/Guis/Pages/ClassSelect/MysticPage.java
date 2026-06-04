@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.MysticaGui.Guis.Pages.ClassSelect;
 
+import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;
 import me.angeloo.mystica.Components.MysticaGui.Font.UiGlyphs;
 import me.angeloo.mystica.Components.MysticaGui.GuiButton;
@@ -11,6 +12,7 @@ import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderContext;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
+import java.util.List;
 import java.util.Set;
 
 public class MysticPage extends GuiPage{
@@ -44,6 +46,9 @@ public class MysticPage extends GuiPage{
         );
 
         context.drawIcon(0, -105, UiGlyphs.MYSTIC_TITLE);
+
+        List<String> description = PlayerClass.MYSTIC.getDescription();
+        context.drawTextContainer(-105, -16, description);
 
         /*
          * Decorative buttons

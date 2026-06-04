@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.MysticaGui.Guis.Pages.ClassSelect;
 
+import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;
 import me.angeloo.mystica.Components.MysticaGui.Font.UiGlyphs;
 import me.angeloo.mystica.Components.MysticaGui.GuiButton;
@@ -11,6 +12,7 @@ import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderContext;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
+import java.util.List;
 import java.util.Set;
 
 public class ShadowKnightPage extends GuiPage {
@@ -44,6 +46,9 @@ public class ShadowKnightPage extends GuiPage {
         );
 
         context.drawIcon(0, -105, UiGlyphs.SHADOW_KNIGHT_TITLE);
+
+        List<String> description = PlayerClass.SHADOW_KNIGHT.getDescription();
+        context.drawTextContainer(-105, -16, description);
 
         /*
          * Decorative buttons

@@ -52,21 +52,24 @@ public class TextContainerAssembler {
             }
 
             TextDimensions dim = measure(lines); //in pixels
-            ContainerSize size = calculateSize(dim);
+            ContainerSize size = calculateSize(dim, container.y());
 
             /*
              * 2. Render 9-slice background
              */
 
-            drawNineSlice(builder, container.x(), container.y(), size);
+            cursor.seek(builder, container.x());
 
+            drawNineSlice(builder, size);
+
+            cursor.advance(size.columns());
             /*
              * 3. Render text inside (NO cursor advancement per line)
              */
 
             List<StringGlyph> glyphs = layoutEngine.layout(lines);
 
-            cursor.seek(builder, container.x() + PADDING_X);
+            cursor.seek(builder, container.x() + 14);
 
             builder.append(
                     stringRenderer.render(
@@ -104,27 +107,52 @@ public class TextContainerAssembler {
         return new TextDimensions(maxWidth, totalHeight);
     }
 
-    //TODO: the text and the grid are on two different measurment scales. the grid needs to be more generous
 
-    private ContainerSize calculateSize(TextDimensions dim) {
+    private ContainerSize calculateSize(
+            TextDimensions dim,
+            int textY
+    ) {
 
         int width = dim.width() + (PADDING_X * 2);
-        int height = dim.height() + (PADDING_Y * 2);
 
+        int cols = Math.max(
+                2,
+                (int)Math.ceil(width / 16.0)
+        );
 
-        int cols = Math.max(2,(int) Math.ceil((double)width/16));
-        int rows = Math.max(2,(int) Math.ceil((double)height/16));
+        /*
+         * Determine vertical bands touched by text.
+         */
 
-        return new ContainerSize(cols, rows);
+        int topVariant = Math.max(0, (-textY) / 16);
+
+        int bottomY = textY - dim.height();
+
+        int bottomVariant = Math.max(
+                0,
+                (int)Math.ceil((-bottomY) / 16.0) - 1
+        );
+
+        int rows = (bottomVariant - topVariant) + 1;
+
+        rows = Math.max(2, rows);
+
+        return new ContainerSize(
+                cols,
+                rows,
+                topVariant
+        );
     }
 
 
-    private record ContainerSize(int columns, int rows) {}
+    private record ContainerSize(
+            int columns,
+            int rows,
+            int startVariant
+    ) {}
 
     private void drawNineSlice(
             StringBuilder builder,
-            int x,
-            int y,
             ContainerSize size
     ) {
         int w = size.columns();
@@ -136,7 +164,7 @@ public class TextContainerAssembler {
 
                 Glyph region = resolveRegion(dx, dy, w, h);
 
-                int variant = dy;
+                int variant = size.startVariant() + dy;
 
                 builder.append(region.getVariant(variant).unicode());
                 builder.append(UiSpacing.offset(-1));
@@ -171,17 +199,6 @@ public class TextContainerAssembler {
         return NineSlice.center;
     }
 
-    private int rowBand(int y, int h) {
-
-        if (h <= 1) return 0;
-
-        if (h <= 14) {
-            return y; // direct mapping, perfect case
-        }
-
-        // compress into 0–13 range
-        return (int) ((y / (double)(h - 1)) * 13);
-    }
 
 
 

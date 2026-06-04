@@ -48,8 +48,9 @@ public enum PlayerClass {
             Material.CYAN_DYE,
 
             List.of(
-                    "Powerful spellcasters who burst",
-                    "their enemies from a distance")
+                    "Powerful spellcasters who",
+                    "burst their enemies from a",
+                    "distance")
     ),
 
 
@@ -61,8 +62,8 @@ public enum PlayerClass {
             Material.PURPLE_DYE,
 
             List.of(
-                    "Spellcasters who balance support",
-                    "skills with damage"
+                    "Spellcasters who balance",
+                    "support skills with damage"
             )
     ),
 

@@ -54,17 +54,8 @@ public class AssassinPage extends GuiPage {
 
 
         List<String> description = PlayerClass.ASSASSIN.getDescription();
+        context.drawTextContainer(-105, -16, description);
 
-        context.drawTextContainer(0, 0, description);
-
-        /*List<LineData> datas = new ArrayList<>();
-
-        for(String line : description){
-            LineData data = new LineData(ChatColor.of(Color.BLACK) + line, 8);
-            datas.add(data);
-        }
-
-        context.drawText(-105, -10, datas);*/
 
         /*
          * Decorative buttons

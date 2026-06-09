@@ -1,38 +1,14 @@
 package me.angeloo.mystica.Utility.Listeners;
 
 
-import com.google.gson.Gson;
-import me.angeloo.mystica.Components.Guis.Abilities.AbilityInventory;
-import me.angeloo.mystica.Components.Guis.Party.DungeonSelect;
-import me.angeloo.mystica.Components.Guis.Party.PartyInventory;
-import me.angeloo.mystica.Components.Guis.Storage.BagEquipmentFunctions;
-import me.angeloo.mystica.Components.Guis.Storage.GenericDiscard;
-import me.angeloo.mystica.Components.Guis.Storage.MysticaBag;
-import me.angeloo.mystica.Components.Guis.Storage.MysticaBagCollection;
-import me.angeloo.mystica.Components.Items.*;
-import me.angeloo.mystica.Components.Guis.CustomInventoryManager;
 import me.angeloo.mystica.Components.Items.Equipment.EquipmentDisplayRenderer;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.DisplayWeapons;
-import me.angeloo.mystica.Components.Hud.CooldownDisplayer;
-import me.angeloo.mystica.Utility.InventoryItemGetter;
-import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import java.util.*;
 
 public class InventoryEventListener implements Listener {
 

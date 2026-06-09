@@ -1,6 +1,6 @@
 package me.angeloo.mystica.Components.Commands;
 
-import me.angeloo.mystica.Components.Guis.Misc.GearSwapInventory;
+import me.angeloo.mystica.Components.OldGuis.Misc.GearSwapInventory;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

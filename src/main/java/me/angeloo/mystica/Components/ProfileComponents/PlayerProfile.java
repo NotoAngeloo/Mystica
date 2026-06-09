@@ -1,7 +1,7 @@
 package me.angeloo.mystica.Components.ProfileComponents;
 
 import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
-import me.angeloo.mystica.Components.Guis.Storage.MysticaBagCollection;
+import me.angeloo.mystica.Components.OldGuis.Storage.MysticaBagCollection;
 import me.angeloo.mystica.Components.Quests.Progress.QuestProgress;
 import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 

@@ -11,7 +11,7 @@ import me.angeloo.mystica.Components.Creatures.CreaturesAndCharactersManager;
 import me.angeloo.mystica.Components.EntityBehavior.AggroManager;
 import me.angeloo.mystica.Components.EntityBehavior.AggroTick;
 import me.angeloo.mystica.Components.EntityBehavior.FakePlayerAiManager;
-import me.angeloo.mystica.Components.Guis.Equipment.EquipmentUpgradeManager;
+import me.angeloo.mystica.Components.OldGuis.Equipment.EquipmentUpgradeManager;
 import me.angeloo.mystica.Components.Hud.BossCastingManager;
 import me.angeloo.mystica.Components.Hud.DamageIndicator.DamageHudManager;
 import me.angeloo.mystica.Components.Hud.HudManager;

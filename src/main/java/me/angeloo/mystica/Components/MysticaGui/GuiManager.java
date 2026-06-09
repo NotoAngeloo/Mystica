@@ -1,6 +1,6 @@
 package me.angeloo.mystica.Components.MysticaGui;
 
-import me.angeloo.mystica.Components.MysticaGui.Guis.Pages.GuiPage;
+import me.angeloo.mystica.Components.MysticaGui.Guis.GuiPage;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderResult;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderer;
 import net.md_5.bungee.api.ChatColor;

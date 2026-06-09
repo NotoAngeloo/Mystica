@@ -1,6 +1,5 @@
 package me.angeloo.mystica.Components.Commands;
 
-import me.angeloo.mystica.Components.Guis.Equipment.EquipmentInventory;
 import me.angeloo.mystica.Components.ProfileComponents.ProfileManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.command.Command;

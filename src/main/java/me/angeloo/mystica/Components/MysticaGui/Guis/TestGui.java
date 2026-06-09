@@ -1,7 +1,6 @@
 package me.angeloo.mystica.Components.MysticaGui.Guis;
 
 import me.angeloo.mystica.Components.MysticaGui.Gui;
-import me.angeloo.mystica.Components.MysticaGui.Guis.Pages.GuiPage;
 
 
 public class TestGui extends Gui {

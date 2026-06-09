@@ -1,7 +1,6 @@
 package me.angeloo.mystica.Components.Commands;
 
 import me.angeloo.mystica.Components.Quests.Quest;
-import me.angeloo.mystica.Components.Guis.QuestInventories.QuestAcceptInventory;
 import me.angeloo.mystica.Components.Quests.QuestManager;
 import me.angeloo.mystica.Mystica;
 import org.bukkit.Bukkit;

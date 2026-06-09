@@ -2,7 +2,7 @@ package me.angeloo.mystica.Components.Commands;
 
 import me.angeloo.mystica.Components.MysticaGui.GuiManager;
 
-import me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect;
+import me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect.ClassSelect;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

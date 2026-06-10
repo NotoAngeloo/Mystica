@@ -36,7 +36,9 @@ import me.angeloo.mystica.Utility.Listeners.MMListeners;
 import me.angeloo.mystica.Utility.Logic.PveChecker;
 import me.angeloo.mystica.Utility.Logic.StealthTargetBlacklist;
 import me.angeloo.mystica.Utility.MechanicCircle.CircleCommand;
-import me.angeloo.mystica.Utility.TextRenderer.*;
+import me.angeloo.mystica.Utility.ShapeRenderer.*;
+import me.angeloo.mystica.Utility.ShapeRenderer.Gradient.GradientRenderers;
+import me.angeloo.mystica.Utility.ShapeRenderer.Text.*;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.World;
@@ -55,6 +57,7 @@ public final class Mystica extends JavaPlugin{
 
     private LayoutEngine layoutEngine;
     private StringRenderer stringRenderer;
+    private GradientRenderers gradientRenderers;
 
     private CreaturesAndCharactersManager creaturesAndCharactersManager;
 
@@ -141,6 +144,8 @@ public final class Mystica extends JavaPlugin{
         //Bukkit.getLogger().info(glyphMap.keySet().size() + " chars registered");
 
         CharGlyphPreComputer.precomputeAll(charGlyphAtlas, pixelGlyphRegistry);
+
+        gradientRenderers = new GradientRenderers(pixelGlyphRegistry);
 
         layoutEngine = new LayoutEngine(charGlyphAtlas);
         stringRenderer = new StringRenderer();
@@ -495,4 +500,7 @@ public final class Mystica extends JavaPlugin{
         return equipmentDisplayRenderer;
     }
 
+    public GradientRenderers getGradientRenderers() {
+        return gradientRenderers;
+    }
 }

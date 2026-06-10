@@ -1,4 +1,4 @@
-package me.angeloo.mystica.Utility.TextRenderer;
+package me.angeloo.mystica.Utility.ShapeRenderer;
 
 public class PixelGlyph {
 

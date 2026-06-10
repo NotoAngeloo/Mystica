@@ -1,18 +1,21 @@
 package me.angeloo.mystica.Components.MysticaGui.Render;
 
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.BackgroundDrawCommand.BackgroundDrawCommand;
-import me.angeloo.mystica.Components.MysticaGui.DrawCommand.ContainerCommand.DrawNineSliceCommand;
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.ContainerCommand.DrawTextContainerCommand;
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.DrawCommand;
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.DrawIconCommand.DrawIconCommand;
+import me.angeloo.mystica.Components.MysticaGui.DrawCommand.GradientCommand.DrawGradientCommand;
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.SlotDrawCommand.DrawSlotCommand;
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.TextDrawCommand.DrawTextCommand;
 import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;
 import me.angeloo.mystica.Components.MysticaGui.GuiSession;
-import me.angeloo.mystica.Utility.TextRenderer.LineData;
+import me.angeloo.mystica.Utility.ShapeRenderer.Gradient.GradientDirection;
+import me.angeloo.mystica.Utility.ShapeRenderer.Text.LineData;
 import org.bukkit.entity.Player;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 public class GuiRenderContext {
 
@@ -150,6 +153,29 @@ public class GuiRenderContext {
                 )
         );
 
+    }
+
+    public void drawGradient(
+            int x,
+            int y,
+            int width,
+            int height,
+            Color start,
+            Color end,
+            GradientDirection direction
+    ){
+        draw(
+                RenderLayer.Icons,
+                new DrawGradientCommand(
+                        x,
+                        y,
+                        width,
+                        height,
+                        start,
+                        end,
+                        direction
+                )
+        );
     }
 
     /*

@@ -1,3 +1,3 @@
-package me.angeloo.mystica.Utility.TextRenderer;
+package me.angeloo.mystica.Utility.ShapeRenderer.Text;
 
 public record LineData(String text, int nextLineOffset) {}

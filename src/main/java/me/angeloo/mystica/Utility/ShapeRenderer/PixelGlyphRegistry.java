@@ -1,6 +1,4 @@
-package me.angeloo.mystica.Utility.TextRenderer;
-
-import org.bukkit.Bukkit;
+package me.angeloo.mystica.Utility.ShapeRenderer;
 
 import java.util.HashMap;
 import java.util.Map;

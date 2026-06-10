@@ -1,4 +1,6 @@
-package me.angeloo.mystica.Utility.TextRenderer;
+package me.angeloo.mystica.Utility.ShapeRenderer.Text;
+
+import me.angeloo.mystica.Utility.ShapeRenderer.Text.RenderGlyph;
 
 public class StringGlyph {
 

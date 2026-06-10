@@ -21,7 +21,7 @@ public class GuiAssembler {
 
     public GuiAssembler(Mystica main){
         backgroundAssembler = new BackgroundLayerAssembler();
-        iconLayerAssembler  = new IconLayerAssembler();
+        iconLayerAssembler  = new IconLayerAssembler(main);
         textContainerAssembler = new TextContainerAssembler(main);
         buttonAssembler = new ButtonLayerAssembler();
         textLayerAssembler = new TextLayerAssembler(main);
@@ -39,8 +39,7 @@ public class GuiAssembler {
         for(RenderLayer layer
                 : RenderLayer.values()) {
 
-            List<DrawCommand> commands =
-                    context.getLayer(layer);
+            List<DrawCommand> commands = context.getLayer(layer);
 
             switch(layer) {
 

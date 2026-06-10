@@ -1,8 +1,7 @@
 package me.angeloo.mystica.Components.MysticaGui.DrawCommand.TextDrawCommand;
 
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.DrawCommand;
-import me.angeloo.mystica.Utility.TextRenderer.LineData;
-import net.md_5.bungee.api.ChatColor;
+import me.angeloo.mystica.Utility.ShapeRenderer.Text.LineData;
 
 import java.util.List;
 

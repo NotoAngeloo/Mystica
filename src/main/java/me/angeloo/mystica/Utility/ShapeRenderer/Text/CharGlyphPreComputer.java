@@ -1,6 +1,8 @@
-package me.angeloo.mystica.Utility.TextRenderer;
+package me.angeloo.mystica.Utility.ShapeRenderer.Text;
 
-import org.bukkit.Bukkit;
+import me.angeloo.mystica.Utility.ShapeRenderer.PixelGlyphRegistry;
+import me.angeloo.mystica.Utility.ShapeRenderer.Text.CharGlyph;
+import me.angeloo.mystica.Utility.ShapeRenderer.Text.CharGlyphAtlas;
 
 public class CharGlyphPreComputer {
 

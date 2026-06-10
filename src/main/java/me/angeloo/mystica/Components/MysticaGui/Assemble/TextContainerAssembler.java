@@ -5,11 +5,10 @@ import me.angeloo.mystica.Components.MysticaGui.DrawCommand.DrawCommand;
 import me.angeloo.mystica.Components.MysticaGui.Font.*;
 import me.angeloo.mystica.Components.MysticaGui.Render.RenderCursor;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.TextRenderer.LayoutEngine;
-import me.angeloo.mystica.Utility.TextRenderer.LineData;
-import me.angeloo.mystica.Utility.TextRenderer.StringGlyph;
-import me.angeloo.mystica.Utility.TextRenderer.StringRenderer;
-import org.bukkit.Bukkit;
+import me.angeloo.mystica.Utility.ShapeRenderer.Text.LayoutEngine;
+import me.angeloo.mystica.Utility.ShapeRenderer.Text.LineData;
+import me.angeloo.mystica.Utility.ShapeRenderer.Text.StringGlyph;
+import me.angeloo.mystica.Utility.ShapeRenderer.Text.StringRenderer;
 
 import java.util.ArrayList;
 import java.util.List;

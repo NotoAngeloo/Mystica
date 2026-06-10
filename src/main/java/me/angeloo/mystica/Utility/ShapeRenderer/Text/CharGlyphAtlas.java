@@ -1,4 +1,4 @@
-package me.angeloo.mystica.Utility.TextRenderer;
+package me.angeloo.mystica.Utility.ShapeRenderer.Text;
 
 import java.util.Collection;
 import java.util.HashMap;

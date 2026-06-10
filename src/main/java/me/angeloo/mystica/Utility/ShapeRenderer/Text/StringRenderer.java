@@ -1,6 +1,8 @@
-package me.angeloo.mystica.Utility.TextRenderer;
+package me.angeloo.mystica.Utility.ShapeRenderer.Text;
 
-import org.bukkit.Bukkit;
+import me.angeloo.mystica.Utility.ShapeRenderer.Text.CharGlyph;
+import me.angeloo.mystica.Utility.ShapeRenderer.Text.RenderGlyph;
+import me.angeloo.mystica.Utility.ShapeRenderer.Text.StringGlyph;
 
 import java.util.HashMap;
 import java.util.List;

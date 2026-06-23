@@ -1,6 +1,8 @@
 package me.angeloo.mystica.Components.MysticaGui.Render;
 
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.BackgroundDrawCommand.BackgroundDrawCommand;
+import me.angeloo.mystica.Components.MysticaGui.DrawCommand.ContainerCommand.CardStyle;
+import me.angeloo.mystica.Components.MysticaGui.DrawCommand.ContainerCommand.DescriptionCardCommand;
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.ContainerCommand.DrawTextContainerCommand;
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.DrawCommand;
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.DrawIconCommand.DrawIconCommand;
@@ -176,6 +178,25 @@ public class GuiRenderContext {
                         direction
                 )
         );
+    }
+
+    public void drawDescriptionCard(
+        int x,
+        int y,
+        String title,
+        List<String> description,
+        CardStyle style
+    ){
+
+        draw(
+                RenderLayer.DescriptionCard,
+                new DescriptionCardCommand(
+                        x,
+                        y,
+                        title,
+                        description,
+                        style
+                ));
     }
 
     /*

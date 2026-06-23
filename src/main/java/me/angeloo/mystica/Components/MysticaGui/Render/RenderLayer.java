@@ -6,6 +6,7 @@ public enum RenderLayer {
     Icons,
     Buttons,
     Container,
+    DescriptionCard,
     Text
 
 }

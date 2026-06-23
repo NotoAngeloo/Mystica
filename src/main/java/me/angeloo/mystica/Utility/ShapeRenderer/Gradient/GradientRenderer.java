@@ -6,7 +6,7 @@ public interface GradientRenderer {
 
     String render(
             DrawGradientCommand command,
-            int baseAScent
+            int baseAscent
     );
 
 }

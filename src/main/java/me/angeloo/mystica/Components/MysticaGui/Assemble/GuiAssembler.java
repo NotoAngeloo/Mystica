@@ -18,6 +18,7 @@ public class GuiAssembler {
     private final TextContainerAssembler textContainerAssembler;
     private final ButtonLayerAssembler buttonAssembler ;
     private final TextLayerAssembler textLayerAssembler;
+    private final DescriptionCardAssembler descriptionCardAssembler;
 
     public GuiAssembler(Mystica main){
         backgroundAssembler = new BackgroundLayerAssembler();
@@ -25,6 +26,7 @@ public class GuiAssembler {
         textContainerAssembler = new TextContainerAssembler(main);
         buttonAssembler = new ButtonLayerAssembler();
         textLayerAssembler = new TextLayerAssembler(main);
+        descriptionCardAssembler = new DescriptionCardAssembler(main, textContainerAssembler);
     }
 
     public GuiRenderResult assemble(
@@ -41,6 +43,7 @@ public class GuiAssembler {
 
             List<DrawCommand> commands = context.getLayer(layer);
 
+
             switch(layer) {
 
                 case Background -> backgroundAssembler.assemble(
@@ -50,6 +53,8 @@ public class GuiAssembler {
                 case Icons -> iconLayerAssembler.assemble(builder, cursor, commands);
 
                 case Container -> textContainerAssembler.assemble(builder, cursor, commands);
+
+                case DescriptionCard -> descriptionCardAssembler.assemble(builder, cursor, commands);
 
                 case Buttons ->
                         buttonAssembler.assemble(

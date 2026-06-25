@@ -2,6 +2,11 @@ package me.angeloo.mystica.Components.MysticaGui.Font;
 
 public class UiGlyphs {
 
+    /*
+
+        usage, these are used for glyphs of a different size than the png itself. i now have a raw png rasterizer if can be the real size.
+     */
+
     public static final Glyph LEFT_ARROW = new Glyph(16, 16, 1);
     public static final Glyph RIGHT_ARROW = new Glyph(16, 16, 1);
     public static final Glyph UP_ARROW = new Glyph(16, 16, 1);

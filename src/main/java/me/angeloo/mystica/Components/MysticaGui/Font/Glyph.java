@@ -1,5 +1,6 @@
 package me.angeloo.mystica.Components.MysticaGui.Font;
 
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +24,7 @@ public class Glyph {
         this.height = height;
         this.slotWidth = slotWidth;
     }
+
 
     public void addVariant(
             int ascent,
@@ -58,4 +60,6 @@ public class Glyph {
     public int slotWidth(){
         return slotWidth;
     }
+
+
 }

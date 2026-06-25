@@ -5,6 +5,7 @@ import me.angeloo.mystica.Components.MysticaGui.DrawCommand.ContainerCommand.Car
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.ContainerCommand.DescriptionCardCommand;
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.ContainerCommand.DrawTextContainerCommand;
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.DrawCommand;
+import me.angeloo.mystica.Components.MysticaGui.DrawCommand.DrawIconCommand.ConstructedIcon;
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.DrawIconCommand.DrawIconCommand;
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.GradientCommand.DrawGradientCommand;
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.SlotDrawCommand.DrawSlotCommand;
@@ -183,7 +184,8 @@ public class GuiRenderContext {
     public void drawDescriptionCard(
         int x,
         int y,
-        String title,
+        ConstructedIcon icon,
+        List<String> title,
         List<String> description,
         CardStyle style
     ){
@@ -193,6 +195,7 @@ public class GuiRenderContext {
                 new DescriptionCardCommand(
                         x,
                         y,
+                        icon,
                         title,
                         description,
                         style

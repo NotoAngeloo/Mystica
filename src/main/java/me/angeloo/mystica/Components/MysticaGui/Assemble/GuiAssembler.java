@@ -26,7 +26,7 @@ public class GuiAssembler {
         textContainerAssembler = new TextContainerAssembler(main);
         buttonAssembler = new ButtonLayerAssembler();
         textLayerAssembler = new TextLayerAssembler(main);
-        descriptionCardAssembler = new DescriptionCardAssembler(main, textContainerAssembler);
+        descriptionCardAssembler = new DescriptionCardAssembler(main, textContainerAssembler, iconLayerAssembler);
     }
 
     public GuiRenderResult assemble(

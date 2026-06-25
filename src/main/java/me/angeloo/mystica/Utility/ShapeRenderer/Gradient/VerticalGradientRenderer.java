@@ -18,35 +18,35 @@ public class VerticalGradientRenderer extends AbstractGradientRenderer{
     public String render(DrawGradientCommand command, int baseAscent){
         StringBuilder sb = new StringBuilder();
 
-        for (int y = 0; y < command.getHeight(); y++) {
+        for (int y = 0; y < command.height(); y++) {
 
             int ascent = baseAscent - y;
 
             Color color = GradientUtil.sample(
                     GradientDirection.VERTICAL,
-                    command.getStart(),
-                    command.getEnd(),
+                    command.start(),
+                    command.end(),
                     0,
                     y,
-                    command.getWidth(),
-                    command.getHeight()
+                    command.width(),
+                    command.height()
             );
 
             sb.append(ChatColor.of(color));
 
             char pixel = registry.get(ascent).getUnicode();
 
-            for (int x = 0; x < command.getWidth(); x++) {
+            for (int x = 0; x < command.width(); x++) {
 
                 sb.append(pixel);
 
-                if (x < command.getWidth() - 1) {
+                if (x < command.width() - 1) {
                     sb.append("\uF801");
                 }
             }
 
-            if(y!=command.getHeight()-1){
-                sb.append(UiSpacing.offset(-command.getWidth() - 1));
+            if(y!=command.height()-1){
+                sb.append(UiSpacing.offset(-command.width() - 1));
             }
 
 

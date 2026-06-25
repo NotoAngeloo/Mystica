@@ -192,7 +192,7 @@ public class MinecraftCharWidths {
             Map.entry('ü', 5),
             Map.entry('ý', 3),
             Map.entry('þ', 2),
-            Map.entry(' ', 3)
+            Map.entry(' ', 2)
     );
 
     public static int getPixelWidth(String text) {

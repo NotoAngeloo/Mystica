@@ -186,8 +186,7 @@ public class DescriptionCardAssembler {
 
             int lastLineWidth = MinecraftCharWidths.getPixelWidth(card.title().getLast());
 
-            //+1 one line +0 2 lines -1 3 lines +1 - (line number - 1). if 3 lines +1 - 2
-            cursor.advance(lastLineWidth+1-(card.title().size()-1));
+            cursor.advance(lastLineWidth+1);
 
             /*
              * ----------------------------------------

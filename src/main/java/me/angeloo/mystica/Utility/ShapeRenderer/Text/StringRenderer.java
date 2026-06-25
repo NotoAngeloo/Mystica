@@ -58,7 +58,7 @@ public class StringRenderer {
                 }
 
                 if(glyph.getChar() == ' ') {
-
+                    //+3
                     sb.append("\uF823");
                     continue;
                 }

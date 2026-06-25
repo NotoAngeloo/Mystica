@@ -60,11 +60,9 @@ public final class TextContainerLayout {
                 (int) Math.ceil(width / 16.0)
         );
 
-        int topVariant =
-                Math.max(0, (-textY) / 16);
+        int topVariant = Math.max(0, (-textY) / 16);
 
-        int bottomY =
-                textY - dim.height();
+        int bottomY = textY - dim.height();
 
         int bottomVariant =
                 Math.max(

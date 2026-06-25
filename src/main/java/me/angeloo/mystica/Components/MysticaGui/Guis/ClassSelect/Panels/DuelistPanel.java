@@ -43,18 +43,20 @@ public class DuelistPanel extends GuiPanel {
     private void drawContent(GuiRenderContext context){
 
         context.drawDescriptionCard(
-                80,
-                -64,
+                180,
+                -32,
 
                 ConstructedIcons.DUELIST_ICON,
 
                 List.of(
                         SubClass.DUELIST.getDisplayName(),
-                        "Role: " + SubClass.DUELIST.getRole().getDisplayName(),
-                        "A third line"
+                        SubClass.DUELIST.getRange().getDisplayName()
+                                + " " +SubClass.DUELIST.getRole().getDisplayName(),
+                        SubClass.DUELIST.getDamageType().getDisplayName()
                 ),
 
                 SubClass.DUELIST.getDescription(),
+
                 new CardStyle(
                         Color.RED,
                         Color.BLACK,

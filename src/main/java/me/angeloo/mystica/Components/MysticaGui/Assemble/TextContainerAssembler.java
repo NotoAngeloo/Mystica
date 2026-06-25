@@ -9,6 +9,7 @@ import me.angeloo.mystica.Utility.ShapeRenderer.Text.LayoutEngine;
 import me.angeloo.mystica.Utility.ShapeRenderer.Text.LineData;
 import me.angeloo.mystica.Utility.ShapeRenderer.Text.StringGlyph;
 import me.angeloo.mystica.Utility.ShapeRenderer.Text.StringRenderer;
+import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +44,6 @@ public class TextContainerAssembler {
                 lines.add(new LineData(s, 8));
             }
 
-            /*TextDimensions dim = measure(lines); //in pixels
-            ContainerSize size = calculateSize(dim, container.y());*/
 
             TextContainerLayout.ContainerLayout layout =
                     TextContainerLayout.measure(
@@ -57,13 +56,20 @@ public class TextContainerAssembler {
             drawNineSlice(builder, layout.container());
             //drawNineSlice(builder, size);
 
-            cursor.advance(layout.container().columns());
+            //2 cols
+
+            //Bukkit.getLogger().info(layout.container().columns() + " cols");
+
+            //each col 16 pix
+            cursor.advance((layout.container().columns()*16)+1);
             //cursor.advance(size.columns());
 
 
             List<StringGlyph> glyphs = layoutEngine.layout(lines);
 
-            cursor.seek(builder, container.x() + 14);
+           // cursor.seek(builder, container.x() + 14);
+            cursor.seek(builder, container.x() + TextContainerLayout.paddingX() + 1);
+
 
             builder.append(
                     stringRenderer.render(
@@ -72,8 +78,11 @@ public class TextContainerAssembler {
                     )
             );
 
+            int lastLineWidth = MinecraftCharWidths.getPixelWidth(container.lines().getLast());
 
-            cursor.advance(layout.container().columns());
+            cursor.advance(lastLineWidth+1);
+
+            //cursor.advance(layout.container().columns());
             //cursor.advance(size.columns());
         }
     }
@@ -99,7 +108,11 @@ public class TextContainerAssembler {
                 builder.append(UiSpacing.offset(-1));
             }
 
-            builder.append(UiSpacing.offset(-16 * w));
+            if(dy!=h-1){
+                builder.append(UiSpacing.offset(-16 * w));
+            }
+
+
         }
     }
 

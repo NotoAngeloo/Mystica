@@ -125,8 +125,16 @@ public class AssassinPage extends GuiPage {
                             InventoryClickEvent event
                     ) {
 
-                        gui.setSelectedSubclass(SubClass.DUELIST);
+                        if(gui.getSelectedSubclass() != SubClass.DUELIST){
+                            gui.setSelectedSubclass(SubClass.DUELIST);
+                            guiManager.refresh(p);
+                            return;
+                        }
+
+                        gui.setSelectedSubclass(null);
                         guiManager.refresh(p);
+                        return;
+
                     }
                 }
         );

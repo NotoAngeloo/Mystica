@@ -3,11 +3,12 @@ package me.angeloo.mystica.Components.MysticaGui.Assemble;
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.ContainerCommand.DescriptionCardCommand;
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.ContainerCommand.DrawTextContainerCommand;
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.DrawCommand;
+import me.angeloo.mystica.Components.MysticaGui.DrawCommand.DrawIconCommand.DrawConstructedIconCommand;
+import me.angeloo.mystica.Components.MysticaGui.DrawCommand.DrawIconCommand.DrawIconCommand;
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.GradientCommand.DrawGradientCommand;
 import me.angeloo.mystica.Components.MysticaGui.Font.MinecraftCharWidths;
 import me.angeloo.mystica.Components.MysticaGui.Render.RenderCursor;
 import me.angeloo.mystica.Mystica;
-import me.angeloo.mystica.Utility.ShapeRenderer.Gradient.GradientDirection;
 import me.angeloo.mystica.Utility.ShapeRenderer.Gradient.GradientRenderer;
 import me.angeloo.mystica.Utility.ShapeRenderer.Gradient.GradientRenderers;
 import me.angeloo.mystica.Utility.ShapeRenderer.Text.LayoutEngine;
@@ -24,12 +25,14 @@ public class DescriptionCardAssembler {
     private final LayoutEngine layoutEngine;
     private final StringRenderer stringRenderer;
     private final TextContainerAssembler textContainerAssembler;
+    private final IconLayerAssembler iconLayerAssembler;
 
-    public DescriptionCardAssembler(Mystica main, TextContainerAssembler textContainerAssembler) {
+    public DescriptionCardAssembler(Mystica main, TextContainerAssembler textContainerAssembler, IconLayerAssembler iconLayerAssembler) {
         gradientRenderers = main.getGradientRenderers();
         layoutEngine = main.getLayoutEngine();
         stringRenderer = main.getStringRenderer();
         this.textContainerAssembler = textContainerAssembler;
+        this.iconLayerAssembler = iconLayerAssembler;
     }
 
     public void assemble(
@@ -46,24 +49,20 @@ public class DescriptionCardAssembler {
 
             /*
              * ----------------------------------------
-             * 1. SAFE BODY ANCHOR (AVOID TOP VARIANT)
+             * 1. SAFE BODY ANCHOR
              * ----------------------------------------
              */
 
-            int bodyY = (card.getY() / 16) * 16 - 16;
-            int headerHeight = 16; //TODO: make header title multi-line and derive height from that
-            int headerY = bodyY + headerHeight + 4;
-
-            //header can NOT be above y = 0. if cY=0, bY = -16
+            int bodyY = (card.y() / 16) * 16 - 16;
 
             /*
              * ----------------------------------------
-             * 2. BODY LAYOUT (SOURCE OF TRUTH)
+             * 2. BODY LAYOUT
              * ----------------------------------------
              */
 
             List<LineData> lines = new ArrayList<>();
-            for (String s : card.getDescription()) {
+            for (String s : card.description()) {
                 lines.add(new LineData(s, 8));
             }
 
@@ -72,77 +71,115 @@ public class DescriptionCardAssembler {
 
             int bodyCols = bodyLayout.container().columns();
 
-
-
             /*
              * ----------------------------------------
-             * 3. TITLE WIDTH (GRID COMPATIBLE)
+             * 3. TITLE WIDTH
              * ----------------------------------------
              */
 
-            int titlePixelWidth =
-                    MinecraftCharWidths.getPixelWidth(card.getTitle());
+            int titlePixelWidth = 0;
+            for (String l : card.title()) {
+                titlePixelWidth = Math.max(
+                        titlePixelWidth,
+                        MinecraftCharWidths.getPixelWidth(l)
+                );
+            }
 
-            int titleCols =
-                    (int) Math.ceil(titlePixelWidth / 16.0);
+            int titleCols = (int) Math.ceil(titlePixelWidth / 16.0);
 
             /*
              * ----------------------------------------
-             * 4. FINAL WIDTH (GRID ALIGNED)
+             * 4. ICON + TITLE HEIGHT LOGIC
+             * ----------------------------------------
+             */
+
+            int lineHeight = 8;
+
+            int titleHeight = card.title().size() * lineHeight;
+
+            int iconWidth = card.icon() == null ? 0 : card.icon().width();
+            int iconHeight = card.icon() == null ? 0 : card.icon().height();
+
+            int contentHeight = Math.max(titleHeight, iconHeight);
+
+            int verticalPadding = (iconHeight > titleHeight) ? 2 : 0;
+
+            int headerHeight = contentHeight + (verticalPadding * 2);
+
+            /*
+             * ----------------------------------------
+             * 5. WIDTH (UNCHANGED LOGIC)
              * ----------------------------------------
              */
 
             int cols = Math.max(bodyCols, titleCols);
             int width = cols * 16;
 
+            /*
+             * ----------------------------------------
+             * 6. HEADER POSITION
+             * ----------------------------------------
+             */
+
+            int headerY = bodyY + headerHeight + 6;
+            int headerTopY = headerY - verticalPadding;
 
             /*
              * ----------------------------------------
-             * 5. HEADER (DERIVED FROM BODY)
+             * 7. GRADIENT
              * ----------------------------------------
              */
 
             DrawGradientCommand gradient =
                     new DrawGradientCommand(
-                            card.getX(),
-                            headerY,
+                            card.x(),
+                            headerTopY,
                             width,
                             headerHeight,
-                            card.getStyle().startColor(),
-                            card.getStyle().endColor(),
-                            card.getStyle().gradientDirection()
+                            card.style().startColor(),
+                            card.style().endColor(),
+                            card.style().gradientDirection()
                     );
 
             GradientRenderer renderer =
-                    gradientRenderers.get(gradient.getDirection());
+                    gradientRenderers.get(gradient.direction());
 
-            cursor.seek(builder, card.getX());
-
-            builder.append(renderer.render(gradient, headerY));
-
+            cursor.seek(builder, card.x());
+            builder.append(renderer.render(gradient, headerTopY));
             cursor.advance(width);
 
             /*
              * ----------------------------------------
-             * 6. TITLE (CENTERED)
+             * 8. TITLE
              * ----------------------------------------
              */
 
-            List<LineData> titleData =
-                    List.of(new LineData(card.getTitle(), 8));
+            List<LineData> titleData = new ArrayList<>();
+            for (String l : card.title()) {
+                titleData.add(new LineData(l, 8));
+            }
 
             List<StringGlyph> titleGlyphs =
                     layoutEngine.layout(titleData);
 
-            int titleX =
-                    card.getX() + ((width - titlePixelWidth) / 2);
+            int iconOffset = 2;
+            int iconGap = 2;
+
+            int iconX = card.x() + iconOffset;
+            int iconY = headerTopY - verticalPadding;
+
+            int titleX = card.x() + iconOffset;
+
+            if (card.icon() != null) {
+                titleX += iconWidth + iconGap;
+            }
 
             cursor.seek(builder, titleX);
 
             builder.append(
                     stringRenderer.render(
                             titleGlyphs,
-                            headerY - 2
+                            headerY - 4
                     )
             );
 
@@ -150,15 +187,31 @@ public class DescriptionCardAssembler {
 
             /*
              * ----------------------------------------
-             * 7. BODY (TEXT CONTAINER)
+             * 9. ICON
+             * ----------------------------------------
+             */
+
+            if(card.icon() != null){
+                DrawConstructedIconCommand iconCommand = new DrawConstructedIconCommand(
+                        iconX,
+                        iconY,
+                        card.icon());
+
+                iconLayerAssembler.assemble(builder, cursor, List.of(iconCommand));
+            }
+
+
+            /*
+             * ----------------------------------------
+             * 10. BODY
              * ----------------------------------------
              */
 
             DrawTextContainerCommand body =
                     new DrawTextContainerCommand(
-                            card.getX(),
+                            card.x(),
                             bodyY,
-                            card.getDescription()
+                            card.description()
                     );
 
             textContainerAssembler.assemble(
@@ -166,116 +219,9 @@ public class DescriptionCardAssembler {
                     cursor,
                     List.of(body)
             );
-
-
-
-
         }
-
     }
 
-    /*public void assemble(
-            StringBuilder builder,
-            RenderCursor cursor,
-            List<DrawCommand> commands
-    ) {
-
-        for (DrawCommand command : commands) {
-
-            if (!(command instanceof DescriptionCardCommand card)) {
-                continue;
-            }
-
-
-
-            List<LineData> lines = new ArrayList<>();
-            for (String s : card.getDescription()) {
-                lines.add(new LineData(s, 8));
-            }
-
-            TextContainerLayout.ContainerLayout bodyLayout =
-                    TextContainerLayout.measure(
-                            lines,
-                            card.getY()
-                    );
-
-            int bodyCols = bodyLayout.container().columns();
-
-
-
-            int titlePixelWidth =
-                    MinecraftCharWidths.getPixelWidth(card.getTitle());
-
-            int titleCols =
-                    (int) Math.ceil(titlePixelWidth / 16.0);
-
-
-
-            int cols = Math.max(bodyCols, titleCols);
-            int width = cols * 16;
-
-
-            int headerHeight = 10;
-            int headerY = card.getY();
-            int bodyY = headerY - headerHeight - 16;
-
-
-            DrawGradientCommand gradient =
-                    new DrawGradientCommand(
-                            card.getX(),
-                            headerY,
-                            width,
-                            headerHeight,
-                            card.getStyle().startColor(),
-                            card.getStyle().endColor(),
-                            card.getStyle().gradientDirection()
-                    );
-
-            GradientRenderer renderer =
-                    gradientRenderers.get(gradient.getDirection());
-
-            cursor.seek(builder, card.getX());
-            builder.append(renderer.render(gradient, headerY));
-
-
-            cursor.advance(width);
-
-
-            List<LineData> titleData =
-                    List.of(new LineData(card.getTitle(), 8));
-
-            List<StringGlyph> titleGlyphs =
-                    layoutEngine.layout(titleData);
-
-            int titleX =
-                    card.getX() + ((width - titlePixelWidth) / 2);
-
-            cursor.seek(builder, titleX);
-
-            builder.append(
-                    stringRenderer.render(
-                            titleGlyphs,
-                            headerY - 2
-                    )
-            );
-
-            cursor.advance(titlePixelWidth+1);
-
-
-            DrawTextContainerCommand body =
-                    new DrawTextContainerCommand(
-                            card.getX(),
-                            bodyY,
-                            card.getDescription()
-                    );
-
-            textContainerAssembler.assemble(
-                    builder,
-                    cursor,
-                    List.of(body)
-            );
-        }
-    }*/
 
 
 

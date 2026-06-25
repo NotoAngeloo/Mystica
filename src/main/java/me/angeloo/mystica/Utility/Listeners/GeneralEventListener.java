@@ -176,6 +176,8 @@ public class GeneralEventListener implements Listener {
 
         player.getInventory().setHeldItemSlot(8);
 
+        //player.setResourcePack();
+
         targetManager.setPlayerTarget(player, null);
         gearReader.setGearStats(player);
 

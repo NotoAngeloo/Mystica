@@ -23,22 +23,22 @@ public class HorizontalGradientRenderer extends AbstractGradientRenderer{
 
         Color previous = null;
 
-        for (int y = 0; y < command.getHeight(); y++) {
+        for (int y = 0; y < command.height(); y++) {
 
             char pixel =
                     registry.get(baseAscent - y)
                             .getUnicode();
 
-            for (int x = 0; x < command.getWidth(); x++) {
+            for (int x = 0; x < command.width(); x++) {
 
                 Color color = GradientUtil.sample(
                         GradientDirection.HORIZONTAL,
-                        command.getStart(),
-                        command.getEnd(),
+                        command.start(),
+                        command.end(),
                         x,
                         y,
-                        command.getWidth(),
-                        command.getHeight()
+                        command.width(),
+                        command.height()
                 );
 
                 if (!color.equals(previous)) {
@@ -48,13 +48,13 @@ public class HorizontalGradientRenderer extends AbstractGradientRenderer{
 
                 sb.append(pixel);
 
-                if (x < command.getWidth() - 1) {
+                if (x < command.width() - 1) {
                     sb.append("\uF801");
                 }
             }
 
-            if(y!=command.getHeight()-1){
-                sb.append(UiSpacing.offset(-command.getWidth() - 1));
+            if(y!=command.height()-1){
+                sb.append(UiSpacing.offset(-command.width() - 1));
             }
         }
 

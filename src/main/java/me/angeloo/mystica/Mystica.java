@@ -38,6 +38,8 @@ import me.angeloo.mystica.Utility.Logic.StealthTargetBlacklist;
 import me.angeloo.mystica.Utility.MechanicCircle.CircleCommand;
 import me.angeloo.mystica.Utility.ShapeRenderer.*;
 import me.angeloo.mystica.Utility.ShapeRenderer.Gradient.GradientRenderers;
+import me.angeloo.mystica.Utility.ShapeRenderer.Icon.ConstructedIconRenderer;
+import me.angeloo.mystica.Utility.ShapeRenderer.Icon.ConstructedIcons;
 import me.angeloo.mystica.Utility.ShapeRenderer.Text.*;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -45,7 +47,10 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.InputStream;
 import java.util.Map;
 
 public final class Mystica extends JavaPlugin{
@@ -58,6 +63,7 @@ public final class Mystica extends JavaPlugin{
     private LayoutEngine layoutEngine;
     private StringRenderer stringRenderer;
     private GradientRenderers gradientRenderers;
+    private ConstructedIconRenderer constructedIconRenderer;
 
     private CreaturesAndCharactersManager creaturesAndCharactersManager;
 
@@ -144,8 +150,8 @@ public final class Mystica extends JavaPlugin{
         //Bukkit.getLogger().info(glyphMap.keySet().size() + " chars registered");
 
         CharGlyphPreComputer.precomputeAll(charGlyphAtlas, pixelGlyphRegistry);
-
         gradientRenderers = new GradientRenderers(pixelGlyphRegistry);
+        constructedIconRenderer = new ConstructedIconRenderer(pixelGlyphRegistry);
 
         layoutEngine = new LayoutEngine(charGlyphAtlas);
         stringRenderer = new StringRenderer();
@@ -503,4 +509,6 @@ public final class Mystica extends JavaPlugin{
     public GradientRenderers getGradientRenderers() {
         return gradientRenderers;
     }
+
+    public ConstructedIconRenderer getConstructedIconRenderer(){return constructedIconRenderer;}
 }

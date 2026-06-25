@@ -12,7 +12,8 @@ import me.angeloo.mystica.Utility.ShapeRenderer.Icon.ConstructedIcons;
 import org.bukkit.entity.Player;
 
 import java.awt.*;
-import java.util.Collections;
+
+import java.util.List;
 
 public class DuelistPanel extends GuiPanel {
 
@@ -44,8 +45,15 @@ public class DuelistPanel extends GuiPanel {
         context.drawDescriptionCard(
                 80,
                 -64,
+
                 ConstructedIcons.DUELIST_ICON,
-                Collections.singletonList(SubClass.DUELIST.getDisplayName()),
+
+                List.of(
+                        SubClass.DUELIST.getDisplayName(),
+                        "Role: " + SubClass.DUELIST.getRole().getDisplayName(),
+                        "A third line"
+                ),
+
                 SubClass.DUELIST.getDescription(),
                 new CardStyle(
                         Color.RED,

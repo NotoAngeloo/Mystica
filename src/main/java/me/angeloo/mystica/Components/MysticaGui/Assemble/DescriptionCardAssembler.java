@@ -15,6 +15,7 @@ import me.angeloo.mystica.Utility.ShapeRenderer.Text.LayoutEngine;
 import me.angeloo.mystica.Utility.ShapeRenderer.Text.LineData;
 import me.angeloo.mystica.Utility.ShapeRenderer.Text.StringGlyph;
 import me.angeloo.mystica.Utility.ShapeRenderer.Text.StringRenderer;
+import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,11 +101,11 @@ public class DescriptionCardAssembler {
             int iconWidth = card.icon() == null ? 0 : card.icon().width();
             int iconHeight = card.icon() == null ? 0 : card.icon().height();
 
+
             int contentHeight = Math.max(titleHeight, iconHeight);
 
-            int verticalPadding = (iconHeight > titleHeight) ? 2 : 0;
-
-            int headerHeight = contentHeight + (verticalPadding * 2);
+            int headerHeight = contentHeight + 4; //+2 top, +2 bottom
+            int headerTopY = bodyY + headerHeight + 3;
 
             /*
              * ----------------------------------------
@@ -121,8 +122,6 @@ public class DescriptionCardAssembler {
              * ----------------------------------------
              */
 
-            int headerY = bodyY + headerHeight + 6;
-            int headerTopY = headerY - verticalPadding;
 
             /*
              * ----------------------------------------
@@ -148,6 +147,8 @@ public class DescriptionCardAssembler {
             builder.append(renderer.render(gradient, headerTopY));
             cursor.advance(width);
 
+            //each line of text makes the 9 slice offset by 1
+
             /*
              * ----------------------------------------
              * 8. TITLE
@@ -166,7 +167,7 @@ public class DescriptionCardAssembler {
             int iconGap = 2;
 
             int iconX = card.x() + iconOffset;
-            int iconY = headerTopY - verticalPadding;
+            int iconY = headerTopY - 2; //2 below top header
 
             int titleX = card.x() + iconOffset;
 
@@ -179,11 +180,14 @@ public class DescriptionCardAssembler {
             builder.append(
                     stringRenderer.render(
                             titleGlyphs,
-                            headerY - 4
+                            iconY
                     )
             );
 
-            cursor.advance(titlePixelWidth + 1);
+            int lastLineWidth = MinecraftCharWidths.getPixelWidth(card.title().getLast());
+
+            //+1 one line +0 2 lines -1 3 lines +1 - (line number - 1). if 3 lines +1 - 2
+            cursor.advance(lastLineWidth+1-(card.title().size()-1));
 
             /*
              * ----------------------------------------
@@ -201,11 +205,14 @@ public class DescriptionCardAssembler {
             }
 
 
+
             /*
              * ----------------------------------------
              * 10. BODY
              * ----------------------------------------
              */
+
+            //perhaps container width can also be effected by how wide the title is
 
             DrawTextContainerCommand body =
                     new DrawTextContainerCommand(

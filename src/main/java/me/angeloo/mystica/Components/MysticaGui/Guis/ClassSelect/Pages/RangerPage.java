@@ -1,12 +1,15 @@
 package me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect.Pages;
 
 import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;
 import me.angeloo.mystica.Components.MysticaGui.Font.UiGlyphs;
 import me.angeloo.mystica.Components.MysticaGui.GuiButton;
 import me.angeloo.mystica.Components.MysticaGui.GuiManager;
 import me.angeloo.mystica.Components.MysticaGui.GuiSession;
 import me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect.ClassSelect;
+import me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect.Panels.ScoutPanel;
+import me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect.Panels.TamerPanel;
 import me.angeloo.mystica.Components.MysticaGui.Guis.GuiPage;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderContext;
 import org.bukkit.entity.Player;
@@ -21,6 +24,9 @@ public class RangerPage extends GuiPage {
 
     private final GuiManager guiManager;
 
+    private final ScoutPanel scoutPanel;
+    private final TamerPanel tamerPanel;
+
     public RangerPage(
             ClassSelect gui,
             GuiManager guiManager
@@ -28,6 +34,9 @@ public class RangerPage extends GuiPage {
 
         this.gui = gui;
         this.guiManager = guiManager;
+
+        this.scoutPanel = new ScoutPanel(gui);
+        this.tamerPanel = new TamerPanel(gui);
     }
 
     @Override
@@ -78,9 +87,6 @@ public class RangerPage extends GuiPage {
                 UiGlyphs.RANGER_CHARACTER
         );
 
-        /*
-         * Pyromancer
-         */
 
         button(
                 context,
@@ -113,6 +119,14 @@ public class RangerPage extends GuiPage {
                             InventoryClickEvent event
                     ) {
 
+                        if(gui.getSelectedSubclass() != SubClass.SCOUT){
+                            gui.setSelectedSubclass(SubClass.SCOUT);
+                            guiManager.refresh(p);
+                            return;
+                        }
+
+                        gui.setSelectedSubclass(null);
+                        guiManager.refresh(p);
 
                     }
                 }
@@ -150,6 +164,14 @@ public class RangerPage extends GuiPage {
                             InventoryClickEvent event
                     ) {
 
+                        if(gui.getSelectedSubclass() != SubClass.TAMER){
+                            gui.setSelectedSubclass(SubClass.TAMER);
+                            guiManager.refresh(p);
+                            return;
+                        }
+
+                        gui.setSelectedSubclass(null);
+                        guiManager.refresh(p);
 
                     }
                 }
@@ -192,6 +214,7 @@ public class RangerPage extends GuiPage {
 
 
                         session.setCurrentPage(gui.getPaladinPage());
+                        gui.setSelectedSubclass(null);
                         guiManager.refresh(p);
 
                     }
@@ -234,10 +257,19 @@ public class RangerPage extends GuiPage {
                                 guiManager.getSession(p);
 
                         session.setCurrentPage(gui.getShadowKnightPage());
+                        gui.setSelectedSubclass(null);
                         guiManager.refresh(p);
                     }
                 }
         );
+
+        if(scoutPanel.isVisible(player)){
+            scoutPanel.build(player, context);
+        }
+
+        if(tamerPanel.isVisible(player)){
+            tamerPanel.build(player, context);
+        }
     }
 
 }

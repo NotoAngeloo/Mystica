@@ -54,11 +54,7 @@ public class TextContainerAssembler {
             cursor.seek(builder, container.x());
 
             drawNineSlice(builder, layout.container());
-            //drawNineSlice(builder, size);
 
-            //2 cols
-
-            //Bukkit.getLogger().info(layout.container().columns() + " cols");
 
             //each col 16 pix
             cursor.advance((layout.container().columns()*16)+1);
@@ -67,7 +63,6 @@ public class TextContainerAssembler {
 
             List<StringGlyph> glyphs = layoutEngine.layout(lines);
 
-           // cursor.seek(builder, container.x() + 14);
             cursor.seek(builder, container.x() + TextContainerLayout.paddingX() + 1);
 
 
@@ -82,8 +77,6 @@ public class TextContainerAssembler {
 
             cursor.advance(lastLineWidth+1);
 
-            //cursor.advance(layout.container().columns());
-            //cursor.advance(size.columns());
         }
     }
 

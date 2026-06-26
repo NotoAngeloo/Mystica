@@ -31,7 +31,7 @@ public final class TextContainerLayout {
     ) {
 
         int maxWidth = 0;
-        int totalHeight = lines.size() * 8;
+        int totalHeight = lines.size() * 9;
 
         for (LineData line : lines) {
             int width =

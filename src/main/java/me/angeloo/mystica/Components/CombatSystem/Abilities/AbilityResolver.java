@@ -250,7 +250,7 @@ public class AbilityResolver implements AbilityLookup{
 
         ultimates.put(
                 SubClass.ALCHEMIST,
-                new WickedConcoction(main, manager)
+                new WickedConcoction(main)
         );
 
         ultimates.put(

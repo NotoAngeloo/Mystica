@@ -43,7 +43,7 @@ public class WickedConcoction extends BaseAbility {
 
 
 
-    public WickedConcoction(Mystica main, AbilityManager manager){
+    public WickedConcoction(Mystica main){
         super("wicked_concoction");
         this.main = main;
         profileManager = main.getProfileManager();

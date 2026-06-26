@@ -1,12 +1,15 @@
 package me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect.Pages;
 
 import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;
 import me.angeloo.mystica.Components.MysticaGui.Font.UiGlyphs;
 import me.angeloo.mystica.Components.MysticaGui.GuiButton;
 import me.angeloo.mystica.Components.MysticaGui.GuiManager;
 import me.angeloo.mystica.Components.MysticaGui.GuiSession;
 import me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect.ClassSelect;
+import me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect.Panels.ConjurerPanel;
+import me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect.Panels.PyromancerPanel;
 import me.angeloo.mystica.Components.MysticaGui.Guis.GuiPage;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderContext;
 import org.bukkit.entity.Player;
@@ -21,6 +24,9 @@ public class ElementalistPage extends GuiPage {
 
     private final GuiManager guiManager;
 
+    private final PyromancerPanel pyromancerPanel;
+    private final ConjurerPanel conjurerPanel;
+
     public ElementalistPage(
             ClassSelect gui,
             GuiManager guiManager
@@ -28,6 +34,8 @@ public class ElementalistPage extends GuiPage {
 
         this.gui = gui;
         this.guiManager = guiManager;
+        pyromancerPanel = new PyromancerPanel(gui);
+        conjurerPanel = new ConjurerPanel(gui);
     }
 
     @Override
@@ -112,7 +120,14 @@ public class ElementalistPage extends GuiPage {
                             InventoryClickEvent event
                     ) {
 
-                        //player.sendMessage("pyromancer");
+                        if(gui.getSelectedSubclass() != SubClass.PYROMANCER){
+                            gui.setSelectedSubclass(SubClass.PYROMANCER);
+                            guiManager.refresh(p);
+                            return;
+                        }
+
+                        gui.setSelectedSubclass(null);
+                        guiManager.refresh(p);
 
                     }
                 }
@@ -150,6 +165,14 @@ public class ElementalistPage extends GuiPage {
                             InventoryClickEvent event
                     ) {
 
+                        if(gui.getSelectedSubclass() != SubClass.CONJURER){
+                            gui.setSelectedSubclass(SubClass.CONJURER);
+                            guiManager.refresh(p);
+                            return;
+                        }
+
+                        gui.setSelectedSubclass(null);
+                        guiManager.refresh(p);
 
                     }
                 }
@@ -192,6 +215,7 @@ public class ElementalistPage extends GuiPage {
                                 guiManager.getSession(p);
 
                         session.setCurrentPage(gui.getAssassinPage());
+                        gui.setSelectedSubclass(null);
                         guiManager.refresh(p);
                     }
                 }
@@ -233,10 +257,19 @@ public class ElementalistPage extends GuiPage {
                                 guiManager.getSession(p);
 
                         session.setCurrentPage(gui.getMysticPage());
+                        gui.setSelectedSubclass(null);
                         guiManager.refresh(p);
                     }
                 }
         );
+
+        if(pyromancerPanel.isVisible(player)){
+            pyromancerPanel.build(player, context);
+        }
+
+        if(conjurerPanel.isVisible(player)){
+            conjurerPanel.build(player, context);
+        }
     }
 
 }

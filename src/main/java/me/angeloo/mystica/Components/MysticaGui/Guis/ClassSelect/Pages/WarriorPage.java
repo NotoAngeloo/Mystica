@@ -1,12 +1,15 @@
 package me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect.Pages;
 
 import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;
 import me.angeloo.mystica.Components.MysticaGui.Font.UiGlyphs;
 import me.angeloo.mystica.Components.MysticaGui.GuiButton;
 import me.angeloo.mystica.Components.MysticaGui.GuiManager;
 import me.angeloo.mystica.Components.MysticaGui.GuiSession;
 import me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect.ClassSelect;
+import me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect.Panels.ExecutionerPanel;
+import me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect.Panels.GladiatorPanel;
 import me.angeloo.mystica.Components.MysticaGui.Guis.GuiPage;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderContext;
 import org.bukkit.entity.Player;
@@ -21,6 +24,9 @@ public class WarriorPage extends GuiPage {
 
     private final GuiManager guiManager;
 
+    private final GladiatorPanel gladiatorPanel;
+    private final ExecutionerPanel executionerPanel;
+
     public WarriorPage(
             ClassSelect gui,
             GuiManager guiManager
@@ -28,6 +34,9 @@ public class WarriorPage extends GuiPage {
 
         this.gui = gui;
         this.guiManager = guiManager;
+
+        this.gladiatorPanel = new GladiatorPanel(gui);
+        this.executionerPanel = new ExecutionerPanel(gui);
     }
 
     @Override
@@ -78,10 +87,6 @@ public class WarriorPage extends GuiPage {
                 UiGlyphs.WARRIOR_CHARACTER
         );
 
-        /*
-         * Pyromancer
-         */
-
         button(
                 context,
                 new GuiButton() {
@@ -113,6 +118,14 @@ public class WarriorPage extends GuiPage {
                             InventoryClickEvent event
                     ) {
 
+                        if(gui.getSelectedSubclass() != SubClass.GLADIATOR){
+                            gui.setSelectedSubclass(SubClass.GLADIATOR);
+                            guiManager.refresh(p);
+                            return;
+                        }
+
+                        gui.setSelectedSubclass(null);
+                        guiManager.refresh(p);
 
                     }
                 }
@@ -150,6 +163,14 @@ public class WarriorPage extends GuiPage {
                             InventoryClickEvent event
                     ) {
 
+                        if(gui.getSelectedSubclass() != SubClass.EXECUTIONER){
+                            gui.setSelectedSubclass(SubClass.EXECUTIONER);
+                            guiManager.refresh(p);
+                            return;
+                        }
+
+                        gui.setSelectedSubclass(null);
+                        guiManager.refresh(p);
 
                     }
                 }
@@ -192,6 +213,7 @@ public class WarriorPage extends GuiPage {
 
 
                         session.setCurrentPage(gui.getShadowKnightPage());
+                        gui.setSelectedSubclass(null);
                         guiManager.refresh(p);
 
                     }
@@ -234,10 +256,19 @@ public class WarriorPage extends GuiPage {
                                 guiManager.getSession(p);
 
                         session.setCurrentPage(gui.getAssassinPage());
+                        gui.setSelectedSubclass(null);
                         guiManager.refresh(p);
                     }
                 }
         );
+
+        if(gladiatorPanel.isVisible(player)){
+            gladiatorPanel.build(player, context);
+        }
+
+        if(executionerPanel.isVisible(player)){
+            executionerPanel.build(player, context);
+        }
     }
 
 }

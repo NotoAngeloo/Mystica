@@ -8,6 +8,7 @@ import me.angeloo.mystica.Components.MysticaGui.GuiButton;
 import me.angeloo.mystica.Components.MysticaGui.GuiManager;
 import me.angeloo.mystica.Components.MysticaGui.GuiSession;
 import me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect.ClassSelect;
+import me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect.Panels.AlchemistPanel;
 import me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect.Panels.DuelistPanel;
 import me.angeloo.mystica.Components.MysticaGui.Guis.GuiPage;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderContext;
@@ -24,6 +25,7 @@ public class AssassinPage extends GuiPage {
     private final GuiManager guiManager;
 
     private final DuelistPanel duelistPanel;
+    private final AlchemistPanel alchemistPanel;
 
     public AssassinPage(
             ClassSelect gui,
@@ -34,6 +36,7 @@ public class AssassinPage extends GuiPage {
         this.guiManager = guiManager;
 
         this.duelistPanel = new DuelistPanel(gui);
+        this.alchemistPanel = new AlchemistPanel(gui);
     }
 
 
@@ -171,6 +174,16 @@ public class AssassinPage extends GuiPage {
                             InventoryClickEvent event
                     ) {
 
+                        if(gui.getSelectedSubclass() != SubClass.ALCHEMIST){
+                            gui.setSelectedSubclass(SubClass.ALCHEMIST);
+                            guiManager.refresh(p);
+                            return;
+                        }
+
+                        gui.setSelectedSubclass(null);
+                        guiManager.refresh(p);
+                        return;
+
 
                     }
                 }
@@ -214,6 +227,7 @@ public class AssassinPage extends GuiPage {
 
 
                         session.setCurrentPage(gui.getWarriorPage());
+                        gui.setSelectedSubclass(null);
                         guiManager.refresh(p);
 
                     }
@@ -256,6 +270,7 @@ public class AssassinPage extends GuiPage {
                                 guiManager.getSession(p);
 
                         session.setCurrentPage(gui.getElementalistPage());
+                        gui.setSelectedSubclass(null);
                         guiManager.refresh(p);
                     }
                 }
@@ -264,6 +279,10 @@ public class AssassinPage extends GuiPage {
 
         if(duelistPanel.isVisible(player)){
             duelistPanel.build(player, context);
+        }
+
+        if(alchemistPanel.isVisible(player)){
+            alchemistPanel.build(player, context);
         }
     }
 

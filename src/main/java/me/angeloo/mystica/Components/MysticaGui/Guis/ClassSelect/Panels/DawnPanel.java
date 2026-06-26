@@ -3,24 +3,21 @@ package me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect.Panels;
 import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
 import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import me.angeloo.mystica.Components.MysticaGui.DrawCommand.ContainerCommand.CardStyle;
-import me.angeloo.mystica.Components.MysticaGui.Font.UiGlyphs;
 import me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect.ClassSelect;
 import me.angeloo.mystica.Components.MysticaGui.Guis.GuiPanel;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderContext;
 import me.angeloo.mystica.Utility.ShapeRenderer.Gradient.GradientDirection;
-import me.angeloo.mystica.Utility.ShapeRenderer.Gradient.GradientRenderers;
 import me.angeloo.mystica.Utility.ShapeRenderer.Icon.ConstructedIcons;
 import org.bukkit.entity.Player;
 
 import java.awt.*;
-
 import java.util.List;
 
-public class DuelistPanel extends GuiPanel {
+public class DawnPanel extends GuiPanel {
 
     private final ClassSelect gui;
 
-    public DuelistPanel(ClassSelect gui){
+    public DawnPanel(ClassSelect gui){
         this.gui = gui;
     }
 
@@ -31,7 +28,7 @@ public class DuelistPanel extends GuiPanel {
             return false;
         }
 
-        return gui.getSelectedSubclass().equals(SubClass.DUELIST);
+        return gui.getSelectedSubclass().equals(SubClass.DAWN);
     }
 
     @Override
@@ -47,19 +44,19 @@ public class DuelistPanel extends GuiPanel {
                 180,
                 -32,
 
-                ConstructedIcons.DUELIST_ICON,
+                ConstructedIcons.DAWN_ICON,
 
                 List.of(
-                        SubClass.DUELIST.getDisplayName(),
-                        SubClass.DUELIST.getRange().getDisplayName()
-                                + " " +SubClass.DUELIST.getRole().getDisplayName(),
-                        SubClass.DUELIST.getDamageType().getDisplayName()
+                        SubClass.DAWN.getDisplayName(),
+                        SubClass.DAWN.getRange().getDisplayName()
+                                + " " +SubClass.DAWN.getRole().getDisplayName(),
+                        SubClass.DAWN.getDamageType().getDisplayName()
                 ),
 
-                SubClass.DUELIST.getDescription(),
+                SubClass.DAWN.getDescription(),
 
                 new CardStyle(
-                        PlayerClass.ASSASSIN.getColor(),
+                        PlayerClass.PALADIN.getColor(),
                         Color.BLACK,
                         GradientDirection.HORIZONTAL
 

@@ -1,12 +1,15 @@
 package me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect.Pages;
 
 import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;
 import me.angeloo.mystica.Components.MysticaGui.Font.UiGlyphs;
 import me.angeloo.mystica.Components.MysticaGui.GuiButton;
 import me.angeloo.mystica.Components.MysticaGui.GuiManager;
 import me.angeloo.mystica.Components.MysticaGui.GuiSession;
 import me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect.ClassSelect;
+import me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect.Panels.BloodPanel;
+import me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect.Panels.DoomPanel;
 import me.angeloo.mystica.Components.MysticaGui.Guis.GuiPage;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderContext;
 import org.bukkit.entity.Player;
@@ -21,6 +24,9 @@ public class ShadowKnightPage extends GuiPage {
 
     private final GuiManager guiManager;
 
+    private final DoomPanel doomPanel;
+    private final BloodPanel bloodPanel;
+
     public ShadowKnightPage(
             ClassSelect gui,
             GuiManager guiManager
@@ -28,6 +34,9 @@ public class ShadowKnightPage extends GuiPage {
 
         this.gui = gui;
         this.guiManager = guiManager;
+
+        this.doomPanel = new DoomPanel(gui);
+        this.bloodPanel = new BloodPanel(gui);
     }
 
     @Override
@@ -113,6 +122,14 @@ public class ShadowKnightPage extends GuiPage {
                             InventoryClickEvent event
                     ) {
 
+                        if(gui.getSelectedSubclass() != SubClass.DOOM){
+                            gui.setSelectedSubclass(SubClass.DOOM);
+                            guiManager.refresh(p);
+                            return;
+                        }
+
+                        gui.setSelectedSubclass(null);
+                        guiManager.refresh(p);
 
                     }
                 }
@@ -150,6 +167,14 @@ public class ShadowKnightPage extends GuiPage {
                             InventoryClickEvent event
                     ) {
 
+                        if(gui.getSelectedSubclass() != SubClass.BLOOD){
+                            gui.setSelectedSubclass(SubClass.BLOOD);
+                            guiManager.refresh(p);
+                            return;
+                        }
+
+                        gui.setSelectedSubclass(null);
+                        guiManager.refresh(p);
 
                     }
                 }
@@ -192,6 +217,7 @@ public class ShadowKnightPage extends GuiPage {
 
 
                         session.setCurrentPage(gui.getRangerPage());
+                        gui.setSelectedSubclass(null);
                         guiManager.refresh(p);
 
                     }
@@ -234,10 +260,19 @@ public class ShadowKnightPage extends GuiPage {
                                 guiManager.getSession(p);
 
                         session.setCurrentPage(gui.getWarriorPage());
+                        gui.setSelectedSubclass(null);
                         guiManager.refresh(p);
                     }
                 }
         );
+
+        if(doomPanel.isVisible(player)){
+            doomPanel.build(player, context);
+        }
+
+        if(bloodPanel.isVisible(player)){
+            bloodPanel.build(player, context);
+        }
     }
 
 }

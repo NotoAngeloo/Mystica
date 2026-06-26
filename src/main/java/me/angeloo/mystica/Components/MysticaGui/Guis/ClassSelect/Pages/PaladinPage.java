@@ -1,12 +1,16 @@
 package me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect.Pages;
 
 import me.angeloo.mystica.Components.CombatSystem.Classes.PlayerClass;
+import me.angeloo.mystica.Components.CombatSystem.Classes.SubClass;
 import me.angeloo.mystica.Components.MysticaGui.Font.Glyph;
 import me.angeloo.mystica.Components.MysticaGui.Font.UiGlyphs;
 import me.angeloo.mystica.Components.MysticaGui.GuiButton;
 import me.angeloo.mystica.Components.MysticaGui.GuiManager;
 import me.angeloo.mystica.Components.MysticaGui.GuiSession;
 import me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect.ClassSelect;
+import me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect.Panels.DawnPanel;
+import me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect.Panels.DivinePanel;
+import me.angeloo.mystica.Components.MysticaGui.Guis.ClassSelect.Panels.TemplarPanel;
 import me.angeloo.mystica.Components.MysticaGui.Guis.GuiPage;
 import me.angeloo.mystica.Components.MysticaGui.Render.GuiRenderContext;
 import org.bukkit.entity.Player;
@@ -21,6 +25,10 @@ public class PaladinPage extends GuiPage {
 
     private final GuiManager guiManager;
 
+    public final TemplarPanel templarPanel;
+    private final DawnPanel dawnPanel;
+    private final DivinePanel divinePanel;
+
     public PaladinPage(
             ClassSelect gui,
             GuiManager guiManager
@@ -28,6 +36,10 @@ public class PaladinPage extends GuiPage {
 
         this.gui = gui;
         this.guiManager = guiManager;
+
+        this.templarPanel = new TemplarPanel(gui);
+        this.dawnPanel = new DawnPanel(gui);
+        this.divinePanel = new DivinePanel(gui);
     }
 
     @Override
@@ -78,10 +90,6 @@ public class PaladinPage extends GuiPage {
                 UiGlyphs.PALADIN_CHARACTER
         );
 
-        /*
-         * Pyromancer
-         */
-
         button(
                 context,
                 new GuiButton() {
@@ -113,6 +121,14 @@ public class PaladinPage extends GuiPage {
                             InventoryClickEvent event
                     ) {
 
+                        if(gui.getSelectedSubclass() != SubClass.TEMPLAR){
+                            gui.setSelectedSubclass(SubClass.TEMPLAR);
+                            guiManager.refresh(p);
+                            return;
+                        }
+
+                        gui.setSelectedSubclass(null);
+                        guiManager.refresh(p);
 
                     }
                 }
@@ -150,6 +166,14 @@ public class PaladinPage extends GuiPage {
                             InventoryClickEvent event
                     ) {
 
+                        if(gui.getSelectedSubclass() != SubClass.DAWN){
+                            gui.setSelectedSubclass(SubClass.DAWN);
+                            guiManager.refresh(p);
+                            return;
+                        }
+
+                        gui.setSelectedSubclass(null);
+                        guiManager.refresh(p);
 
                     }
                 }
@@ -192,6 +216,7 @@ public class PaladinPage extends GuiPage {
 
 
                         session.setCurrentPage(gui.getMysticPage());
+                        gui.setSelectedSubclass(null);
                         guiManager.refresh(p);
 
                     }
@@ -234,10 +259,23 @@ public class PaladinPage extends GuiPage {
                                 guiManager.getSession(p);
 
                         session.setCurrentPage(gui.getRangerPage());
+                        gui.setSelectedSubclass(null);
                         guiManager.refresh(p);
                     }
                 }
         );
+
+        if(templarPanel.isVisible(player)){
+            templarPanel.build(player, context);
+        }
+
+        if(dawnPanel.isVisible(player)){
+            dawnPanel.build(player, context);
+        }
+
+        if(divinePanel.isVisible(player)){
+            divinePanel.build(player, context);
+        }
     }
 
 }
